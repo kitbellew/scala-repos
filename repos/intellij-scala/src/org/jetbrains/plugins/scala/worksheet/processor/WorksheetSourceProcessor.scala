@@ -77,8 +77,8 @@ object WorksheetSourceProcessor {
 
     val name = s"A$$A$iterNumber"
     val instanceName = s"inst$$A$$A"
-    val packOpt = Option(srcFile.getContainingDirectory) flatMap {
-      case dir => Option(JavaDirectoryService.getInstance().getPackage(dir))
+    val packOpt = Option(srcFile.getContainingDirectory) flatMap { case dir =>
+      Option(JavaDirectoryService.getInstance().getPackage(dir))
     } collect {
       case psiPackage: PsiPackage
           if !psiPackage.getQualifiedName.trim.isEmpty =>
@@ -297,8 +297,8 @@ object WorksheetSourceProcessor {
         eraseClassName + " + \" = \" + ( " + PRINT_ARRAY_NAME + "($$temp$$) )" + erasePrefixName + "}"
 
     def insertUntouched(exprs: mutable.Iterable[PsiElement]) {
-      exprs foreach {
-        case expr => classRes append expr.getText append insertNlsFromWs(expr)
+      exprs foreach { case expr =>
+        classRes append expr.getText append insertNlsFromWs(expr)
       }
     }
 
@@ -378,8 +378,8 @@ object WorksheetSourceProcessor {
         )
       case varDef: ScVariableDefinition =>
         def writeTypedPatter(p: ScTypedPattern) = {
-          p.typePattern map {
-            case typed => p.name + ":" + typed.typeElement.getText
+          p.typePattern map { case typed =>
+            p.name + ":" + typed.typeElement.getText
           } getOrElse p.name
         }
 

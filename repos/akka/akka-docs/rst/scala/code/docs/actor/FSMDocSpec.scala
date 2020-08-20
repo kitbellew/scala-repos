@@ -140,8 +140,8 @@ class FSMDocSpec extends MyFavoriteTestFrameWorkPlusAkkaTestKit {
       //#stop-syntax
 
       //#transform-syntax
-      when(SomeState)(transform {
-        case Event(bytes: ByteString, read) => stay using (read + bytes.length)
+      when(SomeState)(transform { case Event(bytes: ByteString, read) =>
+        stay using (read + bytes.length)
       } using {
         case s @ FSM.State(state, read, timeout, stopReason, replies)
             if read > 1000 =>
@@ -156,8 +156,8 @@ class FSMDocSpec extends MyFavoriteTestFrameWorkPlusAkkaTestKit {
           goto(Processing)
       }
 
-      when(SomeState)(transform {
-        case Event(bytes: ByteString, read) => stay using (read + bytes.length)
+      when(SomeState)(transform { case Event(bytes: ByteString, read) =>
+        stay using (read + bytes.length)
       } using processingTrigger)
       //#alt-transform-syntax
 

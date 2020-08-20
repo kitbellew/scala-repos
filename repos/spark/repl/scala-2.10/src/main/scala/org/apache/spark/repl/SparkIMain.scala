@@ -661,8 +661,8 @@ class SparkIMain(
       oldReq <- definedNameMap get name.companionName
       newSym <- req.definedSymbols get name
       oldSym <- oldReq.definedSymbols get name.companionName
-      if Seq(oldSym, newSym).permutations exists {
-        case Seq(s1, s2) => s1.isClass && s2.isModule
+      if Seq(oldSym, newSym).permutations exists { case Seq(s1, s2) =>
+        s1.isClass && s2.isModule
       }
     } {
       afterTyper(replwarn(
@@ -828,8 +828,8 @@ class SparkIMain(
                   "    line" -> line,
                   " content" -> content,
                   "     was" -> l2,
-                  "combined" -> combined) map {
-                  case (label, s) => label + ": '" + s + "'"
+                  "combined" -> combined) map { case (label, s) =>
+                  label + ": '" + s + "'"
                 } mkString "\n")
               combined
             }
@@ -1958,8 +1958,8 @@ class SparkISettings(intp: SparkIMain) extends Logging {
     )
 
   private def allSettingsString =
-    allSettings.toList sortBy (_._1) map {
-      case (k, v) => "  " + k + " = " + v + "\n"
+    allSettings.toList sortBy (_._1) map { case (k, v) =>
+      "  " + k + " = " + v + "\n"
     } mkString
 
   override def toString = """

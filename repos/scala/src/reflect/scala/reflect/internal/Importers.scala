@@ -529,15 +529,15 @@ trait Importers { to: SymbolTable =>
     // ============== MISCELLANEOUS ==============
 
     def importAttachments(attachments: Set[Any]): Set[Any] =
-      attachments.collect {
-        case ia: ImportableAttachment => ia.importAttachment(this)
+      attachments.collect { case ia: ImportableAttachment =>
+        ia.importAttachment(this)
       }
 
     def importAnnotationInfo(ann: from.AnnotationInfo): AnnotationInfo = {
       val atp1 = importType(ann.atp)
       val args1 = ann.args map importTree
-      val assocs1 = ann.assocs map {
-        case (name, arg) => (importName(name), importAnnotArg(arg))
+      val assocs1 = ann.assocs map { case (name, arg) =>
+        (importName(name), importAnnotArg(arg))
       }
       val original1 = importTree(ann.original)
       AnnotationInfo(atp1, args1, assocs1) setOriginal original1

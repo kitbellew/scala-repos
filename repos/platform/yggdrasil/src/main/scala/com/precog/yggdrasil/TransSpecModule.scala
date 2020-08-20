@@ -521,8 +521,8 @@ trait TransSpecModule extends FNModule {
   def makeTableTrans(tableTrans: TableTransSpec1): TransSpec1 = {
     val wrapped =
       for ((key @ CPathField(fieldName), value) <- tableTrans) yield {
-        val mapped = TransSpec.deepMap(value) {
-          case Leaf(_) => DerefObjectStatic(Leaf(Source), key)
+        val mapped = TransSpec.deepMap(value) { case Leaf(_) =>
+          DerefObjectStatic(Leaf(Source), key)
         }
 
         trans.WrapObject(mapped, fieldName)

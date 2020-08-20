@@ -119,8 +119,8 @@ private[puzzle] final class PuzzleApi(
               BSONDocument("_id" -> p2.id),
               BSONDocument(
                 "$set" -> BSONDocument(
-                  Puzzle.BSONFields.vote -> p2.vote))) map {
-            case _ => p2 -> a2
+                  Puzzle.BSONFields.vote -> p2.vote))) map { case _ =>
+            p2 -> a2
           }
       }
 

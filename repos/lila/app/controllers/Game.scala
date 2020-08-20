@@ -33,8 +33,8 @@ object Game extends LilaController {
 
   def export(user: String) =
     Auth { implicit ctx => _ =>
-      Env.security.forms.emptyWithCaptcha map {
-        case (form, captcha) => Ok(html.game.export(user, form, captcha))
+      Env.security.forms.emptyWithCaptcha map { case (form, captcha) =>
+        Ok(html.game.export(user, form, captcha))
       }
     }
 

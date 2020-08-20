@@ -396,8 +396,8 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
         import stats.vclockStats._
         s"ClusterStats($receivedGossipCount, $mergeCount, $sameCount, $newerCount, $olderCount, $versionSize, $seenLatest)"
       }
-      (clusterStatsObservedByNode map {
-        case (monitor, stats) ⇒ s"${monitor}\t${f(stats)}"
+      (clusterStatsObservedByNode map { case (monitor, stats) ⇒
+        s"${monitor}\t${f(stats)}"
       }).mkString(
         "ClusterStats(gossip, merge, same, newer, older, vclockSize, seenLatest)\n",
         "\n",
@@ -695,8 +695,8 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
   }
 
   class Leaf extends Actor {
-    def receive = {
-      case (_: Int, job: SimpleJob) ⇒ sender() ! Ack(job.id)
+    def receive = { case (_: Int, job: SimpleJob) ⇒
+      sender() ! Ack(job.id)
     }
   }
 
@@ -738,8 +738,8 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
     * Child of Supervisor for remote supervision testing
     */
   class RemoteChild extends Actor {
-    def receive = {
-      case e: Exception ⇒ throw e
+    def receive = { case e: Exception ⇒
+      throw e
     }
   }
 

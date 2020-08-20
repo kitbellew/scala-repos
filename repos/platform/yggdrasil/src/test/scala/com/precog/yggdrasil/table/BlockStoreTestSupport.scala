@@ -93,8 +93,8 @@ trait BaseBlockStoreTestModule[M[+_]]
     private val slices = fromJson(data).slices.toStream.copoint
 
     val length: Long = data.length
-    val xyz = slices.foldLeft(Set.empty[ColumnRef]) {
-      case (acc, slice) => acc ++ slice.columns.keySet
+    val xyz = slices.foldLeft(Set.empty[ColumnRef]) { case (acc, slice) =>
+      acc ++ slice.columns.keySet
     }
     def structure(implicit M: Monad[M]) = M.point(xyz)
 

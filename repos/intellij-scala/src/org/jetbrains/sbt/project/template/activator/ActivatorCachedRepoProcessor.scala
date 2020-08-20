@@ -50,10 +50,10 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
       }
 
       downloaded flatMap { case str =>
-        str.split('\n').find {
-          case s => s.trim startsWith CACHE_HASH
-        } map {
-          case hashStr => hashStr.trim.stripPrefix(CACHE_HASH)
+        str.split('\n').find { case s =>
+          s.trim startsWith CACHE_HASH
+        } map { case hashStr =>
+          hashStr.trim.stripPrefix(CACHE_HASH)
         }
       }
     }
@@ -121,8 +121,8 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
           searcher.search(new lucene.search.MatchAllDocsQuery, reader.maxDoc())
         val data = docs.scoreDocs.map { case doc => reader document doc.doc }
 
-        data.map {
-          case docData => Keys.from(docData)
+        data.map { case docData =>
+          Keys.from(docData)
         }.toMap
       }
     } catch {

@@ -400,8 +400,8 @@ object Boilerplate {
       import tv._
       val implicitArgs =
         (synTypes map (a => s"cast${a}:Typeable[${a}]")) mkString ", "
-      val enumerators = synTypes.zipWithIndex map {
-        case (a, idx) => s"_ <- p._${idx + 1}.cast[${a}]"
+      val enumerators = synTypes.zipWithIndex map { case (a, idx) =>
+        s"_ <- p._${idx + 1}.cast[${a}]"
       } mkString "; "
       val castVals =
         (synTypes map (a => s"$${cast${a}.describe}")) mkString ", "

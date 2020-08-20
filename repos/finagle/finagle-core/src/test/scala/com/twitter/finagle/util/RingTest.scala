@@ -24,8 +24,8 @@ class RingTest extends FunSuite {
   }
 
   def histo(seq: Seq[Int]) =
-    seq.foldLeft(Map.empty: Map[Int, Int]) {
-      case (map, which) => map + (which -> (map.getOrElse(which, 0) + 1))
+    seq.foldLeft(Map.empty: Map[Int, Int]) { case (map, which) =>
+      map + (which -> (map.getOrElse(which, 0) + 1))
     }
 
   def run(mk: => Seq[Int]) =

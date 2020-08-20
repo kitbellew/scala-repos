@@ -488,8 +488,8 @@ private class SelectorMap(binds: List[CssBind])
               val calcedList = calced.toList
               val availableIds = (attrs.get("id").toList ++
                 calcedList
-                  .collect({
-                    case e: Elem => e.attribute("id")
+                  .collect({ case e: Elem =>
+                    e.attribute("id")
                   })
                   .flatten
                   .map(_.toString)).toSet

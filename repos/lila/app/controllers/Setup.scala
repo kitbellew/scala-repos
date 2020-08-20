@@ -178,8 +178,8 @@ object Setup extends LilaController with TheftPrevention {
 
   def filterForm =
     Open { implicit ctx =>
-      env.forms.filterFilled map {
-        case (form, filter) => html.setup.filter(form, filter)
+      env.forms.filterFilled map { case (form, filter) =>
+        html.setup.filter(form, filter)
       }
     }
 

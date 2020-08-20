@@ -16,8 +16,8 @@ import com.typesafe.config.{Config, ConfigFactory}
 
 object EventBusSpec {
   class TestActorWrapperActor(testActor: ActorRef) extends Actor {
-    def receive = {
-      case x ⇒ testActor forward x
+    def receive = { case x ⇒
+      testActor forward x
     }
   }
 }
@@ -87,11 +87,11 @@ abstract class EventBusSpec(
       val subscribers = (1 to 10) map { _ ⇒ createNewSubscriber() }
       val events = createEvents(10)
       val classifiers = events map getClassifierFor
-      subscribers.zip(classifiers) forall {
-        case (s, c) ⇒ bus.subscribe(s, c)
+      subscribers.zip(classifiers) forall { case (s, c) ⇒
+        bus.subscribe(s, c)
       } should ===(true)
-      subscribers.zip(classifiers) forall {
-        case (s, c) ⇒ bus.unsubscribe(s, c)
+      subscribers.zip(classifiers) forall { case (s, c) ⇒
+        bus.unsubscribe(s, c)
       } should ===(true)
 
       subscribers foreach (disposeSubscriber(system, _))

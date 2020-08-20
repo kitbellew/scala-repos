@@ -136,8 +136,8 @@ object ShardServiceCombinators extends Logging {
       val parsed: Validation[Error, List[CPath]] =
         ((Thrown(_: Throwable)) <-: JParser.parseFromString(paths)) flatMap {
           case JArray(elems) =>
-            Validation.success(elems collect {
-              case JString(path) => CPath(path)
+            Validation.success(elems collect { case JString(path) =>
+              CPath(path)
             })
           case JString(path) =>
             Validation.success(CPath(path) :: Nil)

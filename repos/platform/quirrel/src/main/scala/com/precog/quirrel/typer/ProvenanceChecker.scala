@@ -1045,8 +1045,8 @@ trait ProvenanceChecker extends parser.AST with Binder {
         val leftP = unifyProvenance(relations)(left, p2)
         val rightP = unifyProvenance(relations)(right, p2)
 
-        val unionP = (leftP |@| rightP) {
-          case (p1, p2) => p1 & p2
+        val unionP = (leftP |@| rightP) { case (p1, p2) =>
+          p1 & p2
         }
 
         lazy val unionLeft = leftP map { ProductProvenance(_, right) }
@@ -1059,8 +1059,8 @@ trait ProvenanceChecker extends parser.AST with Binder {
         val leftP = unifyProvenance(relations)(p1, left)
         val rightP = unifyProvenance(relations)(p1, right)
 
-        val unionP = (leftP |@| rightP) {
-          case (p1, p2) => p1 & p2
+        val unionP = (leftP |@| rightP) { case (p1, p2) =>
+          p1 & p2
         }
 
         lazy val unionLeft = leftP map { ProductProvenance(_, right) }
@@ -1073,8 +1073,8 @@ trait ProvenanceChecker extends parser.AST with Binder {
         val leftP = unifyProvenance(relations)(left, p2)
         val rightP = unifyProvenance(relations)(right, p2)
 
-        val unionP = (leftP |@| rightP) {
-          case (p1, p2) => p1 | p2
+        val unionP = (leftP |@| rightP) { case (p1, p2) =>
+          p1 | p2
         }
         unionP orElse leftP orElse rightP
       }
@@ -1083,8 +1083,8 @@ trait ProvenanceChecker extends parser.AST with Binder {
         val leftP = unifyProvenance(relations)(p1, left)
         val rightP = unifyProvenance(relations)(p1, right)
 
-        val unionP = (leftP |@| rightP) {
-          case (p1, p2) => p1 | p2
+        val unionP = (leftP |@| rightP) { case (p1, p2) =>
+          p1 | p2
         }
         unionP orElse leftP orElse rightP
       }

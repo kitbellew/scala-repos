@@ -144,8 +144,8 @@ object DatabasesSpec extends Specification {
       val db = Databases.inMemory(name = "test-shutdown")
       db.getConnection.close()
       db.shutdown()
-      db.getConnection.close() must throwA[SQLException].like {
-        case e => e.getMessage must endWith("has been closed.")
+      db.getConnection.close() must throwA[SQLException].like { case e =>
+        e.getMessage must endWith("has been closed.")
       }
     }
 

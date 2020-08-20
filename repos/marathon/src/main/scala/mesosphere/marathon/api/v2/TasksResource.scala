@@ -75,8 +75,8 @@ class TasksResource @Inject() (
       val appIdsToApps =
         appIds.map(appId => appId -> result(groupManager.app(appId))).toMap
 
-      val appToPorts = appIdsToApps.map {
-        case (appId, app) => appId -> app.map(_.servicePorts).getOrElse(Nil)
+      val appToPorts = appIdsToApps.map { case (appId, app) =>
+        appId -> app.map(_.servicePorts).getOrElse(Nil)
       }.toMap
 
       val health = appIds.flatMap { appId =>
@@ -150,8 +150,8 @@ class TasksResource @Inject() (
         // starting to kill tasks
         affectedApps.foreach(checkAuthorization(UpdateApp, _))
 
-        val killed = result(Future.sequence(toKill.map {
-          case (appId, tasks) => taskKiller.kill(appId, _ => tasks)
+        val killed = result(Future.sequence(toKill.map { case (appId, tasks) =>
+          taskKiller.kill(appId, _ => tasks)
         })).flatten
         ok(jsonObjString("tasks" -> killed.map(task =>
           EnrichedTask(task.taskId.appId, task, Seq.empty))))

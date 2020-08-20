@@ -82,8 +82,8 @@ class TestKitUsageSpec
         filterRef ! "text"
         filterRef ! 1
 
-        receiveWhile(500 millis) {
-          case msg: String => messages = msg +: messages
+        receiveWhile(500 millis) { case msg: String =>
+          messages = msg +: messages
         }
       }
       messages.length should be(3)
@@ -93,13 +93,13 @@ class TestKitUsageSpec
   "A SequencingActor" should {
     "receive an interesting message at some point " in {
       within(500 millis) {
-        ignoreMsg {
-          case msg: String => msg != "something"
+        ignoreMsg { case msg: String =>
+          msg != "something"
         }
         seqRef ! "something"
         expectMsg("something")
-        ignoreMsg {
-          case msg: String => msg == "1"
+        ignoreMsg { case msg: String =>
+          msg == "1"
         }
         expectNoMsg
         ignoreNoMsg
@@ -120,8 +120,8 @@ object TestKitUsageSpec {
     * An Actor that forwards every message to a next Actor
     */
   class ForwardingActor(next: ActorRef) extends Actor {
-    def receive = {
-      case msg => next ! msg
+    def receive = { case msg =>
+      next ! msg
     }
   }
 

@@ -356,8 +356,8 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
       case v: String  => replacement
       case v: Boolean => replacement
       case _ =>
-        replacement.map {
-          case (k, v) => (convertToDouble(k), convertToDouble(v))
+        replacement.map { case (k, v) =>
+          (convertToDouble(k), convertToDouble(v))
         }
     }
 

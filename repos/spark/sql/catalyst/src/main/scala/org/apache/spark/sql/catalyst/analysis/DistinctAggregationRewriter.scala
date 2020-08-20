@@ -110,16 +110,16 @@ import org.apache.spark.sql.types.IntegerType
 object DistinctAggregationRewriter extends Rule[LogicalPlan] {
 
   def apply(plan: LogicalPlan): LogicalPlan =
-    plan transformUp {
-      case a: Aggregate => rewrite(a)
+    plan transformUp { case a: Aggregate =>
+      rewrite(a)
     }
 
   def rewrite(a: Aggregate): Aggregate = {
 
     // Collect all aggregate expressions.
     val aggExpressions = a.aggregateExpressions.flatMap { e =>
-      e.collect {
-        case ae: AggregateExpression => ae
+      e.collect { case ae: AggregateExpression =>
+        ae
       }
     }
 
@@ -144,8 +144,8 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
         If(EqualTo(gid, id), e, nullify(e))
       def patchAggregateFunctionChildren(af: AggregateFunction)(
           attrs: Expression => Expression): AggregateFunction = {
-        af.withNewChildren(af.children.map {
-          case afc => attrs(afc)
+        af.withNewChildren(af.children.map { case afc =>
+          attrs(afc)
         }).asInstanceOf[AggregateFunction]
       }
 

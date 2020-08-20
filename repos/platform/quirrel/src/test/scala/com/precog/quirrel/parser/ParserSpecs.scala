@@ -396,20 +396,20 @@ object ParserSpecs
     }
 
     "accept a 'new' expression" in {
-      parseSingle("new 1") must beLike {
-        case New(_, NumLit(_, "1")) => ok
+      parseSingle("new 1") must beLike { case New(_, NumLit(_, "1")) =>
+        ok
       }
     }
 
     "accept a 'new' expression followed by a let" in {
-      parseSingle("new foo := //foo foo") must beLike {
-        case New(_, _) => ok
+      parseSingle("new foo := //foo foo") must beLike { case New(_, _) =>
+        ok
       }
     }
 
     "accept a 'new' expression followed by a solve" in {
-      parseSingle("new solve 'a 'a") must beLike {
-        case New(_, _) => ok
+      parseSingle("new solve 'a 'a") must beLike { case New(_, _) =>
+        ok
       }
     }
 
@@ -510,8 +510,8 @@ object ParserSpecs
     "accept a path literal" in {
       // TODO find a way to use LoadId instead
       parseSingle("//foo") must beLike { case PathLit("/foo") => ok }
-      parseSingle("//foo/bar/baz") must beLike {
-        case PathLit("/foo/bar/baz") => ok
+      parseSingle("//foo/bar/baz") must beLike { case PathLit("/foo/bar/baz") =>
+        ok
       }
       parseSingle("//cafe-babe42_silly/SILLY") must beLike {
         case PathLit("/cafe-babe42_silly/SILLY") => ok
@@ -2411,8 +2411,8 @@ object ParserSpecs
       parseSingle(" 1") must beLike { case NumLit(_, "1") => ok }
       parseSingle("     1") must beLike { case NumLit(_, "1") => ok }
       parseSingle("\t  \t 1") must beLike { case NumLit(_, "1") => ok }
-      parseSingle("\n\r  ;\r\t  \t\n ;;1") must beLike {
-        case NumLit(_, "1") => ok
+      parseSingle("\n\r  ;\r\t  \t\n ;;1") must beLike { case NumLit(_, "1") =>
+        ok
       }
     }
 
@@ -2420,8 +2420,8 @@ object ParserSpecs
       parseSingle("1 ") must beLike { case NumLit(_, "1") => ok }
       parseSingle("1     ") must beLike { case NumLit(_, "1") => ok }
       parseSingle("1\t  \t ") must beLike { case NumLit(_, "1") => ok }
-      parseSingle("1\n\r  ;\r\t  \t\n ;;") must beLike {
-        case NumLit(_, "1") => ok
+      parseSingle("1\n\r  ;\r\t  \t\n ;;") must beLike { case NumLit(_, "1") =>
+        ok
       }
     }
 
@@ -2507,8 +2507,8 @@ object ParserSpecs
 
     // Regression test for #39825209
     "ambiguous comment syntax" in {
-      parseSingle("(-- Test\n--) 1") must beLike {
-        case NumLit(_, "1") => ok
+      parseSingle("(-- Test\n--) 1") must beLike { case NumLit(_, "1") =>
+        ok
       }
     }
 
@@ -2819,8 +2819,8 @@ object ParserSpecs
     }
 
     "prefer path literals in case of ambiguity" in {
-      parseSingle("//foo.bar") must beLike {
-        case PathLit("/foo.bar") => ok
+      parseSingle("//foo.bar") must beLike { case PathLit("/foo.bar") =>
+        ok
       }
     }
   }

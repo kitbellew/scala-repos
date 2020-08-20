@@ -117,8 +117,8 @@ class WorksheetInProcessRunnerFactory {
         try {
           val cl = Class.forName(className, true, classLoader)
 
-          cl.getDeclaredMethods.find {
-            case m => m.getName == "main"
+          cl.getDeclaredMethods.find { case m =>
+            m.getName == "main"
           } map { case method =>
             System.out match {
               case threadLocal: ThreadLocalPrintStream =>

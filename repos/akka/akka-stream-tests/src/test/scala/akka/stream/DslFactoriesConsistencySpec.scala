@@ -216,8 +216,8 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
     *   runnableN => runnable
     *   createN => create
     */
-  private val unspecializeName: PartialFunction[Method, Method] = {
-    case m ⇒ m.copy(name = m.name.filter(Character.isLetter))
+  private val unspecializeName: PartialFunction[Method, Method] = { case m ⇒
+    m.copy(name = m.name.filter(Character.isLetter))
   }
 
   /**

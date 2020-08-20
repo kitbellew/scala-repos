@@ -63,8 +63,8 @@ trait CogroupSpec[M[+_]]
           _.map(_._1).toSet
         }
       val (l, r) = data map { case (ids, values) =>
-        val (d1, d2) = values.partition {
-          case (cpath, _) => lschema.contains(cpath)
+        val (d1, d2) = values.partition { case (cpath, _) =>
+          lschema.contains(cpath)
         }
         (toRecord(ids, assemble(d1)), toRecord(ids, assemble(d2)))
       } unzip

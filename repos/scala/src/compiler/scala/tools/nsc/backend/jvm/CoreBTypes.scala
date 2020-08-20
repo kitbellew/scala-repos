@@ -284,8 +284,8 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
       cls.info
     ) // the `transformInfo` method of specialization adds specialized subclasses to the `specializedClass` map
     specializeTypes.specializedClass
-      .collect({
-        case ((`cls`, _), specCls) => specCls
+      .collect({ case ((`cls`, _), specCls) =>
+        specCls
       })
       .toList
   }

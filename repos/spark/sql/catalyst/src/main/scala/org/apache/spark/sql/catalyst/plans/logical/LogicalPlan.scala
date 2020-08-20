@@ -74,8 +74,8 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
     */
   def resolveExpressions(
       r: PartialFunction[Expression, Expression]): LogicalPlan = {
-    this resolveOperators {
-      case p => p.transformExpressions(r)
+    this resolveOperators { case p =>
+      p.transformExpressions(r)
     }
   }
 

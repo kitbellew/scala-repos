@@ -61,8 +61,8 @@ private[netty4] object Netty4Transporter {
         val nettyConnectF = bootstrap.connect(addr)
 
         // try to cancel the connect attempt if the transporter's promise is interrupted.
-        transportP.setInterruptHandler {
-          case _ => nettyConnectF.cancel(true /* mayInterruptIfRunning */ )
+        transportP.setInterruptHandler { case _ =>
+          nettyConnectF.cancel(true /* mayInterruptIfRunning */ )
         }
 
         nettyConnectF.addListener(new GenericFutureListener[ChannelPromise] {

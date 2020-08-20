@@ -125,8 +125,8 @@ class ScalaControlFlowBuilder(
     if (instruction == null) return
     var index = 0
     if (scopeWhenAdded != null) {
-      index = myPending.indexWhere {
-        case (_, e) => !PsiTreeUtil.isAncestor(e, scopeWhenAdded, true)
+      index = myPending.indexWhere { case (_, e) =>
+        !PsiTreeUtil.isAncestor(e, scopeWhenAdded, true)
       }
     }
     if (!myPending.contains((instruction, scopeWhenAdded)))

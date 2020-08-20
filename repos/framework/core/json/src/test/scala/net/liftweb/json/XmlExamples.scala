@@ -32,8 +32,8 @@ object XmlExamples extends Specification {
   }
 
   "Conversion transformation example 1" in {
-    val json = toJson(users1).transformField {
-      case JField("id", JString(s)) => JField("id", JInt(s.toInt))
+    val json = toJson(users1).transformField { case JField("id", JString(s)) =>
+      JField("id", JInt(s.toInt))
     }
     compactRender(
       json) mustEqual """{"users":{"count":"2","user":[{"disabled":"true","id":1,"name":"Harry"},{"id":2,"name":"David","nickname":"Dave"}]}}"""

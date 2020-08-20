@@ -18,8 +18,8 @@ trait PredefinedToRequestMarshallers {
 
   implicit def fromMethodAndUriAndValue[S, T](implicit
       mt: ToEntityMarshaller[T]): TRM[(HttpMethod, Uri, T)] =
-    fromMethodAndUriAndHeadersAndValue[T] compose {
-      case (m, u, v) ⇒ (m, u, Nil, v)
+    fromMethodAndUriAndHeadersAndValue[T] compose { case (m, u, v) ⇒
+      (m, u, Nil, v)
     }
 
   implicit def fromMethodAndUriAndHeadersAndValue[T](implicit

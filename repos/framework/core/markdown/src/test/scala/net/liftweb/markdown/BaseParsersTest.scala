@@ -52,14 +52,14 @@ class BaseParsersTest extends FlatSpec with ShouldMatchers with BaseParsers {
 
   it should "be able to look behind" in {
     apply(
-      ((elem('a') ~ lookbehind(Set('a')) ~ elem('b')) ^^ {
-        case a ~ lb ~ b => a + "" + b
+      ((elem('a') ~ lookbehind(Set('a')) ~ elem('b')) ^^ { case a ~ lb ~ b =>
+        a + "" + b
       }),
       "ab") should equal("ab")
     evaluating {
       apply(
-        ((elem('a') ~ lookbehind(Set('b')) ~ elem('b')) ^^ {
-          case a ~ b => a + "" + b
+        ((elem('a') ~ lookbehind(Set('b')) ~ elem('b')) ^^ { case a ~ b =>
+          a + "" + b
         }),
         "ab")
     } should produce[IllegalArgumentException]

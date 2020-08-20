@@ -23,8 +23,8 @@ import net.liftweb.http._
 
 object Children extends DispatchSnippet {
 
-  def dispatch: DispatchIt = {
-    case _ => render _
+  def dispatch: DispatchIt = { case _ =>
+    render _
   }
 
   /**

@@ -25,8 +25,8 @@ class DottySdkSelectionDialog(
   override protected def getLanguageName = "Dotty"
 
   override protected def fetchVersions()
-      : ((String) => BoxedUnit) => Array[String] = {
-    case _ => DottyVersions.loadDottyVersions
+      : ((String) => BoxedUnit) => Array[String] = { case _ =>
+    DottyVersions.loadDottyVersions
   }
 
   override protected def getSdkTableModel: ListTableModel[SdkChoice] =

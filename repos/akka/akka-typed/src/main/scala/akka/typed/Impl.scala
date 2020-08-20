@@ -123,7 +123,7 @@ private[typed] class ActorContextAdapter[T](ctx: akka.actor.ActorContext)
   * INTERNAL API. A small Actor that translates between message protocols.
   */
 private[typed] class MessageWrapper(f: Any ⇒ Any) extends akka.actor.Actor {
-  def receive = {
-    case msg ⇒ context.parent ! f(msg)
+  def receive = { case msg ⇒
+    context.parent ! f(msg)
   }
 }

@@ -106,8 +106,8 @@ object StringTemplateSupport {
       extends AttributeRenderer {
     override def toString(o: scala.Any, s: String, locale: Locale): String = {
       val wrapped = o.asInstanceOf[AndroidPackage]
-      val classes = wrapped.pkg.values.toList.collect {
-        case c: AndroidClass => c
+      val classes = wrapped.pkg.values.toList.collect { case c: AndroidClass =>
+        c
       }
       s match {
         case null | "" | "wrap-all-classes" =>

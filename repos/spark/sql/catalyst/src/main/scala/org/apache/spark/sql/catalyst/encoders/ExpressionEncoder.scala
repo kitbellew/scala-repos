@@ -133,8 +133,8 @@ object ExpressionEncoder {
 
     val fromRowExpressions = encoders.zipWithIndex.map { case (enc, index) =>
       if (enc.flat) {
-        enc.fromRowExpression.transform {
-          case b: BoundReference => b.copy(ordinal = index)
+        enc.fromRowExpression.transform { case b: BoundReference =>
+          b.copy(ordinal = index)
         }
       } else {
         val input = BoundReference(index, enc.schema, nullable = true)
@@ -316,8 +316,8 @@ case class ExpressionEncoder[T](
     // `UnresolvedExtractValue`, so we need to check if their ordinals are all valid.
     // Note that, `BoundReference` contains the expected type, but here we need the actual type, so
     // we unbound it by the given `schema` and propagate the actual type to `GetStructField`.
-    val unbound = fromRowExpression transform {
-      case b: BoundReference => schema(b.ordinal)
+    val unbound = fromRowExpression transform { case b: BoundReference =>
+      schema(b.ordinal)
     }
 
     val exprToMaxOrdinal =

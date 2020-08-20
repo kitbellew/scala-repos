@@ -809,8 +809,8 @@ class RichPipe(val pipe: Pipe)
       val notSeen: Set[Pipe] =
         p.getPrevious.filter(i => !visited.contains(i)).toSet
       val nextVisited: Set[Pipe] = visited + p
-      val nextToVisit = notSeen.foldLeft(toVisit) {
-        case (prev, n) => prev.maybeAdd(n)
+      val nextToVisit = notSeen.foldLeft(toVisit) { case (prev, n) =>
+        prev.maybeAdd(n)
       }
 
       nextToVisit.next match {

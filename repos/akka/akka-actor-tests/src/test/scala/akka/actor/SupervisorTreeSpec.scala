@@ -25,8 +25,8 @@ class SupervisorTreeSpec
             override val supervisorStrategy =
               OneForOneStrategy(maxNrOfRetries = 3, withinTimeRange = 1 second)(
                 List(classOf[Exception]))
-            def receive = {
-              case p: Props ⇒ sender() ! context.actorOf(p)
+            def receive = { case p: Props ⇒
+              sender() ! context.actorOf(p)
             }
             override def preRestart(cause: Throwable, msg: Option[Any]) {
               testActor ! self.path

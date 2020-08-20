@@ -39,8 +39,8 @@ trait Versions {
   protected def loadVersionsOf(entity: Entity): Array[String] = {
     loadVersionsFrom(
       entity.url,
-      {
-        case releaseVersionLine(number) => number
+      { case releaseVersionLine(number) =>
+        number
       })
       .getOrElse(entity.hardcodedVersions)
       .map(Version(_))

@@ -44,16 +44,16 @@ trait SnapshotStore extends Actor with ActorLogging {
       breaker.withCircuitBreaker(
         loadAsync(persistenceId, criteria.limit(toSequenceNr))) map { sso ⇒
         LoadSnapshotResult(sso, toSequenceNr)
-      } recover {
-        case e ⇒ LoadSnapshotResult(None, toSequenceNr)
+      } recover { case e ⇒
+        LoadSnapshotResult(None, toSequenceNr)
       } pipeTo senderPersistentActor()
 
     case SaveSnapshot(metadata, snapshot) ⇒
       val md = metadata.copy(timestamp = System.currentTimeMillis)
       breaker.withCircuitBreaker(saveAsync(md, snapshot)) map { _ ⇒
         SaveSnapshotSuccess(md)
-      } recover {
-        case e ⇒ SaveSnapshotFailure(metadata, e)
+      } recover { case e ⇒
+        SaveSnapshotFailure(metadata, e)
       } to (self, senderPersistentActor())
 
     case evt: SaveSnapshotSuccess ⇒
@@ -75,8 +75,8 @@ trait SnapshotStore extends Actor with ActorLogging {
           DeleteSnapshotFailure(metadata, e)
         }
         .pipeTo(self)(senderPersistentActor())
-        .onComplete {
-          case _ ⇒ if (publish) context.system.eventStream.publish(d)
+        .onComplete { case _ ⇒
+          if (publish) context.system.eventStream.publish(d)
         }
 
     case evt: DeleteSnapshotSuccess ⇒
@@ -96,8 +96,8 @@ trait SnapshotStore extends Actor with ActorLogging {
           DeleteSnapshotsFailure(criteria, e)
         }
         .pipeTo(self)(senderPersistentActor())
-        .onComplete {
-          case _ ⇒ if (publish) context.system.eventStream.publish(d)
+        .onComplete { case _ ⇒
+          if (publish) context.system.eventStream.publish(d)
         }
 
     case evt: DeleteSnapshotsFailure ⇒

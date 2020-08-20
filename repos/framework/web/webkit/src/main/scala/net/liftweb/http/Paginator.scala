@@ -243,8 +243,8 @@ trait PaginatorSnippet[T] extends Paginator[T] {
     } match {
       case one :: Nil => one
       case first :: rest =>
-        rest.foldLeft(first) {
-          case (a, b) => a ++ sep ++ b
+        rest.foldLeft(first) { case (a, b) =>
+          a ++ sep ++ b
         }
       case Nil => Nil
     }

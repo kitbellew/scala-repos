@@ -161,8 +161,8 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
   def apply[K1, K2, V: Semiring: Zero](
       values: TraversableOnce[(K1, K2, V)]): Counter2[K1, K2, V] = {
     val rv = apply[K1, K2, V]()
-    values.foreach({
-      case (k1, k2, v) => rv(k1, k2) = implicitly[Semiring[V]].+(rv(k1, k2), v)
+    values.foreach({ case (k1, k2, v) =>
+      rv(k1, k2) = implicitly[Semiring[V]].+(rv(k1, k2), v)
     })
     rv
   }

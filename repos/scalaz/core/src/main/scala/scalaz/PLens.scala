@@ -499,8 +499,8 @@ trait PLensFunctions extends PLensInstances with PLensFamilyFunctions {
     plens {
       case Nil => None
       case h :: t =>
-        lookupr(Nil, h, t) map {
-          case (l, (k, v), r) => Store(w => l reverse_::: (k, w) :: r, v)
+        lookupr(Nil, h, t) map { case (l, (k, v), r) =>
+          Store(w => l reverse_::: (k, w) :: r, v)
         }
     }
   }
@@ -553,8 +553,8 @@ trait PLensFunctions extends PLensInstances with PLensFamilyFunctions {
     plens {
       case Stream.Empty => None
       case h #:: t =>
-        lookupr(Stream.empty, h, t) map {
-          case (l, (k, v), r) => Store(w => l.reverse #::: (k, w) #:: r, v)
+        lookupr(Stream.empty, h, t) map { case (l, (k, v), r) =>
+          Store(w => l.reverse #::: (k, w) #:: r, v)
         }
     }
   }

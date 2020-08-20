@@ -222,8 +222,8 @@ trait Jvm {
     */
   def mainClassName: String = {
     val mainClass = for {
-      (_, stack) <- Thread.getAllStackTraces().asScala.find {
-        case (t, s) => t.getName == "main"
+      (_, stack) <- Thread.getAllStackTraces().asScala.find { case (t, s) =>
+        t.getName == "main"
       }
       frame <- stack.reverse.find { elem =>
         !(elem.getClassName.startsWith("scala.tools.nsc.MainGenericRunner"))

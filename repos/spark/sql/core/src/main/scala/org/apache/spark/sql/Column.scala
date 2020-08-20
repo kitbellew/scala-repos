@@ -144,8 +144,8 @@ class Column(protected[sql] val expr: Expression) extends Logging {
       // If we have a top level Cast, there is a chance to give it a better alias, if there is a
       // NamedExpression under this Cast.
       case c: Cast =>
-        c.transformUp {
-          case Cast(ne: NamedExpression, to) => UnresolvedAlias(Cast(ne, to))
+        c.transformUp { case Cast(ne: NamedExpression, to) =>
+          UnresolvedAlias(Cast(ne, to))
         } match {
           case ne: NamedExpression => ne
           case other               => Alias(expr, usePrettyExpression(expr).sql)()

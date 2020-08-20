@@ -74,8 +74,8 @@ object ConfiguredLocalRoutingSpec {
   }
 
   class EchoProps extends Actor {
-    def receive = {
-      case "get" ⇒ sender() ! context.props
+    def receive = { case "get" ⇒
+      sender() ! context.props
     }
   }
 

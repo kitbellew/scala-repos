@@ -237,8 +237,8 @@ private[akka] class Shard(
                   handOffStopMessage))))
 
           //During hand off we only care about watching for termination of the hand off stopper
-          context become {
-            case Terminated(ref) ⇒ receiveTerminated(ref)
+          context become { case Terminated(ref) ⇒
+            receiveTerminated(ref)
           }
         } else {
           replyTo ! ShardStopped(shardId)
@@ -307,8 +307,8 @@ private[akka] class Shard(
 
       //Now there is no deliveryBuffer we can try to redeliver
       // and as the child exists, the message will be directly forwarded
-      messages foreach {
-        case (msg, snd) ⇒ deliverMessage(msg, snd)
+      messages foreach { case (msg, snd) ⇒
+        deliverMessage(msg, snd)
       }
     }
   }

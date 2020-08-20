@@ -43,8 +43,8 @@ object ScalaMoveUtil {
       case (td1: ScTypeDefinition, td2: ScTypeDefinition)
           if td1.name == td2.name =>
         val classes = Seq(td1, td2)
-        val noFakeCompanions = classes.collect {
-          case td: ScTypeDefinition => td.fakeCompanionModule.isDefined
+        val noFakeCompanions = classes.collect { case td: ScTypeDefinition =>
+          td.fakeCompanionModule.isDefined
         }.isEmpty
         classes.count(_.isInstanceOf[ScObject]) == 1 && noFakeCompanions
       case _ => false

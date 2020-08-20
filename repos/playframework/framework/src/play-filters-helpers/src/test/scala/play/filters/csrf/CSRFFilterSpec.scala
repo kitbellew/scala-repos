@@ -197,8 +197,8 @@ object CSRFFilterSpec extends CSRFCommonSpecs {
                 CustomErrorHandler].getName)
           else Nil
         }
-        withServer(config) {
-          case _ => Action(Results.Ok)
+        withServer(config) { case _ =>
+          Action(Results.Ok)
         } {
           import play.api.Play.current
           handleResponse(
@@ -216,8 +216,8 @@ object CSRFFilterSpec extends CSRFCommonSpecs {
             "play.http.filters" -> classOf[CsrfFilters].getName,
             "play.filters.csrf.cookie.name" -> "csrf",
             "play.filters.csrf.errorHandler" -> "play.filters.csrf.JavaErrorHandler"
-          )) {
-          case _ => Action(Results.Ok)
+          )) { case _ =>
+          Action(Results.Ok)
         } {
           import play.api.Play.current
           handleResponse(
@@ -252,8 +252,8 @@ object CSRFFilterSpec extends CSRFCommonSpecs {
           handleResponse: (WSResponse) => T) =
         withServer(
           Seq("play.http.filters" -> classOf[CsrfFilters].getName)
-        ) {
-          case _ => Action(Results.Ok.withHeaders(responseHeaders: _*))
+        ) { case _ =>
+          Action(Results.Ok.withHeaders(responseHeaders: _*))
         } {
           import play.api.Play.current
           handleResponse(

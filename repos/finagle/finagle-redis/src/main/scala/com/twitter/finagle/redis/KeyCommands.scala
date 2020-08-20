@@ -14,8 +14,8 @@ trait Keys { self: BaseClient =>
     * @return Number of keys removed
     */
   def del(keys: Seq[ChannelBuffer]): Future[JLong] =
-    doRequest(Del(keys)) {
-      case IntegerReply(n) => Future.value(n)
+    doRequest(Del(keys)) { case IntegerReply(n) =>
+      Future.value(n)
     }
 
   /**
@@ -36,8 +36,8 @@ trait Keys { self: BaseClient =>
     * @return true if key exists, false otherwise
     */
   def exists(key: ChannelBuffer): Future[JBoolean] =
-    doRequest(Exists(key)) {
-      case IntegerReply(n) => Future.value((n == 1))
+    doRequest(Exists(key)) { case IntegerReply(n) =>
+      Future.value((n == 1))
     }
 
   /**
@@ -48,8 +48,8 @@ trait Keys { self: BaseClient =>
     * false otherwise.
     */
   def expire(key: ChannelBuffer, ttl: JLong): Future[JBoolean] =
-    doRequest(Expire(key, ttl)) {
-      case IntegerReply(n) => Future.value(n == 1)
+    doRequest(Expire(key, ttl)) { case IntegerReply(n) =>
+      Future.value(n == 1)
     }
 
   /**
@@ -86,8 +86,8 @@ trait Keys { self: BaseClient =>
     *         false if key was not moved for any reason.
     */
   def move(key: ChannelBuffer, db: ChannelBuffer): Future[JBoolean] =
-    doRequest(Move(key, db)) {
-      case IntegerReply(n) => Future.value(n == 1)
+    doRequest(Move(key, db)) { case IntegerReply(n) =>
+      Future.value(n == 1)
     }
 
   /**
@@ -99,8 +99,8 @@ trait Keys { self: BaseClient =>
     * @see http://redis.io/commands/pexpire
     */
   def pExpire(key: ChannelBuffer, milliseconds: JLong): Future[JBoolean] =
-    doRequest(PExpire(key, milliseconds)) {
-      case IntegerReply(n) => Future.value(n == 1)
+    doRequest(PExpire(key, milliseconds)) { case IntegerReply(n) =>
+      Future.value(n == 1)
     }
 
   /**

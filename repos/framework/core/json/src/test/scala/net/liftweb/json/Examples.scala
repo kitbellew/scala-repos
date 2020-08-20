@@ -46,8 +46,8 @@ trait AbstractExamples extends Specification {
   }
 
   "Transformation example" in {
-    val uppercased = parse(person).transformField {
-      case JField(n, v) => JField(n.toUpperCase, v)
+    val uppercased = parse(person).transformField { case JField(n, v) =>
+      JField(n.toUpperCase, v)
     }
     val rendered = compactRender(uppercased)
     rendered mustEqual

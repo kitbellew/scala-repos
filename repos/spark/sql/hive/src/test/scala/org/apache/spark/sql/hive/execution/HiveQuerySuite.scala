@@ -1220,8 +1220,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     }
 
     assertResult(1, "Duplicated project detected\n" + analyzedPlan) {
-      analyzedPlan.collect {
-        case _: Project => ()
+      analyzedPlan.collect { case _: Project =>
+        ()
       }.size
     }
   }
@@ -1239,8 +1239,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     }
 
     assertResult(1, "Duplicated project detected\n" + analyzedPlan) {
-      analyzedPlan.collect {
-        case _: Project => ()
+      analyzedPlan.collect { case _: Project =>
+        ()
       }.size
     }
   }

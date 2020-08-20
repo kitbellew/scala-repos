@@ -475,8 +475,8 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
     })
     val argInfos = closureInit.capturedArgInfos ++ originalCallsite
       .map(cs =>
-        cs.argInfos map {
-          case (index, info) => (index + numCapturedValues, info)
+        cs.argInfos map { case (index, info) =>
+          (index + numCapturedValues, info)
         })
       .getOrElse(IntMap.empty)
     val bodyMethodCallsite = Callsite(

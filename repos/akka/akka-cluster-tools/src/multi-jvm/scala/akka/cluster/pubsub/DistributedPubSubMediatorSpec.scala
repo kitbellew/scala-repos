@@ -320,8 +320,8 @@ class DistributedPubSubMediatorSpec
       }
 
       runOn(first) {
-        val names = receiveWhile(messages = 2) {
-          case "hello all" ⇒ lastSender.path.name
+        val names = receiveWhile(messages = 2) { case "hello all" ⇒
+          lastSender.path.name
         }
         names.toSet should ===(Set("u8", "u9"))
       }

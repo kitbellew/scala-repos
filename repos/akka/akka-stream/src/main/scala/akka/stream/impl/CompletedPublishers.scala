@@ -80,8 +80,8 @@ private[akka] final case class MaybePublisher[T](
     try {
       requireNonNullSubscriber(subscriber)
       tryOnSubscribe(subscriber, new MaybeSubscription(subscriber))
-      promise.future onFailure {
-        case error ⇒ tryOnError(subscriber, error)
+      promise.future onFailure { case error ⇒
+        tryOnError(subscriber, error)
       }
     } catch {
       case sv: SpecViolation ⇒ ec.reportFailure(sv)

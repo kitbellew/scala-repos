@@ -291,28 +291,28 @@ trait AbstractScreen extends Factory with Loggable {
       * Convert the field builder into a field
       */
     def make: Field { type ValueType = T } = {
-      val paramFieldId: Box[String] = (stuff.collect {
-        case FormFieldId(id) => id
+      val paramFieldId: Box[String] = (stuff.collect { case FormFieldId(id) =>
+        id
       }).headOption
 
-      val confirmInfo = stuff.collect {
-        case NotOnConfirmScreen => false
+      val confirmInfo = stuff.collect { case NotOnConfirmScreen =>
+        false
       }.headOption orElse
-        stuff.collect {
-          case OnConfirmScreen => true
+        stuff.collect { case OnConfirmScreen =>
+          true
         }.headOption
 
       val newBinding: Box[FieldBinding] = (stuff.collect {
         case AFieldBinding(i) => i
       }).headOption
 
-      val newHelp: Box[NodeSeq] = help or (stuff.collect {
-        case Help(ns) => ns
+      val newHelp: Box[NodeSeq] = help or (stuff.collect { case Help(ns) =>
+        ns
       }).headOption
 
       val newTransforms: List[BaseField => NodeSeq => NodeSeq] = stuff
-        .collect({
-          case FieldTransform(func) => func
+        .collect({ case FieldTransform(func) =>
+          func
         })
         .toList
 
@@ -395,11 +395,11 @@ trait AbstractScreen extends Factory with Loggable {
       default,
       man,
       Empty,
-      stuff.toList.collect {
-        case AVal(v: Function1[_, _]) => v.asInstanceOf[T => List[FieldError]]
+      stuff.toList.collect { case AVal(v: Function1[_, _]) =>
+        v.asInstanceOf[T => List[FieldError]]
       },
-      stuff.toList.collect {
-        case AFilter(v) => v.asInstanceOf[T => T]
+      stuff.toList.collect { case AFilter(v) =>
+        v.asInstanceOf[T => T]
       },
       stuff)
   }
@@ -462,28 +462,28 @@ trait AbstractScreen extends Factory with Loggable {
       underlying: => BaseField { type ValueType = T },
       stuff: FilterOrValidate[T]*)(implicit
       man: Manifest[T]): Field { type ValueType = T } = {
-    val paramFieldId: Box[String] = (stuff.collect {
-      case FormFieldId(id) => id
+    val paramFieldId: Box[String] = (stuff.collect { case FormFieldId(id) =>
+      id
     }).headOption
 
-    val confirmInfo = stuff.collect {
-      case NotOnConfirmScreen => false
+    val confirmInfo = stuff.collect { case NotOnConfirmScreen =>
+      false
     }.headOption orElse
-      stuff.collect {
-        case OnConfirmScreen => true
+      stuff.collect { case OnConfirmScreen =>
+        true
       }.headOption
 
     val newBinding: Box[FieldBinding] = (stuff.collect {
       case AFieldBinding(i) => i
     }).headOption
 
-    val newHelp: Box[NodeSeq] = (stuff.collect {
-      case Help(ns) => ns
+    val newHelp: Box[NodeSeq] = (stuff.collect { case Help(ns) =>
+      ns
     }).headOption
 
     val newTransforms: List[BaseField => NodeSeq => NodeSeq] = stuff
-      .collect({
-        case FieldTransform(func) => func
+      .collect({ case FieldTransform(func) =>
+        func
       })
       .toList
 
@@ -536,13 +536,13 @@ trait AbstractScreen extends Factory with Loggable {
       override def validate = underlying.validate ::: super.validate
 
       override def validations =
-        stuff.collect {
-          case AVal(f) => f.asInstanceOf[ValueType => List[FieldError]]
+        stuff.collect { case AVal(f) =>
+          f.asInstanceOf[ValueType => List[FieldError]]
         }.toList
 
       override def setFilter =
-        stuff.collect {
-          case AFilter(f) => f.asInstanceOf[ValueType => ValueType]
+        stuff.collect { case AFilter(f) =>
+          f.asInstanceOf[ValueType => ValueType]
         }.toList
 
       override def is = underlying.get
@@ -574,21 +574,21 @@ trait AbstractScreen extends Factory with Loggable {
       stuff: FilterOrValidate[T]*)(implicit
       man: Manifest[T],
       marker: BoxMarker): Field { type ValueType = T } = {
-    val paramFieldId: Box[String] = (stuff.collect {
-      case FormFieldId(id) => id
+    val paramFieldId: Box[String] = (stuff.collect { case FormFieldId(id) =>
+      id
     }).headOption
 
     val newBinding: Box[FieldBinding] = (stuff.collect {
       case AFieldBinding(i) => i
     }).headOption
 
-    val newHelp: Box[NodeSeq] = (stuff.collect {
-      case Help(ns) => ns
+    val newHelp: Box[NodeSeq] = (stuff.collect { case Help(ns) =>
+      ns
     }).headOption
 
     val newTransforms: List[BaseField => NodeSeq => NodeSeq] = stuff
-      .collect({
-        case FieldTransform(func) => func
+      .collect({ case FieldTransform(func) =>
+        func
       })
       .toList
 
@@ -596,11 +596,11 @@ trait AbstractScreen extends Factory with Loggable {
       case DisplayIf(func) => func
     }).headOption
 
-    val confirmInfo = stuff.collect {
-      case NotOnConfirmScreen => false
+    val confirmInfo = stuff.collect { case NotOnConfirmScreen =>
+      false
     }.headOption orElse
-      stuff.collect {
-        case OnConfirmScreen => true
+      stuff.collect { case OnConfirmScreen =>
+        true
       }.headOption
 
     new Field {
@@ -653,13 +653,13 @@ trait AbstractScreen extends Factory with Loggable {
         underlying.toList.flatMap(_.validate) ::: super.validate
 
       override def validations =
-        stuff.collect {
-          case AVal(f) => f.asInstanceOf[ValueType => List[FieldError]]
+        stuff.collect { case AVal(f) =>
+          f.asInstanceOf[ValueType => List[FieldError]]
         }.toList
 
       override def setFilter =
-        stuff.collect {
-          case AFilter(f) => f.asInstanceOf[ValueType => ValueType]
+        stuff.collect { case AFilter(f) =>
+          f.asInstanceOf[ValueType => ValueType]
         }.toList
 
       override def is = underlying.openOrThrowException("Legacy code").get
@@ -843,13 +843,13 @@ trait AbstractScreen extends Factory with Loggable {
       case AFieldBinding(i) => i
     }).headOption
 
-    val newHelp: Box[NodeSeq] = (stuff.collect {
-      case Help(ns) => ns
+    val newHelp: Box[NodeSeq] = (stuff.collect { case Help(ns) =>
+      ns
     }).headOption
 
     val newTransforms: List[BaseField => NodeSeq => NodeSeq] = stuff
-      .collect({
-        case FieldTransform(func) => func
+      .collect({ case FieldTransform(func) =>
+        func
       })
       .toList
 
@@ -1104,8 +1104,8 @@ trait AbstractScreen extends Factory with Loggable {
       ("id" -> id): SHtml.ElemAttr
     }.headOption
       .toList :::
-      sl.collect {
-        case FormParam(fp) => fp
+      sl.collect { case FormParam(fp) =>
+        fp
       }
   }
 
@@ -1206,8 +1206,8 @@ trait ScreenWizardRendered extends Loggable {
         "Binding %s to %s".format(replace(f), value),
         replace(f) #> value)
 
-    def updateAttrs(metaData: MetaData): NodeSeq => NodeSeq = {
-      case e: Elem => e % metaData
+    def updateAttrs(metaData: MetaData): NodeSeq => NodeSeq = { case e: Elem =>
+      e % metaData
     }
 
     def update(f: CssClassBinding => String, metaData: MetaData) =
@@ -1295,8 +1295,8 @@ trait ScreenWizardRendered extends Loggable {
       for {
         field <- fields
         bindingInfo <- field.binding
-        dynamic <- Some(bindingInfo.bindingStyle) collect {
-          case d: Dynamic => d
+        dynamic <- Some(bindingInfo.bindingStyle) collect { case d: Dynamic =>
+          d
         }
       } yield {
         val template = dynamic.func()

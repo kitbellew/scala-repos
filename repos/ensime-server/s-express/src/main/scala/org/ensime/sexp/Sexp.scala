@@ -59,8 +59,8 @@ object SexpList {
   def apply(els: Sexp*): Sexp = apply(els.toList)
 
   def apply(els: List[Sexp]): Sexp =
-    els.foldRight(SexpNil: Sexp) {
-      case (head, tail) => SexpCons(head, tail)
+    els.foldRight(SexpNil: Sexp) { case (head, tail) =>
+      SexpCons(head, tail)
     }
 
   def unapply(sexp: Sexp): Option[List[Sexp]] =

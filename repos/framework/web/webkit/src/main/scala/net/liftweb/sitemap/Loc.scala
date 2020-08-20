@@ -242,11 +242,11 @@ trait Loc[T] {
   protected def findStatelessCalc
       : (Box[Loc.CalcStateless], Box[Loc.CalcParamStateless[T]]) =
     (
-      allParams.collect {
-        case v @ Loc.CalcStateless(_) => v
+      allParams.collect { case v @ Loc.CalcStateless(_) =>
+        v
       }.headOption,
-      allParams.collect {
-        case v @ Loc.CalcParamStateless(_) => v
+      allParams.collect { case v @ Loc.CalcParamStateless(_) =>
+        v
       }.headOption)
 
   /**

@@ -17,8 +17,8 @@ object ReceivePipelineSpec {
       case "become" ⇒ context.become(justReply)
       case m ⇒ sender ! m
     }
-    def justReply: Actor.Receive = {
-      case m ⇒ sender ! m
+    def justReply: Actor.Receive = { case m ⇒
+      sender ! m
     }
   }
 
@@ -43,8 +43,8 @@ object ReceivePipelineSpec {
   trait ListBuilderInterceptor {
     this: ReceivePipeline ⇒
 
-    pipelineOuter {
-      case n: Int ⇒ Inner(IntList((n until n + 3).toList))
+    pipelineOuter { case n: Int ⇒
+      Inner(IntList((n until n + 3).toList))
     }
   }
 
@@ -195,8 +195,8 @@ object PersistentReceivePipelineSpec {
       case "become" ⇒ context.become(justReply)
       case m ⇒ sender ! m
     }
-    def justReply: Actor.Receive = {
-      case m ⇒ sender ! m
+    def justReply: Actor.Receive = { case m ⇒
+      sender ! m
     }
 
     override def receiveCommand: Receive = becomeAndReply
@@ -430,8 +430,8 @@ object InterceptorSamples {
   import ReceivePipeline._
 
   //#interceptor-sample1
-  val incrementInterceptor: Interceptor = {
-    case i: Int ⇒ Inner(i + 1)
+  val incrementInterceptor: Interceptor = { case i: Int ⇒
+    Inner(i + 1)
   }
   //#interceptor-sample1
 

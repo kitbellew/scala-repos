@@ -8,8 +8,8 @@ abstract class Base[M[_, _]] {
 }
 
 class Derived extends Base[PartialFunction] {
-  def foo[AA, BB] /*: PartialFunction[(A, B) => Any]*/ = {
-    case (a, b) => (a: AA, b: BB)
+  def foo[AA, BB] /*: PartialFunction[(A, B) => Any]*/ = { case (a, b) =>
+    (a: AA, b: BB)
   }
 }
 

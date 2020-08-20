@@ -164,8 +164,8 @@ trait DiagramFactory extends DiagramDirectiveParser {
             case (ScalaPackage, NothingClass) =>
               (List(NullClass) ::: ScalaValueClasses) map { makeTemplate(_) }
             case _ =>
-              member.parentTypes map {
-                case (template, tpe) => template
+              member.parentTypes map { case (template, tpe) =>
+                template
               } filter {
                 nodesAll.contains(_)
               }
@@ -203,8 +203,8 @@ trait DiagramFactory extends DiagramDirectiveParser {
             case (entity, superClasses) => {
               (mapNodes(entity), superClasses flatMap { mapNodes.get(_) })
             }
-          } filterNot {
-            case (node, superClassNodes) => superClassNodes.isEmpty
+          } filterNot { case (node, superClassNodes) =>
+            superClassNodes.isEmpty
           }
 
           val diagram =

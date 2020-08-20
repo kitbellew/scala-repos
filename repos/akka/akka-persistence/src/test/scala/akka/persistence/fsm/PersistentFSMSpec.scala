@@ -379,8 +379,8 @@ object PersistentFSMSpec {
       case Event(e, _) ⇒ goto(LookingAround)
     }
 
-    onTransition {
-      case (from, to) ⇒ reportActor ! s"$from -> $to"
+    onTransition { case (from, to) ⇒
+      reportActor ! s"$from -> $to"
     }
 
     override def applyEvent(
@@ -419,8 +419,8 @@ object PersistentFSMSpec {
           case EmptyShoppingCart ⇒ // do nothing...
         }
       case Event(Leave, _) ⇒
-        stop applying OrderDiscarded andThen {
-          case _ ⇒ reportActor ! ShoppingCardDiscarded
+        stop applying OrderDiscarded andThen { case _ ⇒
+          reportActor ! ShoppingCardDiscarded
         }
       case Event(GetCurrentCart, data) ⇒
         stay replying data
@@ -432,8 +432,8 @@ object PersistentFSMSpec {
       case Event(AddItem(item), _) ⇒
         goto(Shopping) applying ItemAdded(item) forMax (1 seconds)
       case Event(StateTimeout, _) ⇒
-        stop applying OrderDiscarded andThen {
-          case _ ⇒ reportActor ! ShoppingCardDiscarded
+        stop applying OrderDiscarded andThen { case _ ⇒
+          reportActor ! ShoppingCardDiscarded
         }
     }
 

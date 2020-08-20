@@ -66,8 +66,8 @@ object ScatterChartDemo extends JFXApp {
   def xySeries(name: String, data: Seq[(Double, Double)]) =
     XYChart.Series[Number, Number](
       name,
-      ObservableBuffer(data.map {
-        case (x, y) => XYChart.Data[Number, Number](x, y)
+      ObservableBuffer(data.map { case (x, y) =>
+        XYChart.Data[Number, Number](x, y)
       })
     )
 }

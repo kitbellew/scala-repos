@@ -92,8 +92,8 @@ class FileUploadSupportSpecServlet
     "file size: " + tempFile.length
   }
 
-  error {
-    case e => e.printStackTrace()
+  error { case e =>
+    e.printStackTrace()
   }
 }
 

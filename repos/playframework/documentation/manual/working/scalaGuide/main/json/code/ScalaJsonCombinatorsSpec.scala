@@ -96,8 +96,8 @@ class ScalaJsonCombinatorsSpec extends Specification {
       val nameReads: Reads[String] = (JsPath \ "name").read[String]
       //#reads-simple
 
-      json.validate(nameReads) must beLike {
-        case x: JsSuccess[String] => x.get === "Watership Down"
+      json.validate(nameReads) must beLike { case x: JsSuccess[String] =>
+        x.get === "Watership Down"
       }
     }
 
@@ -121,8 +121,8 @@ class ScalaJsonCombinatorsSpec extends Specification {
       //#reads-complex-buildertoreads
 
       val locationResult = (json \ "location").validate[Location]
-      locationResult must beLike {
-        case x: JsSuccess[Location] => x.get.lat === 51.235685
+      locationResult must beLike { case x: JsSuccess[Location] =>
+        x.get.lat === 51.235685
       }
     }
 
@@ -143,8 +143,8 @@ class ScalaJsonCombinatorsSpec extends Specification {
       //#reads-complex-statement
 
       val locationResult = (json \ "location").validate[Location]
-      locationResult must beLike {
-        case x: JsSuccess[Location] => x.get.lat === 51.235685
+      locationResult must beLike { case x: JsSuccess[Location] =>
+        x.get.lat === 51.235685
       }
     }
 
@@ -168,8 +168,8 @@ class ScalaJsonCombinatorsSpec extends Specification {
         case e: JsError           => println("Errors: " + JsError.toJson(e).toString())
       }
       //#reads-validation-simple
-      nameResult must beLike {
-        case x: JsSuccess[String] => x.get === "Watership Down"
+      nameResult must beLike { case x: JsSuccess[String] =>
+        x.get === "Watership Down"
       }
 
       //#reads-validation-custom
@@ -221,8 +221,8 @@ class ScalaJsonCombinatorsSpec extends Specification {
       }
       //#reads-model
 
-      json.validate[Place] must beLike {
-        case x: JsSuccess[Place] => x.get.name === "Watership Down"
+      json.validate[Place] must beLike { case x: JsSuccess[Place] =>
+        x.get.name === "Watership Down"
       }
     }
 
@@ -303,8 +303,8 @@ class ScalaJsonCombinatorsSpec extends Specification {
       }
       """)
       val userResult = json.validate[User]
-      userResult must beLike {
-        case x: JsSuccess[User] => x.get.name === "Fiver"
+      userResult must beLike { case x: JsSuccess[User] =>
+        x.get.name === "Fiver"
       }
 
       // Use Writes for model -> JSON

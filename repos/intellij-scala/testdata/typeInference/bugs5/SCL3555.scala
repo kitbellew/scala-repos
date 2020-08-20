@@ -10,8 +10,8 @@ object SCL3555 {
       """[^"\s]+""".r
 
     def command =
-      /*start*/ command_spec ~ params_spec ^^ {
-        case left ~ right => FullCommand(left, right)
+      /*start*/ command_spec ~ params_spec ^^ { case left ~ right =>
+        FullCommand(left, right)
       } /*end*/
 
     def command_spec =

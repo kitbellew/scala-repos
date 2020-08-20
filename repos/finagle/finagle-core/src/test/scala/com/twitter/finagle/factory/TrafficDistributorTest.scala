@@ -153,8 +153,8 @@ class TrafficDistributorTest extends FunSuite {
       val dist = newDist(dest)
       for (_ <- 0 until R) dist()
 
-      distribution(balancers).foreach {
-        case ((w, _, l)) => assert(math.abs(w / weightSum - l / R.toDouble) < ε)
+      distribution(balancers).foreach { case ((w, _, l)) =>
+        assert(math.abs(w / weightSum - l / R.toDouble) < ε)
       }
     }
 
@@ -180,8 +180,8 @@ class TrafficDistributorTest extends FunSuite {
         case ((w, s, l)) if s / w == 1.0 => l / w
       }.head
 
-      result.foreach {
-        case ((w, _, l)) => assert(math.abs(l / w - baseline) <= baseline * ε)
+      result.foreach { case ((w, _, l)) =>
+        assert(math.abs(l / w - baseline) <= baseline * ε)
       }
     }
   })
@@ -229,8 +229,8 @@ class TrafficDistributorTest extends FunSuite {
     dest() = Activity.Ok(update)
     assert(newEndpointCalls == newAddrs.size)
     assert(newBalancerCalls == 0)
-    val expected = newAddrs.map {
-      case WeightedAddress(addr, _) => AddressFactory(addr)
+    val expected = newAddrs.map { case WeightedAddress(addr, _) =>
+      AddressFactory(addr)
     } + AddressFactory(Address(existingWeight.toInt))
     assert(balancers.count { _.endpoints.sample() == expected } == 1)
 
@@ -243,8 +243,8 @@ class TrafficDistributorTest extends FunSuite {
     assert(newBalancerCalls == 1)
     assert(newEndpointCalls == 0)
     assert(balancers.count {
-      _.endpoints.sample() == updated.map {
-        case WeightedAddress(addr, _) => AddressFactory(addr)
+      _.endpoints.sample() == updated.map { case WeightedAddress(addr, _) =>
+        AddressFactory(addr)
       }
     } == 1)
   })

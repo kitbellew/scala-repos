@@ -339,8 +339,8 @@ object AndroidClassExtractor extends JavaConversionHelpers {
           }
           val types = javaTypes.map(toScalaType)
 
-          paramNames.zip(types).map {
-            case (n, t) => Argument(n, t)
+          paramNames.zip(types).map { case (n, t) =>
+            Argument(n, t)
           }
       }
 

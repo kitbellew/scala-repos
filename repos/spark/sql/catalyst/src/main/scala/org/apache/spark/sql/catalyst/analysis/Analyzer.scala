@@ -660,8 +660,8 @@ class Analyzer(
     def resolveDeserializer(
         deserializer: Expression,
         attributes: Seq[Attribute]): Expression = {
-      val unbound = deserializer transform {
-        case b: BoundReference => attributes(b.ordinal)
+      val unbound = deserializer transform { case b: BoundReference =>
+        attributes(b.ordinal)
       }
 
       resolveExpression(
@@ -916,8 +916,8 @@ class Analyzer(
     def containsAggregates(exprs: Seq[Expression]): Boolean = {
       // Collect all Windowed Aggregate Expressions.
       val windowedAggExprs = exprs.flatMap { expr =>
-        expr.collect {
-          case WindowExpression(ae: AggregateExpression, _) => ae
+        expr.collect { case WindowExpression(ae: AggregateExpression, _) =>
+          ae
         }
       }.toSet
 
@@ -1137,8 +1137,8 @@ class Analyzer(
           AttributeReference(name, t, nullable)()
         }
       } else if (names.isEmpty) {
-        elementTypes.map {
-          case (t, nullable, name) => AttributeReference(name, t, nullable)()
+        elementTypes.map { case (t, nullable, name) =>
+          AttributeReference(name, t, nullable)()
         }
       } else {
         failAnalysis("The number of aliases supplied in the AS clause does not match the number of columns " +
@@ -1322,8 +1322,8 @@ class Analyzer(
 
       // Second, we group extractedWindowExprBuffer based on their Partition and Order Specs.
       val groupedWindowExpressions = extractedWindowExprBuffer.groupBy { expr =>
-        val distinctWindowSpec = expr.collect {
-          case window: WindowExpression => window.windowSpec
+        val distinctWindowSpec = expr.collect { case window: WindowExpression =>
+          window.windowSpec
         }.distinct
 
         // We do a final check and see if we only have a single Window Spec defined in an
@@ -1610,8 +1610,8 @@ class Analyzer(
         rightKeys ++ lUniqueOutput.map(_.withNullability(true)) ++ rUniqueOutput
       case FullOuter =>
         // in full outer join, joinCols should be non-null if there is.
-        val joinedCols = joinPairs.map {
-          case (l, r) => Alias(Coalesce(Seq(l, r)), l.name)()
+        val joinedCols = joinPairs.map { case (l, r) =>
+          Alias(Coalesce(Seq(l, r)), l.name)()
         }
         joinedCols ++
           lUniqueOutput.map(_.withNullability(true)) ++
@@ -1633,8 +1633,8 @@ class Analyzer(
   */
 object EliminateSubqueryAliases extends Rule[LogicalPlan] {
   def apply(plan: LogicalPlan): LogicalPlan =
-    plan transformUp {
-      case SubqueryAlias(_, child) => child
+    plan transformUp { case SubqueryAlias(_, child) =>
+      child
     }
 }
 

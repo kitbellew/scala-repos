@@ -95,8 +95,8 @@ object Instrumentation {
     val toBePrinted = stats.toSeq.filter(p => filter(p._1)).sortBy(_._1)
     // <count> <trace>
     val format = "%5d  %s\n"
-    toBePrinted foreach {
-      case (trace, count) => printf(format, count, trace)
+    toBePrinted foreach { case (trace, count) =>
+      printf(format, count, trace)
     }
   }
 

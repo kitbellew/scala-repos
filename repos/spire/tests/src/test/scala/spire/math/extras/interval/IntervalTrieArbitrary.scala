@@ -11,8 +11,8 @@ object IntervalTrieArbitrary {
     require(support.length == kind.length)
     require(kind.forall(x => x >= 0 && x <= 2))
     val r = IntervalTrie.constant[Long](initial)
-    (r /: (support zip kind)) {
-      case (current, (x, k)) => current ^ IntervalTrie.fromKind(x, k)
+    (r /: (support zip kind)) { case (current, (x, k)) =>
+      current ^ IntervalTrie.fromKind(x, k)
     }
   }
 

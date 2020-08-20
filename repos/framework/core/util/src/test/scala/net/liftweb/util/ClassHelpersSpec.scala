@@ -157,8 +157,8 @@ object ClassHelpersSpec extends Specification {
 
   "The invokeMethod function" should {
     "return a Failure if the class is null" in {
-      invokeMethod(null, "", "length") must beLike {
-        case Failure(_, _, _) => 1 must_== 1
+      invokeMethod(null, "", "length") must beLike { case Failure(_, _, _) =>
+        1 must_== 1
       }
     }
     "return a Failure if the instance is null" in {

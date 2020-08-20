@@ -133,8 +133,8 @@ class Zk2Resolver(
   private[this] val serverSetOf =
     Memoize[
       (ServiceDiscoverer, String),
-      Var[Activity.State[Seq[(Entry, Double)]]]] {
-      case (discoverer, path) => discoverer(path).run
+      Var[Activity.State[Seq[(Entry, Double)]]]] { case (discoverer, path) =>
+      discoverer(path).run
     }
 
   private[this] val addrOf_ =
@@ -145,8 +145,8 @@ class Zk2Resolver(
             path
               .split("/")
               .filter(_.nonEmpty)
-              .foldLeft(discoverer.statsReceiver) {
-                case (sr, ns) => sr.scope(ns)
+              .foldLeft(discoverer.statsReceiver) { case (sr, ns) =>
+                sr.scope(ns)
               }
           sr.scope(s"endpoint=${endpointOption.getOrElse("default")}")
         }

@@ -506,8 +506,8 @@ trait AST extends Phases {
               Solve(_, constraints1, child1),
               Solve(_, constraints2, child2)) => {
           val sizing = constraints1.length == constraints2.length
-          val contents = constraints1 zip constraints2 forall {
-            case (e1, e2) => e1 equalsIgnoreLoc e2
+          val contents = constraints1 zip constraints2 forall { case (e1, e2) =>
+            e1 equalsIgnoreLoc e2
           }
 
           sizing && contents && (child1 equalsIgnoreLoc child2)
@@ -560,8 +560,8 @@ trait AST extends Phases {
 
         case (ArrayDef(_, values1), ArrayDef(_, values2)) => {
           val sizing = values1.length == values2.length
-          val contents = values1 zip values2 forall {
-            case (e1, e2) => e1 equalsIgnoreLoc e2
+          val contents = values1 zip values2 forall { case (e1, e2) =>
+            e1 equalsIgnoreLoc e2
           }
 
           sizing && contents
@@ -584,8 +584,8 @@ trait AST extends Phases {
           val naming = name1 == name2
           val sizing = actuals1.length == actuals2.length
           val binding = d1.binding == d2.binding
-          val contents = actuals1 zip actuals2 forall {
-            case (e1, e2) => e1 equalsIgnoreLoc e2
+          val contents = actuals1 zip actuals2 forall { case (e1, e2) =>
+            e1 equalsIgnoreLoc e2
           }
 
           naming && sizing && binding && contents
@@ -695,8 +695,8 @@ trait AST extends Phases {
         case NullLit(_) => "null".hashCode
 
         case ObjectDef(_, props) => {
-          props map {
-            case (key, value) => key.hashCode + value.hashCodeIgnoreLoc
+          props map { case (key, value) =>
+            key.hashCode + value.hashCodeIgnoreLoc
           } sum
         }
 

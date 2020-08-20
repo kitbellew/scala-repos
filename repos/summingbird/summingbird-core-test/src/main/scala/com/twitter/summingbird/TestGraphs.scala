@@ -292,8 +292,8 @@ object TestGraphs {
     val firstStore = MapAlgebra.sumByKey(
       source1
         .flatMap(simpleFM1)
-        .map {
-          case (_, kju) => kju
+        .map { case (_, kju) =>
+          kju
         } // drop the time from the key for the store
     )
 
@@ -323,8 +323,8 @@ object TestGraphs {
         .flatMap(simpleFM2)
         .toList
         .map { case (time, (k, u)) => (k, (time, Left(u))) }
-        .++(sumStream.map {
-          case (time, (k, (optju, ju))) => (k, (time, Right(ju)))
+        .++(sumStream.map { case (time, (k, (optju, ju))) =>
+          (k, (time, Right(ju)))
         })
 
     // scan left to join the left values and the right summing result stream
@@ -421,15 +421,15 @@ object TestGraphs {
 
     // compute the final store result after join
     val rightStream = resultStream
-      .flatMap {
-        case (k, lopts) => lopts.map { case ((_, optoptv)) => (k, optoptv) }
+      .flatMap { case (k, lopts) =>
+        lopts.map { case ((_, optoptv)) => (k, optoptv) }
       }
 
     // compute the final store result after join
     MapAlgebra.sumByKey(
       rightStream
-        .flatMap {
-          case (k, opt) => opt.map { case (time, (optv, v)) => (k, v) }
+        .flatMap { case (k, opt) =>
+          opt.map { case (time, (optv, v)) => (k, v) }
         } // drop time and opt[v]
     )
   }
@@ -473,13 +473,13 @@ object TestGraphs {
     val resultStream = loopJoinInScala(leftAndRight, flatMapValuesFn)
 
     val leftStream = resultStream
-      .flatMap {
-        case (k, lopts) => lopts.map { case ((optuoptv, _)) => (k, optuoptv) }
+      .flatMap { case (k, lopts) =>
+        lopts.map { case ((optuoptv, _)) => (k, optuoptv) }
       }
 
     val rightStream = resultStream
-      .flatMap {
-        case (k, lopts) => lopts.map { case ((_, optoptv)) => (k, optoptv) }
+      .flatMap { case (k, lopts) =>
+        lopts.map { case ((_, optoptv)) => (k, optoptv) }
       }
 
     // compute the first store using the join stream as input
@@ -495,8 +495,8 @@ object TestGraphs {
     // compute the final store result after join
     val storeAfterJoin = MapAlgebra.sumByKey(
       rightStream
-        .flatMap {
-          case (k, opt) => opt.map { case (time, (optv, v)) => (k, v) }
+        .flatMap { case (k, opt) =>
+          opt.map { case (time, (optv, v)) => (k, v) }
         } // drop time and opt[v]
     )
 

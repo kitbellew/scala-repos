@@ -47,8 +47,8 @@ object PersistentActorStashingSpec {
       case Cmd("b") ⇒ persist(Evt("b"))(evt ⇒ sender() ! evt.data)
     }
 
-    def unstashBehavior: Receive = {
-      case Cmd("c") ⇒ unstashAll(); sender() ! "c"
+    def unstashBehavior: Receive = { case Cmd("c") ⇒
+      unstashAll(); sender() ! "c"
     }
   }
 
@@ -71,8 +71,8 @@ object PersistentActorStashingSpec {
       case Cmd("b-2") ⇒ persist(Evt("b-2"))(updateState)
     }
 
-    val processC: Receive = unstashBehavior orElse {
-      case other ⇒ stash()
+    val processC: Receive = unstashBehavior orElse { case other ⇒
+      stash()
     }
 
     def unstashBehavior: Receive = { case Cmd("c") ⇒
@@ -100,8 +100,8 @@ object PersistentActorStashingSpec {
       }
     }
 
-    val otherCommandHandler: Receive = unstashBehavior orElse {
-      case other ⇒ stash()
+    val otherCommandHandler: Receive = unstashBehavior orElse { case other ⇒
+      stash()
     }
 
     def unstashBehavior: Receive = { case Cmd("c") ⇒
@@ -134,8 +134,8 @@ object PersistentActorStashingSpec {
       case Cmd("b") ⇒ persistAsync(Evt("b"))(updateState)
     }
 
-    override def unstashBehavior: Receive = {
-      case Cmd("c") ⇒ persistAsync(Evt("c"))(updateState); unstashAll()
+    override def unstashBehavior: Receive = { case Cmd("c") ⇒
+      persistAsync(Evt("c"))(updateState); unstashAll()
     }
   }
 

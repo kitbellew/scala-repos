@@ -970,8 +970,8 @@ trait Printers extends api.Printers { self: SymbolTable =>
                 printColumn(earlyDefs, "", ";", "")
                 print("} " + (if (printedParents.nonEmpty) "with " else ""))
               }
-              ctBody collectFirst {
-                case apply: Apply => apply
+              ctBody collectFirst { case apply: Apply =>
+                apply
               }
             case _ => None
           }

@@ -34,8 +34,8 @@ object PersistentActorDeleteFailureSpec {
   class DoesNotHandleDeleteFailureActor(name: String, probe: ActorRef)
       extends PersistentActor {
     override def persistenceId = name
-    override def receiveCommand: Receive = {
-      case DeleteTo(n) ⇒ deleteMessages(n)
+    override def receiveCommand: Receive = { case DeleteTo(n) ⇒
+      deleteMessages(n)
     }
     override def receiveRecover: Receive = Actor.emptyBehavior
   }

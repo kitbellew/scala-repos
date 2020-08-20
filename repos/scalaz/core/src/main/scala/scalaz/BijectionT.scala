@@ -108,8 +108,8 @@ object BijectionT extends BijectionTInstances {
         case -\/(a) => (true, a)
         case \/-(a) => (false, a)
       },
-      {
-        case (p, a) => if (p) -\/(a) else \/-(a)
+      { case (p, a) =>
+        if (p) -\/(a) else \/-(a)
       })
 
   def zipB[X[_], A, B](implicit

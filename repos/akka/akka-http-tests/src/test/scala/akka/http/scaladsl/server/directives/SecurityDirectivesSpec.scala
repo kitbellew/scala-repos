@@ -160,8 +160,8 @@ class SecurityDirectivesSpec extends RoutingSpec {
 
       Get() ~> Route.seal(bothAuth { echoComplete }) ~> check {
         status shouldEqual StatusCodes.Unauthorized
-        headers.collect {
-          case `WWW-Authenticate`(challenge +: Nil) ⇒ challenge
+        headers.collect { case `WWW-Authenticate`(challenge +: Nil) ⇒
+          challenge
         } shouldEqual Seq(challenge, otherChallenge)
       }
     }

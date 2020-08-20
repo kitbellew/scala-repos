@@ -195,8 +195,8 @@ object PersistentActorSpec {
 
   class ReplyInEventHandlerPersistentActor(name: String)
       extends ExamplePersistentActor(name) {
-    val receiveCommand: Receive = {
-      case Cmd("a") ⇒ persist(Evt("a"))(evt ⇒ sender() ! evt.data)
+    val receiveCommand: Receive = { case Cmd("a") ⇒
+      persist(Evt("a"))(evt ⇒ sender() ! evt.data)
     }
   }
 
@@ -355,8 +355,8 @@ object PersistentActorSpec {
 
   class AnyValEventPersistentActor(name: String)
       extends ExamplePersistentActor(name) {
-    val receiveCommand: Receive = {
-      case Cmd("a") ⇒ persist(5)(evt ⇒ sender() ! evt)
+    val receiveCommand: Receive = { case Cmd("a") ⇒
+      persist(5)(evt ⇒ sender() ! evt)
     }
   }
 
@@ -379,8 +379,8 @@ object PersistentActorSpec {
     override def receiveRecover = sendingRecover.orElse(super.receiveRecover)
 
     override def receiveCommand: Receive =
-      super.receiveCommand orElse {
-        case s: String ⇒ probe ! s
+      super.receiveCommand orElse { case s: String ⇒
+        probe ! s
       }
 
   }
@@ -572,8 +572,8 @@ object PersistentActorSpec {
       }
     }
 
-    def receiveRecover = {
-      case _ ⇒ ()
+    def receiveRecover = { case _ ⇒
+      ()
     }
 
     override def preStart(): Unit = {

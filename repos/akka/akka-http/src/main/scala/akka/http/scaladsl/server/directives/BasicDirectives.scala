@@ -51,8 +51,8 @@ trait BasicDirectives {
 
   def recoverRejectionsWith(
       f: immutable.Seq[Rejection] ⇒ Future[RouteResult]): Directive0 =
-    mapRouteResultWithPF {
-      case RouteResult.Rejected(rejections) ⇒ f(rejections)
+    mapRouteResultWithPF { case RouteResult.Rejected(rejections) ⇒
+      f(rejections)
     }
 
   def mapRejections(
@@ -60,8 +60,8 @@ trait BasicDirectives {
     recoverRejections(rejections ⇒ RouteResult.Rejected(f(rejections)))
 
   def mapResponse(f: HttpResponse ⇒ HttpResponse): Directive0 =
-    mapRouteResultPF {
-      case RouteResult.Complete(response) ⇒ RouteResult.Complete(f(response))
+    mapRouteResultPF { case RouteResult.Complete(response) ⇒
+      RouteResult.Complete(f(response))
     }
 
   def mapResponseEntity(f: ResponseEntity ⇒ ResponseEntity): Directive0 =

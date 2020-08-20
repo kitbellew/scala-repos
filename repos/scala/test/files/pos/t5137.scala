@@ -10,15 +10,15 @@ object Test {
 
   // okay
   ((1: BigInt) * (List[BigInt]()
-    .map({
-      case x => x
+    .map({ case x =>
+      x
     })
     .sum))
 
   // fail
   (1 * (List[BigInt]()
-    .map({
-      case x => x
+    .map({ case x =>
+      x
     })
     .sum))
 }

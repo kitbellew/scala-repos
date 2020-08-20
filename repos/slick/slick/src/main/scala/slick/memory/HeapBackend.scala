@@ -142,11 +142,11 @@ trait HeapBackend extends RelationalBackend with Logging {
       columns.map(_.sym).zipWithIndex.toMap
 
     val verifier = {
-      val v1 = indexes.foldLeft(Verifier.empty) {
-        case (z, i) => z andThen createIndexVerifier(i)
+      val v1 = indexes.foldLeft(Verifier.empty) { case (z, i) =>
+        z andThen createIndexVerifier(i)
       }
-      val v2 = constraints.foldLeft(v1) {
-        case (z, c) => z andThen createConstraintVerifier(c)
+      val v2 = constraints.foldLeft(v1) { case (z, c) =>
+        z andThen createConstraintVerifier(c)
       }
       columns.foldLeft(v2) { case (z, c) =>
         if (c.isUnique)

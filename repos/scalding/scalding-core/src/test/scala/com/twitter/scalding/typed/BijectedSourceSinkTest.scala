@@ -74,8 +74,8 @@ class ContraMappedAndThenSourceJob(args: Args) extends Job(args) {
       (LongIntPacker.l(x), LongIntPacker.r(x))
     })
     .map { case (l, r) => (l * 2, r * 2) }
-    .write(TypedTsv[Long]("output").contraMap {
-      case (l, r) => LongIntPacker.lr(l, r)
+    .write(TypedTsv[Long]("output").contraMap { case (l, r) =>
+      LongIntPacker.lr(l, r)
     })
 }
 

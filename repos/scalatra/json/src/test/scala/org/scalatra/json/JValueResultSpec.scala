@@ -18,8 +18,8 @@ class BottleSerializer
           } yield (new Bottle(of))
           b.get
         },
-        {
-          case a: Bottle => JObject(JField("of", JString(a.of)))
+        { case a: Bottle =>
+          JObject(JField("of", JString(a.of)))
         })) {}
 
 class JValueResultSpec extends MutableScalatraSpec {

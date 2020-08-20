@@ -65,8 +65,8 @@ trait Imports {
     lang ++ session
   }
   def implicitSymbolsBySource: List[(Symbol, List[Symbol])] = {
-    importedSymbolsBySource map {
-      case (k, vs) => (k, vs filter (_.isImplicit))
+    importedSymbolsBySource map { case (k, vs) =>
+      (k, vs filter (_.isImplicit))
     } filterNot (_._2.isEmpty)
   }
 

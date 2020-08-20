@@ -50,8 +50,8 @@ class ConsumerIntegrationTest
       start(
         new Consumer {
           def endpointUri = "direct:a1"
-          def receive = {
-            case m: CamelMessage ⇒ sender() ! "received " + m.bodyAs[String]
+          def receive = { case m: CamelMessage ⇒
+            sender() ! "received " + m.bodyAs[String]
           }
         },
         name = "direct-a1")
@@ -246,8 +246,8 @@ class ErrorThrowingConsumer(override val endpointUri: String) extends Consumer {
 
 class ErrorRespondingConsumer(override val endpointUri: String)
     extends Consumer {
-  def receive = {
-    case msg: CamelMessage ⇒ throw new TestException("Error!")
+  def receive = { case msg: CamelMessage ⇒
+    throw new TestException("Error!")
   }
   override def onRouteDefinition =
     (rd: RouteDefinition) ⇒ {

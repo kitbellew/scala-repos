@@ -428,11 +428,11 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
         req) - 2 // this request and any open comet requests
 
       // dump the oldest requests
-      which.drop(max).foreach {
-        case (actor, req) => actor ! BreakOut()
+      which.drop(max).foreach { case (actor, req) =>
+        actor ! BreakOut()
       }
-      invalid.foreach {
-        case (actor, req) => actor ! BreakOut()
+      invalid.foreach { case (actor, req) =>
+        actor ! BreakOut()
       }
     }
 

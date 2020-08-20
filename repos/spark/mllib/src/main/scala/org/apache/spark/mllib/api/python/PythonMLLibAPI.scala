@@ -1216,8 +1216,8 @@ private[python] class PythonMLLibAPI extends Serializable {
       numCols: Int): IndexedRowMatrix = {
     // We use DataFrames for serialization of IndexedRows from Python,
     // so map each Row in the DataFrame back to an IndexedRow.
-    val indexedRows = rows.rdd.map {
-      case Row(index: Long, vector: Vector) => IndexedRow(index, vector)
+    val indexedRows = rows.rdd.map { case Row(index: Long, vector: Vector) =>
+      IndexedRow(index, vector)
     }
     new IndexedRowMatrix(indexedRows, numRows, numCols)
   }
@@ -1231,8 +1231,8 @@ private[python] class PythonMLLibAPI extends Serializable {
       numCols: Long): CoordinateMatrix = {
     // We use DataFrames for serialization of MatrixEntry entries from
     // Python, so map each Row in the DataFrame back to a MatrixEntry.
-    val entries = rows.rdd.map {
-      case Row(i: Long, j: Long, value: Double) => MatrixEntry(i, j, value)
+    val entries = rows.rdd.map { case Row(i: Long, j: Long, value: Double) =>
+      MatrixEntry(i, j, value)
     }
     new CoordinateMatrix(entries, numRows, numCols)
   }

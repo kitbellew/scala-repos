@@ -60,11 +60,11 @@ trait Solver extends parser.AST with typer.Binder {
       { case Sub(loc, left, right) => Set(Add(loc, Neg(loc, right), left)) },
       { case Add(loc, Neg(_, left), right) => Set(Sub(loc, right, left)) },
       { case Mul(loc, left, right) => Set(Mul(loc, right, left)) },
-      {
-        case Add(loc, Add(loc2, x, y), z) => Set(Add(loc, x, Add(loc2, y, z)))
+      { case Add(loc, Add(loc2, x, y), z) =>
+        Set(Add(loc, x, Add(loc2, y, z)))
       },
-      {
-        case Mul(loc, Mul(loc2, x, y), z) => Set(Mul(loc, x, Mul(loc2, y, z)))
+      { case Mul(loc, Mul(loc2, x, y), z) =>
+        Set(Mul(loc, x, Mul(loc2, y, z)))
       },
       {
         case Add(loc, Mul(loc2, x, y), z) if y equalsIgnoreLoc z =>
@@ -94,8 +94,8 @@ trait Solver extends parser.AST with typer.Binder {
             Add(loc, Mul(loc2, w, z), Mul(loc3, y, x)),
             Mul(loc2, x, z)))
       },
-      {
-        case Mul(loc, Div(loc2, x, y), z) => Set(Div(loc2, Mul(loc, x, z), y))
+      { case Mul(loc, Div(loc2, x, y), z) =>
+        Set(Div(loc2, Mul(loc, x, z), y))
       },
       { case Mul(loc, Div(loc2, w, x), Div(loc3, y, z)) =>
         Set(Div(loc2, Mul(loc, w, y), Mul(loc, x, z)))

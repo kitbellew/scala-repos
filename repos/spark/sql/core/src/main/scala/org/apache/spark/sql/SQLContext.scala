@@ -238,8 +238,8 @@ class SQLContext private[sql] (
     conf.setConf(properties)
     // After we have populated SQLConf, we call setConf to populate other confs in the subclass
     // (e.g. hiveconf in HiveContext).
-    properties.asScala.foreach {
-      case (key, value) => setConf(key, value)
+    properties.asScala.foreach { case (key, value) =>
+      setConf(key, value)
     }
   }
 

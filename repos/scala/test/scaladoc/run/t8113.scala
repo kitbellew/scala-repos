@@ -30,8 +30,8 @@ object Test extends ScaladocModelTest {
         case _ => None
       }
 
-    val link = find(test.comment.get.body).collect {
-      case Link(ta, Text(ti)) => (ta, ti)
+    val link = find(test.comment.get.body).collect { case Link(ta, Text(ti)) =>
+      (ta, ti)
     }
     assert(link.isDefined)
     val expected = ("http://www.scala-lang.org", "this great website")

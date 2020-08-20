@@ -355,8 +355,8 @@ case class NameParams(name: String, params: Option[JValue])
 class NameParamsSerializer
     extends CustomSerializer[NameParams](format =>
       (
-        {
-          case jv: JValue => WorkflowUtils.extractNameParams(jv)
+        { case jv: JValue =>
+          WorkflowUtils.extractNameParams(jv)
         },
         { case x: NameParams =>
           JObject(

@@ -302,8 +302,8 @@ trait BaseClient[T] {
       if (result.failures.nonEmpty) {
         Future.exception(result.failures.values.head)
       } else {
-        Future.value(result.valuesWithTokens.mapValues {
-          case (v, u) => (bufferToType(v), u)
+        Future.value(result.valuesWithTokens.mapValues { case (v, u) =>
+          (bufferToType(v), u)
         })
       }
     }
@@ -494,8 +494,8 @@ protected class ConnectedClient(
   import scala.collection.breakOut
 
   protected def rawGet(command: RetrievalCommand) = {
-    val keys: immutable.Set[String] = command.keys.map {
-      case Buf.Utf8(s) => s
+    val keys: immutable.Set[String] = command.keys.map { case Buf.Utf8(s) =>
+      s
     }(breakOut)
 
     service(command).map {
@@ -1255,8 +1255,8 @@ case class KetamaClientBuilder private[memcached] (
     if (LocalMemcached.enabled) {
       withLocalMemcached
     } else {
-      copy(_group = Group(nodes.map {
-        case (host, port, weight) => new CacheNode(host, port, weight)
+      copy(_group = Group(nodes.map { case (host, port, weight) =>
+        new CacheNode(host, port, weight)
       }: _*))
     }
   }

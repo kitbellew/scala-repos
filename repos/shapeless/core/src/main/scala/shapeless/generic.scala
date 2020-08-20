@@ -480,13 +480,13 @@ trait CaseClassMacros extends ReprTypes {
   def nameOf(tpe: Type) = tpe.typeSymbol.name
 
   def mkHListValue(elems: List[Tree]): Tree =
-    elems.foldRight(q"_root_.shapeless.HNil": Tree) {
-      case (elem, acc) => q"_root_.shapeless.::($elem, $acc)"
+    elems.foldRight(q"_root_.shapeless.HNil": Tree) { case (elem, acc) =>
+      q"_root_.shapeless.::($elem, $acc)"
     }
 
   def mkCompoundTpe(nil: Type, cons: Type, items: List[Type]): Type =
-    items.foldRight(nil) {
-      case (tpe, acc) => appliedType(cons, List(devarargify(tpe), acc))
+    items.foldRight(nil) { case (tpe, acc) =>
+      appliedType(cons, List(devarargify(tpe), acc))
     }
 
   def mkLabelTpe(name: Name): Type =
@@ -841,8 +841,8 @@ trait CaseClassMacros extends ReprTypes {
     }
 
   def equalTypes(as: List[Type], bs: List[Type]): Boolean =
-    as.length == bs.length && (as zip bs).foldLeft(true) {
-      case (acc, (a, b)) => acc && unByName(a) =:= unByName(b)
+    as.length == bs.length && (as zip bs).foldLeft(true) { case (acc, (a, b)) =>
+      acc && unByName(a) =:= unByName(b)
     }
 
   def alignFields(tpe: Type, ts: List[Type]): Option[List[(TermName, Type)]] = {
@@ -974,8 +974,8 @@ trait CaseClassMacros extends ReprTypes {
           narrow(tree, tpe)
 
       def mkCtorDtor0(elems0: List[(TermName, Type)]) = {
-        val elems = elems0.map {
-          case (name, tpe) => (TermName(c.freshName("pat")), tpe)
+        val elems = elems0.map { case (name, tpe) =>
+          (TermName(c.freshName("pat")), tpe)
         }
         val pattern =
           pq"${companionRef(tpe)}(..${elems.map { case (binder, tpe) =>
@@ -1055,27 +1055,27 @@ trait CaseClassMacros extends ReprTypes {
 
         // case 5: concrete, exactly one public constructor with matching public unapply
         case HasCtorUnapply(args) =>
-          val elems = args.map {
-            case (name, tpe) => (TermName(c.freshName("pat")), name, tpe)
+          val elems = args.map { case (name, tpe) =>
+            (TermName(c.freshName("pat")), name, tpe)
           }
           val pattern =
             pq"${companionRef(tpe)}(..${elems.map { case (binder, _, tpe) =>
               if (isVararg(tpe)) pq"$binder @ $repWCard" else pq"$binder"
             }})"
-          val rhs = elems.map {
-            case (binder, _, tpe) => narrow(q"$binder", tpe)
+          val rhs = elems.map { case (binder, _, tpe) =>
+            narrow(q"$binder", tpe)
           }
           mkCtorDtor1(elems, pattern, rhs)
 
         // case 6: concrete, exactly one public constructor with matching accessible fields
         case HasUniqueCtor(args) =>
-          val elems = args.map {
-            case (name, tpe) => (TermName(c.freshName("pat")), name, tpe)
+          val elems = args.map { case (name, tpe) =>
+            (TermName(c.freshName("pat")), name, tpe)
           }
           val binder = TermName(c.freshName("pat"))
           val pattern = pq"$binder"
-          val rhs = elems.map {
-            case (_, name, tpe) => narrow(q"$binder.$name", tpe)
+          val rhs = elems.map { case (_, name, tpe) =>
+            narrow(q"$binder.$name", tpe)
           }
           mkCtorDtor1(elems, pattern, rhs)
 

@@ -81,8 +81,8 @@ object JsonTransSpec extends Specification {
             Reads.of[JsNumber].map { case JsNumber(nb) => JsNumber(nb + 12) }
           ) andThen
             (__ \ 'field31).json.update(
-              Reads.of[JsString].map {
-                case JsString(s) => JsString(s + "toto")
+              Reads.of[JsString].map { case JsString(s) =>
+                JsString(s + "toto")
               }
             )
         )

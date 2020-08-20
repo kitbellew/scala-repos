@@ -113,8 +113,8 @@ case class Form[T](
     bind {
       data.foldLeft(Map.empty[String, String]) {
         case (s, (key, values)) if key.endsWith("[]") =>
-          s ++ values.zipWithIndex.map {
-            case (v, i) => (key.dropRight(2) + "[" + i + "]") -> v
+          s ++ values.zipWithIndex.map { case (v, i) =>
+            (key.dropRight(2) + "[" + i + "]") -> v
           }
         case (s, (key, values)) => s + (key -> values.headOption.getOrElse(""))
       }
@@ -808,8 +808,8 @@ case class RepeatedMapping[T](
     * @return the plain data
     */
   def unbind(value: List[T]): Map[String, String] = {
-    val datas = value.zipWithIndex.map {
-      case (t, i) => wrapped.withPrefix(key + "[" + i + "]").unbind(t)
+    val datas = value.zipWithIndex.map { case (t, i) =>
+      wrapped.withPrefix(key + "[" + i + "]").unbind(t)
     }
     datas.foldLeft(Map.empty[String, String])(_ ++ _)
   }

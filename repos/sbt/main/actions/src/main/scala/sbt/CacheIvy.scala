@@ -90,8 +90,8 @@ object CacheIvy {
       UpdateReport,
       (File, Seq[ConfigurationReport], UpdateStats, Map[File, Long])](
       rep => (rep.cachedDescriptor, rep.configurations, rep.stats, rep.stamps),
-      {
-        case (cd, cs, stats, stamps) => new UpdateReport(cd, cs, stats, stamps)
+      { case (cd, cs, stats, stamps) =>
+        new UpdateReport(cd, cs, stats, stamps)
       })
   }
   implicit def updateStatsFormat: Format[UpdateStats] =

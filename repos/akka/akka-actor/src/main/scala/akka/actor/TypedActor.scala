@@ -801,8 +801,8 @@ class TypedActorExtension(val system: ExtendedActorSystem)
     val actorVar = new AtomVar[ActorRef](null)
     val proxy = Proxy
       .newProxyInstance(
-        (props.loader orElse props.interfaces.collectFirst {
-          case any ⇒ any.getClassLoader
+        (props.loader orElse props.interfaces.collectFirst { case any ⇒
+          any.getClassLoader
         }).orNull, //If we have no loader, we arbitrarily take the loader of the first interface
         props.interfaces.toArray,
         new TypedActorInvocationHandler(

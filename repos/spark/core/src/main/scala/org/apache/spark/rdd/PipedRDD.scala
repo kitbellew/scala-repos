@@ -82,8 +82,8 @@ private[spark] class PipedRDD[T: ClassTag](
     val pb = new ProcessBuilder(command.asJava)
     // Add the environmental variables to the process.
     val currentEnvVars = pb.environment()
-    envVars.foreach {
-      case (variable, value) => currentEnvVars.put(variable, value)
+    envVars.foreach { case (variable, value) =>
+      currentEnvVars.put(variable, value)
     }
 
     // for compatibility with Hadoop which sets these env variables

@@ -227,8 +227,8 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
       storage: StorageProvider,
       @Named(EventModule.busName) eventBus: EventStream,
       taskFailureRepository: TaskFailureRepository): ActorRef = {
-    val supervision = OneForOneStrategy() {
-      case NonFatal(_) => Restart
+    val supervision = OneForOneStrategy() { case NonFatal(_) =>
+      Restart
     }
 
     import scala.concurrent.ExecutionContext.Implicits.global

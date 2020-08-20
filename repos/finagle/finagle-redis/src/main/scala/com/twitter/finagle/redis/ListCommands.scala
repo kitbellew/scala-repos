@@ -16,8 +16,8 @@ trait Lists { self: BaseClient =>
     * lists, and return 0.
     */
   def lLen(key: ChannelBuffer): Future[JLong] =
-    doRequest(LLen(key)) {
-      case IntegerReply(n) => Future.value(n)
+    doRequest(LLen(key)) { case IntegerReply(n) =>
+      Future.value(n)
     }
 
   /**
@@ -49,8 +49,8 @@ trait Lists { self: BaseClient =>
       pivot: ChannelBuffer,
       value: ChannelBuffer
   ): Future[Option[JLong]] =
-    doRequest(LInsert(key, "AFTER", pivot, value)) {
-      case IntegerReply(n) => Future.value(if (n == -1) None else Some(n))
+    doRequest(LInsert(key, "AFTER", pivot, value)) { case IntegerReply(n) =>
+      Future.value(if (n == -1) None else Some(n))
     }
 
   /**
@@ -68,8 +68,8 @@ trait Lists { self: BaseClient =>
       pivot: ChannelBuffer,
       value: ChannelBuffer
   ): Future[Option[JLong]] =
-    doRequest(LInsert(key, "BEFORE", pivot, value)) {
-      case IntegerReply(n) => Future.value(if (n == -1) None else Some(n))
+    doRequest(LInsert(key, "BEFORE", pivot, value)) { case IntegerReply(n) =>
+      Future.value(if (n == -1) None else Some(n))
     }
 
   /**
@@ -92,8 +92,8 @@ trait Lists { self: BaseClient =>
     * @return the length of the list
     */
   def lPush(key: ChannelBuffer, value: List[ChannelBuffer]): Future[JLong] =
-    doRequest(LPush(key, value)) {
-      case IntegerReply(n) => Future.value(n)
+    doRequest(LPush(key, value)) { case IntegerReply(n) =>
+      Future.value(n)
     }
 
   /**
@@ -109,8 +109,8 @@ trait Lists { self: BaseClient =>
       key: ChannelBuffer,
       count: JLong,
       value: ChannelBuffer): Future[JLong] =
-    doRequest(LRem(key, count, value)) {
-      case IntegerReply(n) => Future.value(n)
+    doRequest(LRem(key, count, value)) { case IntegerReply(n) =>
+      Future.value(n)
     }
 
   /**
@@ -124,8 +124,8 @@ trait Lists { self: BaseClient =>
       key: ChannelBuffer,
       index: JLong,
       value: ChannelBuffer): Future[Unit] =
-    doRequest(LSet(key, index, value)) {
-      case StatusReply(message) => Future.Unit
+    doRequest(LSet(key, index, value)) { case StatusReply(message) =>
+      Future.Unit
     }
 
   /**
@@ -166,8 +166,8 @@ trait Lists { self: BaseClient =>
     * @return the length of the list
     */
   def rPush(key: ChannelBuffer, value: List[ChannelBuffer]): Future[JLong] =
-    doRequest(RPush(key, value)) {
-      case IntegerReply(n) => Future.value(n)
+    doRequest(RPush(key, value)) { case IntegerReply(n) =>
+      Future.value(n)
     }
 
   /**
@@ -177,7 +177,7 @@ trait Lists { self: BaseClient =>
     * @param end (exclusive)
     */
   def lTrim(key: ChannelBuffer, start: JLong, end: JLong): Future[Unit] =
-    doRequest(LTrim(key, start, end)) {
-      case StatusReply(message) => Future.Unit
+    doRequest(LTrim(key, start, end)) { case StatusReply(message) =>
+      Future.Unit
     }
 }

@@ -56,8 +56,8 @@ class ConfigParser(
     }
 
   def assignment =
-    identToken ~ assignToken ~ value ^^ {
-      case k ~ a ~ v => map(prefix + k) = v
+    identToken ~ assignToken ~ value ^^ { case k ~ a ~ v =>
+      map(prefix + k) = v
     }
 
   def sectionOpen =

@@ -430,8 +430,8 @@ private[deploy] class Master(
           }
 
           for (driverId <- driverIds) {
-            val driverMatches = worker.drivers.exists {
-              case (id, _) => id == driverId
+            val driverMatches = worker.drivers.exists { case (id, _) =>
+              id == driverId
             }
             if (!driverMatches) {
               // master doesn't recognize this driver. So just tell worker to kill it.

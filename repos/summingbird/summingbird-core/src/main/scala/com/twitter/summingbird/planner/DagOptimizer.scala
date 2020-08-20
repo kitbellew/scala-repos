@@ -242,8 +242,8 @@ trait DagOptimizer[P <: Platform[P]] {
     * the AST that we generate and optimize along the way
     */
   object RemoveNames extends PartialRule[Prod] {
-    def applyWhere[T](on: ExpressionDag[Prod]) = {
-      case NamedProducer(p, _) => p
+    def applyWhere[T](on: ExpressionDag[Prod]) = { case NamedProducer(p, _) =>
+      p
     }
   }
 

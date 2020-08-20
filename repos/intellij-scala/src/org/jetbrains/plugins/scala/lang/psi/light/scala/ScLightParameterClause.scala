@@ -23,8 +23,8 @@ class ScLightParameterClause(types: List[ScType], clause: ScParameterClause)
   override def isImplicit: Boolean = clause.isImplicit
 
   override def parameters: Seq[ScParameter] =
-    clause.parameters.zip(types).zipWithIndex.map {
-      case ((param, tp), i) => new ScLightParameter(param, tp, i)
+    clause.parameters.zip(types).zipWithIndex.map { case ((param, tp), i) =>
+      new ScLightParameter(param, tp, i)
     }
 
   override def effectiveParameters: Seq[ScParameter] = parameters

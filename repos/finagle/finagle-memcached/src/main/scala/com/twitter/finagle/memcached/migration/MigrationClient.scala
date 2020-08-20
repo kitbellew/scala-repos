@@ -322,8 +322,8 @@ trait ReadRepair { self: FallbackRead =>
       frontR: GetResult,
       backR: GetResult): GetResult = {
     // when readrepair, use back hit to repair front miss
-    backR.hits foreach {
-      case (k, v) => set(k, v.value)
+    backR.hits foreach { case (k, v) =>
+      set(k, v.value)
     }
     GetResult.merged(Seq(GetResult(frontR.hits), backR))
   }

@@ -24,8 +24,8 @@ class HoistClientOps extends Phase {
               .filter(t => t._2 ne t._3._1)
               .map(_._1)
               .mkString(", "))
-          val newDefsM = hoisted.iterator.map {
-            case (ts, n, (n2, wrap)) => (n2, new AnonSymbol)
+          val newDefsM = hoisted.iterator.map { case (ts, n, (n2, wrap)) =>
+            (n2, new AnonSymbol)
           }.toMap
           logger.debug("New defs: " + newDefsM)
           val oldDefsM = hoisted.iterator.map { case (ts, n, (n2, wrap)) =>
@@ -85,8 +85,8 @@ class HoistClientOps extends Phase {
               bl2: Bind,
               lrepl: Map[TermSymbol, (Node => Node, AnonSymbol)]) =
               if (jt != JoinType.Right) {
-                val hoisted = ldefs.map {
-                  case (ts, n) => (ts, n, unwrap(n, false))
+                val hoisted = ldefs.map { case (ts, n) =>
+                  (ts, n, unwrap(n, false))
                 }
                 logger.debug(
                   "Hoisting operations from defs in left side of Join: " + hoisted.iterator
@@ -104,8 +104,8 @@ class HoistClientOps extends Phase {
                 logger.debug(
                   "Translated left join side:",
                   Ellipsis(bl2, List(0)))
-                val repl = hoisted.iterator.map {
-                  case (s, _, (n2, wrap)) => (s, (wrap, newDefsM(n2)))
+                val repl = hoisted.iterator.map { case (s, _, (n2, wrap)) =>
+                  (s, (wrap, newDefsM(n2)))
                 }.toMap
                 (bl2, repl)
               } else (bl, Map.empty)
@@ -113,8 +113,8 @@ class HoistClientOps extends Phase {
               br2: Bind,
               rrepl: Map[TermSymbol, (Node => Node, AnonSymbol)]) =
               if (jt != JoinType.Left) {
-                val hoisted = rdefs.map {
-                  case (ts, n) => (ts, n, unwrap(n, false))
+                val hoisted = rdefs.map { case (ts, n) =>
+                  (ts, n, unwrap(n, false))
                 }
                 logger.debug(
                   "Hoisting operations from defs in right side of Join: " + hoisted.iterator
@@ -132,8 +132,8 @@ class HoistClientOps extends Phase {
                 logger.debug(
                   "Translated right join side:",
                   Ellipsis(br2, List(0)))
-                val repl = hoisted.iterator.map {
-                  case (s, _, (n2, wrap)) => (s, (wrap, newDefsM(n2)))
+                val repl = hoisted.iterator.map { case (s, _, (n2, wrap)) =>
+                  (s, (wrap, newDefsM(n2)))
                 }.toMap
                 (br2, repl)
               } else (br, Map.empty)

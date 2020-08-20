@@ -356,8 +356,8 @@ trait ArgumentCapture {
       .zip(arg5)
       .zip(arg6)
       .zip(arg7)
-      .map({
-        case (((((((a, b), c), d), e), f), g), h) => (a, b, c, d, e, f, g, h)
+      .map({ case (((((((a, b), c), d), e), f), g), h) =>
+        (a, b, c, d, e, f, g, h)
       })
       .toSeq
   }

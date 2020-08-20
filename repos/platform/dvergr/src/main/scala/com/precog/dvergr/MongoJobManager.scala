@@ -214,8 +214,8 @@ final class MongoJobManager(
   def listChannels(jobId: JobId): Future[Seq[String]] = {
     database {
       distinct("channel").from(settings.messages).where("jobId" === jobId)
-    } map (_.collect {
-      case JString(channel) => channel
+    } map (_.collect { case JString(channel) =>
+      channel
     }.toList)
   }
 

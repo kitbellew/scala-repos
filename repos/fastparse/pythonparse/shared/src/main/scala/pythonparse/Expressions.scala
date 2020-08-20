@@ -193,10 +193,11 @@ object Expressions {
   }
   val named_argument = P(NAME ~ "=" ~ test).map(Ast.keyword.tupled)
 
-  val comp_for: P[Ast.comprehension] = P(
-    "for" ~ exprlist ~ "in" ~ or_test ~ comp_if.rep).map {
-    case (targets, test, ifs) => Ast.comprehension(tuplize(targets), test, ifs)
-  }
+  val comp_for: P[Ast.comprehension] =
+    P("for" ~ exprlist ~ "in" ~ or_test ~ comp_if.rep).map {
+      case (targets, test, ifs) =>
+        Ast.comprehension(tuplize(targets), test, ifs)
+    }
   val comp_if: P[Ast.expr] = P("if" ~ test)
 
   val testlist1: P[Seq[Ast.expr]] = P(test.rep(1, sep = ","))

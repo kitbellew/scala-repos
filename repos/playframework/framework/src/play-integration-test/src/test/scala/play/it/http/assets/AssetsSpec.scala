@@ -237,8 +237,8 @@ trait AssetsSpec
         await(client.url("/subdir").get()).status must_== NOT_FOUND
       }
       "if the directory is a jar entry" in {
-        Server.withRouter() {
-          case req => Assets.versioned("/scala", req.path)
+        Server.withRouter() { case req =>
+          Assets.versioned("/scala", req.path)
         } { implicit port =>
           implicit val materializer = Play.current.materializer
           withClient { client =>

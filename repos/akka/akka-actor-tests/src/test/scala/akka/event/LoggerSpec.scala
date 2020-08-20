@@ -143,8 +143,8 @@ object LoggerSpec {
       always ++ perMessage
     }
 
-    def receive: Receive = {
-      case m: String ⇒ log.warning(m)
+    def receive: Receive = { case m: String ⇒
+      log.warning(m)
     }
   }
 

@@ -177,8 +177,8 @@ class Hakker(name: String, chair: Int) extends Actor {
       subscribers -= subscriber
   }
 
-  def initializing: Receive = {
-    case Identify => identify("Initializing")
+  def initializing: Receive = { case Identify =>
+    identify("Initializing")
   }
 
   def identify(busyWith: String): Unit = {

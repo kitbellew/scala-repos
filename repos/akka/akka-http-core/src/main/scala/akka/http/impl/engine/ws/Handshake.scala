@@ -67,8 +67,8 @@ private[http] object Handshake {
         headers: List[HttpHeader],
         hostHeaderPresent: Boolean): Option[UpgradeToWebSocket] = {
       def find[T <: HttpHeader: ClassTag]: Option[T] =
-        headers.collectFirst {
-          case t: T ⇒ t
+        headers.collectFirst { case t: T ⇒
+          t
         }
 
       // Host header is validated in general HTTP logic

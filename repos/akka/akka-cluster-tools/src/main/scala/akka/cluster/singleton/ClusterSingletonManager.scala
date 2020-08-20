@@ -840,8 +840,8 @@ class ClusterSingletonManager(
     case WasOldest -> _ ⇒ cancelTimer(TakeOverRetryTimer)
   }
 
-  onTransition {
-    case _ -> (Younger | Oldest) ⇒ getNextOldestChanged()
+  onTransition { case _ -> (Younger | Oldest) ⇒
+    getNextOldestChanged()
   }
 
   onTransition {

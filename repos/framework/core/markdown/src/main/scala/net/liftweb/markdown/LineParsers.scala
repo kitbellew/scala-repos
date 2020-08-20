@@ -252,16 +252,16 @@ trait LineParsers extends InlineParsers {
     * Matches a line starting with up to three spaces followed by an asterisk, a space, and any whitespace.
     */
   val uItemStartLine: Parser[UItemStartLine] =
-    (""" {0,3}[\*\+-] [\t\v ]*""".r) ~ rest ^^ {
-      case prefix ~ payload => new UItemStartLine(prefix, payload)
+    (""" {0,3}[\*\+-] [\t\v ]*""".r) ~ rest ^^ { case prefix ~ payload =>
+      new UItemStartLine(prefix, payload)
     }
 
   /** A line that starts an ordered list item.
     * Matches a line starting with up to three spaces followed by a number, a dot and a space, and any whitespace
     */
   val oItemStartLine: Parser[OItemStartLine] =
-    (""" {0,3}[0-9]+\. [\t\v ]*""".r) ~ rest ^^ {
-      case prefix ~ payload => new OItemStartLine(prefix, payload)
+    (""" {0,3}[0-9]+\. [\t\v ]*""".r) ~ rest ^^ { case prefix ~ payload =>
+      new OItemStartLine(prefix, payload)
     }
 
   /** Accepts an empty line. (A line that consists only of optional whitespace or the empty string.)

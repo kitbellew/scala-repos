@@ -177,8 +177,8 @@ private class ReqRepFilter
       }
 
       case CanDispatch.Yes | CanDispatch.Unknown => { tag: Int =>
-        val contexts = Contexts.broadcast.marshal().map {
-          case (k, v) => (BufChannelBuffer(k), BufChannelBuffer(v))
+        val contexts = Contexts.broadcast.marshal().map { case (k, v) =>
+          (BufChannelBuffer(k), BufChannelBuffer(v))
         }
         Message.Tdispatch(
           tag,

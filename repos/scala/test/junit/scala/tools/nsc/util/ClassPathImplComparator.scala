@@ -94,8 +94,8 @@ object ClassPathImplComparator {
         def createClassPaths() =
           (1 to cpCreationRepetitions).map(_ => classPath).last
         def testClassLookup(cp: ClassFileLookup[AbstractFile]): Boolean =
-          (1 to cpCreationRepetitions).foldLeft(true) {
-            case (a, _) => a && checkExistenceOfClasses(classesToFind)(cp)
+          (1 to cpCreationRepetitions).foldLeft(true) { case (a, _) =>
+            a && checkExistenceOfClasses(classesToFind)(cp)
           }
 
         val cp = withMeasuredTime(

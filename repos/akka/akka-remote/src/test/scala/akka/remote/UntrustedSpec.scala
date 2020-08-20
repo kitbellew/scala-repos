@@ -46,15 +46,15 @@ object UntrustedSpec {
     override def postStop(): Unit = {
       testActor ! s"${self.path.name} stopped"
     }
-    def receive = {
-      case msg ⇒ testActor forward msg
+    def receive = { case msg ⇒
+      testActor forward msg
     }
   }
 
   class FakeUser(testActor: ActorRef) extends Actor {
     context.actorOf(Props(classOf[Child], testActor), "receptionist")
-    def receive = {
-      case msg ⇒ testActor forward msg
+    def receive = { case msg ⇒
+      testActor forward msg
     }
   }
 
@@ -153,8 +153,8 @@ akka.loglevel = DEBUG
     "discard watch messages" in {
       client.actorOf(Props(new Actor {
         context.watch(target2)
-        def receive = {
-          case x ⇒ testActor forward x
+        def receive = { case x ⇒
+          testActor forward x
         }
       }).withDeploy(Deploy.local))
       receptionist ! StopChild("child2")

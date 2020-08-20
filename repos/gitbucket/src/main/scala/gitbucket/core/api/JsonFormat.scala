@@ -50,8 +50,8 @@ object JsonFormat {
           case JString(s) =>
             throw new MappingException("Can't convert " + s + " to ApiPath")
         },
-        {
-          case ApiPath(path) => JString(c.baseUrl + path)
+        { case ApiPath(path) =>
+          JString(c.baseUrl + path)
         }
       ))
 

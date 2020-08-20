@@ -51,8 +51,8 @@ class BaseClient(service: Service[Command, Reply]) {
     * @param password
     */
   def auth(password: ChannelBuffer): Future[Unit] =
-    doRequest(Auth(password)) {
-      case StatusReply(message) => Future.Unit
+    doRequest(Auth(password)) { case StatusReply(message) =>
+      Future.Unit
     }
 
   /**
@@ -71,24 +71,24 @@ class BaseClient(service: Service[Command, Reply]) {
     * Deletes all keys in all databases
     */
   def flushAll(): Future[Unit] =
-    doRequest(FlushAll) {
-      case StatusReply(_) => Future.Unit
+    doRequest(FlushAll) { case StatusReply(_) =>
+      Future.Unit
     }
 
   /**
     * Deletes all keys in current DB
     */
   def flushDB(): Future[Unit] =
-    doRequest(FlushDB) {
-      case StatusReply(message) => Future.Unit
+    doRequest(FlushDB) { case StatusReply(message) =>
+      Future.Unit
     }
 
   /**
     * Closes connection to Redis instance
     */
   def quit(): Future[Unit] =
-    doRequest(Quit) {
-      case StatusReply(message) => Future.Unit
+    doRequest(Quit) { case StatusReply(message) =>
+      Future.Unit
     }
 
   /**
@@ -96,8 +96,8 @@ class BaseClient(service: Service[Command, Reply]) {
     * @param index
     */
   def select(index: Int): Future[Unit] =
-    doRequest(Select(index)) {
-      case StatusReply(message) => Future.Unit
+    doRequest(Select(index)) { case StatusReply(message) =>
+      Future.Unit
     }
 
   /**
@@ -138,8 +138,8 @@ trait TransactionalClient extends Client {
     * Flushes all previously watched keys for a transaction
     */
   def unwatch(): Future[Unit] =
-    doRequest(UnWatch) {
-      case StatusReply(message) => Future.Unit
+    doRequest(UnWatch) { case StatusReply(message) =>
+      Future.Unit
     }
 
   /**
@@ -147,8 +147,8 @@ trait TransactionalClient extends Client {
     * @param keys to watch
     */
   def watch(keys: Seq[ChannelBuffer]): Future[Unit] =
-    doRequest(Watch(keys)) {
-      case StatusReply(message) => Future.Unit
+    doRequest(Watch(keys)) { case StatusReply(message) =>
+      Future.Unit
     }
 
   /**

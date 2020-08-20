@@ -1044,8 +1044,8 @@ trait StatsLibModule[M[+_]]
         }
 
       def extract(res: Result): Table = {
-        val res2 = res filter {
-          case (count, _, _, _) => count != 0
+        val res2 = res filter { case (count, _, _, _) =>
+          count != 0
         }
 
         res2 map {
@@ -1342,8 +1342,8 @@ trait StatsLibModule[M[+_]]
         }
 
       def extract(res: Result): Table = {
-        val res2 = res filter {
-          case (count, _, _, _, _) => count != 0
+        val res2 = res filter { case (count, _, _, _, _) =>
+          count != 0
         }
 
         res2 map {
@@ -1713,8 +1713,8 @@ trait StatsLibModule[M[+_]]
         }
 
       def extract(res: Result): Table = {
-        val res2 = res filter {
-          case (count, _, _, _, _) => count != 0
+        val res2 = res filter { case (count, _, _, _, _) =>
+          count != 0
         }
 
         res2 map {
@@ -1871,8 +1871,8 @@ trait StatsLibModule[M[+_]]
           .filter { case (k, v) =>
             v.isDefinedAt(lastRow)
           }
-          .map {
-            case (k, v) => (k, v.cValue(lastRow))
+          .map { case (k, v) =>
+            (k, v.cValue(lastRow))
           }
         RankContext(curr, next, items)
       }

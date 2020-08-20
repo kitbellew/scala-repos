@@ -300,8 +300,8 @@ trait BaseParsers extends RegexParsers {
   /** Parses an XML Attribute with simplified value handling like xmlAttrVal.
     */
   def xmlAttr: Parser[String] =
-    ws ~ xmlName ~ '=' ~ xmlAttrVal ^^ {
-      case w ~ name ~ _ ~ value => w + name + '=' + value
+    ws ~ xmlName ~ '=' ~ xmlAttrVal ^^ { case w ~ name ~ _ ~ value =>
+      w + name + '=' + value
     }
 
   /** Parses an xml start or empty tag, attribute values are escaped.

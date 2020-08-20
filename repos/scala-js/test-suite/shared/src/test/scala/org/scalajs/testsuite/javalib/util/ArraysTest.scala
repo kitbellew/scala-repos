@@ -484,8 +484,8 @@ class ArraysTest {
   @Test def should_check_ranges_of_input_to_binarySearch(): Unit = {
     def expectException(block: => Unit)(
         expected: PartialFunction[Throwable, Unit]): Unit = {
-      val catchAll: PartialFunction[Throwable, Unit] = {
-        case e: Throwable => assertEquals("not thrown", e.getClass.getName)
+      val catchAll: PartialFunction[Throwable, Unit] = { case e: Throwable =>
+        assertEquals("not thrown", e.getClass.getName)
       }
 
       try {

@@ -69,8 +69,8 @@ class PromiseSubscriberSpec extends Specification {
       isEmptyAfterDelay() must beTrue
 
       onComplete()
-      next must beLike {
-        case OnComplete(Failure(_: IllegalStateException)) => ok
+      next must beLike { case OnComplete(Failure(_: IllegalStateException)) =>
+        ok
       }
       isEmptyAfterDelay() must beTrue
     }

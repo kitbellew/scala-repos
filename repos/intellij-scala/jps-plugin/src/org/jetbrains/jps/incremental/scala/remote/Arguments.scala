@@ -93,8 +93,8 @@ object Arguments {
             CompilerJars(libraryJar, compilerJar, extraJars)
         }
 
-        val javaHome = javaHomePath.map {
-          case PathToFile(file) => file
+        val javaHome = javaHomePath.map { case PathToFile(file) =>
+          file
         }
 
         val incrementalType = IncrementalityType.valueOf(incrementalTypeName)

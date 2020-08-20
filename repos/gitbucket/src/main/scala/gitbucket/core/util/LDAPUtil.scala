@@ -227,8 +227,8 @@ object LDAPUtil {
 
     getEntries(
       conn.search(baseDN, LDAPConnection.SCOPE_SUB, filterCond, null, false))
-      .collectFirst {
-        case x => x.getDN
+      .collectFirst { case x =>
+        x.getDN
       }
   }
 

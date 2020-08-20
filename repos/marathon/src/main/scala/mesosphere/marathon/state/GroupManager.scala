@@ -208,8 +208,8 @@ class GroupManager @Singleton @Inject() (
         //Filter out all items with already existing path.
         //Since the path is derived from the content itself,
         //it will only change, if the content changes.
-        val downloads = mutable.Map(paths.toSeq.filterNot {
-          case (url, path) => storage.item(path).exists
+        val downloads = mutable.Map(paths.toSeq.filterNot { case (url, path) =>
+          storage.item(path).exists
         }: _*)
         val actions = Seq.newBuilder[ResolveArtifacts]
         group.updateApps(group.version) { app =>
@@ -293,8 +293,8 @@ class GroupManager @Singleton @Inject() (
         d <- c.docker
         pms <- d.portMappings
       } yield {
-        val mappings = pms.zip(servicePorts).map {
-          case (pm, sp) => pm.copy(servicePort = sp)
+        val mappings = pms.zip(servicePorts).map { case (pm, sp) =>
+          pm.copy(servicePort = sp)
         }
         c.copy(
           docker = Some(d.copy(portMappings = Some(mappings)))

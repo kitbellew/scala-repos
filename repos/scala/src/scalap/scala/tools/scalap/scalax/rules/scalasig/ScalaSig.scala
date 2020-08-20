@@ -37,8 +37,8 @@ object ScalaSigParser {
 
     def mergedLongSignatureBytes(
         signatureParts: Seq[ElementValue]): Array[Byte] =
-      signatureParts.flatMap {
-        case ConstValueIndex(index) => bytesForIndex(index)
+      signatureParts.flatMap { case ConstValueIndex(index) =>
+        bytesForIndex(index)
       }(collection.breakOut)
 
     def bytesForIndex(index: Int) =

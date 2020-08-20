@@ -38,8 +38,8 @@ class PatternAnnotatorTest
     configureFromFileTextAdapter("dummy.scala", text)
     val mock = new AnnotatorHolderMock
     val annotator = new PatternAnnotator {}
-    val patterns = getFileAdapter.depthFirst.collect {
-      case p: ScPattern => p
+    val patterns = getFileAdapter.depthFirst.collect { case p: ScPattern =>
+      p
     }
     patterns.foreach(p =>
       annotator.annotatePattern(p, mock, highlightErrors = true))

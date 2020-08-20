@@ -211,8 +211,8 @@ abstract class SnapshotStoreSpec(config: Config)
     "save and overwrite snapshot with same sequence number" in {
       val md = metadata(4)
       snapshotStore.tell(SaveSnapshot(md, s"s-5-modified"), senderProbe.ref)
-      val md2 = senderProbe.expectMsgPF() {
-        case SaveSnapshotSuccess(md2) ⇒ md2
+      val md2 = senderProbe.expectMsgPF() { case SaveSnapshotSuccess(md2) ⇒
+        md2
       }
       md2.sequenceNr should be(md.sequenceNr)
       snapshotStore.tell(

@@ -33,8 +33,8 @@ object $enumerate {
       size: Int,
       limit: Int = Int.MaxValue)(op: List[A] => Funit): Funit =
     query.batch(size).cursor[A]().enumerateBulks(limit) run {
-      Iteratee.foldM(()) {
-        case (_, objs) => op(objs.toList)
+      Iteratee.foldM(()) { case (_, objs) =>
+        op(objs.toList)
       }
     }
 

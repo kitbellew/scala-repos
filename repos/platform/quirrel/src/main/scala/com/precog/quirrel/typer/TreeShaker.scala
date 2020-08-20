@@ -62,8 +62,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
             ids zip (Stream continually (FormalBinding(
               b): NameBinding)): _*) &~ leftNameBindings
 
-          val errors = unusedParamBindings map {
-            case (id, _) => Error(b, UnusedFormalBinding(id))
+          val errors = unusedParamBindings map { case (id, _) =>
+            Error(b, UnusedFormalBinding(id))
           }
 
           (
@@ -100,8 +100,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
           b.vars.toSeq zip (Stream continually (SolveBinding(
             b): VarBinding)): _*) &~ childVars
 
-        val errors = unusedBindings map {
-          case (id, _) => Error(b, UnusedTicVariable(id))
+        val errors = unusedBindings map { case (id, _) =>
+          Error(b, UnusedTicVariable(id))
         }
 
         (
@@ -171,8 +171,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
                 Expr,
                 Set[(Identifier, NameBinding)],
                 Set[(TicId, VarBinding)],
-                Set[Error]))] = props map {
-          case (key, value) => (key, performShake(value))
+                Set[Error]))] = props map { case (key, value) =>
+          (key, performShake(value))
         }
 
         val props2 = mapped map { case (key, (value, _, _, _)) => (key, value) }

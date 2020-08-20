@@ -52,8 +52,8 @@ object HttpDtab {
       case Throw(e: IllegalArgumentException) => Throw(decodingFailure(b64path))
       case Throw(e)                           => Throw(e)
       case Return(pathStr) =>
-        Try(Path.read(pathStr)).rescue {
-          case iae: IllegalArgumentException => Throw(pathFailure(pathStr, iae))
+        Try(Path.read(pathStr)).rescue { case iae: IllegalArgumentException =>
+          Throw(pathFailure(pathStr, iae))
         }
     }
 

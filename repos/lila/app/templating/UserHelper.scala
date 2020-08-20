@@ -105,8 +105,8 @@ trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
     PerfType(perfKey) map { showPerfRating(u, _) }
 
   def showBestPerf(u: User)(implicit ctx: Context): Option[Html] =
-    u.perfs.bestPerf map {
-      case (pt, perf) => showPerfRating(pt, perf, klass = "hint--bottom")
+    u.perfs.bestPerf map { case (pt, perf) =>
+      showPerfRating(pt, perf, klass = "hint--bottom")
     }
 
   def showRatingDiff(diff: Int) =
@@ -307,8 +307,8 @@ trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
     withPerfRating match {
       case Some(perfType) => renderRating(user.perfs(perfType))
       case _ if withBestRating =>
-        user.perfs.bestPerf ?? {
-          case (_, perf) => renderRating(perf)
+        user.perfs.bestPerf ?? { case (_, perf) =>
+          renderRating(perf)
         }
       case _ => ""
     }
@@ -354,8 +354,8 @@ trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
     val nbGames = user.count.game
     val createdAt =
       org.joda.time.format.DateTimeFormat forStyle "M-" print user.createdAt
-    val currentRating = user.perfs.bestPerf ?? {
-      case (pt, perf) => s" Current ${pt.name} rating: ${perf.intRating}."
+    val currentRating = user.perfs.bestPerf ?? { case (pt, perf) =>
+      s" Current ${pt.name} rating: ${perf.intRating}."
     }
     s"$name played $nbGames games since $createdAt.$currentRating"
   }

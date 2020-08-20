@@ -68,8 +68,8 @@ trait HeadActionSpec
 
     def serverWithAction[T](action: EssentialAction)(
         block: WSClient => T): T = {
-      Server.withRouter() {
-        case _ => action
+      Server.withRouter() { case _ =>
+        action
       } { implicit port =>
         implicit val mat = Play.current.materializer
         WsTestClient.withClient(block)

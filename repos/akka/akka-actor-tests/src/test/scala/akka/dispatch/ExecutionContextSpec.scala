@@ -163,8 +163,8 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
         }
       }))
       val b = TestActorRef(Props(new Actor {
-        def receive = {
-          case msg ⇒ a forward msg
+        def receive = { case msg ⇒
+          a forward msg
         }
       }))
       val p = TestProbe()

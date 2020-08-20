@@ -160,8 +160,8 @@ class RecordMacros(val c: whitebox.Context) {
             s"$elem has the wrong shape for a record field")
       }
 
-    rec.foldRight(hnilValueTree) {
-      case (elem, acc) => q""" $hconsValueTree(${promoteElem(elem)}, $acc) """
+    rec.foldRight(hnilValueTree) { case (elem, acc) =>
+      q""" $hconsValueTree(${promoteElem(elem)}, $acc) """
     }
   }
 }

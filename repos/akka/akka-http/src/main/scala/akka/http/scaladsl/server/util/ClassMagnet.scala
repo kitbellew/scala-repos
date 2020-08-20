@@ -27,8 +27,8 @@ object ClassMagnet {
     new ClassMagnet[T] {
       val classTag: ClassTag[T] = tag
       val runtimeClass: Class[T] = tag.runtimeClass.asInstanceOf[Class[T]]
-      val extractPF: PartialFunction[Any, T] = {
-        case x: T ⇒ x
+      val extractPF: PartialFunction[Any, T] = { case x: T ⇒
+        x
       }
     }
 }

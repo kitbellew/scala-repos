@@ -77,8 +77,8 @@ private[netty4] class ChannelTransport[In, Out](ch: Channel)
             p.setException(ChannelException(f.cause, remoteAddress))
       })
 
-      p.setInterruptHandler {
-        case _ => op.cancel(true /* mayInterruptIfRunning */ )
+      p.setInterruptHandler { case _ =>
+        op.cancel(true /* mayInterruptIfRunning */ )
       }
       p
     }

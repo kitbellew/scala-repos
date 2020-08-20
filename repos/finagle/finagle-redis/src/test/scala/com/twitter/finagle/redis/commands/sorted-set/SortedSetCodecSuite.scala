@@ -170,11 +170,11 @@ final class SortedSetCodecSuite extends RedisRequestTest {
       f: (Seq[ChannelBuffer], Option[Weights], Option[Aggregate]) => Unit
   ): PartialFunction[Command, Unit] =
     cmd match {
-      case "ZINTERSTORE" => {
-        case ZInterStore(k, n, keys, w, a) => f(keys, w, a)
+      case "ZINTERSTORE" => { case ZInterStore(k, n, keys, w, a) =>
+        f(keys, w, a)
       }
-      case "ZUNIONSTORE" => {
-        case ZUnionStore(k, n, keys, w, a) => f(keys, w, a)
+      case "ZUNIONSTORE" => { case ZUnionStore(k, n, keys, w, a) =>
+        f(keys, w, a)
       }
       case _ => throw new Exception("Unhandled type")
     }
@@ -277,11 +277,11 @@ final class SortedSetCodecSuite extends RedisRequestTest {
       scored: Option[CommandArgument]
   ): PartialFunction[Command, Unit] = {
     cmd match {
-      case "ZRANGE" => {
-        case ZRange(k, start, stop, scored) => ()
+      case "ZRANGE" => { case ZRange(k, start, stop, scored) =>
+        ()
       }
-      case "ZREVRANGE" => {
-        case ZRevRange(k, start, stop, scored) => ()
+      case "ZREVRANGE" => { case ZRevRange(k, start, stop, scored) =>
+        ()
       }
     }
   }
@@ -361,11 +361,11 @@ final class SortedSetCodecSuite extends RedisRequestTest {
       f: (Option[CommandArgument], Option[Limit]) => Unit
   ): PartialFunction[Command, Unit] =
     cmd match {
-      case "ZRANGEBYSCORE" => {
-        case ZRangeByScore(k, min, max, s, l) => f(s, l)
+      case "ZRANGEBYSCORE" => { case ZRangeByScore(k, min, max, s, l) =>
+        f(s, l)
       }
-      case "ZREVRANGEBYSCORE" => {
-        case ZRevRangeByScore(k, min, max, s, l) => f(s, l)
+      case "ZREVRANGEBYSCORE" => { case ZRevRangeByScore(k, min, max, s, l) =>
+        f(s, l)
       }
     }
 
@@ -468,11 +468,11 @@ final class SortedSetCodecSuite extends RedisRequestTest {
   def verifyRank(cmd: String, k: String)(
       f: ChannelBuffer => Unit): PartialFunction[Command, Unit] =
     cmd match {
-      case "ZRANK" => {
-        case ZRank(k, m) => f(m)
+      case "ZRANK" => { case ZRank(k, m) =>
+        f(m)
       }
-      case "ZREVRANK" => {
-        case ZRevRank(k, m) => f(m)
+      case "ZREVRANK" => { case ZRevRank(k, m) =>
+        f(m)
       }
     }
 

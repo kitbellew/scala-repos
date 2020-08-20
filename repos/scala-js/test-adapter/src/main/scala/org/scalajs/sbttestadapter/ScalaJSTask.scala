@@ -46,8 +46,8 @@ final class ScalaJSTask private (
     // Prepare result handler
     val logBuffer = mutable.Buffer.empty[LogElement[_]]
 
-    val doneHandler: LoopHandler[List[TaskInfo]] = {
-      case ("ok", msg) => Some(fromJSON[List[TaskInfo]](readJSON(msg)))
+    val doneHandler: LoopHandler[List[TaskInfo]] = { case ("ok", msg) =>
+      Some(fromJSON[List[TaskInfo]](readJSON(msg)))
     }
 
     val handlerChain = (eventHandler(handler) orElse

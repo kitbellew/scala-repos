@@ -32,8 +32,8 @@ class RoundRobinSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
 
       val actor = system.actorOf(
         RoundRobinPool(5).props(routeeProps = Props(new Actor {
-          def receive = {
-            case "hello" ⇒ helloLatch.countDown()
+          def receive = { case "hello" ⇒
+            helloLatch.countDown()
           }
 
           override def postStop() {
@@ -92,8 +92,8 @@ class RoundRobinSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
 
       val actor = system.actorOf(
         RoundRobinPool(5).props(routeeProps = Props(new Actor {
-          def receive = {
-            case "hello" ⇒ helloLatch.countDown()
+          def receive = { case "hello" ⇒
+            helloLatch.countDown()
           }
 
           override def postStop() {

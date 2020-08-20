@@ -250,8 +250,8 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
           Array(3, 4, 5),
           Array(1, 1, 1)
         ) // tiger, cat, dog
-      ).zipWithIndex.map {
-        case (wordCounts, docId) => (docId.toLong, wordCounts)
+      ).zipWithIndex.map { case (wordCounts, docId) =>
+        (docId.toLong, wordCounts)
       }
     val corpus = sc.parallelize(docs, 2)
 
@@ -677,16 +677,16 @@ private[clustering] object LDASuite {
       Vectors.dense(0, 0, 0, 0, 0), // empty doc
       Vectors.dense(0, 3, 1, 9, 8),
       Vectors.dense(1, 1, 4, 2, 6)
-    ).zipWithIndex.map {
-      case (wordCounts, docId) => (docId.toLong, wordCounts)
+    ).zipWithIndex.map { case (wordCounts, docId) =>
+      (docId.toLong, wordCounts)
     }
   assert(
     tinyCorpus.forall(_._2.size == tinyVocabSize)
   ) // sanity check for test data
 
   def getNonEmptyDoc(corpus: Array[(Long, Vector)]): Array[(Long, Vector)] =
-    corpus.filter {
-      case (_, wc: Vector) => Vectors.norm(wc, p = 1.0) != 0.0
+    corpus.filter { case (_, wc: Vector) =>
+      Vectors.norm(wc, p = 1.0) != 0.0
     }
 
   def toyData: Array[(Long, Vector)] =
@@ -697,8 +697,8 @@ private[clustering] object LDASuite {
       Vectors.sparse(6, Array(3, 4), Array(1, 1)),
       Vectors.sparse(6, Array(3, 5), Array(1, 1)),
       Vectors.sparse(6, Array(4, 5), Array(1, 1))
-    ).zipWithIndex.map {
-      case (wordCounts, docId) => (docId.toLong, wordCounts)
+    ).zipWithIndex.map { case (wordCounts, docId) =>
+      (docId.toLong, wordCounts)
     }
 
   /** Used in the Java Test Suite */

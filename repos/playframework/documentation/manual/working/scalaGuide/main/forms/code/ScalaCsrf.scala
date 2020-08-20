@@ -61,8 +61,8 @@ object ScalaCsrf extends PlaySpecification {
       })
       val result =
         addAndGetToken(FakeRequest().withSession("csrfToken" -> originalToken))
-      contentAsString(result) must be like {
-        case t => Crypto.compareSignedTokens(originalToken, t) must_== true
+      contentAsString(result) must be like { case t =>
+        Crypto.compareSignedTokens(originalToken, t) must_== true
       }
     }
 

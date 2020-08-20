@@ -348,8 +348,8 @@ object TypeCheckToMatchUtil {
         case _ => Nil
       }
     } else {
-      separateConditions(condition).collect {
-        case IsInstanceOfCall(call) => call
+      separateConditions(condition).collect { case IsInstanceOfCall(call) =>
+        call
       }
     }
   }

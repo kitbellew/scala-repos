@@ -394,8 +394,8 @@ histogram
       Thread.sleep(10000)
 
       val result = executor.execute("apiKey", "load(//test/null)")
-      result must beLike {
-        case Success(JArray(vals)) => vals.size must_== 2
+      result must beLike { case Success(JArray(vals)) =>
+        vals.size must_== 2
       }
     }.pendingUntilFixed
     "handle mixed type scenario" in {
@@ -483,8 +483,8 @@ histogram
       Thread.sleep(10000)
 
       val result = executor.execute("apiKey", "load(//test/mixed)")
-      result must beLike {
-        case Success(JArray(vals)) => vals.size must_== 2
+      result must beLike { case Success(JArray(vals)) =>
+        vals.size must_== 2
       }
     }.pendingUntilFixed
 

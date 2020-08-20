@@ -21,8 +21,8 @@ trait $operator {
   def $inc[A: Writes](pairs: (String, A)*) =
     Json.obj("$inc" -> Json.obj(wrap(pairs): _*))
   def $incBson(pairs: (String, Int)*) =
-    BSONDocument("$inc" -> BSONDocument(pairs map {
-      case (k, v) => k -> BSONInteger(v)
+    BSONDocument("$inc" -> BSONDocument(pairs map { case (k, v) =>
+      k -> BSONInteger(v)
     }))
   def $push[A: Writes](field: String, value: A) =
     Json.obj("$push" -> Json.obj(field -> value))
@@ -59,7 +59,7 @@ trait $operator {
 
   private def wrap[K, V: Writes](
       pairs: Seq[(K, V)]): Seq[(K, Json.JsValueWrapper)] =
-    pairs map {
-      case (k, v) => k -> Json.toJsFieldJsValueWrapper(v)
+    pairs map { case (k, v) =>
+      k -> Json.toJsFieldJsValueWrapper(v)
     }
 }

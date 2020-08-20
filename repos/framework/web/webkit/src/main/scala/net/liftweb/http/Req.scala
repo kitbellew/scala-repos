@@ -472,8 +472,8 @@ object Req {
     val rewritten = processRewrite(tmpPath, Map.empty)
 
     val localParams: Map[String, List[String]] = Map(
-      rewritten.params.toList.map {
-        case (name, value) => name -> List(value)
+      rewritten.params.toList.map { case (name, value) =>
+        name -> List(value)
       }: _*)
 
     // val session = request.getSession

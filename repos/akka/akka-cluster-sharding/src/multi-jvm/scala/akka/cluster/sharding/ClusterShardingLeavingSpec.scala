@@ -30,8 +30,8 @@ object ClusterShardingLeavingSpec {
   case class Ping(id: String)
 
   class Entity extends Actor {
-    def receive = {
-      case Ping(_) ⇒ sender() ! self
+    def receive = { case Ping(_) ⇒
+      sender() ! self
     }
   }
 
@@ -46,12 +46,12 @@ object ClusterShardingLeavingSpec {
     }
   }
 
-  val extractEntityId: ShardRegion.ExtractEntityId = {
-    case m @ Ping(id) ⇒ (id, m)
+  val extractEntityId: ShardRegion.ExtractEntityId = { case m @ Ping(id) ⇒
+    (id, m)
   }
 
-  val extractShardId: ShardRegion.ExtractShardId = {
-    case Ping(id: String) ⇒ id.charAt(0).toString
+  val extractShardId: ShardRegion.ExtractShardId = { case Ping(id: String) ⇒
+    id.charAt(0).toString
   }
 }
 

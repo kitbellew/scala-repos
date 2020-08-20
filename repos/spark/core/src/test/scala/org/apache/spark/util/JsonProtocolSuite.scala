@@ -295,8 +295,8 @@ class JsonProtocolSuite extends SparkFunSuite {
       hasOutput = false)
     assert(metrics.inputMetrics.nonEmpty)
     val newJson = JsonProtocol.taskMetricsToJson(metrics)
-    val oldJson = newJson.removeField {
-      case (field, _) => field == "Input Metrics"
+    val oldJson = newJson.removeField { case (field, _) =>
+      field == "Input Metrics"
     }
     val newMetrics = JsonProtocol.taskMetricsFromJson(oldJson)
     assert(newMetrics.inputMetrics.isEmpty)
@@ -361,8 +361,8 @@ class JsonProtocolSuite extends SparkFunSuite {
       hasOutput = true)
     assert(metrics.outputMetrics.nonEmpty)
     val newJson = JsonProtocol.taskMetricsToJson(metrics)
-    val oldJson = newJson.removeField {
-      case (field, _) => field == "Output Metrics"
+    val oldJson = newJson.removeField { case (field, _) =>
+      field == "Output Metrics"
     }
     val newMetrics = JsonProtocol.taskMetricsFromJson(oldJson)
     assert(newMetrics.outputMetrics.isEmpty)
@@ -436,8 +436,8 @@ class JsonProtocolSuite extends SparkFunSuite {
       hasRecords = false)
     assert(metrics.shuffleReadMetrics.nonEmpty)
     val newJson = JsonProtocol.taskMetricsToJson(metrics)
-    val oldJson = newJson.removeField {
-      case (field, _) => field == "Local Bytes Read"
+    val oldJson = newJson.removeField { case (field, _) =>
+      field == "Local Bytes Read"
     }
     val newMetrics = JsonProtocol.taskMetricsFromJson(oldJson)
     assert(newMetrics.shuffleReadMetrics.get.localBytesRead == 0)

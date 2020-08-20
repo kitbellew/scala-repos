@@ -57,8 +57,8 @@ object CombParserHelpersSpec extends Specification with ScalaCheck {
       import StringWithWhiteGen._
       val whiteSpaceParse =
         (s: String) =>
-          whiteSpace(s) must beLike {
-            case Success(x, y) => x.toString must_== "()"
+          whiteSpace(s) must beLike { case Success(x, y) =>
+            x.toString must_== "()"
           }
       forAll(whiteSpaceParse)
     }

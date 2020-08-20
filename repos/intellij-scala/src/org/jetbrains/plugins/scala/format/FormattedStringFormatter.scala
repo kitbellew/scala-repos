@@ -30,8 +30,8 @@ object FormattedStringFormatter extends StringFormatter {
     }
     val (strings, arguments) = bindings.unzip
     val formatString = strings.mkString
-    val argumentString = arguments.collect {
-      case Some(it) => it
+    val argumentString = arguments.collect { case Some(it) =>
+      it
     }
     format(formatString, argumentString.mkString(", "))
   }

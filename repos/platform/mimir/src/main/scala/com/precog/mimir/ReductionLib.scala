@@ -439,13 +439,13 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         }
 
       def perform(res: Result): Option[BigDecimal] =
-        res map {
-          case (sum, count) => sum / count
+        res map { case (sum, count) =>
+          sum / count
         }
 
       def extract(res: Result): Table =
-        perform(res) map {
-          case v => Table.constDecimal(Set(v))
+        perform(res) map { case v =>
+          Table.constDecimal(Set(v))
         } getOrElse Table.empty
 
       def extractValue(res: Result) = perform(res) map { CNum(_) }
@@ -506,8 +506,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         }
 
       private def perform(res: Result) =
-        res map {
-          case (prod, count) => math.pow(prod.toDouble, 1 / count.toDouble)
+        res map { case (prod, count) =>
+          math.pow(prod.toDouble, 1 / count.toDouble)
         } filter (StdLib.doubleIsDefined)
 
       def extract(res: Result): Table =

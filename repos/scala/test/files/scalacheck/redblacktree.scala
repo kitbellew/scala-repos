@@ -175,8 +175,8 @@ package scala.collection.immutable.redblacktree {
     override def modify(
         tree: Tree[String, Int],
         parm: ModifyParm): Tree[String, Int] =
-      nodeAt(tree, parm) map {
-        case (key, _) => update(tree, key, newValue, true)
+      nodeAt(tree, parm) map { case (key, _) =>
+        update(tree, key, newValue, true)
       } getOrElse tree
 
     property("update modifies values") = forAll(genInput) {
@@ -197,8 +197,8 @@ package scala.collection.immutable.redblacktree {
     override def modify(
         tree: Tree[String, Int],
         parm: ModifyParm): Tree[String, Int] =
-      nodeAt(tree, parm) map {
-        case (key, _) => delete(tree, key)
+      nodeAt(tree, parm) map { case (key, _) =>
+        delete(tree, key)
       } getOrElse tree
 
     property("delete removes elements") = forAll(genInput) {

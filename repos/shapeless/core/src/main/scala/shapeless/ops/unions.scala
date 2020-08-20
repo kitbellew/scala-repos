@@ -219,8 +219,8 @@ object union {
           c match {
             case Inl(h) => Map(keyLub.left(wk.value) -> valueLub.left(h: HV))
             case Inr(t) =>
-              tailToMap(t).map {
-                case (k, v) => keyLub.right(k) -> valueLub.right(v)
+              tailToMap(t).map { case (k, v) =>
+                keyLub.right(k) -> valueLub.right(v)
               }
           }
       }

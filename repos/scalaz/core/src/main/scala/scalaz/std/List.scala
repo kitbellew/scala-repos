@@ -274,8 +274,8 @@ trait ListFunctions {
     as match {
       case Nil => F.point(Nil: List[A], Nil: List[A])
       case h :: t =>
-        F.ap(partitionM(t)(p))(F.map(p(h))(b => {
-          case (x, y) => if (b) (h :: x, y) else (x, h :: y)
+        F.ap(partitionM(t)(p))(F.map(p(h))(b => { case (x, y) =>
+          if (b) (h :: x, y) else (x, h :: y)
         }))
     }
 

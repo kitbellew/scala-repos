@@ -27,8 +27,8 @@ trait Zip[F[_]] { self =>
 
   def zipWith[A, B, C](fa: => F[A], fb: => F[B])(f: (A, B) => C)(implicit
       F: Functor[F]): F[C] =
-    F.map(zip(fa, fb)) {
-      case (a, b) => f(a, b)
+    F.map(zip(fa, fb)) { case (a, b) =>
+      f(a, b)
     }
 
   def apzip[A, B](f: => F[A] => F[B], a: => F[A]): F[(A, B)] =

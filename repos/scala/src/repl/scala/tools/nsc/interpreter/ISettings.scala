@@ -47,8 +47,8 @@ class ISettings(intp: IMain) {
     )
 
   private def allSettingsString =
-    allSettings.toList sortBy (_._1) map {
-      case (k, v) => "  " + k + " = " + v + "\n"
+    allSettings.toList sortBy (_._1) map { case (k, v) =>
+      "  " + k + " = " + v + "\n"
     } mkString
 
   override def toString = """

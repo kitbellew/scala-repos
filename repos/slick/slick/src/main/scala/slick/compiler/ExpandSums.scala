@@ -184,8 +184,8 @@ class ExpandSums extends Phase {
             defs.toSeq.flatMap { case (s, t) => find(t, s :: path) }(
               collection.breakOut)
           case p: ProductType =>
-            p.elements.iterator.zipWithIndex.flatMap {
-              case (t, i) => find(t, ElementSymbol(i + 1) :: path)
+            p.elements.iterator.zipWithIndex.flatMap { case (t, i) =>
+              find(t, ElementSymbol(i + 1) :: path)
             }.toVector
           case _: AtomicType => Vector(path)
           case _             => Vector.empty

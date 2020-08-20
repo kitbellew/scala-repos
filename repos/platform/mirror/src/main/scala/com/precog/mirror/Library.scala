@@ -82,8 +82,8 @@ trait LibraryModule extends Binder {
       val Namespace = Vector("std", "math")
 
       object sin extends Op1(Namespace, "sin") {
-        override def pf = {
-          case JNum(num) => JNum(scala.math.sin(num.toDouble))
+        override def pf = { case JNum(num) =>
+          JNum(scala.math.sin(num.toDouble))
         }
       }
 
@@ -109,8 +109,8 @@ trait LibraryModule extends Binder {
       object count extends Reduction(Namespace, "count") {
         val zero = Some(JNum(0))
 
-        override def prepare = {
-          case v => JNum(1)
+        override def prepare = { case v =>
+          JNum(1)
         }
 
         override def apply(left: JValue, right: JValue) =

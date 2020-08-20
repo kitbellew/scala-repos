@@ -777,16 +777,16 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
     /** Same as above, for a single argument */
     def unnest(arg: Tree)(makeStat: (Tree, Env) => js.Tree)(implicit
         env: Env): js.Tree = {
-      unnest(List(arg)) {
-        case (List(newArg), env) => makeStat(newArg, env)
+      unnest(List(arg)) { case (List(newArg), env) =>
+        makeStat(newArg, env)
       }
     }
 
     /** Same as above, for two arguments */
     def unnest(lhs: Tree, rhs: Tree)(makeStat: (Tree, Tree, Env) => js.Tree)(
         implicit env: Env): js.Tree = {
-      unnest(List(lhs, rhs)) {
-        case (List(newLhs, newRhs), env) => makeStat(newLhs, newRhs, env)
+      unnest(List(lhs, rhs)) { case (List(newLhs, newRhs), env) =>
+        makeStat(newLhs, newRhs, env)
       }
     }
 

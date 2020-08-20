@@ -138,8 +138,8 @@ class JavaWriter(classfile: Classfile, writer: Writer)
       print("def " + NameTransformer.decode(getName(name)))
       print(getType(tpe) + ";").newline
     }
-    attribs find {
-      case cf.Attribute(name, _) => getName(name) == "Exceptions"
+    attribs find { case cf.Attribute(name, _) =>
+      getName(name) == "Exceptions"
     } match {
       case Some(cf.Attribute(_, data)) =>
         val n = ((data(0) & 0xff) << 8) + (data(1) & 0xff)
@@ -172,8 +172,8 @@ class JavaWriter(classfile: Classfile, writer: Writer)
     if (pck.length() > 0)
       println("package " + pck + ";")
     print(flagsToStr(true, cf.flags))
-    cf.attribs find {
-      case cf.Attribute(name, _) => getName(name) == "JacoMeta"
+    cf.attribs find { case cf.Attribute(name, _) =>
+      getName(name) == "JacoMeta"
     } match {
       case None =>
         printClassHeader;

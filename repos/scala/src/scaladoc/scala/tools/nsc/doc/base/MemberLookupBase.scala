@@ -63,8 +63,8 @@ trait MemberLookupBase {
 
     val syms = (fromRoot +: fromParents) find (!_.isEmpty) getOrElse Nil
 
-    val links = syms flatMap {
-      case (sym, site) => internalLink(sym, site)
+    val links = syms flatMap { case (sym, site) =>
+      internalLink(sym, site)
     } match {
       case Nil =>
         // (3) Look at external links

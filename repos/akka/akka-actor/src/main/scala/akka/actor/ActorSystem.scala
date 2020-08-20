@@ -922,8 +922,8 @@ private[akka] class ActorSystemImpl(
   private def loadExtensions() {
     immutableSeq(settings.config.getStringList("akka.extensions")) foreach {
       fqcn ⇒
-        dynamicAccess.getObjectFor[AnyRef](fqcn) recoverWith {
-          case _ ⇒ dynamicAccess.createInstanceFor[AnyRef](fqcn, Nil)
+        dynamicAccess.getObjectFor[AnyRef](fqcn) recoverWith { case _ ⇒
+          dynamicAccess.createInstanceFor[AnyRef](fqcn, Nil)
         } match {
           case Success(p: ExtensionIdProvider) ⇒ registerExtension(p.lookup())
           case Success(p: ExtensionId[_]) ⇒ registerExtension(p)

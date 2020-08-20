@@ -992,8 +992,8 @@ trait StringLibSpecs[M[+_]]
 
       result must haveSize(8)
 
-      val ns = result.toList.collect {
-        case (_, SDecimal(n)) => n
+      val ns = result.toList.collect { case (_, SDecimal(n)) =>
+        n
       }
 
       ns must contain(
@@ -1019,8 +1019,8 @@ trait StringLibSpecs[M[+_]]
 
       result must haveSize(6)
 
-      val ss = result.toList.collect {
-        case (_, SString(s)) => s
+      val ss = result.toList.collect { case (_, SString(s)) =>
+        s
       }
 
       ss must contain(
@@ -1042,8 +1042,8 @@ trait StringLibSpecs[M[+_]]
       val resultE = testEval(input)
       resultE must haveSize(1)
 
-      val result = resultE.collect {
-        case (_, SString(s)) => s
+      val result = resultE.collect { case (_, SString(s)) =>
+        s
       }
 
       result must contain("3")
@@ -1093,8 +1093,8 @@ trait StringLibSpecs[M[+_]]
         Const(CString("foo{bar"))(line),
         Const(CString("{"))(line))(line)
 
-      testEval(input) collect {
-        case (_, SArray(vec)) => vec collect { case SString(str) => str }
+      testEval(input) collect { case (_, SArray(vec)) =>
+        vec collect { case SString(str) => str }
       } mustEqual Set(Vector("foo", "bar"))
     }
 

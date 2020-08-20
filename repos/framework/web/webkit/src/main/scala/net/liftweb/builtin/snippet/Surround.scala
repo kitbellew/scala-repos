@@ -27,8 +27,8 @@ import Helpers._
 
 object Surround extends DispatchSnippet {
 
-  def dispatch: DispatchIt = {
-    case _ => render _
+  def dispatch: DispatchIt = { case _ =>
+    render _
   }
 
   def render(kids: NodeSeq): NodeSeq =

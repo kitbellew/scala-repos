@@ -262,28 +262,28 @@ object LispCaseClasses extends Lisp {
       }))
     .extend(
       "-",
-      FUN({
-        case List(NUM(arg1), NUM(arg2)) => NUM(arg1 - arg2)
+      FUN({ case List(NUM(arg1), NUM(arg2)) =>
+        NUM(arg1 - arg2)
       }))
     .extend(
       "*",
-      FUN({
-        case List(NUM(arg1), NUM(arg2)) => NUM(arg1 * arg2)
+      FUN({ case List(NUM(arg1), NUM(arg2)) =>
+        NUM(arg1 * arg2)
       }))
     .extend(
       "/",
-      FUN({
-        case List(NUM(arg1), NUM(arg2)) => NUM(arg1 / arg2)
+      FUN({ case List(NUM(arg1), NUM(arg2)) =>
+        NUM(arg1 / arg2)
       }))
     .extend(
       "car",
-      FUN({
-        case List(CONS(x, xs)) => x
+      FUN({ case List(CONS(x, xs)) =>
+        x
       }))
     .extend(
       "cdr",
-      FUN({
-        case List(CONS(x, xs)) => xs
+      FUN({ case List(CONS(x, xs)) =>
+        xs
       }))
     .extend(
       "null?",
@@ -293,8 +293,8 @@ object LispCaseClasses extends Lisp {
       }))
     .extend(
       "cons",
-      FUN({
-        case List(x, y) => CONS(x, y)
+      FUN({ case List(x, y) =>
+        CONS(x, y)
       }));
 
   def evaluate(x: Data): Data = eval(normalize(x), globalEnv);
@@ -480,8 +480,8 @@ object LispAny extends Lisp {
   val globalEnv = EmptyEnvironment
     .extend(
       "=",
-      Lambda {
-        case List(arg1, arg2) => if (arg1 == arg2) 1 else 0
+      Lambda { case List(arg1, arg2) =>
+        if (arg1 == arg2) 1 else 0
       })
     .extend(
       "+",
@@ -491,34 +491,34 @@ object LispAny extends Lisp {
       })
     .extend(
       "-",
-      Lambda {
-        case List(arg1: Int, arg2: Int) => arg1 - arg2
+      Lambda { case List(arg1: Int, arg2: Int) =>
+        arg1 - arg2
       })
     .extend(
       "*",
-      Lambda {
-        case List(arg1: Int, arg2: Int) => arg1 * arg2
+      Lambda { case List(arg1: Int, arg2: Int) =>
+        arg1 * arg2
       })
     .extend(
       "/",
-      Lambda {
-        case List(arg1: Int, arg2: Int) => arg1 / arg2
+      Lambda { case List(arg1: Int, arg2: Int) =>
+        arg1 / arg2
       })
     .extend("nil", Nil)
     .extend(
       "cons",
-      Lambda {
-        case List(arg1, arg2) => arg1 :: asList(arg2)
+      Lambda { case List(arg1, arg2) =>
+        arg1 :: asList(arg2)
       })
     .extend(
       "car",
-      Lambda {
-        case List(x :: xs) => x
+      Lambda { case List(x :: xs) =>
+        x
       })
     .extend(
       "cdr",
-      Lambda {
-        case List(x :: xs) => xs
+      Lambda { case List(x :: xs) =>
+        xs
       })
     .extend(
       "null?",

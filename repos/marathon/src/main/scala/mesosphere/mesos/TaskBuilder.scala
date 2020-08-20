@@ -419,8 +419,8 @@ object TaskBuilder {
         "MARATHON_APP_RESOURCE_CPUS" -> Some(app.cpus.toString),
         "MARATHON_APP_RESOURCE_MEM" -> Some(app.mem.toString),
         "MARATHON_APP_RESOURCE_DISK" -> Some(app.disk.toString)
-      ).collect {
-        case (key, Some(value)) => key -> value
+      ).collect { case (key, Some(value)) =>
+        key -> value
       }.toMap ++ labelsToEnvVars(app.labels)
     }
   }
@@ -437,8 +437,8 @@ object TaskBuilder {
     }
 
     val names = Map("MARATHON_APP_LABELS" -> validLabels.keys.mkString(" "))
-    val values = validLabels.map {
-      case (key, value) => s"$labelEnvironmentKeyPrefix$key" -> value
+    val values = validLabels.map { case (key, value) =>
+      s"$labelEnvironmentKeyPrefix$key" -> value
     }
     names ++ values
   }

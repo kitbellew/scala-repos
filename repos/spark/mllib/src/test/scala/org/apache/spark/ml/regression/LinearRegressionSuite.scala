@@ -923,8 +923,8 @@ class LinearRegressionSuite
         .select("residuals")
         .collect()
         .zip(testSummary.residuals.select("residuals").collect())
-        .forall {
-          case (Row(r1: Double), Row(r2: Double)) => r1 ~== r2 relTol 1e-5
+        .forall { case (Row(r1: Double), Row(r2: Double)) =>
+          r1 ~== r2 relTol 1e-5
         }
     }
   }

@@ -15,8 +15,8 @@ trait BtreeSortedSetCommands { self: BaseClient =>
     * @return Number of fields deleted
     */
   def bRem(key: ChannelBuffer, fields: Seq[ChannelBuffer]): Future[JLong] =
-    doRequest(BRem(key, fields)) {
-      case IntegerReply(n) => Future.value(n)
+    doRequest(BRem(key, fields)) { case IntegerReply(n) =>
+      Future.value(n)
     }
 
   /**
@@ -41,8 +41,8 @@ trait BtreeSortedSetCommands { self: BaseClient =>
       key: ChannelBuffer,
       field: ChannelBuffer,
       value: ChannelBuffer): Future[JLong] =
-    doRequest(BAdd(key, field, value)) {
-      case IntegerReply(n) => Future.value(n)
+    doRequest(BAdd(key, field, value)) { case IntegerReply(n) =>
+      Future.value(n)
     }
 
   /**
@@ -52,8 +52,8 @@ trait BtreeSortedSetCommands { self: BaseClient =>
     * or 0 if key does not exist
     */
   def bCard(key: ChannelBuffer): Future[JLong] =
-    doRequest(BCard(key)) {
-      case IntegerReply(n) => Future.value(n)
+    doRequest(BCard(key)) { case IntegerReply(n) =>
+      Future.value(n)
     }
 
   /**

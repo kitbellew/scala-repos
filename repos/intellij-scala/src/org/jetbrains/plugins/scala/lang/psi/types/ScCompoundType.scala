@@ -94,8 +94,8 @@ case class ScCompoundType(
             s.hasRepeatedParam),
           rt)
       },
-      typesMap.map {
-        case (s: String, sign) => (s, sign.updateTypes(_.removeAbstracts))
+      typesMap.map { case (s: String, sign) =>
+        (s, sign.updateTypes(_.removeAbstracts))
       }
     )
 

@@ -526,8 +526,8 @@ private[sql] class CatalystQl(val conf: ParserConf = SimpleParserConf())
 
     joinConditionToken match {
       case Token("TOK_USING", columnList :: Nil) :: Nil =>
-        val colNames = columnList.children.collect {
-          case Token(name, Nil) => UnresolvedAttribute(name)
+        val colNames = columnList.children.collect { case Token(name, Nil) =>
+          UnresolvedAttribute(name)
         }
         (UsingJoin(joinType, colNames), None)
       /* Join expression specified using ON clause */
@@ -622,8 +622,8 @@ private[sql] class CatalystQl(val conf: ParserConf = SimpleParserConf())
         Some(Alias(nodeToExpr(e), cleanIdentifier(alias))())
 
       case Token("TOK_SELEXPR", e :: aliasChildren) =>
-        val aliasNames = aliasChildren.collect {
-          case Token(name, Nil) => cleanIdentifier(name)
+        val aliasNames = aliasChildren.collect { case Token(name, Nil) =>
+          cleanIdentifier(name)
         }
         Some(MultiAlias(nodeToExpr(e), aliasNames))
 
@@ -1076,8 +1076,8 @@ private[sql] class CatalystQl(val conf: ParserConf = SimpleParserConf())
         nodeToGenerator(other)
     }
 
-    val attributes = clauses.collect {
-      case Token(a, Nil) => UnresolvedAttribute(cleanIdentifier(a.toLowerCase))
+    val attributes = clauses.collect { case Token(a, Nil) =>
+      UnresolvedAttribute(cleanIdentifier(a.toLowerCase))
     }
 
     Generate(

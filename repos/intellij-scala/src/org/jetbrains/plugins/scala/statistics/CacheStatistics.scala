@@ -65,8 +65,8 @@ class CacheStatistics private (id: String, name: String) {
 
   def objectsToKeepTrackOfNormalReferences: mutable.Set[Any] = {
     import scala.collection.JavaConversions._
-    objectsToKeepTrackOf.collect {
-      case WeakReference(ref) => ref
+    objectsToKeepTrackOf.collect { case WeakReference(ref) =>
+      ref
     }
   }
 

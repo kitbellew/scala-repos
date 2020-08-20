@@ -99,8 +99,8 @@ object CacheNodeGroup {
           (host, port.toInt, weight.toInt, Some(key))
       }
 
-    newStaticGroup(hostSeq.map {
-      case (host, port, weight, key) => new CacheNode(host, port, weight, key)
+    newStaticGroup(hostSeq.map { case (host, port, weight, key) =>
+      new CacheNode(host, port, weight, key)
     }.toSet)
   }
 

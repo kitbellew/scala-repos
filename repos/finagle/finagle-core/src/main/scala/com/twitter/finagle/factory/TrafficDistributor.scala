@@ -90,8 +90,8 @@ private[finagle] object TrafficDistributor {
     private[this] val (balancers, drv): (
         IndexedSeq[ServiceFactory[Req, Rep]],
         Drv) = {
-      val tupled = classes.map {
-        case WeightClass(b, weight, size) => (b, weight * size)
+      val tupled = classes.map { case WeightClass(b, weight, size) =>
+        (b, weight * size)
       }
       val (bs, ws) = tupled.unzip
       (bs.toIndexedSeq, Drv.fromWeights(ws.toSeq))

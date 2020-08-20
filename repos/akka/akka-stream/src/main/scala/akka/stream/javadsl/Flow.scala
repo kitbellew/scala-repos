@@ -1097,8 +1097,8 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
       java.util.List[Out @uncheckedVariance],
       javadsl.Source[Out @uncheckedVariance, NotUsed]],
     Mat] =
-    new Flow(delegate.prefixAndTail(n).map {
-      case (taken, tail) ⇒ akka.japi.Pair(taken.asJava, tail.asJava)
+    new Flow(delegate.prefixAndTail(n).map { case (taken, tail) ⇒
+      akka.japi.Pair(taken.asJava, tail.asJava)
     })
 
   /**

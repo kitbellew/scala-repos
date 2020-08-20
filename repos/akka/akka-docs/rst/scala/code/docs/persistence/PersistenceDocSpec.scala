@@ -126,8 +126,8 @@ object PersistenceDocSpec {
           persist(MsgConfirmed(deliveryId))(updateState)
       }
 
-      override def receiveRecover: Receive = {
-        case evt: Evt => updateState(evt)
+      override def receiveRecover: Receive = { case evt: Evt =>
+        updateState(evt)
       }
 
       def updateState(evt: Evt): Unit =

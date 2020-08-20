@@ -52,8 +52,8 @@ object ShowPickled extends Names {
   }
 
   def makeEntryList(buf: PickleBuffer, index: Array[Int]) = {
-    val entries = buf.toIndexedSeq.zipWithIndex map {
-      case ((tag, data), num) => PickleBufferEntry(num, index(num), tag, data)
+    val entries = buf.toIndexedSeq.zipWithIndex map { case ((tag, data), num) =>
+      PickleBufferEntry(num, index(num), tag, data)
     }
 
     PickleBufferEntryList(entries)

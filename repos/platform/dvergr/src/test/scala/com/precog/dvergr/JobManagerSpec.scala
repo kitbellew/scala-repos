@@ -128,8 +128,8 @@ trait JobManagerSpec[M[+_]] extends Specification {
     "create jobs that aren't started" >> {
       val job =
         jobs.createJob(validAPIKey, "name", "job type", None, None).copoint
-      job must beLike {
-        case Job(_, _, "name", "job type", None, NotStarted) => ok
+      job must beLike { case Job(_, _, "name", "job type", None, NotStarted) =>
+        ok
       }
     }
 

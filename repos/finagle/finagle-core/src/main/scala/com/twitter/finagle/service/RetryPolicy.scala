@@ -72,8 +72,8 @@ abstract class RetryPolicy[-A]
       if (!pred(e))
         None
       else {
-        this(e).map {
-          case (backoff, p2) => (backoff, p2.filterEach(pred))
+        this(e).map { case (backoff, p2) =>
+          (backoff, p2.filterEach(pred))
         }
       }
     }
@@ -94,8 +94,8 @@ abstract class RetryPolicy[-A]
       if (triesRemaining <= 0)
         None
       else {
-        this(e).map {
-          case (backoff, p2) => (backoff, p2.limit(triesRemaining - 1))
+        this(e).map { case (backoff, p2) =>
+          (backoff, p2.limit(triesRemaining - 1))
         }
       }
     }

@@ -53,8 +53,8 @@ case class RecursiveSearch(key: String) extends PathNode {
           else Left(KeyPathNode(k) -> v)
         }
       case arr: JsArray =>
-        arr.value.toList.zipWithIndex.map {
-          case (js, j) => Left(IdxPathNode(j) -> js)
+        arr.value.toList.zipWithIndex.map { case (js, j) =>
+          Left(IdxPathNode(j) -> js)
         }
 
       case _ => List()
@@ -115,8 +115,8 @@ case class IdxPathNode(idx: Int) extends PathNode {
   def set(json: JsValue, transform: JsValue => JsValue): JsValue =
     json match {
       case arr: JsArray =>
-        JsArray(arr.value.zipWithIndex.map {
-          case (js, j) => if (j == idx) transform(js) else js
+        JsArray(arr.value.zipWithIndex.map { case (js, j) =>
+          if (j == idx) transform(js) else js
         })
       case _ => transform(json)
     }

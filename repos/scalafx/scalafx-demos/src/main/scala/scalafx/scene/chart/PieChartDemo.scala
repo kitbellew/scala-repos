@@ -42,8 +42,8 @@ object PieChartDemo extends JFXApp {
       root = new PieChart {
         title = "Pie Chart"
         clockwise = false
-        data = ObservableBuffer(dataPairs.map {
-          case (x, y) => PieChart.Data(x, y)
+        data = ObservableBuffer(dataPairs.map { case (x, y) =>
+          PieChart.Data(x, y)
         })
       }
     }

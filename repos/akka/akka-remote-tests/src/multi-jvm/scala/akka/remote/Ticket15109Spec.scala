@@ -36,8 +36,8 @@ object Ticket15109Spec extends MultiNodeConfig {
   testTransport(on = true)
 
   class Subject extends Actor {
-    def receive = {
-      case "ping" ⇒ sender() ! "pong"
+    def receive = { case "ping" ⇒
+      sender() ! "pong"
     }
   }
 

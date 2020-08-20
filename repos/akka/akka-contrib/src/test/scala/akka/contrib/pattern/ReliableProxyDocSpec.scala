@@ -17,8 +17,8 @@ object ReliableProxyDocSpec {
   class ProxyParent(targetPath: ActorPath) extends Actor {
     val proxy = context.actorOf(ReliableProxy.props(targetPath, 100.millis))
 
-    def receive = {
-      case "hello" ⇒ proxy ! "world!"
+    def receive = { case "hello" ⇒
+      proxy ! "world!"
     }
   }
   //#demo

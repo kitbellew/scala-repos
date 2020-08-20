@@ -147,8 +147,8 @@ sealed abstract class Tree[A] {
           f(rootLabel),
           NonEmptyList
             .nel(x, IList.fromFoldable(xs))
-            .traverse1(_.traverse1(f))) {
-          case (h, t) => Node(h, t.list.toStream)
+            .traverse1(_.traverse1(f))) { case (h, t) =>
+          Node(h, t.list.toStream)
         }
     }
   }

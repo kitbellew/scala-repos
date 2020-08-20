@@ -156,8 +156,8 @@ package scalaguide.http.scalaactionscomposition {
 
         def onlyHttps[A](action: Action[A]) =
           Action.async(action.parser) { request =>
-            request.headers.get("X-Forwarded-Proto").collect {
-              case "https" => action(request)
+            request.headers.get("X-Forwarded-Proto").collect { case "https" =>
+              action(request)
             } getOrElse {
               Future.successful(Forbidden("Only HTTPS requests allowed"))
             }

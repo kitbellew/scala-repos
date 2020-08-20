@@ -220,8 +220,8 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
       }
     }
 
-    candidates.toSeq.collect {
-      case isSuitable(sign) => new ScMethodMember(sign, isOverride = false)
+    candidates.toSeq.collect { case isSuitable(sign) =>
+      new ScMethodMember(sign, isOverride = false)
     }
   }
 

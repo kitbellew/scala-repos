@@ -207,8 +207,8 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
   def end: util.matching.Regex = """\s*""".r
 
   def comment: Parser[Comment] =
-    "#" ~> ".*".r ^^ {
-      case c => Comment(c)
+    "#" ~> ".*".r ^^ { case c =>
+      Comment(c)
     }
 
   def newLine: Parser[String] =
@@ -236,45 +236,45 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
 
   def multiString: Parser[String] = {
     "\"\"\"" ~ (several((parentheses | not("\"\"\"") ~> """.""".r))) ~ commit(
-      "\"\"\"") ^^ {
-      case p1 ~ charList ~ p2 => p1 + charList.mkString + p2
+      "\"\"\"") ^^ { case p1 ~ charList ~ p2 =>
+      p1 + charList.mkString + p2
     }
   }
 
   def httpVerb: Parser[HttpVerb] =
     namedError(
       "GET" | "POST" | "PUT" | "PATCH" | "HEAD" | "DELETE" | "OPTIONS",
-      "HTTP Verb expected") ^^ {
-      case v => HttpVerb(v)
+      "HTTP Verb expected") ^^ { case v =>
+      HttpVerb(v)
     }
 
   def singleComponentPathPart: Parser[DynamicPart] =
-    (":" ~> identifier) ^^ {
-      case name => DynamicPart(name, """[^/]+""", encode = true)
+    (":" ~> identifier) ^^ { case name =>
+      DynamicPart(name, """[^/]+""", encode = true)
     }
 
   def multipleComponentsPathPart: Parser[DynamicPart] =
-    ("*" ~> identifier) ^^ {
-      case name => DynamicPart(name, """.+""", encode = false)
+    ("*" ~> identifier) ^^ { case name =>
+      DynamicPart(name, """.+""", encode = false)
     }
 
   def regexComponentPathPart: Parser[DynamicPart] =
     "$" ~> identifier ~ ("<" ~> (not(">") ~> """[^\s]""".r +) <~ ">" ^^ {
       case c => c.mkString
-    }) ^^ {
-      case name ~ regex => DynamicPart(name, regex, encode = false)
+    }) ^^ { case name ~ regex =>
+      DynamicPart(name, regex, encode = false)
     }
 
   def staticPathPart: Parser[StaticPart] =
-    (not(":") ~> not("*") ~> not("$") ~> """[^\s]""".r +) ^^ {
-      case chars => StaticPart(chars.mkString)
+    (not(":") ~> not("*") ~> not("$") ~> """[^\s]""".r +) ^^ { case chars =>
+      StaticPart(chars.mkString)
     }
 
   def path: Parser[PathPattern] =
     "/" ~ ((positioned(singleComponentPathPart) | positioned(
       multipleComponentsPathPart) | positioned(
-      regexComponentPathPart) | staticPathPart) *) ^^ {
-      case _ ~ parts => PathPattern(parts)
+      regexComponentPathPart) | staticPathPart) *) ^^ { case _ ~ parts =>
+      PathPattern(parts)
     }
 
   def space(s: String): Parser[String] =
@@ -283,11 +283,11 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
   def parameterType: Parser[String] = ":" ~> ignoreWhiteSpace ~> simpleType
 
   def simpleType: Parser[String] = {
-    ((stableId <~ ignoreWhiteSpace) ~ opt(typeArgs)) ^^ {
-      case sid ~ ta => sid.toString + ta.getOrElse("")
+    ((stableId <~ ignoreWhiteSpace) ~ opt(typeArgs)) ^^ { case sid ~ ta =>
+      sid.toString + ta.getOrElse("")
     } |
-      (space("(") ~ types ~ space(")")) ^^ {
-        case _ ~ b ~ _ => "(" + b + ")"
+      (space("(") ~ types ~ space(")")) ^^ { case _ ~ b ~ _ =>
+        "(" + b + ")"
       }
   }
 
@@ -295,8 +295,8 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
     (space("[") ~ types ~ space("]") ~ opt(typeArgs)) ^^ {
       case _ ~ ts ~ _ ~ ta => "[" + ts + "]" + ta.getOrElse("")
     } |
-      (space("#") ~ identifier ~ opt(typeArgs)) ^^ {
-        case _ ~ id ~ ta => "#" + id + ta.getOrElse("")
+      (space("#") ~ identifier ~ opt(typeArgs)) ^^ { case _ ~ id ~ ta =>
+        "#" + id + ta.getOrElse("")
       }
   }
 
@@ -312,13 +312,13 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
     }
 
   def parameterFixedValue: Parser[String] =
-    "=" ~ ignoreWhiteSpace ~ expression ^^ {
-      case a ~ _ ~ b => a + b
+    "=" ~ ignoreWhiteSpace ~ expression ^^ { case a ~ _ ~ b =>
+      a + b
     }
 
   def parameterDefaultValue: Parser[String] =
-    "?=" ~ ignoreWhiteSpace ~ expression ^^ {
-      case a ~ _ ~ b => a + b
+    "?=" ~ ignoreWhiteSpace ~ expression ^^ { case a ~ _ ~ b =>
+      a + b
     }
 
   def parameter: Parser[Parameter] =
@@ -360,14 +360,14 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
     }
 
   def router: Parser[String] =
-    rep1sep(identifier, ".") ^^ {
-      case parts => parts.mkString(".")
+    rep1sep(identifier, ".") ^^ { case parts =>
+      parts.mkString(".")
     }
 
   def route =
     httpVerb ~! separator ~ path ~ separator ~ positioned(
-      call) ~ ignoreWhiteSpace ^^ {
-      case v ~ _ ~ p ~ _ ~ c ~ _ => Route(v, p, c)
+      call) ~ ignoreWhiteSpace ^^ { case v ~ _ ~ p ~ _ ~ c ~ _ =>
+      Route(v, p, c)
     }
 
   def include =

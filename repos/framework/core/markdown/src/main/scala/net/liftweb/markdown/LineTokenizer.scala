@@ -208,8 +208,8 @@ class LineTokenizer() extends Parsers {
     */
   def innerTokens(
       lookup: Map[String, LinkDefinition]): Parser[MarkdownLineReader] =
-    phrase(lineToken *) ^^ {
-      case ts => new MarkdownLineReader(ts, lookup)
+    phrase(lineToken *) ^^ { case ts =>
+      new MarkdownLineReader(ts, lookup)
     }
 
   /** Parses first level line tokens, i.e. Markdown lines, XML chunks and link definitions.

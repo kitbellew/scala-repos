@@ -209,11 +209,11 @@ object SwaggerSerializers {
   class HttpMethodSerializer
       extends CustomSerializer[HttpMethod](implicit formats =>
         (
-          {
-            case JString(method) => HttpMethod(method)
+          { case JString(method) =>
+            HttpMethod(method)
           },
-          {
-            case method: HttpMethod => JString(method.toString)
+          { case method: HttpMethod =>
+            JString(method.toString)
           }))
 
   def writeDataType(dataType: DataType, key: String = "type")(implicit

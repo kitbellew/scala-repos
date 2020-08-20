@@ -24,8 +24,8 @@ trait HyperLogLogs { self: BaseClient =>
   def pfAdd(
       key: ChannelBuffer,
       elements: List[ChannelBuffer]): Future[JBoolean] =
-    doRequest(PFAdd(key, elements)) {
-      case IntegerReply(n) => Future.value(n == 1)
+    doRequest(PFAdd(key, elements)) { case IntegerReply(n) =>
+      Future.value(n == 1)
     }
 
   /**
@@ -35,8 +35,8 @@ trait HyperLogLogs { self: BaseClient =>
     * @see http://redis.io/commands/pfcount
     */
   def pfCount(keys: Seq[ChannelBuffer]): Future[JLong] =
-    doRequest(PFCount(keys)) {
-      case IntegerReply(n) => Future.value(n)
+    doRequest(PFCount(keys)) { case IntegerReply(n) =>
+      Future.value(n)
     }
 
   /**
@@ -48,8 +48,8 @@ trait HyperLogLogs { self: BaseClient =>
   def pfMerge(
       destKey: ChannelBuffer,
       srcKeys: Seq[ChannelBuffer]): Future[Unit] =
-    doRequest(PFMerge(destKey, srcKeys)) {
-      case StatusReply(_) => Future.Unit
+    doRequest(PFMerge(destKey, srcKeys)) { case StatusReply(_) =>
+      Future.Unit
     }
 
 }

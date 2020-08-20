@@ -179,8 +179,8 @@ abstract class ProductNodeShape[Level <: ShapeLevel, C, M <: C, U <: C, P <: C]
     shapes.iterator.zipWithIndex.map(t => getElement(value, t._2))
 
   def pack(value: Mixed) = {
-    val elems = shapes.iterator.zip(getIterator(value)).map {
-      case (p, f) => p.pack(f.asInstanceOf[p.Mixed])
+    val elems = shapes.iterator.zip(getIterator(value)).map { case (p, f) =>
+      p.pack(f.asInstanceOf[p.Mixed])
     }
     buildValue(elems.toIndexedSeq).asInstanceOf[Packed]
   }
@@ -210,8 +210,8 @@ abstract class ProductNodeShape[Level <: ShapeLevel, C, M <: C, U <: C, P <: C]
       ConstArray.from(
         shapes.iterator
           .zip(getIterator(value))
-          .map {
-            case (p, f) => p.toNode(f.asInstanceOf[p.Mixed])
+          .map { case (p, f) =>
+            p.toNode(f.asInstanceOf[p.Mixed])
           }
           .toIterable))
 }
@@ -463,11 +463,11 @@ object ShapedValue {
         .mkString(", ") + ").mapTo[" + rTag.tpe + "]")
     val fpChildren = fields.map { case (_, t, n) => q"val $n = next[$t]" }
     val fpReadChildren = fields.map { case (_, _, n) => q"$n.read(r)" }
-    val fpSetChildren = fields.map {
-      case (fn, _, n) => q"$n.set(value.$fn, pp)"
+    val fpSetChildren = fields.map { case (fn, _, n) =>
+      q"$n.set(value.$fn, pp)"
     }
-    val fpUpdateChildren = fields.map {
-      case (fn, _, n) => q"$n.update(value.$fn, pr)"
+    val fpUpdateChildren = fields.map { case (fn, _, n) =>
+      q"$n.update(value.$fn, pr)"
     }
 
     q"""

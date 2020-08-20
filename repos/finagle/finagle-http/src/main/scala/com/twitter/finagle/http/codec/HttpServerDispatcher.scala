@@ -78,8 +78,8 @@ class HttpServerDispatcher(
         }
 
         val req = Request(reqIn, reader, addr)
-        service(req).handle {
-          case _ => Response(req.version, Status.InternalServerError)
+        service(req).handle { case _ =>
+          Response(req.version, Status.InternalServerError)
         }
 
       case invalid =>

@@ -154,8 +154,8 @@ class JDBCQueryExecutor(
           case _ =>
             Success(JNum(0))
         }
-      }.onFailure {
-        case t => logger.error("Failure during size", t)
+      }.onFailure { case t =>
+        logger.error("Failure during size", t)
       }
 
     def browse(
@@ -213,8 +213,8 @@ class JDBCQueryExecutor(
             Failure(
               "JDBC paths have the form /databaseName/tableName; longer paths are not supported.")
         }
-      }.onFailure {
-        case t => logger.error("Failure during size", t)
+      }.onFailure { case t =>
+        logger.error("Failure during size", t)
       }
     }
 

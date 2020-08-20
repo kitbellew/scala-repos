@@ -28,8 +28,8 @@ private[opening] final class Selector(
       case Some(user) =>
         api.attempt.playedIds(user, modulo) flatMap { ids =>
           tryRange(user, toleranceStep, ids)
-        } recoverWith {
-          case e: Exception => apply(none)
+        } recoverWith { case e: Exception =>
+          apply(none)
         }
     }).mon(_.opening.selector.time) >>- lila.mon.opening.selector.count()
 

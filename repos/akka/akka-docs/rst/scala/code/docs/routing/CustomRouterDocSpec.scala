@@ -58,8 +58,8 @@ akka.actor.deployment {
   //#routing-logic
 
   class Storage extends Actor {
-    def receive = {
-      case x => sender() ! x
+    def receive = { case x =>
+      sender() ! x
     }
   }
 

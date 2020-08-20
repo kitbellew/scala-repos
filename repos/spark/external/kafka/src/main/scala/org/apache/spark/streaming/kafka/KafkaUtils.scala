@@ -331,8 +331,8 @@ object KafkaUtils {
         leadersForRanges(kc, offsetRanges)
       } else {
         // This could be avoided by refactoring KafkaRDD.leaders and KafkaCluster to use Broker
-        leaders.map {
-          case (tp: TopicAndPartition, Broker(host, port)) => (tp, (host, port))
+        leaders.map { case (tp: TopicAndPartition, Broker(host, port)) =>
+          (tp, (host, port))
         }
       }
       val cleanedHandler = sc.clean(messageHandler)

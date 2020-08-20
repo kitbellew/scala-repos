@@ -26,8 +26,8 @@ import akka.cluster.routing.ClusterRouterPoolSettings
 object AdaptiveLoadBalancingRouterConfig extends MultiNodeConfig {
 
   class Echo extends Actor {
-    def receive = {
-      case _ ⇒ sender() ! Reply(Cluster(context.system).selfAddress)
+    def receive = { case _ ⇒
+      sender() ! Reply(Cluster(context.system).selfAddress)
     }
   }
 
@@ -141,10 +141,10 @@ abstract class AdaptiveLoadBalancingRouterSpec
 
   def receiveReplies(expectedReplies: Int): Map[Address, Int] = {
     val zero = Map.empty[Address, Int] ++ roles.map(address(_) -> 0)
-    (receiveWhile(5 seconds, messages = expectedReplies) {
-      case Reply(address) ⇒ address
-    }).foldLeft(zero) {
-      case (replyMap, address) ⇒ replyMap + (address -> (replyMap(address) + 1))
+    (receiveWhile(5 seconds, messages = expectedReplies) { case Reply(address) ⇒
+      address
+    }).foldLeft(zero) { case (replyMap, address) ⇒
+      replyMap + (address -> (replyMap(address) + 1))
     }
   }
 
@@ -172,8 +172,8 @@ abstract class AdaptiveLoadBalancingRouterSpec
     // it may take some time until router receives cluster member events
     awaitAssert { currentRoutees(router).size should ===(roles.size) }
     val routees = currentRoutees(router)
-    routees.map {
-      case ActorRefRoutee(ref) ⇒ fullAddress(ref)
+    routees.map { case ActorRefRoutee(ref) ⇒
+      fullAddress(ref)
     }.toSet should ===(roles.map(address).toSet)
     router
   }
@@ -254,8 +254,8 @@ abstract class AdaptiveLoadBalancingRouterSpec
         // it may take some time until router receives cluster member events
         awaitAssert { currentRoutees(router3).size should ===(9) }
         val routees = currentRoutees(router3)
-        routees.map {
-          case ActorRefRoutee(ref) ⇒ fullAddress(ref)
+        routees.map { case ActorRefRoutee(ref) ⇒
+          fullAddress(ref)
         }.toSet should ===(Set(address(node1)))
       }
       enterBarrier("after-4")
@@ -267,8 +267,8 @@ abstract class AdaptiveLoadBalancingRouterSpec
         // it may take some time until router receives cluster member events
         awaitAssert { currentRoutees(router4).size should ===(6) }
         val routees = currentRoutees(router4)
-        routees.map {
-          case ActorRefRoutee(ref) ⇒ fullAddress(ref)
+        routees.map { case ActorRefRoutee(ref) ⇒
+          fullAddress(ref)
         }.toSet should ===(Set(address(node1), address(node2), address(node3)))
       }
       enterBarrier("after-5")

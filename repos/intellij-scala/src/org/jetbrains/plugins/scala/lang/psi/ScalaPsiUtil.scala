@@ -121,17 +121,17 @@ object ScalaPsiUtil {
         .map(typeParamString)
         .mkString("[", ", ", "]")
     }
-    param.lowerTypeElement foreach {
-      case tp => paramText = paramText + " >: " + tp.getText
+    param.lowerTypeElement foreach { case tp =>
+      paramText = paramText + " >: " + tp.getText
     }
-    param.upperTypeElement foreach {
-      case tp => paramText = paramText + " <: " + tp.getText
+    param.upperTypeElement foreach { case tp =>
+      paramText = paramText + " <: " + tp.getText
     }
-    param.viewTypeElement foreach {
-      case tp => paramText = paramText + " <% " + tp.getText
+    param.viewTypeElement foreach { case tp =>
+      paramText = paramText + " <% " + tp.getText
     }
-    param.contextBoundTypeElement foreach {
-      case tp => paramText = paramText + " : " + tp.getText
+    param.contextBoundTypeElement foreach { case tp =>
+      paramText = paramText + " : " + tp.getText
     }
     paramText
   }
@@ -274,8 +274,8 @@ object ScalaPsiUtil {
               checkImplicits = true,
               isShape = false,
               None))
-            .map {
-              case (res, _) => res.getOrAny
+            .map { case (res, _) =>
+              res.getOrAny
             }
         val qual = "scala.Tuple" + exprTypes.length
         val tupleClass = ScalaPsiManager
@@ -1505,8 +1505,8 @@ object ScalaPsiUtil {
     TypeDefinitionMembers
       .getSignatures(clazz)
       .allFirstSeq()
-      .flatMap(_.filter {
-        case (_, n) => n.info.isInstanceOf[PhysicalSignature]
+      .flatMap(_.filter { case (_, n) =>
+        n.info.isInstanceOf[PhysicalSignature]
       })
       .map { case (_, n) => n.info.asInstanceOf[PhysicalSignature] }
 

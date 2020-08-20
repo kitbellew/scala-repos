@@ -124,8 +124,8 @@ object StreamLayout {
       val indent = " " * (level * 2)
       println(
         s"$indent${simpleName(this)}($shape): ${ins(inPorts)} ${outs(outPorts)}")
-      downstreams foreach {
-        case (o, i) ⇒ println(s"$indent    ${out(o)} -> ${in(i)}")
+      downstreams foreach { case (o, i) ⇒
+        println(s"$indent    ${out(o)} -> ${in(i)}")
       }
       problems foreach (p ⇒ println(s"$indent  -!- $p"))
     }

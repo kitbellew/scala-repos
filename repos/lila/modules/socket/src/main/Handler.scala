@@ -112,8 +112,8 @@ object Handler {
         .map(_ => socket ! Quit(uid))
     }
 
-    socket ? join map connecter map {
-      case (controller, enum, member) => iteratee(controller, member) -> enum
+    socket ? join map connecter map { case (controller, enum, member) =>
+      iteratee(controller, member) -> enum
     }
   }
 }

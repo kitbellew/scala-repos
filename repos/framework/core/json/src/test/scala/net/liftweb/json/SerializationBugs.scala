@@ -98,8 +98,8 @@ object SerializationBugs extends Specification {
     class SeqFormat extends Serializer[Seq[_]] {
       val SeqClass = classOf[Seq[_]]
 
-      def serialize(implicit format: Formats) = {
-        case seq: Seq[_] => JArray(seq.toList.map(Extraction.decompose))
+      def serialize(implicit format: Formats) = { case seq: Seq[_] =>
+        JArray(seq.toList.map(Extraction.decompose))
       }
 
       def deserialize(implicit format: Formats) = {

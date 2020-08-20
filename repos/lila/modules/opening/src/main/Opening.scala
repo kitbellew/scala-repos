@@ -20,8 +20,8 @@ case class Opening(
   lazy val goal = qualityMoves.count(_.quality == Quality.Good) min 4
 
   lazy val qualityMoves: List[QualityMove] = {
-    val bestCp = moves.foldLeft(Int.MaxValue) {
-      case (cp, move) => if (move.cp < cp) move.cp else cp
+    val bestCp = moves.foldLeft(Int.MaxValue) { case (cp, move) =>
+      if (move.cp < cp) move.cp else cp
     }
     moves.map { move =>
       QualityMove(move, Quality(move.cp - bestCp))

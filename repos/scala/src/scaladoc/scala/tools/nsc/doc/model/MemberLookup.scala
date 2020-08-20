@@ -28,8 +28,8 @@ trait MemberLookup extends base.MemberLookupBase {
     }
 
   override def chooseLink(links: List[LinkTo]): LinkTo = {
-    val mbrs = links.collect {
-      case lm @ LinkToMember(mbr: MemberEntity, _) => (mbr, lm)
+    val mbrs = links.collect { case lm @ LinkToMember(mbr: MemberEntity, _) =>
+      (mbr, lm)
     }
     if (mbrs.isEmpty)
       links.head

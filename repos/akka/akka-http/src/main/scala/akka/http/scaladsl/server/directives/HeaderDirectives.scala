@@ -78,8 +78,8 @@ trait HeaderDirectives {
     * with a [[akka.http.scaladsl.server.MalformedHeaderRejection]].
     */
   def optionalHeaderValue[T](f: HttpHeader ⇒ Option[T]): Directive1[Option[T]] =
-    headerValue(f).map(Some(_): Option[T]).recoverPF {
-      case Nil ⇒ provide(None)
+    headerValue(f).map(Some(_): Option[T]).recoverPF { case Nil ⇒
+      provide(None)
     }
   //#
 

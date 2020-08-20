@@ -70,8 +70,8 @@ private[http] object OutgoingConnectionBlueprint {
       val renderingContextCreation = b.add {
         Flow[HttpRequest] map { request ⇒
           val sendEntityTrigger =
-            request.headers collectFirst {
-              case headers.Expect.`100-continue` ⇒ Promise[NotUsed]().future
+            request.headers collectFirst { case headers.Expect.`100-continue` ⇒
+              Promise[NotUsed]().future
             }
           RequestRenderingContext(request, hostHeader, sendEntityTrigger)
         }
@@ -120,8 +120,8 @@ private[http] object OutgoingConnectionBlueprint {
 
       val terminationFanout = b.add(Broadcast[HttpResponse](2))
 
-      val logger = b.add(MapError[ByteString] {
-        case t ⇒ log.error(t, "Outgoing request stream error"); t
+      val logger = b.add(MapError[ByteString] { case t ⇒
+        log.error(t, "Outgoing request stream error"); t
       }.named("errorLogger"))
       val wrapTls = b.add(Flow[ByteString].map(SendBytes))
 

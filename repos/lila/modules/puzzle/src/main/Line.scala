@@ -52,8 +52,8 @@ object Line {
           }
       }
 
-    loop(lines collect {
-      case Node(move, _) => List(move)
+    loop(lines collect { case Node(move, _) =>
+      List(move)
     })
   }
 

@@ -80,12 +80,12 @@ class AkkaSupportServlet extends ScalatraServlet with FutureSupport {
   }
 
   override protected def contentTypeInferrer =
-    ({
-      case "jpeg" => "image/jpeg"
+    ({ case "jpeg" =>
+      "image/jpeg"
     }: ContentTypeInferrer) orElse super.contentTypeInferrer
 
-  error {
-    case e: FailException => "caught"
+  error { case e: FailException =>
+    "caught"
   }
 
   override def destroy() {

@@ -451,8 +451,8 @@ abstract class TreeGen {
         rhs = EmptyTree
       )
     }
-    val lvdefs = evdefs collect {
-      case vdef: ValDef => copyValDef(vdef)(mods = vdef.mods | PRESUPER)
+    val lvdefs = evdefs collect { case vdef: ValDef =>
+      copyValDef(vdef)(mods = vdef.mods | PRESUPER)
     }
 
     val constr = {

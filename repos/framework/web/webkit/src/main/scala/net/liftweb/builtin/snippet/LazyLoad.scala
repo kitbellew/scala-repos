@@ -36,8 +36,8 @@ import comet.AsyncRenderComet
   * on a different thread, which avoids blocking the page render.
   */
 object LazyLoad extends DispatchSnippet {
-  def dispatch: DispatchIt = {
-    case _ => render _
+  def dispatch: DispatchIt = { case _ =>
+    render _
   }
 
   /**

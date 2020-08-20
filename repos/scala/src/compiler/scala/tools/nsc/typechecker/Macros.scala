@@ -241,8 +241,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
           case wrapped                   => (wrapped, Nil)
         }
       val Apply(_, pickledPayload) = wrapped
-      val payload = pickledPayload.map {
-        case Assign(k, v) => (unpickleAtom(k), unpickleAtom(v))
+      val payload = pickledPayload.map { case Assign(k, v) =>
+        (unpickleAtom(k), unpickleAtom(v))
       }.toMap
 
       // TODO: refactor error handling: fail always throws a TypeError,

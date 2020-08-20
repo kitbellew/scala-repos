@@ -88,8 +88,8 @@ object RootIsolator {
       polys match {
         case TransformedPoly(p, a, b, c, d) :: rest =>
           if (p(BigInt(0)) == BigInt(0)) {
-            val p0 = p.mapTerms {
-              case Term(coeff, exp) => Term(coeff, exp - 1)
+            val p0 = p.mapTerms { case Term(coeff, exp) =>
+              Term(coeff, exp - 1)
             }
             rec(
               TransformedPoly(p0, a, b, c, d) :: rest,

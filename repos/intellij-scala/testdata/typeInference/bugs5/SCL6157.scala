@@ -3,8 +3,8 @@ import scala.util.parsing.combinator.RegexParsers
 object SCL6157 {
 
   object Grammar extends RegexParsers {
-    val Blah: Parser[(Int, String)] = "\\d+".r ~ ".+".r ^^ {
-      case a ~ b => (a.toInt, b)
+    val Blah: Parser[(Int, String)] = "\\d+".r ~ ".+".r ^^ { case a ~ b =>
+      (a.toInt, b)
     }
   }
 

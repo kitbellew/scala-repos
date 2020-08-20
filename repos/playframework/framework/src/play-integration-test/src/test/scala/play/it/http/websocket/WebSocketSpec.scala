@@ -69,13 +69,13 @@ trait WebSocketSpec
   }
 
   def pongFrame(matcher: Matcher[String]): Matcher[ExtendedMessage] =
-    beLike {
-      case SimpleMessage(PongMessage(data), _) => data.utf8String must matcher
+    beLike { case SimpleMessage(PongMessage(data), _) =>
+      data.utf8String must matcher
     }
 
   def textFrame(matcher: Matcher[String]): Matcher[ExtendedMessage] =
-    beLike {
-      case SimpleMessage(TextMessage(text), _) => text must matcher
+    beLike { case SimpleMessage(TextMessage(text), _) =>
+      text must matcher
     }
 
   def closeFrame(status: Int = 1000): Matcher[ExtendedMessage] =
@@ -92,8 +92,8 @@ trait WebSocketSpec
 
   def onFramesConsumed[A](onDone: List[A] => Unit): Sink[A, _] =
     consumeFrames[A].mapMaterializedValue { future =>
-      future.onSuccess {
-        case list => onDone(list)
+      future.onSuccess { case list =>
+        onDone(list)
       }
     }
 
@@ -579,8 +579,8 @@ trait WebSocketSpec
                   out ! msg
                 }
                 out ! Status.Success(())
-                def receive = {
-                  case msg: Message => ()
+                def receive = { case msg: Message =>
+                  ()
                 }
               })
             }

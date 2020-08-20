@@ -200,8 +200,8 @@ abstract class MappedBoolean[T <: Mapper[T]](val fieldOwner: T)
       doField(
         inst,
         accessor,
-        {
-          case tv: MappedBoolean[T] => tv.allSet(if (isNull) Empty else Full(v))
+        { case tv: MappedBoolean[T] =>
+          tv.allSet(if (isNull) Empty else Full(v))
         })
 
   /**

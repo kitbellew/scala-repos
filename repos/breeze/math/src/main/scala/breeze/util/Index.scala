@@ -379,13 +379,13 @@ final class CompositeIndex[U](indices: Index[_ <: U]*) extends Index[(Int, U)] {
   }
 
   def pairs =
-    indices.iterator.zipWithIndex.flatMap {
-      case (index, i) => index.iterator.map { t => (i, t: U) }
+    indices.iterator.zipWithIndex.flatMap { case (index, i) =>
+      index.iterator.map { t => (i, t: U) }
     }.zipWithIndex
 
   def iterator =
-    indices.iterator.zipWithIndex.flatMap {
-      case (index, i) => index.iterator.map { t => (i -> t) }
+    indices.iterator.zipWithIndex.flatMap { case (index, i) =>
+      index.iterator.map { t => (i -> t) }
     }
 
   override def size: Int = offsets(offsets.length - 1)

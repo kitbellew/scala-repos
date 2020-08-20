@@ -475,8 +475,8 @@ object Compatibility {
       val missed =
         for ((parameter: Parameter, b) <- parameters.zip(used)
           if !b && !parameter.isDefault) yield MissedValueParameter(parameter)
-      defaultParameterUsed = parameters.zip(used).exists {
-        case (param, bool) => !bool && param.isDefault
+      defaultParameterUsed = parameters.zip(used).exists { case (param, bool) =>
+        !bool && param.isDefault
       }
       if (missed.nonEmpty)
         return ConformanceExtResult(

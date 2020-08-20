@@ -78,8 +78,8 @@ private[remote] object Remoting {
 
     transportMapping.get(remote.protocol) match {
       case Some(transports) ⇒
-        val responsibleTransports = transports.filter {
-          case (t, _) ⇒ t.isResponsibleFor(remote)
+        val responsibleTransports = transports.filter { case (t, _) ⇒
+          t.isResponsibleFor(remote)
         }
 
         responsibleTransports.size match {
@@ -115,8 +115,8 @@ private[remote] object Remoting {
       extends Actor
       with RequiresMessageQueue[UnboundedMessageQueueSemantics] {
     override def supervisorStrategy =
-      OneForOneStrategy() {
-        case NonFatal(e) ⇒ Restart
+      OneForOneStrategy() { case NonFatal(e) ⇒
+        Restart
       }
 
     def receive = { case RegisterTransportActor(props, name) ⇒
@@ -219,8 +219,8 @@ private[remote] class Remoting(
               "No transport drivers were loaded.",
               null)
 
-          transportMapping = transports.groupBy {
-            case (transport, _) ⇒ transport.schemeIdentifier
+          transportMapping = transports.groupBy { case (transport, _) ⇒
+            transport.schemeIdentifier
           } map { case (k, v) ⇒ k -> v.toSet }
 
           defaultAddress = transports.head._2
@@ -645,8 +645,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
         case NonFatal(e) ⇒ ListensFailure(addressesPromise, e)
       } pipeTo self
     case ListensResult(addressesPromise, results) ⇒
-      transportMapping = results.groupBy {
-        case (_, transportAddress, _) ⇒ transportAddress
+      transportMapping = results.groupBy { case (_, transportAddress, _) ⇒
+        transportAddress
       } map {
         case (a, t) if t.size > 1 ⇒
           throw new RemoteTransportException(
@@ -809,8 +809,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
           shutdown: T ⇒ Future[Boolean]): Future[Boolean] = {
         (Future sequence resources.map(shutdown)) map {
           _.forall(identity)
-        } recover {
-          case NonFatal(_) ⇒ false
+        } recover { case NonFatal(_) ⇒
+          false
         }
       }
 
@@ -985,8 +985,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
 
     // Collect all transports, listen addresses and listener promises in one future
     Future.sequence(transports.map { transport ⇒
-      transport.listen map {
-        case (address, listenerPromise) ⇒ (transport, address, listenerPromise)
+      transport.listen map { case (address, listenerPromise) ⇒
+        (transport, address, listenerPromise)
       }
     })
   }

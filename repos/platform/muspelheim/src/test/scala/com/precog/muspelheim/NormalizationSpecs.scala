@@ -101,8 +101,8 @@ trait NormalizationSpecs extends EvalStackSpecs {
   }
 
   def makeObject(query: String): Map[String, SValue] = {
-    val result = evalE(query) collect {
-      case (_, SObject(values)) => values("model1")
+    val result = evalE(query) collect { case (_, SObject(values)) =>
+      values("model1")
     }
     val SObject(obj) = result.head
     obj
@@ -226,8 +226,8 @@ trait NormalizationSpecs extends EvalStackSpecs {
     result must haveSize(1)
 
     def makeObject(query: String): Map[String, SValue] = {
-      val result = evalE(query) collect {
-        case (_, SObject(values)) => values("model1")
+      val result = evalE(query) collect { case (_, SObject(values)) =>
+        values("model1")
       }
       val SObject(obj) = result.head
       obj

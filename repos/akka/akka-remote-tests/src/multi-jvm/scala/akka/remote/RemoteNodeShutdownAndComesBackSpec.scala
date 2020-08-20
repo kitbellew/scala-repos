@@ -111,8 +111,8 @@ abstract class RemoteNodeShutdownAndComesBackSpec
             system
               .actorSelection(RootActorPath(secondAddress) / "user" / "subject")
               .tell(Identify("subject"), p.ref)
-            p.expectMsgPF(1 second) {
-              case ActorIdentity("subject", Some(ref)) ⇒ true
+            p.expectMsgPF(1 second) { case ActorIdentity("subject", Some(ref)) ⇒
+              true
             }
           }
         }
@@ -130,8 +130,8 @@ abstract class RemoteNodeShutdownAndComesBackSpec
 
         subjectNew ! "shutdown"
         // we are waiting for a Terminated here, but it is ok if it does not arrive
-        receiveWhile(5.seconds) {
-          case _: ActorIdentity ⇒ true
+        receiveWhile(5.seconds) { case _: ActorIdentity ⇒
+          true
         }
       }
 

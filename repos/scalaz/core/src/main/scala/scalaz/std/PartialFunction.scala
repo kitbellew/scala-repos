@@ -5,8 +5,8 @@ trait PartialFunctionInstances {
   implicit val partialFunctionInstance = new Arrow[PartialFunction]
     with Category[PartialFunction]
     with Choice[PartialFunction] {
-    def arr[A, B](f: A => B) = {
-      case a => f(a)
+    def arr[A, B](f: A => B) = { case a =>
+      f(a)
     }
     def compose[A, B, C](f: PartialFunction[B, C], g: PartialFunction[A, B]) =
       new PartialFunction[A, C] {
@@ -14,8 +14,8 @@ trait PartialFunctionInstances {
         def isDefinedAt(a: A): Boolean = g.isDefinedAt(a) && f.isDefinedAt(g(a))
       }
 
-    def id[A] = {
-      case a => a
+    def id[A] = { case a =>
+      a
     }
 
     def choice[A, B, C](

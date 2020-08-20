@@ -80,8 +80,8 @@ final class SinatraRouteMatcher(pattern: String)
     def get: String = {
       if (!splats.isEmpty)
         throw new Exception("Too many splats for builder \"%s\"" format pattern)
-      val pairs = params map {
-        case (key, value) => key.urlEncode + "=" + value.urlEncode
+      val pairs = params map { case (key, value) =>
+        key.urlEncode + "=" + value.urlEncode
       }
       val queryString = if (pairs.isEmpty) "" else pairs.mkString("?", "&", "")
       path + queryString
@@ -105,8 +105,8 @@ final class SinatraRouteMatcher(pattern: String)
       "*" ^^^ { builder => builder addSplat }
 
     private def prefixedOptional: Parser[Builder => Builder] =
-      ("." | "/") ~ "?:" ~ """\w+""".r ~ "?" ^^ {
-        case p ~ "?:" ~ o ~ "?" => builder => builder addPrefixedOptional (o, p)
+      ("." | "/") ~ "?:" ~ """\w+""".r ~ "?" ^^ { case p ~ "?:" ~ o ~ "?" =>
+        builder => builder addPrefixedOptional (o, p)
       }
 
     private def optional: Parser[Builder => Builder] =
@@ -161,8 +161,8 @@ final class RailsRouteMatcher(pattern: String)
 
     // appends additional params as a query string
     def get: String = {
-      val pairs = params map {
-        case (key, value) => key.urlEncode + "=" + value.urlEncode
+      val pairs = params map { case (key, value) =>
+        key.urlEncode + "=" + value.urlEncode
       }
       val queryString = if (pairs.isEmpty) "" else pairs.mkString("?", "&", "")
       path + queryString

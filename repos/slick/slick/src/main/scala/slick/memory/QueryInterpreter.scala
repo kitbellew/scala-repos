@@ -72,8 +72,8 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
         b.result()
       case Join(_, _, left, RangeFrom(0), JoinType.Zip, LiteralNode(true)) =>
         val leftV = run(left).asInstanceOf[Coll]
-        leftV.zipWithIndex.map {
-          case (l, r) => new ProductValue(Vector(l, r.toLong))
+        leftV.zipWithIndex.map { case (l, r) =>
+          new ProductValue(Vector(l, r.toLong))
         }
       case Join(_, _, left, right, JoinType.Zip, LiteralNode(true)) =>
         val leftV = run(left).asInstanceOf[Coll]
@@ -271,8 +271,8 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
         Option(run(ch))
       case c: IfThenElse =>
         val opt = n.nodeType.asInstanceOf[ScalaType[_]].nullable
-        val take = c.ifThenClauses.find {
-          case (pred, _) => asBoolean(run(pred))
+        val take = c.ifThenClauses.find { case (pred, _) =>
+          asBoolean(run(pred))
         }
         take match {
           case Some((_, r)) =>

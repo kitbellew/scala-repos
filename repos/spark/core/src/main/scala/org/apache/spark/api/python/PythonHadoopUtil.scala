@@ -95,8 +95,8 @@ private[python] class WritableToJavaConverter(
         aw.get().map(convertWritable(_))
       case mw: MapWritable =>
         val map = new java.util.HashMap[Any, Any]()
-        mw.asScala.foreach {
-          case (k, v) => map.put(convertWritable(k), convertWritable(v))
+        mw.asScala.foreach { case (k, v) =>
+          map.put(convertWritable(k), convertWritable(v))
         }
         map
       case w: Writable => WritableUtils.clone(w, conf.value.value)
@@ -191,8 +191,8 @@ private[python] object PythonHadoopUtil {
       rdd: RDD[(K, V)],
       keyConverter: Converter[Any, Any],
       valueConverter: Converter[Any, Any]): RDD[(Any, Any)] = {
-    rdd.map {
-      case (k, v) => (keyConverter.convert(k), valueConverter.convert(v))
+    rdd.map { case (k, v) =>
+      (keyConverter.convert(k), valueConverter.convert(v))
     }
   }
 

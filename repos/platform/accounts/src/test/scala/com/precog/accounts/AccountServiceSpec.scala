@@ -234,8 +234,8 @@ class AccountServiceSpec extends TestAccountService with Tags {
           createAccount("test0002@email.com", "password2")
       } yield errorMessage
 
-      msgFuture.copoint must beLike {
-        case JString(msg) => msg must startWith("An account already exists")
+      msgFuture.copoint must beLike { case JString(msg) =>
+        msg must startWith("An account already exists")
       }
     }
 

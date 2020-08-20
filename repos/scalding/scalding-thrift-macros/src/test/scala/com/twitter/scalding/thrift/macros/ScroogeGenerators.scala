@@ -285,8 +285,8 @@ object ScroogeGenerators {
             .listOf(arb[(Set[String], Set[String])])
             .map(
               _.toMap
-                .map {
-                  case (k, v) => k.to[collection.Set] -> v.to[collection.Set]
+                .map { case (k, v) =>
+                  k.to[collection.Set] -> v.to[collection.Set]
                 }
                 .asInstanceOf[collection.Map[
                   collection.Set[String],

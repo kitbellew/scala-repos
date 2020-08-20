@@ -26,8 +26,8 @@ private[cluster] final class ClusterHeartbeatReceiver
   lazy val selfHeartbeatRsp = HeartbeatRsp(
     Cluster(context.system).selfUniqueAddress)
 
-  def receive = {
-    case Heartbeat(from) ⇒ sender() ! selfHeartbeatRsp
+  def receive = { case Heartbeat(from) ⇒
+    sender() ! selfHeartbeatRsp
   }
 
 }

@@ -228,8 +228,8 @@ class ListMap[A, +B]
       if (cur.isEmpty)
         acc.last
       else if (k == cur.key)
-        (cur.next /: acc) {
-          case (t, h) => val tt = t; new tt.Node(h.key, h.value) // SI-7459
+        (cur.next /: acc) { case (t, h) =>
+          val tt = t; new tt.Node(h.key, h.value) // SI-7459
         }
       else
         remove0(k, cur.next, cur :: acc)

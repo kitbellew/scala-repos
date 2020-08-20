@@ -91,8 +91,8 @@ class NIHDBFileStoreSpec
                 RawUTF8Encoding),
               Clock.System.instant,
               StreamRef.Create(UUID.randomUUID, true)
-            ))))).copoint must beLike {
-        case UpdateSuccess(_) => ok
+            ))))).copoint must beLike { case UpdateSuccess(_) =>
+        ok
       }
 
       (projectionsActor ? Read(testPath, Version.Current))
@@ -120,15 +120,15 @@ class NIHDBFileStoreSpec
               None,
               Clock.System.instant,
               StreamRef.Create(streamId, false)
-            ))))).copoint must beLike {
-        case UpdateSuccess(_) => ok
+            ))))).copoint must beLike { case UpdateSuccess(_) =>
+        ok
       }
 
       // We haven't terminated the stream yet, so it shouldn't find anything
       (projectionsActor ? Read(testPath, Version.Current))
         .mapTo[ReadResult]
-        .copoint must beLike {
-        case PathOpFailure(_, NotFound(_)) => ok
+        .copoint must beLike { case PathOpFailure(_, NotFound(_)) =>
+        ok
       }
 
       (projectionsActor ? IngestData(
@@ -143,8 +143,8 @@ class NIHDBFileStoreSpec
               None,
               Clock.System.instant,
               StreamRef.Create(streamId, true)
-            ))))).copoint must beLike {
-        case UpdateSuccess(_) => ok
+            ))))).copoint must beLike { case UpdateSuccess(_) =>
+        ok
       }
 
       (projectionsActor ? Read(testPath, Version.Current))

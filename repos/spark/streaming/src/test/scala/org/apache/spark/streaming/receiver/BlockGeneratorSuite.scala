@@ -107,8 +107,8 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
     // Verify addDataWithCallback() add data+metadata and and callbacks are called correctly
     val data2 = 11 to 20
     val metadata2 = data2.map { _.toString }
-    data2.zip(metadata2).foreach {
-      case (d, m) => blockGenerator.addDataWithCallback(d, m)
+    data2.zip(metadata2).foreach { case (d, m) =>
+      blockGenerator.addDataWithCallback(d, m)
     }
     assert(listener.onAddDataCalled === true)
     listener.addedData.asScala.toSeq should contain theSameElementsInOrderAs (data2)

@@ -37,8 +37,8 @@ object Schema {
       case JObjectFixedT(fields) =>
         fields.values.toSet.flatMap { tpe: JType => ctypes(tpe) }
       case JArrayHomogeneousT(elemType) =>
-        ctypes(elemType) collect {
-          case cType: CValueType[_] => CArrayType(cType)
+        ctypes(elemType) collect { case cType: CValueType[_] =>
+          CArrayType(cType)
         }
       case JNumberT  => Set(CLong, CDouble, CNum)
       case JTextT    => Set(CString)
@@ -52,12 +52,12 @@ object Schema {
   def cpath(jtype: JType): Seq[CPath] = {
     val cpaths = jtype match {
       case JArrayFixedT(indices) =>
-        indices flatMap {
-          case (idx, tpe) => CPath(CPathIndex(idx)) combine cpath(tpe)
+        indices flatMap { case (idx, tpe) =>
+          CPath(CPathIndex(idx)) combine cpath(tpe)
         } toSeq
       case JObjectFixedT(fields) =>
-        fields flatMap {
-          case (name, tpe) => CPath(CPathField(name)) combine cpath(tpe)
+        fields flatMap { case (name, tpe) =>
+          CPath(CPathField(name)) combine cpath(tpe)
         } toSeq
       case JArrayHomogeneousT(elemType)                    => Seq(CPath(CPathArray))
       case JNumberT | JTextT | JBooleanT | JNullT | JDateT => Nil

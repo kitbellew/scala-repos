@@ -12,8 +12,8 @@ import org.scalatest.Inside
 class HeaderDirectivesSpec extends RoutingSpec with Inside {
 
   "The headerValuePF directive" should {
-    lazy val myHeaderValue = headerValuePF {
-      case Connection(tokens) ⇒ tokens.head
+    lazy val myHeaderValue = headerValuePF { case Connection(tokens) ⇒
+      tokens.head
     }
 
     "extract the respective header value if a matching request header is present" in {

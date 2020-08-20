@@ -60,8 +60,8 @@ object ActorsLeakSpec {
   }
 
   class StoppableActor extends Actor {
-    override def receive = {
-      case "stop" ⇒ context.stop(self)
+    override def receive = { case "stop" ⇒
+      context.stop(self)
     }
   }
 

@@ -83,8 +83,8 @@ trait GroupSolver
             }
 
             letM map { let =>
-              subs(dispatch) map {
-                case (key, value) => (Identifier(Vector(), key) -> let) -> value
+              subs(dispatch) map { case (key, value) =>
+                (Identifier(Vector(), key) -> let) -> value
               }
             }
           } reduceOption { _ ++ _ } getOrElse Map()
@@ -124,8 +124,8 @@ trait GroupSolver
           } getOrElse Set()
 
           val forestErrors2 = if (finalErrors.isEmpty) {
-            forestErrors filter {
-              case Error(tpe) => tpe == ConstraintsWithinInnerSolve
+            forestErrors filter { case Error(tpe) =>
+              tpe == ConstraintsWithinInnerSolve
             }
           } else {
             forestErrors
@@ -272,14 +272,14 @@ trait GroupSolver
 
   private def orderTopologically(sigma: Sigma): List[Formal] = {
     val edges: Map[Formal, Set[Formal]] = sigma mapValues { expr =>
-      expr.provenance.possibilities collect {
-        case ParamProvenance(id, let) => (id, let)
+      expr.provenance.possibilities collect { case ParamProvenance(id, let) =>
+        (id, let)
       }
     }
 
     def bfs(vertices: Set[Formal]): List[Formal] = {
-      val vertices2 = edges filter {
-        case (_, targets) => !(vertices & targets).isEmpty
+      val vertices2 = edges filter { case (_, targets) =>
+        !(vertices & targets).isEmpty
       } keySet
 
       if (vertices2.isEmpty)
@@ -288,8 +288,8 @@ trait GroupSolver
         vertices.toList ::: bfs(vertices2)
     }
 
-    val leaves = edges filter {
-      case (_, targets) => targets.isEmpty
+    val leaves = edges filter { case (_, targets) =>
+      targets.isEmpty
     } keySet
 
     bfs(leaves).reverse
@@ -344,8 +344,8 @@ trait GroupSolver
             if (innerVars.isEmpty) {
               (Some(UnfixedSolution(tv, result, dtrace)), Set[Error]())
             } else {
-              val errors = innerVars map {
-                case (_, id) => Error(expr, ExtraVarsInGroupConstraint(id))
+              val errors = innerVars map { case (_, id) =>
+                Error(expr, ExtraVarsInGroupConstraint(id))
               }
 
               (None, errors)
@@ -414,8 +414,8 @@ trait GroupSolver
       case _ =>
         (
           None,
-          listTicVars(Some(b), expr, sigma) map {
-            case (_, id) => id
+          listTicVars(Some(b), expr, sigma) map { case (_, id) =>
+            id
           } map UnableToSolveTicVariable map { Error(expr, _) })
     }
 

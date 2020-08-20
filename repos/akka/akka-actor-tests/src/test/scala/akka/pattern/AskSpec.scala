@@ -242,8 +242,8 @@ class AskSpec extends AkkaSpec {
       val p = TestProbe()
 
       val act = system.actorOf(Props(new Actor {
-        def receive = {
-          case msg ⇒ p.ref ! sender() -> msg
+        def receive = { case msg ⇒
+          p.ref ! sender() -> msg
         }
       }))
 

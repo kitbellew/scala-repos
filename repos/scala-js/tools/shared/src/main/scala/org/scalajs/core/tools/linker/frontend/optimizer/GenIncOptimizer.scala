@@ -905,8 +905,8 @@ abstract class GenIncOptimizer private[optimizer] (
 
         val changed = {
           originalDef == null ||
-          (methodDef.hash zip originalDef.hash).forall {
-            case (h1, h2) => !Hashers.hashesEqual(h1, h2, considerPositions)
+          (methodDef.hash zip originalDef.hash).forall { case (h1, h2) =>
+            !Hashers.hashesEqual(h1, h2, considerPositions)
           }
         }
 

@@ -722,8 +722,8 @@ object TreeNode {
           val expectedTypes = p.getParameterTypes
           expectedTypes.length == fields.length && expectedTypes
             .zip(fields.map(_._2))
-            .forall {
-              case (cls, tpe) => cls == getClassFromType(tpe)
+            .forall { case (cls, tpe) =>
+              cls == getClassFromType(tpe)
             }
         }
         if (maybeCtor.isEmpty) {

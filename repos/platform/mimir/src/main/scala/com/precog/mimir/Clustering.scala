@@ -722,8 +722,8 @@ trait ClusteringLibModule[M[+_]]
 
               val tables: StreamT[M, (Table, JType)] = StreamT.wrapEffect {
                 specs map { ts =>
-                  StreamT.fromStream(M.point((ts map {
-                    case (spec, jtype) => (table.transform(spec), jtype)
+                  StreamT.fromStream(M.point((ts map { case (spec, jtype) =>
+                    (table.transform(spec), jtype)
                   }).toStream))
                 }
               }

@@ -158,8 +158,8 @@ class StressTest {
         val stream = StreamT.unfoldM[Future, Unit, Option[Long]](None) { key =>
           projection
             .getBlockAfter(key, None)
-            .map(_.map {
-              case BlockProjectionData(_, maxKey, _) => ((), Some(maxKey))
+            .map(_.map { case BlockProjectionData(_, maxKey, _) =>
+              ((), Some(maxKey))
             })
         }
         stream.length

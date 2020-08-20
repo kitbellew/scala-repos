@@ -93,8 +93,8 @@ class AccountBalanceRetriever extends Actor with Aggregator {
 
     context.system.scheduler.scheduleOnce(1.second, self, TimedOut)
     //#expect-timeout
-    expect {
-      case TimedOut ⇒ collectBalances(force = true)
+    expect { case TimedOut ⇒
+      collectBalances(force = true)
     }
     //#expect-timeout
 
@@ -147,8 +147,8 @@ final case class FinalResponse(qualifiedValues: List[String])
   */
 class ChainingSample extends Actor with Aggregator {
 
-  expectOnce {
-    case InitialRequest(name) ⇒ new MultipleResponseHandler(sender(), name)
+  expectOnce { case InitialRequest(name) ⇒
+    new MultipleResponseHandler(sender(), name)
   }
 
   class MultipleResponseHandler(originalSender: ActorRef, propName: String) {
@@ -174,8 +174,8 @@ class ChainingSample extends Actor with Aggregator {
 
       if (values.size > 0) {
         context.actorSelection("/user/evaluator") ! values.toList
-        expectOnce {
-          case EvaluationResults(name, eval) ⇒ processFinal(eval)
+        expectOnce { case EvaluationResults(name, eval) ⇒
+          processFinal(eval)
         }
       } else processFinal(List.empty[Int])
     }

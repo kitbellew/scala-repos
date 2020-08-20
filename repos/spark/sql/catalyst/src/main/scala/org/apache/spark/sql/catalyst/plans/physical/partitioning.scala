@@ -352,8 +352,8 @@ case class PartitioningCollection(partitionings: Seq[Partitioning])
     s"PartitioningCollection requires all of its partitionings have the same numPartitions.")
 
   override def children: Seq[Expression] =
-    partitionings.collect {
-      case expr: Expression => expr
+    partitionings.collect { case expr: Expression =>
+      expr
     }
 
   override def nullable: Boolean = false

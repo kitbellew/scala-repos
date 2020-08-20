@@ -657,8 +657,8 @@ class ShardRegion(
   def replyToRegionStatsQuery(ref: ActorRef): Unit = {
     askAllShards[Shard.ShardStats](Shard.GetShardStats)
       .map { shardStats ⇒
-        ShardRegionStats(shardStats.map {
-          case (shardId, stats) ⇒ (shardId, stats.entityCount)
+        ShardRegionStats(shardStats.map { case (shardId, stats) ⇒
+          (shardId, stats.entityCount)
         }.toMap)
       }
       .recover { case x: AskTimeoutException ⇒
@@ -669,8 +669,8 @@ class ShardRegion(
 
   def askAllShards[T: ClassTag](msg: Any): Future[Seq[(ShardId, T)]] = {
     implicit val timeout: Timeout = 3.seconds
-    Future.sequence(shards.toSeq.map {
-      case (shardId, ref) ⇒ (ref ? msg).mapTo[T].map(t ⇒ (shardId, t))
+    Future.sequence(shards.toSeq.map { case (shardId, ref) ⇒
+      (ref ? msg).mapTo[T].map(t ⇒ (shardId, t))
     })
   }
 

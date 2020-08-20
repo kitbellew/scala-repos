@@ -1083,8 +1083,8 @@ trait SliceTransforms[M[+_]]
         st.f(from(b), s) map (to <-: _)
       }
       def advance(s: Slice): M[(SliceTransform1[B], Slice)] =
-        st.advance(s) map {
-          case (st0, s0) => (MappedState1[A, B](st0, to, from), s0)
+        st.advance(s) map { case (st0, s0) =>
+          (MappedState1[A, B](st0, to, from), s0)
         }
     }
   }
@@ -1317,8 +1317,8 @@ trait SliceTransforms[M[+_]]
         f0: (A, Slice, Slice) => (A, Slice))
         extends SliceTransform2[A] {
       override def unlift = Some(f0)
-      val f: (A, Slice, Slice) => M[(A, Slice)] = {
-        case (a, sl, sr) => M point f0(a, sl, sr)
+      val f: (A, Slice, Slice) => M[(A, Slice)] = { case (a, sl, sr) =>
+        M point f0(a, sl, sr)
       }
       def advance(sl: Slice, sr: Slice): M[(SliceTransform2[A], Slice)] =
         M point ({ (a: A) => SliceTransform2S[A](a, f0) } <-: f0(
@@ -1387,8 +1387,8 @@ trait SliceTransforms[M[+_]]
         st.f(from(b), sl, sr) map (to <-: _)
       }
       def advance(sl: Slice, sr: Slice): M[(SliceTransform2[B], Slice)] =
-        st.advance(sl, sr) map {
-          case (st0, s0) => (MappedState2[A, B](st0, to, from), s0)
+        st.advance(sl, sr) map { case (st0, s0) =>
+          (MappedState2[A, B](st0, to, from), s0)
         }
     }
   }
@@ -1519,8 +1519,8 @@ trait ObjectConcatHelpers extends ConcatHelpers {
     val innerPaths = Set(leftInner.keys map { _.selector } toSeq: _*)
 
     val mergedPairs: Set[(ColumnRef, Column)] = innerPaths flatMap { path =>
-      val rightSelection = rightInner filter {
-        case (ColumnRef(path2, _), _) => path == path2
+      val rightSelection = rightInner filter { case (ColumnRef(path2, _), _) =>
+        path == path2
       }
 
       val leftSelection = leftInner filter {

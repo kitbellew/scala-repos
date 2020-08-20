@@ -143,8 +143,8 @@ object Package {
     log.info("Done packaging.")
   }
   def sourcesDebugString(sources: Seq[(File, String)]): String =
-    "Input file mappings:\n\t" + (sources map {
-      case (f, s) => s + "\n\t  " + f
+    "Input file mappings:\n\t" + (sources map { case (f, s) =>
+      s + "\n\t  " + f
     } mkString ("\n\t"))
 
   implicit def manifestEquiv: Equiv[Manifest] = defaultEquiv

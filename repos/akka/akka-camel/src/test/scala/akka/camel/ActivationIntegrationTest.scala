@@ -87,8 +87,8 @@ class ActivationIntegrationTest
       super.preStart()
     }
 
-    override def receive = {
-      case msg: CamelMessage ⇒ sender() ! "received " + msg.body
+    override def receive = { case msg: CamelMessage ⇒
+      sender() ! "received " + msg.body
     }
   }
 

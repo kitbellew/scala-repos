@@ -513,8 +513,8 @@ class ConstraintsTest extends MarathonSpec with GivenWhenThen with Matchers {
   }
 
   def makeSampleTask(id: String, attrs: Map[String, String]) = {
-    val attributes = attrs.map {
-      case (name, value) => TextAttribute(name, value): Attribute
+    val attributes = attrs.map { case (name, value) =>
+      TextAttribute(name, value): Attribute
     }
     MarathonTestHelper
       .stagedTask(id)

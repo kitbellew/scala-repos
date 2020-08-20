@@ -106,8 +106,8 @@ class ScalaCompilerSettings(state: ScalaCompilerSettingsState) {
   private def initFrom0(options: Seq[String]) {
     val optionToSetter = ToggleOptions.map(it => (it._1, it._3)).toMap
 
-    optionToSetter.foreach {
-      case (option, setter) => setter(options.contains(option))
+    optionToSetter.foreach { case (option, setter) =>
+      setter(options.contains(option))
     }
 
     debuggingInfoLevel = DebuggingOptions
@@ -115,8 +115,8 @@ class ScalaCompilerSettings(state: ScalaCompilerSettingsState) {
       .map(_._2)
       .getOrElse(DebuggingInfoLevel.Vars)
 
-    plugins = options collect {
-      case PluginOptionPattern(path) => path
+    plugins = options collect { case PluginOptionPattern(path) =>
+      path
     }
 
     additionalCompilerOptions = options.filterNot { option =>

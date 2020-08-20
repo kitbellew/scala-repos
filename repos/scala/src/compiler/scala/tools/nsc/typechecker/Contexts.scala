@@ -1463,8 +1463,8 @@ trait Contexts { self: Analyzer =>
     // have to pass in context because multiple contexts may share the same ReportBuffer
     def reportFirstDivergentError(fun: Tree, param: Symbol, paramTp: Type)(
         implicit context: Context): Unit =
-      errors.collectFirst {
-        case dte: DivergentImplicitTypeError => dte
+      errors.collectFirst { case dte: DivergentImplicitTypeError =>
+        dte
       } match {
         case Some(divergent) =>
           // DivergentImplicit error has higher priority than "no implicit found"
@@ -1507,8 +1507,8 @@ trait Contexts { self: Analyzer =>
 
     final def emitWarnings() =
       if (_warningBuffer != null) {
-        _warningBuffer foreach {
-          case (pos, msg) => reporter.warning(pos, msg)
+        _warningBuffer foreach { case (pos, msg) =>
+          reporter.warning(pos, msg)
         }
         _warningBuffer = null
       }

@@ -70,8 +70,8 @@ class FutureTests extends MinimalScalaTest {
       Await.result(f2, defaultTimeout) mustBe ("success")
 
       f2 foreach { _ => throw new ThrowableTest("current thread foreach") }
-      f2 onSuccess {
-        case _ => throw new ThrowableTest("current thread receive")
+      f2 onSuccess { case _ =>
+        throw new ThrowableTest("current thread receive")
       }
 
       Await.result(f3, defaultTimeout) mustBe ("SUCCESS")
@@ -118,16 +118,16 @@ class FutureTests extends MinimalScalaTest {
       val f = Future.successful(s)
 
       ECNotUsed(ec =>
-        f.onFailure({
-          case _ => fail("onFailure should not have been called")
+        f.onFailure({ case _ =>
+          fail("onFailure should not have been called")
         })(ec))
       assert(
         ECNotUsed(ec =>
           f.recover({ case _ => fail("recover should not have been called") })(
             ec)) eq f)
       assert(ECNotUsed(ec =>
-        f.recoverWith({
-          case _ => fail("flatMap should not have been called")
+        f.recoverWith({ case _ =>
+          fail("flatMap should not have been called")
         })(ec)) eq f)
       assert(
         f.fallbackTo(f) eq f,
@@ -154,8 +154,8 @@ class FutureTests extends MinimalScalaTest {
       ECNotUsed(ec =>
         f.foreach(_ => fail("foreach should not have been called"))(ec))
       ECNotUsed(ec =>
-        f.onSuccess({
-          case _ => fail("onSuccess should not have been called")
+        f.onSuccess({ case _ =>
+          fail("onSuccess should not have been called")
         })(ec))
       assert(ECNotUsed(ec =>
         f.map(_ => fail("map should not have been called"))(ec)) eq f)
@@ -230,16 +230,16 @@ class FutureTests extends MinimalScalaTest {
       ECNotUsed(ec =>
         test.foreach(_ => fail("foreach should not have been called"))(ec))
       ECNotUsed(ec =>
-        test.onSuccess({
-          case _ => fail("onSuccess should not have been called")
+        test.onSuccess({ case _ =>
+          fail("onSuccess should not have been called")
         })(ec))
       ECNotUsed(ec =>
-        test.onFailure({
-          case _ => fail("onFailure should not have been called")
+        test.onFailure({ case _ =>
+          fail("onFailure should not have been called")
         })(ec))
       ECNotUsed(ec =>
-        test.onComplete({
-          case _ => fail("onComplete should not have been called")
+        test.onComplete({ case _ =>
+          fail("onComplete should not have been called")
         })(ec))
       ECNotUsed(ec => test.transform(identity, identity)(ec) eq test)
       ECNotUsed(ec => test.transform(identity)(ec) eq test)
@@ -260,8 +260,8 @@ class FutureTests extends MinimalScalaTest {
         test.recover({ case _ => fail("recover should not have been called") })(
           ec) eq test)
       ECNotUsed(ec =>
-        test.recoverWith({
-          case _ => fail("recoverWith should not have been called")
+        test.recoverWith({ case _ =>
+          fail("recoverWith should not have been called")
         })(ec) eq test)
       ECNotUsed(ec =>
         test.andThen({ case _ => fail("andThen should not have been called") })(
@@ -344,31 +344,31 @@ class FutureTests extends MinimalScalaTest {
       val future2 = future1 map (_ / 0)
       val future3 = future2 map (_.toString)
 
-      val future4 = future1 recover {
-        case e: ArithmeticException => 0
+      val future4 = future1 recover { case e: ArithmeticException =>
+        0
       } map (_.toString)
 
-      val future5 = future2 recover {
-        case e: ArithmeticException => 0
+      val future5 = future2 recover { case e: ArithmeticException =>
+        0
       } map (_.toString)
 
-      val future6 = future2 recover {
-        case e: MatchError => 0
+      val future6 = future2 recover { case e: MatchError =>
+        0
       } map (_.toString)
 
-      val future7 = future3 recover {
-        case e: ArithmeticException => "You got ERROR"
+      val future7 = future3 recover { case e: ArithmeticException =>
+        "You got ERROR"
       }
 
       val future8 = testAsync("Failure")
-      val future9 = testAsync("Failure") recover {
-        case e: RuntimeException => "FAIL!"
+      val future9 = testAsync("Failure") recover { case e: RuntimeException =>
+        "FAIL!"
       }
-      val future10 = testAsync("Hello") recover {
-        case e: RuntimeException => "FAIL!"
+      val future10 = testAsync("Hello") recover { case e: RuntimeException =>
+        "FAIL!"
       }
-      val future11 = testAsync("Failure") recover {
-        case _ => "Oops!"
+      val future11 = testAsync("Failure") recover { case _ =>
+        "Oops!"
       }
 
       Await.result(future1, defaultTimeout) mustBe (5)
@@ -395,14 +395,14 @@ class FutureTests extends MinimalScalaTest {
         Await.result(failed, defaultTimeout)
       } mustBe (o)
 
-      val recovered = Future.failed[String](o) recoverWith {
-        case _ => Future.successful("yay!")
+      val recovered = Future.failed[String](o) recoverWith { case _ =>
+        Future.successful("yay!")
       }
       Await.result(recovered, defaultTimeout) mustBe ("yay!")
 
       intercept[IllegalStateException] {
-        val refailed = Future.failed[String](o) recoverWith {
-          case _ => Future.failed[String](r)
+        val refailed = Future.failed[String](o) recoverWith { case _ =>
+          Future.failed[String](r)
         }
         Await.result(refailed, defaultTimeout)
       } mustBe (r)
@@ -548,12 +548,12 @@ class FutureTests extends MinimalScalaTest {
       for (i <- 1 to 1000) {
         val chained = Future {
           q.add(1); 3
-        } andThen {
-          case _ => q.add(2)
-        } andThen {
-          case Success(0) => q.add(Int.MaxValue)
-        } andThen {
-          case _ => q.add(3);
+        } andThen { case _ =>
+          q.add(2)
+        } andThen { case Success(0) =>
+          q.add(Int.MaxValue)
+        } andThen { case _ =>
+          q.add(3);
         }
         Await.result(chained, defaultTimeout) mustBe (3)
         q.poll() mustBe (1)
@@ -674,8 +674,8 @@ class FutureTests extends MinimalScalaTest {
         (0 to 9) map { idx =>
           async(idx, idx * 20)
         }
-      val folded = futures.foldLeft(Future(0)) {
-        case (fr, fa) => for (r <- fr; a <- fa) yield (r + a)
+      val folded = futures.foldLeft(Future(0)) { case (fr, fa) =>
+        for (r <- fr; a <- fa) yield (r + a)
       }
       Await.result(folded, timeout) mustBe (45)
     }

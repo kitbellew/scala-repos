@@ -419,8 +419,8 @@ class BufTest
   test("highly nested concat buffer shouldn't throw StackOverflowError") {
     val size = 50 * 1000
     val b = 'x'.toByte
-    val bigBuf = (1 to size).foldLeft(Buf.Empty) {
-      case (buf, _) => buf concat Buf.ByteArray.Owned(Array[Byte](b))
+    val bigBuf = (1 to size).foldLeft(Buf.Empty) { case (buf, _) =>
+      buf concat Buf.ByteArray.Owned(Array[Byte](b))
     }
 
     val expected = Array.fill(size) { 'x'.toByte }

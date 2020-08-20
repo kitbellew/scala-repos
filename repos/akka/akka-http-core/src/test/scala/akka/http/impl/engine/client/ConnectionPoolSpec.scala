@@ -188,8 +188,8 @@ class ConnectionPoolSpec extends AkkaSpec("""
 
       val responses = Seq(responseOut.expectNext(), responseOut.expectNext())
 
-      responses mustContainLike {
-        case (Success(x), 42) ⇒ requestUri(x) should endWith("/a")
+      responses mustContainLike { case (Success(x), 42) ⇒
+        requestUri(x) should endWith("/a")
       }
       responses mustContainLike { case (Failure(x), 43) ⇒
         x.getMessage should include(ConnectionResetByPeerMessage)
@@ -214,11 +214,11 @@ class ConnectionPoolSpec extends AkkaSpec("""
 
       val responses = Seq(responseOut.expectNext(), responseOut.expectNext())
 
-      responses mustContainLike {
-        case (Success(x), 42) ⇒ requestUri(x) should endWith("/a")
+      responses mustContainLike { case (Success(x), 42) ⇒
+        requestUri(x) should endWith("/a")
       }
-      responses mustContainLike {
-        case (Success(x), 43) ⇒ requestUri(x) should endWith("/crash")
+      responses mustContainLike { case (Success(x), 43) ⇒
+        requestUri(x) should endWith("/crash")
       }
     }
 
@@ -241,8 +241,8 @@ class ConnectionPoolSpec extends AkkaSpec("""
 
       val responses = Seq(responseOut.expectNext(), responseOut.expectNext())
 
-      responses mustContainLike {
-        case (Success(x), 42) ⇒ requestUri(x) should endWith("/a")
+      responses mustContainLike { case (Success(x), 42) ⇒
+        requestUri(x) should endWith("/a")
       }
       responses mustContainLike { case (Failure(x), 43) ⇒
         x.getMessage should include(ConnectionResetByPeerMessage)
@@ -384,11 +384,11 @@ class ConnectionPoolSpec extends AkkaSpec("""
     val incomingConnectionsSub = {
       val rawBytesInjection = BidiFlow.fromFlows(
         Flow[SslTlsOutbound]
-          .collect[ByteString] {
-            case SendBytes(x) ⇒ mapServerSideOutboundRawBytes(x)
+          .collect[ByteString] { case SendBytes(x) ⇒
+            mapServerSideOutboundRawBytes(x)
           }
-          .transform(StreamUtils.recover {
-            case NoErrorComplete ⇒ ByteString.empty
+          .transform(StreamUtils.recover { case NoErrorComplete ⇒
+            ByteString.empty
           }),
         Flow[ByteString].map(SessionBytes(null, _))
       )

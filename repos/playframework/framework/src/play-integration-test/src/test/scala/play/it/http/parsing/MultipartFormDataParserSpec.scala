@@ -87,8 +87,8 @@ object MultipartFormDataParserSpec extends PlaySpecification {
 
       val result = await(parser.run(Source.single(ByteString(body))))
 
-      result must beLeft.like {
-        case error => error.header.status must_== BAD_REQUEST
+      result must beLeft.like { case error =>
+        error.header.status must_== BAD_REQUEST
       }
     }
 
@@ -102,8 +102,8 @@ object MultipartFormDataParserSpec extends PlaySpecification {
 
       val result = await(parser.run(Source.single(ByteString(body))))
 
-      result must beLeft.like {
-        case error => error.header.status must_== REQUEST_ENTITY_TOO_LARGE
+      result must beLeft.like { case error =>
+        error.header.status must_== REQUEST_ENTITY_TOO_LARGE
       }
     }
 
@@ -117,8 +117,8 @@ object MultipartFormDataParserSpec extends PlaySpecification {
 
       val result = await(parser.run(Source.single(ByteString(body))))
 
-      result must beLeft.like {
-        case error => error.header.status must_== REQUEST_ENTITY_TOO_LARGE
+      result must beLeft.like { case error =>
+        error.header.status must_== REQUEST_ENTITY_TOO_LARGE
       }
     }
 

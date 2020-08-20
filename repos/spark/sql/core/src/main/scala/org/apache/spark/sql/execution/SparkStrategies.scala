@@ -387,8 +387,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
           // be used to re-write expressions so that they reference the single copy of the
           // aggregate function which actually gets computed.
           val aggregateExpressions = resultExpressions.flatMap { expr =>
-            expr.collect {
-              case agg: AggregateExpression => agg
+            expr.collect { case agg: AggregateExpression =>
+              agg
             }
           }.distinct
           // For those distinct aggregate expressions, we create a map from the

@@ -516,8 +516,8 @@ trait Reifiers { self: Quasiquotes =>
       reifyHighRankList(xs)(fillListHole.orElse(fillListOfListsHole))(reify)
 
     def reifyAnnotList(annots: List[Tree]): Tree =
-      reifyHighRankList(annots) {
-        case AnnotPlaceholder(h @ Hole(_, DotDot)) => reifyAnnotation(h)
+      reifyHighRankList(annots) { case AnnotPlaceholder(h @ Hole(_, DotDot)) =>
+        reifyAnnotation(h)
       } {
         case AnnotPlaceholder(h: ApplyHole) if h.tpe <:< treeType =>
           reifyAnnotation(h)

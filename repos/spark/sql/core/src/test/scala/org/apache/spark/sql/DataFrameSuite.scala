@@ -174,8 +174,8 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
   test("explode") {
     val df = Seq((1, "a b c"), (2, "a b"), (3, "a")).toDF("number", "letters")
     val df2 =
-      df.explode('letters) {
-        case Row(letters: String) => letters.split(" ").map(Tuple1(_)).toSeq
+      df.explode('letters) { case Row(letters: String) =>
+        letters.split(" ").map(Tuple1(_)).toSeq
       }
 
     checkAnswer(

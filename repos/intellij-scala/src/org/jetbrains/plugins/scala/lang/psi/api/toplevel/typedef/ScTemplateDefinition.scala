@@ -220,8 +220,8 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
       .getTypes(this)
       .allFirstSeq()
       .flatMap(n =>
-        n.map {
-          case (_, x) => (x.info, x.substitutor)
+        n.map { case (_, x) =>
+          (x.info, x.substitutor)
         }) ++ syntheticTypeDefinitions
       .filter(!_.isObject)
       .map((_, ScSubstitutor.empty))
@@ -296,8 +296,8 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
     TypeDefinitionMembers
       .getSignatures(this)
       .allFirstSeq()
-      .flatMap(_.filter {
-        case (_, n) => n.info.isInstanceOf[PhysicalSignature]
+      .flatMap(_.filter { case (_, n) =>
+        n.info.isInstanceOf[PhysicalSignature]
       })
       .map { case (_, n) => n.info.asInstanceOf[PhysicalSignature] } ++
       syntheticMethodsNoOverride.map(
@@ -312,8 +312,8 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
             TypeDefinitionMembers
               .getSignatures(c, Some(clazzType), this)
               .allFirstSeq()
-              .flatMap(_.filter {
-                case (_, n) => n.info.isInstanceOf[PhysicalSignature]
+              .flatMap(_.filter { case (_, n) =>
+                n.info.isInstanceOf[PhysicalSignature]
               })
               .map { case (_, n) => n.info.asInstanceOf[PhysicalSignature] } ++
               syntheticMethodsNoOverride.map(

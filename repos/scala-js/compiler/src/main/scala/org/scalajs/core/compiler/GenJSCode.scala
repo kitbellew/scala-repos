@@ -983,8 +983,8 @@ abstract class GenJSCode
 
             // Parameter count resolution
             case js.Match(selector, cases, default) =>
-              val newCases = cases.map {
-                case (literals, body) => (literals, transformDispatch(body))
+              val newCases = cases.map { case (literals, body) =>
+                (literals, transformDispatch(body))
               }
               val newDefault = transformDispatch(default)
               js.Match(selector, newCases, newDefault)(tree.tpe)
@@ -3596,8 +3596,8 @@ abstract class GenJSCode
 
         def warnIfDuplicatedKey(
             pairs: List[(js.StringLiteral, js.Tree)]): Unit = {
-          val allKeys = pairs.collect {
-            case (js.StringLiteral(keyName), _) => keyName
+          val allKeys = pairs.collect { case (js.StringLiteral(keyName), _) =>
+            keyName
           }
           val keyCounts =
             allKeys.distinct.map(key => key -> allKeys.count(_ == key))

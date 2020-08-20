@@ -142,8 +142,8 @@ class LoggingDocSpec extends AkkaSpec {
       import akka.actor.{Actor, DeadLetter, Props}
 
       class Listener extends Actor {
-        def receive = {
-          case d: DeadLetter => println(d)
+        def receive = { case d: DeadLetter =>
+          println(d)
         }
       }
 

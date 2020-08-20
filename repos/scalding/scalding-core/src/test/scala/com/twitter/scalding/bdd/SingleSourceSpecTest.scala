@@ -23,8 +23,8 @@ class SingleSourceSpecTest extends WordSpec with Matchers with BddDsl {
         }
       } Then { buffer: Buffer[(String, String, String)] =>
         {
-          buffer.forall({
-            case (_, _, transformed) => transformed.endsWith("_transf")
+          buffer.forall({ case (_, _, transformed) =>
+            transformed.endsWith("_transf")
           }) shouldBe true
         }
       }
@@ -44,8 +44,8 @@ class SingleSourceSpecTest extends WordSpec with Matchers with BddDsl {
         }
       } Then { buffer: Buffer[(String, String, String)] =>
         {
-          buffer.forall({
-            case (_, _, transformed) => transformed.endsWith("_transf")
+          buffer.forall({ case (_, _, transformed) =>
+            transformed.endsWith("_transf")
           }) shouldBe true
         }
       }

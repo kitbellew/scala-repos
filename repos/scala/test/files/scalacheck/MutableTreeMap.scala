@@ -53,8 +53,8 @@ package scala.collection.mutable {
 
     property("insert") = forAll { (tree: RB.Tree[K, V], entries: Seq[(K, V)]) =>
       entries.foreach { case (k, v) => RB.insert(tree, k, v) }
-      RB.isValid(tree) && entries.toMap.forall {
-        case (k, v) => RB.get(tree, k) == Some(v)
+      RB.isValid(tree) && entries.toMap.forall { case (k, v) =>
+        RB.get(tree, k) == Some(v)
       }
     }
 
@@ -138,8 +138,8 @@ package scala.collection.mutable {
       val oldElems = map.toList
       map --= ks
       val deletedElems = ks.toSet
-      oldElems.forall {
-        case (k, v) => map.get(k) == (if (deletedElems(k)) None else Some(v))
+      oldElems.forall { case (k, v) =>
+        map.get(k) == (if (deletedElems(k)) None else Some(v))
       }
     }
 
@@ -228,8 +228,8 @@ package scala.collection.mutable {
         entries: This,
         from: Option[K],
         until: Option[K])(implicit bf: CanBuildFrom[This, (K, V), That]) = {
-      (bf.apply(entries) ++= entries.filter {
-        case (k, _) => in(k, from, until)
+      (bf.apply(entries) ++= entries.filter { case (k, _) =>
+        in(k, from, until)
       }).result()
     }
 

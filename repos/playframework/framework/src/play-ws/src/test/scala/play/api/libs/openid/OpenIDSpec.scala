@@ -154,8 +154,8 @@ object OpenIDSpec extends Specification with Mockito {
         }
 
         "every query parameter apart from openid.mode is used in the verification request" in {
-          (verificationQuery - "openid.mode") forall {
-            case (key, value) => responseQueryString.get(key) == Some(value)
+          (verificationQuery - "openid.mode") forall { case (key, value) =>
+            responseQueryString.get(key) == Some(value)
           } must beTrue
         }
       }

@@ -151,8 +151,8 @@ final class JsonView(
       case s: arena.ScoringSystem.Sheet =>
         Json.obj(
           "game" -> s.scores.size,
-          "berserk" -> pairings.foldLeft(0) {
-            case (nb, p) => nb + p.berserkOf(userId)
+          "berserk" -> pairings.foldLeft(0) { case (nb, p) =>
+            nb + p.berserkOf(userId)
           },
           "win" -> s.scores.count(_.isWin))
     }

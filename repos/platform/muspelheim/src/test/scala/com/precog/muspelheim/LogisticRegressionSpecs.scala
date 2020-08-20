@@ -92,8 +92,8 @@ trait LogisticRegressionSpecs extends EvalStackSpecs {
       val results = evalE(input)
       val resultsCount = evalE(input2)
 
-      val count = resultsCount.collectFirst {
-        case (_, SDecimal(d)) => d.toInt
+      val count = resultsCount.collectFirst { case (_, SDecimal(d)) =>
+        d.toInt
       }.get
       results must haveSize(count)
 
@@ -185,8 +185,8 @@ trait LogisticRegressionSpecs extends EvalStackSpecs {
       val results = evalE(input)
       val resultsCount = evalE(input2)
 
-      val count = resultsCount.collectFirst {
-        case (_, SDecimal(d)) => d.toInt
+      val count = resultsCount.collectFirst { case (_, SDecimal(d)) =>
+        d.toInt
       }.get
       results must haveSize(count)
 

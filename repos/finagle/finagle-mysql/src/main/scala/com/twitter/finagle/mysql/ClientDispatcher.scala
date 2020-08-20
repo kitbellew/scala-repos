@@ -78,8 +78,8 @@ object ClientDispatcher {
   private val lostSyncExc = new LostSyncException(new Throwable)
   private val emptyTx = (Nil, EOF(0: Short, 0: Short))
   private val wrapWriteException
-      : PartialFunction[Throwable, Future[Nothing]] = {
-    case exc: Throwable => Future.exception(WriteException(exc))
+      : PartialFunction[Throwable, Future[Nothing]] = { case exc: Throwable =>
+    Future.exception(WriteException(exc))
   }
 
   /**

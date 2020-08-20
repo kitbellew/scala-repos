@@ -17,8 +17,8 @@ trait Sets { self: BaseClient =>
     * @return the number of new members added to the set.
     */
   def sAdd(key: ChannelBuffer, members: List[ChannelBuffer]): Future[JLong] =
-    doRequest(SAdd(key, members)) {
-      case IntegerReply(n) => Future.value(n)
+    doRequest(SAdd(key, members)) { case IntegerReply(n) =>
+      Future.value(n)
     }
 
   /**
@@ -43,8 +43,8 @@ trait Sets { self: BaseClient =>
     * keys are considered empty sets.
     */
   def sIsMember(key: ChannelBuffer, member: ChannelBuffer): Future[JBoolean] =
-    doRequest(SIsMember(key, member)) {
-      case IntegerReply(n) => Future.value(n == 1)
+    doRequest(SIsMember(key, member)) { case IntegerReply(n) =>
+      Future.value(n == 1)
     }
 
   /**
@@ -55,8 +55,8 @@ trait Sets { self: BaseClient =>
     * empty sets.
     */
   def sCard(key: ChannelBuffer): Future[JLong] =
-    doRequest(SCard(key)) {
-      case IntegerReply(n) => Future.value(n)
+    doRequest(SCard(key)) { case IntegerReply(n) =>
+      Future.value(n)
     }
 
   /**
@@ -68,8 +68,8 @@ trait Sets { self: BaseClient =>
     * 0 if the key is unassigned.
     */
   def sRem(key: ChannelBuffer, members: List[ChannelBuffer]): Future[JLong] =
-    doRequest(SRem(key, members)) {
-      case IntegerReply(n) => Future.value(n)
+    doRequest(SRem(key, members)) { case IntegerReply(n) =>
+      Future.value(n)
     }
 
   /**

@@ -66,8 +66,8 @@ object IntentionUtils {
       case (_, param) if param.isRepeated => true
       case _                              => false
     }
-    val allNamesDefined = argsAndMatchedParams.forall {
-      case (_, param) => !StringUtil.isEmpty(param.name)
+    val allNamesDefined = argsAndMatchedParams.forall { case (_, param) =>
+      !StringUtil.isEmpty(param.name)
     }
     val hasUnderscore = argsAndMatchedParams.exists {
       case (underscore: ScUnderscoreSection, _) => true

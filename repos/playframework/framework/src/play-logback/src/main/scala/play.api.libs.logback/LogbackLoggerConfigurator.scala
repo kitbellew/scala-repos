@@ -108,8 +108,8 @@ class LogbackLoggerConfigurator extends LoggerConfigurator {
           frameworkPackages.add(classOf[play.Logger].getName)
           frameworkPackages.add(classOf[play.api.Logger].getName)
 
-          properties.foreach {
-            case (name, value) => ctx.putProperty(name, value)
+          properties.foreach { case (name, value) =>
+            ctx.putProperty(name, value)
           }
 
           try {

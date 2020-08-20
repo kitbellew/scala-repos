@@ -60,8 +60,8 @@ object ClusterShardingSpec {
     def updateState(event: CounterChanged): Unit =
       count += event.delta
 
-    override def receiveRecover: Receive = {
-      case evt: CounterChanged ⇒ updateState(evt)
+    override def receiveRecover: Receive = { case evt: CounterChanged ⇒
+      updateState(evt)
     }
 
     override def receiveCommand: Receive = {
@@ -106,8 +106,8 @@ object ClusterShardingSpec {
       case _: Exception ⇒ SupervisorStrategy.Restart
     }
 
-    def receive = {
-      case msg ⇒ counter forward msg
+    def receive = { case msg ⇒
+      counter forward msg
     }
   }
   //#supervisor

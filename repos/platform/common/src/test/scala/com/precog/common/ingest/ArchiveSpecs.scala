@@ -43,8 +43,8 @@ class ArchiveSpecs
   implicit val arbArchive = Arbitrary(genRandomArchive)
   "serialization of an archive" should {
     "read back the data that was written" in check { in: Archive =>
-      in.serialize.validated[Archive] must beLike {
-        case Success(out) => in must_== out
+      in.serialize.validated[Archive] must beLike { case Success(out) =>
+        in must_== out
       }
     }
 

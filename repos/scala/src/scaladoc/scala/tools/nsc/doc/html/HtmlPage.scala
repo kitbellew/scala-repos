@@ -109,8 +109,8 @@ abstract class HtmlPage extends Page { thisPage =>
         <ol class={listStyle}>{listItemsToHtml(items)}</ol>
       case DefinitionList(items) =>
         <dl>{
-          items map {
-            case (t, d) => <dt>{inlineToHtml(t)}</dt><dd>{blockToHtml(d)}</dd>
+          items map { case (t, d) =>
+            <dt>{inlineToHtml(t)}</dt><dd>{blockToHtml(d)}</dd>
           }
         }</dl>
       case HorizontalRule() =>

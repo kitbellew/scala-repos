@@ -37,8 +37,8 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
 
     lazy val arguments = CommandLineParser.tokenize(options)
     lazy val virtualDirectory =
-      arguments.iterator.sliding(2).collectFirst {
-        case Seq("-d", dir) => dir
+      arguments.iterator.sliding(2).collectFirst { case Seq("-d", dir) =>
+        dir
       } match {
         case Some(outDir) => AbstractFile.getDirectory(outDir)
         case None         => new VirtualDirectory("(memory)", None)

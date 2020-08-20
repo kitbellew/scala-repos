@@ -41,8 +41,8 @@ trait CheckAnalysis {
 
   protected def containsMultipleGenerators(exprs: Seq[Expression]): Boolean = {
     exprs
-      .flatMap(_.collect {
-        case e: Generator => e
+      .flatMap(_.collect { case e: Generator =>
+        e
       })
       .length > 1
   }

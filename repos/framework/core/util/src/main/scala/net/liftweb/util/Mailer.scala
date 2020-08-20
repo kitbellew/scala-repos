@@ -317,8 +317,8 @@ trait Mailer extends SimpleInjector {
     in match {
       case n: Node => n
       case ns =>
-        ns.toList.collect {
-          case e: Elem => e
+        ns.toList.collect { case e: Elem =>
+          e
         } match {
           case Nil     => if (ns.length == 0) Text("") else ns(0)
           case x :: xs => x

@@ -117,8 +117,8 @@ trait AssignClusterModule[M[+_]]
                 Model(modelId, modelClusters)
               }.toSet
 
-              models0 filter {
-                case Model(_, modelClusters) => !modelClusters.isEmpty
+              models0 filter { case Model(_, modelClusters) =>
+                !modelClusters.isEmpty
               }
             }
           }
@@ -153,8 +153,8 @@ trait AssignClusterModule[M[+_]]
                     featurePaths.contains(cpath)
                   }
 
-                  val resPaths = res map {
-                    case (ColumnRef(cpath, _), _) => cpath
+                  val resPaths = res map { case (ColumnRef(cpath, _), _) =>
+                    cpath
                   } toSet
 
                   if (resPaths == featurePaths) res

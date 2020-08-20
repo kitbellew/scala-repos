@@ -186,8 +186,8 @@ private[akka] object EventAdapters {
       path: String): Map[String, String] = {
     import scala.collection.JavaConverters._
     if (config.hasPath(path)) {
-      config.getConfig(path).root.unwrapped.asScala.toMap map {
-        case (k, v) ⇒ k -> v.toString
+      config.getConfig(path).root.unwrapped.asScala.toMap map { case (k, v) ⇒
+        k -> v.toString
       }
     } else Map.empty
   }

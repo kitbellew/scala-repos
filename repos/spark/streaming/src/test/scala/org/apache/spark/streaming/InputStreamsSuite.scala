@@ -287,8 +287,8 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
 
     // Verify whether all the elements received are as expected
     assert(output.size === expectedOutput.size)
-    output.zipWithIndex.foreach {
-      case (e, i) => assert(e == expectedOutput(i))
+    output.zipWithIndex.foreach { case (e, i) =>
+      assert(e == expectedOutput(i))
     }
   }
 
@@ -341,8 +341,8 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
 
     // Verify whether all the elements received are as expected
     assert(output.size === expectedOutput.size)
-    output.zipWithIndex.foreach {
-      case (e, i) => assert(e == expectedOutput(i))
+    output.zipWithIndex.foreach { case (e, i) =>
+      assert(e == expectedOutput(i))
     }
   }
 

@@ -248,8 +248,8 @@ object Constraints {
       val updated = distribution.map(_ -- without.keys).groupBy(_.size)
       if (updated.size == 1) /* even distributed */ Iterator.empty
       else {
-        updated.maxBy(_._1)._2.iterator.flatten.map {
-          case (taskId, task) => task
+        updated.maxBy(_._1)._2.iterator.flatten.map { case (taskId, task) =>
+          task
         }
       }
     }

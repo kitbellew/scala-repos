@@ -454,8 +454,8 @@ trait TypeDiagnostics {
     */
   def withDisambiguation[T](locals: List[Symbol], types: Type*)(op: => T): T = {
     val typeRefs = typeDiags(locals, types: _*)
-    val toCheck = pairs(typeRefs) filterNot {
-      case (td1, td2) => td1 sym_== td2
+    val toCheck = pairs(typeRefs) filterNot { case (td1, td2) =>
+      td1 sym_== td2
     }
 
     ultimately(typeRefs foreach (_.restoreName())) {

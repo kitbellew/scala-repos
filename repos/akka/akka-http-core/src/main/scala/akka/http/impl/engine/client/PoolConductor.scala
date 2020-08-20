@@ -93,8 +93,8 @@ private object PoolConductor {
         .filter(
           !_.isInstanceOf[
             SlotEvent.RetryRequest]) ~> flatten ~> slotSelector.in1
-      retrySplit.out(1).collect {
-        case SlotEvent.RetryRequest(r) ⇒ r
+      retrySplit.out(1).collect { case SlotEvent.RetryRequest(r) ⇒
+        r
       } ~> retryMerge.preferred
 
       Ports(retryMerge.in(0), retrySplit.in, route.outArray.toList)

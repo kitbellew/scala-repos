@@ -112,8 +112,8 @@ object ORSet {
             else acc.updated(k, merged)
           }
         case (ManyVersionVector(lhsVs), ManyVersionVector(rhsVs)) ⇒
-          val commonDots = lhsVs.filter {
-            case (thisDotNode, v) ⇒ rhsVs.get(thisDotNode).exists(_ == v)
+          val commonDots = lhsVs.filter { case (thisDotNode, v) ⇒
+            rhsVs.get(thisDotNode).exists(_ == v)
           }
           val commonDotsKeys = commonDots.keys
           val lhsUniqueDots = lhsVs -- commonDotsKeys
@@ -127,8 +127,8 @@ object ORSet {
           if (merged.isEmpty) acc
           else acc.updated(k, merged)
         case (ManyVersionVector(lhsVs), OneVersionVector(n2, v2)) ⇒
-          val commonDots = lhsVs.filter {
-            case (n1, v1) ⇒ v1 == v2 && n1 == n2
+          val commonDots = lhsVs.filter { case (n1, v1) ⇒
+            v1 == v2 && n1 == n2
           }
           val commonDotsKeys = commonDots.keys
           val lhsUniqueDots = lhsVs -- commonDotsKeys
@@ -142,8 +142,8 @@ object ORSet {
           if (merged.isEmpty) acc
           else acc.updated(k, merged)
         case (OneVersionVector(n1, v1), ManyVersionVector(rhsVs)) ⇒
-          val commonDots = rhsVs.filter {
-            case (n2, v2) ⇒ v1 == v2 && n1 == n2
+          val commonDots = rhsVs.filter { case (n2, v2) ⇒
+            v1 == v2 && n1 == n2
           }
           val commonDotsKeys = commonDots.keys
           val lhsUnique =
@@ -364,8 +364,8 @@ final class ORSet[A] private[akka] (
       val newSet = new ORSet(
         elementsMap = elementsMap ++ pruned,
         vvector = vvector.prune(removedNode, collapseInto))
-      pruned.keys.foldLeft(newSet) {
-        case (s, elem) ⇒ s.add(collapseInto, elem)
+      pruned.keys.foldLeft(newSet) { case (s, elem) ⇒
+        s.add(collapseInto, elem)
       }
     }
   }

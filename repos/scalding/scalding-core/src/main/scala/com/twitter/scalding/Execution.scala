@@ -69,8 +69,8 @@ sealed trait Execution[+T] extends java.io.Serializable {
     * instead only the Try.
     */
   def liftToTry: Execution[Try[T]] =
-    map(e => Success(e)).recoverWith {
-      case throwable => Execution.from(Failure(throwable))
+    map(e => Success(e)).recoverWith { case throwable =>
+      Execution.from(Failure(throwable))
     }
 
   /**
@@ -485,8 +485,8 @@ object Execution {
       cache.getOrElseInsert(
         conf,
         this,
-        prev.runStats(conf, mode, cache).map {
-          case (t, _) => (t, ExecutionCounters.empty)
+        prev.runStats(conf, mode, cache).map { case (t, _) =>
+          (t, ExecutionCounters.empty)
         })
   }
 
@@ -1008,8 +1008,8 @@ object Execution {
       cx: Execution[C],
       dx: Execution[D],
       ex: Execution[E]): Execution[(A, B, C, D, E)] =
-    ax.zip(bx).zip(cx).zip(dx).zip(ex).map {
-      case ((((a, b), c), d), e) => (a, b, c, d, e)
+    ax.zip(bx).zip(cx).zip(dx).zip(ex).map { case ((((a, b), c), d), e) =>
+      (a, b, c, d, e)
     }
 
   /*

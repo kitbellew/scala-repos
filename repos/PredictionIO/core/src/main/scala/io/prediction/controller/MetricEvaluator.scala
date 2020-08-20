@@ -94,8 +94,8 @@ case class MetricEvaluatorResult[R](
         s"  $bestEPStr",
         "Metrics:",
         s"  $metricHeader: ${bestScore.score}") ++
-      otherMetricHeaders.zip(bestScore.otherScores).map {
-        case (h, s) => s"  $h: $s"
+      otherMetricHeaders.zip(bestScore.otherScores).map { case (h, s) =>
+        s"  $h: $s"
       } ++
       outputPath.toSeq.map { p =>
         s"The best variant params can be found in $p"

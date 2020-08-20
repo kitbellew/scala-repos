@@ -1051,8 +1051,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
             }
         }
       }
-      val identifiedKeyTrans = keyTrans.zipWithIndex map {
-        case (kt, i) => kt -> i.toString
+      val identifiedKeyTrans = keyTrans.zipWithIndex map { case (kt, i) =>
+        kt -> i.toString
       }
       write0(
         reduceSlices(slices),
@@ -1295,8 +1295,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
         sortOrder: DesiredSortOrder): Table = {
       import mergeEngine._
 
-      val totalCount = indices.toList.map {
-        case (_, sliceIndex) => sliceIndex.count
+      val totalCount = indices.toList.map { case (_, sliceIndex) =>
+        sliceIndex.count
       }.sum
 
       // Map the distinct indices into SortProjections/Cells, then merge them

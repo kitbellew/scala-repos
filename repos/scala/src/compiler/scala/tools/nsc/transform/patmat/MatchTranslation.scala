@@ -500,8 +500,8 @@ trait MatchTranslation {
 
       // never store these in local variables (for PreserveSubPatBinders)
       lazy val ignoredSubPatBinders: Set[Symbol] =
-        subPatBinders zip args collect {
-          case (b, PatternBoundToUnderscore()) => b
+        subPatBinders zip args collect { case (b, PatternBoundToUnderscore()) =>
+          b
         } toSet
 
       // do repeated-parameter expansion to match up with the expected number of arguments (in casu, subpatterns)

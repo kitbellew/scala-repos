@@ -41,8 +41,8 @@ object PerformanceSpec {
       extends NamedPersistentActor(name) {
     var failAt: Long = -1
 
-    override val receiveRecover: Receive = {
-      case _ ⇒ if (lastSequenceNr % 1000 == 0) print("r")
+    override val receiveRecover: Receive = { case _ ⇒
+      if (lastSequenceNr % 1000 == 0) print("r")
     }
 
     val controlBehavior: Receive = {
@@ -96,8 +96,8 @@ object PerformanceSpec {
   class StashingEventsourcedTestPersistentActor(name: String)
       extends PerformanceTestPersistentActor(name) {
 
-    val printProgress: PartialFunction[Any, Any] = {
-      case m ⇒ if (lastSequenceNr % 1000 == 0) print("."); m
+    val printProgress: PartialFunction[Any, Any] = { case m ⇒
+      if (lastSequenceNr % 1000 == 0) print("."); m
     }
 
     val receiveCommand: Receive =

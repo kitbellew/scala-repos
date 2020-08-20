@@ -95,12 +95,12 @@ object Endpoint {
   private def parseEndpoint(m: Any): Option[(String, Int)] =
     m match {
       case ep: java.util.Map[_, _] =>
-        val p = Option(ep.get("port")) collect {
-          case port: java.lang.Integer => port
+        val p = Option(ep.get("port")) collect { case port: java.lang.Integer =>
+          port
         }
 
-        val h = Option(ep.get("host")) collect {
-          case host: String => host
+        val h = Option(ep.get("host")) collect { case host: String =>
+          host
         }
 
         for (h <- h; p <- p)
@@ -131,8 +131,8 @@ object Endpoint {
     for (map <- d("serviceEndpoint"); hostport <- parseEndpoint(map))
       namesByHostPort(hostport) += null
     for {
-      map <- d("additionalEndpoints") collect {
-        case m: java.util.Map[_, _] => m
+      map <- d("additionalEndpoints") collect { case m: java.util.Map[_, _] =>
+        m
       }
       key <- map.keySet().asScala collect { case k: String => k }
       if key.isInstanceOf[String]

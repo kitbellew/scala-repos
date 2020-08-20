@@ -85,14 +85,14 @@ object SolverSpecs
     }
 
     "solve negation" in {
-      solve("neg 'a", 'a) must beLike {
-        case Some(Neg(_, someFunction)) => ok
+      solve("neg 'a", 'a) must beLike { case Some(Neg(_, someFunction)) =>
+        ok
       }
     }
 
     "solve parenthetical" in {
-      solve("('a)", 'a) must beLike {
-        case Some(someFunction) => ok
+      solve("('a)", 'a) must beLike { case Some(someFunction) =>
+        ok
       }
     }
   }
@@ -119,20 +119,20 @@ object SolverSpecs
     }
 
     "fail to solve paired variable subtraction" in {
-      solve("'a - 'a", 'a) must beLike {
-        case None => ok
+      solve("'a - 'a", 'a) must beLike { case None =>
+        ok
       }
     }
 
     "fail to solve paired variable multiplication" in {
-      solve("'a * 'a", 'a) must beLike {
-        case None => ok
+      solve("'a * 'a", 'a) must beLike { case None =>
+        ok
       }
     }
 
     "fail to solve paired variable division" in {
-      solve("'a / 'a", 'a) must beLike {
-        case None => ok
+      solve("'a / 'a", 'a) must beLike { case None =>
+        ok
       }
     }
 

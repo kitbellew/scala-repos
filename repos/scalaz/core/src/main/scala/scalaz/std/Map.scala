@@ -53,8 +53,8 @@ trait MapSubInstances0 extends MapSub {
       if (equalIsNatural) a1 == a2
       else
         Equal[Set[K]].equal(a1.keySet, a2.keySet) && {
-          a1.forall {
-            case (k, v) => a2.get(k).exists(v2 => Equal[V].equal(v, v2))
+          a1.forall { case (k, v) =>
+            a2.get(k).exists(v2 => Equal[V].equal(v, v2))
           }
         }
     }
@@ -110,8 +110,8 @@ trait MapSubInstances extends MapSubInstances0 with MapSubFunctions {
         fa.map { case (k, v) => (k, f(v)) }
       def traverseImpl[G[_], A, B](m: XMap[K, A])(f: A => G[B])(implicit
           G: Applicative[G]): G[XMap[K, B]] =
-        G.map(list.listInstance.traverseImpl(m.toList)({
-          case (k, v) => G.map(f(v))(k -> _)
+        G.map(list.listInstance.traverseImpl(m.toList)({ case (k, v) =>
+          G.map(f(v))(k -> _)
         }))(xs => fromSeq(xs: _*))
       import \&/._
       override def alignWith[A, B, C](f: A \&/ B => C) = {
@@ -163,8 +163,8 @@ trait MapSubInstances extends MapSubInstances0 with MapSubFunctions {
       "Map[" +:
         Cord.mkCord(
           ", ",
-          m.toSeq.view.map {
-            case (k, v) => Cord(K show k, "->", V show v)
+          m.toSeq.view.map { case (k, v) =>
+            Cord(K show k, "->", V show v)
           }: _*) :+ "]")
 
   implicit def mapOrder[K: Order, V: Order]: Order[XMap[K, V]] =
@@ -223,8 +223,8 @@ trait MapSubFunctions extends MapSub {
       m1: XMap[K, A],
       m2: XMap[K, A])(f: (K, A, A) => A): XMap[K, A] = {
     val diff = m2 -- m1.keySet
-    val aug = m1 map {
-      case (k, v) => if (m2 contains k) k -> f(k, v, m2(k)) else (k, v)
+    val aug = m1 map { case (k, v) =>
+      if (m2 contains k) k -> f(k, v, m2(k)) else (k, v)
     }
     aug ++ diff
   }

@@ -50,8 +50,8 @@ final case class OptionT[F[_], A](run: F[Option[A]]) {
     * both `F`s.  It is not compatible with `Monad#bind`.
     */
   def app[B](f: => OptionT[F, A => B])(implicit F: Apply[F]): OptionT[F, B] =
-    OptionT(F.apply2(f.run, run) {
-      case (ff, aa) => optionInstance.ap(aa)(ff)
+    OptionT(F.apply2(f.run, run) { case (ff, aa) =>
+      optionInstance.ap(aa)(ff)
     })
 
   def isDefined(implicit F: Functor[F]): F[Boolean] = mapO(_.isDefined)

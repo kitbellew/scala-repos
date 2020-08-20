@@ -144,8 +144,8 @@ sealed trait CPathTraversal { self =>
           plan0(t, matches, idx)
 
         case Loop(s, e, t) =>
-          val matches = paths collect {
-            case (CPathArray :: ns, p) => (ns, CPathArray :: p)
+          val matches = paths collect { case (CPathArray :: ns, p) =>
+            (ns, CPathArray :: p)
           }
           val tailComp = plan0(t, matches, idx + 1)
           new CPathComparator {

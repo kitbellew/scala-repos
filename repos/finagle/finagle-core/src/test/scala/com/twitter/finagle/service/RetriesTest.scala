@@ -52,8 +52,8 @@ class RetriesTest extends FunSuite {
     val stats = new InMemoryStatsReceiver()
     val budget = newBudget()
 
-    val retryAll: PartialFunction[Try[Nothing], Boolean] = {
-      case _ => true
+    val retryAll: PartialFunction[Try[Nothing], Boolean] = { case _ =>
+      true
     }
 
     val params = Stack.Params.empty +

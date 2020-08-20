@@ -187,8 +187,8 @@ class ScalaImportOptimizer extends ImportOptimizer {
           .zip {
             collectRanges(_ => Set.empty, _ => Seq.empty)
           }
-          .map {
-            case ((_, infos), (range, _)) => (range, infos)
+          .map { case ((_, infos), (range, _)) =>
+            (range, infos)
           }
       }
     }

@@ -203,8 +203,8 @@ abstract class QueryTest extends PlanTest {
     */
   def assertCached(query: Queryable, numCachedTables: Int = 1): Unit = {
     val planWithCaching = query.queryExecution.withCachedData
-    val cachedData = planWithCaching collect {
-      case cached: InMemoryRelation => cached
+    val cachedData = planWithCaching collect { case cached: InMemoryRelation =>
+      cached
     }
 
     assert(
@@ -224,8 +224,8 @@ abstract class QueryTest extends PlanTest {
         case _: CoGroup         => return
         case _: LogicalRelation => return
       }
-      .transformAllExpressions {
-        case a: ImperativeAggregate => return
+      .transformAllExpressions { case a: ImperativeAggregate =>
+        return
       }
 
     // bypass hive tests before we fix all corner cases in hive module.
@@ -256,8 +256,8 @@ abstract class QueryTest extends PlanTest {
     // in the logical plans parsed from JSON.
     var logicalRDDs = logicalPlan.collect { case l: LogicalRDD => l }
     var localRelations = logicalPlan.collect { case l: LocalRelation => l }
-    var inMemoryRelations = logicalPlan.collect {
-      case i: InMemoryRelation => i
+    var inMemoryRelations = logicalPlan.collect { case i: InMemoryRelation =>
+      i
     }
 
     val jsonBackPlan =

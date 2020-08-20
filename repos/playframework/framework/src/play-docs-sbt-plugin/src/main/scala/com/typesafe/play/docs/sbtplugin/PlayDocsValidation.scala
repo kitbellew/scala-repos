@@ -337,8 +337,8 @@ object PlayDocsValidation {
 
     val markdownFiles = (base / "manual" ** "*.md").get.pair(relativeTo(base))
 
-    CodeSamplesReport(markdownFiles.map {
-      case (file, name) => extractCodeSamples("/" + name, IO.read(file))
+    CodeSamplesReport(markdownFiles.map { case (file, name) =>
+      extractCodeSamples("/" + name, IO.read(file))
     })
   }
 

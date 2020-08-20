@@ -332,8 +332,8 @@ object FormSpec extends Specification {
       .withGlobalError("some.error")
       .bind(Map("value" -> "some value"))
       .errors
-      .headOption must beSome.like {
-      case error => error.message must equalTo("some.error")
+      .headOption must beSome.like { case error =>
+      error.message must equalTo("some.error")
     }
   }
 

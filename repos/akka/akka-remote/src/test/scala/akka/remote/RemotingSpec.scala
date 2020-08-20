@@ -189,8 +189,8 @@ class RemotingSpec
       s"akka.test://remote-sys@localhost:12346/user/$bigBounceId")
 
     val eventForwarder = system.actorOf(Props(new Actor {
-      def receive = {
-        case x ⇒ testActor ! x
+      def receive = { case x ⇒
+        testActor ! x
       }
     }).withDeploy(Deploy.local))
     system.eventStream.subscribe(eventForwarder, classOf[AssociationErrorEvent])

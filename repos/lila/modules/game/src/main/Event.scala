@@ -128,8 +128,8 @@ object Event {
         enpassant = (move.capture ifTrue move.enpassant).map {
           Event.Enpassant(_, !move.color)
         },
-        castle = move.castle.map {
-          case (king, rook) => Castling(king, rook, move.color)
+        castle = move.castle.map { case (king, rook) =>
+          Castling(king, rook, move.color)
         },
         state = state,
         clock = clock,
@@ -195,8 +195,8 @@ object Event {
     def json(moves: Map[Pos, List[Pos]]) =
       if (moves.isEmpty) JsNull
       else
-        moves.foldLeft(JsObject(Nil)) {
-          case (res, (o, d)) => res + (o.key, JsString(d map (_.key) mkString))
+        moves.foldLeft(JsObject(Nil)) { case (res, (o, d)) =>
+          res + (o.key, JsString(d map (_.key) mkString))
         }
   }
 

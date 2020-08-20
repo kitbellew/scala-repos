@@ -283,8 +283,8 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             // creates a BitSet for each array-column with index `idx`
             def defined(idx: Int): BitSet = {
               val bools = dateTimes map { _.length > idx }
-              val indices = bools.zipWithIndex collect {
-                case (true, idx) => idx
+              val indices = bools.zipWithIndex collect { case (true, idx) =>
+                idx
               }
 
               BitSetUtil.create(indices)

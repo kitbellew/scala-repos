@@ -163,8 +163,8 @@ case class Game(
   }
 
   lazy val toChessHistory = ChessHistory(
-    lastMove = castleLastMoveTime.lastMove map {
-      case (orig, dest) => Uci.Move(orig, dest)
+    lastMove = castleLastMoveTime.lastMove map { case (orig, dest) =>
+      Uci.Move(orig, dest)
     },
     castles = castleLastMoveTime.castles,
     positionHashes = positionHashes,

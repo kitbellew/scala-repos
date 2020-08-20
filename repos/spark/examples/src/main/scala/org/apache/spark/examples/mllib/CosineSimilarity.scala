@@ -95,11 +95,11 @@ object CosineSimilarity {
     // Compute similar columns with estimation using DIMSUM
     val approx = mat.columnSimilarities(params.threshold)
 
-    val exactEntries = exact.entries.map {
-      case MatrixEntry(i, j, u) => ((i, j), u)
+    val exactEntries = exact.entries.map { case MatrixEntry(i, j, u) =>
+      ((i, j), u)
     }
-    val approxEntries = approx.entries.map {
-      case MatrixEntry(i, j, v) => ((i, j), v)
+    val approxEntries = approx.entries.map { case MatrixEntry(i, j, v) =>
+      ((i, j), v)
     }
     val MAE = exactEntries
       .leftOuterJoin(approxEntries)

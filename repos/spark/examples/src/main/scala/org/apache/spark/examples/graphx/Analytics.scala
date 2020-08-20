@@ -171,8 +171,8 @@ object Analytics extends Logging {
         val triangles = TriangleCount.run(graph)
         println(
           "Triangles: " + triangles.vertices
-            .map {
-              case (vid, data) => data.toLong
+            .map { case (vid, data) =>
+              data.toLong
             }
             .reduce(_ + _) / 3)
         sc.stop()

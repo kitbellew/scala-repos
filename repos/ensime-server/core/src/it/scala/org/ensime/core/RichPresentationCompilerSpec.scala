@@ -147,8 +147,8 @@ class RichPresentationCompilerSpec
         val sym = cc.askSymbolInfoAt(p).get
         sym.name shouldBe "fn"
         sym.localName shouldBe "fn"
-        inside(sym.declPos) {
-          case Some(OffsetSourcePosition(f, i)) => i should be > 0
+        inside(sym.declPos) { case Some(OffsetSourcePosition(f, i)) =>
+          i should be > 0
         }
       }
     }
@@ -172,8 +172,8 @@ class RichPresentationCompilerSpec
         val sym = cc.askSymbolInfoAt(p).get
         sym.name shouldBe "apply"
         sym.localName shouldBe "apply"
-        inside(sym.declPos) {
-          case Some(OffsetSourcePosition(f, i)) => i should be > 0
+        inside(sym.declPos) { case Some(OffsetSourcePosition(f, i)) =>
+          i should be > 0
         }
       }
     }
@@ -198,8 +198,8 @@ class RichPresentationCompilerSpec
         val sym = cc.askSymbolInfoAt(p).get
         sym.name shouldBe "copy"
         sym.localName shouldBe "copy"
-        inside(sym.declPos) {
-          case Some(OffsetSourcePosition(f, i)) => i should be > 0
+        inside(sym.declPos) { case Some(OffsetSourcePosition(f, i)) =>
+          i should be > 0
         }
       }
     }

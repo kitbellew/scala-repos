@@ -96,8 +96,8 @@ object Externalizables {
     // per type a sorted list of indices
     val perType = targs.zipWithIndex
       .groupBy { case (targ, i) => targ }
-      .map {
-        case (targ, things) => (targ, (things.map { case (_, i) => i }).sorted)
+      .map { case (targ, things) =>
+        (targ, (things.map { case (_, i) => i }).sorted)
       }
 
     def finalTree(tpe: Type): Tree =
@@ -228,8 +228,8 @@ object Externalizables {
     // per type a sorted list of indices
     val perType = targs.zipWithIndex
       .groupBy { case (targ, i) => targ }
-      .map {
-        case (targ, things) => (targ, (things.map { case (_, i) => i }).sorted)
+      .map { case (targ, things) =>
+        (targ, (things.map { case (_, i) => i }).sorted)
       }
 
     // create array-valued fields

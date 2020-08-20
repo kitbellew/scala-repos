@@ -57,8 +57,8 @@ object AdSamples {
   val ageTuples =
     List((0, 17), (18, 24), (25, 36), (37, 48), (49, 60), (61, 75), (76, 130))
   val ageRangeStrings = ageTuples map { case (l, h) => "%d-%d".format(l, h) }
-  val ageRangeArrays = ageTuples map {
-    case (l, h) => JArray(List(JNum(l), JNum(h)))
+  val ageRangeArrays = ageTuples map { case (l, h) =>
+    JArray(List(JNum(l), JNum(h)))
   }
   val platforms = List("android", "iphone", "web", "blackberry", "other")
   val campaigns = for (i <- 0 to 30) yield "c" + i

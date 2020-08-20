@@ -251,8 +251,8 @@ class DStreamScopeSuite
 
   /** Assert that all the specified options are defined. */
   private def assertDefined[T](options: Option[T]*): Unit = {
-    options.zipWithIndex.foreach {
-      case (o, i) => assert(o.isDefined, s"Option $i was empty!")
+    options.zipWithIndex.foreach { case (o, i) =>
+      assert(o.isDefined, s"Option $i was empty!")
     }
   }
 

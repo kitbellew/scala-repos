@@ -54,8 +54,8 @@ trait Calculate {
             println(
               "boundSym: %s of type %s".format(
                 tree.symbol,
-                (tree.productIterator.toList collect {
-                  case tt: TypeTree => tt
+                (tree.productIterator.toList collect { case tt: TypeTree =>
+                  tt
                 }).headOption.getOrElse(TypeTree(tree.tpe))))
           registerLocalSymbol(tree.symbol, currMetalevel)
 

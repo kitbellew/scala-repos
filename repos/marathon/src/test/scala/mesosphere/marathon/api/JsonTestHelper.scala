@@ -41,8 +41,8 @@ object JsonTestHelper extends Assertions with Matchers {
           case (_, JsNull) => false
           case _           => true
         }
-        val filterSubValues = withoutNullValues.mapValues {
-          case v => removeNullFieldValues(v)
+        val filterSubValues = withoutNullValues.mapValues { case v =>
+          removeNullFieldValues(v)
         }
 
         JsObject(filterSubValues)

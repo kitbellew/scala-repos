@@ -53,8 +53,8 @@ trait TournamentHelper { self: I18nHelper with DateHelper with UserHelper =>
     }
     def apply(name: String) =
       Html {
-        replacements.foldLeft(name) {
-          case (n, (from, to)) => n.replace(from, to)
+        replacements.foldLeft(name) { case (n, (from, to)) =>
+          n.replace(from, to)
         }
       }
   }

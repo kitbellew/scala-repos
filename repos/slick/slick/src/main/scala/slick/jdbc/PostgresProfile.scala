@@ -234,12 +234,12 @@ trait PostgresProfile extends JdbcProfile {
 
   class TableDDLBuilder(table: Table[_]) extends super.TableDDLBuilder(table) {
     override def createPhase1 =
-      super.createPhase1 ++ columns.flatMap {
-        case cb: ColumnDDLBuilder => cb.createLobTrigger(table.tableName)
+      super.createPhase1 ++ columns.flatMap { case cb: ColumnDDLBuilder =>
+        cb.createLobTrigger(table.tableName)
       }
     override def dropPhase1 = {
-      val dropLobs = columns.flatMap {
-        case cb: ColumnDDLBuilder => cb.dropLobTrigger(table.tableName)
+      val dropLobs = columns.flatMap { case cb: ColumnDDLBuilder =>
+        cb.dropLobTrigger(table.tableName)
       }
       if (dropLobs.isEmpty) super.dropPhase1
       else

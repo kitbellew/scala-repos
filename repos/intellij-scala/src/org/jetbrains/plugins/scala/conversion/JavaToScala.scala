@@ -1113,8 +1113,8 @@ object JavaToScala {
 
     def handleModifiers: Seq[IntermediateNode] = {
       val modifiers = new ArrayBuffer[IntermediateNode]()
-      val simpleList = SIMPLE_MODIFIERS_MAP.filter {
-        case (psiType, el) => owner.hasModifierProperty(psiType)
+      val simpleList = SIMPLE_MODIFIERS_MAP.filter { case (psiType, el) =>
+        owner.hasModifierProperty(psiType)
       }.values
 
       modifiers ++= simpleList.map(SimpleModifier)

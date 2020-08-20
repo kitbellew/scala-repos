@@ -26,8 +26,8 @@ import net.liftweb.common._
 import Helpers._
 
 object Comet extends DispatchSnippet with LazyLoggable {
-  def dispatch: DispatchIt = {
-    case _ => render _
+  def dispatch: DispatchIt = { case _ =>
+    render _
   }
 
   // Take the comet's internal container and annotate it with the unique

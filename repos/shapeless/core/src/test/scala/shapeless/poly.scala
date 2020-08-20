@@ -305,8 +305,8 @@ class PolyTests {
   @Test
   def testRotateLeft {
     object isd extends Poly3 {
-      implicit val default = at[Int, String, Double] {
-        case (i, s, d) => s"i: $i, s: $s, d: $d"
+      implicit val default = at[Int, String, Double] { case (i, s, d) =>
+        s"i: $i, s: $s, d: $d"
       }
     }
 
@@ -346,8 +346,8 @@ class PolyTests {
   @Test
   def testRotateRight {
     object isd extends Poly3 {
-      implicit val default = at[Int, String, Double] {
-        case (i, s, d) => s"i: $i, s: $s, d: $d"
+      implicit val default = at[Int, String, Double] { case (i, s, d) =>
+        s"i: $i, s: $s, d: $d"
       }
     }
 

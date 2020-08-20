@@ -364,8 +364,8 @@ trait FutureCombinators extends TestBase {
       val cause = new RuntimeException
       val f = Future {
         throw cause
-      } recover {
-        case te: TimeoutException => "timeout"
+      } recover { case te: TimeoutException =>
+        "timeout"
       }
       f onSuccess { case _ => done(false) }
       f onFailure { case any => done(any == cause) }

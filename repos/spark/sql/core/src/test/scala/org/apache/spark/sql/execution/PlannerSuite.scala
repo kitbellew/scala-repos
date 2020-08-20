@@ -95,8 +95,8 @@ class PlannerSuite extends SharedSQLContext {
     "sizeInBytes estimation of limit operator for broadcast hash join optimization") {
     def checkPlan(fieldTypes: Seq[DataType]): Unit = {
       withTempTable("testLimit") {
-        val fields = fieldTypes.zipWithIndex.map {
-          case (dataType, index) => StructField(s"c${index}", dataType, true)
+        val fields = fieldTypes.zipWithIndex.map { case (dataType, index) =>
+          StructField(s"c${index}", dataType, true)
         } :+ StructField("key", IntegerType, true)
         val schema = StructType(fields)
         val row = Row.fromSeq(Seq.fill(fields.size)(null))
@@ -113,8 +113,8 @@ class PlannerSuite extends SharedSQLContext {
         val broadcastHashJoins = planned.collect {
           case join: BroadcastHashJoin => join
         }
-        val sortMergeJoins = planned.collect {
-          case join: SortMergeJoin => join
+        val sortMergeJoins = planned.collect { case join: SortMergeJoin =>
+          join
         }
 
         assert(broadcastHashJoins.size === 1, "Should use broadcast hash join")
@@ -171,8 +171,8 @@ class PlannerSuite extends SharedSQLContext {
         val broadcastHashJoins = planned.collect {
           case join: BroadcastHashJoin => join
         }
-        val sortMergeJoins = planned.collect {
-          case join: SortMergeJoin => join
+        val sortMergeJoins = planned.collect { case join: SortMergeJoin =>
+          join
         }
 
         assert(broadcastHashJoins.size === 1, "Should use broadcast hash join")

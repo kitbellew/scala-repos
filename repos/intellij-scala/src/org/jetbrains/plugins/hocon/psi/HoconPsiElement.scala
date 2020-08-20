@@ -82,8 +82,8 @@ sealed abstract class HoconPsiElement(ast: ASTNode)
         ch.getNode.getElementType))
 
   def findChildren[T <: HoconPsiElement: ClassTag] =
-    allChildren.collect {
-      case t: T => t
+    allChildren.collect { case t: T =>
+      t
     }
 }
 

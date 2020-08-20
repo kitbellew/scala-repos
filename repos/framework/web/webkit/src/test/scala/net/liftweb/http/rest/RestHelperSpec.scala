@@ -35,8 +35,8 @@ class RestHelperSpec extends WebSpec(RestHelperSpecBoot.boot _) {
     }
 
     "give the correct response" withReqFor testOptionsReq in { req =>
-      RestHelperSpecRest(req)() must beLike {
-        case Full(OkResponse()) => ok
+      RestHelperSpecRest(req)() must beLike { case Full(OkResponse()) =>
+        ok
       }
     }
 
@@ -65,8 +65,8 @@ class RestHelperSpec extends WebSpec(RestHelperSpecBoot.boot _) {
 }
 
 object RestHelperSpecRest extends RestHelper {
-  serve {
-    case "api" :: "info" :: Nil Options req => OkResponse()
+  serve { case "api" :: "info" :: Nil Options req =>
+    OkResponse()
   }
 }
 

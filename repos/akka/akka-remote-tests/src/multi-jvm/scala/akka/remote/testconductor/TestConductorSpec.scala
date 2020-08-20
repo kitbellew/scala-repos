@@ -48,8 +48,8 @@ class TestConductorSpec
       runOn(master) {
         system.actorOf(
           Props(new Actor {
-            def receive = {
-              case x ⇒ testActor ! x; sender() ! x
+            def receive = { case x ⇒
+              testActor ! x; sender() ! x
             }
           }).withDeploy(Deploy.local),
           "echo")

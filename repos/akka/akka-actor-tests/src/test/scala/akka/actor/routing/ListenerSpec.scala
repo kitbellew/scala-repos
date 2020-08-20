@@ -18,8 +18,8 @@ class ListenerSpec extends AkkaSpec {
 
       val broadcast = system.actorOf(Props(new Actor with Listeners {
         def receive =
-          listenerManagement orElse {
-            case "foo" ⇒ gossip("bar")
+          listenerManagement orElse { case "foo" ⇒
+            gossip("bar")
           }
       }))
 

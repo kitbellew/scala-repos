@@ -252,8 +252,8 @@ object Promise {
     * the returned promise handles an interrupt when any of ''fs'' do.
     */
   def interrupts[A](fs: Future[_]*): Promise[A] = {
-    val handler: PartialFunction[Throwable, Unit] = {
-      case intr => for (f <- fs) f.raise(intr)
+    val handler: PartialFunction[Throwable, Unit] = { case intr =>
+      for (f <- fs) f.raise(intr)
     }
     new Promise[A](handler)
   }

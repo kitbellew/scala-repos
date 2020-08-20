@@ -44,12 +44,12 @@ akka.persistence.snapshot-store.plugin = "akka.persistence.no-snapshot-store"
       monitor ! PostRestart(persistenceId)
     override def postStop(): Unit = monitor ! PostStop(persistenceId)
 
-    def receiveRecover = {
-      case x ⇒ monitor ! x
+    def receiveRecover = { case x ⇒
+      monitor ! x
     }
     def receiveCommand =
-      behavior orElse {
-        case m: Multi ⇒ m.cmd.foreach(behavior)
+      behavior orElse { case m: Multi ⇒
+        m.cmd.foreach(behavior)
       }
 
     val behavior: Receive = {
@@ -86,8 +86,8 @@ class JournalProbe(implicit private val system: ExtendedActorSystem)
 
 class JournalPuppet extends Actor {
   val ref = JournalPuppet(context.system).ref
-  def receive = {
-    case x ⇒ ref forward x
+  def receive = { case x ⇒
+    ref forward x
   }
 }
 

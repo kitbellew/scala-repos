@@ -301,8 +301,8 @@ private[io] class SelectionHandler(settings: SelectionHandlerSettings)
   // we can never recover from failures of a connection or listener child
   // and log the failure at debug level
   override def supervisorStrategy = {
-    def stoppingDecider: SupervisorStrategy.Decider = {
-      case _: Exception ⇒ SupervisorStrategy.Stop
+    def stoppingDecider: SupervisorStrategy.Decider = { case _: Exception ⇒
+      SupervisorStrategy.Stop
     }
     new OneForOneStrategy()(stoppingDecider) {
       override def logFailure(

@@ -107,8 +107,8 @@ private[pickling] class IrScalaSymbols[
         .toList
       //System.err.println(s"$tpe has constructor args:\n - ${constructorArgs.mkString("\n - ")}")
       // NOTE - This will only collect memeber vals/vals.  It's possible some things come from the constructor.
-      val declaredVars = (tpe.declarations).collect {
-        case meth: MethodSymbol => meth
+      val declaredVars = (tpe.declarations).collect { case meth: MethodSymbol =>
+        meth
       }.toList
       // NOTE - There can be duplication between 'constructor args' and 'declared vars' we'd like to avoid.
       declaredVars

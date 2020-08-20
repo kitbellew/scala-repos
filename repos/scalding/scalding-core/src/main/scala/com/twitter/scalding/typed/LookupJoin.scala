@@ -204,8 +204,8 @@ object LookupJoin extends Serializable {
     joined.flatMap { case (k, (_, optV)) =>
       // filter out every event that produced a Right(delta) above,
       // leaving only the leftJoin events that occurred above:
-      optV.map {
-        case (t, v, optJoined) => (t, (k, (v, optJoined)))
+      optV.map { case (t, v, optJoined) =>
+        (t, (k, (v, optJoined)))
       }
     }
   }

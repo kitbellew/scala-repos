@@ -1580,8 +1580,8 @@ trait TransformSpec[M[+_]]
     }
 
     check { (sample: SampleData) =>
-      val toDelete = sample.schema.flatMap({
-        case (_, schema) => randomDeletionMask(schema)
+      val toDelete = sample.schema.flatMap({ case (_, schema) =>
+        randomDeletionMask(schema)
       })
       toDelete.isDefined ==> {
         val table = fromSample(sample)
@@ -2056,8 +2056,8 @@ trait TransformSpec[M[+_]]
 
   def testIsType(sample: SampleData) = {
     val (_, schema) = sample.schema.getOrElse(0 -> List())
-    val cschema = schema map {
-      case (jpath, ctype) => ColumnRef(CPath(jpath), ctype)
+    val cschema = schema map { case (jpath, ctype) =>
+      ColumnRef(CPath(jpath), ctype)
     }
 
     // using a generator with heterogeneous data, we're just going to produce
@@ -2136,8 +2136,8 @@ trait TransformSpec[M[+_]]
 
   def testTyped(sample: SampleData) = {
     val (_, schema) = sample.schema.getOrElse(0 -> List())
-    val cschema = schema map {
-      case (jpath, ctype) => ColumnRef(CPath(jpath), ctype)
+    val cschema = schema map { case (jpath, ctype) =>
+      ColumnRef(CPath(jpath), ctype)
     }
 
     // using a generator with heterogeneous data, we're just going to produce
@@ -2364,8 +2364,8 @@ trait TransformSpec[M[+_]]
       JPath(List(JPathIndex(1))) -> Set(CEmptyArray),
       JPath(List(JPathIndex(2))) -> Set(CNull))
 
-    val sampleSchema = inferSchema(data.toSeq) map {
-      case (jpath, ctype) => (CPath(jpath), ctype)
+    val sampleSchema = inferSchema(data.toSeq) map { case (jpath, ctype) =>
+      (CPath(jpath), ctype)
     }
     val subsumes: Boolean = Schema.subsumes(sampleSchema, jtpe)
 
@@ -2409,8 +2409,8 @@ trait TransformSpec[M[+_]]
       JPath(List(JPathIndex(3))) -> Set(CEmptyArray)
     )
 
-    val sampleSchema = inferSchema(data.toSeq) map {
-      case (jpath, ctype) => (CPath(jpath), ctype)
+    val sampleSchema = inferSchema(data.toSeq) map { case (jpath, ctype) =>
+      (CPath(jpath), ctype)
     }
     val subsumes: Boolean = Schema.subsumes(sampleSchema, jtpe)
 

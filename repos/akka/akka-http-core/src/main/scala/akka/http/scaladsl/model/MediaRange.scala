@@ -79,8 +79,8 @@ object MediaRange {
     def render[R <: Rendering](r: R): r.type = {
       r ~~ mainType ~~ '/' ~~ '*'
       if (qValue < 1.0f) r ~~ ";q=" ~~ qValue
-      if (params.nonEmpty) params foreach {
-        case (k, v) ⇒ r ~~ ';' ~~ ' ' ~~ k ~~ '=' ~~# v
+      if (params.nonEmpty) params foreach { case (k, v) ⇒
+        r ~~ ';' ~~ ' ' ~~ k ~~ '=' ~~# v
       }
       r
     }

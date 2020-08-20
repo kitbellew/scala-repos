@@ -838,8 +838,8 @@ object Project extends ProjectExtra {
     }
   def usedBy(structure: BuildStructure, actual: Boolean, key: AttributeKey[_])(
       implicit display: Show[ScopedKey[_]]): Seq[ScopedKey[_]] =
-    relation(structure, actual)(display).all.toSeq flatMap {
-      case (a, b) => if (b.key == key) List[ScopedKey[_]](a) else Nil
+    relation(structure, actual)(display).all.toSeq flatMap { case (a, b) =>
+      if (b.key == key) List[ScopedKey[_]](a) else Nil
     }
   def reverseDependencies(
       cMap: Map[ScopedKey[_], Flattened],

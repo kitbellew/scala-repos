@@ -89,11 +89,11 @@ class BackoffSupervisorSpec extends AkkaSpec with ImplicitSender {
         }
       }
       filterException[TestException] {
-        val stoppingStrategy = OneForOneStrategy() {
-          case _: TestException ⇒ SupervisorStrategy.Stop
+        val stoppingStrategy = OneForOneStrategy() { case _: TestException ⇒
+          SupervisorStrategy.Stop
         }
-        val restartingStrategy = OneForOneStrategy() {
-          case _: TestException ⇒ SupervisorStrategy.Restart
+        val restartingStrategy = OneForOneStrategy() { case _: TestException ⇒
+          SupervisorStrategy.Restart
         }
 
         assertCustomStrategy(
@@ -159,11 +159,11 @@ class BackoffSupervisorSpec extends AkkaSpec with ImplicitSender {
           expectMsg(BackoffSupervisor.RestartCount(0))
         }
 
-        val stoppingStrategy = OneForOneStrategy() {
-          case _: TestException ⇒ SupervisorStrategy.Stop
+        val stoppingStrategy = OneForOneStrategy() { case _: TestException ⇒
+          SupervisorStrategy.Stop
         }
-        val restartingStrategy = OneForOneStrategy() {
-          case _: TestException ⇒ SupervisorStrategy.Restart
+        val restartingStrategy = OneForOneStrategy() { case _: TestException ⇒
+          SupervisorStrategy.Restart
         }
 
         assertManualReset(

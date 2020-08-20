@@ -50,8 +50,8 @@ trait UnaryLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       object Comp extends Op1F1(UnaryNamespace, "comp") {
         val tpe = UnaryOperationType(JBooleanT, JBooleanT)
         def f1(ctx: MorphContext): F1 =
-          CF1P("builtin::unary::comp") {
-            case c: BoolColumn => new BoolFrom.B(c, !_)
+          CF1P("builtin::unary::comp") { case c: BoolColumn =>
+            new BoolFrom.B(c, !_)
           }
 
         def spec[A <: SourceType](

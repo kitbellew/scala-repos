@@ -140,8 +140,8 @@ class EnsembleTree(
   def getThumbs(keyName: String) = thumbnails(keyName)
 
   def getDashThumbsCtrl =
-    thumbnails.flatMap {
-      case (heading, ts) => Seq(createCategoryLabel(heading), createTiles(ts))
+    thumbnails.flatMap { case (heading, ts) =>
+      Seq(createCategoryLabel(heading), createTiles(ts))
     }
 
   def getDashThumb(ctrlGrpName: String) =

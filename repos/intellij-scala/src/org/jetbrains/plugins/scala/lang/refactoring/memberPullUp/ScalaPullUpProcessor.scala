@@ -167,13 +167,13 @@ class ScalaPullUpProcessor(
         Seq(copy.getText)
       case valDef: ScPatternDefinition =>
         val copy = valDef.copy().asInstanceOf[ScPatternDefinition]
-        copy.bindings.collect {
-          case b: ScBindingPattern => "val " + textForBinding(b)
+        copy.bindings.collect { case b: ScBindingPattern =>
+          "val " + textForBinding(b)
         }
       case varDef: ScVariableDefinition =>
         val copy = varDef.copy().asInstanceOf[ScVariableDefinition]
-        copy.bindings.collect {
-          case b: ScBindingPattern => "var " + textForBinding(b)
+        copy.bindings.collect { case b: ScBindingPattern =>
+          "var " + textForBinding(b)
         }
       case ta: ScTypeAliasDefinition =>
         val copy = ta.copy().asInstanceOf[ScTypeAliasDefinition]

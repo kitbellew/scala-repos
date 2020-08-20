@@ -89,8 +89,8 @@ private[spire] trait Fuser[C <: Context, A] {
         }
 
       case q"$constr($apx, $mes, $ind, $exact)" =>
-        termify(apx, mes, ind, exact) map {
-          case (apx, mes, ind, exact) => Fused(Nil, apx, mes, ind, exact)
+        termify(apx, mes, ind, exact) map { case (apx, mes, ind, exact) =>
+          Fused(Nil, apx, mes, ind, exact)
         } getOrElse Approx(apx, mes, Left(ind), exact).fused(Nil)
 
       case _ if typeCheck(c)(tree).tpe <:< c.weakTypeOf[FpFilterExact[A]] =>

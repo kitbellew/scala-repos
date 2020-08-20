@@ -365,8 +365,8 @@ object CustomSerializerExamples extends Specification {
         }
     }
 
-    def serialize(implicit formats: Formats) = {
-      case i: IndexedSeq[_] => JArray(i.map(Extraction.decompose).toList)
+    def serialize(implicit formats: Formats) = { case i: IndexedSeq[_] =>
+      JArray(i.map(Extraction.decompose).toList)
     }
   }
 

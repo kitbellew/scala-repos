@@ -25,8 +25,8 @@ object ComparingUtil {
       ClassInheritorsSearch
         .search(clazz, new LocalSearchScope(clazz.getContainingFile), false)
         .toArray(PsiClass.EMPTY_ARRAY)
-        .collect {
-          case x: ScTypeDefinition => x
+        .collect { case x: ScTypeDefinition =>
+          x
         }
 
     def sealedAndAllChildrenAreIrreconcilable = {

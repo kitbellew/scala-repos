@@ -392,8 +392,8 @@ class CachedTableSuite
         |abc a join abc b on a.key=b.key
         |join abc c on a.key=c.key""".stripMargin).queryExecution.sparkPlan
 
-    assert(sparkPlan.collect {
-      case e: InMemoryColumnarTableScan => e
+    assert(sparkPlan.collect { case e: InMemoryColumnarTableScan =>
+      e
     }.size === 3)
     assert(sparkPlan.collect { case e: PhysicalRDD => e }.size === 0)
   }
@@ -402,8 +402,8 @@ class CachedTableSuite
     * Verifies that the plan for `df` contains `expected` number of Exchange operators.
     */
   private def verifyNumExchanges(df: DataFrame, expected: Int): Unit = {
-    assert(df.queryExecution.executedPlan.collect {
-      case e: ShuffleExchange => e
+    assert(df.queryExecution.executedPlan.collect { case e: ShuffleExchange =>
+      e
     }.size == expected)
   }
 

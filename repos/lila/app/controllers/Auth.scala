@@ -232,8 +232,8 @@ object Auth extends LilaController {
 
   def passwordReset =
     Open { implicit ctx =>
-      forms.passwordResetWithCaptcha map {
-        case (form, captcha) => Ok(html.auth.passwordReset(form, captcha))
+      forms.passwordResetWithCaptcha map { case (form, captcha) =>
+        Ok(html.auth.passwordReset(form, captcha))
       }
     }
 

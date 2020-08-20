@@ -7,8 +7,8 @@ import akka.actor.{Actor, ActorRef, Props}
   * to the given destination. Useful for testing.
   */
 class ForwardingActor(destination: ActorRef) extends Actor {
-  override def receive: Receive = {
-    case msg => destination.forward(msg)
+  override def receive: Receive = { case msg =>
+    destination.forward(msg)
   }
 }
 

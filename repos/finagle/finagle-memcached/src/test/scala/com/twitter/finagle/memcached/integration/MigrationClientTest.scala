@@ -169,8 +169,8 @@ class MigrationClientTest
 
       assert(Await.result(client1.get("foo"), TIMEOUT).get == Buf.Utf8("bar"))
       eventually {
-        assert(Await.result(client2.get("foo")).map {
-          case Buf.Utf8(s) => s
+        assert(Await.result(client2.get("foo")).map { case Buf.Utf8(s) =>
+          s
         } == Some("bar"))
       }
     }
@@ -208,8 +208,8 @@ class MigrationClientTest
       val Buf.Utf8(cl1Res) = Await.result(client1.get("foo"), TIMEOUT).get
       assert(cl1Res == "bar")
       eventually {
-        assert(Await.result(client2.get("foo")).map {
-          case Buf.Utf8(s) => s
+        assert(Await.result(client2.get("foo")).map { case Buf.Utf8(s) =>
+          s
         } == Some("bar"))
       }
     }
@@ -278,8 +278,8 @@ class MigrationClientTest
       val Buf.Utf8(res3) = Await.result(client1.get("foo"), TIMEOUT).get
       assert(res3 == "bar")
       eventually {
-        assert(Await.result(client2.get("foo")).map {
-          case Buf.Utf8(s) => s
+        assert(Await.result(client2.get("foo")).map { case Buf.Utf8(s) =>
+          s
         } == Some("bar"))
       }
     }

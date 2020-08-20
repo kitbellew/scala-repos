@@ -50,8 +50,8 @@ private[tv] final class TvActor(
       import lila.socket.Socket.makeMessage
       val player = game.firstPlayer
       val user = player.userId flatMap lightUser
-      (user |@| player.rating) apply {
-        case (u, r) => channelChampions += (channel -> Tv.Champion(u, r))
+      (user |@| player.rating) apply { case (u, r) =>
+        channelChampions += (channel -> Tv.Champion(u, r))
       }
       channelActors
         .collect {

@@ -31,8 +31,8 @@ object ClusterRoundRobinMultiJvmSpec extends MultiNodeConfig {
   class SomeActor(routeeType: RouteeType) extends Actor {
     def this() = this(PoolRoutee)
 
-    def receive = {
-      case "hit" ⇒ sender() ! Reply(routeeType, self)
+    def receive = { case "hit" ⇒
+      sender() ! Reply(routeeType, self)
     }
   }
 
@@ -132,8 +132,8 @@ abstract class ClusterRoundRobinSpec
     val zero = Map.empty[Address, Int] ++ roles.map(address(_) -> 0)
     (receiveWhile(5 seconds, messages = expectedReplies) {
       case Reply(`routeeType`, ref) ⇒ fullAddress(ref)
-    }).foldLeft(zero) {
-      case (replyMap, address) ⇒ replyMap + (address -> (replyMap(address) + 1))
+    }).foldLeft(zero) { case (replyMap, address) ⇒
+      replyMap + (address -> (replyMap(address) + 1))
     }
   }
 
@@ -321,8 +321,8 @@ abstract class ClusterRoundRobinSpec
 
         // note that router2 has totalInstances = 3, maxInstancesPerNode = 1
         val routees = currentRoutees(router2)
-        val routeeAddresses = routees map {
-          case ActorRefRoutee(ref) ⇒ fullAddress(ref)
+        val routeeAddresses = routees map { case ActorRefRoutee(ref) ⇒
+          fullAddress(ref)
         }
 
         routeeAddresses.size should ===(3)
@@ -339,8 +339,8 @@ abstract class ClusterRoundRobinSpec
 
       def routees = currentRoutees(router4)
       def routeeAddresses =
-        (routees map {
-          case ActorSelectionRoutee(sel) ⇒ fullAddress(sel.anchor)
+        (routees map { case ActorSelectionRoutee(sel) ⇒
+          fullAddress(sel.anchor)
         }).toSet
 
       runOn(first) {

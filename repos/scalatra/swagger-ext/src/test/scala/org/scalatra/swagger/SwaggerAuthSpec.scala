@@ -56,8 +56,8 @@ object SwaggerAuthSpec {
     protected val fromSession: PartialFunction[String, User] = {
       case s: String => Users.find(_.login == s).get
     }
-    protected val toSession: PartialFunction[User, String] = {
-      case u: User => u.login
+    protected val toSession: PartialFunction[User, String] = { case u: User =>
+      u.login
     }
     override def configureScentry = {
       //      scentry.store = new CookieAuthStore(this)
@@ -78,8 +78,8 @@ object SwaggerAuthSpec {
       with CorsSupport
       with SwaggerAuthBase[User] {
 
-    error {
-      case t: Throwable => t.printStackTrace()
+    error { case t: Throwable =>
+      t.printStackTrace()
     }
 
     protected val userManifest = manifest[User]

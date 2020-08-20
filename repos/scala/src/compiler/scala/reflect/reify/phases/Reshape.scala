@@ -44,8 +44,8 @@ trait Reshape {
           if (reifyDebug) println("cross-stage type bearer, retaining: " + tree)
           ta
         case ta @ TypeApply(hk, ts) =>
-          val discard = ts collect {
-            case tt: TypeTree => tt
+          val discard = ts collect { case tt: TypeTree =>
+            tt
           } exists isDiscarded
           if (reifyDebug && discard) println("discarding TypeApply: " + tree)
           if (discard) hk else ta
@@ -62,8 +62,8 @@ trait Reshape {
           val impl1 = Template(parents, self, body1).copyAttrs(impl)
           ModuleDef(mods, name, impl1).copyAttrs(moduledef)
         case template @ Template(parents, self, body) =>
-          val discardedParents = parents collect {
-            case tt: TypeTree => tt
+          val discardedParents = parents collect { case tt: TypeTree =>
+            tt
           } filter isDiscarded
           if (reifyDebug && discardedParents.length > 0)
             println(

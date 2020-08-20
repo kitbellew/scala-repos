@@ -56,8 +56,8 @@ object HttpBinApplication {
           // Anything else
           case m: play.api.mvc.AnyContentAsMultipartFormData @unchecked =>
             Json.obj(
-              "form" -> m.mdf.dataParts.map {
-                case (k, v) => k -> JsString(v.mkString)
+              "form" -> m.mdf.dataParts.map { case (k, v) =>
+                k -> JsString(v.mkString)
               },
               "file" -> JsString(
                 m.mdf
@@ -182,8 +182,8 @@ object HttpBinApplication {
   val cookiesSet: Routes = { case GET(p"/cookies/set") =>
     Action { request =>
       Redirect("/cookies").withCookies(
-        request.queryString.mapValues(_.head).toSeq.map {
-          case (k, v) => Cookie(k, v)
+        request.queryString.mapValues(_.head).toSeq.map { case (k, v) =>
+          Cookie(k, v)
         }: _*)
     }
   }

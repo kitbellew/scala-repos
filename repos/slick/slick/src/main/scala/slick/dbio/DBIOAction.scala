@@ -333,8 +333,8 @@ object DBIOAction {
             .asInstanceOf[DBIOAction[Unit, NoStream, E]]
         case n =>
           val last = grouped.length - 1
-          val as = grouped.iterator.zipWithIndex.map {
-            case (g, i) => sequenceGroup(g, i == last)
+          val as = grouped.iterator.zipWithIndex.map { case (g, i) =>
+            sequenceGroup(g, i == last)
           }.toVector
           AndThenAction[Unit, NoStream, E](as)
       }
@@ -446,8 +446,8 @@ case class AndThenAction[R, +S <: NoStream, -E <: Effect](
   def getDumpInfo =
     DumpInfo(
       "andThen",
-      children = as.zipWithIndex.map {
-        case (a, i) => (String.valueOf(i + 1), a)
+      children = as.zipWithIndex.map { case (a, i) =>
+        (String.valueOf(i + 1), a)
       })
 
   override def andThen[R2, S2 <: NoStream, E2 <: Effect](
@@ -466,8 +466,8 @@ case class SequenceAction[R, +R2, -E <: Effect](
   def getDumpInfo =
     DumpInfo(
       "sequence",
-      children = as.zipWithIndex.map {
-        case (a, i) => (String.valueOf(i + 1), a)
+      children = as.zipWithIndex.map { case (a, i) =>
+        (String.valueOf(i + 1), a)
       })
 }
 

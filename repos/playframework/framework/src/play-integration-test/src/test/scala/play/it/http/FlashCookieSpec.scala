@@ -87,8 +87,8 @@ trait FlashCookieSpec
               "Cookie" -> s"${flashCookie.name.get}=${flashCookie.value.get}")
             .get())
 
-        readFlashCookie(response2) must beSome.like {
-          case cookie => cookie.value must beNone
+        readFlashCookie(response2) must beSome.like { case cookie =>
+          cookie.value must beNone
         }
         response2.cookie("some-cookie") must beSome.like { case cookie =>
           cookie.value must beSome("some-value")

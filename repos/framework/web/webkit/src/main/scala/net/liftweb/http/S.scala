@@ -2001,8 +2001,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
           List(name.substring(prefix.length + 1) -> value)
         case _ => Nil
       }
-      .foldRight(start) {
-        case ((name, value), at) => at + (name -> value)
+      .foldRight(start) { case ((name, value), at) =>
+        at + (name -> value)
       }
 
   /**
@@ -2064,8 +2064,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see # prefixedAttrsToMetaData ( String, Map )
     */
   def mapToAttrs(in: Map[String, String]): MetaData =
-    in.foldLeft[MetaData](Null) {
-      case (md, (name, value)) => new UnprefixedAttribute(name, value, md)
+    in.foldLeft[MetaData](Null) { case (md, (name, value)) =>
+      new UnprefixedAttribute(name, value, md)
     }
 
   /**
@@ -3217,8 +3217,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @param f - the function that returns the messages
     */
   def noIdMessages(f: => List[(NodeSeq, Box[String])]): List[NodeSeq] = {
-    f.collect {
-      case (message, Empty) => message
+    f.collect { case (message, Empty) =>
+      message
     }
   }
 

@@ -62,8 +62,8 @@ trait SequentialProvider extends Actor {
 
   private case object Done
 
-  private def fallback: ReceiveAsync = {
-    case _ => fuccess(Status.Failure)
+  private def fallback: ReceiveAsync = { case _ =>
+    fuccess(Status.Failure)
   }
 
   private def processThenDone(signal: Any) {

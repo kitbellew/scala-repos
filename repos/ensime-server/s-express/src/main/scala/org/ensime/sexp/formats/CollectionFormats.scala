@@ -84,8 +84,8 @@ trait CollectionFormats {
   ): SexpFormat[M[K, V]] =
     new SexpFormat[M[K, V]] {
       def write(m: M[K, V]) =
-        SexpList(m.map {
-          case (k, v) => SexpList(k.toSexp, v.toSexp)
+        SexpList(m.map { case (k, v) =>
+          SexpList(k.toSexp, v.toSexp)
         }(breakOut): List[Sexp])
 
       def read(v: Sexp): M[K, V] =

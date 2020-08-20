@@ -47,8 +47,8 @@ class LanguageFeatureInspection
       "scala.language",
       "postfixOps",
       _.postfixOps,
-      _.postfixOps = true) {
-      case e: ScPostfixExpr => e.operation
+      _.postfixOps = true) { case e: ScPostfixExpr =>
+      e.operation
     },
     Feature(
       "reflective call",

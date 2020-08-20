@@ -122,8 +122,8 @@ abstract class SetOperation(left: LogicalPlan, right: LogicalPlan)
   protected def rightConstraints: Set[Expression] = {
     require(left.output.size == right.output.size)
     val attributeRewrites = AttributeMap(right.output.zip(left.output))
-    right.constraints.map(_ transform {
-      case a: Attribute => attributeRewrites(a)
+    right.constraints.map(_ transform { case a: Attribute =>
+      attributeRewrites(a)
     })
   }
 }
@@ -152,8 +152,8 @@ case class Intersect(left: LogicalPlan, right: LogicalPlan)
   override lazy val resolved: Boolean =
     childrenResolved &&
       left.output.length == right.output.length &&
-      left.output.zip(right.output).forall {
-        case (l, r) => l.dataType == r.dataType
+      left.output.zip(right.output).forall { case (l, r) =>
+        l.dataType == r.dataType
       } &&
       duplicateResolved
 
@@ -184,8 +184,8 @@ case class Except(left: LogicalPlan, right: LogicalPlan)
   override lazy val resolved: Boolean =
     childrenResolved &&
       left.output.length == right.output.length &&
-      left.output.zip(right.output).forall {
-        case (l, r) => l.dataType == r.dataType
+      left.output.zip(right.output).forall { case (l, r) =>
+        l.dataType == r.dataType
       }
 
   override def statistics: Statistics = {
@@ -223,8 +223,8 @@ case class Union(children: Seq[LogicalPlan]) extends LogicalPlan {
         // compare the attribute number with the first child
         child.output.length == children.head.output.length &&
           // compare the data types with the first child
-          child.output.zip(children.head.output).forall {
-            case (l, r) => l.dataType == r.dataType
+          child.output.zip(children.head.output).forall { case (l, r) =>
+            l.dataType == r.dataType
           })
 
     children.length > 1 && childrenResolved && allChildrenCompatible
@@ -246,8 +246,8 @@ case class Union(children: Seq[LogicalPlan]) extends LogicalPlan {
       constraints: Set[Expression]): Set[Expression] = {
     require(reference.size == original.size)
     val attributeRewrites = AttributeMap(original.zip(reference))
-    constraints.map(_ transform {
-      case a: Attribute => attributeRewrites(a)
+    constraints.map(_ transform { case a: Attribute =>
+      attributeRewrites(a)
     })
   }
 

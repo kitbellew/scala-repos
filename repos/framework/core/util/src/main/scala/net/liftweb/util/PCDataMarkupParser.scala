@@ -295,8 +295,8 @@ object HtmlEntities {
     case (name, value) => (name, value.toChar)
   }
 
-  val revMap: Map[Char, String] = Map(entList.map {
-    case (name, value) => (value.toChar, name)
+  val revMap: Map[Char, String] = Map(entList.map { case (name, value) =>
+    (value.toChar, name)
   }: _*)
 
   val entities = entList.map { case (name, value) =>

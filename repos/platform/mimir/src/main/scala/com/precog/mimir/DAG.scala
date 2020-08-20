@@ -462,8 +462,8 @@ trait DAG extends Instructions {
     if (stream.isEmpty) {
       Left(EmptyStream)
     } else {
-      M.sequence(findFirstRoot(None, stream).right map {
-        case (root, tail) => loop(root.loc, Right(root) :: Nil, Nil, tail)
+      M.sequence(findFirstRoot(None, stream).right map { case (root, tail) =>
+        loop(root.loc, Right(root) :: Nil, Nil, tail)
       }).map(_.joinRight)
         .run
     }

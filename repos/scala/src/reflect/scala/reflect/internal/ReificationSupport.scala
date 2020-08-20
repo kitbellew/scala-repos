@@ -429,8 +429,8 @@ trait ReificationSupport { self: SymbolTable =>
               case other => other
             }
             // undo flag modifications by merging flag info from constructor args and fieldDefs
-            val modsMap = fieldDefs.map {
-              case ValDef(mods, name, _, _) => name -> mods
+            val modsMap = fieldDefs.map { case ValDef(mods, name, _, _) =>
+              name -> mods
             }.toMap
             def ctorArgsCorrespondToFields =
               vparamssRestoredImplicits.flatten.forall { vd =>
@@ -1198,8 +1198,8 @@ trait ReificationSupport { self: SymbolTable =>
                     gen.Yield(UnPatSeqWithRes(pats, elems2)))),
                 outerRest,
                 fbody) =>
-            val valeqs = pats.map {
-              case (pat, rhs) => SyntacticValEq(pat, rhs)
+            val valeqs = pats.map { case (pat, rhs) =>
+              SyntacticValEq(pat, rhs)
             }
             Some((
               SyntacticValFrom(pat, rhs) :: innerRest ::: valeqs ::: outerRest,

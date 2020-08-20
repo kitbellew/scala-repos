@@ -432,8 +432,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
         seedNodes.mkString(", "))
   }
 
-  def removed: Actor.Receive = {
-    case msg: SubscriptionMessage ⇒ publisher forward msg
+  def removed: Actor.Receive = { case msg: SubscriptionMessage ⇒
+    publisher forward msg
   }
 
   def receive = uninitialized

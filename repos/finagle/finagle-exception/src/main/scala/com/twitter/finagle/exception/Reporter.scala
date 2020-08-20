@@ -192,8 +192,8 @@ sealed case class Reporter(
     client.log(createEntry(t) :: Nil) onSuccess {
       case ResultCode.Ok       => okCounter.incr()
       case ResultCode.TryLater => tryLaterCounter.incr()
-    } onFailure {
-      case e => statsReceiver.counter("report_exception_" + e.toString).incr()
+    } onFailure { case e =>
+      statsReceiver.counter("report_exception_" + e.toString).incr()
     }
 
     false // did not actually handle

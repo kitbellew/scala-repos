@@ -151,8 +151,8 @@ trait CValueGenerators extends ArbitraryBigDecimal {
         containerOfN[List, Long](idCount, posNum[Long]))
       values <- containerOfN[List, Seq[(JPath, JValue)]](
         dataSize,
-        Gen.sequence[List, (JPath, JValue)](jschema map {
-          case (jpath, ctype) => jvalue(ctype).map(jpath ->)
+        Gen.sequence[List, (JPath, JValue)](jschema map { case (jpath, ctype) =>
+          jvalue(ctype).map(jpath ->)
         }))
 
       falseDepth <- choose(1, 3)

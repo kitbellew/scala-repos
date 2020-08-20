@@ -1094,8 +1094,8 @@ trait Implicits {
             errors: Seq[AbsTypeError]): SearchResult = {
           // A divergent error from a nested implicit search will be found in `errors`. Stash that
           // aside to be re-issued if this implicit search fails.
-          errors.collectFirst {
-            case err: DivergentImplicitTypeError => err
+          errors.collectFirst { case err: DivergentImplicitTypeError =>
+            err
           } foreach saveDivergent
 
           if (search.isDivergent && divergentError.isEmpty) {

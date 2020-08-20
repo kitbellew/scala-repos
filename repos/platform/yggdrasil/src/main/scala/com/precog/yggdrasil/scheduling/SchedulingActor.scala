@@ -130,8 +130,8 @@ trait SchedulingActorModule extends SecureVFSModule[Future, Slice] {
     override def preStart = {
       val now = new Date
 
-      storage.listTasks onSuccess {
-        case tasks => self ! AddTasksToQueue(tasks)
+      storage.listTasks onSuccess { case tasks =>
+        self ! AddTasksToQueue(tasks)
       }
     }
 

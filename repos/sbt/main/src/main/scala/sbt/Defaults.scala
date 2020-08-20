@@ -1119,8 +1119,8 @@ object Defaults extends BuildCommon {
         .filter(_.exists)
         .flatMap(_.allPaths.get)
         .partition(_.isDirectory)
-      val mappings = files.zipWithIndex map {
-        case (f, i) => (f, new File(temp, i.toHexString))
+      val mappings = files.zipWithIndex map { case (f, i) =>
+        (f, new File(temp, i.toHexString))
       }
       IO.move(mappings)
       IO.delete(clean)

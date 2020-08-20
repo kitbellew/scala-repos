@@ -100,8 +100,8 @@ class ParquetQuerySuite
     withParquetTable(data, "t") {
       checkAnswer(
         sql("SELECT _1._2[0] FROM t"),
-        data.map {
-          case Tuple1((_, Seq(string))) => Row(string)
+        data.map { case Tuple1((_, Seq(string))) =>
+          Row(string)
         })
     }
   }
@@ -111,8 +111,8 @@ class ParquetQuerySuite
     withParquetTable(data, "t") {
       checkAnswer(
         sql("SELECT _1[0]._2 FROM t"),
-        data.map {
-          case Tuple1(Seq((_, string))) => Row(string)
+        data.map { case Tuple1(Seq((_, string))) =>
+          Row(string)
         })
     }
   }

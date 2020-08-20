@@ -81,8 +81,8 @@ object TypeDescriptorProviderImpl {
         case tpe
             if (tpe.typeSymbol.isClass && tpe.typeSymbol.asClass.isCaseClass) =>
           val flattened = flattenOnce(tpe)
-            .scanLeft((offset, Option.empty[Int])) {
-              case ((off, _), t) => go(t, off)
+            .scanLeft((offset, Option.empty[Int])) { case ((off, _), t) =>
+              go(t, off)
             }
 
           val nextPos = flattened.last._1

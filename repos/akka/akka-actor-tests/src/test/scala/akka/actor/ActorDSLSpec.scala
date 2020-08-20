@@ -25,8 +25,8 @@ class ActorDSLDummy {
 class ActorDSLSpec extends AkkaSpec {
 
   val echo = system.actorOf(Props(new Actor {
-    def receive = {
-      case x ⇒ sender() ! x
+    def receive = { case x ⇒
+      sender() ! x
     }
   }))
 
@@ -78,8 +78,8 @@ class ActorDSLSpec extends AkkaSpec {
       val i = inbox()
       i.receiver ! "hello"
       i.receiver ! "world"
-      val result = i.select() {
-        case "world" ⇒ true
+      val result = i.select() { case "world" ⇒
+        true
       }
       result should ===(true)
       i.receive() should ===("hello")
@@ -126,8 +126,8 @@ class ActorDSLSpec extends AkkaSpec {
     "support creating regular actors" in {
       //#simple-actor
       val a = actor(new Act {
-        become {
-          case "hello" ⇒ sender() ! "hi"
+        become { case "hello" ⇒
+          sender() ! "hi"
         }
       })
       //#simple-actor
@@ -179,8 +179,8 @@ class ActorDSLSpec extends AkkaSpec {
     "support restart" in {
       //#failing-actor
       val a = actor(new Act {
-        become {
-          case "die" ⇒ throw new Exception
+        become { case "die" ⇒
+          throw new Exception
         }
         whenFailing { case m @ (cause, msg) ⇒ testActor ! m }
         whenRestarted { cause ⇒ testActor ! cause }
@@ -210,8 +210,8 @@ class ActorDSLSpec extends AkkaSpec {
             case ex: Exception ⇒ throw ex
           }
         })
-        become {
-          case x ⇒ child ! x
+        become { case x ⇒
+          child ! x
         }
       })
       a ! testActor
@@ -233,8 +233,8 @@ class ActorDSLSpec extends AkkaSpec {
         val b = actor("barney")(new Act {
           whenStarting { context.parent ! ("hello from " + self.path) }
         })
-        become {
-          case x ⇒ testActor ! x
+        become { case x ⇒
+          testActor ! x
         }
       })
       //#nested-actor
@@ -249,8 +249,8 @@ class ActorDSLSpec extends AkkaSpec {
           case 1 ⇒ stash()
           case 2 ⇒
             testActor ! 2; unstashAll();
-            becomeStacked {
-              case 1 ⇒ testActor ! 1; unbecome()
+            becomeStacked { case 1 ⇒
+              testActor ! 1; unbecome()
             }
         }
       })

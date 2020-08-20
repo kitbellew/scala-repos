@@ -95,8 +95,8 @@ object Duration {
 
   // Label => TimeUnit
   protected[duration] val timeUnit: Map[String, TimeUnit] =
-    timeUnitLabels flatMap {
-      case (unit, names) => expandLabels(names) map (_ -> unit)
+    timeUnitLabels flatMap { case (unit, names) =>
+      expandLabels(names) map (_ -> unit)
     } toMap
 
   /**

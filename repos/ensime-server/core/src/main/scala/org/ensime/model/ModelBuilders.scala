@@ -74,8 +74,8 @@ trait ModelBuilders { self: RichPresentationCompiler =>
     }
 
     val parentMap = parents.map(_.typeSymbol -> List[TypeMember]()).toMap
-    val membersMap = visMembers.groupBy {
-      case TypeMember(sym, _, _, _, _) => sym.owner
+    val membersMap = visMembers.groupBy { case TypeMember(sym, _, _, _, _) =>
+      sym.owner
     }
     // Create a list of pairs [(typeSym, membersOfSym)]
     val membersByOwner = (parentMap ++ membersMap).toList.sortWith {

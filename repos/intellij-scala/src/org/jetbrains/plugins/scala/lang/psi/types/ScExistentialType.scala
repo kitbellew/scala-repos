@@ -261,14 +261,14 @@ case class ScExistentialType(
             s.substitutedTypes.foreach(_.foreach(f =>
               checkRecursive(f(), newSet)))
             s.typeParams.foreach { case tParam: TypeParameter =>
-              tParam.update {
-                case tp: ScType => checkRecursive(tp, newSet); tp
+              tParam.update { case tp: ScType =>
+                checkRecursive(tp, newSet); tp
               }
             }
             checkRecursive(rt, newSet)
           }
-          typeMap.foreach(_._2.updateTypes {
-            case tp: ScType => checkRecursive(tp, newSet); tp
+          typeMap.foreach(_._2.updateTypes { case tp: ScType =>
+            checkRecursive(tp, newSet); tp
           })
         case ScDesignatorType(elem) =>
           elem match {

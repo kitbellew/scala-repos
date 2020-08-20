@@ -17,8 +17,8 @@ object PersistentActorFailureExample extends App {
 
     }
 
-    def receiveRecover: Receive = {
-      case s: String => received = s :: received
+    def receiveRecover: Receive = { case s: String =>
+      received = s :: received
     }
   }
 

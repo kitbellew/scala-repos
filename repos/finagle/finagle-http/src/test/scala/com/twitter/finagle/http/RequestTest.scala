@@ -28,8 +28,8 @@ class RequestTest extends FunSuite {
       "/search.json?q=twitter" -> "/search.json",
       "/search.json%3Fq=twitter" -> "/search.json%3Fq=twitter"
     )
-    tests.foreach {
-      case (input, expected) => assert(Request(input).path == expected)
+    tests.foreach { case (input, expected) =>
+      assert(Request(input).path == expected)
     }
   }
 
@@ -46,8 +46,8 @@ class RequestTest extends FunSuite {
       "/" -> "",
       "/." -> ""
     )
-    tests.foreach {
-      case (input, expected) => assert(Request(input).fileExtension == expected)
+    tests.foreach { case (input, expected) =>
+      assert(Request(input).fileExtension == expected)
     }
   }
 

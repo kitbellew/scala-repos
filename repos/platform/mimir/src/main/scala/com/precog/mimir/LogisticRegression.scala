@@ -315,8 +315,8 @@ trait LogisticRegressionLibModule[M[+_]]
                 .map(res => extract(res, jtype))
 
           val reducedTables: M[Seq[Table]] = tablesWithType flatMap {
-            _.map {
-              case (table, jtype) => tableReducer(table, jtype)
+            _.map { case (table, jtype) =>
+              tableReducer(table, jtype)
             }.toStream.sequence map (_.toSeq)
           }
 

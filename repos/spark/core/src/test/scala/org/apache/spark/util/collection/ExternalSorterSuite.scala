@@ -687,8 +687,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
     } else {
       assert(sorter.numSpills === 0, "sorter spilled")
     }
-    val results = sorter.partitionedIterator.map {
-      case (p, vs) => (p, vs.toSet)
+    val results = sorter.partitionedIterator.map { case (p, vs) =>
+      (p, vs.toSet)
     }.toSet
     val expected = (0 until 3).map { p =>
       var v = (0 until size)

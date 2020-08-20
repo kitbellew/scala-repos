@@ -64,8 +64,8 @@ object Announcer {
     val announcers = LoadService[Announcer]()
     val log = Logger.getLogger(getClass.getName)
 
-    val dups = announcers groupBy (_.scheme) filter {
-      case (_, rs) => rs.size > 1
+    val dups = announcers groupBy (_.scheme) filter { case (_, rs) =>
+      rs.size > 1
     }
     if (dups.size > 0) throw new MultipleAnnouncersPerSchemeException(dups)
 

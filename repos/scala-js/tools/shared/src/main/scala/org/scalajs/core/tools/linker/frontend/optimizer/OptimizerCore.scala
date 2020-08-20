@@ -633,8 +633,8 @@ private[optimizer] abstract class OptimizerCore(
         JSArrayConstr(items map transformExprOrSpread)
 
       case JSObjectConstr(fields) =>
-        JSObjectConstr(fields map {
-          case (name, value) => (name, transformExpr(value))
+        JSObjectConstr(fields map { case (name, value) =>
+          (name, transformExpr(value))
         })
 
       // Atomic expressions

@@ -83,10 +83,10 @@ object ScalaOptionParser {
         BooleanSetting) ++ stringSettingNames.map(
         StringSetting) ++ multiStringSettingNames.map(
         MultiStringSetting) ++ intSettingNames.map(
-        IntSetting) ++ choiceSettingNames.map {
-        case (k, v) => ChoiceSetting(k, v)
-      } ++ multiChoiceSettingNames.map {
-        case (k, v) => MultiChoiceSetting(k, v)
+        IntSetting) ++ choiceSettingNames.map { case (k, v) =>
+        ChoiceSetting(k, v)
+      } ++ multiChoiceSettingNames.map { case (k, v) =>
+        MultiChoiceSetting(k, v)
       } ++ scalaVersionSettings.map(ScalaVersionSetting))
     val ScalacOpt = sourceFile | UniversalOpt
 

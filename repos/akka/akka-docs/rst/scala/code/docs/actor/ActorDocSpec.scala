@@ -39,8 +39,8 @@ final case class Message(s: String)
 class FirstActor extends Actor {
   val child = context.actorOf(Props[MyActor], name = "myChild")
   //#plus-some-behavior
-  def receive = {
-    case x => sender() ! x
+  def receive = { case x =>
+    sender() ! x
   }
   //#plus-some-behavior
 }
@@ -65,8 +65,8 @@ class DemoActorWrapper extends Actor {
   }
 
   class DemoActor(magicNumber: Int) extends Actor {
-    def receive = {
-      case x: Int => sender() ! (x + magicNumber)
+    def receive = { case x: Int =>
+      sender() ! (x + magicNumber)
     }
   }
 
@@ -271,8 +271,8 @@ class ActorDocSpec extends AkkaSpec("""
       class FirstActor extends Actor {
         import context._
         val myActor = actorOf(Props[MyActor], name = "myactor")
-        def receive = {
-          case x => myActor ! x
+        def receive = { case x =>
+          myActor ! x
         }
       }
       //#import-context
@@ -625,11 +625,11 @@ class ActorDocSpec extends AkkaSpec("""
   "using ActorDSL outside of akka.actor package" in {
     import akka.actor.ActorDSL._
     actor(new Act {
-      superviseWith(OneForOneStrategy() {
-        case _ => Stop; Restart; Resume; Escalate
+      superviseWith(OneForOneStrategy() { case _ =>
+        Stop; Restart; Resume; Escalate
       })
-      superviseWith(AllForOneStrategy() {
-        case _ => Stop; Restart; Resume; Escalate
+      superviseWith(AllForOneStrategy() { case _ =>
+        Stop; Restart; Resume; Escalate
       })
     })
   }

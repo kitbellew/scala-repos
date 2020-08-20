@@ -174,8 +174,8 @@ object PlaySettings {
     mappings in Universal ++= {
       if (externalizeResources.value) {
         val resourceMappings = (playExternalizedResources in Compile).value
-        resourceMappings.map {
-          case (resource, path) => resource -> ("conf/" + path)
+        resourceMappings.map { case (resource, path) =>
+          resource -> ("conf/" + path)
         }
       } else Nil
     },
@@ -252,8 +252,8 @@ object PlaySettings {
         val toExclude = copied.collect {
           case (source, dest) if externalized(source) => dest
         }.toSet
-        packageBinMappings.filterNot {
-          case (file, _) => toExclude(file)
+        packageBinMappings.filterNot { case (file, _) =>
+          toExclude(file)
         }
       },
       artifactClassifier in playJarSansExternalized := Option(

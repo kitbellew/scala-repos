@@ -21,7 +21,7 @@ class Table extends Actor {
   val chopsticks =
     for (i <- 1 to 5) yield context.actorOf(Props[Chopstick], "Chopstick" + i)
 
-  def receive = {
-    case x: Int => sender() ! ((chopsticks(x), chopsticks((x + 1) % 5)))
+  def receive = { case x: Int =>
+    sender() ! ((chopsticks(x), chopsticks((x + 1) % 5)))
   }
 }

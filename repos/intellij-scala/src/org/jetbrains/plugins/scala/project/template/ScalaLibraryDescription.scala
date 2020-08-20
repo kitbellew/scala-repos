@@ -132,8 +132,8 @@ trait ScalaLibraryDescription extends CustomLibraryDescription {
       .groupBy(_.version)
       .mapValues(sdkDescriptor.from)
       .toSeq
-      .collect {
-        case (Some(version), Right(sdk)) => sdk
+      .collect { case (Some(version), Right(sdk)) =>
+        sdk
       }
   }
 }

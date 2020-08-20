@@ -860,8 +860,8 @@ class MutableSettings(val errorFn: String => Unit)
     def help: String = {
       val choiceLength = choices.map(_.length).max + 1
       val formatStr = s"  %-${choiceLength}s %s"
-      choices.zipAll(descriptions, "", "").map {
-        case (arg, descr) => formatStr.format(arg, descr)
+      choices.zipAll(descriptions, "", "").map { case (arg, descr) =>
+        formatStr.format(arg, descr)
       } mkString (f"$descr%n", f"%n", "")
     }
 

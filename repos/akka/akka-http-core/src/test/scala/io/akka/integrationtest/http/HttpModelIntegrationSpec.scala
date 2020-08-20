@@ -114,8 +114,8 @@ class HttpModelIntegrationSpec
       // we use Akka HTTP's HeaderParser to parse the headers, giving us a
       // List[HttpHeader].
 
-      val parsingResults = textHeaders map {
-        case (name, value) ⇒ HttpHeader.parse(name, value)
+      val parsingResults = textHeaders map { case (name, value) ⇒
+        HttpHeader.parse(name, value)
       }
       val convertedHeaders = parsingResults collect {
         case HttpHeader.ParsingResult.Ok(h, _) ⇒ h

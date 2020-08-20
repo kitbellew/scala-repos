@@ -73,8 +73,8 @@ object FSMActorSpec {
       }
     }
 
-    onTransition {
-      case Locked -> Open ⇒ transitionLatch.open
+    onTransition { case Locked -> Open ⇒
+      transitionLatch.open
     }
 
     // verify that old-style does still compile
@@ -167,8 +167,8 @@ class FSMActorSpec
     "log termination" in {
       val fsm = TestActorRef(new Actor with FSM[Int, Null] {
         startWith(1, null)
-        when(1) {
-          case Event("go", _) ⇒ goto(2)
+        when(1) { case Event("go", _) ⇒
+          goto(2)
         }
       })
       val name = fsm.path.toString
@@ -194,8 +194,8 @@ class FSMActorSpec
         override def preStart = { started.countDown }
         startWith(1, null)
         when(1) { FSM.NullFunction }
-        onTermination {
-          case x ⇒ testActor ! x
+        onTermination { case x ⇒
+          testActor ! x
         }
       }
       val ref = system.actorOf(Props(fsm))
@@ -208,11 +208,11 @@ class FSMActorSpec
       val expected = "pigdog"
       val actor = system.actorOf(Props(new Actor with FSM[Int, String] {
         startWith(1, null)
-        when(1) {
-          case Event(2, null) ⇒ stop(FSM.Normal, expected)
+        when(1) { case Event(2, null) ⇒
+          stop(FSM.Normal, expected)
         }
-        onTermination {
-          case StopEvent(FSM.Normal, 1, `expected`) ⇒ testActor ! "green"
+        onTermination { case StopEvent(FSM.Normal, 1, `expected`) ⇒
+          testActor ! "green"
         }
       }))
       actor ! 2
@@ -225,11 +225,11 @@ class FSMActorSpec
       // Lazy so fsmref can refer to checkTimersActive
       lazy val fsmref = TestFSMRef(new Actor with FSM[String, Null] {
         startWith("not-started", null)
-        when("not-started") {
-          case Event("start", _) ⇒ goto("started") replying "starting"
+        when("not-started") { case Event("start", _) ⇒
+          goto("started") replying "starting"
         }
-        when("started", stateTimeout = 10 seconds) {
-          case Event("stop", _) ⇒ stop()
+        when("started", stateTimeout = 10 seconds) { case Event("stop", _) ⇒
+          stop()
         }
         onTransition { case "not-started" -> "started" ⇒
           for (timerName ← timerNames)
@@ -281,8 +281,8 @@ class FSMActorSpec
                 cancelTimer("t")
                 stop
               }
-              onTermination {
-                case StopEvent(r, _, _) ⇒ testActor ! r
+              onTermination { case StopEvent(r, _, _) ⇒
+                testActor ! r
               }
             })
             val name = fsm.path.toString
@@ -357,13 +357,13 @@ class FSMActorSpec
       import akka.actor.FSM._
       val fsmref = system.actorOf(Props(new Actor with FSM[Int, Int] {
         startWith(0, 0)
-        when(0)(transform {
-          case Event("go", _) ⇒ stay
-        } using {
-          case x ⇒ goto(1)
+        when(0)(transform { case Event("go", _) ⇒
+          stay
+        } using { case x ⇒
+          goto(1)
         })
-        when(1) {
-          case _ ⇒ stay
+        when(1) { case _ ⇒
+          stay
         }
       }))
       fsmref ! SubscribeTransitionCallBack(testActor)

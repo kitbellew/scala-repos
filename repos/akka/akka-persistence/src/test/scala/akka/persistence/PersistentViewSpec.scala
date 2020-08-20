@@ -14,8 +14,8 @@ object PersistentViewSpec {
 
   private class TestPersistentActor(name: String, probe: ActorRef)
       extends NamedPersistentActor(name) {
-    def receiveCommand = {
-      case msg ⇒ persist(msg) { m ⇒ probe ! s"${m}-${lastSequenceNr}" }
+    def receiveCommand = { case msg ⇒
+      persist(msg) { m ⇒ probe ! s"${m}-${lastSequenceNr}" }
     }
 
     override def receiveRecover: Receive = { case _ ⇒ // do nothing...
@@ -118,8 +118,8 @@ object PersistentViewSpec {
 
     def receive = Actor.emptyBehavior
 
-    context.become {
-      case payload ⇒ probe ! s"replicated-${payload}-${lastSequenceNr}"
+    context.become { case payload ⇒
+      probe ! s"replicated-${payload}-${lastSequenceNr}"
     }
   }
 
@@ -132,8 +132,8 @@ object PersistentViewSpec {
       case "other" ⇒ stash()
       case "unstash" ⇒
         unstashAll()
-        context.become {
-          case msg ⇒ probe ! s"$msg-${lastSequenceNr}"
+        context.become { case msg ⇒
+          probe ! s"$msg-${lastSequenceNr}"
         }
       case msg ⇒ stash()
     }

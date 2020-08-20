@@ -158,8 +158,8 @@ class GraphStageTimersSpec extends AkkaSpec {
       val driver = setupIsolatedStage
 
       driver ! TestRepeatedTimer
-      val seq = receiveWhile(2.seconds) {
-        case t: Tick ⇒ t
+      val seq = receiveWhile(2.seconds) { case t: Tick ⇒
+        t
       }
       seq should have length 5
       expectNoMsg(1.second)

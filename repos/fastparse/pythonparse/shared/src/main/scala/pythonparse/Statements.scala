@@ -54,8 +54,8 @@ class Statements(indent: Int) {
   val classdef: P[Seq[Ast.expr] => Ast.stmt.ClassDef] =
     P(
       kw("class") ~/ NAME ~ ("(" ~ testlist.? ~ ")").?.map(
-        _.toSeq.flatten.flatten) ~ ":" ~~ suite).map {
-      case (a, b, c) => Ast.stmt.ClassDef(a, b, c, _)
+        _.toSeq.flatten.flatten) ~ ":" ~~ suite).map { case (a, b, c) =>
+      Ast.stmt.ClassDef(a, b, c, _)
     }
 
   val funcdef: P[Seq[Ast.expr] => Ast.stmt.FunctionDef] =
@@ -217,8 +217,8 @@ class Statements(indent: Int) {
       case (items, body) =>
         val (last_expr, last_vars) = items.last
         val inner = Ast.stmt.With(last_expr, last_vars, body)
-        items.init.foldRight(inner) {
-          case ((expr, vars), body) => Ast.stmt.With(expr, vars, Seq(body))
+        items.init.foldRight(inner) { case ((expr, vars), body) =>
+          Ast.stmt.With(expr, vars, Seq(body))
         }
     }
   val with_item: P[(Ast.expr, Option[Ast.expr])] = P(test ~ (kw("as") ~ expr).?)

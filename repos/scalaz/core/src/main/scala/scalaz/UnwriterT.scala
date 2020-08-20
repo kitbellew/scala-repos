@@ -40,8 +40,8 @@ final case class UnwriterT[F[_], U, A](run: F[(U, A)]) { self =>
   def ap[B](f: => UnwriterT[F, U, A => B])(implicit
       F: Apply[F]): UnwriterT[F, U, B] =
     unwriterT {
-      F.apply2(f.run, run) {
-        case ((w1, fab), (_, a)) => (w1, fab(a))
+      F.apply2(f.run, run) { case ((w1, fab), (_, a)) =>
+        (w1, fab(a))
       }
     }
 
@@ -55,8 +55,8 @@ final case class UnwriterT[F[_], U, A](run: F[(U, A)]) { self =>
   def traverse[G[_], B](f: A => G[B])(implicit
       G: Applicative[G],
       F: Traverse[F]): G[UnwriterT[F, U, B]] = {
-    G.map(F.traverse(run) {
-      case (w, a) => G.map(f(a))(b => (w, b))
+    G.map(F.traverse(run) { case (w, a) =>
+      G.map(f(a))(b => (w, b))
     })(UnwriterT(_))
   }
 
@@ -66,8 +66,8 @@ final case class UnwriterT[F[_], U, A](run: F[(U, A)]) { self =>
     }
 
   def bimap[C, D](f: U => C, g: A => D)(implicit F: Functor[F]) =
-    unwriterT[F, C, D](F.map(run)({
-      case (a, b) => (f(a), g(b))
+    unwriterT[F, C, D](F.map(run)({ case (a, b) =>
+      (f(a), g(b))
     }))
 
   def leftMap[C](f: U => C)(implicit F: Functor[F]): UnwriterT[F, C, A] =
@@ -76,15 +76,15 @@ final case class UnwriterT[F[_], U, A](run: F[(U, A)]) { self =>
   def bitraverse[G[_], C, D](f: U => G[C], g: A => G[D])(implicit
       G: Applicative[G],
       F: Traverse[F]) =
-    G.map(F.traverse[G, (U, A), (C, D)](run) {
-      case (a, b) => G.tuple2(f(a), g(b))
+    G.map(F.traverse[G, (U, A), (C, D)](run) { case (a, b) =>
+      G.tuple2(f(a), g(b))
     })(unwriterT(_))
 
   def wpoint[G[_]](implicit
       F: Functor[F],
       P: Applicative[G]): UnwriterT[F, G[U], A] =
-    unwriterT(F.map(self.run) {
-      case (u, a) => (P.point(u), a)
+    unwriterT(F.map(self.run) { case (u, a) =>
+      (P.point(u), a)
     })
 
   def colocal[X](f: U => X)(implicit F: Functor[F]): UnwriterT[F, X, A] =

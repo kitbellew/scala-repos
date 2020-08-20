@@ -133,8 +133,8 @@ class JavaWriter(classfile: Classfile, writer: Writer)
       attribs: List[cf.Attribute]) {
     if (getName(name) == "<init>")
       print(flagsToStr(false, flags))
-    attribs find {
-      case cf.Attribute(name, _) => getName(name) == "JacoMeta"
+    attribs find { case cf.Attribute(name, _) =>
+      getName(name) == "JacoMeta"
     } match {
       case Some(cf.Attribute(_, data)) =>
         val mp = new MetaParser(
@@ -161,8 +161,8 @@ class JavaWriter(classfile: Classfile, writer: Writer)
           print(getType(tpe) + ";").newline
         }
     }
-    attribs find {
-      case cf.Attribute(name, _) => getName(name) == "Exceptions"
+    attribs find { case cf.Attribute(name, _) =>
+      getName(name) == "Exceptions"
     } match {
       case Some(cf.Attribute(_, data)) =>
         val n = ((data(0) & 0xff) << 8) + (data(1) & 0xff)
@@ -195,8 +195,8 @@ class JavaWriter(classfile: Classfile, writer: Writer)
     if (pck.length() > 0)
       println("package " + pck + ";")
     print(flagsToStr(true, cf.flags))
-    cf.attribs find {
-      case cf.Attribute(name, _) => getName(name) == "JacoMeta"
+    cf.attribs find { case cf.Attribute(name, _) =>
+      getName(name) == "JacoMeta"
     } match {
       case None =>
         printClassHeader;

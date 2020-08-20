@@ -32,8 +32,8 @@ object WithParamVar extends RequestVar[Map[String, NodeSeq]](Map.empty)
   */
 object WithParam extends DispatchSnippet {
 
-  def dispatch: DispatchIt = {
-    case _ => render _
+  def dispatch: DispatchIt = { case _ =>
+    render _
   }
 
   /**

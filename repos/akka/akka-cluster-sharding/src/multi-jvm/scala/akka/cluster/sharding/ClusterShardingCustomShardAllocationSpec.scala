@@ -28,13 +28,13 @@ import akka.pattern.ask
 
 object ClusterShardingCustomShardAllocationSpec {
   class Entity extends Actor {
-    def receive = {
-      case id: Int ⇒ sender() ! id
+    def receive = { case id: Int ⇒
+      sender() ! id
     }
   }
 
-  val extractEntityId: ShardRegion.ExtractEntityId = {
-    case id: Int ⇒ (id.toString, id)
+  val extractEntityId: ShardRegion.ExtractEntityId = { case id: Int ⇒
+    (id.toString, id)
   }
 
   val extractShardId: ShardRegion.ExtractShardId = msg ⇒

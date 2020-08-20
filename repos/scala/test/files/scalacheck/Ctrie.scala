@@ -75,8 +75,8 @@ object Test extends Properties("concurrent.TrieMap") {
 
   def hasGrown[K, V](last: Map[K, V], current: Map[K, V]) = {
     (last.size <= current.size) && {
-      last forall {
-        case (k, v) => current.get(k) == Some(v)
+      last forall { case (k, v) =>
+        current.get(k) == Some(v)
       }
     }
   }
@@ -119,8 +119,8 @@ object Test extends Properties("concurrent.TrieMap") {
       // wait for checker to finish
       val growing = true //checker.get
 
-      val ok = growing && ((0 until sz) forall {
-        case i => ct.get(Wrap(i)) == Some(i)
+      val ok = growing && ((0 until sz) forall { case i =>
+        ct.get(Wrap(i)) == Some(i)
       })
 
       ok
@@ -129,8 +129,8 @@ object Test extends Properties("concurrent.TrieMap") {
   property("update") = forAll(sizes) { (n: Int) =>
     val ct = new TrieMap[Int, Int]
     for (i <- 0 until n) ct(i) = i
-    (0 until n) forall {
-      case i => ct(i) == i
+    (0 until n) forall { case i =>
+      ct(i) == i
     }
   }
 
@@ -141,8 +141,8 @@ object Test extends Properties("concurrent.TrieMap") {
       for (i <- elementRange(idx, p, sz)) ct(Wrap(i)) = i
     }
 
-    (0 until sz) forall {
-      case i => ct(Wrap(i)) == i
+    (0 until sz) forall { case i =>
+      ct(Wrap(i)) == i
     }
   }
 
@@ -154,8 +154,8 @@ object Test extends Properties("concurrent.TrieMap") {
       for (i <- elementRange(idx, p, sz)) ct.remove(Wrap(i))
     }
 
-    (0 until sz) forall {
-      case i => ct.get(Wrap(i)) == None
+    (0 until sz) forall { case i =>
+      ct.get(Wrap(i)) == None
     }
   }
 
@@ -166,8 +166,8 @@ object Test extends Properties("concurrent.TrieMap") {
       elementRange(idx, p, sz) find (i => ct.putIfAbsent(Wrap(i), i) != None)
     }
 
-    (results forall (_ == None)) && ((0 until sz) forall {
-      case i => ct.get(Wrap(i)) == Some(i)
+    (results forall (_ == None)) && ((0 until sz) forall { case i =>
+      ct.get(Wrap(i)) == Some(i)
     })
   }
 
@@ -183,8 +183,8 @@ object Test extends Properties("concurrent.TrieMap") {
         }
       }
 
-      (totalInserts.get == sz) && ((0 until sz) forall {
-        case i => ct(Wrap(i)).split(":")(1).toInt == i
+      (totalInserts.get == sz) && ((0 until sz) forall { case i =>
+        ct(Wrap(i)).split(":")(1).toInt == i
       })
   }
 

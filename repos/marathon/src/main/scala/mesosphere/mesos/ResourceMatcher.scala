@@ -64,8 +64,8 @@ object ResourceMatcher {
                 label.getKey -> label.getValue
             }.toMap
           }
-        requiredLabels.labels.forall {
-          case (k, v) => labelMap.get(k).contains(v)
+        requiredLabels.labels.forall { case (k, v) =>
+          labelMap.get(k).contains(v)
         }
       }
 

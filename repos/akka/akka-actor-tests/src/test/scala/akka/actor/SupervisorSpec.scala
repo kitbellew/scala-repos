@@ -76,8 +76,8 @@ object SupervisorSpec {
       target ! ((self, sender(), ex))
       SupervisorStrategy.Stop
     }
-    def receive = {
-      case p: Props ⇒ sender() ! context.actorOf(p)
+    def receive = { case p: Props ⇒
+      sender() ! context.actorOf(p)
     }
   }
 
@@ -252,8 +252,8 @@ class SupervisorSpec
         override val supervisorStrategy =
           OneForOneStrategy(maxNrOfRetries = restarts)(List(classOf[Exception]))
         val child = context.actorOf(Props(childInstance))
-        def receive = {
-          case msg ⇒ child forward msg
+        def receive = { case msg ⇒
+          child forward msg
         }
       }))
 

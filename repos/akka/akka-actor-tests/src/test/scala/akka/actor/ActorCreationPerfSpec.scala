@@ -22,14 +22,14 @@ object ActorCreationPerfSpec {
   case object Waited
 
   class EmptyActor extends Actor {
-    def receive = {
-      case IsAlive ⇒ sender() ! Alive
+    def receive = { case IsAlive ⇒
+      sender() ! Alive
     }
   }
 
   class EmptyArgsActor(val foo: Int, val bar: Int) extends Actor {
-    def receive = {
-      case IsAlive ⇒ sender() ! Alive
+    def receive = { case IsAlive ⇒
+      sender() ! Alive
     }
   }
 

@@ -71,8 +71,8 @@ object Future {
     scala.Function.const(NotApplied) _
   private val toUnit: Any => Future[Unit] = scala.Function.const(Unit)
   private val toVoid: Any => Future[Void] = scala.Function.const(Void)
-  private val AlwaysMasked: PartialFunction[Throwable, Boolean] = {
-    case _ => true
+  private val AlwaysMasked: PartialFunction[Throwable, Boolean] = { case _ =>
+    true
   }
 
   // Exception used to raise on Futures.

@@ -95,8 +95,8 @@ class ShardCoordinator(zk: ZkClient, path: String, numShards: Int) {
       permit: Permit): Future[Option[Shard]] = {
     zk(shardPath(id)).create(mode = CreateMode.EPHEMERAL) map { node =>
       Some(Shard(id, node, permit))
-    } handle {
-      case err: KeeperException.NodeExistsException => None
+    } handle { case err: KeeperException.NodeExistsException =>
+      None
     }
   }
 

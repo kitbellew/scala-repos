@@ -156,8 +156,8 @@ class StreamExecution(
     sink.currentOffset match {
       case Some(c: CompositeOffset) =>
         val storedProgress = c.offsets
-        val sources = logicalPlan collect {
-          case StreamingRelation(source, _) => source
+        val sources = logicalPlan collect { case StreamingRelation(source, _) =>
+          source
         }
 
         assert(sources.size == storedProgress.size)

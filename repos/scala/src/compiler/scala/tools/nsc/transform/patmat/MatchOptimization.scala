@@ -761,8 +761,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
       val optCases = doCSE(prevBinder, cases, pt)
       val toHoist = (
         for (treeMakers <- optCases)
-          yield treeMakers.collect {
-            case tm: ReusedCondTreeMaker => tm.treesToHoist
+          yield treeMakers.collect { case tm: ReusedCondTreeMaker =>
+            tm.treesToHoist
           }
       ).flatten.flatten.toList
       (optCases, toHoist)

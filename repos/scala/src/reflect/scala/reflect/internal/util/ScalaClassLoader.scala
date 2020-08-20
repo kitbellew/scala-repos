@@ -64,8 +64,8 @@ trait ScalaClassLoader extends JClassLoader {
         val ctor = {
           val maybes = clazz.getConstructors filter (c =>
             c.getParameterCount == args.size &&
-              (c.getParameterTypes zip args).forall {
-                case (k, a) => k isAssignableFrom a.getClass
+              (c.getParameterTypes zip args).forall { case (k, a) =>
+                k isAssignableFrom a.getClass
               })
           if (maybes.size == 1) maybes.head
           else

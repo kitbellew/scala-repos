@@ -431,8 +431,8 @@ trait TestKitBase {
   def expectTerminated(
       target: ActorRef,
       max: Duration = Duration.Undefined): Terminated =
-    expectMsgPF(max, "Terminated " + target) {
-      case t @ Terminated(`target`) ⇒ t
+    expectMsgPF(max, "Terminated " + target) { case t @ Terminated(`target`) ⇒
+      t
     }
 
   /**

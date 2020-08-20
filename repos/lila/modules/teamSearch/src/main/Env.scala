@@ -24,8 +24,8 @@ final class Env(
 
   def cli =
     new lila.common.Cli {
-      def process = {
-        case "team" :: "search" :: "reset" :: Nil => api.reset inject "done"
+      def process = { case "team" :: "search" :: "reset" :: Nil =>
+        api.reset inject "done"
       }
     }
 

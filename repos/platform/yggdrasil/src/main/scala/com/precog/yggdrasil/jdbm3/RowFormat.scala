@@ -427,8 +427,8 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
     //val decoders: Seq[(ColumnValueDecoder, Int)] = // Seq[((Int, ByteBuffer) => Unit, Int)] =
     //  (columnRefs zip cols map { case (ref, col) => getColumnDecoder(ref.ctype, col) }).zipWithIndex
     val decoders: List[ColumnValueDecoder] =
-      (columnRefs zip cols).map {
-        case (ref, col) => getColumnDecoder(ref.ctype, col)
+      (columnRefs zip cols).map { case (ref, col) =>
+        getColumnDecoder(ref.ctype, col)
       }(collection.breakOut)
 
     new ColumnDecoder {

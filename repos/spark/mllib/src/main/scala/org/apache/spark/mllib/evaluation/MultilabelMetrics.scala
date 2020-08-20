@@ -167,14 +167,14 @@ class MultilabelMetrics @Since("1.2.0") (
     if ((p + r) == 0) 0.0 else 2 * p * r / (p + r)
   }
 
-  private lazy val sumTp = tpPerClass.foldLeft(0L) {
-    case (sum, (_, tp)) => sum + tp
+  private lazy val sumTp = tpPerClass.foldLeft(0L) { case (sum, (_, tp)) =>
+    sum + tp
   }
-  private lazy val sumFpClass = fpPerClass.foldLeft(0L) {
-    case (sum, (_, fp)) => sum + fp
+  private lazy val sumFpClass = fpPerClass.foldLeft(0L) { case (sum, (_, fp)) =>
+    sum + fp
   }
-  private lazy val sumFnClass = fnPerClass.foldLeft(0L) {
-    case (sum, (_, fn)) => sum + fn
+  private lazy val sumFnClass = fnPerClass.foldLeft(0L) { case (sum, (_, fn)) =>
+    sum + fn
   }
 
   /**

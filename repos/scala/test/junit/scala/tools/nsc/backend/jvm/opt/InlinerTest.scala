@@ -1529,8 +1529,8 @@ class InlinerTest extends ClearAfterClass {
       getSingleMethod(c, "t1"),
       List(Op(ICONST_0), Op(ICONST_1), Op(IADD), Op(IRETURN)))
     assertEquals(
-      getSingleMethod(c, "t2").instructions collect {
-        case i: Invoke => i.owner + "." + i.name
+      getSingleMethod(c, "t2").instructions collect { case i: Invoke =>
+        i.owner + "." + i.name
       },
       List("scala/runtime/IntRef.create", "C.C$$$anonfun$1"))
   }
@@ -1608,8 +1608,8 @@ class InlinerTest extends ClearAfterClass {
       """.stripMargin
     val List(c, _) = compile(code)
     def casts(m: String) =
-      getSingleMethod(c, m).instructions collect {
-        case TypeOp(CHECKCAST, tp) => tp
+      getSingleMethod(c, m).instructions collect { case TypeOp(CHECKCAST, tp) =>
+        tp
       }
     assertSameCode(getSingleMethod(c, "t1"), List(VarOp(ALOAD, 1), Op(ARETURN)))
     assertSameCode(getSingleMethod(c, "t2"), List(VarOp(ALOAD, 1), Op(ARETURN)))

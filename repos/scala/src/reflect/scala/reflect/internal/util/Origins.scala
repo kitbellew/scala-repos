@@ -62,8 +62,8 @@ abstract class Origins {
     println(
       "\n>> Origins tag '%s' logged %s calls from %s distinguished sources.\n"
         .format(tag, total, origins.keys.size))
-    origins.toList sortBy (-_._2) foreach {
-      case (k, v) => println("%7s %s".format(v, repString(k)))
+    origins.toList sortBy (-_._2) foreach { case (k, v) =>
+      println("%7s %s".format(v, repString(k)))
     }
   }
   def purge() = {

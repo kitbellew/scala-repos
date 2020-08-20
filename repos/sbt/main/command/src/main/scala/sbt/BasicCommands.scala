@@ -89,8 +89,8 @@ object BasicCommands {
     Command.make(CompletionsCommand, CompletionsBrief, CompletionsDetailed)(
       completionsParser)
   def completionsParser(state: State) = {
-    val notQuoted = (NotQuoted ~ any.*) map {
-      case (nq, s) => (nq +: s).mkString
+    val notQuoted = (NotQuoted ~ any.*) map { case (nq, s) =>
+      (nq +: s).mkString
     }
     val quotedOrUnquotedSingleArgument =
       Space ~> (StringVerbatim | StringEscapable | notQuoted)

@@ -117,8 +117,8 @@ private[coordinator] class MemberMetadata(
     * indicated by the order of supported protocols and returns the first one also contained in the set
     */
   def vote(candidates: Set[String]): String = {
-    supportedProtocols.find({
-      case (protocol, _) => candidates.contains(protocol)
+    supportedProtocols.find({ case (protocol, _) =>
+      candidates.contains(protocol)
     }) match {
       case Some((protocol, _)) => protocol
       case None =>

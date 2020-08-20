@@ -184,8 +184,8 @@ object ReassignPartitionsCommand extends Logging {
         "Partition reassignment data file %s is empty".format(
           reassignmentJsonFile))
     val duplicateReassignedPartitions =
-      CoreUtils.duplicates(partitionsToBeReassigned.map {
-        case (tp, replicas) => tp
+      CoreUtils.duplicates(partitionsToBeReassigned.map { case (tp, replicas) =>
+        tp
       })
     if (duplicateReassignedPartitions.nonEmpty)
       throw new AdminCommandFailedException(

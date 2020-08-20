@@ -201,8 +201,8 @@ sealed abstract class LensFamily[A1, A2, B1, B2] {
   /** Two disjoint lenses can be paired */
   def product[C1, C2, D1, D2](that: LensFamily[C1, C2, D1, D2])
       : LensFamily[(A1, C1), (A2, C2), (B1, D1), (B2, D2)] =
-    lensFamily {
-      case (a, c) => run(a) *** that.run(c)
+    lensFamily { case (a, c) =>
+      run(a) *** that.run(c)
     }
 
   /** alias for `product` */
@@ -271,14 +271,14 @@ trait LensFamilyFunctions {
 
   /** Polymorphically access the first field of a tuple */
   def firstLensFamily[A1, A2, B]: LensFamily[(A1, B), (A2, B), A1, A2] =
-    lensFamily {
-      case (a, b) => IndexedStore(x => (x, b), a)
+    lensFamily { case (a, b) =>
+      IndexedStore(x => (x, b), a)
     }
 
   /** Polymorphically access the second field of a tuple */
   def secondLensFamily[A, B1, B2]: LensFamily[(A, B1), (A, B2), B1, B2] =
-    lensFamily {
-      case (a, b) => IndexedStore(x => (a, x), b)
+    lensFamily { case (a, b) =>
+      IndexedStore(x => (a, x), b)
     }
 
   /** Polymorphically access the first field of a tuple */
@@ -369,14 +369,14 @@ trait LensFunctions extends LensFamilyFunctions {
 
   /** Access the first field of a tuple */
   def firstLens[A, B]: (A, B) @> A =
-    lens {
-      case (a, b) => Store(x => (x, b), a)
+    lens { case (a, b) =>
+      Store(x => (x, b), a)
     }
 
   /** Access the second field of a tuple */
   def secondLens[A, B]: (A, B) @> B =
-    lens {
-      case (a, b) => Store(x => (a, x), b)
+    lens { case (a, b) =>
+      Store(x => (a, x), b)
     }
 
   /** Access the first field of a tuple */

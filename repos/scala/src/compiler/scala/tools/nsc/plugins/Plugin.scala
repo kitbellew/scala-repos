@@ -156,8 +156,8 @@ object Plugin {
 
     // scan plugin dirs for jars containing plugins, ignoring dirs with none and other jars
     val fromDirs: PDResults = dirs filter (_.isDirectory) flatMap { d =>
-      scan(d.toDirectory) collect {
-        case (j, Success(pd)) => Success((pd, loaderFor(Seq(j))))
+      scan(d.toDirectory) collect { case (j, Success(pd)) =>
+        Success((pd, loaderFor(Seq(j))))
       }
     }
 

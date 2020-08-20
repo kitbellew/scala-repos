@@ -29,14 +29,14 @@ object FSMTransitionSpec {
 
   class MyFSM(target: ActorRef) extends Actor with FSM[Int, Unit] {
     startWith(0, Unit)
-    when(0) {
-      case Event("tick", _) ⇒ goto(1)
+    when(0) { case Event("tick", _) ⇒
+      goto(1)
     }
-    when(1) {
-      case Event("tick", _) ⇒ goto(0)
+    when(1) { case Event("tick", _) ⇒
+      goto(0)
     }
-    whenUnhandled {
-      case Event("reply", _) ⇒ stay replying "reply"
+    whenUnhandled { case Event("reply", _) ⇒
+      stay replying "reply"
     }
     initialize()
     override def preRestart(reason: Throwable, msg: Option[Any]) {
@@ -50,8 +50,8 @@ object FSMTransitionSpec {
       case Event("tick", _) ⇒ goto(1) using 1
       case Event("stay", _) ⇒ stay()
     }
-    when(1) {
-      case _ ⇒ goto(1)
+    when(1) { case _ ⇒
+      goto(1)
     }
     onTransition {
       case 0 -> 1 ⇒ target ! ((stateData, nextStateData))
@@ -151,11 +151,11 @@ class FSMTransitionSpec extends AkkaSpec with ImplicitSender {
     "not leak memory in nextState" in {
       val fsmref = system.actorOf(Props(new Actor with FSM[Int, ActorRef] {
         startWith(0, null)
-        when(0) {
-          case Event("switch", _) ⇒ goto(1) using sender()
+        when(0) { case Event("switch", _) ⇒
+          goto(1) using sender()
         }
-        onTransition {
-          case x -> y ⇒ nextStateData ! (x -> y)
+        onTransition { case x -> y ⇒
+          nextStateData ! (x -> y)
         }
         when(1) { case Event("test", _) ⇒
           try {

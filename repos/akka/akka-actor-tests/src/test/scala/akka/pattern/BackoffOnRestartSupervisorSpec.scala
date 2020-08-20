@@ -39,8 +39,8 @@ object TestParentActor {
 class TestParentActor(probe: ActorRef, supervisorProps: Props) extends Actor {
   val supervisor = context.actorOf(supervisorProps)
 
-  def receive = {
-    case other ⇒ probe.forward(other)
+  def receive = { case other ⇒
+    probe.forward(other)
   }
 }
 

@@ -55,8 +55,8 @@ import xml.Text
   */
 object Msgs extends DispatchSnippet {
   // Dispatch to the render method no matter how we're called
-  def dispatch: DispatchIt = {
-    case _ => render
+  def dispatch: DispatchIt = { case _ =>
+    render
   }
 
   /**

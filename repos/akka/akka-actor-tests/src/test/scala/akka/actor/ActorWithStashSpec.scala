@@ -197,8 +197,8 @@ class ActorWithStashSpec
     "allow using whenRestarted" in {
       import ActorDSL._
       val a = actor(new ActWithStash {
-        become {
-          case "die" ⇒ throw new RuntimeException("dying")
+        become { case "die" ⇒
+          throw new RuntimeException("dying")
         }
         whenRestarted { thr ⇒
           testActor ! "restarted"

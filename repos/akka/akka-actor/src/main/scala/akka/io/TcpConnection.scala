@@ -123,8 +123,8 @@ private[io] abstract class TcpConnection(
 
   /** the peer sent EOF first, but we may still want to send */
   def peerSentEOF(info: ConnectionInfo): Receive =
-    handleWriteMessages(info) orElse {
-      case cmd: CloseCommand ⇒ handleClose(info, Some(sender()), cmd.event)
+    handleWriteMessages(info) orElse { case cmd: CloseCommand ⇒
+      handleClose(info, Some(sender()), cmd.event)
     }
 
   /** connection is closing but a write has to be finished first */

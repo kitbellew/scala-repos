@@ -597,8 +597,8 @@ object List extends SeqFactory[List] {
     */
   @deprecated("use `xs.unzip' instead")
   def unzip[A, B](xs: Iterable[(A, B)]): (List[A], List[B]) =
-    xs.foldRight[(List[A], List[B])]((Nil, Nil)) {
-      case ((x, y), (xs, ys)) => (x :: xs, y :: ys)
+    xs.foldRight[(List[A], List[B])]((Nil, Nil)) { case ((x, y), (xs, ys)) =>
+      (x :: xs, y :: ys)
     }
 
   /**

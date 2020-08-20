@@ -336,8 +336,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
           val (staticArgs, dynamicArgs) =
             staticAndDynamicArgs.splitAt(numStaticArgs)
           val boostrapDescriptor = staticHandleFromSymbol(boostrapMethodRef)
-          val bootstrapArgs = staticArgs.map({
-            case t @ Literal(c: Constant) => bootstrapMethodArg(c, t.pos)
+          val bootstrapArgs = staticArgs.map({ case t @ Literal(c: Constant) =>
+            bootstrapMethodArg(c, t.pos)
           })
           val descriptor = methodBTypeFromMethodType(qual.symbol.info, false)
           genLoadArguments(
@@ -1063,8 +1063,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
       }
 
       // first push *all* arguments. This makes sure muliple uses of the same labelDef-var will all denote the (previous) value.
-      aps foreach {
-        case (arg, param) => genLoad(arg, locals(param).tk)
+      aps foreach { case (arg, param) =>
+        genLoad(arg, locals(param).tk)
       } // `locals` is known to contain `param` because `genDefDef()` visited `labelDefsAtOrUnder`
 
       // second assign one by one to the LabelDef's variables.

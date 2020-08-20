@@ -185,8 +185,8 @@ trait WebHookService {
             }
           }
         }
-        f.onSuccess {
-          case s => logger.debug(s"Success: web hook request to ${webHook.url}")
+        f.onSuccess { case s =>
+          logger.debug(s"Success: web hook request to ${webHook.url}")
         }
         f.onFailure { case t =>
           logger.error(s"Failed: web hook request to ${webHook.url}", t)

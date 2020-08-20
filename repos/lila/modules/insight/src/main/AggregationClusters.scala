@@ -44,8 +44,8 @@ object AggregationClusters {
         percents =
           if (total == 0) points
           else
-            points.map {
-              case (n, p) => n -> Point(100 * p.y / total)
+            points.map { case (n, p) =>
+              n -> Point(100 * p.y / total)
             }
         ids <- doc.getAs[List[String]]("ids")
       } yield Cluster(x, Insight.Stacked(percents), total, ids)

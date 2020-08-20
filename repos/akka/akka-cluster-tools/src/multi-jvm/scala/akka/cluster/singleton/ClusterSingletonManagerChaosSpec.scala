@@ -51,8 +51,8 @@ object ClusterSingletonManagerChaosSpec extends MultiNodeConfig {
   class Echo(testActor: ActorRef) extends Actor {
     testActor ! EchoStarted
 
-    def receive = {
-      case _ ⇒ sender() ! self
+    def receive = { case _ ⇒
+      sender() ! self
     }
   }
 }

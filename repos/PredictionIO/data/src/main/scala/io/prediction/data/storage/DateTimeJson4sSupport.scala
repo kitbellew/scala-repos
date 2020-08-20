@@ -31,8 +31,8 @@ object DateTimeJson4sSupport {
   @transient lazy implicit val formats = DefaultFormats
 
   /** Serialize DateTime to JValue */
-  def serializeToJValue: PartialFunction[Any, JValue] = {
-    case d: DateTime => JString(DataUtils.dateTimeToString(d))
+  def serializeToJValue: PartialFunction[Any, JValue] = { case d: DateTime =>
+    JString(DataUtils.dateTimeToString(d))
   }
 
   /** Deserialize JValue to DateTime */

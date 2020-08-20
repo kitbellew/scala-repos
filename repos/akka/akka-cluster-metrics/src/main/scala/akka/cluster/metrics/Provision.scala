@@ -67,8 +67,8 @@ trait SigarProvider {
     } orElse TryNative {
       provisionSigarLibrary()
       verifiedSigarInstance
-    } recover {
-      case e: Throwable ⇒ throw new RuntimeException("Failed to load sigar:", e)
+    } recover { case e: Throwable ⇒
+      throw new RuntimeException("Failed to load sigar:", e)
     } get
   }
 

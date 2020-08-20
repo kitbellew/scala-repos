@@ -63,8 +63,8 @@ class ActorSelectionSpec
 
   def identify(selection: ActorSelection): Option[ActorRef] = {
     selection.tell(Identify(selection), idProbe.ref)
-    val result = idProbe.expectMsgPF() {
-      case ActorIdentity(`selection`, ref) ⇒ ref
+    val result = idProbe.expectMsgPF() { case ActorIdentity(`selection`, ref) ⇒
+      ref
     }
     val asked = Await.result(
       (selection ? Identify(selection)).mapTo[ActorIdentity],
@@ -74,8 +74,8 @@ class ActorSelectionSpec
 
     implicit val ec = system.dispatcher
     val resolved = Await.result(
-      selection.resolveOne(timeout.duration).mapTo[ActorRef] recover {
-        case _ ⇒ null
+      selection.resolveOne(timeout.duration).mapTo[ActorRef] recover { case _ ⇒
+        null
       },
       timeout.duration)
     Option(resolved) should ===(result)
@@ -319,8 +319,8 @@ class ActorSelectionSpec
     "send messages with correct sender" in {
       implicit val sender = c1
       ActorSelection(c21, "../../*") ! GetSender(testActor)
-      val actors = Set() ++ receiveWhile(messages = 2) {
-        case `c1` ⇒ lastSender
+      val actors = Set() ++ receiveWhile(messages = 2) { case `c1` ⇒
+        lastSender
       }
       actors should ===(Set(c1, c2))
       expectNoMsg(1 second)
@@ -329,8 +329,8 @@ class ActorSelectionSpec
     "drop messages which cannot be delivered" in {
       implicit val sender = c2
       ActorSelection(c21, "../../*/c21") ! GetSender(testActor)
-      val actors = receiveWhile(messages = 2) {
-        case `c2` ⇒ lastSender
+      val actors = receiveWhile(messages = 2) { case `c2` ⇒
+        lastSender
       }
       actors should ===(Seq(c21))
       expectNoMsg(1 second)

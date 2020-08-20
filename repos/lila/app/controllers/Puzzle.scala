@@ -209,8 +209,8 @@ object Puzzle extends LilaController {
         env.forms.vote.bindFromRequest.fold(
           err => fuccess(BadRequest(errorsAsJson(err))),
           vote =>
-            env.api.attempt.vote(attempt, vote == 1) map {
-              case (p, a) => Ok(play.api.libs.json.Json.arr(a.vote, p.vote.sum))
+            env.api.attempt.vote(attempt, vote == 1) map { case (p, a) =>
+              Ok(play.api.libs.json.Json.arr(a.vote, p.vote.sum))
             }
         ) map (_ as JSON)
       }

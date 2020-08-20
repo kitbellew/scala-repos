@@ -59,8 +59,8 @@ object PersistentActorFailureSpec {
     def isWrong(messages: immutable.Seq[AtomicWrite]): Boolean =
       messages.exists {
         case a: AtomicWrite ⇒
-          a.payload.exists {
-            case PersistentRepr(Evt(s: String), _) ⇒ s.contains("wrong")
+          a.payload.exists { case PersistentRepr(Evt(s: String), _) ⇒
+            s.contains("wrong")
           }
         case _ ⇒ false
       }
@@ -79,16 +79,16 @@ object PersistentActorFailureSpec {
       }
 
     def isCorrupt(events: Seq[PersistentRepr]): Boolean =
-      events.exists {
-        case PersistentRepr(Evt(s: String), _) ⇒ s.contains("corrupt")
+      events.exists { case PersistentRepr(Evt(s: String), _) ⇒
+        s.contains("corrupt")
       }
 
   }
 
   class OnRecoveryFailurePersistentActor(name: String, probe: ActorRef)
       extends ExamplePersistentActor(name) {
-    val receiveCommand: Receive = commonBehavior orElse {
-      case c @ Cmd(txt) ⇒ persist(Evt(txt))(updateState)
+    val receiveCommand: Receive = commonBehavior orElse { case c @ Cmd(txt) ⇒
+      persist(Evt(txt))(updateState)
     }
 
     override protected def onRecoveryFailure(

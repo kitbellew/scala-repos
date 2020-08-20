@@ -287,8 +287,8 @@ trait EvaluatorModule[M[+_]]
             val Some(spec) = mkTransSpec(solution, commonGraph, ctx)
             for {
               _ <- monadState.gets(identity)
-              liftedTrans = TransSpec.deepMap(spec) {
-                case Leaf(_) => DerefObjectStatic(Leaf(Source), paths.Value)
+              liftedTrans = TransSpec.deepMap(spec) { case Leaf(_) =>
+                DerefObjectStatic(Leaf(Source), paths.Value)
               }
             } yield GroupKeySpecSource(CPathField(id.toString), liftedTrans)
 
@@ -299,8 +299,8 @@ trait EvaluatorModule[M[+_]]
               extraId = state.extraCount
               _ <- monadState.modify { _.copy(extraCount = extraId + 1) }
 
-              liftedTrans = TransSpec.deepMap(spec) {
-                case Leaf(_) => DerefObjectStatic(Leaf(Source), paths.Value)
+              liftedTrans = TransSpec.deepMap(spec) { case Leaf(_) =>
+                DerefObjectStatic(Leaf(Source), paths.Value)
               }
             } yield GroupKeySpecSource(
               CPathField("extra" + extraId),
@@ -489,8 +489,8 @@ trait EvaluatorModule[M[+_]]
           def isSorted(sort: TableOrder): Boolean =
             (joinKey, sort) match {
               case (IdentityJoin(keys), IdentityOrder(ids)) =>
-                ids.zipWithIndex take keys.length forall {
-                  case (i, j) => i == j
+                ids.zipWithIndex take keys.length forall { case (i, j) =>
+                  i == j
                 }
               case (ValueJoin(id0), ValueOrder(id1)) => id0 == id1
               case _                                 => false
@@ -890,8 +890,8 @@ trait EvaluatorModule[M[+_]]
               *          returns an array (to be dereferenced later) containing the result of each reduction
               */
             case m @ MegaReduce(reds, parent) =>
-              val firstCoalesce = reds.map {
-                case (_, reductions) => coalesce(reductions.map((_, None)))
+              val firstCoalesce = reds.map { case (_, reductions) =>
+                coalesce(reductions.map((_, None)))
               }
 
               def makeJArray(idx: Int)(tpe: JType): JType =
@@ -981,11 +981,11 @@ trait EvaluatorModule[M[+_]]
                 result <-
                   transState liftM mn(Table.merge(grouping2) { (key, map) =>
                     val splits2 = splits + (id -> (map andThen mn))
-                    val rewritten =
-                      params.foldLeft(child) { case (child, param) =>
+                    val rewritten = params.foldLeft(child) {
+                      case (child, param) =>
                         val subKey = key \ param.id.toString
                         replaceNode(child, param, Const(subKey)(param.loc))
-                      }
+                    }
 
                     val back =
                       fullEval(rewritten, splits2, id :: splits.keys.toList)
@@ -1259,8 +1259,8 @@ trait EvaluatorModule[M[+_]]
           List((join, Const(result)(from.loc)))
       }
 
-      replacements.foldLeft(graph) {
-        case (graph, (from, to)) => replaceNode(graph, from, to)
+      replacements.foldLeft(graph) { case (graph, (from, to)) =>
+        replaceNode(graph, from, to)
       }
     }
 
@@ -1269,8 +1269,8 @@ trait EvaluatorModule[M[+_]]
         from: DepGraph,
         to: DepGraph) = {
       graph mapDown { recurse =>
-        {
-          case `from` => to
+        { case `from` =>
+          to
         }
       }
     }
@@ -1342,8 +1342,8 @@ trait EvaluatorModule[M[+_]]
             case dag.Memoize(parent, _) => queue2 enqueue parent
           }
 
-          val addend = Some(graph) collect {
-            case fp: StagingPoint => fp
+          val addend = Some(graph) collect { case fp: StagingPoint =>
+            fp
           }
 
           (queue3, addend)

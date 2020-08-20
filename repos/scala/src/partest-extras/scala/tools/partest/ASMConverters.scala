@@ -350,8 +350,8 @@ object ASMConverters {
 
   private def createLabelNodes(
       instructions: List[Instruction]): Map[Label, asm.Label] = {
-    val labels = instructions collect {
-      case l: Label => l
+    val labels = instructions collect { case l: Label =>
+      l
     }
     assert(labels.distinct == labels, s"Duplicate labels in: $labels")
     labels.map(l => (l, new asm.Label())).toMap

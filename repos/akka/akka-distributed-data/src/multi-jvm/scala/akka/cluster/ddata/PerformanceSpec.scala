@@ -125,8 +125,8 @@ class PerformanceSpec
       awaitAssert {
         val readProbe = TestProbe()
         replicator.tell(Get(key, ReadLocal), readProbe.ref)
-        val result = readProbe.expectMsgPF() {
-          case g @ GetSuccess(`key`, _) ⇒ g.get(key)
+        val result = readProbe.expectMsgPF() { case g @ GetSuccess(`key`, _) ⇒
+          g.get(key)
         }
         result.elements should be(expectedData)
       }
@@ -229,8 +229,8 @@ class PerformanceSpec
         awaitAssert {
           val readProbe = TestProbe()
           replicator.tell(Get(key, ReadLocal), readProbe.ref)
-          val result = readProbe.expectMsgPF() {
-            case g @ GetSuccess(`key`, _) ⇒ g.get(key)
+          val result = readProbe.expectMsgPF() { case g @ GetSuccess(`key`, _) ⇒
+            g.get(key)
           }
           result.value should be(3 * n)
         }

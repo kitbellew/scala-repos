@@ -44,8 +44,8 @@ class DeploymentManager(
     mutable.Map.empty[String, DeploymentStepInfo]
 
   override def supervisorStrategy: SupervisorStrategy =
-    OneForOneStrategy() {
-      case NonFatal(e) => Stop
+    OneForOneStrategy() { case NonFatal(e) =>
+      Stop
     }
 
   //TODO: fix style issue and enable this scalastyle check

@@ -58,16 +58,16 @@ private[std] sealed trait Function1Instances extends Function1Instances0 {
 
       def lift[A, B](f: A => B): A => B = f
 
-      def first[A, B, C](fa: A => B): ((A, C)) => (B, C) = {
-        case (a, c) => (fa(a), c)
+      def first[A, B, C](fa: A => B): ((A, C)) => (B, C) = { case (a, c) =>
+        (fa(a), c)
       }
 
       def id[A]: A => A = a => a
 
       override def split[A, B, C, D](
           f: A => B,
-          g: C => D): ((A, C)) => (B, D) = {
-        case (a, c) => (f(a), g(c))
+          g: C => D): ((A, C)) => (B, D) = { case (a, c) =>
+        (f(a), g(c))
       }
 
       def compose[A, B, C](f: B => C, g: A => B): A => C = f.compose(g)

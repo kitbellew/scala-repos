@@ -13,8 +13,8 @@ sealed abstract class IndexedReaderWriterStateT[F[_], -R, W, -S1, S2, A] {
   /** Discards the writer component. */
   def state(r: R)(implicit F: Monad[F]): IndexedStateT[F, S1, S2, A] =
     IndexedStateT((s: S1) =>
-      F.map(run(r, s)) {
-        case (w, a, s1) => (s1, a)
+      F.map(run(r, s)) { case (w, a, s1) =>
+        (s1, a)
       })
 
   /** Calls `run` using `Monoid[S].zero` as the initial state */
@@ -51,8 +51,8 @@ sealed abstract class IndexedReaderWriterStateT[F[_], -R, W, -S1, S2, A] {
       (r: RR, s1: S1) =>
         F.bind(self.run(r, s1)(G)) {
           case (w1, a, s2) => {
-            F.map(f(a).run(r, s2)(G)) {
-              case (w2, b, s3) => (W.append(w1, w2), b, s3)
+            F.map(f(a).run(r, s2)(G)) { case (w2, b, s3) =>
+              (W.append(w1, w2), b, s3)
             }
           }
         })
@@ -275,8 +275,8 @@ private trait ReaderWriterStateTHoist[R, W, S]
       ?]) {
       def apply[A](ma: ReaderWriterStateT[M, R, W, S, A])
           : ReaderWriterStateT[N, R, W, S, A] =
-        ReaderWriterStateT {
-          case (r, s) => f.apply(ma.run(r, s))
+        ReaderWriterStateT { case (r, s) =>
+          f.apply(ma.run(r, s))
         }
     }
 

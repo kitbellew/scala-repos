@@ -848,8 +848,8 @@ object Engine {
             .join(qasMap)
             .map { case (qx, t) => (qx, t._2._1, t._1, t._2._2) }
 
-          val qpaMap: RDD[(Q, P, A)] = qpsaMap.map {
-            case (qx, q, ps, a) => (q, serving.serveBase(q, ps), a)
+          val qpaMap: RDD[(Q, P, A)] = qpsaMap.map { case (qx, q, ps, a) =>
+            (q, serving.serveBase(q, ps), a)
           }
           (ex, qpaMap)
         }

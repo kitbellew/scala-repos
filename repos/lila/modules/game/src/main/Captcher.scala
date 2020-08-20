@@ -40,8 +40,8 @@ private final class Captcher extends Actor {
     def current = challenges.head
 
     def refresh =
-      createFromDb onSuccess {
-        case Some(captcha) => add(captcha)
+      createFromDb onSuccess { case Some(captcha) =>
+        add(captcha)
       }
 
     // Private stuff
@@ -80,8 +80,8 @@ private final class Captcher extends Actor {
         for {
           rewinded ← rewind(game, moves)
           solutions ← solve(rewinded)
-          moves = rewinded.situation.destinations map {
-            case (from, dests) => from.key -> dests.mkString
+          moves = rewinded.situation.destinations map { case (from, dests) =>
+            from.key -> dests.mkString
           }
         } yield Captcha(
           game.id,

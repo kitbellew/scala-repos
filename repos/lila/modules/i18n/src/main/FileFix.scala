@@ -29,8 +29,8 @@ private[i18n] final class FileFix(
   private def write(lang: Lang, messages: List[(String, String)]) = {
     val file = "%s/messages.%s".format(path, lang.language)
     printToFile(file) { writer =>
-      messages foreach {
-        case (name, trans) => writer.println(name + "=" + trans)
+      messages foreach { case (name, trans) =>
+        writer.println(name + "=" + trans)
       }
     }
   }

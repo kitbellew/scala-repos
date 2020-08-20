@@ -101,7 +101,7 @@ object HoconColorSettingsPage {
     "Path separator" -> HHC.PathSeparator,
     "Key" -> HHC.EntryKey,
     "Key in substitution" -> HHC.SubstitutionKey
-  ).map({
-    case (displayName, key) => new AttributesDescriptor(displayName, key)
+  ).map({ case (displayName, key) =>
+    new AttributesDescriptor(displayName, key)
   })
 }

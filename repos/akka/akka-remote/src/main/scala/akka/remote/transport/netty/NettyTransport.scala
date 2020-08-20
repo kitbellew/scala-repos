@@ -609,8 +609,8 @@ class NettyTransport(
                   s"Unknown local address type [${newServerChannel.getLocalAddress.getClass.getName}]")
             }
             localAddress = address
-            associationListenerPromise.future.onSuccess {
-              case listener ⇒ newServerChannel.setReadable(true)
+            associationListenerPromise.future.onSuccess { case listener ⇒
+              newServerChannel.setReadable(true)
             }
             (address, associationListenerPromise)
           case None ⇒
@@ -665,8 +665,8 @@ class NettyTransport(
                     remoteAddress,
                     readyChannel,
                     NettyTransport.this)
-                  handle.readHandlerPromise.future.onSuccess {
-                    case listener ⇒ udpConnectionTable.put(addr, listener)
+                  handle.readHandlerPromise.future.onSuccess { case listener ⇒
+                    udpConnectionTable.put(addr, listener)
                   }
                   handle
                 case unknown ⇒

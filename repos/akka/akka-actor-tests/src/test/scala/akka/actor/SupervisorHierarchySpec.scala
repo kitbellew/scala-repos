@@ -42,8 +42,8 @@ object SupervisorHierarchySpec {
       override val supervisorStrategy: SupervisorStrategy)
       extends Actor {
 
-    def receive = {
-      case p: Props ⇒ sender() ! context.actorOf(p)
+    def receive = { case p: Props ⇒
+      sender() ! context.actorOf(p)
     }
     // test relies on keeping children around during restart
     override def preRestart(cause: Throwable, msg: Option[Any]) {}
@@ -626,8 +626,8 @@ object SupervisorHierarchySpec {
         goto(Failed)
     }
 
-    onTransition {
-      case Stress -> Finishing ⇒ ignoreFailConstr = true
+    onTransition { case Stress -> Finishing ⇒
+      ignoreFailConstr = true
     }
 
     when(Finishing) {
@@ -920,8 +920,8 @@ class SupervisorHierarchySpec
             OneForOneStrategy() { case _ ⇒
               Await.ready(latch, 4.seconds.dilated); SupervisorStrategy.Resume
             }
-          def receive = {
-            case "spawn" ⇒ sender() ! context.actorOf(Props[Resumer])
+          def receive = { case "spawn" ⇒
+            sender() ! context.actorOf(Props[Resumer])
           }
         }),
         "slowResumer"
@@ -983,15 +983,15 @@ class SupervisorHierarchySpec
                 override def postRestart(reason: Throwable) = {
                   postRestartCalled.incrementAndGet()
                 }
-                override def receive = {
-                  case m ⇒ sender() ! m
+                override def receive = { case m ⇒
+                  sender() ! m
                 }
               }),
               "failChild"
             )
 
-            override def receive = {
-              case m ⇒ child.forward(m)
+            override def receive = { case m ⇒
+              child.forward(m)
             }
           }),
           "failResumer"

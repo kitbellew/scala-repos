@@ -51,14 +51,14 @@ object Conneg {
     def paramSep: Parser[Any] = """\s*;\s*""".r
 
     def parameter: Parser[(String, String)] =
-      (token ~ (valueSep ~> (token | quotedString))) ^^ {
-        case token ~ value => (token, value)
+      (token ~ (valueSep ~> (token | quotedString))) ^^ { case token ~ value =>
+        (token, value)
       }
 
     def parameters: Parser[Map[String, String]] =
       repsep(parameter, paramSep) ^^ {
-        _.foldLeft(Map[String, String]()) {
-          case (params, param) => params + param
+        _.foldLeft(Map[String, String]()) { case (params, param) =>
+          params + param
         }
       }
 

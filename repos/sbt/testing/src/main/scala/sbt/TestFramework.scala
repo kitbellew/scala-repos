@@ -188,8 +188,8 @@ object TestFramework {
     else
       createTestTasks(
         testLoader,
-        runners.map {
-          case (tf, r) => (frameworks(tf), new TestRunner(r, listeners, log))
+        runners.map { case (tf, r) =>
+          (frameworks(tf), new TestRunner(r, listeners, log))
         },
         mappedTests,
         tests,

@@ -373,8 +373,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
     if (intp.lastWarnings.isEmpty)
       "Can't find any cached warnings."
     else
-      intp.lastWarnings foreach {
-        case (pos, msg) => intp.reporter.warning(pos, msg)
+      intp.lastWarnings foreach { case (pos, msg) =>
+        intp.reporter.warning(pos, msg)
       }
   }
 
@@ -1034,8 +1034,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       val readers =
         readerClasses map (cls => Try { mkReader(instantiater(cls)) })
 
-      val reader = (readers collect {
-        case Success(reader) => reader
+      val reader = (readers collect { case Success(reader) =>
+        reader
       } headOption) getOrElse SimpleReader()
 
       if (settings.debug) {

@@ -81,15 +81,15 @@ object ActorSystemSpec {
   }
 
   class Terminater extends Actor {
-    def receive = {
-      case "run" ⇒ context.stop(self)
+    def receive = { case "run" ⇒
+      context.stop(self)
     }
   }
 
   class Strategy extends SupervisorStrategyConfigurator {
     def create() =
-      OneForOneStrategy() {
-        case _ ⇒ SupervisorStrategy.Escalate
+      OneForOneStrategy() { case _ ⇒
+        SupervisorStrategy.Escalate
       }
   }
 
@@ -361,8 +361,8 @@ class ActorSystemSpec
             "akka.actor.guardian-supervisor-strategy=akka.actor.StoppingSupervisorStrategy")
           .withFallback(AkkaSpec.testConf))
       val a = system.actorOf(Props(new Actor {
-        def receive = {
-          case "die" ⇒ throw new Exception("hello")
+        def receive = { case "die" ⇒
+          throw new Exception("hello")
         }
       }))
       val probe = TestProbe()
@@ -385,8 +385,8 @@ class ActorSystemSpec
             "akka.actor.guardian-supervisor-strategy=\"akka.actor.ActorSystemSpec$Strategy\"")
           .withFallback(AkkaSpec.testConf))
       val a = system.actorOf(Props(new Actor {
-        def receive = {
-          case "die" ⇒ throw new Exception("hello")
+        def receive = { case "die" ⇒
+          throw new Exception("hello")
         }
       }))
       EventFilter[Exception]("hello") intercept {
@@ -406,8 +406,8 @@ class ActorSystemSpec
 
       try {
         val ref = system2.actorOf(Props(new Actor {
-          def receive = {
-            case "ping" ⇒ sender() ! "pong"
+          def receive = { case "ping" ⇒
+            sender() ! "pong"
           }
         }))
 
@@ -437,8 +437,8 @@ class ActorSystemSpec
 
       try {
         val ref = system2.actorOf(Props(new Actor {
-          def receive = {
-            case "ping" ⇒ sender() ! "pong"
+          def receive = { case "ping" ⇒
+            sender() ! "pong"
           }
         }))
 

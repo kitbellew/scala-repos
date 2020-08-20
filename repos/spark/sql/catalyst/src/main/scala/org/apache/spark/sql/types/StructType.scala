@@ -309,8 +309,8 @@ case class StructType(fields: Array[StructField])
 
   private[sql] override def simpleString(maxNumberFields: Int): String = {
     val builder = new StringBuilder
-    val fieldTypes = fields.take(maxNumberFields).map {
-      case f => s"${f.name}: ${f.dataType.simpleString(maxNumberFields)}"
+    val fieldTypes = fields.take(maxNumberFields).map { case f =>
+      s"${f.name}: ${f.dataType.simpleString(maxNumberFields)}"
     }
     builder.append("struct<")
     builder.append(fieldTypes.mkString(", "))

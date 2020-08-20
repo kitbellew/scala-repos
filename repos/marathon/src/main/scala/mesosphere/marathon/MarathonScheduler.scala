@@ -157,8 +157,8 @@ class MarathonScheduler @Inject() (
 
     // Asynchronously call sys.exit() to avoid deadlock due to the JVM shutdown hooks
     // scalastyle:off magic.number
-    Future(sys.exit(9)).onFailure {
-      case NonFatal(t) => log.error("Exception while committing suicide", t)
+    Future(sys.exit(9)).onFailure { case NonFatal(t) =>
+      log.error("Exception while committing suicide", t)
     }
     // scalastyle:on
   }

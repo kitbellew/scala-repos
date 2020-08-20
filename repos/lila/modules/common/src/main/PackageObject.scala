@@ -109,8 +109,8 @@ trait WithPlay { self: PackageObject =>
   implicit def LilaFuMonoid[A: Monoid]: Monoid[Fu[A]] =
     Monoid.instance(
       (x, y) =>
-        x zip y map {
-          case (a, b) => a ⊹ b
+        x zip y map { case (a, b) =>
+          a ⊹ b
         },
       fuccess(∅[A]))
 
@@ -134,8 +134,8 @@ trait WithPlay { self: PackageObject =>
   implicit final class LilaPimpedFuture[A](fua: Fu[A]) {
 
     def >>-(sideEffect: => Unit): Fu[A] =
-      fua andThen {
-        case _ => sideEffect
+      fua andThen { case _ =>
+        sideEffect
       }
 
     def >>[B](fub: => Fu[B]): Fu[B] = fua flatMap (_ => fub)
@@ -178,8 +178,8 @@ trait WithPlay { self: PackageObject =>
     def addEffect(effect: A => Unit) = fua ~ (_ foreach effect)
 
     def addFailureEffect(effect: Exception => Unit) =
-      fua ~ (_ onFailure {
-        case e: Exception => effect(e)
+      fua ~ (_ onFailure { case e: Exception =>
+        effect(e)
       })
 
     def addEffects(fail: Exception => Unit, succ: A => Unit): Fu[A] =
@@ -190,8 +190,8 @@ trait WithPlay { self: PackageObject =>
       }
 
     def mapFailure(f: Exception => Exception) =
-      fua recover {
-        case cause: Exception => throw f(cause)
+      fua recover { case cause: Exception =>
+        throw f(cause)
       }
 
     def prefixFailure(p: => String) =

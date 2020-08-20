@@ -323,8 +323,8 @@ private object ExpectationSum {
   def add(weights: Array[Double], dists: Array[MultivariateGaussian])(
       sums: ExpectationSum,
       x: BV[Double]): ExpectationSum = {
-    val p = weights.zip(dists).map {
-      case (weight, dist) => MLUtils.EPSILON + weight * dist.pdf(x)
+    val p = weights.zip(dists).map { case (weight, dist) =>
+      MLUtils.EPSILON + weight * dist.pdf(x)
     }
     val pSum = p.sum
     sums.logLikelihood += math.log(pSum)

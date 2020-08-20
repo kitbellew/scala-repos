@@ -999,8 +999,8 @@ trait AppAndGroupFormats {
         "totalSummary" -> byVersion.maybeTotalSummary
       )
       Json.toJson(
-        maybeJsons.iterator.flatMap {
-          case (k, v) => v.map(k -> TaskStatsWrites.writes(_))
+        maybeJsons.iterator.flatMap { case (k, v) =>
+          v.map(k -> TaskStatsWrites.writes(_))
         }.toMap
       )
     }

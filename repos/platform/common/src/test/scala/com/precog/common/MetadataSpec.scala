@@ -39,15 +39,15 @@ class MetadataSpec
 
   "simple metadata" should {
     "surivive round trip serialization" in check { in: Metadata =>
-      in.serialize.validated[Metadata] must beLike {
-        case Success(out) => in mustEqual out
+      in.serialize.validated[Metadata] must beLike { case Success(out) =>
+        in mustEqual out
       }
     }
 
     "merge with like metadata" in check {
       (sample1: List[Metadata], sample2: List[Metadata]) =>
-        val prepared = sample1 zip sample2 map {
-          case (e1, e2) => (e1, e2, e1 merge e2)
+        val prepared = sample1 zip sample2 map { case (e1, e2) =>
+          (e1, e2, e1 merge e2)
         }
 
         forall(prepared) {
@@ -110,8 +110,8 @@ class MetadataSpec
       (
           sample1: List[Map[MetadataType, Metadata]],
           sample2: List[Map[MetadataType, Metadata]]) =>
-        val prepared = sample1 zip sample2 map {
-          case (s1, s2) => (s1, s2, s1 |+| s2)
+        val prepared = sample1 zip sample2 map { case (s1, s2) =>
+          (s1, s2, s1 |+| s2)
         }
 
         forall(prepared) {

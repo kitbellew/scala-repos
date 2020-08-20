@@ -147,8 +147,8 @@ class MethodResolveProcessor(
                 isForwardReference = forwardReference,
                 unresolvedTypeParameters = unresolvedTypeParameters)
             }
-            .filter {
-              case r => !accessibility || r.isAccessible
+            .filter { case r =>
+              !accessibility || r.isAccessible
             }
           if (seq.nonEmpty) addResults(seq)
           else

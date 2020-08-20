@@ -1565,8 +1565,8 @@ trait ColumnarTableModule[M[+_]]
               stlr.f(lr, data) flatMap {
                 case (lr0, leftResult) => {
                   tail.uncons map { unconsed =>
-                    Some(leftResult -> (unconsed map {
-                      case (nhead, ntail) => EndLeft(lr0, nhead, ntail)
+                    Some(leftResult -> (unconsed map { case (nhead, ntail) =>
+                      EndLeft(lr0, nhead, ntail)
                     } getOrElse CogroupDone))
                   }
                 }
@@ -1579,8 +1579,8 @@ trait ColumnarTableModule[M[+_]]
               strr.f(rr, data) flatMap {
                 case (rr0, rightResult) => {
                   tail.uncons map { unconsed =>
-                    Some(rightResult -> (unconsed map {
-                      case (nhead, ntail) => EndRight(rr0, nhead, ntail)
+                    Some(rightResult -> (unconsed map { case (nhead, ntail) =>
+                      EndRight(rr0, nhead, ntail)
                     } getOrElse CogroupDone))
                   }
                 }
@@ -1632,12 +1632,12 @@ trait ColumnarTableModule[M[+_]]
             }
 
             val optM = cogroup orElse {
-              leftUnconsed map {
-                case (head, tail) => EndLeft(stlr.initial, head, tail)
+              leftUnconsed map { case (head, tail) =>
+                EndLeft(stlr.initial, head, tail)
               } map { M point _ }
             } orElse {
-              rightUnconsed map {
-                case (head, tail) => EndRight(strr.initial, head, tail)
+              rightUnconsed map { case (head, tail) =>
+                EndRight(strr.initial, head, tail)
               } map { M point _ }
             }
 

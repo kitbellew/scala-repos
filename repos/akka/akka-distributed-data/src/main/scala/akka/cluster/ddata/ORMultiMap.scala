@@ -66,8 +66,8 @@ final class ORMultiMap[A] private[akka] (
   def getEntries(): java.util.Map[String, java.util.Set[A]] = {
     import scala.collection.JavaConverters._
     val result = new java.util.HashMap[String, java.util.Set[A]]
-    underlying.entries.foreach {
-      case (k, v) ⇒ result.put(k, v.elements.asJava)
+    underlying.entries.foreach { case (k, v) ⇒
+      result.put(k, v.elements.asJava)
     }
     result
   }

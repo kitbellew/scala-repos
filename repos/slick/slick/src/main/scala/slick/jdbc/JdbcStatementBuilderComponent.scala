@@ -403,8 +403,8 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
               if (supportsTuples) b"$left = $right"
               else {
                 val cols = left.children.zip(right.children).force
-                b.sep(cols, " and ") {
-                  case (l, r) => expr(l); b += "="; expr(r)
+                b.sep(cols, " and ") { case (l, r) =>
+                  expr(l); b += "="; expr(r)
                 }
               }
               b"\)"

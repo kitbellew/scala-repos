@@ -227,10 +227,10 @@ private[ml] object DefaultParamsWriter {
     val cls = instance.getClass.getName
     val params =
       instance.extractParamMap().toSeq.asInstanceOf[Seq[ParamPair[Any]]]
-    val jsonParams =
-      paramMap.getOrElse(render(params.map { case ParamPair(p, v) =>
+    val jsonParams = paramMap.getOrElse(render(params.map {
+      case ParamPair(p, v) =>
         p.name -> parse(p.jsonEncode(v))
-      }.toList))
+    }.toList))
     val basicMetadata = ("class" -> cls) ~
       ("timestamp" -> System.currentTimeMillis()) ~
       ("sparkVersion" -> sc.version) ~

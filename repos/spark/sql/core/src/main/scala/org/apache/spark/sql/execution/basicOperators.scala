@@ -47,8 +47,8 @@ case class Project(projectList: Seq[NamedExpression], child: SparkPlan)
   override def usedInputs: AttributeSet = {
     // only the attributes those are used at least twice should be evaluated before this plan,
     // otherwise we could defer the evaluation until output attribute is actually used.
-    val usedExprIds = projectList.flatMap(_.collect {
-      case a: Attribute => a.exprId
+    val usedExprIds = projectList.flatMap(_.collect { case a: Attribute =>
+      a.exprId
     })
     val usedMoreThanOnce =
       usedExprIds.groupBy(id => id).filter(_._2.size > 1).keySet

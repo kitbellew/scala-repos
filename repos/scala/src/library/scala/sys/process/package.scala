@@ -246,8 +246,8 @@ package scala.sys {
       type SyncVar[T] = scala.concurrent.SyncVar[T]
       type URL = java.net.URL
 
-      def onError[T](handler: Throwable => T): Throwable =?> T = {
-        case e @ _ => handler(e)
+      def onError[T](handler: Throwable => T): Throwable =?> T = { case e @ _ =>
+        handler(e)
       }
 
       def onIOInterrupt[T](handler: => T): Throwable =?> T = {

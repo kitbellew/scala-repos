@@ -28,8 +28,8 @@ object ActorWithBoundedStashSpec {
 
     }
 
-    def afterWorldBehaviour: Receive = {
-      case _ ⇒ stash()
+    def afterWorldBehaviour: Receive = { case _ ⇒
+      stash()
     }
   }
 

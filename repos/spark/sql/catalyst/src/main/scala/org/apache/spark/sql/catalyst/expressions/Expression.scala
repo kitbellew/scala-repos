@@ -236,8 +236,8 @@ trait Unevaluable extends Expression {
   */
 trait NonSQLExpression extends Expression {
   override def sql: String = {
-    transform {
-      case a: Attribute => new PrettyAttribute(a)
+    transform { case a: Attribute =>
+      new PrettyAttribute(a)
     }.toString
   }
 }

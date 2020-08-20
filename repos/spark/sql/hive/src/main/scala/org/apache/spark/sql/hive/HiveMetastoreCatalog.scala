@@ -1002,8 +1002,8 @@ private[hive] case class MetastoreRelation(
     sd.setSerdeInfo(serdeInfo)
 
     val serdeParameters = new java.util.HashMap[String, String]()
-    table.storage.serdeProperties.foreach {
-      case (k, v) => serdeParameters.put(k, v)
+    table.storage.serdeProperties.foreach { case (k, v) =>
+      serdeParameters.put(k, v)
     }
     serdeInfo.setParameters(serdeParameters)
 
@@ -1067,11 +1067,11 @@ private[hive] case class MetastoreRelation(
       p.storage.serde.foreach(serdeInfo.setSerializationLib)
 
       val serdeParameters = new java.util.HashMap[String, String]()
-      table.storage.serdeProperties.foreach {
-        case (k, v) => serdeParameters.put(k, v)
+      table.storage.serdeProperties.foreach { case (k, v) =>
+        serdeParameters.put(k, v)
       }
-      p.storage.serdeProperties.foreach {
-        case (k, v) => serdeParameters.put(k, v)
+      p.storage.serdeProperties.foreach { case (k, v) =>
+        serdeParameters.put(k, v)
       }
       serdeInfo.setParameters(serdeParameters)
 

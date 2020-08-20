@@ -46,8 +46,8 @@ object RemoteGatePiercingSpec extends MultiNodeConfig {
   testTransport(on = true)
 
   class Subject extends Actor {
-    def receive = {
-      case "shutdown" ⇒ context.system.terminate()
+    def receive = { case "shutdown" ⇒
+      context.system.terminate()
     }
   }
 

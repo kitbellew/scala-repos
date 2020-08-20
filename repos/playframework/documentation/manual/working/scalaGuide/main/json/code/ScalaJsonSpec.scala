@@ -332,8 +332,8 @@ class ScalaJsonSpec extends Specification {
         }
       )
       //#convert-to-type-validate
-      nameResult must beLike {
-        case x: JsSuccess[String] => x.get === "Watership Down"
+      nameResult must beLike { case x: JsSuccess[String] =>
+        x.get === "Watership Down"
       }
     }
 
@@ -373,11 +373,11 @@ class ScalaJsonSpec extends Specification {
       // JsSuccess(Resident(Bigwig,6,Some(Owsla)),)
       //#convert-to-model
 
-      placeResult must beLike {
-        case x: JsSuccess[Place] => x.get.name === "Watership Down"
+      placeResult must beLike { case x: JsSuccess[Place] =>
+        x.get.name === "Watership Down"
       }
-      residentResult must beLike {
-        case x: JsSuccess[Resident] => x.get.name === "Bigwig"
+      residentResult must beLike { case x: JsSuccess[Resident] =>
+        x.get.name === "Bigwig"
       }
     }
 

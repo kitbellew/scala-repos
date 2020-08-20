@@ -117,8 +117,8 @@ object ParserUtils {
   }
 
   def extractTableIdent(tableNameParts: ASTNode): TableIdentifier = {
-    tableNameParts.children.map {
-      case Token(part, Nil) => cleanIdentifier(part)
+    tableNameParts.children.map { case Token(part, Nil) =>
+      cleanIdentifier(part)
     } match {
       case Seq(tableOnly) => TableIdentifier(tableOnly)
       case Seq(databaseName, table) =>

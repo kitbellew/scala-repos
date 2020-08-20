@@ -102,8 +102,8 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
     }
   }
   "headerValuePF-0" in {
-    def extractHostPort: PartialFunction[HttpHeader, Int] = {
-      case h: `Host` => h.port
+    def extractHostPort: PartialFunction[HttpHeader, Int] = { case h: `Host` =>
+      h.port
     }
 
     val route =
@@ -122,8 +122,8 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
     }
   }
   "optionalHeaderValuePF-0" in {
-    def extractHostPort: PartialFunction[HttpHeader, Int] = {
-      case h: `Host` => h.port
+    def extractHostPort: PartialFunction[HttpHeader, Int] = { case h: `Host` =>
+      h.port
     }
 
     val route =

@@ -183,8 +183,8 @@ class BackupRequestFilterTest extends FunSuite with MockitoSugar with Matchers {
       assert(cutoff() > Duration.Zero)
 
       val origPromise = new Promise[String]
-      origPromise.setInterruptHandler {
-        case t => origPromise.updateIfEmpty(Throw(t))
+      origPromise.setInterruptHandler { case t =>
+        origPromise.updateIfEmpty(Throw(t))
       }
       when(underlying("c")).thenReturn(origPromise)
       verify(underlying, times(0)).apply("c")
@@ -239,8 +239,8 @@ class BackupRequestFilterTest extends FunSuite with MockitoSugar with Matchers {
       assert(cutoff() > Duration.Zero)
 
       val origPromise = new Promise[String]
-      origPromise.setInterruptHandler {
-        case t => origPromise.updateIfEmpty(Throw(t))
+      origPromise.setInterruptHandler { case t =>
+        origPromise.updateIfEmpty(Throw(t))
       }
       when(underlying("d")).thenReturn(origPromise)
       verify(underlying, times(0)).apply("d")

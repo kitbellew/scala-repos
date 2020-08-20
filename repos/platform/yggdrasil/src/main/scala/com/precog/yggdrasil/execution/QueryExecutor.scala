@@ -96,11 +96,11 @@ object CacheControl {
   val NoCache = CacheControl(None, None, false, false)
 
   def fromCacheDirectives(cacheDirectives: CacheDirective*) = {
-    val maxAge = cacheDirectives.collectFirst {
-      case `max-age`(Some(n)) => n.number * 1000
+    val maxAge = cacheDirectives.collectFirst { case `max-age`(Some(n)) =>
+      n.number * 1000
     }
-    val maxStale = cacheDirectives.collectFirst {
-      case `max-stale`(Some(n)) => n.number * 1000
+    val maxStale = cacheDirectives.collectFirst { case `max-stale`(Some(n)) =>
+      n.number * 1000
     }
     val cacheable = cacheDirectives exists { _ != `no-cache` }
     val onlyIfCached = cacheDirectives exists { _ == `only-if-cached` }

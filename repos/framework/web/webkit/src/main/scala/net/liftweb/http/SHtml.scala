@@ -2144,8 +2144,8 @@ trait SHtml extends Loggable {
   object SelectableOption {
     implicit def tupleSeqToSelectableOptionSeq[T](
         seq: Seq[(T, String)]): Seq[SelectableOption[T]] =
-      seq.collect {
-        case (value, label) => SelectableOption(value, label)
+      seq.collect { case (value, label) =>
+        SelectableOption(value, label)
       }
     implicit def tupleToSelectableOption[T](
         tuple: (T, String)): SelectableOption[T] =

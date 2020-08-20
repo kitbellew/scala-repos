@@ -110,8 +110,8 @@ trait BlockLoadSpec[M[+_]]
       (back \ "value" != JUndefined).option(back)
     }
 
-    val cschema = module.schema map {
-      case (jpath, ctype) => ColumnRef(CPath(jpath), ctype)
+    val cschema = module.schema map { case (jpath, ctype) =>
+      ColumnRef(CPath(jpath), ctype)
     }
 
     val result = module.Table

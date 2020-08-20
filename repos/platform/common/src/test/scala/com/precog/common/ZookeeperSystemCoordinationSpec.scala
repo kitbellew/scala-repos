@@ -144,16 +144,16 @@ class ZookeeperSystemCoordinationSpec extends Specification {
         val sc1 = newSystemCoordination(client1)
 
         val result1 = sc1.registerRelayAgent("test_agent", 10000)
-        result1 must beLike {
-          case Success(_) => ok
+        result1 must beLike { case Success(_) =>
+          ok
         }
 
         val client2 = factory()
         val sc2 = newSystemCoordination(client2)
 
         val result2 = sc2.registerRelayAgent("test_agent", 10000)
-        result2 must beLike {
-          case Failure(_) => ok
+        result2 must beLike { case Failure(_) =>
+          ok
         }
     }
 

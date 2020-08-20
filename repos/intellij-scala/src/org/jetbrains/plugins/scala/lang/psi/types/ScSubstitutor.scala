@@ -527,8 +527,8 @@ class ScSubstitutor(
                 s.hasRepeatedParam),
               rt)
           },
-          typeMap.map {
-            case (s, sign) => (s, sign.updateTypes(substInternal))
+          typeMap.map { case (s, sign) =>
+            (s, sign.updateTypes(substInternal))
           }
         )
         //todo: this is ugly workaround for

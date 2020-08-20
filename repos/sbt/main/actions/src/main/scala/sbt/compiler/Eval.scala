@@ -437,8 +437,8 @@ final class Eval(
     tpt0
   }
   private[this] def parseImports(imports: EvalImports): Seq[Tree] =
-    imports.strings flatMap {
-      case (s, line) => parseImport(mkUnit(imports.srcName, line, s))
+    imports.strings flatMap { case (s, line) =>
+      parseImport(mkUnit(imports.srcName, line, s))
     }
   private[this] def parseImport(importUnit: CompilationUnit): Seq[Tree] = {
     val parser = new syntaxAnalyzer.UnitParser(importUnit)

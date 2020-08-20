@@ -64,8 +64,8 @@ object HiveFromSpark {
       "SELECT key, value FROM src WHERE key < 10 ORDER BY key")
 
     println("Result of RDD.map:")
-    val rddAsStrings = rddFromSql.rdd.map {
-      case Row(key: Int, value: String) => s"Key: $key, Value: $value"
+    val rddAsStrings = rddFromSql.rdd.map { case Row(key: Int, value: String) =>
+      s"Key: $key, Value: $value"
     }
 
     // You can also register RDDs as temporary tables within a HiveContext.

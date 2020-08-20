@@ -160,8 +160,8 @@ private[sbt] object SettingCompletions {
       rawKeyMap: Map[String, AttributeKey[_]],
       context: ResolvedProject): Parser[String] = {
     val cutoff = KeyRanks.MainCutoff
-    val keyMap: Map[String, AttributeKey[_]] = rawKeyMap.map {
-      case (k, v) => (keyScalaID(k), v)
+    val keyMap: Map[String, AttributeKey[_]] = rawKeyMap.map { case (k, v) =>
+      (keyScalaID(k), v)
     } toMap;
     def inputScopedKey(pred: AttributeKey[_] => Boolean): Parser[ScopedKey[_]] =
       scopedKeyParser(
@@ -234,8 +234,8 @@ private[sbt] object SettingCompletions {
       context: ResolvedProject): Parser[Scope] = {
     val data = settings.data
     val allScopes = data.keys.toSeq
-    val definedScopes = data.toSeq flatMap {
-      case (scope, attrs) => if (attrs contains key) scope :: Nil else Nil
+    val definedScopes = data.toSeq flatMap { case (scope, attrs) =>
+      if (attrs contains key) scope :: Nil else Nil
     }
     scope(key, allScopes, definedScopes, context)
   }
@@ -282,8 +282,8 @@ private[sbt] object SettingCompletions {
       k => keyScalaID(k.label),
       _.description,
       "task")
-    val nonGlobal = (configParser ~ taskParser) map {
-      case (c, t) => Scope(This, c, t, Global)
+    val nonGlobal = (configParser ~ taskParser) map { case (c, t) =>
+      Scope(This, c, t, Global)
     }
     val global = inParser ~> token((Space ~ GlobalID) ^^^ GlobalScope)
     global | nonGlobal

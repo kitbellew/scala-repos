@@ -100,8 +100,8 @@ object CascadingBinaryComparator {
     if (missing.isEmpty) Success(())
     else {
       val badSteps = missing.size
-      val msg = missing.zipWithIndex.map {
-        case (msg, idx) => s"<step$idx>$msg</step$idx>"
+      val msg = missing.zipWithIndex.map { case (msg, idx) =>
+        s"<step$idx>$msg</step$idx>"
       }.mkString
       error(s"There are $badSteps missing OrderedSerializations: $msg")
     }

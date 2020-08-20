@@ -263,8 +263,8 @@ class DefaultPromiseTest {
     val ps = (0 until count).toList
     val pPairs = for (a <- ps; b <- ps) yield (a, b)
 
-    var allActions = ps.map(Complete(_)) ++ pPairs.map {
-      case (a, b) => Link(a, b)
+    var allActions = ps.map(Complete(_)) ++ pPairs.map { case (a, b) =>
+      Link(a, b)
     } ++ ps.map(AttachHandler(_))
     for ((permutation, i) <- allActions.permutations.zipWithIndex) {
       testActions(permutation)

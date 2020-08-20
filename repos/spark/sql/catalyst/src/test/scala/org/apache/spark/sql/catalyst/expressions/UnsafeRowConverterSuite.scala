@@ -338,8 +338,8 @@ class UnsafeRowConverterSuite extends SparkFunSuite with Matchers {
   private def testArrayInt(array: UnsafeArrayData, values: Seq[Int]): Unit = {
     assert(array.numElements == values.length)
     assert(array.getSizeInBytes == 4 + (4 + 4) * values.length)
-    values.zipWithIndex.foreach {
-      case (value, index) => assert(array.getInt(index) == value)
+    values.zipWithIndex.foreach { case (value, index) =>
+      assert(array.getInt(index) == value)
     }
   }
 

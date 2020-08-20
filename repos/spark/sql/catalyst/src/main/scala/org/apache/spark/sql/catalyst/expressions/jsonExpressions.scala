@@ -52,8 +52,8 @@ private[this] object JsonPathParser extends RegexParsers {
   def root: Parser[Char] = '$'
 
   def long: Parser[Long] =
-    "\\d+".r ^? {
-      case x => x.toLong
+    "\\d+".r ^? { case x =>
+      x.toLong
     }
 
   // parse `[*]` and `[123]` subscripts
@@ -366,8 +366,8 @@ case class JsonTuple(children: Seq[Expression])
     foldableFieldNames.count(_ != null)
 
   override def elementTypes: Seq[(DataType, Boolean, String)] =
-    fieldExpressions.zipWithIndex.map {
-      case (_, idx) => (StringType, true, s"c$idx")
+    fieldExpressions.zipWithIndex.map { case (_, idx) =>
+      (StringType, true, s"c$idx")
     }
 
   override def prettyName: String = "json_tuple"

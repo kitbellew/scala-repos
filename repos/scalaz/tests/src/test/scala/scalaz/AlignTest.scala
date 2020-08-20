@@ -13,8 +13,8 @@ object AlignTest extends SpecLite {
     val max = xs.size max ys.size
     val min = xs.size min ys.size
     xys.length must_=== (max)
-    xys.takeWhile {
-      case (x, y) => x.isDefined && y.isDefined
+    xys.takeWhile { case (x, y) =>
+      x.isDefined && y.isDefined
     }.size must_=== (min)
     val dropped: List[(Option[Int], Option[Int])] = xys.dropWhile {
       case (x, y) => x.isDefined && y.isDefined

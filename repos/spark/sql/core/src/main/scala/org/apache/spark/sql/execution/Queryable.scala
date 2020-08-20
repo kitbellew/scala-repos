@@ -33,8 +33,8 @@ private[sql] trait Queryable {
   override def toString: String = {
     try {
       val builder = new StringBuilder
-      val fields = schema.take(2).map {
-        case f => s"${f.name}: ${f.dataType.simpleString(2)}"
+      val fields = schema.take(2).map { case f =>
+        s"${f.name}: ${f.dataType.simpleString(2)}"
       }
       builder.append("[")
       builder.append(fields.mkString(", "))

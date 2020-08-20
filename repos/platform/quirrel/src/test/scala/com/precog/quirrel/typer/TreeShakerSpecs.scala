@@ -116,8 +116,8 @@ object TreeShakerSpecs
         val tree = TicVar(LineStream(), "'a")
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case TicVar(LineStream(), "'a") => ok
+        shakeTree(tree) must beLike { case TicVar(LineStream(), "'a") =>
+          ok
         }
       }
 
@@ -125,8 +125,8 @@ object TreeShakerSpecs
         val tree = StrLit(LineStream(), "foo")
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case StrLit(LineStream(), "foo") => ok
+        shakeTree(tree) must beLike { case StrLit(LineStream(), "foo") =>
+          ok
         }
       }
 
@@ -134,8 +134,8 @@ object TreeShakerSpecs
         val tree = NumLit(LineStream(), "42")
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case NumLit(LineStream(), "42") => ok
+        shakeTree(tree) must beLike { case NumLit(LineStream(), "42") =>
+          ok
         }
       }
 
@@ -143,8 +143,8 @@ object TreeShakerSpecs
         val tree = BoolLit(LineStream(), true)
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case BoolLit(LineStream(), true) => ok
+        shakeTree(tree) must beLike { case BoolLit(LineStream(), true) =>
+          ok
         }
       }
 
@@ -152,8 +152,8 @@ object TreeShakerSpecs
         val tree = NullLit(LineStream())
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case NullLit(LineStream()) => ok
+        shakeTree(tree) must beLike { case NullLit(LineStream()) =>
+          ok
         }
       }
 
@@ -554,8 +554,8 @@ object TreeShakerSpecs
       val tree = Paren(LineStream(), NumLit(LineStream(), "1"))
       bindRoot(tree, tree)
 
-      shakeTree(tree) must beLike {
-        case NumLit(LineStream(), "1") => ok
+      shakeTree(tree) must beLike { case NumLit(LineStream(), "1") =>
+        ok
       }
     }
 
@@ -569,8 +569,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case NumLit(LineStream(), "24") => ok
+      result must beLike { case NumLit(LineStream(), "24") =>
+        ok
       }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
@@ -883,8 +883,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case New(LineStream(), NumLit(LineStream(), "24")) => ok
+      result must beLike { case New(LineStream(), NumLit(LineStream(), "24")) =>
+        ok
       }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
@@ -3890,8 +3890,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Neg(LineStream(), NumLit(LineStream(), "24")) => ok
+      result must beLike { case Neg(LineStream(), NumLit(LineStream(), "24")) =>
+        ok
       }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))

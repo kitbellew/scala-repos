@@ -66,15 +66,15 @@ trait ScalatraSlf4jRequestLogging extends ScalatraBase with Handler {
     MDC.put(RequestApp, getClass.getSimpleName)
     MDC.put(
       RequestParams,
-      multiParams map {
-        case (k, vl) ⇒ vl.map(v ⇒ "%s=%s".format(%-(k), %-(v)))
+      multiParams map { case (k, vl) ⇒
+        vl.map(v ⇒ "%s=%s".format(%-(k), %-(v)))
       } mkString "&")
     this match {
       case a: SessionSupport =>
         MDC.put(
           SessionParams,
-          a.session map {
-            case (k, v) ⇒ "%s=%s".format(%-(k), %-(v.toString))
+          a.session map { case (k, v) ⇒
+            "%s=%s".format(%-(k), %-(v.toString))
           } mkString "&")
       case _ =>
     }

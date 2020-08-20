@@ -727,10 +727,10 @@ object Conformance {
           val t = conformsInner(comp, r, HashSet.empty, undefinedSubst)
           undefinedSubst = t._2
           t._1
-        }) && c.signatureMap.forall {
-          case (s: Signature, retType) => workWithSignature(s, retType)
-        } && c.typesMap.forall {
-          case (s, sign) => workWithTypeAlias(sign)
+        }) && c.signatureMap.forall { case (s: Signature, retType) =>
+          workWithSignature(s, retType)
+        } && c.typesMap.forall { case (s, sign) =>
+          workWithTypeAlias(sign)
         },
         undefinedSubst)
     }

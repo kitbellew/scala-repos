@@ -29,8 +29,8 @@ object ResizerSpec {
     """
 
   class TestActor extends Actor {
-    def receive = {
-      case latch: TestLatch ⇒ latch.countDown()
+    def receive = { case latch: TestLatch ⇒
+      latch.countDown()
     }
   }
 

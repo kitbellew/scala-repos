@@ -142,8 +142,8 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
       "which correctly fail to be set to Empty" in {
         mandatory.valueBox.isDefined must_== true
         mandatory.setBox(Empty)
-        mandatory.valueBox must beLike {
-          case Failure(s, _, _) => s must_== mandatory.notOptionalErrorMessage
+        mandatory.valueBox must beLike { case Failure(s, _, _) =>
+          s must_== mandatory.notOptionalErrorMessage
         }
       }
     }

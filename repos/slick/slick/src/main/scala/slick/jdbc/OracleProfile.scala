@@ -187,8 +187,8 @@ trait OracleProfile extends JdbcProfile {
         case Library.==(left: ProductNode, right: ProductNode) => //TODO
           b"\("
           val cols = (left.children zip right.children).force
-          b.sep(cols, " and ") {
-            case (l, r) => expr(Library.==.typed[Boolean](l, r))
+          b.sep(cols, " and ") { case (l, r) =>
+            expr(Library.==.typed[Boolean](l, r))
           }
           b"\)"
         case Library.==(l, r)

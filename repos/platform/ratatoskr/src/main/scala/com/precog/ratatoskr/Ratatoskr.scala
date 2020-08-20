@@ -1171,8 +1171,8 @@ object ImportTools extends Command with Logging {
           }
         }
 
-        loop(0L, AsyncParser.stream()) onComplete {
-          case _ => ch.close()
+        loop(0L, AsyncParser.stream()) onComplete { case _ =>
+          ch.close()
         }
       }
 
@@ -1242,8 +1242,8 @@ object CSVTools extends Command {
         config.delimeter,
         config.teaseTimestamps,
         config.verbose)
-      .foreach {
-        case jval => println(jval.renderCompact)
+      .foreach { case jval =>
+        println(jval.renderCompact)
       }
   }
 
@@ -1468,8 +1468,8 @@ object CSVToJSONConverter {
         val result = JObject(
           header
             .zip(line)
-            .map {
-              case (k, v) => JField(k, parse(v, timestampConversion, verbose))
+            .map { case (k, v) =>
+              JField(k, parse(v, timestampConversion, verbose))
             }
             .toList)
         line = reader.readNext

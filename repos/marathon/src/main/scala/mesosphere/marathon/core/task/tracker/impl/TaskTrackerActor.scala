@@ -76,8 +76,8 @@ private class TaskTrackerActor(
   private[this] val updaterRef =
     context.actorOf(taskUpdaterProps(self), "updater")
 
-  override val supervisorStrategy = OneForOneStrategy() {
-    case _: Exception => Escalate
+  override val supervisorStrategy = OneForOneStrategy() { case _: Exception =>
+    Escalate
   }
 
   override def preStart(): Unit = {

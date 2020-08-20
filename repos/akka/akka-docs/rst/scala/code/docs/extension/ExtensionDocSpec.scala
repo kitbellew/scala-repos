@@ -72,8 +72,8 @@ object ExtensionDocSpec {
     def increment() = CountExtension(context.system).increment()
   }
   class MyCounterActor extends Actor with Counting {
-    def receive = {
-      case someMessage => increment()
+    def receive = { case someMessage =>
+      increment()
     }
   }
   //#extension-usage-actor-trait

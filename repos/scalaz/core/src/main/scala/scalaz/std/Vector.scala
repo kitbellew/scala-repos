@@ -205,8 +205,8 @@ trait VectorFunctions {
   final def partitionM[A, M[_]](as: Vector[A])(p: A => M[Boolean])(implicit
       F: Applicative[M]): M[(Vector[A], Vector[A])] =
     lazyFoldRight(as, F.point(empty[A], empty[A]))((a, g) =>
-      F.ap(g)(F.map(p(a))(b => {
-        case (x, y) => if (b) (a +: x, y) else (x, a +: y)
+      F.ap(g)(F.map(p(a))(b => { case (x, y) =>
+        if (b) (a +: x, y) else (x, a +: y)
       })))
 
   /** A pair of the longest prefix of passing `as` against `p`, and

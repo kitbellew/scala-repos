@@ -18,8 +18,8 @@ object IntervalSeqArbitrary {
         case 2 => IntervalSeq.atOrAbove(x)
       }
     val r = IntervalSeq[Int](initial)
-    (r /: (support zip kind)) {
-      case (current, (x, k)) => current ^ fromKind(x, k)
+    (r /: (support zip kind)) { case (current, (x, k)) =>
+      current ^ fromKind(x, k)
     }
   }
 

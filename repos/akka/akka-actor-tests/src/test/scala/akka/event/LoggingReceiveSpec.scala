@@ -58,8 +58,8 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
   appLifecycle.eventStream.publish(filter)
 
   def ignoreMute(t: TestKit) {
-    t.ignoreMsg {
-      case (_: TestEvent.Mute | _: TestEvent.UnMute) ⇒ true
+    t.ignoreMsg { case (_: TestEvent.Mute | _: TestEvent.UnMute) ⇒
+      true
     }
   }
 
@@ -103,12 +103,12 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
         }
 
         val actor = TestActorRef(new Actor {
-          def switch: Actor.Receive = {
-            case "becomenull" ⇒ context.become(r, false)
+          def switch: Actor.Receive = { case "becomenull" ⇒
+            context.become(r, false)
           }
           def receive =
-            switch orElse LoggingReceive {
-              case x ⇒ sender() ! "x"
+            switch orElse LoggingReceive { case x ⇒
+              sender() ! "x"
             }
         })
 
@@ -127,8 +127,8 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
 
         within(500 millis) {
           actor ! "bah"
-          expectMsgPF() {
-            case UnhandledMessage("bah", testActor, `actor`) ⇒ true
+          expectMsgPF() { case UnhandledMessage("bah", testActor, `actor`) ⇒
+            true
           }
         }
       }
@@ -139,8 +139,8 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
         system.eventStream.subscribe(testActor, classOf[Logging.Debug])
         val actor = TestActorRef(new Actor {
           def receive =
-            LoggingReceive(LoggingReceive {
-              case _ ⇒ sender() ! "x"
+            LoggingReceive(LoggingReceive { case _ ⇒
+              sender() ! "x"
             })
         })
         actor ! "buh"

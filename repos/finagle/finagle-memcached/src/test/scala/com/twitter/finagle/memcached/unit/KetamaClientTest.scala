@@ -69,8 +69,8 @@ class KetamaClientTest extends FunSuite with MockitoSugar {
       new KetamaPartitionedClient(Group(clients.keys.toSeq: _*), newService)
 
     info("pick the correct node")
-    val ipToService = clients.map {
-      case (key, service) => key.host -> service
+    val ipToService = clients.map { case (key, service) =>
+      key.host -> service
     }.toMap
     val rng = new scala.util.Random
     for (testcase <- expected) {

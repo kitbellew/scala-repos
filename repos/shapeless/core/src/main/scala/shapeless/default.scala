@@ -319,8 +319,8 @@ class DefaultMacros(val c: whitebox.Context) extends CaseClassMacros {
         wrapTpeTree(idx, devarargify(argTpe))
     }
 
-    val resultTpe = mkHListTpe(wrapTpeTrees.map {
-      case (wrapTpe, _) => wrapTpe
+    val resultTpe = mkHListTpe(wrapTpeTrees.map { case (wrapTpe, _) =>
+      wrapTpe
     })
 
     val resultTree = wrapTpeTrees.foldRight(q"_root_.shapeless.HNil": Tree) {

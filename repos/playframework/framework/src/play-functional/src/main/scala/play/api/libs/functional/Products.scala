@@ -383,8 +383,8 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
         fu: Functor[M]): M[B] =
       fu.fmap[A1 ~ A2 ~ A3 ~ A4 ~ A5 ~ A6 ~ A7, B](
         canBuild(m1, m2),
-        {
-          case a1 ~ a2 ~ a3 ~ a4 ~ a5 ~ a6 ~ a7 => f(a1, a2, a3, a4, a5, a6, a7)
+        { case a1 ~ a2 ~ a3 ~ a4 ~ a5 ~ a6 ~ a7 =>
+          f(a1, a2, a3, a4, a5, a6, a7)
         })
 
     def apply[B](f: B => (A1, A2, A3, A4, A5, A6, A7))(implicit

@@ -41,8 +41,8 @@ class EventSpec
   implicit val arbEvent = Arbitrary(genRandomIngest)
   "serialization of an event" should {
     "read back the data that was written" in check { in: Ingest =>
-      in.serialize.validated[Ingest] must beLike {
-        case Success(out) => out must_== in
+      in.serialize.validated[Ingest] must beLike { case Success(out) =>
+        out must_== in
       }
     }
   }
@@ -73,15 +73,15 @@ class EventSpec
   "Archive serialization" should {
     "Handle V0 format" in {
       JObject("tokenId" -> JString("1234"), "path" -> JString("/test/"))
-        .validated[Archive] must beLike {
-        case Success(_) => ok
+        .validated[Archive] must beLike { case Success(_) =>
+        ok
       }
     }
 
     "Handle V1 format" in {
       JObject("apiKey" -> JString("1234"), "path" -> JString("/test/"))
-        .validated[Archive] must beLike {
-        case Success(_) => ok
+        .validated[Archive] must beLike { case Success(_) =>
+        ok
       }
     }
   }

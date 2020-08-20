@@ -66,8 +66,8 @@ class ScenariosTask(settings: Settings)
           case Right(s)  => JParser.parseFromString(s)
         }
 
-      res must beLike {
-        case Success(jobj) => ok
+      res must beLike { case Success(jobj) =>
+        ok
       }
     }
 
@@ -84,8 +84,8 @@ class ScenariosTask(settings: Settings)
         case Right(s)  => JParser.parseFromString(s)
       }
 
-      res must beLike {
-        case Success(jobj) => ok
+      res must beLike { case Success(jobj) =>
+        ok
       }
     }
 
@@ -115,8 +115,8 @@ class ScenariosTask(settings: Settings)
           case Right(s)  => JParser.parseFromString(s)
         }
 
-      res must beLike {
-        case Failure(StatusCode(403)) => ok
+      res must beLike { case Failure(StatusCode(403)) =>
+        ok
       }
     }
 
@@ -182,8 +182,8 @@ class ScenariosTask(settings: Settings)
           case Right(s)  => JParser.parseFromString(s)
         }
 
-      res must beLike {
-        case Success(jobj) => ok
+      res must beLike { case Success(jobj) =>
+        ok
       }
 
       EventuallyResults.eventually(10, 1.second) {

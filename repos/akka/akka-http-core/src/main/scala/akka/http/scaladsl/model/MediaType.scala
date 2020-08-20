@@ -295,8 +295,8 @@ object MediaType {
       subType: String,
       params: Map[String, String]): String = {
     val r = new StringRendering ~~ mainType ~~ '/' ~~ subType
-    if (params.nonEmpty) params foreach {
-      case (k, v) ⇒ r ~~ ';' ~~ ' ' ~~ k ~~ '=' ~~# v
+    if (params.nonEmpty) params foreach { case (k, v) ⇒
+      r ~~ ';' ~~ ' ' ~~ k ~~ '=' ~~# v
     }
     r.get
   }

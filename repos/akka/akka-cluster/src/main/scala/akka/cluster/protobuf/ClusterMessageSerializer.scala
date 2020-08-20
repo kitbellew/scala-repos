@@ -222,8 +222,8 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
       MemberStatus.WeaklyUp -> cm.MemberStatus.WeaklyUp_VALUE
     )
 
-  private val memberStatusFromInt = memberStatusToInt.map {
-    case (a, b) ⇒ (b, a)
+  private val memberStatusFromInt = memberStatusToInt.map { case (a, b) ⇒
+    (b, a)
   }
 
   private val reachabilityStatusToInt =

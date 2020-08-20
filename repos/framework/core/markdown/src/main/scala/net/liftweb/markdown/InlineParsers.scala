@@ -240,8 +240,8 @@ trait InlineParsers extends BaseParsers {
     if (ctx.tags.contains("a")) {
       failure("Cannot nest a link in a link.")
     } else {
-      ref(ctx.addTag("a")) ^^ {
-        case (LinkDefinition(_, u, ttl), txt) => deco.decorateLink(txt, u, ttl)
+      ref(ctx.addTag("a")) ^^ { case (LinkDefinition(_, u, ttl), txt) =>
+        deco.decorateLink(txt, u, ttl)
       }
     }
 
@@ -296,8 +296,8 @@ trait InlineParsers extends BaseParsers {
     */
   def ref(ctx: InlineContext): Parser[(LinkDefinition, String)] =
     ('[' ~> linkInline(ctx) ~ (']' ~ opt(' ') ~ '[') ~ idReference(
-      ctx) <~ ']' ^^ {
-      case t ~ dummy ~ pair => (pair._2, t)
+      ctx) <~ ']' ^^ { case t ~ dummy ~ pair =>
+      (pair._2, t)
     }) |
       ('[' ~> idReference(ctx) <~ (']' ~ opt(opt(' ') ~ '[' ~ ows ~ ']')) ^^ {
         case (t, ld) => (ld, t)
@@ -320,8 +320,8 @@ trait InlineParsers extends BaseParsers {
     * Parses a referenced image.
     */
   def refImg(ctx: InlineContext): Parser[String] =
-    ref(ctx) ^^ {
-      case (LinkDefinition(_, u, ttl), alt) => deco.decorateImg(alt, u, ttl)
+    ref(ctx) ^^ { case (LinkDefinition(_, u, ttl), alt) =>
+      deco.decorateImg(alt, u, ttl)
     }
 
   /** Parses inline in a span element like bold or emphasis or link up until the given end marker

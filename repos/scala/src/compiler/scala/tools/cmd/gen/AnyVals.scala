@@ -318,8 +318,8 @@ import scala.language.implicitConversions"""
       ) ++ boxUnboxImpls
 
     def interpolate(s: String): String =
-      interpolations.foldLeft(s) {
-        case (str, (key, value)) => str.replaceAll(key, value)
+      interpolations.foldLeft(s) { case (str, (key, value)) =>
+        str.replaceAll(key, value)
       }
     def classDoc = interpolate(classDocTemplate)
     def objectDoc = ""

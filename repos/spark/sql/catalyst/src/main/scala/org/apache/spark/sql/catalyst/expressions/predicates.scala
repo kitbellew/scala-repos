@@ -73,8 +73,8 @@ trait PredicateHelper {
   protected def replaceAlias(
       condition: Expression,
       aliases: AttributeMap[Expression]): Expression = {
-    condition.transform {
-      case a: Attribute => aliases.getOrElse(a, a)
+    condition.transform { case a: Attribute =>
+      aliases.getOrElse(a, a)
     }
   }
 

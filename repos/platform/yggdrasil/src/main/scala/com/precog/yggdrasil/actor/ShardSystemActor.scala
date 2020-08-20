@@ -80,8 +80,8 @@ object IngestSystem extends Logging {
       logger.debug(
         config.logPrefix + " Stop call for " + name + " actor returned " + b)
     }
-  } recover {
-    case e => logger.error("Error stopping " + name + " actor", e)
+  } recover { case e =>
+    logger.error("Error stopping " + name + " actor", e)
   }
 }
 

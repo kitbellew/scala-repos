@@ -68,8 +68,8 @@ class InMemoryColumnarQuerySuite extends QueryTest with SharedSQLContext {
       scan,
       testData
         .collect()
-        .map {
-          case Row(key: Int, value: String) => value -> key
+        .map { case Row(key: Int, value: String) =>
+          value -> key
         }
         .map(Row.fromTuple))
   }

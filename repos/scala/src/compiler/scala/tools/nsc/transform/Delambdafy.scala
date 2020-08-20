@@ -257,8 +257,8 @@ abstract class Delambdafy
         val paramSyms = map2(formals, params) { (tp, vparam) =>
           methSym.newSyntheticValueParam(tp, vparam.name)
         }
-        params zip paramSyms foreach {
-          case (valdef, sym) => valdef.symbol = sym
+        params zip paramSyms foreach { case (valdef, sym) =>
+          valdef.symbol = sym
         }
         params foreach (_.symbol.owner = methSym)
 

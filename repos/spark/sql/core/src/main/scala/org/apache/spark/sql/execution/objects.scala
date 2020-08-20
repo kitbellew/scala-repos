@@ -47,8 +47,8 @@ trait ObjectOperator extends SparkPlan {
       } else {
         GenerateUnsafeProjection.generate(serializer)
       }
-    val inputType = serializer.head.collect {
-      case b: BoundReference => b.dataType
+    val inputType = serializer.head.collect { case b: BoundReference =>
+      b.dataType
     }.head
     val outputRow = new SpecificMutableRow(inputType :: Nil)
     (o: Any) => {

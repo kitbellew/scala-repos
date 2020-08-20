@@ -22,8 +22,8 @@ object JavaFormSpec extends PlaySpecification {
           .form(classOf[FooForm])
           .bind(Map("id" -> "1234567891").asJava)
         myForm.hasErrors must beEqualTo(true)
-        myForm.get must throwAn[IllegalStateException].like {
-          case e => e.getMessage must contain("fooName")
+        myForm.get must throwAn[IllegalStateException].like { case e =>
+          e.getMessage must contain("fooName")
         }
       }
     }

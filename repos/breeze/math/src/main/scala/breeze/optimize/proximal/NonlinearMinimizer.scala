@@ -462,8 +462,8 @@ object NonlinearMinimizer {
     val owlqnLogisticResult = owlqn.minimizeAndReturnState(elasticNetLoss, init)
     val owlqnLogisticTime = System.nanoTime() - owlqnLogisticStart
     val owlqnLogisticObj = elasticNetLoss.calculate(owlqnLogisticResult.x)._1
-    val s = owlqnLogisticResult.x.foldLeft(0.0) {
-      case (agg, entry) => agg + abs(entry)
+    val s = owlqnLogisticResult.x.foldLeft(0.0) { case (agg, entry) =>
+      agg + abs(entry)
     }
 
     init := 0.0

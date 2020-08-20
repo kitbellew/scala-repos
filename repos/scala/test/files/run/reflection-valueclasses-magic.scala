@@ -50,8 +50,8 @@ object Test extends App {
       if (meth.isMethod) List(meth.asMethod)
       else meth.asTerm.alternatives.map(_.asMethod)
     testees foreach (testee => {
-      val convertedArgs = args.zipWithIndex.map {
-        case (arg, i) => convert(arg, testee.paramLists.flatten.apply(i).info)
+      val convertedArgs = args.zipWithIndex.map { case (arg, i) =>
+        convert(arg, testee.paramLists.flatten.apply(i).info)
       }
       print(s"testing ${tpe.typeSymbol.name}.$method(${testee.paramLists.flatten
         .map(_.info)

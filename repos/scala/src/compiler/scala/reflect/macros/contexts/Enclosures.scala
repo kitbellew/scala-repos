@@ -16,8 +16,8 @@ trait Enclosures {
   private def lenientEnclosure[T <: Tree: ClassTag]: Tree =
     enclTrees collectFirst { case x: T => x } getOrElse EmptyTree
   private def strictEnclosure[T <: Tree: ClassTag]: T =
-    enclTrees collectFirst {
-      case x: T => x
+    enclTrees collectFirst { case x: T =>
+      x
     } getOrElse (throw new EnclosureException(
       classTag[T].runtimeClass,
       enclTrees))

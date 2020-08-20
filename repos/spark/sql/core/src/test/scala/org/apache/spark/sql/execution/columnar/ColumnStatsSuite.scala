@@ -67,8 +67,8 @@ class ColumnStatsSuite extends SparkFunSuite {
       val columnStats = columnStatsClass.newInstance()
       columnStats.collectedStatistics.values
         .zip(initialStatistics.values)
-        .foreach {
-          case (actual, expected) => assert(actual === expected)
+        .foreach { case (actual, expected) =>
+          assert(actual === expected)
         }
     }
 
@@ -109,8 +109,8 @@ class ColumnStatsSuite extends SparkFunSuite {
       val columnStats = new DecimalColumnStats(15, 10)
       columnStats.collectedStatistics.values
         .zip(initialStatistics.values)
-        .foreach {
-          case (actual, expected) => assert(actual === expected)
+        .foreach { case (actual, expected) =>
+          assert(actual === expected)
         }
     }
 

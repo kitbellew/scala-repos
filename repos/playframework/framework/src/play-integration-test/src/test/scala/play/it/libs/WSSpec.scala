@@ -72,8 +72,8 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
     }
 
     def withResult[T](result: Result)(block: play.libs.ws.WSClient => T) = {
-      Server.withRouter() {
-        case _ => Action(result)
+      Server.withRouter() { case _ =>
+        Action(result)
       } { implicit port =>
         withClient(block)
       }
@@ -268,8 +268,8 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
     }
 
     def withResult[T](result: Result)(block: play.api.libs.ws.WSClient => T) = {
-      Server.withRouter() {
-        case _ => Action(result)
+      Server.withRouter() { case _ =>
+        Action(result)
       } { implicit port =>
         WsTestClient.withClient(block)
       }

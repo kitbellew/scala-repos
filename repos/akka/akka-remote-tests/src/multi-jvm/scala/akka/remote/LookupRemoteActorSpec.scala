@@ -15,8 +15,8 @@ import akka.actor.ActorIdentity
 object LookupRemoteActorMultiJvmSpec extends MultiNodeConfig {
 
   class SomeActor extends Actor {
-    def receive = {
-      case "identify" ⇒ sender() ! self
+    def receive = { case "identify" ⇒
+      sender() ! self
     }
   }
 

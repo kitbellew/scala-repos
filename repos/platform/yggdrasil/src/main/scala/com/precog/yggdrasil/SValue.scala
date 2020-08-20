@@ -109,8 +109,8 @@ sealed trait SValue {
         if (m.isEmpty) List((JPath(), CEmptyObject))
         else {
           m.toSeq.flatMap { case (name, value) =>
-            value.structure map {
-              case (path, ctype) => (JPathField(name) \ path, ctype)
+            value.structure map { case (path, ctype) =>
+              (JPathField(name) \ path, ctype)
             }
           }
         }
@@ -119,8 +119,8 @@ sealed trait SValue {
         if (a.isEmpty) List((JPath(), CEmptyArray))
         else {
           a.zipWithIndex.flatMap { case (value, index) =>
-            value.structure map {
-              case (path, ctype) => (JPathIndex(index) \ path, ctype)
+            value.structure map { case (path, ctype) =>
+              (JPathIndex(index) \ path, ctype)
             }
           }
         }
@@ -209,8 +209,8 @@ trait SValueInstances {
       private val arrayOrder = (o1: Vector[SValue]) =>
         (o2: Vector[SValue]) => {
           (o1.length ?|? o2.length) |+|
-            (o1 zip o2).foldLeft[Ordering](EQ) {
-              case (ord, (v1, v2)) => ord |+| (v1 ?|? v2)
+            (o1 zip o2).foldLeft[Ordering](EQ) { case (ord, (v1, v2)) =>
+              ord |+| (v1 ?|? v2)
             }
         }
 
@@ -243,8 +243,8 @@ trait SValueInstances {
       private val arrayEqual = (o1: Vector[SValue]) =>
         (o2: Vector[SValue]) =>
           (o1.length == o2.length) &&
-            (o1 zip o2).foldLeft(true) {
-              case (eql, (v1, v2)) => eql && v1 === v2
+            (o1 zip o2).foldLeft(true) { case (eql, (v1, v2)) =>
+              eql && v1 === v2
             }
 
       private val stringEqual = (Equal[String].equal _).curried

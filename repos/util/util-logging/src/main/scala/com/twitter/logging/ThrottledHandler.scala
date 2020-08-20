@@ -127,8 +127,8 @@ class ThrottledHandler(
   def flushThrottled() {
     synchronized {
       val now = Time.now
-      throttleMap retain {
-        case (_, throttle) => !throttle.removeIfExpired(now)
+      throttleMap retain { case (_, throttle) =>
+        !throttle.removeIfExpired(now)
       }
     }
   }

@@ -39,8 +39,8 @@ object RoutingSpec {
   }
 
   class Echo extends Actor {
-    def receive = {
-      case _ ⇒ sender() ! self
+    def receive = { case _ ⇒
+      sender() ! self
     }
   }
 
@@ -72,8 +72,8 @@ class RoutingSpec
       awaitCond {
         router ! ""
         router ! ""
-        val res = receiveWhile(100 millis, messages = 2) {
-          case x: ActorRef ⇒ x
+        val res = receiveWhile(100 millis, messages = 2) { case x: ActorRef ⇒
+          x
         }
         res == Seq(c1, c1)
       }
@@ -171,8 +171,8 @@ class RoutingSpec
     }
 
     "set supplied supervisorStrategy for FromConfig" in {
-      val escalator = OneForOneStrategy() {
-        case e ⇒ testActor ! e; SupervisorStrategy.Escalate
+      val escalator = OneForOneStrategy() { case e ⇒
+        testActor ! e; SupervisorStrategy.Escalate
       }
       val router = system.actorOf(
         FromConfig
@@ -187,13 +187,13 @@ class RoutingSpec
     }
 
     "default to all-for-one-always-escalate strategy" in {
-      val restarter = OneForOneStrategy() {
-        case e ⇒ testActor ! e; SupervisorStrategy.Restart
+      val restarter = OneForOneStrategy() { case e ⇒
+        testActor ! e; SupervisorStrategy.Restart
       }
       val supervisor = system.actorOf(Props(new Supervisor(restarter)))
       supervisor ! RoundRobinPool(3).props(routeeProps = Props(new Actor {
-        def receive = {
-          case x: String ⇒ throw new Exception(x)
+        def receive = { case x: String ⇒
+          throw new Exception(x)
         }
         override def postRestart(reason: Throwable): Unit =
           testActor ! "restarted"
@@ -226,8 +226,8 @@ class RoutingSpec
 
     "send message to connection" in {
       class Actor1 extends Actor {
-        def receive = {
-          case msg ⇒ testActor forward msg
+        def receive = { case msg ⇒
+          testActor forward msg
         }
       }
 

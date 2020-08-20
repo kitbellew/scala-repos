@@ -35,8 +35,8 @@ private[sbt] final class TaskTimings extends ExecuteProgress[Task] {
     println("Total time: " + (total * 1e-6) + " ms")
     import collection.JavaConversions._
     def sumTimes(in: Seq[(Task[_], Long)]) = in.map(_._2).sum
-    val timingsByName = timings.toSeq.groupBy {
-      case (t, time) => mappedName(t)
+    val timingsByName = timings.toSeq.groupBy { case (t, time) =>
+      mappedName(t)
     } mapValues (sumTimes)
     for ((taskName, time) <- timingsByName.toSeq.sortBy(_._2).reverse)
       println("  " + taskName + ": " + (time * 1e-6) + " ms")

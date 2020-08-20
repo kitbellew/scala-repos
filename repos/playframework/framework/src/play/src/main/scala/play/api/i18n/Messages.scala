@@ -342,8 +342,8 @@ object Messages {
     val sentence = (comment | positioned(message)) <~ newLine
 
     val parser = phrase(((sentence | blankLine).*) <~ end) ^^ { case messages =>
-      messages.collect {
-        case m @ Messages.Message(_, _, _, _) => m
+      messages.collect { case m @ Messages.Message(_, _, _, _) =>
+        m
       }
     }
 

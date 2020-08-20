@@ -136,8 +136,8 @@ object ExpressionDagTests extends Properties("ExpressionDag") {
   }
 
   object RemoveInc extends PartialRule[Formula] {
-    def applyWhere[T](on: ExpressionDag[Formula]) = {
-      case Inc(f, by) => Sum(f, Constant(by))
+    def applyWhere[T](on: ExpressionDag[Formula]) = { case Inc(f, by) =>
+      Sum(f, Constant(by))
     }
   }
 

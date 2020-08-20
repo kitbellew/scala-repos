@@ -86,8 +86,8 @@ class StubVFSMetadata[M[+_]](
       version: Version): EitherT[M, ResourceError, PathStructure] = {
     for {
       types <- getPathMeta(path) map {
-        _ collect {
-          case (ColumnRef(`property`, ctype), count) => (ctype, count)
+        _ collect { case (ColumnRef(`property`, ctype), count) =>
+          (ctype, count)
         }
       }
 

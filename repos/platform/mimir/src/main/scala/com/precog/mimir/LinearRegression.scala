@@ -449,8 +449,8 @@ trait LinearRegressionLibModule[M[+_]]
         val inverse = errors.product.inverse()
         val varianceCovariance = inverse.times(varianceEst)
 
-        val stdErrors0 = (0 until colDim) map {
-          case i => math.sqrt(varianceCovariance.get(i, i))
+        val stdErrors0 = (0 until colDim) map { case i =>
+          math.sqrt(varianceCovariance.get(i, i))
         }
         val stdErrors = insertZeroAt(stdErrors0.toArray, coeffs.removed.toArray)
 
@@ -565,8 +565,8 @@ trait LinearRegressionLibModule[M[+_]]
           }
 
           val reducedTables: M[Seq[Table]] = tablesWithType flatMap {
-            _.map {
-              case (table, jtype) => tableReducer(table, jtype)
+            _.map { case (table, jtype) =>
+              tableReducer(table, jtype)
             }.toStream.sequence map (_.toSeq)
           }
 

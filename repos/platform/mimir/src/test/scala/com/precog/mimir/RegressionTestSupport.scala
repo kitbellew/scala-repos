@@ -60,11 +60,11 @@ trait RegressionTestSupport[M[+_]] {
         else if (idx % mod == 1) cpaths.tail zip cvalues.tail.toSeq
         else cpaths.tail.tail zip cvalues.tail.tail.toSeq
       }
-      val withJPath = withCPath map {
-        case (cpath, cvalue) => cPathToJPaths(cpath, cvalue) head
+      val withJPath = withCPath map { case (cpath, cvalue) =>
+        cPathToJPaths(cpath, cvalue) head
       } // `head` is only okay if we don't have any homogeneous arrays
-      val withJValue = withJPath map {
-        case (jpath, cvalue) => (jpath, cvalue.toJValue)
+      val withJValue = withJPath map { case (jpath, cvalue) =>
+        (jpath, cvalue.toJValue)
       }
       withJValue.foldLeft(JArray(Nil).asInstanceOf[JValue]) {
         case (target, (jpath, jvalue)) => target.unsafeInsert(jpath, jvalue)

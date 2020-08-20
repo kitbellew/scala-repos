@@ -121,8 +121,8 @@ abstract class UntypedActor extends Actor {
     throw new UnhandledMessageException(msg, self)
   }
 
-  final protected def receive = {
-    case msg => onReceive(msg)
+  final protected def receive = { case msg =>
+    onReceive(msg)
   }
 }
 

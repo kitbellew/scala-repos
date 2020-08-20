@@ -342,8 +342,8 @@ object JsonAST {
         val newAcc = f(acc, v)
         v match {
           case JObject(l) =>
-            l.foldLeft(newAcc) {
-              case (a, JField(name, value)) => value.fold(a)(f)
+            l.foldLeft(newAcc) { case (a, JField(name, value)) =>
+              value.fold(a)(f)
             }
           case JArray(l) =>
             l.foldLeft(newAcc) { (a, e) =>

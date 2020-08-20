@@ -105,8 +105,8 @@ class ZkResolver(factory: ZkClientFactory) extends Resolver {
           case inst if inst.getAdditionalEndpoints.containsKey(epname) =>
             inst.getAdditionalEndpoints.get(epname)
         }
-        case None => {
-          case inst: ServiceInstance => inst.getServiceEndpoint()
+        case None => { case inst: ServiceInstance =>
+          inst.getServiceEndpoint()
         }
       }
 

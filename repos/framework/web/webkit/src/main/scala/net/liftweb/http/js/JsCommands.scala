@@ -148,8 +148,8 @@ trait JsObj extends JsExp {
     */
   def extend(other: JsObj) = {
     // existing, non-existing props
-    val (ep, nep) = other.props.partition {
-      case (key, exp) => props.exists { case (k, e) => k == key }
+    val (ep, nep) = other.props.partition { case (key, exp) =>
+      props.exists { case (k, e) => k == key }
     }
     // replaced props
     val rp = props.map { case (key, exp) =>

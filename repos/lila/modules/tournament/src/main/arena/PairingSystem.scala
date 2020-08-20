@@ -86,8 +86,8 @@ object PairingSystem extends AbstractPairingSystem {
   private def naivePairings(
       tour: Tournament,
       players: RankedPlayers): List[Pairing.Prep] =
-    players grouped 2 collect {
-      case List(p1, p2) => Pairing.prep(tour, p1.player, p2.player)
+    players grouped 2 collect { case List(p1, p2) =>
+      Pairing.prep(tour, p1.player, p2.player)
     } toList
 
   private val smartPairingsMaxMillis = 400
@@ -178,14 +178,14 @@ object PairingSystem extends AbstractPairingSystem {
         case ps =>
           findBetter(Nil, Int.MaxValue) match {
             case Found(best) =>
-              best map {
-                case (rp0, rp1) => rp0.player -> rp1.player
+              best map { case (rp0, rp1) =>
+                rp0.player -> rp1.player
               }
             case _ =>
               pairingLogger.warn(
                 "Could not make smart pairings for arena tournament")
-              players map (_.player) grouped 2 collect {
-                case List(p1, p2) => (p1, p2)
+              players map (_.player) grouped 2 collect { case List(p1, p2) =>
+                (p1, p2)
               } toList
           }
       }) map {

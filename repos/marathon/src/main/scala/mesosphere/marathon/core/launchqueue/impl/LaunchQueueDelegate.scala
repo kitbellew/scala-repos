@@ -53,8 +53,8 @@ private[launchqueue] class LaunchQueueDelegate(
     implicit val timeout: Timeout = 1.second
     val answerFuture = actorRef ? message
     import scala.concurrent.ExecutionContext.Implicits.global
-    answerFuture.recover {
-      case NonFatal(e) => throw new RuntimeException(s"in $method", e)
+    answerFuture.recover { case NonFatal(e) =>
+      throw new RuntimeException(s"in $method", e)
     }
     answerFuture
   }

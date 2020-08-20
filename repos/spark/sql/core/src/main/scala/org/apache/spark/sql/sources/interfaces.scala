@@ -607,8 +607,8 @@ class HDFSFileCatalog(
             nullable = true)
       })
 
-      val selected = partitions.filter {
-        case PartitionDirectory(values, _) => boundPredicate(values)
+      val selected = partitions.filter { case PartitionDirectory(values, _) =>
+        boundPredicate(values)
       }
       logInfo {
         val total = partitions.length

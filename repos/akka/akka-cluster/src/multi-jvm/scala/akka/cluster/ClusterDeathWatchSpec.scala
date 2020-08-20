@@ -158,8 +158,8 @@ abstract class ClusterDeathWatchSpec
         system.actorOf(
           Props(new Actor {
             context.watch(context.actorFor(path))
-            def receive = {
-              case t: Terminated ⇒ testActor ! t.actor.path
+            def receive = { case t: Terminated ⇒
+              testActor ! t.actor.path
             }
           }).withDeploy(Deploy.local),
           name = "observer3")

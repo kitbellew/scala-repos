@@ -114,8 +114,8 @@ class MergeToComprehensions extends Phase {
           logger.debug(
             "Merging SortBy into Comprehension:",
             Ellipsis(n, List(0)))
-          val b2 = b1.map {
-            case (n, o) => (applyReplacements(n, replacements1, c1), o)
+          val b2 = b1.map { case (n, o) =>
+            (applyReplacements(n, replacements1, c1), o)
           }
           val c2 = c1.copy(orderBy = b2 ++ c1.orderBy) :@ c1.nodeType
           logger.debug("Merged SortBy into Comprehension:", c2)
@@ -202,8 +202,8 @@ class MergeToComprehensions extends Phase {
             .infer()
           logger.debug("Merged GroupBy into Comprehension:", c2)
           val StructNode(defs2) = str2
-          val replacements = defs2.iterator.map {
-            case (f, _) => (ts2, f) -> f
+          val replacements = defs2.iterator.map { case (f, _) =>
+            (ts2, f) -> f
           }.toMap
           logger.debug("Replacements are: " + replacements)
           (c2, replacements)
@@ -396,14 +396,14 @@ class MergeToComprehensions extends Phase {
     logger.debug("Building new Comprehension from:", n)
     val newSyms = mappings.map(x => (x, new AnonSymbol))
     val s = new AnonSymbol
-    val struct = StructNode(newSyms.map {
-      case ((_, ss), as) => (as, FwdPath(s :: ss))
+    val struct = StructNode(newSyms.map { case ((_, ss), as) =>
+      (as, FwdPath(s :: ss))
     })
     val pid = new AnonTypeSymbol
     val res = Comprehension(s, n, select = Pure(struct, pid)).infer()
     logger.debug("Built new Comprehension:", res)
-    val replacements = newSyms.iterator.map {
-      case (((ts, f), _), as) => ((ts, f), as)
+    val replacements = newSyms.iterator.map { case (((ts, f), _), as) =>
+      ((ts, f), as)
     }.toMap
     logger.debug("Replacements are: " + replacements)
     (res, replacements)
@@ -431,13 +431,13 @@ class MergeToComprehensions extends Phase {
         logger.debug(
           "Merging Bind into Comprehension as 'select':",
           Ellipsis(n, List(0)))
-        val defs2 = defs1.map {
-          case (s, d) => (s, applyReplacements(d, replacements1, c1))
+        val defs2 = defs1.map { case (s, d) =>
+          (s, applyReplacements(d, replacements1, c1))
         }
         val c2 = c1.copy(select = Pure(StructNode(defs2), ts1)).infer()
         logger.debug("Merged Bind into Comprehension as 'select':", c2)
-        val replacements = defs2.iterator.map {
-          case (f, _) => (ts1, f) -> f
+        val replacements = defs2.iterator.map { case (f, _) =>
+          (ts1, f) -> f
         }.toMap
         logger.debug("Replacements are: " + replacements)
         (c2, replacements)

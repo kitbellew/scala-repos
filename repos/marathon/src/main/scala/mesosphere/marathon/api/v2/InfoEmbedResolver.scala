@@ -60,8 +60,8 @@ private[v2] object InfoEmbedResolver {
     }
 
     val embedWithSeparatedPrefixes = embed.map(separatePrefix)
-    embedWithSeparatedPrefixes.flatMap {
-      case (prefix, withoutPrefix) => mapEmbedStrings(prefix, withoutPrefix)
+    embedWithSeparatedPrefixes.flatMap { case (prefix, withoutPrefix) =>
+      mapEmbedStrings(prefix, withoutPrefix)
     }
   }
 

@@ -108,8 +108,8 @@ class WorksheetEditorPrinter(
         case Some((start, end)) =>
           if (!inited) {
             val first = init()
-            val diffBetweenFirst = first map {
-              case i => Math.min(i, start)
+            val diffBetweenFirst = first map { case i =>
+              Math.min(i, start)
             } getOrElse start
 
             if (diffBetweenFirst > 0)

@@ -200,8 +200,8 @@ abstract class FormatInterpolator {
       fstring append s
     }
 
-    parts.zipWithIndex foreach {
-      case (part, n) => copyPart(part, n)
+    parts.zipWithIndex foreach { case (part, n) =>
+      copyPart(part, n)
     }
 
     //q"{..$evals; new StringOps(${fstring.toString}).format(..$ids)}"

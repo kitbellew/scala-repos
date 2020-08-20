@@ -68,8 +68,8 @@ trait SortedSets { self: BaseClient =>
     * or 0 if key does not exist
     */
   def zCard(key: ChannelBuffer): Future[JLong] =
-    doRequest(ZCard(key)) {
-      case IntegerReply(n) => Future.value(n)
+    doRequest(ZCard(key)) { case IntegerReply(n) =>
+      Future.value(n)
     }
 
   /**
@@ -83,8 +83,8 @@ trait SortedSets { self: BaseClient =>
       key: ChannelBuffer,
       min: ZInterval,
       max: ZInterval): Future[JLong] =
-    doRequest(ZCount(key, min, max)) {
-      case IntegerReply(n) => Future.value(n)
+    doRequest(ZCount(key, min, max)) { case IntegerReply(n) =>
+      Future.value(n)
     }
 
   /**
@@ -111,8 +111,8 @@ trait SortedSets { self: BaseClient =>
     * @return Number of members removed from sorted set
     */
   def zRem(key: ChannelBuffer, members: Seq[ChannelBuffer]): Future[JLong] =
-    doRequest(ZRem(key, members)) {
-      case IntegerReply(n) => Future.value(n)
+    doRequest(ZRem(key, members)) { case IntegerReply(n) =>
+      Future.value(n)
     }
 
   /**
@@ -220,8 +220,8 @@ trait SortedSets { self: BaseClient =>
       key: ChannelBuffer,
       start: JLong,
       stop: JLong): Future[JLong] =
-    doRequest(ZRemRangeByRank(key, start, stop)) {
-      case IntegerReply(n) => Future.value(n)
+    doRequest(ZRemRangeByRank(key, start, stop)) { case IntegerReply(n) =>
+      Future.value(n)
     }
 
   /**
@@ -235,8 +235,8 @@ trait SortedSets { self: BaseClient =>
       key: ChannelBuffer,
       min: ZInterval,
       max: ZInterval): Future[JLong] =
-    doRequest(ZRemRangeByScore(key, min, max)) {
-      case IntegerReply(n) => Future.value(n)
+    doRequest(ZRemRangeByScore(key, min, max)) { case IntegerReply(n) =>
+      Future.value(n)
     }
 
   /**

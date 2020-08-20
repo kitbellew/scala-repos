@@ -171,8 +171,8 @@ private[finagle] class ServiceFactoryCache[Key, Req, Rep](
     }
 
   private[this] def findEvictee(): Option[Key] = {
-    val (evictNamer, evictFactory) = cache maxBy {
-      case (_, fac) => fac.idleFor
+    val (evictNamer, evictFactory) = cache maxBy { case (_, fac) =>
+      fac.idleFor
     }
     if (evictFactory.idleFor > Duration.Zero) Some(evictNamer)
     else None

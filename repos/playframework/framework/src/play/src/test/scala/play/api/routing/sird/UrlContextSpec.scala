@@ -14,8 +14,8 @@ object UrlContextSpec extends Specification {
 
     "match a plain path" in {
       "match" in {
-        "/foo/bar" must beLike {
-          case p"/foo/bar" => ok
+        "/foo/bar" must beLike { case p"/foo/bar" =>
+          ok
         }
       }
       "no match" in {
@@ -28,8 +28,8 @@ object UrlContextSpec extends Specification {
 
     "match a parameterised path" in {
       "match" in {
-        "/foo/testing/bar" must beLike {
-          case p"/foo/$id/bar" => id must_== "testing"
+        "/foo/testing/bar" must beLike { case p"/foo/$id/bar" =>
+          id must_== "testing"
         }
       }
       "no match" in {
@@ -39,16 +39,16 @@ object UrlContextSpec extends Specification {
         }
       }
       "decoded" in {
-        "/foo/te%24ting/bar" must beLike {
-          case p"/foo/$id/bar" => id must_== "te$ting"
+        "/foo/te%24ting/bar" must beLike { case p"/foo/$id/bar" =>
+          id must_== "te$ting"
         }
       }
     }
 
     "match a regex path" in {
       "match" in {
-        "/foo/1234/bar" must beLike {
-          case p"/foo/$id<[0-9]+>/bar" => id must_== "1234"
+        "/foo/1234/bar" must beLike { case p"/foo/$id<[0-9]+>/bar" =>
+          id must_== "1234"
         }
       }
       "no match" in {
@@ -58,16 +58,16 @@ object UrlContextSpec extends Specification {
         }
       }
       "raw" in {
-        "/foo/te%24ting/bar" must beLike {
-          case p"/foo/$id<[^/]+>/bar" => id must_== "te%24ting"
+        "/foo/te%24ting/bar" must beLike { case p"/foo/$id<[^/]+>/bar" =>
+          id must_== "te%24ting"
         }
       }
     }
 
     "match a star path" in {
       "match" in {
-        "/foo/path/to/something" must beLike {
-          case p"/foo/$path*" => path must_== "path/to/something"
+        "/foo/path/to/something" must beLike { case p"/foo/$path*" =>
+          path must_== "path/to/something"
         }
       }
       "no match" in {
@@ -77,16 +77,16 @@ object UrlContextSpec extends Specification {
         }
       }
       "raw" in {
-        "/foo/path/to/%24omething" must beLike {
-          case p"/foo/$path*" => path must_== "path/to/%24omething"
+        "/foo/path/to/%24omething" must beLike { case p"/foo/$path*" =>
+          path must_== "path/to/%24omething"
         }
       }
     }
 
     "match a path with a nested extractor" in {
       "match" in {
-        "/foo/1234/bar" must beLike {
-          case p"/foo/${int(id)}/bar" => id must_== 1234L
+        "/foo/1234/bar" must beLike { case p"/foo/${int(id)}/bar" =>
+          id must_== 1234L
         }
       }
       "no match" in {
@@ -104,8 +104,8 @@ object UrlContextSpec extends Specification {
     }
 
     "match a uri" in {
-      URI.create("/foo/testing/bar") must beLike {
-        case p"/foo/$id/bar" => id must_== "testing"
+      URI.create("/foo/testing/bar") must beLike { case p"/foo/$id/bar" =>
+        id must_== "testing"
       }
     }
 
@@ -123,8 +123,8 @@ object UrlContextSpec extends Specification {
 
     "allow required parameter extraction" in {
       "match" in {
-        qs("foo" -> "bar") must beLike {
-          case q"foo=$foo" => foo must_== "bar"
+        qs("foo" -> "bar") must beLike { case q"foo=$foo" =>
+          foo must_== "bar"
         }
       }
       "no match" in {
@@ -137,26 +137,26 @@ object UrlContextSpec extends Specification {
 
     "allow optional parameter extraction" in {
       "existing" in {
-        qs("foo" -> "bar") must beLike {
-          case q_o"foo=$foo" => foo must beSome("bar")
+        qs("foo" -> "bar") must beLike { case q_o"foo=$foo" =>
+          foo must beSome("bar")
         }
       }
       "not existing" in {
-        qs("foo" -> "bar") must beLike {
-          case q_o"notfoo=$foo" => foo must beNone
+        qs("foo" -> "bar") must beLike { case q_o"notfoo=$foo" =>
+          foo must beNone
         }
       }
     }
 
     "allow seq parameter extraction" in {
       "none" in {
-        qs() must beLike {
-          case q_s"foo=$foo" => foo must beEmpty
+        qs() must beLike { case q_s"foo=$foo" =>
+          foo must beEmpty
         }
       }
       "one" in {
-        qs("foo" -> "bar") must beLike {
-          case q_s"foo=$foo" => Seq("bar") must_== Seq("bar")
+        qs("foo" -> "bar") must beLike { case q_s"foo=$foo" =>
+          Seq("bar") must_== Seq("bar")
         }
       }
       "many" in {

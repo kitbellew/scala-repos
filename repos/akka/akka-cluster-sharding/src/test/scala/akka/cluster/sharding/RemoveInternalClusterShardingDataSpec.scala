@@ -39,12 +39,12 @@ object RemoveInternalClusterShardingDataSpec {
     akka.cluster.sharding.snapshot-after = 5
     """
 
-  val extractEntityId: ShardRegion.ExtractEntityId = {
-    case msg: Int ⇒ (msg.toString, msg)
+  val extractEntityId: ShardRegion.ExtractEntityId = { case msg: Int ⇒
+    (msg.toString, msg)
   }
 
-  val extractShardId: ShardRegion.ExtractShardId = {
-    case msg: Int ⇒ (msg % 10).toString
+  val extractShardId: ShardRegion.ExtractShardId = { case msg: Int ⇒
+    (msg % 10).toString
   }
 
   class HasSnapshots(override val persistenceId: String, replyTo: ActorRef)

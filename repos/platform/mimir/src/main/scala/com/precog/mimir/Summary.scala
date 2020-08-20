@@ -83,8 +83,8 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
           }
 
           // handles case when we have multiple numeric columns at same path
-          val singleNumerics = numerics.toList.map {
-            case (path, _) => (path, CNum)
+          val singleNumerics = numerics.toList.map { case (path, _) =>
+            (path, CNum)
           }
           val sortedNumerics = singleNumerics.distinct.sortBy(_._1).reverse
 

@@ -48,8 +48,8 @@ class VerifyTypes(after: Option[Phase] = None) extends Phase {
           errors += RefId(n1)
         }
       }
-      n1.children.zip(n2.children).force.foreach {
-        case (n1, n2) => compare(n1, n2)
+      n1.children.zip(n2.children).force.foreach { case (n1, n2) =>
+        compare(n1, n2)
       }
     }
     compare(tree, retyped)

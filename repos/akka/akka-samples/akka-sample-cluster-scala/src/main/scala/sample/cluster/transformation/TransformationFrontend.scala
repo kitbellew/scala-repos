@@ -55,8 +55,8 @@ object TransformationFrontend {
     system.scheduler.schedule(2.seconds, 2.seconds) {
       implicit val timeout = Timeout(5 seconds)
       (frontend ? TransformationJob(
-        "hello-" + counter.incrementAndGet())) onSuccess {
-        case result => println(result)
+        "hello-" + counter.incrementAndGet())) onSuccess { case result =>
+        println(result)
       }
     }
 

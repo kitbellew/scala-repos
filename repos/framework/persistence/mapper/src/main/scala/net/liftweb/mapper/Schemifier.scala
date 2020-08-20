@@ -443,8 +443,8 @@ object Schemifier extends Loggable {
         case _        => byName(name) = List(col)
       }
     }
-    val indexedFields: List[List[String]] = byName.map {
-      case (name, value) => value.sortWith(_ < _)
+    val indexedFields: List[List[String]] = byName.map { case (name, value) =>
+      value.sortWith(_ < _)
     }.toList
     //rs.close
 

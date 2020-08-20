@@ -224,8 +224,8 @@ trait MapLike[A, B, +This <: MapLike[A, B, This] with Map[A, B]]
     * @return   the map itself.
     */
   def transform(f: (A, B) => B): this.type = {
-    this.iterator foreach {
-      case (key, value) => update(key, f(key, value))
+    this.iterator foreach { case (key, value) =>
+      update(key, f(key, value))
     }
     this
   }

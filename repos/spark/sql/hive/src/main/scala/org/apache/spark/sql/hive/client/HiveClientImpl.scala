@@ -751,8 +751,8 @@ private[hive] class HiveClientImpl(
       .map(toOutputFormat)
       .foreach(hiveTable.setOutputFormatClass)
     table.storage.serde.foreach(hiveTable.setSerializationLib)
-    table.storage.serdeProperties.foreach {
-      case (k, v) => hiveTable.setSerdeParam(k, v)
+    table.storage.serdeProperties.foreach { case (k, v) =>
+      hiveTable.setSerdeParam(k, v)
     }
     table.properties.foreach { case (k, v) => hiveTable.setProperty(k, v) }
     table.viewOriginalText.foreach { t => hiveTable.setViewOriginalText(t) }

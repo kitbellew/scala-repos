@@ -297,8 +297,8 @@ object Tests {
       loader: ClassLoader,
       runnables: Seq[TestRunnable],
       tags: Seq[(Tag, Int)]): Task[Map[String, SuiteResult]] = {
-    val tasks = runnables.map {
-      case (name, test) => toTask(loader, name, test, tags)
+    val tasks = runnables.map { case (name, test) =>
+      toTask(loader, name, test, tags)
     }
     tasks.join.map(_.foldLeft(Map.empty[String, SuiteResult]) { case (sum, e) =>
       val merged = sum.toSeq ++ e.toSeq
@@ -402,11 +402,11 @@ object Tests {
       fingerprints: Seq[Fingerprint],
       definitions: Seq[Definition],
       log: Logger): (Seq[TestDefinition], Set[String]) = {
-    val subclasses = fingerprints collect {
-      case sub: SubclassFingerprint => (sub.superclassName, sub.isModule, sub)
+    val subclasses = fingerprints collect { case sub: SubclassFingerprint =>
+      (sub.superclassName, sub.isModule, sub)
     };
-    val annotations = fingerprints collect {
-      case ann: AnnotatedFingerprint => (ann.annotationName, ann.isModule, ann)
+    val annotations = fingerprints collect { case ann: AnnotatedFingerprint =>
+      (ann.annotationName, ann.isModule, ann)
     };
     log.debug("Subclass fingerprints: " + subclasses)
     log.debug("Annotation fingerprints: " + annotations)

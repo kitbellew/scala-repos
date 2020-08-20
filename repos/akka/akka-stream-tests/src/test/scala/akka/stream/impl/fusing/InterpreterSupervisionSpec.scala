@@ -322,8 +322,8 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
 
     "restart when Collect throws" in {
       // TODO can't get type inference to work with `pf` inlined
-      val pf: PartialFunction[Int, Int] = {
-        case x: Int ⇒ if (x == 0) throw TE else x
+      val pf: PartialFunction[Int, Int] = { case x: Int ⇒
+        if (x == 0) throw TE else x
       }
       new OneBoundedSetup[Int](Seq(Collect(pf, restartingDecider))) {
         downstream.requestOne()

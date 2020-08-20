@@ -86,8 +86,8 @@ object SerializationTests {
   """
 
   class FooActor extends Actor {
-    def receive = {
-      case s: String ⇒ sender() ! s
+    def receive = { case s: String ⇒
+      sender() ! s
     }
   }
 
@@ -96,8 +96,8 @@ object SerializationTests {
   }
 
   class NonSerializableActor(system: ActorSystem) extends Actor {
-    def receive = {
-      case s: String ⇒ sender() ! s
+    def receive = { case s: String ⇒
+      sender() ! s
     }
   }
 

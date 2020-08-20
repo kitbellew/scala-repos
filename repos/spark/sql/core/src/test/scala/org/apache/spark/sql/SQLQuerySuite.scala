@@ -785,8 +785,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   test("SPARK-11111 null-safe join should not use cartesian product") {
     val df = sql(
       "select count(*) from testData a join testData b on (a.key <=> b.key)")
-    val cp = df.queryExecution.sparkPlan.collect {
-      case cp: CartesianProduct => cp
+    val cp = df.queryExecution.sparkPlan.collect { case cp: CartesianProduct =>
+      cp
     }
     assert(cp.isEmpty, "should not use CartesianProduct for null-safe join")
     val smj = df.queryExecution.sparkPlan.collect {

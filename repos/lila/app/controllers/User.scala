@@ -99,8 +99,8 @@ object User extends LilaController {
               if (lila.common.HTTPRequest.isSynchronousHttp(ctx.req))
                 userShow(u, filterOption, page)
               else
-                userGames(u, filterOption, page) map {
-                  case (filterName, pag) => html.user.games(u, pag, filterName)
+                userGames(u, filterOption, page) map { case (filterName, pag) =>
+                  html.user.games(u, pag, filterName)
                 }
             }.map { status(_) }.mon(_.http.response.user.show.website),
             api = _ =>

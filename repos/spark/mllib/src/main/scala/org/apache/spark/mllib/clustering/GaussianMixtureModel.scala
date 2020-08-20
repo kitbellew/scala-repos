@@ -124,8 +124,8 @@ class GaussianMixtureModel @Since("1.3.0") (
       dists: Array[MultivariateGaussian],
       weights: Array[Double],
       k: Int): Array[Double] = {
-    val p = weights.zip(dists).map {
-      case (weight, dist) => MLUtils.EPSILON + weight * dist.pdf(pt)
+    val p = weights.zip(dists).map { case (weight, dist) =>
+      MLUtils.EPSILON + weight * dist.pdf(pt)
     }
     val pSum = p.sum
     for (i <- 0 until k) {

@@ -476,8 +476,8 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
             }),
             "child")
 
-          def receive = {
-            case name: String ⇒ sender() ! context.child(name).isDefined
+          def receive = { case name: String ⇒
+            sender() ! context.child(name).isDefined
           }
         }),
         "parent"

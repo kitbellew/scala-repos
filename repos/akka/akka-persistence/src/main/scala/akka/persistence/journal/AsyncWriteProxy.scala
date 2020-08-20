@@ -107,8 +107,8 @@ private[persistence] trait AsyncWriteProxy
           persistenceId,
           fromSequenceNr = 0L,
           toSequenceNr = 0L,
-          max = 0L)).map {
-          case ReplaySuccess(highest) ⇒ highest
+          max = 0L)).map { case ReplaySuccess(highest) ⇒
+          highest
         }
       case None ⇒ storeNotInitialized
     }

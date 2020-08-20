@@ -51,8 +51,8 @@ object ~ {
     path match {
       case Root => None
       case parent / last =>
-        unapply(last) map {
-          case (base, ext) => (parent / base, ext)
+        unapply(last) map { case (base, ext) =>
+          (parent / base, ext)
         }
     }
   }

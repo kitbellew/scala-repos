@@ -308,8 +308,8 @@ case class DefaultOptimalSizeExploringResizer(
         .take(numOfSizesEachSide)
         .lastOption
         .getOrElse(currentSize)
-      performanceLog.filter {
-        case (size, _) ⇒ size >= leftBoundary && size <= rightBoundary
+      performanceLog.filter { case (size, _) ⇒
+        size >= leftBoundary && size <= rightBoundary
       }
     }
 

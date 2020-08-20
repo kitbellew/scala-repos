@@ -50,8 +50,8 @@ object QuirrelCacheSpecs
           case e                    => e.children
         }
 
-        cs.iterator map loop collectFirst {
-          case Some(a) => a
+        cs.iterator map loop collectFirst { case Some(a) =>
+          a
         }
       }
     }
@@ -73,17 +73,17 @@ object QuirrelCacheSpecs
       result must haveSize(1)
       val root = result.head
 
-      val a = findNode(root) {
-        case NumLit(loc, _) => (loc.lineNum, loc.colNum)
+      val a = findNode(root) { case NumLit(loc, _) =>
+        (loc.lineNum, loc.colNum)
       }
-      val b = findNode(root) {
-        case StrLit(loc, "asdf") => (loc.lineNum, loc.colNum)
+      val b = findNode(root) { case StrLit(loc, "asdf") =>
+        (loc.lineNum, loc.colNum)
       }
-      val c = findNode(root) {
-        case BoolLit(loc, _) => (loc.lineNum, loc.colNum)
+      val c = findNode(root) { case BoolLit(loc, _) =>
+        (loc.lineNum, loc.colNum)
       }
-      val d = findNode(root) {
-        case StrLit(loc, "/abc") => (loc.lineNum, loc.colNum)
+      val d = findNode(root) { case StrLit(loc, "/abc") =>
+        (loc.lineNum, loc.colNum)
       }
 
       a must_== Some((1, 6))

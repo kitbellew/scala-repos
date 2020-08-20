@@ -146,8 +146,8 @@ private[transport] class AkkaProtocolManager(
 
   // The AkkaProtocolTransport does not handle the recovery of associations, this task is implemented in the
   // remoting itself. Hence the strategy Stop.
-  override val supervisorStrategy = OneForOneStrategy() {
-    case NonFatal(_) ⇒ Stop
+  override val supervisorStrategy = OneForOneStrategy() { case NonFatal(_) ⇒
+    Stop
   }
 
   private def actorNameFor(remoteAddress: Address): String =

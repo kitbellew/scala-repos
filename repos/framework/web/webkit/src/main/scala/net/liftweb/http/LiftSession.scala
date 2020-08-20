@@ -230,8 +230,8 @@ private[http] object RenderVersion {
     val ret: Box[T] =
       for {
         sess <- S.session
-        func <- sess.findFunc(v).collect {
-          case f: S.PageStateHolder => f
+        func <- sess.findFunc(v).collect { case f: S.PageStateHolder =>
+          f
         }
       } yield {
         val tret = ver.doWith(v) {
@@ -961,8 +961,8 @@ class LiftSession(
         SessionMaster.sendMsg(RemoveSession(this.underlyingId))
 
         import scala.collection.JavaConversions._
-        nasyncComponents.foreach {
-          case (_, comp) => done ::= (() => tryo(comp ! ShutDown))
+        nasyncComponents.foreach { case (_, comp) =>
+          done ::= (() => tryo(comp ! ShutDown))
         }
         cleanUpSession()
         LiftSession.onShutdownSession.foreach(f => done ::= (() => f(this)))
@@ -2127,8 +2127,8 @@ class LiftSession(
   private def asNodeSeq(in: Seq[Node]): NodeSeq = in
 
   private class DeferredProcessor extends SpecializedLiftActor[ProcessSnippet] {
-    protected def messageHandler = {
-      case ProcessSnippet(f) => f()
+    protected def messageHandler = { case ProcessSnippet(f) =>
+      f()
     }
   }
 

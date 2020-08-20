@@ -166,8 +166,8 @@ trait DStreamCheckpointTester { self: SparkFunSuite =>
     */
   protected def getTestOutputStream[V: ClassTag](
       streams: Array[DStream[_]]): TestOutputStreamWithPartitions[V] = {
-    streams.collect {
-      case ds: TestOutputStreamWithPartitions[V @unchecked] => ds
+    streams.collect { case ds: TestOutputStreamWithPartitions[V @unchecked] =>
+      ds
     }.head
   }
 

@@ -123,8 +123,8 @@ trait SymbolTables {
     private def remove(name: TermName): SymbolTable = {
       var newSymtab = symtab
       val newAliases = aliases filter (_._2 != name)
-      newSymtab = newSymtab filter {
-        case ((sym, _)) => newAliases exists (_._1 == sym)
+      newSymtab = newSymtab filter { case ((sym, _)) =>
+        newAliases exists (_._1 == sym)
       }
       newSymtab = newSymtab map { case ((sym, tree)) =>
         val ValDef(mods, primaryName, tpt, rhs) = tree

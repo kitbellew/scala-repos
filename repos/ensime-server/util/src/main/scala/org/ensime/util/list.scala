@@ -31,13 +31,13 @@ package object list {
       val builder = new mutable.HashMap[K, mutable.Set[V]]
         with mutable.MultiMap[K, V]
 
-      list.foreach {
-        case (k, v) => builder.addBinding(k, v)
+      list.foreach { case (k, v) =>
+        builder.addBinding(k, v)
       }
       // its all a bit awkward to work with because the signature of
       // the MultiMap has a mutable Set as the value, *sigh*
-      builder.map {
-        case (k, vs) => (k, vs.toSet)
+      builder.map { case (k, vs) =>
+        (k, vs.toSet)
       }(collection.breakOut)
     }
   }

@@ -287,8 +287,8 @@ class FutureSpec
                 sender() ! Status.Failure(new ArithmeticException("/ by zero"))
               }
             }))
-            val future = actor1 ? "Hello" flatMap {
-              case s: String ⇒ actor2 ? s
+            val future = actor1 ? "Hello" flatMap { case s: String ⇒
+              actor2 ? s
             }
             FutureSpec.ready(future, timeout.duration)
             test(future, "/ by zero")
@@ -383,30 +383,30 @@ class FutureSpec
           val future2 = future1 map (_ / 0)
           val future3 = future2 map (_.toString)
 
-          val future4 = future1 recover {
-            case e: ArithmeticException ⇒ 0
+          val future4 = future1 recover { case e: ArithmeticException ⇒
+            0
           } map (_.toString)
 
-          val future5 = future2 recover {
-            case e: ArithmeticException ⇒ 0
+          val future5 = future2 recover { case e: ArithmeticException ⇒
+            0
           } map (_.toString)
 
-          val future6 = future2 recover {
-            case e: MatchError ⇒ 0
+          val future6 = future2 recover { case e: MatchError ⇒
+            0
           } map (_.toString)
 
-          val future7 = future3 recover {
-            case e: ArithmeticException ⇒ "You got ERROR"
+          val future7 = future3 recover { case e: ArithmeticException ⇒
+            "You got ERROR"
           }
 
           val actor = system.actorOf(Props[TestActor])
 
           val future8 = actor ? "Failure"
-          val future9 = actor ? "Failure" recover {
-            case e: RuntimeException ⇒ "FAIL!"
+          val future9 = actor ? "Failure" recover { case e: RuntimeException ⇒
+            "FAIL!"
           }
-          val future10 = actor ? "Hello" recover {
-            case e: RuntimeException ⇒ "FAIL!"
+          val future10 = actor ? "Hello" recover { case e: RuntimeException ⇒
+            "FAIL!"
           }
           val future11 = actor ? "Failure" recover { case _ ⇒ "Oops!" }
 
@@ -453,8 +453,8 @@ class FutureSpec
 
         intercept[IllegalStateException] {
           Await.result(
-            Promise.failed[String](o).future recoverWith {
-              case _ ⇒ Promise.failed[String](r).future
+            Promise.failed[String](o).future recoverWith { case _ ⇒
+              Promise.failed[String](r).future
             },
             timeout.duration)
         } should ===(r)
@@ -651,15 +651,15 @@ class FutureSpec
           val latch = new TestLatch
           val f2 = Future { FutureSpec.ready(latch, 5 seconds); "success" }
           f2 foreach (_ ⇒ throw new ThrowableTest("dispatcher foreach"))
-          f2 onSuccess {
-            case _ ⇒ throw new ThrowableTest("dispatcher receive")
+          f2 onSuccess { case _ ⇒
+            throw new ThrowableTest("dispatcher receive")
           }
           val f3 = f2 map (s ⇒ s.toUpperCase)
           latch.open()
           assert(Await.result(f2, timeout.duration) === "success")
           f2 foreach (_ ⇒ throw new ThrowableTest("current thread foreach"))
-          f2 onSuccess {
-            case _ ⇒ throw new ThrowableTest("current thread receive")
+          f2 onSuccess { case _ ⇒
+            throw new ThrowableTest("current thread receive")
           }
           assert(Await.result(f3, timeout.duration) === "SUCCESS")
         }

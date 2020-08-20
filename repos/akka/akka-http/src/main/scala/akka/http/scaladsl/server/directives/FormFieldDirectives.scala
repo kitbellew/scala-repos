@@ -251,8 +251,8 @@ object FormFieldDirectives extends FormFieldDirectives {
       extract { ctx ⇒
         import ctx.{executionContext, materializer}
         sfu(ctx.request.entity).fast.flatMap(form ⇒
-          Future.sequence(form.fields.collect {
-            case (`fieldName`, value) ⇒ fu(value)
+          Future.sequence(form.fields.collect { case (`fieldName`, value) ⇒
+            fu(value)
           }))
       }.flatMap { result ⇒
         handleFieldResult(fieldName, result)

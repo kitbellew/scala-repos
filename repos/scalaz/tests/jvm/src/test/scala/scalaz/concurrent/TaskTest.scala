@@ -122,22 +122,22 @@ object TaskTest extends SpecLite {
   }
 
   "handles exceptions in handle" ! {
-    Task { Thread.sleep(10); throw FailWhale; 42 }.handle {
-      case FailWhale => 84
+    Task { Thread.sleep(10); throw FailWhale; 42 }.handle { case FailWhale =>
+      84
     }.unsafePerformSyncAttempt ==
       \/-(84)
   }
 
   "leaves unhandled exceptions alone in handle" ! {
-    Task { Thread.sleep(10); throw FailWhale; 42 }.handle {
-      case SadTrombone => 84
+    Task { Thread.sleep(10); throw FailWhale; 42 }.handle { case SadTrombone =>
+      84
     }.unsafePerformSyncAttempt ==
       -\/(FailWhale)
   }
 
   "catches exceptions thrown in handle" ! {
-    Task { Thread.sleep(10); throw FailWhale; 42 }.handle {
-      case FailWhale => throw SadTrombone
+    Task { Thread.sleep(10); throw FailWhale; 42 }.handle { case FailWhale =>
+      throw SadTrombone
     }.unsafePerformSyncAttempt ==
       -\/(SadTrombone)
   }
@@ -223,8 +223,8 @@ object TaskTest extends SpecLite {
       val t = fork(
         Task.gatherUnordered(Seq(t1, t2, t3), exceptionCancels = true))(es3)
 
-      t.unsafePerformSyncAttempt mustMatch {
-        case -\/(e) => e must_== ex; true
+      t.unsafePerformSyncAttempt mustMatch { case -\/(e) =>
+        e must_== ex; true
       }
 
       t1v.get must_== 0
@@ -248,8 +248,8 @@ object TaskTest extends SpecLite {
       val t = fork(
         Task.gatherUnordered(Seq(t1, t2, t3), exceptionCancels = true))(es3)
 
-      t.unsafePerformSyncAttempt mustMatch {
-        case -\/(e) => e must_== ex; true
+      t.unsafePerformSyncAttempt mustMatch { case -\/(e) =>
+        e must_== ex; true
       }
 
       sleep(3000)

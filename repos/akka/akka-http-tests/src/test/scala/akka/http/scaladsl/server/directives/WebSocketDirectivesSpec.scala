@@ -72,8 +72,8 @@ class WebSocketDirectivesSpec extends RoutingSpec {
         "http://localhost/",
         Flow[Message],
         List("other")) ~> websocketMultipleProtocolRoute ~> check {
-        rejections.collect {
-          case UnsupportedWebSocketSubprotocolRejection(p) ⇒ p
+        rejections.collect { case UnsupportedWebSocketSubprotocolRejection(p) ⇒
+          p
         }.toSet shouldEqual Set("greeter", "echo")
       }
 

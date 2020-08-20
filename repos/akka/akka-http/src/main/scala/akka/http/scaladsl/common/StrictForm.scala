@@ -134,8 +134,8 @@ object StrictForm {
       def tryUnmarshalToQueryForm: Future[StrictForm] =
         for (formData ← formDataUM(entity).fast) yield {
           new StrictForm {
-            val fields = formData.fields.map {
-              case (name, value) ⇒ name -> Field.FromString(value)
+            val fields = formData.fields.map { case (name, value) ⇒
+              name -> Field.FromString(value)
             }(collection.breakOut)
           }
         }

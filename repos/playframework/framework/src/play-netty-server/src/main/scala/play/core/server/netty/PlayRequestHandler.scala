@@ -113,8 +113,8 @@ private[play] class PlayRequestHandler(val server: NettyServer)
       case Right((action: EssentialAction, app)) =>
         val recovered = EssentialAction { rh =>
           import play.api.libs.iteratee.Execution.Implicits.trampoline
-          action(rh).recoverWith {
-            case error => app.errorHandler.onServerError(rh, error)
+          action(rh).recoverWith { case error =>
+            app.errorHandler.onServerError(rh, error)
           }
         }
         handleAction(recovered, requestHeader, request, Some(app))

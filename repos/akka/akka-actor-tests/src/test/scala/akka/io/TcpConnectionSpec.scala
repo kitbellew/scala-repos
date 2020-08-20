@@ -758,8 +758,8 @@ class TcpConnectionSpec extends AkkaSpec("""
           written += 1
         }
         // dump the NACKs
-        writer.receiveWhile(1.second) {
-          case CommandFailed(write) ⇒ written -= 1
+        writer.receiveWhile(1.second) { case CommandFailed(write) ⇒
+          written -= 1
         }
         writer.msgAvailable should ===(false)
 
@@ -796,8 +796,8 @@ class TcpConnectionSpec extends AkkaSpec("""
           written += 1
         }
         // dump the NACKs
-        writer.receiveWhile(1.second) {
-          case CommandFailed(write) ⇒ written -= 1
+        writer.receiveWhile(1.second) { case CommandFailed(write) ⇒
+          written -= 1
         }
 
         // drain the queue until it works again
@@ -833,8 +833,8 @@ class TcpConnectionSpec extends AkkaSpec("""
           written += 1
         }
         // dump the NACKs
-        writer.receiveWhile(1.second) {
-          case CommandFailed(write) ⇒ written -= 1
+        writer.receiveWhile(1.second) { case CommandFailed(write) ⇒
+          written -= 1
         }
         writer.msgAvailable should ===(false)
 
@@ -867,8 +867,8 @@ class TcpConnectionSpec extends AkkaSpec("""
           written += 1
         }
         // dump the NACKs
-        writer.receiveWhile(1.second) {
-          case CommandFailed(write) ⇒ written -= 1
+        writer.receiveWhile(1.second) { case CommandFailed(write) ⇒
+          written -= 1
         }
 
         // drain the queue until it works again

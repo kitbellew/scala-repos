@@ -88,8 +88,8 @@ object JsData extends lila.Steroids {
       },
       "difficulty" -> ctx.isAuth.option {
         Json.obj(
-          "choices" -> JsArray(translatedDifficultyChoices.map {
-            case (k, v) => Json.arr(k, v)
+          "choices" -> JsArray(translatedDifficultyChoices.map { case (k, v) =>
+            Json.arr(k, v)
           }),
           "current" -> ctx.pref.puzzleDifficulty
         )

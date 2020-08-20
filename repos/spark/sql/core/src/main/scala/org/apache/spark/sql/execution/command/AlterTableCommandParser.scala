@@ -375,8 +375,8 @@ object AlterTableCommandParser {
 
       // ALTER TABLE table_name DROP [IF EXISTS] PARTITION spec1[, PARTITION spec2, ...] [PURGE];
       case Token("TOK_ALTERTABLE_DROPPARTS", args) :: _ =>
-        val parts = args.collect {
-          case p @ Token("TOK_PARTSPEC", _) => parsePartitionSpec(p)
+        val parts = args.collect { case p @ Token("TOK_PARTSPEC", _) =>
+          parsePartitionSpec(p)
         }
         val ifExists = getClauseOption("TOK_IFEXISTS", args).isDefined
         val purge = getClauseOption("PURGE", args).isDefined

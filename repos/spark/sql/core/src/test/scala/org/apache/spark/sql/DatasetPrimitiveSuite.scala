@@ -91,8 +91,8 @@ class DatasetPrimitiveSuite extends QueryTest with SharedSQLContext {
   test("groupBy function, flatMap") {
     val ds = Seq("a", "b", "c", "xyz", "hello").toDS()
     val grouped = ds.groupByKey(_.length)
-    val agged = grouped.flatMapGroups {
-      case (g, iter) => Iterator(g.toString, iter.mkString)
+    val agged = grouped.flatMapGroups { case (g, iter) =>
+      Iterator(g.toString, iter.mkString)
     }
 
     checkDataset(agged, "1", "abc", "3", "xyz", "5", "hello")

@@ -103,11 +103,11 @@ class SqlLexical extends StdLexical {
   }
 
   override lazy val token: Parser[Token] =
-    (rep1(digit) ~ scientificNotation ^^ {
-      case i ~ s => DecimalLit(i.mkString + s)
+    (rep1(digit) ~ scientificNotation ^^ { case i ~ s =>
+      DecimalLit(i.mkString + s)
     }
-      | '.' ~> (rep1(digit) ~ scientificNotation) ^^ {
-        case i ~ s => DecimalLit("0." + i.mkString + s)
+      | '.' ~> (rep1(digit) ~ scientificNotation) ^^ { case i ~ s =>
+        DecimalLit("0." + i.mkString + s)
       }
       | rep1(digit) ~ ('.' ~> digit.*) ~ scientificNotation ^^ {
         case i1 ~ i2 ~ s => DecimalLit(i1.mkString + "." + i2.mkString + s)
@@ -120,14 +120,14 @@ class SqlLexical extends StdLexical {
         case i ~ None    => NumericLit(i.mkString)
         case i ~ Some(d) => DecimalLit(i.mkString + "." + d.mkString)
       }
-      | '\'' ~> chrExcept('\'', '\n', EofCh).* <~ '\'' ^^ {
-        case chars => StringLit(chars mkString "")
+      | '\'' ~> chrExcept('\'', '\n', EofCh).* <~ '\'' ^^ { case chars =>
+        StringLit(chars mkString "")
       }
-      | '"' ~> chrExcept('"', '\n', EofCh).* <~ '"' ^^ {
-        case chars => StringLit(chars mkString "")
+      | '"' ~> chrExcept('"', '\n', EofCh).* <~ '"' ^^ { case chars =>
+        StringLit(chars mkString "")
       }
-      | '`' ~> chrExcept('`', '\n', EofCh).* <~ '`' ^^ {
-        case chars => Identifier(chars mkString "")
+      | '`' ~> chrExcept('`', '\n', EofCh).* <~ '`' ^^ { case chars =>
+        Identifier(chars mkString "")
       }
       | EofCh ^^^ EOF
       | '\'' ~> failure("unclosed string literal")

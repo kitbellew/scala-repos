@@ -49,8 +49,8 @@ class NonServerRunner(
         all.get(0)
       }
 
-    CompileServerLauncher.compilerJars.foreach {
-      case p => assert(p.exists(), p.getPath)
+    CompileServerLauncher.compilerJars.foreach { case p =>
+      assert(p.exists(), p.getPath)
     }
 
     scala.compiler.findJdkByName(sdk.getName) match {

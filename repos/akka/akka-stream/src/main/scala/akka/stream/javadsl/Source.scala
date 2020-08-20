@@ -1599,8 +1599,8 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
       java.util.List[Out @uncheckedVariance],
       javadsl.Source[Out @uncheckedVariance, NotUsed]],
     Mat] =
-    new Source(delegate.prefixAndTail(n).map {
-      case (taken, tail) ⇒ akka.japi.Pair(taken.asJava, tail.asJava)
+    new Source(delegate.prefixAndTail(n).map { case (taken, tail) ⇒
+      akka.japi.Pair(taken.asJava, tail.asJava)
     })
 
   /**

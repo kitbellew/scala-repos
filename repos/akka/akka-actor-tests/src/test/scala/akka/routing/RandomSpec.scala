@@ -21,8 +21,8 @@ class RandomSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
 
       val actor = system.actorOf(
         RandomPool(7).props(Props(new Actor {
-          def receive = {
-            case "hello" ⇒ sender() ! "world"
+          def receive = { case "hello" ⇒
+            sender() ! "world"
           }
 
           override def postStop() {
@@ -89,8 +89,8 @@ class RandomSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
 
       val actor = system.actorOf(
         RandomPool(6).props(routeeProps = Props(new Actor {
-          def receive = {
-            case "hello" ⇒ helloLatch.countDown()
+          def receive = { case "hello" ⇒
+            helloLatch.countDown()
           }
 
           override def postStop() {

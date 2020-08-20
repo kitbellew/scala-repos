@@ -130,8 +130,8 @@ class SearchService(
           (base, checksLookup.get(base.getName().getURI()))
       }
       Future
-        .sequence(basesWithChecks.map {
-          case (file, check) => indexBase(file, check)
+        .sequence(basesWithChecks.map { case (file, check) =>
+          indexBase(file, check)
         })
         .map(_.flatten.sum)
     }

@@ -253,8 +253,8 @@ object arityize {
   private def shouldRelativize(c: Context)(
       td: c.mirror.universe.Modifiers): Option[String] = {
     import c.mirror.universe._
-    td.annotations.collectFirst {
-      case q"new arityize.relative($q)" => q.toString
+    td.annotations.collectFirst { case q"new arityize.relative($q)" =>
+      q.toString
     }
   }
 

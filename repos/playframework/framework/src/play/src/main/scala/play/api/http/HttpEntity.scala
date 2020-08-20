@@ -127,8 +127,8 @@ object HttpEntity {
     def isKnownEmpty = false
     def contentLength = None
     def dataStream =
-      chunks.collect {
-        case HttpChunk.Chunk(data) => data
+      chunks.collect { case HttpChunk.Chunk(data) =>
+        data
       }
     def asJava =
       new JHttpEntity.Chunked(

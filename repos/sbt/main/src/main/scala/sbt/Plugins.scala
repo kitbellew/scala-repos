@@ -352,12 +352,12 @@ ${listConflicts(conflicting)}""")
     // required plugin is the head and `ap` is the body.
     asRequirements(ap) map { x => Clause(convert(ap), Set(Atom(x.label))) }
   private[sbt] def asRequirements(ap: AutoPlugin): List[AutoPlugin] =
-    flatten(ap.requires).toList collect {
-      case x: AutoPlugin => x
+    flatten(ap.requires).toList collect { case x: AutoPlugin =>
+      x
     }
   private[sbt] def asExclusions(ap: AutoPlugin): List[AutoPlugin] =
-    flatten(ap.requires).toList collect {
-      case Exclude(x) => x
+    flatten(ap.requires).toList collect { case Exclude(x) =>
+      x
     }
   // TODO - This doesn't handle nested AND boolean logic...
   private[sbt] def hasExclude(n: Plugins, p: AutoPlugin): Boolean =

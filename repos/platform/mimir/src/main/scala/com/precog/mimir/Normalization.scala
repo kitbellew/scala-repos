@@ -174,8 +174,8 @@ trait NormalizationHelperModule[M[+_]]
             }
 
             val groupedCols: Map[CPath, Map[ColumnRef, Column]] =
-              numericCols.groupBy {
-                case (ColumnRef(selector, _), _) => selector
+              numericCols.groupBy { case (ColumnRef(selector, _), _) =>
+                selector
               }
 
             def continue: Map[ColumnRef, Column] = {

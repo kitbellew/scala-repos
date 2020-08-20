@@ -102,8 +102,8 @@ class Memory(implicit jobID: JobId = JobId("default.memory.jobId"))
 
           case LeftJoinedProducer(producer, service) =>
             val (s, m) = toStream(producer, jamfs)
-            val joined = s.map {
-              case (k, v) => (k, (v, service.get(k)))
+            val joined = s.map { case (k, v) =>
+              (k, (v, service.get(k)))
             }
             (joined, m)
 

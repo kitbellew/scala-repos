@@ -132,11 +132,11 @@ class Mailer(private val smtp: Smtp) extends Notifier {
       }
       "Notifications Successful."
     }
-    f onSuccess {
-      case s => logger.debug(s)
+    f onSuccess { case s =>
+      logger.debug(s)
     }
-    f onFailure {
-      case t => logger.error("Notifications Failed.", t)
+    f onFailure { case t =>
+      logger.error("Notifications Failed.", t)
     }
   }
 }

@@ -411,8 +411,8 @@ private[akka] class ClusterRouterGroupActor(
       if (unusedNodes.nonEmpty) {
         Some((unusedNodes.head, settings.routeesPaths.head))
       } else {
-        val (address, used) = usedRouteePaths.minBy {
-          case (address, used) ⇒ used.size
+        val (address, used) = usedRouteePaths.minBy { case (address, used) ⇒
+          used.size
         }
         // pick next of the unused paths
         settings.routeesPaths.collectFirst {

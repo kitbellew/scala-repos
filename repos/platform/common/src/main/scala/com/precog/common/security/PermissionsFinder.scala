@@ -52,8 +52,8 @@ object PermissionsFinder {
 
       permWriteAs.nonEmpty &&
       writeAsAlls
-        .foldLeft(authorities.accountIds)({
-          case (remaining, s) => remaining diff s
+        .foldLeft(authorities.accountIds)({ case (remaining, s) =>
+          remaining diff s
         })
         .isEmpty
     }
@@ -109,11 +109,11 @@ class PermissionsFinder[M[+_]: Monad](
       eithers.traverse(
         _.bisequence[M, Option[Authorities], Option[Authorities]]) map {
         (perms: List[Option[Authorities] \/ Option[Authorities]]) =>
-          perms collectFirst {
-            case -\/(Some(authorities)) => authorities
+          perms collectFirst { case -\/(Some(authorities)) =>
+            authorities
           } orElse {
-            val allOptions = perms collect {
-              case \/-(Some(authorities)) => authorities
+            val allOptions = perms collect { case \/-(Some(authorities)) =>
+              authorities
             }
             if (allOptions.size == 1) allOptions.headOption else None
           }

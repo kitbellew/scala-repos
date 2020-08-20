@@ -125,8 +125,8 @@ object AddAListener {
   def apply(who: SimpleActor[Any]) =
     new AddAListener(
       who,
-      {
-        case _ => true
+      { case _ =>
+        true
       })
 }
 

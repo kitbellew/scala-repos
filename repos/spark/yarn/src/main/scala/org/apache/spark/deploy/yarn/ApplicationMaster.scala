@@ -573,8 +573,8 @@ private[spark] class ApplicationMaster(
     val params = client.getAmIpFilterParams(yarnConf, proxyBase)
     if (isClusterMode) {
       System.setProperty("spark.ui.filters", amFilter)
-      params.foreach {
-        case (k, v) => System.setProperty(s"spark.$amFilter.param.$k", v)
+      params.foreach { case (k, v) =>
+        System.setProperty(s"spark.$amFilter.param.$k", v)
       }
     } else {
       amEndpoint.send(AddWebUIFilter(amFilter, params.toMap, proxyBase))

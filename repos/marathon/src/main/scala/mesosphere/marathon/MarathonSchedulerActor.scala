@@ -128,8 +128,8 @@ class MarathonSchedulerActor private (
             log.info("initiate task reconciliation")
             val newFuture = schedulerActions.reconcileTasks(driver)
             activeReconciliation = Some(newFuture)
-            newFuture.onFailure {
-              case NonFatal(e) => log.error(e, "error while reconciling tasks")
+            newFuture.onFailure { case NonFatal(e) =>
+              log.error(e, "error while reconciling tasks")
             }
             newFuture
               // the self notification MUST happen before informing the initiator
@@ -159,8 +159,8 @@ class MarathonSchedulerActor private (
           if (origSender != context.system.deadLetters)
             res.sendAnswer(origSender, cmd)
 
-          res andThen {
-            case _ => self ! cmd.answer // unlock app
+          res andThen { case _ =>
+            self ! cmd.answer // unlock app
           }
         }
 

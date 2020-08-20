@@ -164,8 +164,8 @@ private[http] class HttpResponseParser(
             case None ⇒
               emitResponseStart {
                 StreamedEntityCreator { entityParts ⇒
-                  val data = entityParts.collect {
-                    case EntityPart(bytes) ⇒ bytes
+                  val data = entityParts.collect { case EntityPart(bytes) ⇒
+                    bytes
                   }
                   HttpEntity.CloseDelimited(
                     contentType(cth),

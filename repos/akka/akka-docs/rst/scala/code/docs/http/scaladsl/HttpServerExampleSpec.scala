@@ -115,8 +115,8 @@ class HttpServerExampleSpec
 
     val reactToTopLevelFailures = Flow[IncomingConnection]
       .watchTermination()((_, termination) =>
-        termination.onFailure {
-          case cause => failureMonitor ! cause
+        termination.onFailure { case cause =>
+          failureMonitor ! cause
         })
 
     serverSource

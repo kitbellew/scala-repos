@@ -20,8 +20,8 @@ object Donation extends LilaController {
 
   def thanks =
     Open { implicit ctx =>
-      OptionOk(Prismic.getBookmark("donate-thanks")) {
-        case (doc, resolver) => views.html.site.page(doc, resolver)
+      OptionOk(Prismic.getBookmark("donate-thanks")) { case (doc, resolver) =>
+        views.html.site.page(doc, resolver)
       }
     }
 

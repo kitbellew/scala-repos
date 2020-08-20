@@ -62,8 +62,8 @@ object JavaCSRFActionSpec extends CSRFCommonSpecs {
     new CsrfTester {
       def apply[T](makeRequest: (WSRequest) => Future[WSResponse])(
           handleResponse: (WSResponse) => T) =
-        withServer(configuration) {
-          case _ => javaAction[MyAction]("add", myAction.add())
+        withServer(configuration) { case _ =>
+          javaAction[MyAction]("add", myAction.add())
         } {
           handleResponse(
             await(makeRequest(ws.url("http://localhost:" + testServerPort))))
@@ -74,8 +74,8 @@ object JavaCSRFActionSpec extends CSRFCommonSpecs {
     new CsrfTester {
       def apply[T](makeRequest: (WSRequest) => Future[WSResponse])(
           handleResponse: (WSResponse) => T) =
-        withServer(configuration) {
-          case _ => javaAction[MyAction]("withSession", myAction.withSession())
+        withServer(configuration) { case _ =>
+          javaAction[MyAction]("withSession", myAction.withSession())
         } {
           import play.api.Play.current
           handleResponse(
@@ -99,8 +99,8 @@ object JavaCSRFActionSpec extends CSRFCommonSpecs {
     "allow accessing the token from the http context" in withServer(
       Seq(
         "play.http.filters" -> "play.filters.csrf.CsrfFilters"
-      )) {
-      case _ => javaAction[MyAction]("getToken", myAction.getToken())
+      )) { case _ =>
+      javaAction[MyAction]("getToken", myAction.getToken())
     } {
       lazy val token = crypto.generateSignedToken
       import play.api.Play.current

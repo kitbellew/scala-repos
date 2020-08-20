@@ -149,8 +149,8 @@ object DependantsTest extends Properties("Dependants") {
       val dependants = Dependants(prod)
 
       (!dependants.allTails.isEmpty) && {
-        val alsoCount = dependants.nodes.collect {
-          case AlsoProducer(_, _) => 1
+        val alsoCount = dependants.nodes.collect { case AlsoProducer(_, _) =>
+          1
         }.sum
         (dependants.allTails.size <= (alsoCount + 1))
       }

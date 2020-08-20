@@ -43,8 +43,8 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
       val reallyLongTimeout = Timeout(defaultAwaitTimeout.duration * 3)
       requestFromServer("/hello") { request =>
         request.get()
-      } {
-        case ("GET", "/hello") => Action(Ok("greetings"))
+      } { case ("GET", "/hello") =>
+        Action(Ok("greetings"))
       } { response =>
         response.body must_== "greetings"
       }(reallyLongTimeout)
@@ -53,8 +53,8 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
     "send responses when missing a Content-Length" in {
       requestFromServer("/hello") { request =>
         request.get()
-      } {
-        case ("GET", "/hello") => Action(Ok("greetings"))
+      } { case ("GET", "/hello") =>
+        Action(Ok("greetings"))
       } { response =>
         response.status must_== 200
         response.header(CONTENT_TYPE) must_== Some("text/plain; charset=UTF-8")

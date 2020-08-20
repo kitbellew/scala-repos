@@ -283,8 +283,8 @@ object JsonValidSpec extends Specification {
 
   "JSON JsResult" should {
     "recover from error" in {
-      JsNumber(123).validate[String].recover {
-        case JsError(e) => "error"
+      JsNumber(123).validate[String].recover { case JsError(e) =>
+        "error"
       } must beEqualTo(JsSuccess("error"))
 
       JsNumber(123).validate[String].recoverTotal { e =>
@@ -704,8 +704,8 @@ object JsonValidSpec extends Specification {
       implicit val TupleReads: Reads[(String, JsObject)] = (
         (__ \ 'type).read[String] and
           (__ \ 'data).read(
-            Reads.verifyingIf[JsObject] {
-              case JsObject(fields) => !fields.isEmpty
+            Reads.verifyingIf[JsObject] { case JsObject(fields) =>
+              !fields.isEmpty
             }(
               ((__ \ "title").read[String] and
                 (__ \ "created").read[java.util.Date]).tupled

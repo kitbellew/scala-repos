@@ -8,8 +8,8 @@ private object EcopeningDB {
 
   lazy val all = allByEco.values.toList.sorted
 
-  lazy val allByFen: Map[FEN, Ecopening] = allByEco.map {
-    case (_, opening) => opening.fen -> opening
+  lazy val allByFen: Map[FEN, Ecopening] = allByEco.map { case (_, opening) =>
+    opening.fen -> opening
   }
 
   lazy val allByEco: Map[ECO, Ecopening] = Map(

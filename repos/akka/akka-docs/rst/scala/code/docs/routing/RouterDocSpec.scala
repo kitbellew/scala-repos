@@ -495,8 +495,8 @@ router-dispatcher {}
   }
 
   class Echo extends Actor {
-    def receive = {
-      case m => sender() ! m
+    def receive = { case m =>
+      sender() ! m
     }
   }
 }

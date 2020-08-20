@@ -559,8 +559,8 @@ class SetMapConsistencyTest {
     stringKeys.zipWithIndex.foreach { case (k, i) => arm(k) = i }
 
     assert {
-      arm.map {
-        case (k, v) => (if (k == null) "" else k + k) -> v.toString
+      arm.map { case (k, v) =>
+        (if (k == null) "" else k + k) -> v.toString
       }.getClass == arm.getClass
     }
 

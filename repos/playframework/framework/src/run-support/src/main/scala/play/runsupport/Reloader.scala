@@ -186,8 +186,8 @@ object Reloader {
       "You have to specify https.port when http.port is disabled")
 
     // Set Java properties
-    (properties ++ systemProperties).foreach {
-      case (key, value) => System.setProperty(key, value)
+    (properties ++ systemProperties).foreach { case (key, value) =>
+      System.setProperty(key, value)
     }
 
     println()
@@ -340,8 +340,8 @@ object Reloader {
           runHooks.run(_.afterStopped())
 
           // Remove Java properties
-          properties.foreach {
-            case (key, _) => System.clearProperty(key)
+          properties.foreach { case (key, _) =>
+            System.clearProperty(key)
           }
         }
       }

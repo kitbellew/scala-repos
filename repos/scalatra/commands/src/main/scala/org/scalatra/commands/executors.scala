@@ -79,8 +79,8 @@ abstract class BlockingExecutor[T <: Command, S](
             UnknownError).failureNel[S]
       }
     } else {
-      val f = cmd.errors.map(_.validation) collect {
-        case Failure(e) ⇒ e
+      val f = cmd.errors.map(_.validation) collect { case Failure(e) ⇒
+        e
       }
       def failures = if (f.size == 1) "failure" else "failures"
       logger.debug(
@@ -145,8 +145,8 @@ abstract class AsyncExecutor[T <: Command, S](
           UnknownError).failureNel[S]
       }
     } else {
-      val f = cmd.errors.map(_.validation) collect {
-        case Failure(e) ⇒ e
+      val f = cmd.errors.map(_.validation) collect { case Failure(e) ⇒
+        e
       }
       def failures = if (f.size == 1) "failure" else "failures"
       logger.debug(

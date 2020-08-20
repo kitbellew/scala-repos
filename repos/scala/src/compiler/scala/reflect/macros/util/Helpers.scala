@@ -64,8 +64,8 @@ trait Helpers {
     *  @see Metalevels.scala for more information and examples about metalevels
     */
   def increaseMetalevel(pre: Type, tp: Type): Type =
-    transparentShallowTransform(RepeatedParamClass, tp) {
-      case tp => typeRef(pre, MacroContextExprClass, List(tp))
+    transparentShallowTransform(RepeatedParamClass, tp) { case tp =>
+      typeRef(pre, MacroContextExprClass, List(tp))
     }
 
   /** Transforms c.Expr[T] types into c.Tree and leaves the rest unchanged.

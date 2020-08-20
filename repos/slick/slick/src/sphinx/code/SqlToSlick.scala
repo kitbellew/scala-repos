@@ -328,8 +328,8 @@ object SqlToSlick extends App {
         //#sqlQueryExplicitJoin
         val slick =
           //#slickQueryExplicitJoin
-          (people join addresses on (_.addressId === _.id)).map {
-            case (p, a) => (p.name, a.city)
+          (people join addresses on (_.addressId === _.id)).map { case (p, a) =>
+            (p.name, a.city)
           }.result
         //#slickQueryExplicitJoin
         val (sqlRes, slickRes) =

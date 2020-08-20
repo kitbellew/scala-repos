@@ -177,8 +177,8 @@ final case class TreeLoc[A](
       tree map f,
       lefts map ff,
       rights map ff,
-      parents.map {
-        case (l, t, r) => (l map ff, f(t), r map ff)
+      parents.map { case (l, t, r) =>
+        (l map ff, f(t), r map ff)
       })
   }
 

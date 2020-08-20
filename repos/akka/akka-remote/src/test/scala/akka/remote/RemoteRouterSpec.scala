@@ -11,8 +11,8 @@ import com.typesafe.config._
 
 object RemoteRouterSpec {
   class Echo extends Actor {
-    def receive = {
-      case _ ⇒ sender() ! self
+    def receive = { case _ ⇒
+      sender() ! self
     }
   }
 }
@@ -254,8 +254,8 @@ class RemoteRouterSpec extends AkkaSpec("""
 
     "set supplied supervisorStrategy" in {
       val probe = TestProbe()(masterSystem)
-      val escalator = OneForOneStrategy() {
-        case e ⇒ probe.ref ! e; SupervisorStrategy.Escalate
+      val escalator = OneForOneStrategy() { case e ⇒
+        probe.ref ! e; SupervisorStrategy.Escalate
       }
       val router = masterSystem.actorOf(
         new RemoteRouterConfig(

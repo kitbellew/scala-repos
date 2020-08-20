@@ -57,8 +57,8 @@ class AtmosphereSpecServlet(implicit
     }
   }
 
-  error {
-    case t: Throwable => t.printStackTrace()
+  error { case t: Throwable =>
+    t.printStackTrace()
   }
 
   override def handle(

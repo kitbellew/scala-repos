@@ -80,8 +80,8 @@ trait RouteTest
     def msg(e: Throwable) =
       s"Could not unmarshal entity to type '${implicitly[ClassTag[T]]}' for `entityAs` assertion: $e\n\nResponse was: $responseSafe"
     Await.result(
-      Unmarshal(responseEntity).to[T].fast.recover[T] {
-        case error ⇒ failTest(msg(error))
+      Unmarshal(responseEntity).to[T].fast.recover[T] { case error ⇒
+        failTest(msg(error))
       },
       timeout)
   }
@@ -90,8 +90,8 @@ trait RouteTest
     def msg(e: Throwable) =
       s"Could not unmarshal response to type '${implicitly[ClassTag[T]]}' for `responseAs` assertion: $e\n\nResponse was: $responseSafe"
     Await.result(
-      Unmarshal(response).to[T].fast.recover[T] {
-        case error ⇒ failTest(msg(error))
+      Unmarshal(response).to[T].fast.recover[T] { case error ⇒
+        failTest(msg(error))
       },
       timeout)
   }

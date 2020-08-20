@@ -49,8 +49,8 @@ object Embed extends DispatchSnippet {
 
   private lazy val logger = Logger(this.getClass)
 
-  def dispatch: DispatchIt = {
-    case _ => render _
+  def dispatch: DispatchIt = { case _ =>
+    render _
   }
 
   def render(kids: NodeSeq): NodeSeq = {

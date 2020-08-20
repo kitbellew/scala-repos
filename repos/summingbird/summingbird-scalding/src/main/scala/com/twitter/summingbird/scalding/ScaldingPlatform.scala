@@ -583,8 +583,8 @@ object Scalding {
               * 2) there are only NoOp Producers between this node and the Summer
               */
             val downStream = dependants.transitiveDependantsTillOutput(kfm)
-            val maybeMerged = downStream.collect {
-              case t: TailProducer[_, _] => t
+            val maybeMerged = downStream.collect { case t: TailProducer[_, _] =>
+              t
             } match {
               case List(sAny: Summer[_, _, _]) =>
                 val s = sAny.asInstanceOf[Summer[Scalding, Any, Any]]
@@ -725,8 +725,8 @@ object Scalding {
       pf: PipeFactory[T]): Try[(Interval[Timestamp], TimedPipe[T])] = {
     logger.info("topipe Planning on interval: {}", timeSpan)
     pf((timeSpan, mode)).right
-      .map {
-        case (((ts, m), flowDefMutator)) => (ts, flowDefMutator((flowDef, m)))
+      .map { case (((ts, m), flowDefMutator)) =>
+        (ts, flowDefMutator((flowDef, m)))
       }
   }
 

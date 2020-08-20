@@ -49,8 +49,8 @@ object VCardParser extends Parsers {
   lazy val multiLineSep = opt(elem('\n') ~ elem(' '))
   lazy val value = (multiLineSep ~> elem(
     "value",
-    { c => !c.isControl && c != ';' }) <~ multiLineSep).* ^^ {
-    case l => l.mkString
+    { c => !c.isControl && c != ';' }) <~ multiLineSep).* ^^ { case l =>
+    l.mkString
   }
   lazy val spaces = (elem(' ') | elem('\t') | elem('\n') | elem('\r')) *
   lazy val key =

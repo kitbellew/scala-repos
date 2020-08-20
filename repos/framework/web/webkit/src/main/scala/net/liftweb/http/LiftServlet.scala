@@ -700,8 +700,8 @@ class LiftServlet extends Loggable {
               case (jv: JValue) :: Nil  => JsonResponse(jv)
               case (js: JsCmd) :: xs => {
                 (JsCommands(S.noticesToJsCmd :: Nil) &
-                  (js :: (xs.collect {
-                    case js: JsCmd => js
+                  (js :: (xs.collect { case js: JsCmd =>
+                    js
                   }).reverse)).toResponse
               }
 
@@ -880,8 +880,8 @@ class LiftServlet extends Loggable {
       case BeginContinuation =>
         val sendItToMe: AnswerRender => Unit = ah => this ! ah
 
-        actors.foreach {
-          case (act, when) => act ! Listen(when, ListenerId(seqId), sendItToMe)
+        actors.foreach { case (act, when) =>
+          act ! Listen(when, ListenerId(seqId), sendItToMe)
         }
 
       case ar: AnswerRender =>
@@ -891,8 +891,8 @@ class LiftServlet extends Loggable {
       case BreakOut() if !done =>
         done = true
         session.exitComet(this)
-        actors.foreach {
-          case (act, _) => tryo(act ! Unlisten(ListenerId(seqId)))
+        actors.foreach { case (act, _) =>
+          tryo(act ! Unlisten(ListenerId(seqId)))
         }
         onBreakout(answers)
 
@@ -1128,12 +1128,12 @@ class LiftServlet extends Loggable {
     response.addCookies(resp.cookies)
 
     // send the response
-    response.addHeaders(header.map {
-      case (name, value) => HTTPParam(name, value)
+    response.addHeaders(header.map { case (name, value) =>
+      HTTPParam(name, value)
     })
     response.addHeaders(
-      LiftRules.supplementalHeaders.vend.map {
-        case (name, value) => HTTPParam(name, value)
+      LiftRules.supplementalHeaders.vend.map { case (name, value) =>
+        HTTPParam(name, value)
       }
     )
 

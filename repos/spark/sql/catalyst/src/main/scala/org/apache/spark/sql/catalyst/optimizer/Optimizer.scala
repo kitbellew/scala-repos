@@ -262,8 +262,8 @@ object SetOperationPushDown extends Rule[LogicalPlan] with PredicateHelper {
   private def pushToRight[A <: Expression](
       e: A,
       rewrites: AttributeMap[Attribute]) = {
-    val result = e transform {
-      case a: Attribute => rewrites(a)
+    val result = e transform { case a: Attribute =>
+      rewrites(a)
     }
 
     // We must promise the compiler that we did not discard the names in the case of project
@@ -471,8 +471,8 @@ object CollapseProject extends Rule[LogicalPlan] {
       case p @ Project(projectList1, Project(projectList2, child)) =>
         // Create a map of Aliases to their values from the child projection.
         // e.g., 'SELECT ... FROM (SELECT a + b AS c, d ...)' produces Map(c -> Alias(a + b, c)).
-        val aliasMap = AttributeMap(projectList2.collect {
-          case a: Alias => (a.toAttribute, a)
+        val aliasMap = AttributeMap(projectList2.collect { case a: Alias =>
+          (a.toAttribute, a)
         })
 
         // We only collapse these two Projects if their overlapped expressions are all
@@ -489,8 +489,8 @@ object CollapseProject extends Rule[LogicalPlan] {
           // e.g., 'SELECT c + 1 FROM (SELECT a + b AS C ...' produces 'SELECT a + b + 1 ...'
           // TODO: Fix TransformBase to avoid the cast below.
           val substitutedProjection = projectList1
-            .map(_.transform {
-              case a: Attribute => aliasMap.getOrElse(a, a)
+            .map(_.transform { case a: Attribute =>
+              aliasMap.getOrElse(a, a)
             })
             .asInstanceOf[Seq[NamedExpression]]
           // collapse 2 projects may introduce unnecessary Aliases, trim them here.
@@ -507,8 +507,8 @@ object CollapseProject extends Rule[LogicalPlan] {
       case p @ Project(projectList1, agg @ Aggregate(_, projectList2, child)) =>
         // Create a map of Aliases to their values from the child projection.
         // e.g., 'SELECT ... FROM (SELECT a + b AS c, d ...)' produces Map(c -> Alias(a + b, c)).
-        val aliasMap = AttributeMap(projectList2.collect {
-          case a: Alias => (a.toAttribute, a)
+        val aliasMap = AttributeMap(projectList2.collect { case a: Alias =>
+          (a.toAttribute, a)
         })
 
         // We only collapse these two Projects if their overlapped expressions are all
@@ -525,8 +525,8 @@ object CollapseProject extends Rule[LogicalPlan] {
           // e.g., 'SELECT c + 1 FROM (SELECT a + b AS C ...' produces 'SELECT a + b + 1 ...'
           // TODO: Fix TransformBase to avoid the cast below.
           val substitutedProjection = projectList1
-            .map(_.transform {
-              case a: Attribute => aliasMap.getOrElse(a, a)
+            .map(_.transform { case a: Attribute =>
+              aliasMap.getOrElse(a, a)
             })
             .asInstanceOf[Seq[NamedExpression]]
           // collapse 2 projects may introduce unnecessary Aliases, trim them here.
@@ -904,8 +904,8 @@ object SimplifyConditionals extends Rule[LogicalPlan] with PredicateHelper {
   */
 object CombineUnions extends Rule[LogicalPlan] {
   def apply(plan: LogicalPlan): LogicalPlan =
-    plan transform {
-      case Unions(children) => Union(children)
+    plan transform { case Unions(children) =>
+      Union(children)
     }
 }
 
@@ -994,8 +994,8 @@ object PushPredicateThroughProject
           if fields.forall(_.deterministic) =>
         // Create a map of Aliases to their values from the child projection.
         // e.g., 'SELECT a + b AS c, d ...' produces Map(c -> a + b).
-        val aliasMap = AttributeMap(fields.collect {
-          case a: Alias => (a.toAttribute, a.child)
+        val aliasMap = AttributeMap(fields.collect { case a: Alias =>
+          (a.toAttribute, a.child)
         })
 
         // Split the condition into small conditions by `And`, so that we can push down part of this
@@ -1474,8 +1474,8 @@ object ConvertToLocalRelation extends Rule[LogicalPlan] {
   */
 object ReplaceDistinctWithAggregate extends Rule[LogicalPlan] {
   def apply(plan: LogicalPlan): LogicalPlan =
-    plan transform {
-      case Distinct(child) => Aggregate(child.output, child.output, child)
+    plan transform { case Distinct(child) =>
+      Aggregate(child.output, child.output, child)
     }
 }
 

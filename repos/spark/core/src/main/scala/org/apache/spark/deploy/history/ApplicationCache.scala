@@ -378,8 +378,8 @@ private[history] class ApplicationCache(
     sb.append(s"; time= ${clock.getTimeMillis()}")
     sb.append(s"; entry count= ${appCache.size()}\n")
     sb.append("----\n")
-    appCache.asMap().asScala.foreach {
-      case (key, entry) => sb.append(s"  $key -> $entry\n")
+    appCache.asMap().asScala.foreach { case (key, entry) =>
+      sb.append(s"  $key -> $entry\n")
     }
     sb.append("----\n")
     sb.append(metrics)

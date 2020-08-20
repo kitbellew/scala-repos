@@ -139,8 +139,8 @@ trait Slice { source =>
     new Slice {
       val size = source.size
 
-      val cols0 = (source.columns).toList sortBy {
-        case (ref, _) => ref.selector
+      val cols0 = (source.columns).toList sortBy { case (ref, _) =>
+        ref.selector
       }
       val cols = cols0 map { case (_, col) => col }
 
@@ -163,8 +163,8 @@ trait Slice { source =>
             ColumnRef(CPath(CPathArray), CArrayType(tpe0)),
             tpe0 match {
               case CLong =>
-                val longcols = cols.collect {
-                  case (col: LongColumn) => col
+                val longcols = cols.collect { case (col: LongColumn) =>
+                  col
                 }.toArray
 
                 new HomogeneousArrayColumn[Long] {
@@ -178,8 +178,8 @@ trait Slice { source =>
                   def apply(row: Int): Array[Long] = inflate(cols, row)
                 }
               case CDouble =>
-                val doublecols = cols.collect {
-                  case (col: DoubleColumn) => col
+                val doublecols = cols.collect { case (col: DoubleColumn) =>
+                  col
                 }.toArray
                 new HomogeneousArrayColumn[Double] {
                   private val cols: Array[Int => Double] = doublecols map { x =>
@@ -192,8 +192,8 @@ trait Slice { source =>
                   def apply(row: Int): Array[Double] = inflate(cols, row)
                 }
               case CNum =>
-                val numcols = cols.collect {
-                  case (col: NumColumn) => col
+                val numcols = cols.collect { case (col: NumColumn) =>
+                  col
                 }.toArray
                 new HomogeneousArrayColumn[BigDecimal] {
                   private val cols: Array[Int => BigDecimal] = numcols map {
@@ -206,8 +206,8 @@ trait Slice { source =>
                   def apply(row: Int): Array[BigDecimal] = inflate(cols, row)
                 }
               case CBoolean =>
-                val boolcols = cols.collect {
-                  case (col: BoolColumn) => col
+                val boolcols = cols.collect { case (col: BoolColumn) =>
+                  col
                 }.toArray
                 new HomogeneousArrayColumn[Boolean] {
                   private val cols: Array[Int => Boolean] = boolcols map { x =>
@@ -220,8 +220,8 @@ trait Slice { source =>
                   def apply(row: Int): Array[Boolean] = inflate(cols, row)
                 }
               case CString =>
-                val strcols = cols.collect {
-                  case (col: StrColumn) => col
+                val strcols = cols.collect { case (col: StrColumn) =>
+                  col
                 }.toArray
                 new HomogeneousArrayColumn[String] {
                   private val cols: Array[Int => String] = strcols map { x =>
@@ -535,8 +535,8 @@ trait Slice { source =>
   def typed(jtpe: JType): Slice =
     new Slice {
       val size = source.size
-      val columns = source.columns filter {
-        case (ColumnRef(path, ctpe), _) => Schema.requiredBy(jtpe, path, ctpe)
+      val columns = source.columns filter { case (ColumnRef(path, ctpe), _) =>
+        Schema.requiredBy(jtpe, path, ctpe)
       }
     }
 
@@ -545,8 +545,8 @@ trait Slice { source =>
       case (ColumnRef(path, ctpe), _) => (path, ctpe)
     })(collection.breakOut)
     val columns = if (Schema.subsumes(tuples, jtpe)) {
-      source.columns filter {
-        case (ColumnRef(path, ctpe), _) => Schema.requiredBy(jtpe, path, ctpe)
+      source.columns filter { case (ColumnRef(path, ctpe), _) =>
+        Schema.requiredBy(jtpe, path, ctpe)
       }
     } else {
       Map.empty[ColumnRef, Column]
@@ -577,8 +577,8 @@ trait Slice { source =>
         .reduceOption(_ | _) getOrElse new BitSet
 
       val columns = if (subsumes) {
-        val cols = source.columns filter {
-          case (ColumnRef(path, ctpe), _) => Schema.requiredBy(jtpe, path, ctpe)
+        val cols = source.columns filter { case (ColumnRef(path, ctpe), _) =>
+          Schema.requiredBy(jtpe, path, ctpe)
         }
 
         val included = Schema.findTypes(jtpe, CPath.Identity, cols, size)
@@ -756,8 +756,8 @@ trait Slice { source =>
               ctype.isNumeric
           }
 
-          val grouped = numCols groupBy {
-            case (ColumnRef(cpath, _), _) => cpath
+          val grouped = numCols groupBy { case (ColumnRef(cpath, _), _) =>
+            cpath
           }
 
           Loop.range(0, filter.size) { i =>
@@ -1203,8 +1203,8 @@ trait Slice { source =>
         def normalize(schema: SchemaNode): Option[SchemaNode] =
           schema match {
             case SchemaNode.Obj(nodes) => {
-              val nodes2 = nodes flatMap {
-                case (key, value) => normalize(value) map { key -> _ }
+              val nodes2 = nodes flatMap { case (key, value) =>
+                normalize(value) map { key -> _ }
               }
 
               val back =
@@ -1231,8 +1231,8 @@ trait Slice { source =>
             }
 
             case SchemaNode.Arr(map) => {
-              val map2 = map flatMap {
-                case (idx, value) => normalize(value) map { idx -> _ }
+              val map2 = map flatMap { case (idx, value) =>
+                normalize(value) map { idx -> _ }
               }
 
               val back =
@@ -1985,11 +1985,11 @@ object Slice {
       keyf: Slice => Iterable[CPath]): RowComparator = {
     val paths = (keyf(s1) ++ keyf(s2)).toList
     val traversal = CPathTraversal(paths)
-    val lCols = s1.columns groupBy (_._1.selector) map {
-      case (path, m) => path -> m.values.toSet
+    val lCols = s1.columns groupBy (_._1.selector) map { case (path, m) =>
+      path -> m.values.toSet
     }
-    val rCols = s2.columns groupBy (_._1.selector) map {
-      case (path, m) => path -> m.values.toSet
+    val rCols = s2.columns groupBy (_._1.selector) map { case (path, m) =>
+      path -> m.values.toSet
     }
     val allPaths = (lCols.keys ++ rCols.keys).toList
     val order = traversal.rowOrder(allPaths, lCols, Some(rCols))

@@ -55,8 +55,8 @@ trait ListSteroids {
   }
   implicit final class LilaPimpedList[A](list: List[A]) {
     def sortLike[B](other: List[B], f: A => B): List[A] =
-      list.sortWith {
-        case (x, y) => other.indexOf(f(x)) < other.indexOf(f(y))
+      list.sortWith { case (x, y) =>
+        other.indexOf(f(x)) < other.indexOf(f(y))
       }
   }
 }

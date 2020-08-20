@@ -182,8 +182,8 @@ object EvaluatePython {
               s"${fields.length} fields are required while ${array.length} values are provided."
           )
         }
-        new GenericInternalRow(array.zip(fields).map {
-          case (e, f) => fromJava(e, f.dataType)
+        new GenericInternalRow(array.zip(fields).map { case (e, f) =>
+          fromJava(e, f.dataType)
         })
 
       case (_, udt: UserDefinedType[_]) => fromJava(obj, udt.sqlType)

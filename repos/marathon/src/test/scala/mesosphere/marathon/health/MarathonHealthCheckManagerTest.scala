@@ -206,8 +206,8 @@ class MarathonHealthCheckManagerTest
 
     def statuses = hcManager.statuses(appId).futureValue
 
-    statuses.foreach {
-      case (_, health) => assert(health.isEmpty)
+    statuses.foreach { case (_, health) =>
+      assert(health.isEmpty)
     }
 
     updateTaskHealth(task1, version, healthy = true)

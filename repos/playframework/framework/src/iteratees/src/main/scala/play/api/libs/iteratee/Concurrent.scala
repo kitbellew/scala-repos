@@ -145,8 +145,8 @@ object Concurrent {
           .sequence(ready)
           .map[Iteratee[E, Unit]] { commitReady =>
             val downToZero = atomic { implicit txn =>
-              iteratees.transform(commitReady.collect {
-                case Some(s) => s
+              iteratees.transform(commitReady.collect { case Some(s) =>
+                s
               } ++ _)
               (interested.length > 0 && iteratees().length <= 0)
             }
@@ -928,8 +928,8 @@ object Concurrent {
                 }
                 case err => folder(err)
               }(ec)
-              toReturn.onFailure {
-                case e => doneIteratee.failure(e)
+              toReturn.onFailure { case e =>
+                doneIteratee.failure(e)
               }(dec)
               toReturn
             }
@@ -960,8 +960,8 @@ object Concurrent {
       val (consumeRemaining, remaining) = Concurrent.joined[E]
       result.success((a, remaining))
       consumeRemaining
-    }(dec)).onFailure {
-      case e => result.tryFailure(e)
+    }(dec)).onFailure { case e =>
+      result.tryFailure(e)
     }(dec)
 
     result.future

@@ -25,8 +25,8 @@ class JdbcTypeTest extends AsyncTest[JdbcTestDB] {
       _ <- ts.schema.create
       _ <- ts += (1, Array[Byte](1, 2, 3))
       _ <- ts += (2, Array[Byte](4, 5))
-      r1 <- ts.result.map(_.map {
-        case (id, data) => (id, data.mkString)
+      r1 <- ts.result.map(_.map { case (id, data) =>
+        (id, data.mkString)
       }.toSet)
       _ = r1 shouldBe Set((1, "123"), (2, "45"))
     } yield ()
@@ -56,8 +56,8 @@ class JdbcTypeTest extends AsyncTest[JdbcTestDB] {
       ifCap(rcap.setByteArrayNull)(ts += (2, None)),
       ifNotCap(rcap.setByteArrayNull)(ts.map(_.id) += 2),
       ts.result
-        .map(_.map {
-          case (id, data) => (id, data.map(_.mkString).getOrElse(""))
+        .map(_.map { case (id, data) =>
+          (id, data.map(_.mkString).getOrElse(""))
         }.toSet)
         .map(_ shouldBe Set((1, "67"), (2, "")))
     )
@@ -78,8 +78,8 @@ class JdbcTypeTest extends AsyncTest[JdbcTestDB] {
           (ts += (2, new SerialBlob(Array[Byte](4, 5)))) >>
           ts.result
       ).transactionally
-      val p1 = db.stream(a1).mapResult {
-        case (id, data) => (id, data.getBytes(1, data.length.toInt).mkString)
+      val p1 = db.stream(a1).mapResult { case (id, data) =>
+        (id, data.getBytes(1, data.length.toInt).mkString)
       }
       materialize(p1).map(_.toSet shouldBe Set((1, "123"), (2, "45"))) flatMap {
         _ =>

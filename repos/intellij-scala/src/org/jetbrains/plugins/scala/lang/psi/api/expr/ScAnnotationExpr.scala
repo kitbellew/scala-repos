@@ -20,8 +20,8 @@ trait ScAnnotationExpr extends ScalaPsiElement {
     findArgExprs
       .map(_.findChildrenByType(ScalaElementTypes.ASSIGN_STMT))
       .getOrElse(Seq.empty)
-      .map {
-        case stmt: ScAssignStmt => new ScNameValueAssignment(stmt)
+      .map { case stmt: ScAssignStmt =>
+        new ScNameValueAssignment(stmt)
       }
 
   def getAnnotationParameters = findArgExprs.map(_.exprs).getOrElse(Seq.empty)

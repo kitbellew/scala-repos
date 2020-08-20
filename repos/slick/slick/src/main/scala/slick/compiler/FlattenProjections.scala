@@ -104,8 +104,8 @@ class FlattenProjections extends Phase {
         case StructNode(ch) =>
           ch.foreach { case (s, n) => flatten(n, s :: path) }
         case p: ProductNode =>
-          p.children.zipWithIndex.foreach {
-            case (n, i) => flatten(n, new ElementSymbol(i + 1) :: path)
+          p.children.zipWithIndex.foreach { case (n, i) =>
+            flatten(n, new ElementSymbol(i + 1) :: path)
           }
         case n =>
           if (collapse) {

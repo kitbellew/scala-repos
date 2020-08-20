@@ -107,8 +107,8 @@ abstract class TemplateEmailer(
         }
         msg.setContent(multi)
       } else {
-        transformed.foreach {
-          case (content, mimetype) => msg.setContent(content, mimetype)
+        transformed.foreach { case (content, mimetype) =>
+          msg.setContent(content, mimetype)
         }
       }
 

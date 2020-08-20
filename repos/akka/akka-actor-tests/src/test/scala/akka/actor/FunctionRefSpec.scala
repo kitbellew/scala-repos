@@ -29,8 +29,8 @@ object FunctionRefSpec {
 
   class SupSuper extends Actor {
     val s = context.actorOf(Props[Super], "super")
-    def receive = {
-      case msg ⇒ s ! msg
+    def receive = { case msg ⇒
+      s ! msg
     }
   }
 

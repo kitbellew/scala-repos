@@ -36,8 +36,8 @@ private[sird] object QueryStringParameterMacros {
     c.prefix.tree match {
       case Apply(_, List(Apply(_, rawParts))) =>
         // extract the part literals
-        val parts = rawParts map {
-          case Literal(Constant(const: String)) => const
+        val parts = rawParts map { case Literal(Constant(const: String)) =>
+          const
         }
 
         // Extract paramName, and validate

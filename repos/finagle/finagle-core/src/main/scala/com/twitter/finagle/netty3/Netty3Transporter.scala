@@ -186,8 +186,8 @@ object Netty3Transporter {
       pipelineFactory,
       newChannel = cf.newChannel(_),
       newTransport = (ch: Channel) => Transport.cast[In, Out](newTransport(ch)),
-      tlsConfig = tls map {
-        case engine => Netty3TransporterTLSConfig(engine, tlsHostname)
+      tlsConfig = tls map { case engine =>
+        Netty3TransporterTLSConfig(engine, tlsHostname)
       },
       httpProxy = httpProxy,
       httpProxyCredentials = httpProxyCredentials,

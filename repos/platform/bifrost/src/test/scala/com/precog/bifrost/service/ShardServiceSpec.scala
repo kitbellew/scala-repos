@@ -375,8 +375,8 @@ class ShardServiceSpec extends TestShardService {
         job <- jobManager.findJob(jobId)
       } yield job
 
-      res.copoint must beLike {
-        case Some(Job(_, _, _, _, _, _)) => ok
+      res.copoint must beLike { case Some(Job(_, _, _, _, _, _)) =>
+        ok
       }
     }
     "results of an async job must eventually be made available" in {
@@ -428,8 +428,8 @@ class ShardServiceSpec extends TestShardService {
           query("bad query")
       } yield result
 
-      result.copoint must beLike {
-        case JArray(JString("ERROR!") :: Nil) => ok
+      result.copoint must beLike { case JArray(JString("ERROR!") :: Nil) =>
+        ok
       }
     }
     "return warnings/errors if format is 'detailed'" in {

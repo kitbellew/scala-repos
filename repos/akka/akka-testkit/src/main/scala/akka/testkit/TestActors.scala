@@ -14,8 +14,8 @@ object TestActors {
     * EchoActor sends back received messages (unmodified).
     */
   class EchoActor extends Actor {
-    override def receive = {
-      case message ⇒ sender() ! message
+    override def receive = { case message ⇒
+      sender() ! message
     }
   }
 
@@ -25,8 +25,8 @@ object TestActors {
     * @param ref target ActorRef to forward messages to
     */
   class ForwardActor(ref: ActorRef) extends Actor {
-    override def receive = {
-      case message ⇒ ref forward message
+    override def receive = { case message ⇒
+      ref forward message
     }
   }
 

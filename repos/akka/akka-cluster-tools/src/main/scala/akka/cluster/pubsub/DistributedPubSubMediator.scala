@@ -742,8 +742,8 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
 
     case Count ⇒
       val count = registry.map { case (owner, bucket) ⇒
-        bucket.content.count {
-          case (_, valueHolder) ⇒ valueHolder.ref.isDefined
+        bucket.content.count { case (_, valueHolder) ⇒
+          valueHolder.ref.isDefined
         }
       }.sum
       sender() ! count
@@ -810,16 +810,16 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
   def collectDelta(
       otherVersions: Map[Address, Long]): immutable.Iterable[Bucket] = {
     // missing entries are represented by version 0
-    val filledOtherVersions = myVersions.map {
-      case (k, _) ⇒ k -> 0L
+    val filledOtherVersions = myVersions.map { case (k, _) ⇒
+      k -> 0L
     } ++ otherVersions
     var count = 0
     filledOtherVersions.collect {
       case (owner, v)
           if registry(owner).version > v && count < maxDeltaElements ⇒
         val bucket = registry(owner)
-        val deltaContent = bucket.content.filter {
-          case (_, value) ⇒ value.version > v
+        val deltaContent = bucket.content.filter { case (_, value) ⇒
+          value.version > v
         }
         count += deltaContent.size
         if (count <= maxDeltaElements)
@@ -837,8 +837,8 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
   }
 
   def otherHasNewerVersions(otherVersions: Map[Address, Long]): Boolean =
-    otherVersions.exists {
-      case (owner, v) ⇒ v > registry(owner).version
+    otherVersions.exists { case (owner, v) ⇒
+      v > registry(owner).version
     }
 
   /**

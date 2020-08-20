@@ -93,8 +93,8 @@ private[testadapter] object ComUtils {
     result.getOrElse(onFail)
   }
 
-  val doneHandler: LoopHandler[Unit] = {
-    case ("ok", "") => Some(())
+  val doneHandler: LoopHandler[Unit] = { case ("ok", "") =>
+    Some(())
   }
 
   val okHandler: Handler[Unit] = { case ("ok", "") =>

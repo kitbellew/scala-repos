@@ -17,14 +17,14 @@ import scala.concurrent.duration._
 object NewRemoteActorMultiJvmSpec extends MultiNodeConfig {
 
   class SomeActor extends Actor {
-    def receive = {
-      case "identify" ⇒ sender() ! self
+    def receive = { case "identify" ⇒
+      sender() ! self
     }
   }
 
   class SomeActorWithParam(ignored: String) extends Actor {
-    def receive = {
-      case "identify" ⇒ sender() ! self
+    def receive = { case "identify" ⇒
+      sender() ! self
     }
   }
 

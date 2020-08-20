@@ -85,8 +85,8 @@ object TestActorRefSpec {
   class Logger extends Actor {
     var count = 0
     var msg: String = _
-    def receive = {
-      case Warning(_, _, m: String) ⇒ count += 1; msg = m
+    def receive = { case Warning(_, _, m: String) ⇒
+      count += 1; msg = m
     }
   }
 
@@ -187,8 +187,8 @@ class TestActorRefSpec
           }
         }))
         a.!(PoisonPill)(testActor)
-        expectMsgPF(5 seconds) {
-          case WrappedTerminated(Terminated(`a`)) ⇒ true
+        expectMsgPF(5 seconds) { case WrappedTerminated(Terminated(`a`)) ⇒
+          true
         }
         a.isTerminated should ===(true)
         assertThread()
@@ -246,8 +246,8 @@ class TestActorRefSpec
     "allow access to internals" in {
       class TA extends TActor {
         var s: String = _
-        def receiveT = {
-          case x: String ⇒ s = x
+        def receiveT = { case x: String ⇒
+          s = x
         }
       }
       val ref = TestActorRef(new TA)

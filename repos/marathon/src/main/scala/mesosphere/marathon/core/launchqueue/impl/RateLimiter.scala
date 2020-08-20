@@ -20,8 +20,8 @@ private[launchqueue] class RateLimiter(clock: Clock) {
   private[this] var taskLaunchDelays = Map[(PathId, Timestamp), Delay]()
 
   def cleanUpOverdueDelays(): Unit = {
-    taskLaunchDelays = taskLaunchDelays.filter {
-      case (_, delay) => delay.deadline > clock.now()
+    taskLaunchDelays = taskLaunchDelays.filter { case (_, delay) =>
+      delay.deadline > clock.now()
     }
   }
 

@@ -29,8 +29,8 @@ class RetryPolicyTest extends FunSpec {
     }
 
   describe("RetryPolicy") {
-    val NoExceptions: PartialFunction[Try[Nothing], Boolean] = {
-      case _ => false
+    val NoExceptions: PartialFunction[Try[Nothing], Boolean] = { case _ =>
+      false
     }
     val timeoutExc = new TimeoutException {
       protected val timeout = 0.seconds

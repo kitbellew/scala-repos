@@ -198,8 +198,8 @@ class AkkaProtocolSpec
 
       reader ! testPayload
 
-      expectMsgPF() {
-        case InboundPayload(p) ⇒ p should ===(testEnvelope)
+      expectMsgPF() { case InboundPayload(p) ⇒
+        p should ===(testEnvelope)
       }
     }
 

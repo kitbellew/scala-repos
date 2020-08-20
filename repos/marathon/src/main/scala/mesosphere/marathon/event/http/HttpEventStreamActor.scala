@@ -133,8 +133,8 @@ class HttpEventStreamActor(
     }
   }
 
-  private[this] def warnAboutUnknownMessages: Receive = {
-    case message: Any => log.warn(s"Received unexpected message $message")
+  private[this] def warnAboutUnknownMessages: Receive = { case message: Any =>
+    log.warn(s"Received unexpected message $message")
   }
 }
 

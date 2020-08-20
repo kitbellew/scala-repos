@@ -110,8 +110,8 @@ object EitherTTest extends SpecLite {
             case (abc, "Success") => true
             case _                => false
           }
-          .map {
-            case (abc, "Success") => "yay"
+          .map { case (abc, "Success") =>
+            "yay"
           }
 
       for {

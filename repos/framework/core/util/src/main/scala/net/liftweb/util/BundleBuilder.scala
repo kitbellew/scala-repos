@@ -105,8 +105,8 @@ object BundleBuilder {
               }
             }._2
 
-          val res: Map[String, NodeSeq] = Map(map.map {
-            case (name, lst) => name -> choose(lst)
+          val res: Map[String, NodeSeq] = Map(map.map { case (name, lst) =>
+            name -> choose(lst)
           }.toSeq: _*)
 
           List(new ResourceBundle {

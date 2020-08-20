@@ -189,8 +189,8 @@ class TcpListenerSpec extends AkkaSpec("""
         name = "test-listener-" + counter.next()
       )
       parent.watch(listener)
-      def receive: Receive = {
-        case msg ⇒ parent.ref forward msg
+      def receive: Receive = { case msg ⇒
+        parent.ref forward msg
       }
       override def supervisorStrategy = SupervisorStrategy.stoppingStrategy
 

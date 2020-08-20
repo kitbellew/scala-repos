@@ -30,11 +30,11 @@ object TestkitDocSpec {
 
   class TestFsmActor extends Actor with FSM[Int, String] {
     startWith(1, "")
-    when(1) {
-      case Event("go", _) => goto(2) using "go"
+    when(1) { case Event("go", _) =>
+      goto(2) using "go"
     }
-    when(2) {
-      case Event("back", _) => goto(1) using "back"
+    when(2) { case Event("back", _) =>
+      goto(1) using "back"
     }
   }
 
@@ -58,8 +58,8 @@ object TestkitDocSpec {
 
   //#test-probe-forward-actors
   class Source(target: ActorRef) extends Actor {
-    def receive = {
-      case "start" => target ! "work"
+    def receive = { case "start" =>
+      target ! "work"
     }
   }
 
@@ -153,8 +153,8 @@ class TestkitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
     import akka.testkit.TestActorRef
 
     val actorRef = TestActorRef(new Actor {
-      def receive = {
-        case "hello" => throw new IllegalArgumentException("boom")
+      def receive = { case "hello" =>
+        throw new IllegalArgumentException("boom")
       }
     })
     intercept[IllegalArgumentException] { actorRef.receive("hello") }

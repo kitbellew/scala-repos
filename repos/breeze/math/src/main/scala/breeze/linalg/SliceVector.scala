@@ -108,8 +108,8 @@ object SliceVector {
       override def traverse(
           from: SliceVector[K, V],
           fn: KeyValuePairsVisitor[Int, V]): Unit = {
-        from.iterator foreach {
-          case (k, v) => fn.visit(k, v)
+        from.iterator foreach { case (k, v) =>
+          fn.visit(k, v)
         }
 
       }

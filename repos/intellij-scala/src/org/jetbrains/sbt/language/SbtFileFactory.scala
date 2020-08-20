@@ -9,8 +9,8 @@ import org.jetbrains.plugins.scala.lang.parser.ScalaFileFactory
   */
 class SbtFileFactory extends ScalaFileFactory {
   def createFile(provider: FileViewProvider) = {
-    Option(provider.getVirtualFile.getFileType) collect {
-      case SbtFileType => new SbtFileImpl(provider)
+    Option(provider.getVirtualFile.getFileType) collect { case SbtFileType =>
+      new SbtFileImpl(provider)
     }
   }
 }

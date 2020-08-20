@@ -26,14 +26,14 @@ object ClusterShardingGetStateSpec {
     }
   }
 
-  val extractEntityId: ShardRegion.ExtractEntityId = {
-    case msg @ Ping(id) ⇒ (id.toString, msg)
+  val extractEntityId: ShardRegion.ExtractEntityId = { case msg @ Ping(id) ⇒
+    (id.toString, msg)
   }
 
   val numberOfShards = 2
 
-  val extractShardId: ShardRegion.ExtractShardId = {
-    case Ping(id) ⇒ (id % numberOfShards).toString
+  val extractShardId: ShardRegion.ExtractShardId = { case Ping(id) ⇒
+    (id % numberOfShards).toString
   }
 
   val shardTypeName = "Ping"
@@ -147,8 +147,8 @@ abstract class ClusterShardingGetStateSpec
             val pingProbe = TestProbe()
             // trigger starting of 4 entities
             (1 to 4).foreach(n ⇒ region.tell(Ping(n), pingProbe.ref))
-            pingProbe.receiveWhile(messages = 4) {
-              case Pong ⇒ ()
+            pingProbe.receiveWhile(messages = 4) { case Pong ⇒
+              ()
             }
           }
         }

@@ -208,8 +208,8 @@ class HiveInspectorSuite extends SparkFunSuite with HiveInspectors {
 
     checkValues(
       nullRow,
-      nullRow.zip(writableOIs).zip(dataTypes).map {
-        case ((d, oi), dt) => unwrap(wrap(d, oi, dt), oi)
+      nullRow.zip(writableOIs).zip(dataTypes).map { case ((d, oi), dt) =>
+        unwrap(wrap(d, oi, dt), oi)
       })
 
     // struct couldn't be constant, sweep it out
@@ -246,8 +246,8 @@ class HiveInspectorSuite extends SparkFunSuite with HiveInspectors {
 
     checkValues(
       row,
-      row.zip(writableOIs).zip(dataTypes).map {
-        case ((data, oi), dt) => unwrap(wrap(data, oi, dt), oi)
+      row.zip(writableOIs).zip(dataTypes).map { case ((data, oi), dt) =>
+        unwrap(wrap(data, oi, dt), oi)
       })
   }
 
@@ -256,14 +256,14 @@ class HiveInspectorSuite extends SparkFunSuite with HiveInspectors {
 
     checkValues(
       row,
-      row.zip(ois).zip(dataTypes).map {
-        case ((data, oi), dt) => unwrap(wrap(data, oi, dt), oi)
+      row.zip(ois).zip(dataTypes).map { case ((data, oi), dt) =>
+        unwrap(wrap(data, oi, dt), oi)
       })
   }
 
   test("wrap / unwrap Struct Type") {
-    val dt = StructType(dataTypes.zipWithIndex.map {
-      case (t, idx) => StructField(s"c_$idx", t)
+    val dt = StructType(dataTypes.zipWithIndex.map { case (t, idx) =>
+      StructField(s"c_$idx", t)
     })
     val inspector = toInspector(dt)
     checkValues(

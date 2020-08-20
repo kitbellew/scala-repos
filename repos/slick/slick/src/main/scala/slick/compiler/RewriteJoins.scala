@@ -208,8 +208,8 @@ class RewriteJoins extends Phase {
           case (p, (pOnBGen, _)) => (p, (pOnBGen, new AnonSymbol))
         }
         logger.debug("New references for predicate: " + newDefs.mkString(", "))
-        val allRefs = foundRefs.collect {
-          case (p, (_, Some(s))) => (p, s)
+        val allRefs = foundRefs.collect { case (p, (_, Some(s))) =>
+          (p, s)
         } ++ newDefs.map { case (p, (_, s)) => (p, s) }
         logger.debug(
           "All reference mappings for predicate: " + allRefs.mkString(", "))
@@ -291,8 +291,8 @@ class RewriteJoins extends Phase {
                 Ref(replacements(p)) :@ tpe
             },
             keepType = true)
-        val rebasedIllegalDefs = illegalDefs.map {
-          case (s, n) => (s, rebase(n))
+        val rebasedIllegalDefs = illegalDefs.map { case (s, n) =>
+          (s, rebase(n))
         }
         logger.debug(
           "Rebased illegal defs are:",

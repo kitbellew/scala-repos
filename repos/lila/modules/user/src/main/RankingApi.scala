@@ -55,13 +55,14 @@ final class RankingApi(
         coll
           .remove(
             BSONDocument(
-              "_id" -> BSONDocument("$in" -> PerfType.leaderboardable
-                .filter { pt =>
-                  user.perfs(pt).nonEmpty
-                }
-                .map { pt =>
-                  s"${user.id}:${pt.id}"
-                })
+              "_id" -> BSONDocument(
+                "$in" -> PerfType.leaderboardable
+                  .filter { pt =>
+                    user.perfs(pt).nonEmpty
+                  }
+                  .map { pt =>
+                    s"${user.id}:${pt.id}"
+                  })
             ))
           .void
       }

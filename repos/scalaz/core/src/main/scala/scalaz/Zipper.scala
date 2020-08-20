@@ -356,11 +356,11 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
   }
 
   def ap[B](f: => Zipper[A => B]): Zipper[B] = {
-    val ls = lefts.zip(f.lefts) map {
-      case (aa, ff) => ff(aa)
+    val ls = lefts.zip(f.lefts) map { case (aa, ff) =>
+      ff(aa)
     }
-    val rs = rights.zip(f.rights) map {
-      case (aa, ff) => ff(aa)
+    val rs = rights.zip(f.rights) map { case (aa, ff) =>
+      ff(aa)
     }
     zipper(ls, f.focus(focus), rs)
   }

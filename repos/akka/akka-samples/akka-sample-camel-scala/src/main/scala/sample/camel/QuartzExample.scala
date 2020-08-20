@@ -15,9 +15,8 @@ object QuartzExample {
 
     def endpointUri = "quartz://example?cron=0/2+*+*+*+*+?"
 
-    def receive = {
-
-      case msg => println("==============> received %s " format msg)
+    def receive = { case msg =>
+      println("==============> received %s " format msg)
 
     }
 

@@ -34,8 +34,8 @@ object TypedPipeDiff {
     val lefts = left.map { x => (x, (1L, 0L)) }
     val rights = right.map { x => (x, (0L, 1L)) }
     val counts = (lefts ++ rights).sumByKey
-    val diff = counts.filter {
-      case (key, (lCount, rCount)) => lCount != rCount
+    val diff = counts.filter { case (key, (lCount, rCount)) =>
+      lCount != rCount
     }
     reducers.map(diff.withReducers).getOrElse(diff)
   }

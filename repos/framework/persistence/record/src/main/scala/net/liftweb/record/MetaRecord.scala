@@ -123,8 +123,8 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
 
     // sort each list based on having the most specific type and use that method
     val realMeth = map.values
-      .map(_.sortWith {
-        case (a, b) => !a.getReturnType.isAssignableFrom(b.getReturnType)
+      .map(_.sortWith { case (a, b) =>
+        !a.getReturnType.isAssignableFrom(b.getReturnType)
       })
       .map(_.head)
 
@@ -147,8 +147,8 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
     lifecycleCallbacks = (for (v <- methods
       if v.getName != "meta" && isLifecycle(v)) yield (v.getName, v)).toList
 
-    introspect(this, methods) {
-      case (v, mf) => tArray += FieldHolder(mf.name, v, mf)
+    introspect(this, methods) { case (v, mf) =>
+      tArray += FieldHolder(mf.name, v, mf)
     }
 
     fieldList = {

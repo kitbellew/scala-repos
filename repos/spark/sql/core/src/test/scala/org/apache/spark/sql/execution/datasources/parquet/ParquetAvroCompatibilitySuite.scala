@@ -230,12 +230,13 @@ class ParquetAvroCompatibilitySuite
             writer.write(
               AvroMapOfArray
                 .newBuilder()
-                .setStringToIntsColumn(Seq
-                  .tabulate(3) { i =>
-                    i.toString -> Seq.tabulate(3)(j => i + j: Integer).asJava
-                  }
-                  .toMap
-                  .asJava)
+                .setStringToIntsColumn(
+                  Seq
+                    .tabulate(3) { i =>
+                      i.toString -> Seq.tabulate(3)(j => i + j: Integer).asJava
+                    }
+                    .toMap
+                    .asJava)
                 .build())
           }
       }

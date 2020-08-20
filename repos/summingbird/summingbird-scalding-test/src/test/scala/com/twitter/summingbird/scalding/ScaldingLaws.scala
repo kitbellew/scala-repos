@@ -78,8 +78,8 @@ class ScaldingLaws extends WordSpec {
       val fn = sample[(Int) => List[(Int, Int)]]
 
       // Add a time:
-      val inWithTime = original.zipWithIndex.map {
-        case (item, time) => (time.toLong, item)
+      val inWithTime = original.zipWithIndex.map { case (item, time) =>
+        (time.toLong, item)
       }
 
       // get time interval for the input
@@ -122,8 +122,8 @@ class ScaldingLaws extends WordSpec {
       val prunedList = sample[Set[Int]]
 
       // Add a time:
-      val inWithTime = original.zipWithIndex.map {
-        case (item, time) => (time.toLong, item)
+      val inWithTime = original.zipWithIndex.map { case (item, time) =>
+        (time.toLong, item)
       }
 
       // get time interval for the input
@@ -171,8 +171,8 @@ class ScaldingLaws extends WordSpec {
       val fnB = sample[Int => List[Int]]
 
       // Add a time:
-      val inWithTime = original.zipWithIndex.map {
-        case (item, time) => (time.toLong, item)
+      val inWithTime = original.zipWithIndex.map { case (item, time) =>
+        (time.toLong, item)
       }
 
       // get time interval for the input
@@ -218,8 +218,8 @@ class ScaldingLaws extends WordSpec {
       val fnC = sample[(Int) => List[(Int, Int)]]
 
       // Add a time:
-      val inWithTime = original.zipWithIndex.map {
-        case (item, time) => (time.toLong, item)
+      val inWithTime = original.zipWithIndex.map { case (item, time) =>
+        (time.toLong, item)
       }
 
       // get time interval for the input
@@ -272,8 +272,8 @@ class ScaldingLaws extends WordSpec {
       val postJoin = sample[((Int, (Int, Option[Int]))) => List[(Int, Int)]]
 
       //Add a time
-      val inWithTime = original.zipWithIndex.map {
-        case (item, time) => (time.toLong, item)
+      val inWithTime = original.zipWithIndex.map { case (item, time) =>
+        (time.toLong, item)
       }
 
       // get time interval for the input
@@ -353,8 +353,8 @@ class ScaldingLaws extends WordSpec {
       val postJoin = sample[((Int, (Int, Option[Int]))) => List[(Int, Int)]]
 
       // Add a time:
-      val inWithTime = original.zipWithIndex.map {
-        case (item, time) => (time.toLong, item)
+      val inWithTime = original.zipWithIndex.map { case (item, time) =>
+        (time.toLong, item)
       }
 
       // get time interval for the input
@@ -438,11 +438,11 @@ class ScaldingLaws extends WordSpec {
       val postJoin = sample[((Int, (Int, Option[Int]))) => List[(Int, Int)]]
 
       // Add a time
-      val inWithTime1 = original1.zipWithIndex.map {
-        case (item, time) => (time.toLong, item)
+      val inWithTime1 = original1.zipWithIndex.map { case (item, time) =>
+        (time.toLong, item)
       }
-      val inWithTime2 = original2.zipWithIndex.map {
-        case (item, time) => (time.toLong, item)
+      val inWithTime2 = original2.zipWithIndex.map { case (item, time) =>
+        (time.toLong, item)
       }
 
       // get time interval for the input
@@ -549,8 +549,8 @@ class ScaldingLaws extends WordSpec {
       val valuesFlatMapWithTime = toTime(valuesFlatMap)
 
       // add a time
-      val inWithTime = original.zipWithIndex.map {
-        case (item, time) => (time.toLong, item)
+      val inWithTime = original.zipWithIndex.map { case (item, time) =>
+        (time.toLong, item)
       }
 
       // get time interval for the input
@@ -623,8 +623,8 @@ class ScaldingLaws extends WordSpec {
       val valuesFlatMapWithTime = toTime(valuesFlatMap)
 
       // Add a time
-      val inWithTime = original.zipWithIndex.map {
-        case (item, time) => (time.toLong, item)
+      val inWithTime = original.zipWithIndex.map { case (item, time) =>
+        (time.toLong, item)
       }
 
       // get time interval for the input
@@ -696,8 +696,8 @@ class ScaldingLaws extends WordSpec {
       val fn2 = sample[(Int) => List[(Int, Int)]]
 
       // Add a time:
-      val inWithTime = original.zipWithIndex.map {
-        case (item, time) => (time.toLong, item)
+      val inWithTime = original.zipWithIndex.map { case (item, time) =>
+        (time.toLong, item)
       }
 
       // get time interval for the input
@@ -749,8 +749,8 @@ class ScaldingLaws extends WordSpec {
       val keyExpand = sample[(Int) => List[Int]]
 
       // Add a time:
-      val inWithTime = original.zipWithIndex.map {
-        case (item, time) => (time.toLong, item)
+      val inWithTime = original.zipWithIndex.map { case (item, time) =>
+        (time.toLong, item)
       }
 
       // get time interval for the input
@@ -805,8 +805,8 @@ class ScaldingLaws extends WordSpec {
       val fn = sample[(Int) => List[(Int, Int)]]
 
       // Add a time
-      val inWithTime = original.zipWithIndex.map {
-        case (item, time) => (time.toLong, item)
+      val inWithTime = original.zipWithIndex.map { case (item, time) =>
+        (time.toLong, item)
       }
 
       // get time interval for the input

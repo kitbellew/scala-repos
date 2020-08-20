@@ -35,8 +35,8 @@ final class BuildStructure(
   def allProjects(build: URI): Seq[ResolvedProject] =
     units.get(build).toList.flatMap(_.defined.values)
   def allProjectRefs: Seq[ProjectRef] =
-    units.toSeq flatMap {
-      case (build, unit) => refs(build, unit.defined.values.toSeq)
+    units.toSeq flatMap { case (build, unit) =>
+      refs(build, unit.defined.values.toSeq)
     }
   def allProjectRefs(build: URI): Seq[ProjectRef] =
     refs(build, allProjects(build))
@@ -345,8 +345,8 @@ object BuildStreams {
       Nil
   }
   def showAMap(a: AttributeMap): String =
-    a.entries.toSeq.sortBy(_.key.label).map {
-      case AttributeEntry(key, value) => key.label + "=" + value.toString
+    a.entries.toSeq.sortBy(_.key.label).map { case AttributeEntry(key, value) =>
+      key.label + "=" + value.toString
     } mkString (" ")
   def projectPath(
       units: Map[URI, LoadedBuildUnit],

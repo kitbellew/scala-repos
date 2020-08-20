@@ -19,8 +19,8 @@ object Test {
     println(fn(null.toString))
   }
   def f2 = {
-    implicit val myHandler: Handler[String] = standardHandler orElse {
-      case x => "DEBUG: " + shortName(x)
+    implicit val myHandler: Handler[String] = standardHandler orElse { case x =>
+      "DEBUG: " + shortName(x)
     }
     println(fn(Nil.head))
     println(fn(null.toString))

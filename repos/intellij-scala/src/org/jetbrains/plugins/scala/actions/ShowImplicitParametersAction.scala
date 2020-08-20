@@ -383,8 +383,8 @@ class ImplicitParametersTreeStructure(
             addErrorLeaf("No information for no reason")
         }
       } else {
-        value.implicitParameters.foreach {
-          case result => list.add(new ImplicitParametersNode(result))
+        value.implicitParameters.foreach { case result =>
+          list.add(new ImplicitParametersNode(result))
         }
       }
       list

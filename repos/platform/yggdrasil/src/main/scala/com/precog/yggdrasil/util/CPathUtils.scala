@@ -49,8 +49,8 @@ object CPathUtils {
   private def addComponent(
       c: JPathNode,
       xs: List[(JPath, CValue)]): List[(JPath, CValue)] =
-    xs map {
-      case (path, value) => (JPath(c :: path.nodes), value)
+    xs map { case (path, value) =>
+      (JPath(c :: path.nodes), value)
     }
 
   /**

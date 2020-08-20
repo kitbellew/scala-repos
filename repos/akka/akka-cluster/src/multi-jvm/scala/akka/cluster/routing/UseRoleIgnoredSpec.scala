@@ -71,8 +71,8 @@ abstract class UseRoleIgnoredSpec
     val zero = Map.empty[Address, Int] ++ roles.map(address(_) -> 0)
     (receiveWhile(5 seconds, messages = expectedReplies) {
       case Reply(`routeeType`, ref) ⇒ fullAddress(ref)
-    }).foldLeft(zero) {
-      case (replyMap, address) ⇒ replyMap + (address -> (replyMap(address) + 1))
+    }).foldLeft(zero) { case (replyMap, address) ⇒
+      replyMap + (address -> (replyMap(address) + 1))
     }
   }
 

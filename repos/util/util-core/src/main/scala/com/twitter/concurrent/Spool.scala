@@ -386,8 +386,8 @@ object Spool {
     */
   class ToSpool[A](s: Seq[A]) {
     def toSpool: Spool[A] =
-      s.reverse.foldLeft(Spool.empty: Spool[A]) {
-        case (tail, head) => head *:: Future.value(tail)
+      s.reverse.foldLeft(Spool.empty: Spool[A]) { case (tail, head) =>
+        head *:: Future.value(tail)
       }
   }
 

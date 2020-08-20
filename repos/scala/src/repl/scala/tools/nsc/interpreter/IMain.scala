@@ -591,8 +591,8 @@ class IMain(
                   "    line" -> line,
                   " content" -> content,
                   "     was" -> l2,
-                  "combined" -> combined) map {
-                  case (label, s) => label + ": '" + s + "'"
+                  "combined" -> combined) map { case (label, s) =>
+                  label + ": '" + s + "'"
                 } mkString "\n")
               combined
             }

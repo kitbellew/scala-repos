@@ -38,8 +38,8 @@ final class PlaybanApi(coll: Coll, isRematch: String => Boolean) {
       }
       else if (pov.game olderThan 15) none
       else pov.player.some map { Blame(_, Outcome.Abort) }
-    } ?? {
-      case Blame(player, outcome) => player.userId.??(save(outcome))
+    } ?? { case Blame(player, outcome) =>
+      player.userId.??(save(outcome))
     }
 
   def rageQuit(game: Game, quitterColor: Color): Funit =

@@ -171,8 +171,8 @@ object EvaluateConfigurations {
       (definitions.generated ++ dslEntries.flatMap(_.generated))
     loader => {
       val projects =
-        definitions.values(loader).collect {
-          case p: Project => resolveBase(file.getParentFile, p)
+        definitions.values(loader).collect { case p: Project =>
+          resolveBase(file.getParentFile, p)
         }
       val (settingsRaw, manipulationsRaw) =
         dslEntries map (_.result apply loader) partition {
@@ -377,8 +377,8 @@ object EvaluateConfigurations {
       imports: Seq[(String, Int)],
       definitions: Seq[(String, LineRange)],
       file: Option[File]): compiler.EvalDefinitions = {
-    val convertedRanges = definitions.map {
-      case (s, r) => (s, r.start to r.end)
+    val convertedRanges = definitions.map { case (s, r) =>
+      (s, r.start to r.end)
     }
     eval.evalDefinitions(
       convertedRanges,
@@ -421,8 +421,8 @@ object Index {
     if (duplicates.isEmpty)
       multiMap.collect { case (k, v) if validID(k) => (k, v.head) } toMap
     else
-      sys.error(duplicates map {
-        case (k, tps) => "'" + k + "' (" + tps.mkString(", ") + ")"
+      sys.error(duplicates map { case (k, tps) =>
+        "'" + k + "' (" + tps.mkString(", ") + ")"
       } mkString ("Some keys were defined with the same name but different types: ", ", ", ""))
   }
   private[this] type TriggerMap =

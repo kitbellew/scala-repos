@@ -200,8 +200,8 @@ trait SymbolTrackers {
         ownerString :: treeStrings mkString "\n"
       }
       def removedString =
-        (removed: List[Symbol]).zipWithIndex map {
-          case (t, i) => "(%2s) ".format(i + 1) + detailString(t)
+        (removed: List[Symbol]).zipWithIndex map { case (t, i) =>
+          "(%2s) ".format(i + 1) + detailString(t)
         } mkString "\n"
 
       "" + hierarchy + (

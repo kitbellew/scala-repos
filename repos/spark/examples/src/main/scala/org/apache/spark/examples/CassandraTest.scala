@@ -111,8 +111,8 @@ object CassandraTest {
       .map(word => (word, 1))
       .reduceByKey(_ + _)
 
-    counts.collect().foreach {
-      case (word, count) => println(word + ":" + count)
+    counts.collect().foreach { case (word, count) =>
+      println(word + ":" + count)
     }
 
     counts

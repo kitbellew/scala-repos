@@ -328,8 +328,8 @@ final class JsonView(
 
   private def possibleMoves(pov: Pov) =
     (pov.game playableBy pov.player) option {
-      pov.game.toChess.situation.destinations map {
-        case (from, dests) => from.key -> dests.mkString
+      pov.game.toChess.situation.destinations map { case (from, dests) =>
+        from.key -> dests.mkString
       }
     }
 

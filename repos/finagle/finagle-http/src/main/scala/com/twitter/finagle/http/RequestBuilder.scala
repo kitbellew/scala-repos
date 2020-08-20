@@ -219,8 +219,8 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
    */
   def addFormElement(kv: (String, String)*): RequestBuilder[HasUrl, Yes] = {
     val elems = config.formElements
-    val updated = kv.foldLeft(elems) {
-      case (es, (k, v)) => es :+ new SimpleElement(k, v)
+    val updated = kv.foldLeft(elems) { case (es, (k, v)) =>
+      es :+ new SimpleElement(k, v)
     }
     new RequestBuilder(config.copy(formElements = updated))
   }

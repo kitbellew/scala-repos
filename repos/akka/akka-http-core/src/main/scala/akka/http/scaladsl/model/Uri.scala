@@ -746,8 +746,8 @@ object Uri {
         case Some(string) ⇒ apply(string, charset, mode)
       }
     def apply(params: (String, String)*): Query =
-      params.foldRight(Query.Empty: Query) {
-        case ((key, value), acc) ⇒ Cons(key, value, acc)
+      params.foldRight(Query.Empty: Query) { case ((key, value), acc) ⇒
+        Cons(key, value, acc)
       }
     def apply(params: Map[String, String]): Query = apply(params.toSeq: _*)
 

@@ -103,8 +103,8 @@ object Multipart {
           Sink.fold[Seq[Part[A]], Part[A]](Vector.empty)(_ :+ _)).mapFuture {
           parts =>
             def parseError =
-              parts.collectFirst {
-                case ParseError(msg) => createBadResult(msg)(request)
+              parts.collectFirst { case ParseError(msg) =>
+                createBadResult(msg)(request)
               }
 
             def bufferExceededError =
@@ -115,18 +115,18 @@ object Multipart {
             parseError orElse bufferExceededError getOrElse {
               Future.successful(Right(MultipartFormData(
                 parts
-                  .collect {
-                    case dp: DataPart => dp
+                  .collect { case dp: DataPart =>
+                    dp
                   }
                   .groupBy(_.key)
-                  .map {
-                    case (key, partValues) => key -> partValues.map(_.value)
+                  .map { case (key, partValues) =>
+                    key -> partValues.map(_.value)
                   },
-                parts.collect {
-                  case fp: FilePart[A] => fp
+                parts.collect { case fp: FilePart[A] =>
+                  fp
                 },
-                parts.collect {
-                  case bad: BadPart => bad
+                parts.collect { case bad: BadPart =>
+                  bad
                 }
               )))
             }

@@ -35,8 +35,8 @@ private object BSONHandlers {
   }
   implicit val TimeControlBSONHandler = new BSON[TimeControl] {
     def reads(r: Reader) =
-      (r.intO("l") |@| r.intO("i")) {
-        case (limit, inc) => TimeControl.Clock(limit, inc)
+      (r.intO("l") |@| r.intO("i")) { case (limit, inc) =>
+        TimeControl.Clock(limit, inc)
       } orElse {
         r intO "d" map TimeControl.Correspondence.apply
       } getOrElse TimeControl.Unlimited

@@ -314,8 +314,8 @@ object FunctionRegistry {
 
   val builtin: SimpleFunctionRegistry = {
     val fr = new SimpleFunctionRegistry
-    expressions.foreach {
-      case (name, (info, builder)) => fr.registerFunction(name, info, builder)
+    expressions.foreach { case (name, (info, builder)) =>
+      fr.registerFunction(name, info, builder)
     }
     fr
   }

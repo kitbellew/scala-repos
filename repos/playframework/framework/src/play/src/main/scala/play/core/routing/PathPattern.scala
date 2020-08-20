@@ -67,8 +67,8 @@ case class PathPattern(parts: Seq[PathPart]) {
               s._3 + 1 + Pattern.compile(r).matcher("").groupCount)
           }
         }
-      }).map {
-      case (r, g, _) => Pattern.compile("^" + r + "$") -> g
+      }).map { case (r, g, _) =>
+      Pattern.compile("^" + r + "$") -> g
     }.get
   }
 
@@ -81,8 +81,8 @@ case class PathPattern(parts: Seq[PathPart]) {
   def apply(path: String): Option[Map[String, Either[Throwable, String]]] = {
     val matcher = regex.matcher(path)
     if (matcher.matches) {
-      Some(groups.map {
-        case (name, g) => name -> g(matcher)
+      Some(groups.map { case (name, g) =>
+        name -> g(matcher)
       }.toMap)
     } else {
       None

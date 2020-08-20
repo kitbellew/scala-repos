@@ -28,8 +28,8 @@ object SnapshotRecoveryLocalStoreSpec {
 
     def receiveCommand = { case _ ⇒
     }
-    def receiveRecover = {
-      case other ⇒ probe ! other
+    def receiveRecover = { case other ⇒
+      probe ! other
     }
   }
 }

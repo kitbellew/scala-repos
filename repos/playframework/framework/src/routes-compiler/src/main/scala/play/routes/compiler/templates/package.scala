@@ -288,8 +288,8 @@ package object templates {
   def reverseLocalNames(
       route: Route,
       params: Seq[(Parameter, Int)]): Map[String, String] = {
-    params.map {
-      case (lp, i) => route.call.parameters.get(i).name -> lp.name
+    params.map { case (lp, i) =>
+      route.call.parameters.get(i).name -> lp.name
     }.toMap
   }
 
@@ -387,21 +387,22 @@ package object templates {
     val callQueryString = if (queryParams.size == 0) {
       ""
     } else {
-      """ + queryString(List(%s))""".format(queryParams
-        .map { p =>
-          ("""implicitly[QueryStringBindable[""" + p.typeName + """]].unbind("""" + paramNameOnQueryString(
-            p.name) + """", """ + safeKeyword(
-            localNames.get(p.name).getOrElse(p.name)) + """)""") -> p
-        }
-        .map {
-          case (u, Parameter(name, typeName, None, Some(default))) =>
-            """if(""" + safeKeyword(
-              localNames.getOrElse(
-                name,
-                name)) + """ == """ + default + """) None else Some(""" + u + """)"""
-          case (u, Parameter(name, typeName, None, None)) => "Some(" + u + ")"
-        }
-        .mkString(", "))
+      """ + queryString(List(%s))""".format(
+        queryParams
+          .map { p =>
+            ("""implicitly[QueryStringBindable[""" + p.typeName + """]].unbind("""" + paramNameOnQueryString(
+              p.name) + """", """ + safeKeyword(
+              localNames.get(p.name).getOrElse(p.name)) + """)""") -> p
+          }
+          .map {
+            case (u, Parameter(name, typeName, None, Some(default))) =>
+              """if(""" + safeKeyword(
+                localNames.getOrElse(
+                  name,
+                  name)) + """ == """ + default + """) None else Some(""" + u + """)"""
+            case (u, Parameter(name, typeName, None, None)) => "Some(" + u + ")"
+          }
+          .mkString(", "))
 
     }
 

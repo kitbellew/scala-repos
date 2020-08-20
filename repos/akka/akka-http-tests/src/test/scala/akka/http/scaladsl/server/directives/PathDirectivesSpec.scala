@@ -288,8 +288,8 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
 
   "PathMatchers" should {
     {
-      val test = testFor(path(Rest.tmap {
-        case Tuple1(s) ⇒ Tuple1(s.split('-').toList)
+      val test = testFor(path(Rest.tmap { case Tuple1(s) ⇒
+        Tuple1(s.split('-').toList)
       }) { echoComplete })
       "support the hmap modifier in accept [/yes-no]" in test("List(yes, no)")
     }
@@ -298,8 +298,8 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
       "support the map modifier in accept [/yes-no]" in test("List(yes, no)")
     }
     {
-      val test = testFor(path(Rest.tflatMap {
-        case Tuple1(s) ⇒ Some(s).filter("yes" ==).map(x ⇒ Tuple1(x))
+      val test = testFor(path(Rest.tflatMap { case Tuple1(s) ⇒
+        Some(s).filter("yes" ==).map(x ⇒ Tuple1(x))
       }) { echoComplete })
       "support the hflatMap modifier in accept [/yes]" in test("yes")
       "support the hflatMap modifier in reject [/blub]" in test()

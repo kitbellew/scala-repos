@@ -521,8 +521,8 @@ class LogManager(
     * Map of log dir to logs by topic and partitions in that dir
     */
   private def logsByDir = {
-    this.logsByTopicPartition.groupBy {
-      case (_, log) => log.dir.getParent
+    this.logsByTopicPartition.groupBy { case (_, log) =>
+      log.dir.getParent
     }
   }
 

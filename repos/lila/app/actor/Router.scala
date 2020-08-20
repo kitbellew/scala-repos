@@ -20,13 +20,13 @@ private[app] final class Router(
   def receive = {
 
     case Abs(route) =>
-      self ? route map {
-        case route: String => baseUrl + route
+      self ? route map { case route: String =>
+        baseUrl + route
       } pipeTo sender
 
     case Nolang(route) =>
-      self ? route map {
-        case route: String => noLangBaseUrl + route
+      self ? route map { case route: String =>
+        noLangBaseUrl + route
       } pipeTo sender
 
     case TeamShow(id) => sender ! R.Team.show(id).url

@@ -163,8 +163,8 @@ class SingletonPoolTest extends FunSuite with MockitoSugar {
     verify(underlying, times(1)).apply(any[ClientConnection])
 
     var exc: Option[Throwable] = None
-    underlyingP.setInterruptHandler {
-      case exc1 => exc = Some(exc1)
+    underlyingP.setInterruptHandler { case exc1 =>
+      exc = Some(exc1)
     }
 
     assert(pool.close().poll == Some(Return.Unit))

@@ -148,8 +148,8 @@ private[server] class NettyModelConversion(
               }
             }
             .groupBy(_._1)
-            .map {
-              case (name, values) => name -> values.map(_._2).toSeq
+            .map { case (name, values) =>
+              name -> values.map(_._2).toSeq
             }
         } else {
           Map.empty
@@ -233,8 +233,8 @@ private[server] class NettyModelConversion(
     val headers = ServerResultUtils.splitSetCookieHeaders(result.header.headers)
 
     try {
-      headers foreach {
-        case (name, value) => response.headers().add(name, value)
+      headers foreach { case (name, value) =>
+        response.headers().add(name, value)
       }
 
       // Content type and length

@@ -124,8 +124,8 @@ final class CookedReader(
   }
 
   def structure: Iterable[ColumnRef] =
-    metadata.valueOr(throw _).segments map {
-      case (segId, _) => ColumnRef(segId.cpath, segId.ctype)
+    metadata.valueOr(throw _).segments map { case (segId, _) =>
+      ColumnRef(segId.cpath, segId.ctype)
     }
 
   def metadata: Validation[IOException, CookedBlockMetadata] = {

@@ -57,8 +57,8 @@ class CallGraphTest extends ClearAfterClass {
 
   def callsInMethod(methodNode: MethodNode): List[MethodInsnNode] =
     methodNode.instructions.iterator.asScala
-      .collect({
-        case call: MethodInsnNode => call
+      .collect({ case call: MethodInsnNode =>
+        call
       })
       .toList
 

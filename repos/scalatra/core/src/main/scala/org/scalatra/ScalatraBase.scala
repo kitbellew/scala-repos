@@ -374,8 +374,8 @@ trait ScalatraBase
     * The error handler function, called if an exception is thrown during
     * before filters or the routes.
     */
-  protected var errorHandler: ErrorHandler = {
-    case t => throw t
+  protected var errorHandler: ErrorHandler = { case t =>
+    throw t
   }
 
   def error(handler: ErrorHandler): Unit = {
@@ -478,8 +478,8 @@ trait ScalatraBase
       doNotFound()
     case ActionResult(status, x: Int, resultHeaders) =>
       response.status = status
-      resultHeaders foreach {
-        case (name, value) => response.addHeader(name, value)
+      resultHeaders foreach { case (name, value) =>
+        response.addHeader(name, value)
       }
       response.writer.print(x.toString)
     case status: Int =>
@@ -504,8 +504,8 @@ trait ScalatraBase
     case ActionResult(ResponseStatus(404, _), _: Unit | Unit, _) => doNotFound()
     case actionResult: ActionResult =>
       response.status = actionResult.status
-      actionResult.headers.foreach {
-        case (name, value) => response.addHeader(name, value)
+      actionResult.headers.foreach { case (name, value) =>
+        response.addHeader(name, value)
       }
       actionResult.body
     case x =>
@@ -575,8 +575,8 @@ trait ScalatraBase
           response.status = ResponseStatus(status)
         case HaltException(None, _, _, _) => // leave status line alone
       }
-      e.headers foreach {
-        case (name, value) => response.addHeader(name, value)
+      e.headers foreach { case (name, value) =>
+        response.addHeader(name, value)
       }
       if (!rendered) renderResponse(e.body)
     } catch {

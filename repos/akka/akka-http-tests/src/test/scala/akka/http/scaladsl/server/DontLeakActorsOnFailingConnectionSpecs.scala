@@ -81,8 +81,8 @@ class DontLeakActorsOnFailingConnectionSpecs
           HttpRequest(uri = Uri(s"http://127.0.0.1:$port/test/$i")) -> i)
 
         val countDown = new CountDownLatch(reqsCount)
-        val sink = Sink.foreach[(Try[HttpResponse], Int)] {
-          case (resp, id) ⇒ handleResponse(resp, id)
+        val sink = Sink.foreach[(Try[HttpResponse], Int)] { case (resp, id) ⇒
+          handleResponse(resp, id)
         }
 
         val resps = source.via(clientFlow).runWith(sink)

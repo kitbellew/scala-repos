@@ -252,8 +252,8 @@ sealed abstract class IList[A] extends Product with Serializable {
   // private helper for mapAccumLeft/Right below
   private[this] def mapAccum[B, C](
       as: IList[A])(c: C, f: (C, A) => (C, B)): (C, IList[B]) =
-    as.foldLeft((c, IList.empty[B])) {
-      case ((c, bs), a) => BFT.rightMap(f(c, a))(_ :: bs)
+    as.foldLeft((c, IList.empty[B])) { case ((c, bs), a) =>
+      BFT.rightMap(f(c, a))(_ :: bs)
     }
 
   /** All of the `B`s, in order, and the final `C` acquired by a stateful left fold over `as`. */
@@ -281,8 +281,8 @@ sealed abstract class IList[A] extends Product with Serializable {
   }
 
   def partition(f: A => Boolean): (IList[A], IList[A]) =
-    BFT.umap(foldLeft((IList.empty[A], IList.empty[A])) {
-      case ((ts, fs), a) => if (f(a)) (a :: ts, fs) else (ts, a :: fs)
+    BFT.umap(foldLeft((IList.empty[A], IList.empty[A])) { case ((ts, fs), a) =>
+      if (f(a)) (a :: ts, fs) else (ts, a :: fs)
     })(_.reverse)
 
   def patch(from: Int, patch: IList[A], replaced: Int): IList[A] = {

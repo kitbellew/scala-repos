@@ -198,16 +198,16 @@ trait MiscStackSpecs extends EvalStackSpecs {
         case _ => ko
       }
 
-      val weights = result collect {
-        case (_, SObject(elems)) => elems("weight")
+      val weights = result collect { case (_, SObject(elems)) =>
+        elems("weight")
       }
       val expectedWeights = result2 collect { case (_, w) => w }
 
-      val weightsPlus = result collect {
-        case (_, SObject(elems)) => elems("increasedWeight")
+      val weightsPlus = result collect { case (_, SObject(elems)) =>
+        elems("increasedWeight")
       }
-      val expectedWeightsPlus = expectedWeights collect {
-        case SDecimal(d) => SDecimal(d + 5)
+      val expectedWeightsPlus = expectedWeights collect { case SDecimal(d) =>
+        SDecimal(d + 5)
       }
 
       weights mustEqual (expectedWeights)
@@ -245,11 +245,11 @@ trait MiscStackSpecs extends EvalStackSpecs {
       }
       val weights = result2 collect { case (_, w) => w }
 
-      val weightsPlus = result collect {
-        case (_, SObject(elems)) => elems("increasedWeight")
+      val weightsPlus = result collect { case (_, SObject(elems)) =>
+        elems("increasedWeight")
       }
-      val expectedWeightsPlus = weights collect {
-        case SDecimal(d) => SDecimal(d + 5)
+      val expectedWeightsPlus = weights collect { case SDecimal(d) =>
+        SDecimal(d + 5)
       }
 
       fives must contain(BigDecimal(5)).only
@@ -318,8 +318,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
 
       val result = evalE(input)
 
-      result must haveAllElementsLike {
-        case (ids, SObject(fields)) => fields must haveKey("a")
+      result must haveAllElementsLike { case (ids, SObject(fields)) =>
+        fields must haveKey("a")
       }
     }
 
@@ -556,11 +556,11 @@ trait MiscStackSpecs extends EvalStackSpecs {
         ids must haveSize(0)
 
         obj.keys mustEqual (Set("min", "max"))
-        obj("min") must beLike {
-          case SDecimal(num) => (num.toDouble ~= 862.7464285714286) must beTrue
+        obj("min") must beLike { case SDecimal(num) =>
+          (num.toDouble ~= 862.7464285714286) must beTrue
         }
-        obj("max") must beLike {
-          case SDecimal(num) => (num.toDouble ~= 941.0645161290323) must beTrue
+        obj("max") must beLike { case SDecimal(num) =>
+          (num.toDouble ~= 941.0645161290323) must beTrue
         }
       }
     }
@@ -637,23 +637,23 @@ trait MiscStackSpecs extends EvalStackSpecs {
         obj must haveKey("count")
         obj must haveKey("minmax")
 
-        obj("sum") must beLike {
-          case SDecimal(num) => (num.toDouble ~= 4965) must beTrue
+        obj("sum") must beLike { case SDecimal(num) =>
+          (num.toDouble ~= 4965) must beTrue
         }
-        obj("max") must beLike {
-          case SDecimal(num) => (num.toDouble ~= 208) must beTrue
+        obj("max") must beLike { case SDecimal(num) =>
+          (num.toDouble ~= 208) must beTrue
         }
-        obj("min") must beLike {
-          case SDecimal(num) => (num.toDouble ~= 39) must beTrue
+        obj("min") must beLike { case SDecimal(num) =>
+          (num.toDouble ~= 39) must beTrue
         }
-        obj("stdDev") must beLike {
-          case SDecimal(num) => (num.toDouble ~= 0.9076874907113496) must beTrue
+        obj("stdDev") must beLike { case SDecimal(num) =>
+          (num.toDouble ~= 0.9076874907113496) must beTrue
         }
-        obj("count") must beLike {
-          case SDecimal(num) => (num.toDouble ~= 1019) must beTrue
+        obj("count") must beLike { case SDecimal(num) =>
+          (num.toDouble ~= 1019) must beTrue
         }
-        obj("minmax") must beLike {
-          case SDecimal(num) => (num.toDouble ~= 208) must beTrue
+        obj("minmax") must beLike { case SDecimal(num) =>
+          (num.toDouble ~= 208) must beTrue
         }
       }
     }
@@ -804,8 +804,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
       }
 
       containsUserId must haveSize(21)
-      containsUserId collect {
-        case obj => obj("userId")
+      containsUserId collect { case obj =>
+        obj("userId")
       } mustEqual Set(
         SString("user-1000"),
         SString("user-1001"),
@@ -835,8 +835,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
       }
 
       containsPageId must haveSize(5)
-      containsPageId collect {
-        case obj => obj("pageId")
+      containsPageId collect { case obj =>
+        obj("pageId")
       } mustEqual Set(
         SString("page-0"),
         SString("page-1"),
@@ -908,8 +908,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
 
       results must haveSize(16 + 570)
 
-      val maps = results.toSeq collect {
-        case (ids, SObject(obj)) => obj
+      val maps = results.toSeq collect { case (ids, SObject(obj)) =>
+        obj
       }
 
       val india = maps filter { _.values forall { _ == SString("India") } }
@@ -934,8 +934,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
 
       results must haveSize(16)
 
-      val maps = results.toSeq collect {
-        case (ids, SObject(obj)) => obj
+      val maps = results.toSeq collect { case (ids, SObject(obj)) =>
+        obj
       }
 
       val india = maps filter { _.values forall { _ == SString("India") } }
@@ -1007,14 +1007,14 @@ trait MiscStackSpecs extends EvalStackSpecs {
 
         obj.keys mustEqual Set("min", "max", "stdDev")
 
-        obj("min") must beLike {
-          case SDecimal(num) => (num.toDouble ~= 50) must beTrue
+        obj("min") must beLike { case SDecimal(num) =>
+          (num.toDouble ~= 50) must beTrue
         }
-        obj("max") must beLike {
-          case SDecimal(num) => (num.toDouble ~= 2768) must beTrue
+        obj("max") must beLike { case SDecimal(num) =>
+          (num.toDouble ~= 2768) must beTrue
         }
-        obj("stdDev") must beLike {
-          case SDecimal(num) => (num.toDouble ~= 917.6314704474534) must beTrue
+        obj("stdDev") must beLike { case SDecimal(num) =>
+          (num.toDouble ~= 917.6314704474534) must beTrue
         }
       }
     }
@@ -1039,14 +1039,14 @@ trait MiscStackSpecs extends EvalStackSpecs {
 
         obj.keys mustEqual Set("min", "max", "stdDev")
 
-        obj("min") must beLike {
-          case SDecimal(num) => (num.toDouble ~= 50) must beTrue
+        obj("min") must beLike { case SDecimal(num) =>
+          (num.toDouble ~= 50) must beTrue
         }
-        obj("max") must beLike {
-          case SDecimal(num) => (num.toDouble ~= 2768) must beTrue
+        obj("max") must beLike { case SDecimal(num) =>
+          (num.toDouble ~= 2768) must beTrue
         }
-        obj("stdDev") must beLike {
-          case SDecimal(num) => (num.toDouble ~= 917.6314704474534) must beTrue
+        obj("stdDev") must beLike { case SDecimal(num) =>
+          (num.toDouble ~= 917.6314704474534) must beTrue
         }
       }
     }
@@ -1127,8 +1127,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
 
         results must haveSize(10000)
 
-        results must haveAllElementsLike {
-          case (ids, _) => ids must haveSize(2)
+        results must haveAllElementsLike { case (ids, _) =>
+          ids must haveSize(2)
         }
       }
 
@@ -1142,8 +1142,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
 
         results must haveSize(10000)
 
-        results must haveAllElementsLike {
-          case (ids, _) => ids must haveSize(2)
+        results must haveAllElementsLike { case (ids, _) =>
+          ids must haveSize(2)
         }
       }
     }
@@ -1769,14 +1769,14 @@ trait MiscStackSpecs extends EvalStackSpecs {
         obj must haveKey("max")
         obj must haveKey("stdDev")
 
-        obj("sum") must beLike {
-          case SDecimal(num) => (num.toDouble ~= 1590) must beTrue
+        obj("sum") must beLike { case SDecimal(num) =>
+          (num.toDouble ~= 1590) must beTrue
         }
-        obj("mean") must beLike {
-          case SDecimal(num) => (num.toDouble ~= 26.371933267909714) must beTrue
+        obj("mean") must beLike { case SDecimal(num) =>
+          (num.toDouble ~= 26.371933267909714) must beTrue
         }
-        obj("max") must beLike {
-          case SDecimal(num) => (num.toDouble ~= 2.5) must beTrue
+        obj("max") must beLike { case SDecimal(num) =>
+          (num.toDouble ~= 2.5) must beTrue
         }
         obj("stdDev") must beLike { case SDecimal(num) =>
           (num.toDouble ~= 0.36790736209203007) must beTrue
@@ -3276,8 +3276,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
 
       totalResult must haveSize(1)
 
-      val total = totalResult.collectFirst {
-        case (_, SDecimal(d)) => d
+      val total = totalResult.collectFirst { case (_, SDecimal(d)) =>
+        d
       }.get
 
       val result = evalE(input)
@@ -3306,8 +3306,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
 
       totalResult must haveSize(1)
 
-      val total = totalResult.collectFirst {
-        case (_, SDecimal(d)) => d
+      val total = totalResult.collectFirst { case (_, SDecimal(d)) =>
+        d
       }.get
 
       val result = evalE(input)

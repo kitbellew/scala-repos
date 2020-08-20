@@ -21,8 +21,8 @@ final class PgnDump(
       Parser.full(pgni.pgn).toOption
     }
     val ts = tags(game, initialFen, imported)
-    val fenSituation = ts find (_.name == Tag.FEN) flatMap {
-      case Tag(_, fen) => Forsyth <<< fen
+    val fenSituation = ts find (_.name == Tag.FEN) flatMap { case Tag(_, fen) =>
+      Forsyth <<< fen
     }
     val moves2 = fenSituation
       .??(_.situation.color.black)

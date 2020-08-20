@@ -281,16 +281,16 @@ object CPath {
       if (paths.size == 1 && paths.head.size == 0) {
         List(LeafNode(paths.head.value))
       } else {
-        val filtered = paths filterNot {
-          case PathWithLeaf(path, _) => path.isEmpty
+        val filtered = paths filterNot { case PathWithLeaf(path, _) =>
+          path.isEmpty
         }
-        val grouped = filtered groupBy {
-          case PathWithLeaf(path, _) => path.head
+        val grouped = filtered groupBy { case PathWithLeaf(path, _) =>
+          path.head
         }
 
         def recurse[A](paths: Seq[PathWithLeaf[A]]) =
-          inner(paths map {
-            case PathWithLeaf(path, v) => PathWithLeaf(path.tail, v)
+          inner(paths map { case PathWithLeaf(path, v) =>
+            PathWithLeaf(path.tail, v)
           })
 
         val result = grouped.toSeq.sortBy(_._1) map { case (node, paths) =>

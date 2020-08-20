@@ -282,8 +282,8 @@ object CreateEntityQuickFix {
     supRef.staticSuper match {
       case Some(ScType.ExtractClass(clazz: ScTypeDefinition)) => Some(clazz)
       case None =>
-        supRef.parents.toSeq.collect {
-          case td: ScTemplateDefinition => td
+        supRef.parents.toSeq.collect { case td: ScTemplateDefinition =>
+          td
         } match {
           case Seq(td) =>
             td.supers match {

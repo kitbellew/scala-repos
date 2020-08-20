@@ -177,8 +177,8 @@ class AkkaHttpServer(
       case (action: EssentialAction, _) =>
         val actionWithErrorHandling = EssentialAction { rh =>
           import play.api.libs.iteratee.Execution.Implicits.trampoline
-          action(rh).recoverWith {
-            case error => handleHandlerError(tryApp, taggedRequestHeader, error)
+          action(rh).recoverWith { case error =>
+            handleHandlerError(tryApp, taggedRequestHeader, error)
           }
         }
         executeAction(

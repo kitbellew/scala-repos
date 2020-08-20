@@ -306,8 +306,8 @@ object PlayRun {
         // Things are working without passing system properties, and I'm unsure that they need to be passed explicitly. If def main(args: Array[String]){
         // problem occurs in this area then at least we know what to look at.
         val args = Seq(stagingBin) ++
-          properties.map {
-            case (key, value) => s"-D$key=$value"
+          properties.map { case (key, value) =>
+            s"-D$key=$value"
           } ++
           javaProductionOptions ++
           Seq("-Dhttp.port=" + httpPort.getOrElse("disabled"))

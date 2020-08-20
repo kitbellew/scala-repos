@@ -42,8 +42,8 @@ class AssociationRulesSuite extends SparkFunSuite with MLlibTestSparkContext {
         (Set("t", "y", "z"), 3L),
         (Set("t", "y", "x"), 3L),
         (Set("t", "y", "x", "z"), 3L)
-      ).map {
-        case (items, freq) => new FPGrowth.FreqItemset(items.toArray, freq)
+      ).map { case (items, freq) =>
+        new FPGrowth.FreqItemset(items.toArray, freq)
       })
 
     val ar = new AssociationRules()

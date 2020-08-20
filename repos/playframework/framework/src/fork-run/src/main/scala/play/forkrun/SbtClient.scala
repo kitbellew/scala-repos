@@ -186,7 +186,7 @@ class SbtTask(name: String, client: ActorRef) extends Actor {
     context become broken(error)
   }
 
-  def broken(error: Throwable): Receive = {
-    case request: Request => request.sendTo ! Failed(error)
+  def broken(error: Throwable): Receive = { case request: Request =>
+    request.sendTo ! Failed(error)
   }
 }

@@ -42,8 +42,8 @@ class CustomDirectivesExamplesSpec extends RoutingSpec {
       parameters(("a".as[Int], "b".as[Int]))
 
     val myDirective: Directive1[String] =
-      twoIntParameters.tmap {
-        case (a, b) => (a + b).toString
+      twoIntParameters.tmap { case (a, b) =>
+        (a + b).toString
       }
 
     // tests:

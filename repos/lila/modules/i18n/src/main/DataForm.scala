@@ -31,8 +31,8 @@ final class DataForm(
       user: String): Funit = {
     val messages = (data mapValues { msg =>
       msg.some map sanitize filter (_.nonEmpty)
-    }).toList collect {
-      case (key, Some(value)) => key -> value
+    }).toList collect { case (key, Some(value)) =>
+      key -> value
     }
     messages.nonEmpty ?? TranslationRepo.nextId flatMap { id =>
       val sorted = (keys.keys map { key =>
@@ -41,8 +41,8 @@ final class DataForm(
       val translation = Translation(
         id = id,
         code = code,
-        text = sorted map {
-          case (key, trans) => key + "=" + trans
+        text = sorted map { case (key, trans) =>
+          key + "=" + trans
         } mkString "\n",
         comment = metadata.comment,
         author = user.some,

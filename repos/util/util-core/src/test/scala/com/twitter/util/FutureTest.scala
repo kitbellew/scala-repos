@@ -1121,8 +1121,8 @@ class FutureTest
                 val exc = new Exception
                 val f3 = new Promise[Unit]
                 var didInterrupt = false
-                f3.setInterruptHandler {
-                  case `exc` => didInterrupt = true
+                f3.setInterruptHandler { case `exc` =>
+                  didInterrupt = true
                 }
                 val f = seqop(f1, () => seqop(f2, () => f3))
                 f.raise(exc)
@@ -1571,11 +1571,11 @@ class FutureTest
 
         "do conditional interruption" in {
           val p = new HandledPromise[Unit]
-          val f1 = p.mask {
-            case _: TimeoutException => true
+          val f1 = p.mask { case _: TimeoutException =>
+            true
           }
-          val f2 = p.mask {
-            case _: TimeoutException => true
+          val f2 = p.mask { case _: TimeoutException =>
+            true
           }
           f1.raise(new TimeoutException("bang!"))
           assert(p.handled == None)

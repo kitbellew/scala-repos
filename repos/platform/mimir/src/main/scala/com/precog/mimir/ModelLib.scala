@@ -138,8 +138,8 @@ trait ModelLibModule[M[+_]] {
             featurePaths.contains(cpath)
           }
 
-          val resPaths = res map {
-            case (ColumnRef(cpath, _), _) => cpath
+          val resPaths = res map { case (ColumnRef(cpath, _), _) =>
+            cpath
           } toSet
 
           if (resPaths == featurePaths) res

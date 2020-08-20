@@ -100,8 +100,8 @@ sealed abstract class IndexedStateT[F[_], -S1, S2, A] { self =>
       W: Monoid[W]): IndexedReaderWriterStateT[F, R, W, S1, S2, A] =
     IndexedReaderWriterStateT((r, s) =>
       F.bind[S1 => F[(S2, A)], (W, A, S2)](getF(F))((sf: (S1 => F[(S2, A)])) =>
-        F.map(sf(s)) {
-          case (s, a) => (W.zero, a, s)
+        F.map(sf(s)) { case (s, a) =>
+          (W.zero, a, s)
         }))
 
   def zoom[S0, S3, S <: S1](l: LensFamily[S0, S3, S, S2])(implicit

@@ -57,8 +57,8 @@ object Memoize {
       private[this] var memo = Map.empty[A, Either[JCountDownLatch, B]]
 
       def snap: Map[A, B] =
-        synchronized(memo) collect {
-          case (a, Right(b)) => (a, b)
+        synchronized(memo) collect { case (a, Right(b)) =>
+          (a, b)
         }
 
       /**

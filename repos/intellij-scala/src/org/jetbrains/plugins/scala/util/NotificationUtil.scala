@@ -83,15 +83,15 @@ object NotificationUtil {
 
   protected[NotificationUtil] object Link {
     def unapply(event: HyperlinkEvent) =
-      Option(event.getURL) map (_.getProtocol) collect {
-        case "http" => event.getURL
+      Option(event.getURL) map (_.getProtocol) collect { case "http" =>
+        event.getURL
       }
   }
 
   protected[NotificationUtil] object Action {
     def unapply(event: HyperlinkEvent) =
-      Option(event.getURL) map (_.getProtocol) collect {
-        case "ftp" => event.getURL.getHost
+      Option(event.getURL) map (_.getProtocol) collect { case "ftp" =>
+        event.getURL.getHost
       }
   }
 }

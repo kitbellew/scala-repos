@@ -93,8 +93,8 @@ case class Ingest(
   def split(n: Int): List[Event] = {
     val splitSize = (data.length / n) max 1
     val splitData = data.grouped(splitSize).toSeq
-    (splitData zip streamRef.split(splitData.size)).map({
-      case (d, ref) => this.copy(data = d, streamRef = ref)
+    (splitData zip streamRef.split(splitData.size)).map({ case (d, ref) =>
+      this.copy(data = d, streamRef = ref)
     })(collection.breakOut)
   }
 

@@ -91,8 +91,8 @@ trait MemoryDatasetConsumer[M[+_]] extends EvaluatorModule[M] {
       case JString(str) => SString(str)
 
       case JObject(fields) => {
-        val map: Map[String, SValue] = fields.map({
-          case JField(name, value) => (name, jvalueToSValue(value))
+        val map: Map[String, SValue] = fields.map({ case JField(name, value) =>
+          (name, jvalueToSValue(value))
         })(collection.breakOut)
 
         SObject(map)

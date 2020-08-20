@@ -36,8 +36,8 @@ abstract class AbstractFormatConversionIntention(
       if (eager) list.reverse else list
     }
     val results = candidates.map(parser.parse)
-    candidates.zip(results).collectFirst {
-      case (candidate, Some(parts)) => (candidate, parts)
+    candidates.zip(results).collectFirst { case (candidate, Some(parts)) =>
+      (candidate, parts)
     }
   }
 

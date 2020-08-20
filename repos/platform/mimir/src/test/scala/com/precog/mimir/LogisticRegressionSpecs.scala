@@ -312,8 +312,8 @@ trait LogisticRegressionSpecs[M[+_]]
 
       val samples = {
         val samples0 = createLogisticSamplePoints(num, 100, actualThetas)
-        samples0 map {
-          case (xs, y) => (Random.nextGaussian +: Random.nextGaussian +: xs, y)
+        samples0 map { case (xs, y) =>
+          (Random.nextGaussian +: Random.nextGaussian +: xs, y)
         }
       }
       val points = jvalues(samples, cpaths, num) map { _.renderCompact }

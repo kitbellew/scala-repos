@@ -148,8 +148,8 @@ object WebSocketClient {
           handshaker.handshake(channel)
           channel.read()
         }
-        .onFailure {
-          case t => disconnected.tryFailure(t)
+        .onFailure { case t =>
+          disconnected.tryFailure(t)
         }
 
       disconnected.future

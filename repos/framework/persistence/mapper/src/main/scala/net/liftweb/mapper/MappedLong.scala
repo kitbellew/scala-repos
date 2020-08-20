@@ -422,8 +422,8 @@ abstract class MappedNullableLong[T <: Mapper[T]](val fieldOwner: T)
       doField(
         inst,
         accessor,
-        {
-          case f: MappedNullableLong[T] => f.st(if (isNull) Empty else Full(v))
+        { case f: MappedNullableLong[T] =>
+          f.st(if (isNull) Empty else Full(v))
         })
 
   def buildSetStringValue(

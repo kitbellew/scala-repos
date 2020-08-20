@@ -259,8 +259,8 @@ trait TypeStrings {
       "scala.runtime." -> "runtime."
     ) ++ (alsoStrip map (_ -> ""))
 
-    transforms.foldLeft(tpe) {
-      case (res, (k, v)) => res.replaceAll(k, v)
+    transforms.foldLeft(tpe) { case (res, (k, v)) =>
+      res.replaceAll(k, v)
     }
   }
 }

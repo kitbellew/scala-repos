@@ -420,8 +420,8 @@ trait Parser extends RegexParsers with Filters with AST {
         }
       }
 
-      val pairs = expectedCounts.toList.sortWith {
-        case ((_, a), (_, b)) => a > b
+      val pairs = expectedCounts.toList.sortWith { case ((_, a), (_, b)) =>
+        a > b
       }
 
       val expectation = pairs.headOption flatMap {

@@ -491,8 +491,8 @@ class SparkILoop(
 
         // This groups the members by where the symbol is defined
         val byOwner = syms groupBy (_.owner)
-        val sortedOwners = byOwner.toList sortBy {
-          case (owner, _) => afterTyper(source.info.baseClasses indexOf owner)
+        val sortedOwners = byOwner.toList sortBy { case (owner, _) =>
+          afterTyper(source.info.baseClasses indexOf owner)
         }
 
         sortedOwners foreach { case (owner, members) =>
@@ -600,8 +600,8 @@ class SparkILoop(
     if (intp.lastWarnings.isEmpty)
       "Can't find any cached warnings."
     else
-      intp.lastWarnings foreach {
-        case (pos, msg) => intp.reporter.warning(pos, msg)
+      intp.lastWarnings foreach { case (pos, msg) =>
+        intp.reporter.warning(pos, msg)
       }
   }
 

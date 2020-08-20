@@ -762,8 +762,8 @@ private[spark] class Client(
     sparkConf.getAll
       .filter { case (k, v) => k.startsWith(amEnvPrefix) }
       .map { case (k, v) => (k.substring(amEnvPrefix.length), v) }
-      .foreach {
-        case (k, v) => YarnSparkHadoopUtil.addPathToEnvironment(env, k, v)
+      .foreach { case (k, v) =>
+        YarnSparkHadoopUtil.addPathToEnvironment(env, k, v)
       }
 
     // Keep this for backwards compatibility but users should move to the config
@@ -1333,8 +1333,8 @@ object Client extends Logging {
         "DEFAULT_YARN_APPLICATION_CLASSPATH")
       val value = field.get(null).asInstanceOf[Array[String]]
       value.toSeq
-    } recoverWith {
-      case e: NoSuchFieldException => Success(Seq.empty[String])
+    } recoverWith { case e: NoSuchFieldException =>
+      Success(Seq.empty[String])
     }
 
     triedDefault match {
@@ -1355,8 +1355,8 @@ object Client extends Logging {
       val field =
         classOf[MRJobConfig].getField("DEFAULT_MAPREDUCE_APPLICATION_CLASSPATH")
       StringUtils.getStrings(field.get(null).asInstanceOf[String]).toSeq
-    } recoverWith {
-      case e: NoSuchFieldException => Success(Seq.empty[String])
+    } recoverWith { case e: NoSuchFieldException =>
+      Success(Seq.empty[String])
     }
 
     triedDefault match {

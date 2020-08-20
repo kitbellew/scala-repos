@@ -352,8 +352,8 @@ trait SpecializedLiftActor[T] extends SimpleActor[T] {
 
   protected def highPriorityReceive: Box[PartialFunction[T, Unit]] = Empty
 
-  protected def exceptionHandler: PartialFunction[Throwable, Unit] = {
-    case e => ActorLogger.error("Actor threw an exception", e)
+  protected def exceptionHandler: PartialFunction[Throwable, Unit] = { case e =>
+    ActorLogger.error("Actor threw an exception", e)
   }
 }
 

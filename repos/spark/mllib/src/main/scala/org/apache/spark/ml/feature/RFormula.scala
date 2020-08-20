@@ -446,8 +446,8 @@ private class VectorAttributeRewriter(
       val attrs = group.attributes.get.map { attr =>
         if (attr.name.isDefined) {
           val name = attr.name.get
-          val replacement = prefixesToRewrite.filter {
-            case (k, _) => name.startsWith(k)
+          val replacement = prefixesToRewrite.filter { case (k, _) =>
+            name.startsWith(k)
           }
           if (replacement.nonEmpty) {
             val (k, v) = replacement.headOption.get

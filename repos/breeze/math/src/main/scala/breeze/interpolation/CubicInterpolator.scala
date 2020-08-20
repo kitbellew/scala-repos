@@ -31,8 +31,8 @@ class CubicInterpolator(x_coords: Vector[Double], y_coords: Vector[Double])
         lambda(i + 1) // one cell to right from the diagonal
       case _ => 0
     }
-  private val b = DenseVector.tabulate(X.length - 2) {
-    case i => 6 * (d(i + 1) - d(i)) / (h(i) + h(i + 1))
+  private val b = DenseVector.tabulate(X.length - 2) { case i =>
+    6 * (d(i + 1) - d(i)) / (h(i) + h(i + 1))
   }
   private val mp = M \ b
   private def m(i: Int) =

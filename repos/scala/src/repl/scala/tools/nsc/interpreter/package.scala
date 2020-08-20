@@ -103,8 +103,8 @@ package object interpreter extends ReplConfig with ReplStrings {
 
         // This groups the members by where the symbol is defined
         val byOwner = syms groupBy (_.owner)
-        val sortedOwners = byOwner.toList sortBy {
-          case (owner, _) => exitingTyper(source.info.baseClasses indexOf owner)
+        val sortedOwners = byOwner.toList sortBy { case (owner, _) =>
+          exitingTyper(source.info.baseClasses indexOf owner)
         }
 
         sortedOwners foreach { case (owner, members) =>

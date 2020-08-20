@@ -366,15 +366,15 @@ trait ApplicationAnnotator {
 
   private def formatJavaParams(parameters: Seq[PsiParameter]): String = {
     val types = ScalaPsiUtil.mapToLazyTypesSeq(parameters)
-    val parts = parameters.zip(types).map {
-      case (p, t) => t().presentableText + (if (p.isVarArgs) "*" else "")
+    val parts = parameters.zip(types).map { case (p, t) =>
+      t().presentableText + (if (p.isVarArgs) "*" else "")
     }
     parenthesise(parts)
   }
 
   private def formatSyntheticParams(parameters: Seq[Parameter]) = {
-    val parts = parameters.map {
-      case p => p.paramType.presentableText + (if (p.isRepeated) "*" else "")
+    val parts = parameters.map { case p =>
+      p.paramType.presentableText + (if (p.isRepeated) "*" else "")
     }
     parenthesise(parts)
   }

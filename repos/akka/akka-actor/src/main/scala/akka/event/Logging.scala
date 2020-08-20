@@ -126,8 +126,8 @@ trait LoggingBus extends ActorEventBus {
         } yield {
           system.dynamicAccess
             .getClassFor[Actor](loggerName)
-            .map({
-              case actorClass ⇒ addLogger(system, actorClass, level, logName)
+            .map({ case actorClass ⇒
+              addLogger(system, actorClass, level, logName)
             })
             .recover({ case e ⇒
               throw new ConfigurationException(

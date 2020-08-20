@@ -856,8 +856,8 @@ private[deploy] object Worker extends Logging {
 
   def isUseLocalNodeSSLConfig(cmd: Command): Boolean = {
     val pattern = """\-Dspark\.ssl\.useNodeLocalConf\=(.+)""".r
-    val result = cmd.javaOpts.collectFirst {
-      case pattern(_result) => _result.toBoolean
+    val result = cmd.javaOpts.collectFirst { case pattern(_result) =>
+      _result.toBoolean
     }
     result.getOrElse(false)
   }

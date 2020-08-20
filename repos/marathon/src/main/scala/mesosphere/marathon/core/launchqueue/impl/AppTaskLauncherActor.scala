@@ -189,8 +189,8 @@ private class AppTaskLauncherActor(
         sender() ! "waitingForInFlight" // for testing
     }
 
-  private[this] def receiveStop: Receive = {
-    case AppTaskLauncherActor.Stop => waitingForInFlight()
+  private[this] def receiveStop: Receive = { case AppTaskLauncherActor.Stop =>
+    waitingForInFlight()
   }
 
   private[this] def waitingForInFlight(): Unit = {

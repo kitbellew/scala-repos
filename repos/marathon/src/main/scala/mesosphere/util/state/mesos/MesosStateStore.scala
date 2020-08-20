@@ -103,8 +103,8 @@ class MesosStateStore(state: State, timeout: Duration) extends PersistentStore {
   }
 
   private[this] def mapException[T](
-      message: String): PartialFunction[Throwable, T] = {
-    case NonFatal(ex) => throw new StoreCommandFailedException(message, ex)
+      message: String): PartialFunction[Throwable, T] = { case NonFatal(ex) =>
+    throw new StoreCommandFailedException(message, ex)
   }
 }
 

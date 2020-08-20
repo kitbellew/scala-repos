@@ -210,8 +210,8 @@ abstract class Ticket1978CommunicationSpec(val cipherConfig: CipherConfig)
     if (cipherConfig.runTest && preCondition) {
       val ignoreMe = other.actorOf(
         Props(new Actor {
-          def receive = {
-            case ("ping", x) ⇒ sender() ! ((("pong", x), sender()))
+          def receive = { case ("ping", x) ⇒
+            sender() ! ((("pong", x), sender()))
           }
         }),
         "echo")
@@ -230,8 +230,8 @@ abstract class Ticket1978CommunicationSpec(val cipherConfig: CipherConfig)
         }
 
         for (i ← 1 to 1000) here ! (("ping", i))
-        for (i ← 1 to 1000) expectMsgPF() {
-          case (("pong", i), `testActor`) ⇒ true
+        for (i ← 1 to 1000) expectMsgPF() { case (("pong", i), `testActor`) ⇒
+          true
         }
       }
 

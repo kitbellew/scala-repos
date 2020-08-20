@@ -179,12 +179,12 @@ sealed trait Matrix2[R, C, V] extends Serializable {
       this.toTypedPipe.map { case (r, c, x) => (r, c, num.toDouble(x)) },
       this.sizeHint)
     lazy val result = MatrixLiteral(
-      this.toTypedPipe.map {
-        case (r, c, x) => (r, c, num.toDouble(x) * num.toDouble(x))
+      this.toTypedPipe.map { case (r, c, x) =>
+        (r, c, num.toDouble(x) * num.toDouble(x))
       },
       this.sizeHint).sumColVectors.toTypedPipe
-      .map {
-        case (r, c, x) => (r, r, 1 / scala.math.sqrt(x))
+      .map { case (r, c, x) =>
+        (r, r, 1 / scala.math.sqrt(x))
       } // diagonal + inverse
     MatrixLiteral(
       result,
@@ -481,16 +481,16 @@ case class Product[R, C, C2, V](
     if (cost1 > cost2) {
       val product2 = plan2.asInstanceOf[Product[C, R, C, V]]
       val ord = left.colOrd
-      val filtered = product2.toOuterSum.filter {
-        case (c1, c2, _) => ord.equiv(c1, c2)
+      val filtered = product2.toOuterSum.filter { case (c1, c2, _) =>
+        ord.equiv(c1, c2)
       }
       Scalar2(
         product2.computePipe(filtered).map { case (_, _, x) => x }.sum(mon))
     } else {
       val product1 = plan1.asInstanceOf[Product[R, C, R, V]]
       val ord = left.rowOrd
-      val filtered = product1.toOuterSum.filter {
-        case (r1, r2, _) => ord.equiv(r1, r2)
+      val filtered = product1.toOuterSum.filter { case (r1, r2, _) =>
+        ord.equiv(r1, r2)
       }
       Scalar2(
         product1.computePipe(filtered).map { case (_, _, x) => x }.sum(mon))
@@ -587,11 +587,11 @@ case class HadamardProduct[R, C, V](
         (v._1, v._2, ring.times(v._3, v._3)))
     } else {
       // tracking values which were reduced (multiplied by non-zero) or non-reduced (multiplied by zero) with a boolean
-      (left.optimizedSelf.toTypedPipe.map {
-        case (r, c, v) => (r, c, (v, false))
+      (left.optimizedSelf.toTypedPipe.map { case (r, c, v) =>
+        (r, c, (v, false))
       } ++
-        right.optimizedSelf.toTypedPipe.map {
-          case (r, c, v) => (r, c, (v, false))
+        right.optimizedSelf.toTypedPipe.map { case (r, c, v) =>
+          (r, c, (v, false))
         })
         .groupBy(x => (x._1, x._2))
         .mapValues { _._3 }

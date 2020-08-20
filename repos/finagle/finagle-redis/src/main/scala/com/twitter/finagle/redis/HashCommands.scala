@@ -14,8 +14,8 @@ trait Hashes { self: BaseClient =>
     * @return Number of fields deleted
     */
   def hDel(key: ChannelBuffer, fields: Seq[ChannelBuffer]): Future[JLong] =
-    doRequest(HDel(key, fields)) {
-      case IntegerReply(n) => Future.value(n)
+    doRequest(HDel(key, fields)) { case IntegerReply(n) =>
+      Future.value(n)
     }
 
   /**
@@ -24,8 +24,8 @@ trait Hashes { self: BaseClient =>
     * @return true if key field exists, false otherwise
     */
   def hExists(key: ChannelBuffer, field: ChannelBuffer): Future[JBoolean] =
-    doRequest(HExists(key, field)) {
-      case IntegerReply(n) => Future.value(n == 1)
+    doRequest(HExists(key, field)) { case IntegerReply(n) =>
+      Future.value(n == 1)
     }
 
   /**
@@ -62,8 +62,8 @@ trait Hashes { self: BaseClient =>
       key: ChannelBuffer,
       field: ChannelBuffer,
       amount: Long): Future[JLong] =
-    doRequest(HIncrBy(key, field, amount)) {
-      case IntegerReply(n) => Future.value(n)
+    doRequest(HIncrBy(key, field, amount)) { case IntegerReply(n) =>
+      Future.value(n)
     }
 
   /**
@@ -101,8 +101,8 @@ trait Hashes { self: BaseClient =>
   def hMSet(
       key: ChannelBuffer,
       fv: Map[ChannelBuffer, ChannelBuffer]): Future[Unit] =
-    doRequest(HMSet(key, fv)) {
-      case StatusReply(msg) => Future.Unit
+    doRequest(HMSet(key, fv)) { case StatusReply(msg) =>
+      Future.Unit
     }
 
   /**
@@ -130,8 +130,8 @@ trait Hashes { self: BaseClient =>
       key: ChannelBuffer,
       field: ChannelBuffer,
       value: ChannelBuffer): Future[JLong] =
-    doRequest(HSet(key, field, value)) {
-      case IntegerReply(n) => Future.value(n)
+    doRequest(HSet(key, field, value)) { case IntegerReply(n) =>
+      Future.value(n)
     }
 
   /**
@@ -143,8 +143,8 @@ trait Hashes { self: BaseClient =>
       key: ChannelBuffer,
       field: ChannelBuffer,
       value: ChannelBuffer): Future[JLong] =
-    doRequest(HSetNx(key, field, value)) {
-      case IntegerReply(n) => Future.value(n)
+    doRequest(HSetNx(key, field, value)) { case IntegerReply(n) =>
+      Future.value(n)
     }
 
   /**

@@ -38,8 +38,8 @@ object XMLSpec extends Specification {
                   |   <!ELEMENT foo ANY >
                   |   <!ENTITY xxe SYSTEM "${f.toURI}">]><foo>hello&xxe;</foo>""".stripMargin
 
-      parse(xml) must throwA[RuntimeException].like {
-        case re => re.getCause must beAnInstanceOf[SAXException]
+      parse(xml) must throwA[RuntimeException].like { case re =>
+        re.getCause must beAnInstanceOf[SAXException]
       }
     }
 
@@ -63,8 +63,8 @@ object XMLSpec extends Specification {
                   |   %pe;
                   |   ]><foo>hello&xxe;</foo>""".stripMargin
 
-      parse(xml) must throwA[RuntimeException].like {
-        case re => re.getCause must beAnInstanceOf[SAXException]
+      parse(xml) must throwA[RuntimeException].like { case re =>
+        re.getCause must beAnInstanceOf[SAXException]
       }
     }
 
@@ -79,8 +79,8 @@ object XMLSpec extends Specification {
                   | ]>
                   | <billion>&laugh30;</billion>""".stripMargin
 
-      parse(xml) must throwA[RuntimeException].like {
-        case re => re.getCause must beAnInstanceOf[SAXException]
+      parse(xml) must throwA[RuntimeException].like { case re =>
+        re.getCause must beAnInstanceOf[SAXException]
       }
     }
 
@@ -93,8 +93,8 @@ object XMLSpec extends Specification {
                   | ]>
                   | <kaboom>$entities</kaboom>""".stripMargin
 
-      parse(xml) must throwA[RuntimeException].like {
-        case re => re.getCause must beAnInstanceOf[SAXException]
+      parse(xml) must throwA[RuntimeException].like { case re =>
+        re.getCause must beAnInstanceOf[SAXException]
       }
     }
   }

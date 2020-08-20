@@ -1143,8 +1143,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
           val xs = scala.reflect.io
             .File(tree.pos.source.file.file)
             .lines drop start take 7
-          val strs = xs.zipWithIndex map {
-            case (line, idx) => f"${start + idx}%6d $line"
+          val strs = xs.zipWithIndex map { case (line, idx) =>
+            f"${start + idx}%6d $line"
           }
           strs.mkString(
             "== Source file context for tree position ==\n\n",

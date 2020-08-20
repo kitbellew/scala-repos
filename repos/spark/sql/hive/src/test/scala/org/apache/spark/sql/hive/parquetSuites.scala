@@ -930,8 +930,8 @@ abstract class ParquetPartitioningTest
       checkAnswer(
         sql(s"SELECT concat(stringField, stringField) FROM $table"),
         sql(s"SELECT stringField FROM $table").rdd
-          .map {
-            case Row(s: String) => Row(s + s)
+          .map { case Row(s: String) =>
+            Row(s + s)
           }
           .collect()
           .toSeq

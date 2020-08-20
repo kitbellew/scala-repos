@@ -156,8 +156,8 @@ object BinaryFormat {
       }
 
       def posInt(pos: Pos): Int = ((pos.x - 1) << 3) + pos.y - 1
-      val lastMoveInt = clmt.lastMove.fold(0) {
-        case (f, t) => (posInt(f) << 6) + posInt(t)
+      val lastMoveInt = clmt.lastMove.fold(0) { case (f, t) =>
+        (posInt(f) << 6) + posInt(t)
       }
       val time = clmt.lastMoveTime getOrElse 0
 
@@ -203,8 +203,8 @@ object BinaryFormat {
 
   object piece {
 
-    private val groupedPos = Pos.all grouped 2 collect {
-      case List(p1, p2) => (p1, p2)
+    private val groupedPos = Pos.all grouped 2 collect { case List(p1, p2) =>
+      (p1, p2)
     } toArray
 
     def write(pieces: PieceMap): ByteArray = {
@@ -212,8 +212,8 @@ object BinaryFormat {
         (pieces get pos).fold(0) { piece =>
           piece.color.fold(0, 8) + roleToInt(piece.role)
         }
-      ByteArray(groupedPos map {
-        case (p1, p2) => ((posInt(p1) << 4) + posInt(p2)).toByte
+      ByteArray(groupedPos map { case (p1, p2) =>
+        ((posInt(p1) << 4) + posInt(p2)).toByte
       })
     }
 
@@ -227,8 +227,8 @@ object BinaryFormat {
           Piece(Color((int & 8) == 0), role)
         }
       val pieceInts = ba.value flatMap splitInts
-      (Pos.all zip pieceInts flatMap {
-        case (pos, int) => intPiece(int) map (pos -> _)
+      (Pos.all zip pieceInts flatMap { case (pos, int) =>
+        intPiece(int) map (pos -> _)
       }).toMap
     }
 

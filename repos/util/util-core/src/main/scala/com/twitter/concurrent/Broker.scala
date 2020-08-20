@@ -79,8 +79,8 @@ class Broker[T] {
           case s @ (Quiet | Sending(_)) =>
             val p = new Promise[Tx[Unit]]
             val elem: (Promise[Tx[Unit]], T) = (p, msg)
-            p.setInterruptHandler {
-              case _ => rmElem(elem)
+            p.setInterruptHandler { case _ =>
+              rmElem(elem)
             }
             val nextState = s match {
               case Quiet        => Sending(Queue(elem))

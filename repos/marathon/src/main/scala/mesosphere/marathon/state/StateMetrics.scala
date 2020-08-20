@@ -31,8 +31,8 @@ object StateMetrics {
         val t1 = nanoTime()
         durationHistogram.update((t1 - t0) / 1000000)
       }
-      result.onFailure {
-        case _ => errorMeter.mark()
+      result.onFailure { case _ =>
+        errorMeter.mark()
       }
 
       result

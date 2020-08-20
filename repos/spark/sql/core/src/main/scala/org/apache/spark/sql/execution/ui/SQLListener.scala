@@ -336,8 +336,8 @@ private[sql] class SQLListener(conf: SparkConf)
                   s"task did not have a partial value: ${accumulatorUpdate.name}")
               (accumulatorUpdate.id, accumulatorUpdate.update.get)
             }
-          }.filter {
-            case (id, _) => executionUIData.accumulatorMetrics.contains(id)
+          }.filter { case (id, _) =>
+            executionUIData.accumulatorMetrics.contains(id)
           }
           mergeAccumulatorUpdates(
             accumulatorUpdates,

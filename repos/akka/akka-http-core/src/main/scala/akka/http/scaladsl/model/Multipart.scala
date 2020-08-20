@@ -430,8 +430,8 @@ object Multipart {
     def apply(
         fields: Map[String, HttpEntity.Strict]): Multipart.FormData.Strict =
       Multipart.FormData.Strict {
-        fields.map {
-          case (name, entity) ⇒ Multipart.FormData.BodyPart.Strict(name, entity)
+        fields.map { case (name, entity) ⇒
+          Multipart.FormData.BodyPart.Strict(name, entity)
         }(collection.breakOut)
       }
 

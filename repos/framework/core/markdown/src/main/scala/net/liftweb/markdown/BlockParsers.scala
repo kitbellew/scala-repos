@@ -328,8 +328,8 @@ trait BlockParsers extends Parsers {
   ///////////////////
 
   def atxHeader: Parser[Header] =
-    line(classOf[AtxHeaderLine]) ~ lookup ^^ {
-      case l ~ lu => new Header(l.trimHashes, l.headerLevel, lu)
+    line(classOf[AtxHeaderLine]) ~ lookup ^^ { case l ~ lu =>
+      new Header(l.trimHashes, l.headerLevel, lu)
     }
 
   def setExtHeader: Parser[Header] =
@@ -383,8 +383,8 @@ trait BlockParsers extends Parsers {
     *  returns the content of the matched block wrapped in <p> tags
     */
   def paragraph: Parser[Paragraph] =
-    lookup ~ (line(classOf[OtherLine]) +) ^^ {
-      case lu ~ ls => new Paragraph(ls, lu)
+    lookup ~ (line(classOf[OtherLine]) +) ^^ { case lu ~ ls =>
+      new Paragraph(ls, lu)
     }
 
   /**
@@ -393,8 +393,8 @@ trait BlockParsers extends Parsers {
     */
   def blockquoteFragment: Parser[List[MarkdownLine]] =
     line(classOf[BlockQuoteLine]) ~ ((line(classOf[BlockQuoteLine]) | line(
-      classOf[OtherLine])) *) ~ (optEmptyLines) ^^ {
-      case l ~ ls ~ e => (l :: ls ++ e)
+      classOf[OtherLine])) *) ~ (optEmptyLines) ^^ { case l ~ ls ~ e =>
+      (l :: ls ++ e)
     }
 
   /**
@@ -403,8 +403,8 @@ trait BlockParsers extends Parsers {
     * and may be interspersed with empty lines
     */
   def blockquote: Parser[Blockquote] =
-    lookup ~ (blockquoteFragment +) ^^ {
-      case lu ~ fs => new Blockquote(fs.flatten, lu)
+    lookup ~ (blockquoteFragment +) ^^ { case lu ~ fs =>
+      new Blockquote(fs.flatten, lu)
     }
 
   /**
@@ -419,8 +419,8 @@ trait BlockParsers extends Parsers {
     * lines followed by empty lines
     */
   def itemContinuation: Parser[List[MarkdownLine]] =
-    optEmptyLines ~ line(classOf[CodeLine]) ~ itemLines ^^ {
-      case e ~ c ~ cs => e ++ (c :: cs)
+    optEmptyLines ~ line(classOf[CodeLine]) ~ itemLines ^^ { case e ~ c ~ cs =>
+      e ++ (c :: cs)
     }
 
   /** parses an item in an unsorted list

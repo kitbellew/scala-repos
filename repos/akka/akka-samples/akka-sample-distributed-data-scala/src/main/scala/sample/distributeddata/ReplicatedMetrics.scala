@@ -126,8 +126,8 @@ class ReplicatedMetrics(
 
     case Cleanup ⇒
       def cleanupRemoved(data: LWWMap[Long]): LWWMap[Long] =
-        (data.entries.keySet -- nodesInCluster).foldLeft(data) {
-          case (d, key) ⇒ d - key
+        (data.entries.keySet -- nodesInCluster).foldLeft(data) { case (d, key) ⇒
+          d - key
         }
 
       replicator ! Update(UsedHeapKey, LWWMap.empty[Long], WriteLocal)(

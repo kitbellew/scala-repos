@@ -24,8 +24,8 @@ object AnalysisRepo {
 
   def associateToGames(games: List[Game]): Fu[List[(Game, Analysis)]] =
     byIds(games.map(_.id)) map { as =>
-      games zip as collect {
-        case (game, Some(analysis)) => game -> analysis
+      games zip as collect { case (game, Some(analysis)) =>
+        game -> analysis
       }
     }
 

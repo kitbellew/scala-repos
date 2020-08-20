@@ -187,8 +187,8 @@ private class DeploymentActor(
     val promise = Promise[Unit]()
     context.actorOf(
       Props(classOf[AppStopActor], driver, taskTracker, eventBus, app, promise))
-    promise.future.andThen {
-      case Success(_) => scheduler.stopApp(driver, app)
+    promise.future.andThen { case Success(_) =>
+      scheduler.stopApp(driver, app)
     }
   }
 

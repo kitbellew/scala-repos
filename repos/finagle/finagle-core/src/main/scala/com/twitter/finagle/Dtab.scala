@@ -109,8 +109,8 @@ case class Dtab(dentries0: IndexedSeq[Dentry]) extends IndexedSeq[Dentry] {
     */
   def simplified: Dtab =
     Dtab({
-      val simple = this map {
-        case Dentry(prefix, dst) => Dentry(prefix, dst.simplified)
+      val simple = this map { case Dentry(prefix, dst) =>
+        Dentry(prefix, dst.simplified)
       }
 
       // Negative destinations are no-ops

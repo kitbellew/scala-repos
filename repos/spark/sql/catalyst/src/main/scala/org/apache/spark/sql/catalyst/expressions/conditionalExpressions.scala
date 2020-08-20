@@ -215,8 +215,8 @@ case class CaseWhen(
   }
 
   override def sql: String = {
-    val cases = branches.map {
-      case (c, v) => s" WHEN ${c.sql} THEN ${v.sql}"
+    val cases = branches.map { case (c, v) =>
+      s" WHEN ${c.sql} THEN ${v.sql}"
     }.mkString
     val elseCase = elseValue.map(" ELSE " + _.sql).getOrElse("")
     "CASE" + cases + elseCase + " END"

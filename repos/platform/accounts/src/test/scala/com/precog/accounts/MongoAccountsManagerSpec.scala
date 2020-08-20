@@ -139,8 +139,8 @@ object MongoAccountManagerSpec extends Specification with RealMongoSpecSupport {
           (new DateTime).minusMinutes(5))
         resolvedAccount <-
           accountManager.findAccountByResetToken(account.accountId, tokenId)
-      } yield resolvedAccount).copoint must beLike {
-        case -\/(_) => ok
+      } yield resolvedAccount).copoint must beLike { case -\/(_) =>
+        ok
       }
     }
 
