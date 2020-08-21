@@ -443,8 +443,8 @@ private[ml] trait RandomForestParams extends TreeEnsembleParams {
     set(featureSubsetStrategy, value)
 
   /** @group getParam */
-  final def getFeatureSubsetStrategy: String =
-    $(featureSubsetStrategy).toLowerCase
+  final def getFeatureSubsetStrategy: String = $(
+    featureSubsetStrategy).toLowerCase
 }
 
 private[ml] object RandomForestParams {

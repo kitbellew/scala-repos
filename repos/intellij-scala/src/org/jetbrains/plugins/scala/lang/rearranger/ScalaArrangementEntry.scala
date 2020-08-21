@@ -62,11 +62,10 @@ class ScalaArrangementEntry(
 
   override def hashCode = startOffset + endOffset
 
-  override def equals(o: Any) =
-    o match {
-      case other: ScalaArrangementEntry =>
-        other.getStartOffset == startOffset && other.getEndOffset == endOffset &&
-          other.getType == entryType && other.getParent == parent
-      case _ => false
-    }
+  override def equals(o: Any) = o match {
+    case other: ScalaArrangementEntry =>
+      other.getStartOffset == startOffset && other.getEndOffset == endOffset &&
+        other.getType == entryType && other.getParent == parent
+    case _ => false
+  }
 }

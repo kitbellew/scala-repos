@@ -85,22 +85,20 @@ private[json] object ScalaSigReader {
       s: MethodSymbol,
       argIdx: Int,
       typeArgIndex: Int): Class[_] = {
-    def findPrimitive(t: Type): Symbol =
-      t match {
-        case TypeRefType(ThisType(_), symbol, _) if isPrimitive(symbol) =>
-          symbol
-        case TypeRefType(_, _, TypeRefType(ThisType(_), symbol, _) :: xs) =>
-          symbol
-        case TypeRefType(_, symbol, Nil) => symbol
-        case TypeRefType(_, _, args) if typeArgIndex >= args.length =>
-          findPrimitive(args(0))
-        case TypeRefType(_, _, args) =>
-          args(typeArgIndex) match {
-            case ref @ TypeRefType(_, _, _) => findPrimitive(ref)
-            case x                          => Meta.fail("Unexpected type info " + x)
-          }
-        case x => Meta.fail("Unexpected type info " + x)
-      }
+    def findPrimitive(t: Type): Symbol = t match {
+      case TypeRefType(ThisType(_), symbol, _) if isPrimitive(symbol) => symbol
+      case TypeRefType(_, _, TypeRefType(ThisType(_), symbol, _) :: xs) =>
+        symbol
+      case TypeRefType(_, symbol, Nil) => symbol
+      case TypeRefType(_, _, args) if typeArgIndex >= args.length =>
+        findPrimitive(args(0))
+      case TypeRefType(_, _, args) =>
+        args(typeArgIndex) match {
+          case ref @ TypeRefType(_, _, _) => findPrimitive(ref)
+          case x                          => Meta.fail("Unexpected type info " + x)
+        }
+      case x => Meta.fail("Unexpected type info " + x)
+    }
     toClass(
       findPrimitive(s.children(argIdx).asInstanceOf[SymbolInfoSymbol].infoType))
   }
@@ -113,25 +111,23 @@ private[json] object ScalaSigReader {
     }
 
     @scala.annotation.tailrec
-    def findPrimitive(t: Type): Symbol =
-      t match {
-        case TypeRefType(ThisType(_), symbol, _) => symbol
-        case ref @ TypeRefType(_, _, _)          => findPrimitive(ref)
-        case x                                   => Meta.fail("Unexpected type info " + x)
-      }
+    def findPrimitive(t: Type): Symbol = t match {
+      case TypeRefType(ThisType(_), symbol, _) => symbol
+      case ref @ TypeRefType(_, _, _)          => findPrimitive(ref)
+      case x                                   => Meta.fail("Unexpected type info " + x)
+    }
     toClass(findPrimitive(t))
   }
 
-  private def toClass(s: Symbol) =
-    s.path match {
-      case "scala.Short"   => classOf[Short]
-      case "scala.Int"     => classOf[Int]
-      case "scala.Long"    => classOf[Long]
-      case "scala.Boolean" => classOf[Boolean]
-      case "scala.Float"   => classOf[Float]
-      case "scala.Double"  => classOf[Double]
-      case _               => classOf[AnyRef]
-    }
+  private def toClass(s: Symbol) = s.path match {
+    case "scala.Short"   => classOf[Short]
+    case "scala.Int"     => classOf[Int]
+    case "scala.Long"    => classOf[Long]
+    case "scala.Boolean" => classOf[Boolean]
+    case "scala.Float"   => classOf[Float]
+    case "scala.Double"  => classOf[Double]
+    case _               => classOf[AnyRef]
+  }
 
   private def isPrimitive(s: Symbol) = toClass(s) != classOf[AnyRef]
 

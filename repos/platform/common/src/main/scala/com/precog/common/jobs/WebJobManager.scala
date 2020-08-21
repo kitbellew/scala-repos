@@ -204,8 +204,8 @@ trait WebJobManager
     }
   }
 
-  def getStatus(jobId: JobId): Response[Option[Status]] =
-    withJsonClient { client =>
+  def getStatus(jobId: JobId): Response[Option[Status]] = withJsonClient {
+    client =>
       eitherT(client.get[JValue]("/jobs/" + jobId + "/status") map {
         case HttpResponse(HttpStatus(OK, _), _, Some(obj), _) =>
           obj.validated[Message] map (Status.fromMessage(_)) match {
@@ -218,10 +218,10 @@ trait WebJobManager
         case res =>
           left(unexpected(res))
       })
-    }
+  }
 
-  def listChannels(jobId: JobId): Response[Seq[String]] =
-    withJsonClient { client =>
+  def listChannels(jobId: JobId): Response[Seq[String]] = withJsonClient {
+    client =>
       eitherT(client.get[JValue]("/jobs/" + jobId + "/messages/") map {
         case HttpResponse(HttpStatus(OK, _), _, Some(obj), _) =>
           obj.validated[Vector[String]] map (right(_)) getOrElse left(
@@ -229,29 +229,28 @@ trait WebJobManager
         case res =>
           left(unexpected(res))
       })
-    }
+  }
 
   def addMessage(
       jobId: JobId,
       channel: String,
-      value: JValue): Response[Message] =
-    withJsonClient { client =>
-      eitherT(
-        client.post[JValue]("/jobs/" + jobId + "/messages/" + channel)(
-          value) map {
-          case HttpResponse(HttpStatus(Created, _), _, Some(obj), _) =>
-            obj.validated[Message] map (right(_)) getOrElse left(
-              "Invalid message returned from server:\n" + obj)
-          case res =>
-            left(unexpected(res))
-        })
-    }
+      value: JValue): Response[Message] = withJsonClient { client =>
+    eitherT(
+      client.post[JValue]("/jobs/" + jobId + "/messages/" + channel)(
+        value) map {
+        case HttpResponse(HttpStatus(Created, _), _, Some(obj), _) =>
+          obj.validated[Message] map (right(_)) getOrElse left(
+            "Invalid message returned from server:\n" + obj)
+        case res =>
+          left(unexpected(res))
+      })
+  }
 
   def listMessages(
       jobId: JobId,
       channel: String,
-      since: Option[MessageId]): Response[Seq[Message]] =
-    withJsonClient { client0 =>
+      since: Option[MessageId]): Response[Seq[Message]] = withJsonClient {
+    client0 =>
       val client = since map { id =>
         client0.query("after", id.toString)
       } getOrElse client0
@@ -263,7 +262,7 @@ trait WebJobManager
           case res =>
             left(unexpected(res))
         })
-    }
+  }
 
   protected def transition(jobId: JobId)(
       t: JobState => Either[String, JobState]): Response[Either[String, Job]] =

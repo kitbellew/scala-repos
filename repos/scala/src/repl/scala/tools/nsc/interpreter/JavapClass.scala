@@ -73,21 +73,20 @@ class JavapClass(
   /** Find bytes. Handle "-", "Foo#bar" (by ignoring member), "#bar" (by taking "bar").
     *  @return the path to use for filtering, and the byte array
     */
-  private def bytesFor(path: String) =
-    Try {
-      val req = path match {
-        case "-"                                    => intp.mostRecentVar
-        case HashSplit(prefix, _) if prefix != null => prefix
-        case HashSplit(_, member) if member != null => member
-        case s                                      => s
-      }
-      (path, findBytes(req)) match {
-        case (_, bytes) if bytes.isEmpty =>
-          throw new FileNotFoundException(
-            s"Could not find class bytes for '$path'")
-        case ok => ok
-      }
+  private def bytesFor(path: String) = Try {
+    val req = path match {
+      case "-"                                    => intp.mostRecentVar
+      case HashSplit(prefix, _) if prefix != null => prefix
+      case HashSplit(_, member) if member != null => member
+      case s                                      => s
     }
+    (path, findBytes(req)) match {
+      case (_, bytes) if bytes.isEmpty =>
+        throw new FileNotFoundException(
+          s"Could not find class bytes for '$path'")
+      case ok => ok
+    }
+  }
 
   def findBytes(path: String): Array[Byte] =
     tryFile(path) getOrElse tryClass(path)
@@ -156,9 +155,8 @@ class JavapClass(
     implicit protected class Failer[A](a: => A) {
       def orFailed[B >: A](b: => B) = if (failed) b else a
     }
-    protected def noToolError =
-      new JpError(
-        s"No javap tool available: ${getClass.getName} failed to initialize.")
+    protected def noToolError = new JpError(
+      s"No javap tool available: ${getClass.getName} failed to initialize.")
 
     // output filtering support
     val writer = new CharArrayWriter
@@ -290,11 +288,10 @@ class JavapClass(
 
       def inputNamed(name: String): Try[ByteAry] =
         (managed find (_._1 == name)).get._2
-      def managedFile(name: String, kind: Kind) =
-        kind match {
-          case CLASS => fileObjectForInput(name, inputNamed(name), kind)
-          case _     => null
-        }
+      def managedFile(name: String, kind: Kind) = kind match {
+        case CLASS => fileObjectForInput(name, inputNamed(name), kind)
+        case _     => null
+      }
       // todo: just wrap it as scala abstractfile and adapt it uniformly
       def fileObjectForInput(
           name: String,
@@ -378,11 +375,10 @@ class JavapClass(
 
     /** Run the tool. */
     def apply(options: Seq[String], filter: Boolean)(
-        inputs: Seq[Input]): List[JpResult] =
-      (inputs map {
-        case (klass, Success(_)) => applyOne(options, filter, klass, inputs).get
-        case (_, Failure(e))     => JpResult(e.toString)
-      }).toList orFailed List(noToolError)
+        inputs: Seq[Input]): List[JpResult] = (inputs map {
+      case (klass, Success(_)) => applyOne(options, filter, klass, inputs).get
+      case (_, Failure(e))     => JpResult(e.toString)
+    }).toList orFailed List(noToolError)
   }
 
   object JavapTool {
@@ -519,13 +515,12 @@ object Javap {
     require(arg startsWith "-")
     // arg matches opt "-foo/-f" if prefix of -foo or exactly -f
     val r = """(-[^/]*)(?:/(-.))?""".r
-    def maybe(opt: String, s: String): Option[String] =
-      opt match {
-        // disambiguate by preferring short form
-        case r(lf, sf) if s == sf         => Some(sf)
-        case r(lf, sf) if lf startsWith s => Some(lf)
-        case _                            => None
-      }
+    def maybe(opt: String, s: String): Option[String] = opt match {
+      // disambiguate by preferring short form
+      case r(lf, sf) if s == sf         => Some(sf)
+      case r(lf, sf) if lf startsWith s => Some(lf)
+      case _                            => None
+    }
     def candidates(s: String) = (helps map (h => maybe(h._1, s))).flatten
     // one candidate or one single-char candidate
     def uniqueOf(maybes: Seq[String]) = {
@@ -552,10 +547,9 @@ object Javap {
   def helpText: String =
     (helps map { case (name, help) => f"$name%-12.12s$help%n" }).mkString
 
-  def helper(pw: PrintWriter) =
-    new Showable {
-      def show() = pw print helpText
-    }
+  def helper(pw: PrintWriter) = new Showable {
+    def show() = pw print helpText
+  }
 
   val DefaultOptions = List("-protected", "-verbose")
 }

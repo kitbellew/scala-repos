@@ -40,8 +40,8 @@ class MenuSpec
       classOf[jfxsc.Menu],
       classOf[Menu]) {
 
-  override protected def getScalaClassInstance =
-    new Menu(new jfxsc.Menu("default"))
+  override protected def getScalaClassInstance = new Menu(
+    new jfxsc.Menu("default"))
 
   override protected def getJavaClassInstance = new jfxsc.Menu("default")
 

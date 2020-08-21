@@ -6,15 +6,14 @@ package com.twitter.util
 
 @deprecated("Prefer using com.twitter.bijection.Bijection", "6.17.1")
 object Bijection {
-  implicit def identity[A]: Bijection[A, A] =
-    new Bijection[A, A] {
-      def apply(a: A) = a
-      def invert(a: A) = a
+  implicit def identity[A]: Bijection[A, A] = new Bijection[A, A] {
+    def apply(a: A) = a
+    def invert(a: A) = a
 
-      override def inverse = this
-      override def andThen[T](g: Bijection[A, T]) = g
-      override def compose[T](g: Bijection[T, A]) = g
-    }
+    override def inverse = this
+    override def andThen[T](g: Bijection[A, T]) = g
+    override def compose[T](g: Bijection[T, A]) = g
+  }
 }
 
 /**

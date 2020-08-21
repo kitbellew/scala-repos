@@ -42,8 +42,8 @@ class JavaRDD[T](val rdd: RDD[T])(implicit val classTag: ClassTag[T])
     * it is computed. This can only be used to assign a new storage level if the RDD does not
     * have a storage level set yet..
     */
-  def persist(newLevel: StorageLevel): JavaRDD[T] =
-    wrapRDD(rdd.persist(newLevel))
+  def persist(newLevel: StorageLevel): JavaRDD[T] = wrapRDD(
+    rdd.persist(newLevel))
 
   /**
     * Mark the RDD as non-persistent, and remove all blocks for it from memory and disk.
@@ -56,8 +56,8 @@ class JavaRDD[T](val rdd: RDD[T])(implicit val classTag: ClassTag[T])
     *
     * @param blocking Whether to block until all blocks are deleted.
     */
-  def unpersist(blocking: Boolean): JavaRDD[T] =
-    wrapRDD(rdd.unpersist(blocking))
+  def unpersist(blocking: Boolean): JavaRDD[T] = wrapRDD(
+    rdd.unpersist(blocking))
 
   // Transformations (return a new RDD)
 
@@ -69,8 +69,8 @@ class JavaRDD[T](val rdd: RDD[T])(implicit val classTag: ClassTag[T])
   /**
     * Return a new RDD containing the distinct elements in this RDD.
     */
-  def distinct(numPartitions: Int): JavaRDD[T] =
-    wrapRDD(rdd.distinct(numPartitions))
+  def distinct(numPartitions: Int): JavaRDD[T] = wrapRDD(
+    rdd.distinct(numPartitions))
 
   /**
     * Return a new RDD containing only the elements that satisfy a predicate.
@@ -160,8 +160,8 @@ class JavaRDD[T](val rdd: RDD[T])(implicit val classTag: ClassTag[T])
     *
     * Note that this method performs a shuffle internally.
     */
-  def intersection(other: JavaRDD[T]): JavaRDD[T] =
-    wrapRDD(rdd.intersection(other.rdd))
+  def intersection(other: JavaRDD[T]): JavaRDD[T] = wrapRDD(
+    rdd.intersection(other.rdd))
 
   /**
     * Return an RDD with the elements from `this` that are not in `other`.

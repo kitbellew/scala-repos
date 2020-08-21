@@ -52,11 +52,10 @@ abstract class AbstractSourceCodeGenerator(model: m.Model)
 
     def compoundType(types: Seq[String]): String = {
       if (hlistEnabled) {
-        def mkHList(types: List[String]): String =
-          types match {
-            case Nil       => "HNil"
-            case e :: tail => s"HCons[$e," + mkHList(tail) + "]"
-          }
+        def mkHList(types: List[String]): String = types match {
+          case Nil       => "HNil"
+          case e :: tail => s"HCons[$e," + mkHList(tail) + "]"
+        }
         mkHList(types.toList)
       } else compoundValue(types)
     }
@@ -70,9 +69,8 @@ abstract class AbstractSourceCodeGenerator(model: m.Model)
           "Cannot generate tuple for > 22 columns, please set hlistEnable=true or override compound.")
     }
 
-    def factory =
-      if (columns.size == 1) TableClass.elementType
-      else s"${TableClass.elementType}.tupled"
+    def factory = if (columns.size == 1) TableClass.elementType
+    else s"${TableClass.elementType}.tupled"
     def extractor = s"${TableClass.elementType}.unapply"
 
     trait EntityTypeDef extends super.EntityTypeDef {
@@ -234,21 +232,19 @@ class $name(_tableTag: Tag) extends Table[$elementType](_tableTag, ${args
 
     class PrimaryKeyDef(model: m.PrimaryKey)
         extends super.PrimaryKeyDef(model) {
-      def code =
-        s"""val $name = primaryKey("$dbName", ${compoundValue(
-          columns.map(_.name))})"""
+      def code = s"""val $name = primaryKey("$dbName", ${compoundValue(
+        columns.map(_.name))})"""
     }
 
     class ForeignKeyDef(model: m.ForeignKey)
         extends super.ForeignKeyDef(model) {
-      def actionCode(action: ForeignKeyAction) =
-        action match {
-          case ForeignKeyAction.Cascade    => "ForeignKeyAction.Cascade"
-          case ForeignKeyAction.Restrict   => "ForeignKeyAction.Restrict"
-          case ForeignKeyAction.NoAction   => "ForeignKeyAction.NoAction"
-          case ForeignKeyAction.SetNull    => "ForeignKeyAction.SetNull"
-          case ForeignKeyAction.SetDefault => "ForeignKeyAction.SetDefault"
-        }
+      def actionCode(action: ForeignKeyAction) = action match {
+        case ForeignKeyAction.Cascade    => "ForeignKeyAction.Cascade"
+        case ForeignKeyAction.Restrict   => "ForeignKeyAction.Restrict"
+        case ForeignKeyAction.NoAction   => "ForeignKeyAction.NoAction"
+        case ForeignKeyAction.SetNull    => "ForeignKeyAction.SetNull"
+        case ForeignKeyAction.SetDefault => "ForeignKeyAction.SetDefault"
+      }
       def code = {
         val pkTable = referencedTable.TableValue.name
         val (pkColumns, fkColumns) =

@@ -203,9 +203,8 @@ class DefaultIngestProcessingSelectors(
   def selectors(
       apiKey: APIKey,
       path: Path,
-      authorities: Authorities): List[IngestProcessingSelector] =
-    List(
-      new MimeIngestProcessingSelector(apiKey, path, authorities),
-      new JSONIngestProcessingSelector(apiKey, path, authorities)
-    )
+      authorities: Authorities): List[IngestProcessingSelector] = List(
+    new MimeIngestProcessingSelector(apiKey, path, authorities),
+    new JSONIngestProcessingSelector(apiKey, path, authorities)
+  )
 }

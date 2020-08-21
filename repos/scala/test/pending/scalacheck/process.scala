@@ -72,10 +72,10 @@ object IO {
     else codeSource.getLocation
   }
   def classLocationFile(cl: Class[_]): File = toFile(classLocation(cl))
-  def classLocation[T](implicit mf: Manifest[T]): URL =
-    classLocation(mf.erasure)
-  def classLocationFile[T](implicit mf: Manifest[T]): File =
-    classLocationFile(mf.erasure)
+  def classLocation[T](implicit mf: Manifest[T]): URL = classLocation(
+    mf.erasure)
+  def classLocationFile[T](implicit mf: Manifest[T]): File = classLocationFile(
+    mf.erasure)
 
   def toFile(url: URL) =
     try { new File(url.toURI) }

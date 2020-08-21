@@ -43,8 +43,8 @@ class WritableImageSpec
       classOf[jfxsi.WritableImage],
       classOf[WritableImage]) {
 
-  override protected def getScalaClassInstance =
-    new WritableImage(getJavaClassInstance)
+  override protected def getScalaClassInstance = new WritableImage(
+    getJavaClassInstance)
 
   override protected def getJavaClassInstance = new jfxsi.WritableImage(1, 1)
 }

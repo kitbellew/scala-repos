@@ -41,11 +41,10 @@ private[relation] object RelationRepo {
 
   def unfollowAll(u1: ID): Funit = $remove(Json.obj("u1" -> u1))
 
-  private def save(u1: ID, u2: ID, relation: Relation): Funit =
-    $save(
-      makeId(u1, u2),
-      Json.obj("u1" -> u1, "u2" -> u2, "r" -> relation)
-    )
+  private def save(u1: ID, u2: ID, relation: Relation): Funit = $save(
+    makeId(u1, u2),
+    Json.obj("u1" -> u1, "u2" -> u2, "r" -> relation)
+  )
 
   def remove(u1: ID, u2: ID): Funit = $remove byId makeId(u1, u2)
 

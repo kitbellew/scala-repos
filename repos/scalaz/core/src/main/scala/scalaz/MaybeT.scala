@@ -48,14 +48,14 @@ final case class MaybeT[F[_], A](run: F[Maybe[A]]) {
 
   def isEmpty(implicit F: Functor[F]): F[Boolean] = mapO(_.isEmpty)
 
-  def filter(f: A => Boolean)(implicit F: Functor[F]): MaybeT[F, A] =
-    MaybeT(F.map(self.run) { _ filter f })
+  def filter(f: A => Boolean)(implicit F: Functor[F]): MaybeT[F, A] = MaybeT(
+    F.map(self.run) { _ filter f })
 
-  def cata[X](just: A => X, empty: => X)(implicit F: Functor[F]): F[X] =
-    mapO(_.cata(just, empty))
+  def cata[X](just: A => X, empty: => X)(implicit F: Functor[F]): F[X] = mapO(
+    _.cata(just, empty))
 
-  def getOrElse(default: => A)(implicit F: Functor[F]): F[A] =
-    mapO(_.getOrElse(default))
+  def getOrElse(default: => A)(implicit F: Functor[F]): F[A] = mapO(
+    _.getOrElse(default))
 
   /** Alias for `getOrElse`. */
   def |(default: => A)(implicit F: Functor[F]): F[A] =
@@ -68,11 +68,11 @@ final case class MaybeT[F[_], A](run: F[Maybe[A]]) {
 
   def unary_~(implicit F0: Functor[F], M0: Monoid[A]): F[A] = orZero
 
-  def exists(f: A => Boolean)(implicit F: Functor[F]): F[Boolean] =
-    mapO(_.exists(f))
+  def exists(f: A => Boolean)(implicit F: Functor[F]): F[Boolean] = mapO(
+    _.exists(f))
 
-  def forall(f: A => Boolean)(implicit F: Functor[F]): F[Boolean] =
-    mapO(_.forall(f))
+  def forall(f: A => Boolean)(implicit F: Functor[F]): F[Boolean] = mapO(
+    _.forall(f))
 
   def orElse(a: => MaybeT[F, A])(implicit F: Monad[F]): MaybeT[F, A] =
     MaybeT(F.bind(run)(_.cata(a => F.point(just(a)), a.run)))
@@ -80,11 +80,11 @@ final case class MaybeT[F[_], A](run: F[Maybe[A]]) {
   def |||(a: => MaybeT[F, A])(implicit F: Monad[F]): MaybeT[F, A] =
     orElse(a)
 
-  def toRight[E](e: => E)(implicit F: Functor[F]): EitherT[F, E, A] =
-    EitherT(F.map(run)(_.toRight(e)))
+  def toRight[E](e: => E)(implicit F: Functor[F]): EitherT[F, E, A] = EitherT(
+    F.map(run)(_.toRight(e)))
 
-  def toLeft[B](b: => B)(implicit F: Functor[F]): EitherT[F, A, B] =
-    EitherT(F.map(run)(_.toLeft(b)))
+  def toLeft[B](b: => B)(implicit F: Functor[F]): EitherT[F, A, B] = EitherT(
+    F.map(run)(_.toLeft(b)))
 
   private def mapO[B](f: Maybe[A] => B)(implicit F: Functor[F]) = F.map(run)(f)
 }

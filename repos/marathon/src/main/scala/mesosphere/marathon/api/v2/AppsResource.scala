@@ -59,8 +59,8 @@ class AppsResource @Inject() (
       @QueryParam("id") id: String,
       @QueryParam("label") label: String,
       @QueryParam("embed") embed: java.util.Set[String],
-      @Context req: HttpServletRequest): Response =
-    authenticated(req) { implicit identity =>
+      @Context req: HttpServletRequest): Response = authenticated(req) {
+    implicit identity =>
       val selector =
         selectAuthorized(search(Option(cmd), Option(id), Option(label)))
       // additional embeds are deprecated!
@@ -68,15 +68,15 @@ class AppsResource @Inject() (
         AppInfo.Embed.Counts + AppInfo.Embed.Deployments
       val mapped = result(appInfoService.selectAppsBy(selector, resolvedEmbed))
       Response.ok(jsonObjString("apps" -> mapped)).build()
-    }
+  }
 
   @POST
   @Timed
   def create(
       body: Array[Byte],
       @DefaultValue("false") @QueryParam("force") force: Boolean,
-      @Context req: HttpServletRequest): Response =
-    authenticated(req) { implicit identity =>
+      @Context req: HttpServletRequest): Response = authenticated(req) {
+    implicit identity =>
       withValid(Json.parse(body).as[AppDefinition].withCanonizedIds()) {
         appDef =>
           val now = clock.now()
@@ -85,12 +85,11 @@ class AppsResource @Inject() (
 
           checkAuthorization(CreateApp, app)
 
-          def createOrThrow(opt: Option[AppDefinition]) =
-            opt
-              .map(_ =>
-                throw new ConflictingChangeException(
-                  s"An app with id [${app.id}] already exists."))
-              .getOrElse(app)
+          def createOrThrow(opt: Option[AppDefinition]) = opt
+            .map(_ =>
+              throw new ConflictingChangeException(
+                s"An app with id [${app.id}] already exists."))
+            .getOrElse(app)
 
           val plan = result(
             groupManager.updateApp(app.id, createOrThrow, app.version, force))
@@ -108,7 +107,7 @@ class AppsResource @Inject() (
             .entity(jsonString(appWithDeployments))
             .build()
       }
-    }
+  }
 
   @GET
   @Path("""{id:.+}""")
@@ -116,8 +115,8 @@ class AppsResource @Inject() (
   def show(
       @PathParam("id") id: String,
       @QueryParam("embed") embed: java.util.Set[String],
-      @Context req: HttpServletRequest): Response =
-    authenticated(req) { implicit identity =>
+      @Context req: HttpServletRequest): Response = authenticated(req) {
+    implicit identity =>
       val resolvedEmbed =
         InfoEmbedResolver.resolveApp(embed.asScala.toSet) ++ Set(
           // deprecated. For compatibility.
@@ -154,7 +153,7 @@ class AppsResource @Inject() (
         case ListApps(gid) => transitiveApps(gid.toRootPath)
         case _             => app(id.toRootPath)
       }
-    }
+  }
 
   @PUT
   @Path("""{id:.+}""")
@@ -163,8 +162,8 @@ class AppsResource @Inject() (
       @PathParam("id") id: String,
       body: Array[Byte],
       @DefaultValue("false") @QueryParam("force") force: Boolean,
-      @Context req: HttpServletRequest): Response =
-    authenticated(req) { implicit identity =>
+      @Context req: HttpServletRequest): Response = authenticated(req) {
+    implicit identity =>
       val appId = id.toRootPath
       val now = clock.now()
 
@@ -184,21 +183,21 @@ class AppsResource @Inject() (
           maybePostEvent(req, plan.target.app(appId).get)
           deploymentResult(plan, response)
       }
-    }
+  }
 
   @PUT
   @Timed
   def replaceMultiple(
       @DefaultValue("false") @QueryParam("force") force: Boolean,
       body: Array[Byte],
-      @Context req: HttpServletRequest): Response =
-    authenticated(req) { implicit identity =>
+      @Context req: HttpServletRequest): Response = authenticated(req) {
+    implicit identity =>
       withValid(Json.parse(body).as[Seq[AppUpdate]].map(_.withCanonizedIds())) {
         updates =>
           val version = clock.now()
 
-          def updateGroup(root: Group): Group =
-            updates.foldLeft(root) { (group, update) =>
+          def updateGroup(root: Group): Group = updates.foldLeft(root) {
+            (group, update) =>
               update.id match {
                 case Some(id) =>
                   group.updateApp(
@@ -207,13 +206,13 @@ class AppsResource @Inject() (
                     version)
                 case None => group
               }
-            }
+          }
 
           deploymentResult(
             result(
               groupManager.update(PathId.empty, updateGroup, version, force)))
       }
-    }
+  }
 
   @DELETE
   @Path("""{id:.+}""")
@@ -221,8 +220,8 @@ class AppsResource @Inject() (
   def delete(
       @DefaultValue("true") @QueryParam("force") force: Boolean,
       @PathParam("id") id: String,
-      @Context req: HttpServletRequest): Response =
-    authenticated(req) { implicit identity =>
+      @Context req: HttpServletRequest): Response = authenticated(req) {
+    implicit identity =>
       val appId = id.toRootPath
 
       def deleteAppFromGroup(group: Group) = {
@@ -236,27 +235,26 @@ class AppsResource @Inject() (
       deploymentResult(
         result(
           groupManager.update(appId.parent, deleteAppFromGroup, force = force)))
-    }
+  }
 
   @Path("{appId:.+}/tasks")
   def appTasksResource(): AppTasksResource = appTasksRes
 
   @Path("{appId:.+}/versions")
-  def appVersionsResource(): AppVersionsResource =
-    new AppVersionsResource(
-      service,
-      groupManager,
-      authenticator,
-      authorizer,
-      config)
+  def appVersionsResource(): AppVersionsResource = new AppVersionsResource(
+    service,
+    groupManager,
+    authenticator,
+    authorizer,
+    config)
 
   @POST
   @Path("{id:.+}/restart")
   def restart(
       @PathParam("id") id: String,
       @DefaultValue("false") @QueryParam("force") force: Boolean,
-      @Context req: HttpServletRequest): Response =
-    authenticated(req) { implicit identity =>
+      @Context req: HttpServletRequest): Response = authenticated(req) {
+    implicit identity =>
       val appId = id.toRootPath
 
       def markForRestartingOrThrow(opt: Option[AppDefinition]) = {
@@ -276,7 +274,7 @@ class AppsResource @Inject() (
       )
 
       deploymentResult(restartDeployment)
-    }
+  }
 
   private def updateOrCreate(
       appId: PathId,

@@ -270,8 +270,8 @@ class ActorContextSpec extends TypedSpec(ConfigFactory.parseString("""|akka {
 
     protected def stop(ref: ActorRef[Command]) = ref ! Stop
 
-    def `00 must canonicalize behaviors`(): Unit =
-      sync(setup("ctx00") { (ctx, startWith) ⇒
+    def `00 must canonicalize behaviors`(): Unit = sync(
+      setup("ctx00") { (ctx, startWith) ⇒
         val self = ctx.self
         startWith
           .keep { subj ⇒
@@ -294,8 +294,8 @@ class ActorContextSpec extends TypedSpec(ConfigFactory.parseString("""|akka {
           }
       })
 
-    def `01 must correctly wire the lifecycle hooks`(): Unit =
-      sync(setup("ctx01") { (ctx, startWith) ⇒
+    def `01 must correctly wire the lifecycle hooks`(): Unit = sync(
+      setup("ctx01") { (ctx, startWith) ⇒
         val self = ctx.self
         val ex = new Exception("KABOOM1")
         startWith { subj ⇒
@@ -330,8 +330,8 @@ class ActorContextSpec extends TypedSpec(ConfigFactory.parseString("""|akka {
           }
       })
 
-    def `03 must restart and stop a child actor`(): Unit =
-      sync(setup("ctx03") { (ctx, startWith) ⇒
+    def `03 must restart and stop a child actor`(): Unit = sync(setup("ctx03") {
+      (ctx, startWith) ⇒
         val self = ctx.self
         val ex = new Exception("KABOOM2")
         startWith
@@ -368,31 +368,28 @@ class ActorContextSpec extends TypedSpec(ConfigFactory.parseString("""|akka {
           .expectTermination(500.millis) { (t, subj) ⇒
             t.ref should ===(subj)
           }
-      })
+    })
 
-    def `04 must stop a child actor`(): Unit =
-      sync(setup("ctx04") { (ctx, startWith) ⇒
-        val self = ctx.self
-        startWith
-          .mkChild(
-            Some("A"),
-            ctx.spawnAdapter(ChildEvent),
-            self,
-            inert = true) { case (subj, child) ⇒
+    def `04 must stop a child actor`()
+        : Unit = sync(setup("ctx04") { (ctx, startWith) ⇒
+      val self = ctx.self
+      startWith
+        .mkChild(Some("A"), ctx.spawnAdapter(ChildEvent), self, inert = true) {
+          case (subj, child) ⇒
             subj ! Kill(child, self)
             child
-          }
-          .expectMessageKeep(500.millis) { (msg, child) ⇒
-            msg should ===(Killed)
-            ctx.watch(child)
-          }
-          .expectTermination(500.millis) { (t, child) ⇒
-            t.ref should ===(child)
-          }
-      })
+        }
+        .expectMessageKeep(500.millis) { (msg, child) ⇒
+          msg should ===(Killed)
+          ctx.watch(child)
+        }
+        .expectTermination(500.millis) { (t, child) ⇒
+          t.ref should ===(child)
+        }
+    })
 
-    def `05 must reset behavior upon Restart`(): Unit =
-      sync(setup("ctx05") { (ctx, startWith) ⇒
+    def `05 must reset behavior upon Restart`(): Unit = sync(
+      setup("ctx05") { (ctx, startWith) ⇒
         val self = ctx.self
         val ex = new Exception("KABOOM05")
         startWith
@@ -415,8 +412,8 @@ class ActorContextSpec extends TypedSpec(ConfigFactory.parseString("""|akka {
           .stimulate(_ ! Ping(self), _ ⇒ Pong1)
       })
 
-    def `06 must not reset behavior upon Resume`(): Unit =
-      sync(setup("ctx06") { (ctx, startWith) ⇒
+    def `06 must not reset behavior upon Resume`(): Unit = sync(
+      setup("ctx06") { (ctx, startWith) ⇒
         val self = ctx.self
         val ex = new Exception("KABOOM05")
         startWith
@@ -433,8 +430,8 @@ class ActorContextSpec extends TypedSpec(ConfigFactory.parseString("""|akka {
           .stimulate(_ ! Ping(self), _ ⇒ Pong2)
       })
 
-    def `07 must stop upon Stop`(): Unit =
-      sync(setup("ctx07") { (ctx, startWith) ⇒
+    def `07 must stop upon Stop`(): Unit = sync(
+      setup("ctx07") { (ctx, startWith) ⇒
         val self = ctx.self
         val ex = new Exception("KABOOM05")
         startWith
@@ -456,8 +453,8 @@ class ActorContextSpec extends TypedSpec(ConfigFactory.parseString("""|akka {
           }
       })
 
-    def `08 must not stop non-child actor`(): Unit =
-      sync(setup("ctx08") { (ctx, startWith) ⇒
+    def `08 must not stop non-child actor`(): Unit = sync(
+      setup("ctx08") { (ctx, startWith) ⇒
         val self = ctx.self
         startWith
           .mkChild(Some("A"), ctx.spawnAdapter(ChildEvent), self) { pair ⇒
@@ -474,8 +471,8 @@ class ActorContextSpec extends TypedSpec(ConfigFactory.parseString("""|akka {
           .stimulate(_ ! Ping(self), _ ⇒ Pong1)
       })
 
-    def `10 must watch a child actor before its termination`(): Unit =
-      sync(setup("ctx10") { (ctx, startWith) ⇒
+    def `10 must watch a child actor before its termination`(): Unit = sync(
+      setup("ctx10") { (ctx, startWith) ⇒
         val self = ctx.self
         startWith
           .mkChild(None, ctx.spawnAdapter(ChildEvent), self) {
@@ -492,8 +489,8 @@ class ActorContextSpec extends TypedSpec(ConfigFactory.parseString("""|akka {
           }
       })
 
-    def `11 must watch a child actor after its termination`(): Unit =
-      sync(setup("ctx11") { (ctx, startWith) ⇒
+    def `11 must watch a child actor after its termination`(): Unit = sync(
+      setup("ctx11") { (ctx, startWith) ⇒
         val self = ctx.self
         startWith
           .mkChild(None, ctx.spawnAdapter(ChildEvent), self)
@@ -511,8 +508,8 @@ class ActorContextSpec extends TypedSpec(ConfigFactory.parseString("""|akka {
           }
       })
 
-    def `12 must unwatch a child actor before its termination`(): Unit =
-      sync(setup("ctx12") { (ctx, startWith) ⇒
+    def `12 must unwatch a child actor before its termination`(): Unit = sync(
+      setup("ctx12") { (ctx, startWith) ⇒
         val self = ctx.self
         startWith
           .mkChild(None, ctx.spawnAdapter(ChildEvent), self)
@@ -534,8 +531,8 @@ class ActorContextSpec extends TypedSpec(ConfigFactory.parseString("""|akka {
           }
       })
 
-    def `13 must terminate upon not handling Terminated`(): Unit =
-      sync(setup("ctx13") { (ctx, startWith) ⇒
+    def `13 must terminate upon not handling Terminated`(): Unit = sync(
+      setup("ctx13") { (ctx, startWith) ⇒
         val self = ctx.self
         startWith
           .mkChild(None, ctx.spawnAdapter(ChildEvent), self)
@@ -559,8 +556,8 @@ class ActorContextSpec extends TypedSpec(ConfigFactory.parseString("""|akka {
           }
       })
 
-    def `20 must return the right context info`(): Unit =
-      sync(setup("ctx20") { (ctx, startWith) ⇒
+    def `20 must return the right context info`(): Unit = sync(
+      setup("ctx20") { (ctx, startWith) ⇒
         startWith
           .keep(_ ! GetInfo(ctx.self))
           .expectMessage(500.millis) {
@@ -572,8 +569,8 @@ class ActorContextSpec extends TypedSpec(ConfigFactory.parseString("""|akka {
           }
       })
 
-    def `21 must return right info about children`(): Unit =
-      sync(setup("ctx21") { (ctx, startWith) ⇒
+    def `21 must return right info about children`(): Unit = sync(
+      setup("ctx21") { (ctx, startWith) ⇒
         val self = ctx.self
         startWith
           .mkChild(Some("B"), ctx.spawnAdapter(ChildEvent), self)
@@ -582,8 +579,8 @@ class ActorContextSpec extends TypedSpec(ConfigFactory.parseString("""|akka {
           .stimulate(_._1 ! GetChildren(self), x ⇒ Children(Set(x._2)))
       })
 
-    def `30 must set small receive timeout`(): Unit =
-      sync(setup("ctx30") { (ctx, startWith) ⇒
+    def `30 must set small receive timeout`(): Unit = sync(
+      setup("ctx30") { (ctx, startWith) ⇒
         val self = ctx.self
         startWith
           .stimulate(_ ! SetTimeout(1.nano, self), _ ⇒ TimeoutSet)
@@ -592,8 +589,8 @@ class ActorContextSpec extends TypedSpec(ConfigFactory.parseString("""|akka {
           }
       })
 
-    def `31 must set large receive timeout`(): Unit =
-      sync(setup("ctx31") { (ctx, startWith) ⇒
+    def `31 must set large receive timeout`(): Unit = sync(
+      setup("ctx31") { (ctx, startWith) ⇒
         val self = ctx.self
         startWith
           .stimulate(_ ! SetTimeout(1.minute, self), _ ⇒ TimeoutSet)
@@ -604,16 +601,16 @@ class ActorContextSpec extends TypedSpec(ConfigFactory.parseString("""|akka {
           .stimulate(_ ! Ping(self), _ ⇒ Pong1)
       })
 
-    def `32 must schedule a message`(): Unit =
-      sync(setup("ctx32") { (ctx, startWith) ⇒
+    def `32 must schedule a message`(): Unit = sync(
+      setup("ctx32") { (ctx, startWith) ⇒
         startWith(_ ! Schedule(1.nano, ctx.self, Pong2, ctx.self))
           .expectMultipleMessages(500.millis, 2) { (msgs, _) ⇒
             msgs should ===(Scheduled :: Pong2 :: Nil)
           }
       })
 
-    def `40 must create a working adapter`(): Unit =
-      sync(setup("ctx40") { (ctx, startWith) ⇒
+    def `40 must create a working adapter`(): Unit = sync(
+      setup("ctx40") { (ctx, startWith) ⇒
         startWith
           .keep { subj ⇒
             subj ! GetAdapter(ctx.self)

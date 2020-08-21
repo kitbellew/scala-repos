@@ -104,18 +104,17 @@ class SymbolNamer(
   def get(s: Symbol): Option[String] =
     map.get(s) orElse parent.flatMap(_.get(s))
 
-  def apply(s: Symbol): String =
-    get(s).getOrElse(s match {
-      case a: AnonSymbol =>
-        val n = create(treeSymbolPrefix)
-        update(a, n)
-        n
-      case a: AnonTypeSymbol =>
-        val n = create(typeSymbolPrefix)
-        update(a, n)
-        n
-      case s => namedSymbolName(s)
-    })
+  def apply(s: Symbol): String = get(s).getOrElse(s match {
+    case a: AnonSymbol =>
+      val n = create(treeSymbolPrefix)
+      update(a, n)
+      n
+    case a: AnonTypeSymbol =>
+      val n = create(typeSymbolPrefix)
+      update(a, n)
+      n
+    case s => namedSymbolName(s)
+  })
 
   def namedSymbolName(s: Symbol) = s.name
 

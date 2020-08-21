@@ -106,52 +106,48 @@ object CacheNodeGroup {
 
   def apply(
       group: Group[SocketAddress],
-      useOnlyResolvedAddress: Boolean = false) =
-    group collect {
-      case node: CacheNode => node
-      // Note: we ignore weights here
-      case ia: InetSocketAddress
-          if useOnlyResolvedAddress && !ia.isUnresolved =>
-        //Note: unresolvedAddresses won't be added even if they are able
-        // to be resolved after added
-        val key = ia.getAddress.getHostAddress + ":" + ia.getPort
-        new CacheNode(ia.getHostName, ia.getPort, 1, Some(key))
-      case ia: InetSocketAddress if !useOnlyResolvedAddress =>
-        new CacheNode(ia.getHostName, ia.getPort, 1, None)
-    }
+      useOnlyResolvedAddress: Boolean = false) = group collect {
+    case node: CacheNode => node
+    // Note: we ignore weights here
+    case ia: InetSocketAddress if useOnlyResolvedAddress && !ia.isUnresolved =>
+      //Note: unresolvedAddresses won't be added even if they are able
+      // to be resolved after added
+      val key = ia.getAddress.getHostAddress + ":" + ia.getPort
+      new CacheNode(ia.getHostName, ia.getPort, 1, Some(key))
+    case ia: InetSocketAddress if !useOnlyResolvedAddress =>
+      new CacheNode(ia.getHostName, ia.getPort, 1, None)
+  }
 
-  def newStaticGroup(cacheNodeSet: Set[CacheNode]) =
-    Group(cacheNodeSet.toSeq: _*)
+  def newStaticGroup(cacheNodeSet: Set[CacheNode]) = Group(
+    cacheNodeSet.toSeq: _*)
 
   def newZkCacheNodeGroup(
       path: String,
       zkClient: ZooKeeperClient,
       statsReceiver: StatsReceiver = NullStatsReceiver
-  ) =
-    new ZookeeperCacheNodeGroup(
-      zkPath = path,
-      zkClient = zkClient,
-      statsReceiver = statsReceiver)
+  ) = new ZookeeperCacheNodeGroup(
+    zkPath = path,
+    zkClient = zkClient,
+    statsReceiver = statsReceiver)
 
   private[finagle] def fromVarAddr(
       va: Var[Addr],
-      useOnlyResolvedAddress: Boolean = false) =
-    new Group[CacheNode] {
-      protected[finagle] val set: Var[Set[CacheNode]] = va map {
-        case Addr.Bound(addrs, _) =>
-          addrs.collect {
-            case Address.Inet(ia, CacheNodeMetadata(weight, key)) =>
-              CacheNode(ia.getHostName, ia.getPort, weight, key)
-            case Address.Inet(ia, _)
-                if useOnlyResolvedAddress && !ia.isUnresolved =>
-              val key = ia.getAddress.getHostAddress + ":" + ia.getPort
-              CacheNode(ia.getHostName, ia.getPort, 1, Some(key))
-            case Address.Inet(ia, _) if !useOnlyResolvedAddress =>
-              CacheNode(ia.getHostName, ia.getPort, 1, None)
-          }
-        case _ => Set[CacheNode]()
-      }
+      useOnlyResolvedAddress: Boolean = false) = new Group[CacheNode] {
+    protected[finagle] val set: Var[Set[CacheNode]] = va map {
+      case Addr.Bound(addrs, _) =>
+        addrs.collect {
+          case Address.Inet(ia, CacheNodeMetadata(weight, key)) =>
+            CacheNode(ia.getHostName, ia.getPort, weight, key)
+          case Address.Inet(ia, _)
+              if useOnlyResolvedAddress && !ia.isUnresolved =>
+            val key = ia.getAddress.getHostAddress + ":" + ia.getPort
+            CacheNode(ia.getHostName, ia.getPort, 1, Some(key))
+          case Address.Inet(ia, _) if !useOnlyResolvedAddress =>
+            CacheNode(ia.getHostName, ia.getPort, 1, None)
+        }
+      case _ => Set[CacheNode]()
     }
+  }
 }
 
 /**
@@ -202,15 +198,14 @@ object CachePoolCluster {
   def newUnmanagedZkCluster(
       zkPath: String,
       zkClient: ZooKeeperClient
-  ) =
-    new ZookeeperServerSetCluster(
-      ServerSets.create(
-        zkClient,
-        ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL,
-        zkPath)
-    ) map { case addr: InetSocketAddress =>
-      CacheNode(addr.getHostName, addr.getPort, 1)
-    }
+  ) = new ZookeeperServerSetCluster(
+    ServerSets.create(
+      zkClient,
+      ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL,
+      zkPath)
+  ) map { case addr: InetSocketAddress =>
+    CacheNode(addr.getHostName, addr.getPort, 1)
+  }
 }
 
 trait CachePoolCluster extends Cluster[CacheNode] {

@@ -19,23 +19,22 @@ final class JsonView(isOnline: String => Boolean) {
   private implicit val profileWrites = Json.writes[Profile]
   private implicit val playTimeWrites = Json.writes[PlayTime]
 
-  def apply(u: User, onlyPerf: Option[PerfType] = None) =
-    Json
-      .obj(
-        "id" -> u.id,
-        "username" -> u.username,
-        "title" -> u.title,
-        "online" -> isOnline(u.id),
-        "engine" -> u.engine,
-        "booster" -> u.booster,
-        "language" -> u.lang,
-        "profile" -> u.profile.??(profileWrites.writes).noNull,
-        "perfs" -> perfs(u, onlyPerf),
-        "createdAt" -> u.createdAt,
-        "seenAt" -> u.seenAt,
-        "playTime" -> u.playTime
-      )
-      .noNull
+  def apply(u: User, onlyPerf: Option[PerfType] = None) = Json
+    .obj(
+      "id" -> u.id,
+      "username" -> u.username,
+      "title" -> u.title,
+      "online" -> isOnline(u.id),
+      "engine" -> u.engine,
+      "booster" -> u.booster,
+      "language" -> u.lang,
+      "profile" -> u.profile.??(profileWrites.writes).noNull,
+      "perfs" -> perfs(u, onlyPerf),
+      "createdAt" -> u.createdAt,
+      "seenAt" -> u.seenAt,
+      "playTime" -> u.playTime
+    )
+    .noNull
 
   def perfs(u: User, onlyPerf: Option[PerfType] = None) =
     JsObject(u.perfs.perfsMap collect {

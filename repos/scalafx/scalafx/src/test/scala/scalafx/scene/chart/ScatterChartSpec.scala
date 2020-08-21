@@ -46,9 +46,8 @@ class ScatterChartSpec
       classOf[ScatterChart[Number, Number]])
     with RunOnApplicationThread {
 
-  override def getJavaClassInstance =
-    new jfxsc.ScatterChart[Number, Number](
-      new jfxsc.NumberAxis,
-      new jfxsc.NumberAxis)
+  override def getJavaClassInstance = new jfxsc.ScatterChart[Number, Number](
+    new jfxsc.NumberAxis,
+    new jfxsc.NumberAxis)
 
 }

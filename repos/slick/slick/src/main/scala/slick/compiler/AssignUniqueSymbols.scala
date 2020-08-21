@@ -25,19 +25,18 @@ class AssignUniqueSymbols extends Phase {
     var hasDistinct, hasTypeMapping, hasAggregate, hasNonPrimitiveOption = false
     val s2 = state.map { tree =>
       val replace = new HashMap[TermSymbol, AnonSymbol]
-      def checkFeatures(n: Node): Unit =
-        n match {
-          case _: Distinct    => hasDistinct = true
-          case _: TypeMapping => hasTypeMapping = true
-          case n: Apply =>
-            if (n.sym.isInstanceOf[AggregateFunctionSymbol]) hasAggregate = true
-          case (_: OptionFold | _: OptionApply | _: GetOrElse) =>
+      def checkFeatures(n: Node): Unit = n match {
+        case _: Distinct    => hasDistinct = true
+        case _: TypeMapping => hasTypeMapping = true
+        case n: Apply =>
+          if (n.sym.isInstanceOf[AggregateFunctionSymbol]) hasAggregate = true
+        case (_: OptionFold | _: OptionApply | _: GetOrElse) =>
+          hasNonPrimitiveOption = true
+        case j: Join =>
+          if (j.jt == JoinType.LeftOption || j.jt == JoinType.RightOption || j.jt == JoinType.OuterOption)
             hasNonPrimitiveOption = true
-          case j: Join =>
-            if (j.jt == JoinType.LeftOption || j.jt == JoinType.RightOption || j.jt == JoinType.OuterOption)
-              hasNonPrimitiveOption = true
-          case _ =>
-        }
+        case _ =>
+      }
       def tr(n: Node): Node = {
         val n3 = n match {
           case Select(in, s) => Select(tr(in), s) :@ n.nodeType
@@ -79,12 +78,11 @@ class AssignUniqueSymbols extends Phase {
     s2 + (this -> features)
   }
 
-  def hasNominalType(t: Type): Boolean =
-    t match {
-      case _: NominalType => true
-      case _: AtomicType  => false
-      case _              => t.children.exists(hasNominalType)
-    }
+  def hasNominalType(t: Type): Boolean = t match {
+    case _: NominalType => true
+    case _: AtomicType  => false
+    case _              => t.children.exists(hasNominalType)
+  }
 }
 
 case class UsedFeatures(

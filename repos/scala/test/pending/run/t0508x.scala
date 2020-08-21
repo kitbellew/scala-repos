@@ -19,9 +19,8 @@ final object Test extends java.lang.Object with Application {
     },
     Test.this.Foo.apply("this might be fun", 10));
   final object Foo extends java.lang.Object with ((String, Int) => Test.Foo) {
-    def unapply(x$0: Test.Foo): Some[(String, Int)] =
-      scala.Some.apply[(String, Int)](
-        scala.Tuple2.apply[String, Int](x$0.s, x$0.n));
+    def unapply(x$0: Test.Foo): Some[(String, Int)] = scala.Some
+      .apply[(String, Int)](scala.Tuple2.apply[String, Int](x$0.s, x$0.n));
     def apply(s: String, n: Int): Test.Foo = new Test.this.Foo(s, n)
   }
 }

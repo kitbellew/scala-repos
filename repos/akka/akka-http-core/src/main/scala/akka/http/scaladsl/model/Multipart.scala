@@ -279,8 +279,8 @@ object Multipart {
         extends Multipart.General
         with Multipart.Strict
         with jm.Multipart.General.Strict {
-      def parts: Source[Multipart.General.BodyPart.Strict, Any] =
-        Source(strictParts)
+      def parts: Source[Multipart.General.BodyPart.Strict, Any] = Source(
+        strictParts)
       override def toStrict(timeout: FiniteDuration)(implicit
           fm: Materializer) = FastFuture.successful(this)
       override def productPrefix = "General.Strict"
@@ -363,8 +363,8 @@ object Multipart {
         }
 
       def unapply(value: BodyPart)
-          : Option[(BodyPartEntity, immutable.Seq[HttpHeader])] =
-        Some(value.entity -> value.headers)
+          : Option[(BodyPartEntity, immutable.Seq[HttpHeader])] = Some(
+        value.entity -> value.headers)
 
       /**
         * Strict [[General.BodyPart]].
@@ -465,8 +465,8 @@ object Multipart {
         extends FormData
         with Multipart.Strict
         with jm.Multipart.FormData.Strict {
-      def parts: Source[Multipart.FormData.BodyPart.Strict, Any] =
-        Source(strictParts)
+      def parts: Source[Multipart.FormData.BodyPart.Strict, Any] = Source(
+        strictParts)
       override def toStrict(timeout: FiniteDuration)(implicit
           fm: Materializer) = FastFuture.successful(this)
       override def productPrefix = "FormData.Strict"
@@ -507,8 +507,8 @@ object Multipart {
       def additionalHeaders: immutable.Seq[HttpHeader]
 
       override def headers = contentDispositionHeader.get +: additionalHeaders
-      override def contentDispositionHeader =
-        Some(`Content-Disposition`(dispositionType.get, dispositionParams))
+      override def contentDispositionHeader = Some(
+        `Content-Disposition`(dispositionType.get, dispositionParams))
       override def dispositionParams =
         additionalDispositionParams.updated("name", name)
       override def dispositionType = Some(ContentDispositionTypes.`form-data`)
@@ -640,8 +640,8 @@ object Multipart {
         .toJava
   }
   object ByteRanges {
-    def apply(parts: Multipart.ByteRanges.BodyPart.Strict*): Strict =
-      Strict(parts.toVector)
+    def apply(parts: Multipart.ByteRanges.BodyPart.Strict*): Strict = Strict(
+      parts.toVector)
 
     def apply(_parts: Source[Multipart.ByteRanges.BodyPart, Any])
         : Multipart.ByteRanges =
@@ -658,8 +658,8 @@ object Multipart {
         extends Multipart.ByteRanges
         with Multipart.Strict
         with jm.Multipart.ByteRanges.Strict {
-      def parts: Source[Multipart.ByteRanges.BodyPart.Strict, Any] =
-        Source(strictParts)
+      def parts: Source[Multipart.ByteRanges.BodyPart.Strict, Any] = Source(
+        strictParts)
       override def toStrict(timeout: FiniteDuration)(implicit
           fm: Materializer) = FastFuture.successful(this)
       override def productPrefix = "ByteRanges.Strict"

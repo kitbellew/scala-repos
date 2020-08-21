@@ -9,8 +9,8 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
   * @author Nikolay.Tropin
   */
 class DropTakeToSliceInspection extends OperationOnCollectionInspection {
-  override def possibleSimplificationTypes: Array[SimplificationType] =
-    Array(DropTakeToSlice)
+  override def possibleSimplificationTypes: Array[SimplificationType] = Array(
+    DropTakeToSlice)
 }
 
 object DropTakeToSlice extends SimplificationType {

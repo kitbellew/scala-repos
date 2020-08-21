@@ -166,15 +166,13 @@ class JavaSerializer(conf: SparkConf) extends Serializer with Externalizable {
     new JavaSerializerInstance(counterReset, extraDebugInfo, classLoader)
   }
 
-  override def writeExternal(out: ObjectOutput): Unit =
-    Utils.tryOrIOException {
-      out.writeInt(counterReset)
-      out.writeBoolean(extraDebugInfo)
-    }
+  override def writeExternal(out: ObjectOutput): Unit = Utils.tryOrIOException {
+    out.writeInt(counterReset)
+    out.writeBoolean(extraDebugInfo)
+  }
 
-  override def readExternal(in: ObjectInput): Unit =
-    Utils.tryOrIOException {
-      counterReset = in.readInt()
-      extraDebugInfo = in.readBoolean()
-    }
+  override def readExternal(in: ObjectInput): Unit = Utils.tryOrIOException {
+    counterReset = in.readInt()
+    extraDebugInfo = in.readBoolean()
+  }
 }

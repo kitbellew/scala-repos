@@ -48,13 +48,12 @@ abstract class AbstractTable[T](
     */
   def * : ProvenShape[T]
 
-  override def toNode =
-    tableTag match {
-      case _: BaseTag =>
-        val sym = new AnonSymbol
-        TableExpansion(sym, tableNode, tableTag.taggedAs(Ref(sym)).*.toNode)
-      case t: RefTag => t.path
-    }
+  override def toNode = tableTag match {
+    case _: BaseTag =>
+      val sym = new AnonSymbol
+      TableExpansion(sym, tableNode, tableTag.taggedAs(Ref(sym)).*.toNode)
+    case t: RefTag => t.path
+  }
 
   def create_* : Iterable[FieldSymbol] = collectFieldSymbols(*.toNode)
 
@@ -121,13 +120,12 @@ abstract class AbstractTable[T](
       shape: Shape[_ <: FlatShapeLevel, T, _, _]): PrimaryKey =
     PrimaryKey(name, ForeignKey.linearizeFieldRefs(shape.toNode(sourceColumns)))
 
-  def tableConstraints: Iterator[Constraint] =
-    for {
-      m <- getClass().getMethods.iterator
-      if m.getParameterTypes.length == 0 && classOf[Constraint]
-        .isAssignableFrom(m.getReturnType)
-      q = m.invoke(this).asInstanceOf[Constraint]
-    } yield q
+  def tableConstraints: Iterator[Constraint] = for {
+    m <- getClass().getMethods.iterator
+    if m.getParameterTypes.length == 0 && classOf[Constraint].isAssignableFrom(
+      m.getReturnType)
+    q = m.invoke(this).asInstanceOf[Constraint]
+  } yield q
 
   final def foreignKeys: Iterable[ForeignKey] =
     tableConstraints
@@ -144,16 +142,14 @@ abstract class AbstractTable[T](
 
   /** Define an index or a unique constraint. */
   def index[T](name: String, on: T, unique: Boolean = false)(implicit
-      shape: Shape[_ <: FlatShapeLevel, T, _, _]) =
-    new Index(
-      name,
-      this,
-      ForeignKey.linearizeFieldRefs(shape.toNode(on)),
-      unique)
+      shape: Shape[_ <: FlatShapeLevel, T, _, _]) = new Index(
+    name,
+    this,
+    ForeignKey.linearizeFieldRefs(shape.toNode(on)),
+    unique)
 
-  def indexes: Iterable[Index] =
-    (for {
-      m <- getClass().getMethods.view
-      if m.getReturnType == classOf[Index] && m.getParameterTypes.length == 0
-    } yield m.invoke(this).asInstanceOf[Index]).sortBy(_.name)
+  def indexes: Iterable[Index] = (for {
+    m <- getClass().getMethods.view
+    if m.getReturnType == classOf[Index] && m.getParameterTypes.length == 0
+  } yield m.invoke(this).asInstanceOf[Index]).sortBy(_.name)
 }

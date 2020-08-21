@@ -37,11 +37,10 @@ import java.util.{ResourceBundle, Enumeration, Locale}
   */
 object BundleBuilder {
   private object IsText {
-    def unapply(in: NodeSeq): Option[String] =
-      in.toList match {
-        case (x: Atom[_]) :: Nil => Some(x.text)
-        case _                   => None
-      }
+    def unapply(in: NodeSeq): Option[String] = in.toList match {
+      case (x: Atom[_]) :: Nil => Some(x.text)
+      case _                   => None
+    }
   }
 
   final private case class EntryInfo(

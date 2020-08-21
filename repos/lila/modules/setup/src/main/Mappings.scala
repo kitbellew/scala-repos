@@ -22,10 +22,9 @@ object Mappings {
   val days = number(min = 1, max = 14)
   def timeMode = number.verifying(TimeMode.ids contains _)
   def mode(withRated: Boolean) = optional(rawMode(withRated))
-  def rawMode(withRated: Boolean) =
-    number
-      .verifying(HookConfig.modes contains _)
-      .verifying(m => m == Mode.Casual.id || withRated)
+  def rawMode(withRated: Boolean) = number
+    .verifying(HookConfig.modes contains _)
+    .verifying(m => m == Mode.Casual.id || withRated)
   val ratingRange = nonEmptyText.verifying(RatingRange valid _)
   val color = nonEmptyText.verifying(Color.names contains _)
   val level = number.verifying(AiConfig.levels contains _)

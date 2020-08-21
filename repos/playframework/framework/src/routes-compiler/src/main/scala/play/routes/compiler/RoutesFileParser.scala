@@ -161,32 +161,29 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
 
   def EOF: util.matching.Regex = "\\z".r
 
-  def namedError[A](p: Parser[A], msg: String): Parser[A] =
-    Parser[A] { i =>
-      p(i) match {
-        case Failure(_, in) => Failure(msg, in)
-        case o              => o
-      }
+  def namedError[A](p: Parser[A], msg: String): Parser[A] = Parser[A] { i =>
+    p(i) match {
+      case Failure(_, in) => Failure(msg, in)
+      case o              => o
     }
+  }
 
-  def several[T](p: => Parser[T]): Parser[List[T]] =
-    Parser { in =>
-      import scala.collection.mutable.ListBuffer
-      val elems = new ListBuffer[T]
-      def continue(in: Input): ParseResult[List[T]] = {
-        val p0 = p // avoid repeatedly re-evaluating by-name parser
-        @scala.annotation.tailrec
-        def applyp(in0: Input): ParseResult[List[T]] =
-          p0(in0) match {
-            case Success(x, rest) =>
-              elems += x; applyp(rest)
-            case Failure(_, _) => Success(elems.toList, in0)
-            case err: Error    => err
-          }
-        applyp(in)
+  def several[T](p: => Parser[T]): Parser[List[T]] = Parser { in =>
+    import scala.collection.mutable.ListBuffer
+    val elems = new ListBuffer[T]
+    def continue(in: Input): ParseResult[List[T]] = {
+      val p0 = p // avoid repeatedly re-evaluating by-name parser
+      @scala.annotation.tailrec
+      def applyp(in0: Input): ParseResult[List[T]] = p0(in0) match {
+        case Success(x, rest) =>
+          elems += x; applyp(rest)
+        case Failure(_, _) => Success(elems.toList, in0)
+        case err: Error    => err
       }
-      continue(in)
+      applyp(in)
     }
+    continue(in)
+  }
 
   def separator: Parser[String] = namedError(whiteSpace, "Whitespace expected")
 
@@ -206,10 +203,9 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
 
   def end: util.matching.Regex = """\s*""".r
 
-  def comment: Parser[Comment] =
-    "#" ~> ".*".r ^^ { case c =>
-      Comment(c)
-    }
+  def comment: Parser[Comment] = "#" ~> ".*".r ^^ { case c =>
+    Comment(c)
+  }
 
   def newLine: Parser[String] =
     namedError((("\r" ?) ~> "\n"), "End of line expected")
@@ -241,22 +237,19 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
     }
   }
 
-  def httpVerb: Parser[HttpVerb] =
-    namedError(
-      "GET" | "POST" | "PUT" | "PATCH" | "HEAD" | "DELETE" | "OPTIONS",
-      "HTTP Verb expected") ^^ { case v =>
-      HttpVerb(v)
-    }
+  def httpVerb: Parser[HttpVerb] = namedError(
+    "GET" | "POST" | "PUT" | "PATCH" | "HEAD" | "DELETE" | "OPTIONS",
+    "HTTP Verb expected") ^^ { case v =>
+    HttpVerb(v)
+  }
 
-  def singleComponentPathPart: Parser[DynamicPart] =
-    (":" ~> identifier) ^^ { case name =>
-      DynamicPart(name, """[^/]+""", encode = true)
-    }
+  def singleComponentPathPart: Parser[DynamicPart] = (":" ~> identifier) ^^ {
+    case name => DynamicPart(name, """[^/]+""", encode = true)
+  }
 
-  def multipleComponentsPathPart: Parser[DynamicPart] =
-    ("*" ~> identifier) ^^ { case name =>
-      DynamicPart(name, """.+""", encode = false)
-    }
+  def multipleComponentsPathPart: Parser[DynamicPart] = ("*" ~> identifier) ^^ {
+    case name => DynamicPart(name, """.+""", encode = false)
+  }
 
   def regexComponentPathPart: Parser[DynamicPart] =
     "$" ~> identifier ~ ("<" ~> (not(">") ~> """[^\s]""".r +) <~ ">" ^^ {
@@ -332,19 +325,17 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
         d.filter(_.startsWith("?")).map(_.drop(2)))
     }
 
-  def parameters: Parser[List[Parameter]] =
-    "(" ~> repsep(
-      ignoreWhiteSpace ~> positioned(parameter) <~ ignoreWhiteSpace,
-      ",") <~ ")"
+  def parameters: Parser[List[Parameter]] = "(" ~> repsep(
+    ignoreWhiteSpace ~> positioned(parameter) <~ ignoreWhiteSpace,
+    ",") <~ ")"
 
   // Absolute method consists of a series of Java identifiers representing the package name, controller and method.
   // Since the Scala parser is greedy, we can't easily extract this out, so just parse at least 3
-  def absoluteMethod: Parser[List[String]] =
-    namedError(
-      javaIdent ~ "." ~ javaIdent ~ "." ~ rep1sep(javaIdent, ".") ^^ {
-        case first ~ _ ~ second ~ _ ~ rest => first :: second :: rest
-      },
-      "Controller method call expected")
+  def absoluteMethod: Parser[List[String]] = namedError(
+    javaIdent ~ "." ~ javaIdent ~ "." ~ rep1sep(javaIdent, ".") ^^ {
+      case first ~ _ ~ second ~ _ ~ rest => first :: second :: rest
+    },
+    "Controller method call expected")
 
   def call: Parser[HandlerCall] =
     opt("@") ~ absoluteMethod ~ opt(parameters) ^^ {
@@ -359,29 +350,26 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
       }
     }
 
-  def router: Parser[String] =
-    rep1sep(identifier, ".") ^^ { case parts =>
-      parts.mkString(".")
-    }
+  def router: Parser[String] = rep1sep(identifier, ".") ^^ { case parts =>
+    parts.mkString(".")
+  }
 
-  def route =
-    httpVerb ~! separator ~ path ~ separator ~ positioned(
-      call) ~ ignoreWhiteSpace ^^ { case v ~ _ ~ p ~ _ ~ c ~ _ =>
-      Route(v, p, c)
-    }
+  def route = httpVerb ~! separator ~ path ~ separator ~ positioned(
+    call) ~ ignoreWhiteSpace ^^ { case v ~ _ ~ p ~ _ ~ c ~ _ =>
+    Route(v, p, c)
+  }
 
   def include =
     "->" ~! separator ~ path ~ separator ~ router ~ ignoreWhiteSpace ^^ {
       case _ ~ _ ~ p ~ _ ~ r ~ _ => Include(p.toString, r)
     }
 
-  def sentence: Parser[Product with Serializable] =
-    namedError(
-      (comment | positioned(include) | positioned(route)),
-      "HTTP Verb (GET, POST, ...), include (->) or comment (#) expected") <~ (newLine | EOF)
+  def sentence: Parser[Product with Serializable] = namedError(
+    (comment | positioned(include) | positioned(route)),
+    "HTTP Verb (GET, POST, ...), include (->) or comment (#) expected") <~ (newLine | EOF)
 
-  def parser: Parser[List[Rule]] =
-    phrase((blankLine | sentence *) <~ end) ^^ { case routes =>
+  def parser: Parser[List[Rule]] = phrase((blankLine | sentence *) <~ end) ^^ {
+    case routes =>
       routes.reverse
         .foldLeft(List[(Option[Rule], List[Comment])]()) {
           case (s, r @ Route(_, _, _, _)) => (Some(r), List()) :: s
@@ -396,7 +384,7 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
             r.copy(comments = comments).setPos(r.pos)
           case (Some(i @ Include(_, _)), _) => i
         }
-    }
+  }
 
   def parse(text: String): ParseResult[List[Rule]] = {
     parser(new CharSequenceReader(text))

@@ -27,18 +27,17 @@ import com.mongodb.MongoClient
 trait MongoTestKit extends Specification with BeforeAfterEach {
   sequential
 
-  def dbName =
-    "lift_" + this.getClass.getName
-      .replace("$", "")
-      .replace("net.liftweb.mongodb.", "")
-      .replace(".", "_")
-      .toLowerCase
+  def dbName = "lift_" + this.getClass.getName
+    .replace("$", "")
+    .replace("net.liftweb.mongodb.", "")
+    .replace(".", "_")
+    .toLowerCase
 
   def mongo = new MongoClient("127.0.0.1", 27017)
 
   // If you need more than one db, override this
-  def dbs: List[(ConnectionIdentifier, String)] =
-    List((DefaultConnectionIdentifier, dbName))
+  def dbs: List[(ConnectionIdentifier, String)] = List(
+    (DefaultConnectionIdentifier, dbName))
 
   def debug = false
 

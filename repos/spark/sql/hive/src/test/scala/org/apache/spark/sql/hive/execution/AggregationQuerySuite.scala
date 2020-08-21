@@ -76,8 +76,8 @@ class ScalaAggregateFunctionWithoutInputSchema
 
   def inputSchema: StructType = StructType(Nil)
 
-  def bufferSchema: StructType =
-    StructType(StructField("value", LongType) :: Nil)
+  def bufferSchema: StructType = StructType(
+    StructField("value", LongType) :: Nil)
 
   def dataType: DataType = LongType
 
@@ -103,14 +103,12 @@ class ScalaAggregateFunctionWithoutInputSchema
 }
 
 class LongProductSum extends UserDefinedAggregateFunction {
-  def inputSchema: StructType =
-    new StructType()
-      .add("a", LongType)
-      .add("b", LongType)
+  def inputSchema: StructType = new StructType()
+    .add("a", LongType)
+    .add("b", LongType)
 
-  def bufferSchema: StructType =
-    new StructType()
-      .add("product", LongType)
+  def bufferSchema: StructType = new StructType()
+    .add("product", LongType)
 
   def dataType: DataType = LongType
 

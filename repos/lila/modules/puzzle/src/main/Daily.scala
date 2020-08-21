@@ -45,29 +45,26 @@ private[puzzle] final class Daily(
     none
   }
 
-  private def findCurrent =
-    coll
-      .find(
-        BSONDocument(
-          "day" -> BSONDocument(
-            "$gt" -> DateTime.now.minusMinutes(24 * 60 - 15)))
-      )
-      .one[Puzzle]
+  private def findCurrent = coll
+    .find(
+      BSONDocument(
+        "day" -> BSONDocument("$gt" -> DateTime.now.minusMinutes(24 * 60 - 15)))
+    )
+    .one[Puzzle]
 
-  private def findNew =
-    coll
-      .find(
-        BSONDocument("day" -> BSONDocument("$exists" -> false))
-      )
-      .sort(BSONDocument("vote.sum" -> -1))
-      .one[Puzzle] flatMap {
-      case Some(puzzle) =>
-        coll.update(
-          BSONDocument("_id" -> puzzle.id),
-          BSONDocument("$set" -> BSONDocument("day" -> DateTime.now))
-        ) inject puzzle.some
-      case None => fuccess(none)
-    }
+  private def findNew = coll
+    .find(
+      BSONDocument("day" -> BSONDocument("$exists" -> false))
+    )
+    .sort(BSONDocument("vote.sum" -> -1))
+    .one[Puzzle] flatMap {
+    case Some(puzzle) =>
+      coll.update(
+        BSONDocument("_id" -> puzzle.id),
+        BSONDocument("$set" -> BSONDocument("day" -> DateTime.now))
+      ) inject puzzle.some
+    case None => fuccess(none)
+  }
 }
 
 case class DailyPuzzle(html: play.twirl.api.Html, color: chess.Color, id: Int)

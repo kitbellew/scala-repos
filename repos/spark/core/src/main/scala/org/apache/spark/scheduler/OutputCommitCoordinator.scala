@@ -124,77 +124,73 @@ private[spark] class OutputCommitCoordinator(conf: SparkConf, isDriver: Boolean)
   }
 
   // Called by DAGScheduler
-  private[scheduler] def stageEnd(stage: StageId): Unit =
-    synchronized {
-      authorizedCommittersByStage.remove(stage)
-    }
+  private[scheduler] def stageEnd(stage: StageId): Unit = synchronized {
+    authorizedCommittersByStage.remove(stage)
+  }
 
   // Called by DAGScheduler
   private[scheduler] def taskCompleted(
       stage: StageId,
       partition: PartitionId,
       attemptNumber: TaskAttemptNumber,
-      reason: TaskEndReason): Unit =
-    synchronized {
-      val authorizedCommitters = authorizedCommittersByStage.getOrElse(
-        stage, {
-          logDebug(s"Ignoring task completion for completed stage")
-          return
-        })
-      reason match {
-        case Success =>
-        // The task output has been committed successfully
-        case denied: TaskCommitDenied =>
-          logInfo(
-            s"Task was denied committing, stage: $stage, partition: $partition, " +
-              s"attempt: $attemptNumber")
-        case otherReason =>
-          if (authorizedCommitters(partition) == attemptNumber) {
-            logDebug(
-              s"Authorized committer (attemptNumber=$attemptNumber, stage=$stage, " +
-                s"partition=$partition) failed; clearing lock")
-            authorizedCommitters(partition) = NO_AUTHORIZED_COMMITTER
-          }
-      }
+      reason: TaskEndReason): Unit = synchronized {
+    val authorizedCommitters = authorizedCommittersByStage.getOrElse(
+      stage, {
+        logDebug(s"Ignoring task completion for completed stage")
+        return
+      })
+    reason match {
+      case Success =>
+      // The task output has been committed successfully
+      case denied: TaskCommitDenied =>
+        logInfo(
+          s"Task was denied committing, stage: $stage, partition: $partition, " +
+            s"attempt: $attemptNumber")
+      case otherReason =>
+        if (authorizedCommitters(partition) == attemptNumber) {
+          logDebug(
+            s"Authorized committer (attemptNumber=$attemptNumber, stage=$stage, " +
+              s"partition=$partition) failed; clearing lock")
+          authorizedCommitters(partition) = NO_AUTHORIZED_COMMITTER
+        }
     }
+  }
 
-  def stop(): Unit =
-    synchronized {
-      if (isDriver) {
-        coordinatorRef.foreach(_ send StopCoordinator)
-        coordinatorRef = None
-        authorizedCommittersByStage.clear()
-      }
+  def stop(): Unit = synchronized {
+    if (isDriver) {
+      coordinatorRef.foreach(_ send StopCoordinator)
+      coordinatorRef = None
+      authorizedCommittersByStage.clear()
     }
+  }
 
   // Marked private[scheduler] instead of private so this can be mocked in tests
   private[scheduler] def handleAskPermissionToCommit(
       stage: StageId,
       partition: PartitionId,
-      attemptNumber: TaskAttemptNumber): Boolean =
-    synchronized {
-      authorizedCommittersByStage.get(stage) match {
-        case Some(authorizedCommitters) =>
-          authorizedCommitters(partition) match {
-            case NO_AUTHORIZED_COMMITTER =>
-              logDebug(
-                s"Authorizing attemptNumber=$attemptNumber to commit for stage=$stage, " +
-                  s"partition=$partition")
-              authorizedCommitters(partition) = attemptNumber
-              true
-            case existingCommitter =>
-              logDebug(
-                s"Denying attemptNumber=$attemptNumber to commit for stage=$stage, " +
-                  s"partition=$partition; existingCommitter = $existingCommitter")
-              false
-          }
-        case None =>
-          logDebug(
-            s"Stage $stage has completed, so not allowing attempt number $attemptNumber of" +
-              s"partition $partition to commit")
-          false
-      }
+      attemptNumber: TaskAttemptNumber): Boolean = synchronized {
+    authorizedCommittersByStage.get(stage) match {
+      case Some(authorizedCommitters) =>
+        authorizedCommitters(partition) match {
+          case NO_AUTHORIZED_COMMITTER =>
+            logDebug(
+              s"Authorizing attemptNumber=$attemptNumber to commit for stage=$stage, " +
+                s"partition=$partition")
+            authorizedCommitters(partition) = attemptNumber
+            true
+          case existingCommitter =>
+            logDebug(
+              s"Denying attemptNumber=$attemptNumber to commit for stage=$stage, " +
+                s"partition=$partition; existingCommitter = $existingCommitter")
+            false
+        }
+      case None =>
+        logDebug(
+          s"Stage $stage has completed, so not allowing attempt number $attemptNumber of" +
+            s"partition $partition to commit")
+        false
     }
+  }
 }
 
 private[spark] object OutputCommitCoordinator {

@@ -54,13 +54,12 @@ class Serialization2[A, B](
     b <- serB.staticSize
   } yield a + b
 
-  override def dynamicSize(t: (A, B)) =
-    if (staticSize.isDefined) staticSize
-    else
-      for {
-        a <- serA.dynamicSize(t._1)
-        b <- serB.dynamicSize(t._2)
-      } yield a + b
+  override def dynamicSize(t: (A, B)) = if (staticSize.isDefined) staticSize
+  else
+    for {
+      a <- serA.dynamicSize(t._1)
+      b <- serB.dynamicSize(t._2)
+    } yield a + b
 }
 
 object OrderedSerialization2 {

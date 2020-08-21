@@ -41,16 +41,15 @@ object JavaResults
     Writeable(
       (content: Content) => codec.encode(contentBody(content)),
       Some(ContentTypes.withCharset(mimeType)))
-  def contentBody(content: Content): String =
-    content match {
-      case xml: play.twirl.api.Xml => xml.body.trim; case c => c.body
-    }
+  def contentBody(content: Content): String = content match {
+    case xml: play.twirl.api.Xml => xml.body.trim; case c => c.body
+  }
   def writeString(mimeType: String)(implicit codec: Codec): Writeable[String] =
     Writeable(
       (s: String) => codec.encode(s),
       Some(ContentTypes.withCharset(mimeType)))
-  def writeString(implicit codec: Codec): Writeable[String] =
-    writeString(MimeTypes.TEXT)
+  def writeString(implicit codec: Codec): Writeable[String] = writeString(
+    MimeTypes.TEXT)
   def writeBytes: Writeable[Array[Byte]] = Writeable.wByteArray
   def writeBytes(contentType: String): Writeable[ByteString] =
     Writeable((bs: ByteString) => bs)(contentTypeOfBytes(contentType))
@@ -72,12 +71,12 @@ object JavaResults
   //play.api.libs.iteratee.Enumerator.imperative[A](onComplete = onDisconnected)
   def chunked(
       stream: java.io.InputStream,
-      chunkSize: Int): Source[ByteString, _] =
-    enumToSource(Enumerator.fromStream(stream, chunkSize)(internalContext))
-  def chunked(file: java.io.File, chunkSize: Int) =
-    enumToSource(Enumerator.fromFile(file, chunkSize)(internalContext))
-  def chunked(file: java.nio.file.Path, chunkSize: Int) =
-    enumToSource(Enumerator.fromPath(file, chunkSize)(internalContext))
+      chunkSize: Int): Source[ByteString, _] = enumToSource(
+    Enumerator.fromStream(stream, chunkSize)(internalContext))
+  def chunked(file: java.io.File, chunkSize: Int) = enumToSource(
+    Enumerator.fromFile(file, chunkSize)(internalContext))
+  def chunked(file: java.nio.file.Path, chunkSize: Int) = enumToSource(
+    Enumerator.fromPath(file, chunkSize)(internalContext))
   def sendFile(
       status: play.api.mvc.Results.Status,
       file: java.io.File,
@@ -89,10 +88,9 @@ object JavaResults
       inline: Boolean,
       filename: String) = status.sendPath(path, inline, _ => filename)
   private def enumToSource(
-      enumerator: Enumerator[Array[Byte]]): Source[ByteString, _] =
-    Source
-      .fromPublisher(Streams.enumeratorToPublisher(enumerator))
-      .map(ByteString.apply)
+      enumerator: Enumerator[Array[Byte]]): Source[ByteString, _] = Source
+    .fromPublisher(Streams.enumeratorToPublisher(enumerator))
+    .map(ByteString.apply)
 }
 
 object JavaResultExtractor {
@@ -134,17 +132,16 @@ object JavaResultExtractor {
         .data
         .asJava)
 
-  def getFlash(responseHeader: ResponseHeader): JFlash =
-    new JFlash(
-      Flash
-        .decodeFromCookie(
-          Cookies
-            .fromSetCookieHeader(
-              responseHeader.headers.get(HeaderNames.SET_COOKIE))
-            .get(Flash.COOKIE_NAME)
-        )
-        .data
-        .asJava)
+  def getFlash(responseHeader: ResponseHeader): JFlash = new JFlash(
+    Flash
+      .decodeFromCookie(
+        Cookies
+          .fromSetCookieHeader(
+            responseHeader.headers.get(HeaderNames.SET_COOKIE))
+          .get(Flash.COOKIE_NAME)
+      )
+      .data
+      .asJava)
 
   def withHeader(
       responseHeader: ResponseHeader,

@@ -87,8 +87,8 @@ object Lang {
     * Create a Lang value from a code (such as fr or en-US) and
     *  throw exception if language is unrecognized
     */
-  def apply(code: String): Lang =
-    Lang(new Locale.Builder().setLanguageTag(code).build())
+  def apply(code: String): Lang = Lang(
+    new Locale.Builder().setLanguageTag(code).build())
 
   /**
     * Create a Lang value from a code (such as fr or en-US) and
@@ -188,12 +188,11 @@ class DefaultLangs @Inject() (configuration: Configuration) extends Langs {
     }
   }
 
-  def preferred(candidates: Seq[Lang]): Lang =
-    candidates
-      .collectFirst(Function.unlift { lang =>
-        availables.find(_.satisfies(lang))
-      })
-      .getOrElse(availables.headOption.getOrElse(Lang.defaultLang))
+  def preferred(candidates: Seq[Lang]): Lang = candidates
+    .collectFirst(Function.unlift { lang =>
+      availables.find(_.satisfies(lang))
+    })
+    .getOrElse(availables.headOption.getOrElse(Lang.defaultLang))
 }
 
 /**
@@ -303,13 +302,12 @@ object Messages {
     override def skipWhitespace = false
     override val whiteSpace = """^[ \t]+""".r
 
-    def namedError[A](p: Parser[A], msg: String) =
-      Parser[A] { i =>
-        p(i) match {
-          case Failure(_, in) => Failure(msg, in)
-          case o              => o
-        }
+    def namedError[A](p: Parser[A], msg: String) = Parser[A] { i =>
+      p(i) match {
+        case Failure(_, in) => Failure(msg, in)
+        case o              => o
       }
+    }
 
     val end = """^\s*""".r
     val newLine = namedError((("\r" ?) ~> "\n"), "End of line expected")
@@ -533,26 +531,24 @@ class DefaultMessagesApi @Inject() (
     Messages(lang, this)
   }
 
-  def preferred(request: Http.RequestHeader) =
-    preferred(request._underlyingHeader())
+  def preferred(request: Http.RequestHeader) = preferred(
+    request._underlyingHeader())
 
-  def setLang(result: Result, lang: Lang) =
-    result.withCookies(
-      Cookie(
-        langCookieName,
-        lang.code,
-        path = Session.path,
-        domain = Session.domain,
-        secure = langCookieSecure,
-        httpOnly = langCookieHttpOnly))
+  def setLang(result: Result, lang: Lang) = result.withCookies(
+    Cookie(
+      langCookieName,
+      lang.code,
+      path = Session.path,
+      domain = Session.domain,
+      secure = langCookieSecure,
+      httpOnly = langCookieHttpOnly))
 
-  def clearLang(result: Result) =
-    result.discardingCookies(
-      DiscardingCookie(
-        langCookieName,
-        path = Session.path,
-        domain = Session.domain,
-        secure = langCookieSecure))
+  def clearLang(result: Result) = result.discardingCookies(
+    DiscardingCookie(
+      langCookieName,
+      path = Session.path,
+      domain = Session.domain,
+      secure = langCookieSecure))
 
   def apply(key: String, args: Any*)(implicit lang: Lang): String = {
     translate(key, args).getOrElse(noMatch(key, args))
@@ -588,11 +584,10 @@ class DefaultMessagesApi @Inject() (
     })
   }
 
-  private def joinPaths(first: Option[String], second: String) =
-    first match {
-      case Some(parent) => new java.io.File(parent, second).getPath
-      case None         => second
-    }
+  private def joinPaths(first: Option[String], second: String) = first match {
+    case Some(parent) => new java.io.File(parent, second).getPath
+    case None         => second
+  }
 
   protected def loadMessages(file: String): Map[String, String] = {
     import scala.collection.JavaConverters._

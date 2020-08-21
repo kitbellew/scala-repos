@@ -16,10 +16,9 @@ class StatsTestJob1(args: Args) extends Job(args) with CounterVerification {
     }
     .write(TypedTsv[(String, Int)](args("output")))
 
-  override def verifyCounters(counters: Map[StatKey, Long]): Try[Unit] =
-    Try {
-      assert(counters(nonZero) > 0)
-    }
+  override def verifyCounters(counters: Map[StatKey, Long]): Try[Unit] = Try {
+    assert(counters(nonZero) > 0)
+  }
 }
 
 class StatsTestJob2(args: Args) extends StatsTestJob1(args) {

@@ -53,8 +53,8 @@ object ScalatraBase {
       request: HttpServletRequest): Unit = addRenderCallback(_.foreach(fn))
 
   def onRenderedFailure(fn: Throwable => Unit)(implicit
-      request: HttpServletRequest): Unit =
-    addRenderCallback(_.failed.foreach(fn))
+      request: HttpServletRequest): Unit = addRenderCallback(
+    _.failed.foreach(fn))
 
   def onRenderedCompleted(fn: Try[Any] => Unit)(implicit
       request: HttpServletRequest): Unit = addRenderCallback(fn)
@@ -449,11 +449,10 @@ trait ScalatraBase
     * @see #renderPipeline
     */
   protected def renderResponseBody(actionResult: Any): Unit = {
-    @tailrec def loop(ar: Any): Any =
-      ar match {
-        case _: Unit | Unit => runRenderCallbacks(Success(actionResult))
-        case a              => loop(renderPipeline.lift(a).getOrElse(()))
-      }
+    @tailrec def loop(ar: Any): Any = ar match {
+      case _: Unit | Unit => runRenderCallbacks(Success(actionResult))
+      case a              => loop(renderPipeline.lift(a).getOrElse(()))
+    }
     try {
       runCallbacks(Success(actionResult))
       loop(actionResult)
@@ -587,11 +586,10 @@ trait ScalatraBase
     }
   }
 
-  protected def extractStatusCode(e: HaltException): Int =
-    e match {
-      case HaltException(Some(status), _, _, _) => status
-      case _                                    => response.status.code
-    }
+  protected def extractStatusCode(e: HaltException): Int = e match {
+    case HaltException(Some(status), _, _, _) => status
+    case _                                    => response.status.code
+  }
 
   def get(transformers: RouteTransformer*)(action: => Any): Route =
     addRoute(Get, transformers, action)
@@ -914,7 +912,7 @@ trait ScalatraBase
   def params(key: Symbol)(implicit request: HttpServletRequest): String =
     params(request)(key)
 
-  def params(implicit request: HttpServletRequest): Params =
-    new ScalatraParams(multiParams)
+  def params(implicit request: HttpServletRequest): Params = new ScalatraParams(
+    multiParams)
 
 }

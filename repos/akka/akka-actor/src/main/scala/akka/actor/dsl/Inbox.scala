@@ -102,65 +102,66 @@ trait Inbox { this: ActorDSL.type ⇒
 
     var currentDeadline: Option[(Deadline, Cancellable)] = None
 
-    def receive =
-      ({
-        case g: Get ⇒
-          if (messages.isEmpty) enqueueQuery(g)
-          else sender() ! messages.dequeue()
-        case s @ Select(_, predicate, _) ⇒
-          if (messages.isEmpty) enqueueQuery(s)
-          else {
-            currentSelect = s
-            messages.dequeueFirst(messagePredicate) match {
-              case Some(msg) ⇒ sender() ! msg
-              case None ⇒ enqueueQuery(s)
-            }
-            currentSelect = null
+    def receive = ({
+      case g: Get ⇒
+        if (messages.isEmpty) enqueueQuery(g)
+        else sender() ! messages.dequeue()
+      case s @ Select(_, predicate, _) ⇒
+        if (messages.isEmpty) enqueueQuery(s)
+        else {
+          currentSelect = s
+          messages.dequeueFirst(messagePredicate) match {
+            case Some(msg) ⇒ sender() ! msg
+            case None ⇒ enqueueQuery(s)
           }
-        case StartWatch(target) ⇒ context watch target
-        case Kick ⇒
-          val now = Deadline.now
-          val pred = (q: Query) ⇒ q.deadline.time < now.time
-          val overdue = clientsByTimeout.iterator.takeWhile(pred)
-          while (overdue.hasNext) {
-            val toKick = overdue.next()
-            toKick.client ! Status.Failure(
-              new TimeoutException("deadline passed"))
+          currentSelect = null
+        }
+      case StartWatch(target) ⇒ context watch target
+      case Kick ⇒
+        val now = Deadline.now
+        val pred = (q: Query) ⇒ q.deadline.time < now.time
+        val overdue = clientsByTimeout.iterator.takeWhile(pred)
+        while (overdue.hasNext) {
+          val toKick = overdue.next()
+          toKick.client ! Status.Failure(
+            new TimeoutException("deadline passed"))
+        }
+        clients = clients.filterNot(pred)
+        clientsByTimeout = clientsByTimeout.from(Get(now))
+      case msg ⇒
+        if (clients.isEmpty) enqueueMessage(msg)
+        else {
+          currentMsg = msg
+          clients.dequeueFirst(clientPredicate) match {
+            case Some(q) ⇒ { clientsByTimeout -= q; q.client ! msg }
+            case None ⇒ enqueueMessage(msg)
           }
-          clients = clients.filterNot(pred)
-          clientsByTimeout = clientsByTimeout.from(Get(now))
-        case msg ⇒
-          if (clients.isEmpty) enqueueMessage(msg)
-          else {
-            currentMsg = msg
-            clients.dequeueFirst(clientPredicate) match {
-              case Some(q) ⇒ { clientsByTimeout -= q; q.client ! msg }
-              case None ⇒ enqueueMessage(msg)
-            }
-            currentMsg = null
-          }
-      }: Receive) andThen { _ ⇒
-        if (clients.isEmpty) {
-          if (currentDeadline.isDefined) {
-            currentDeadline.get._2.cancel()
-            currentDeadline = None
-          }
+          currentMsg = null
+        }
+    }: Receive) andThen { _ ⇒
+      if (clients.isEmpty) {
+        if (currentDeadline.isDefined) {
+          currentDeadline.get._2.cancel()
+          currentDeadline = None
+        }
+      } else {
+        val next = clientsByTimeout.head.deadline
+        import context.dispatcher
+        if (currentDeadline.isEmpty) {
+          currentDeadline = Some(
+            (
+              next,
+              context.system.scheduler.scheduleOnce(next.timeLeft, self, Kick)))
         } else {
-          val next = clientsByTimeout.head.deadline
-          import context.dispatcher
-          if (currentDeadline.isEmpty) {
-            currentDeadline = Some((
+          // must not rely on the Scheduler to not fire early (for robustness)
+          currentDeadline.get._2.cancel()
+          currentDeadline = Some(
+            (
               next,
               context.system.scheduler.scheduleOnce(next.timeLeft, self, Kick)))
-          } else {
-            // must not rely on the Scheduler to not fire early (for robustness)
-            currentDeadline.get._2.cancel()
-            currentDeadline = Some((
-              next,
-              context.system.scheduler.scheduleOnce(next.timeLeft, self, Kick)))
-          }
         }
       }
+    }
   }
 
   /*

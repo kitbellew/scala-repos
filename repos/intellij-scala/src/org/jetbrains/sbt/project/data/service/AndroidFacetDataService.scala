@@ -83,11 +83,10 @@ object AndroidFacetDataService {
       val configuration = facet.getConfiguration.getState
 
       val base = AndroidRootUtil.getModuleDirPath(module)
-      def getRelativePath(f: File) =
-        "/" + FileUtil.getRelativePath(
-          base,
-          FileUtil.toSystemIndependentName(f.getAbsolutePath),
-          '/')
+      def getRelativePath(f: File) = "/" + FileUtil.getRelativePath(
+        base,
+        FileUtil.toSystemIndependentName(f.getAbsolutePath),
+        '/')
 
       configuration.GEN_FOLDER_RELATIVE_PATH_APT = getRelativePath(data.gen)
       configuration.GEN_FOLDER_RELATIVE_PATH_AIDL = getRelativePath(data.gen)

@@ -58,17 +58,15 @@ class Breaks {
     * }
     * }}}
     */
-  def tryBreakable[T](op: => T) =
-    new TryBlock[T] {
-      def catchBreak(onBreak: => T) =
-        try {
-          op
-        } catch {
-          case ex: BreakControl =>
-            if (ex ne breakException) throw ex
-            onBreak
-        }
+  def tryBreakable[T](op: => T) = new TryBlock[T] {
+    def catchBreak(onBreak: => T) = try {
+      op
+    } catch {
+      case ex: BreakControl =>
+        if (ex ne breakException) throw ex
+        onBreak
     }
+  }
 
   /**
     * Break from dynamically closest enclosing breakable block using this exact

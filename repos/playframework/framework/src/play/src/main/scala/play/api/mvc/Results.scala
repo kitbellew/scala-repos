@@ -50,12 +50,11 @@ final class ResponseHeader(
 
   override def toString = s"$status, $headers"
   override def hashCode = (status, headers).hashCode
-  override def equals(o: Any) =
-    o match {
-      case ResponseHeader(s, h, r) =>
-        (s, h, r).equals((status, headers, reasonPhrase))
-      case _ => false
-    }
+  override def equals(o: Any) = o match {
+    case ResponseHeader(s, h, r) =>
+      (s, h, r).equals((status, headers, reasonPhrase))
+    case _ => false
+  }
 }
 object ResponseHeader {
   val basicDateFormatPattern = "EEE, dd MMM yyyy HH:mm:ss"
@@ -177,8 +176,8 @@ case class Result(header: ResponseHeader, body: HttpEntity) {
     * @param session the session to set with this result
     * @return the new result
     */
-  def withSession(session: (String, String)*): Result =
-    withSession(Session(session.toMap))
+  def withSession(session: (String, String)*): Result = withSession(
+    Session(session.toMap))
 
   /**
     * Discards the existing session for this result.
@@ -221,8 +220,8 @@ case class Result(header: ResponseHeader, body: HttpEntity) {
     * @param values the flash values to set with this result
     * @return the new result
     */
-  def flashing(values: (String, String)*): Result =
-    flashing(Flash(values.toMap))
+  def flashing(values: (String, String)*): Result = flashing(
+    Flash(values.toMap))
 
   /**
     * Changes the result content type.
@@ -322,10 +321,9 @@ object Codec {
   /**
     * Create a Codec from an encoding already supported by the JVM.
     */
-  def javaSupported(charset: String) =
-    Codec(charset)(
-      str => ByteString.apply(str, charset),
-      bytes => bytes.decodeString(charset))
+  def javaSupported(charset: String) = Codec(charset)(
+    str => ByteString.apply(str, charset),
+    bytes => bytes.decodeString(charset))
 
   /**
     * Codec for UTF-8

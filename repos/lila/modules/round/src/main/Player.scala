@@ -101,19 +101,18 @@ private[round] final class Player(
       game: Game,
       uci: Uci,
       blur: Boolean,
-      lag: FiniteDuration) =
-    (uci match {
-      case Uci.Move(orig, dest, prom) =>
-        game.toChess.apply(orig, dest, prom, lag) map { case (ncg, move) =>
-          ncg -> (Left(move): MoveOrDrop)
-        }
-      case Uci.Drop(role, pos) =>
-        game.toChess.drop(role, pos, lag) map { case (ncg, drop) =>
-          ncg -> (Right(drop): MoveOrDrop)
-        }
-    }).map { case (newChessGame, moveOrDrop) =>
-      game.update(newChessGame, moveOrDrop, blur, lag.some) -> moveOrDrop
-    }
+      lag: FiniteDuration) = (uci match {
+    case Uci.Move(orig, dest, prom) =>
+      game.toChess.apply(orig, dest, prom, lag) map { case (ncg, move) =>
+        ncg -> (Left(move): MoveOrDrop)
+      }
+    case Uci.Drop(role, pos) =>
+      game.toChess.drop(role, pos, lag) map { case (ncg, drop) =>
+        ncg -> (Right(drop): MoveOrDrop)
+      }
+  }).map { case (newChessGame, moveOrDrop) =>
+    game.update(newChessGame, moveOrDrop, blur, lag.some) -> moveOrDrop
+  }
 
   private def notifyMove(moveOrDrop: MoveOrDrop, game: Game) {
     val color = moveOrDrop.fold(_.color, _.color)

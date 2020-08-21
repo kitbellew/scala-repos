@@ -51,13 +51,12 @@ trait RenderStackSpecs extends EvalStackSpecs with Logging {
     "dummyAPIKey",
     Path.Root,
     AccountPlan.Free)
-  private def dummyEvaluationContext =
-    EvaluationContext(
-      "dummyAPIKey",
-      dummyAccount,
-      Path.Root,
-      Path.Root,
-      new DateTime)
+  private def dummyEvaluationContext = EvaluationContext(
+    "dummyAPIKey",
+    dummyAccount,
+    Path.Root,
+    Path.Root,
+    new DateTime)
 
   "full stack rendering" should {
     def evalTable(str: String, debug: Boolean = false): Table = {

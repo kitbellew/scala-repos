@@ -14,14 +14,13 @@ import StatusCodes.ClientError
   */
 final case class ErrorInfo(summary: String = "", detail: String = "") {
   def withSummary(newSummary: String) = copy(summary = newSummary)
-  def withSummaryPrepended(prefix: String) =
-    withSummary(if (summary.isEmpty) prefix else prefix + ": " + summary)
+  def withSummaryPrepended(prefix: String) = withSummary(
+    if (summary.isEmpty) prefix else prefix + ": " + summary)
   def withFallbackSummary(fallbackSummary: String) =
     if (summary.isEmpty) withSummary(fallbackSummary) else this
-  def formatPretty =
-    if (summary.isEmpty) detail
-    else if (detail.isEmpty) summary
-    else summary + ": " + detail
+  def formatPretty = if (summary.isEmpty) detail
+  else if (detail.isEmpty) summary
+  else summary + ": " + detail
   def format(withDetail: Boolean): String =
     if (withDetail) formatPretty else summary
 }
@@ -47,8 +46,8 @@ abstract class ExceptionWithErrorInfo(info: ErrorInfo)
 case class IllegalUriException(info: ErrorInfo)
     extends ExceptionWithErrorInfo(info)
 object IllegalUriException {
-  def apply(summary: String, detail: String = ""): IllegalUriException =
-    apply(ErrorInfo(summary, detail))
+  def apply(summary: String, detail: String = ""): IllegalUriException = apply(
+    ErrorInfo(summary, detail))
 }
 
 case class IllegalHeaderException(info: ErrorInfo)
@@ -63,15 +62,15 @@ case class InvalidContentLengthException(info: ErrorInfo)
 object InvalidContentLengthException {
   def apply(
       summary: String,
-      detail: String = ""): InvalidContentLengthException =
-    apply(ErrorInfo(summary, detail))
+      detail: String = ""): InvalidContentLengthException = apply(
+    ErrorInfo(summary, detail))
 }
 
 case class ParsingException(info: ErrorInfo)
     extends ExceptionWithErrorInfo(info)
 object ParsingException {
-  def apply(summary: String, detail: String = ""): ParsingException =
-    apply(ErrorInfo(summary, detail))
+  def apply(summary: String, detail: String = ""): ParsingException = apply(
+    ErrorInfo(summary, detail))
 }
 
 case class IllegalRequestException(info: ErrorInfo, status: ClientError)

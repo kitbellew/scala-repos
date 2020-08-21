@@ -333,8 +333,9 @@ class ScanningEventBusSpec extends EventBusSpec("ScanningEventBus") {
 
   def createEvents(numberOfEvents: Int) = (0 until numberOfEvents)
 
-  def createSubscriber(pipeTo: ActorRef) =
-    new Procedure[Int] { def apply(i: Int) = pipeTo ! i }
+  def createSubscriber(pipeTo: ActorRef) = new Procedure[Int] {
+    def apply(i: Int) = pipeTo ! i
+  }
 
   def classifierFor(event: BusType#Event) = event.toString
 
@@ -371,8 +372,9 @@ class LookupEventBusSpec extends EventBusSpec("LookupEventBus") {
 
   def createEvents(numberOfEvents: Int) = (0 until numberOfEvents)
 
-  def createSubscriber(pipeTo: ActorRef) =
-    new Procedure[Int] { def apply(i: Int) = pipeTo ! i }
+  def createSubscriber(pipeTo: ActorRef) = new Procedure[Int] {
+    def apply(i: Int) = pipeTo ! i
+  }
 
   def classifierFor(event: BusType#Event) = event.toString
 

@@ -9,8 +9,8 @@ import org.jetbrains.plugins.scala.lang.psi.types.ScType
   * @author Nikolay.Tropin
   */
 class SizeToLengthInspection extends OperationOnCollectionInspection {
-  override def possibleSimplificationTypes: Array[SimplificationType] =
-    Array(SizeToLength)
+  override def possibleSimplificationTypes: Array[SimplificationType] = Array(
+    SizeToLength)
 }
 
 object SizeToLength extends SimplificationType {

@@ -47,8 +47,8 @@ private[akka] abstract class SinkModule[-In, Mat](val shape: SinkShape[In])
   protected def newInstance(
       s: SinkShape[In] @uncheckedVariance): SinkModule[In, Mat]
 
-  override def carbonCopy: AtomicModule =
-    newInstance(SinkShape(shape.in.carbonCopy()))
+  override def carbonCopy: AtomicModule = newInstance(
+    SinkShape(shape.in.carbonCopy()))
 
   protected def amendShape(attr: Attributes): SinkShape[In] = {
     val thisN = attributes.nameOrDefault(null)
@@ -404,11 +404,10 @@ final private[stream] class QueueSink[T]()
         pull(in)
       }
 
-      override def postStop(): Unit =
-        stopCallback(promise ⇒
-          promise.failure(
-            new IllegalStateException(
-              "Stream is terminated. QueueSink is detached")))
+      override def postStop(): Unit = stopCallback(promise ⇒
+        promise.failure(
+          new IllegalStateException(
+            "Stream is terminated. QueueSink is detached")))
 
       private val callback: AsyncCallback[Requested[T]] =
         getAsyncCallback(promise ⇒

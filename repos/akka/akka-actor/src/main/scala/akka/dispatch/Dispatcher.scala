@@ -39,8 +39,8 @@ class Dispatcher(
   private class LazyExecutorServiceDelegate(factory: ExecutorServiceFactory)
       extends ExecutorServiceDelegate {
     lazy val executor: ExecutorService = factory.createExecutorService
-    def copy(): LazyExecutorServiceDelegate =
-      new LazyExecutorServiceDelegate(factory)
+    def copy(): LazyExecutorServiceDelegate = new LazyExecutorServiceDelegate(
+      factory)
   }
 
   @volatile private var executorServiceDelegate: LazyExecutorServiceDelegate =

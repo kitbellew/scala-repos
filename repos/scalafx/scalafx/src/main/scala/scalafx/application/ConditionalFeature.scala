@@ -120,27 +120,26 @@ object ConditionalFeature
   @deprecated("Use Web; WEB will be removed in a future releas", "8.0.5")
   val WEB = Web
 
-  protected override def unsortedValues: Array[ConditionalFeature] =
-    Array(
-      Graphics,
-      Controls,
-      Media,
-      Web,
-      SWT,
-      Swing,
-      FXML,
-      Scene3D,
-      Effect,
-      ShapeClip,
-      InputMethod,
-      TransparentWindow,
-      UnifiedWindow,
-      TwoLevelFocus,
-      VirtualKeyboard,
-      InputTouch,
-      InputMultitouch,
-      InputPointer
-    )
+  protected override def unsortedValues: Array[ConditionalFeature] = Array(
+    Graphics,
+    Controls,
+    Media,
+    Web,
+    SWT,
+    Swing,
+    FXML,
+    Scene3D,
+    Effect,
+    ShapeClip,
+    InputMethod,
+    TransparentWindow,
+    UnifiedWindow,
+    TwoLevelFocus,
+    VirtualKeyboard,
+    InputTouch,
+    InputMultitouch,
+    InputPointer
+  )
 }
 
 sealed case class ConditionalFeature(

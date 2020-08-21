@@ -29,12 +29,11 @@ import org.apache.spark.sql.types._
 
 @SQLUserDefinedType(udt = classOf[MyDenseVectorUDT])
 private[sql] class MyDenseVector(val data: Array[Double]) extends Serializable {
-  override def equals(other: Any): Boolean =
-    other match {
-      case v: MyDenseVector =>
-        java.util.Arrays.equals(this.data, v.data)
-      case _ => false
-    }
+  override def equals(other: Any): Boolean = other match {
+    case v: MyDenseVector =>
+      java.util.Arrays.equals(this.data, v.data)
+    case _ => false
+  }
 }
 
 @BeanInfo
@@ -61,11 +60,10 @@ private[sql] class MyDenseVectorUDT extends UserDefinedType[MyDenseVector] {
 
   private[spark] override def asNullable: MyDenseVectorUDT = this
 
-  override def equals(other: Any): Boolean =
-    other match {
-      case _: MyDenseVectorUDT => true
-      case _                   => false
-    }
+  override def equals(other: Any): Boolean = other match {
+    case _: MyDenseVectorUDT => true
+    case _                   => false
+  }
 }
 
 class UserDefinedTypeSuite

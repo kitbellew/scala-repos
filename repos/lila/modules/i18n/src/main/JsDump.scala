@@ -8,20 +8,18 @@ import play.api.libs.json.{JsString, JsObject}
 
 private[i18n] final class JsDump(path: String, pool: I18nPool, keys: I18nKeys) {
 
-  def keysToObject(keys: Seq[I18nKey], lang: Lang) =
-    JsObject {
-      keys.map { k =>
-        k.key -> JsString(k.to(lang)())
-      }
+  def keysToObject(keys: Seq[I18nKey], lang: Lang) = JsObject {
+    keys.map { k =>
+      k.key -> JsString(k.to(lang)())
     }
+  }
 
-  def apply: Funit =
-    Future {
-      pathFile.mkdir
-      pool.langs foreach write(jsMessages)
-      writeRefs
-      writeFullJson
-    } void
+  def apply: Funit = Future {
+    pathFile.mkdir
+    pool.langs foreach write(jsMessages)
+    writeRefs
+    writeFullJson
+  } void
 
   private val jsMessages = List(
     keys.standard,

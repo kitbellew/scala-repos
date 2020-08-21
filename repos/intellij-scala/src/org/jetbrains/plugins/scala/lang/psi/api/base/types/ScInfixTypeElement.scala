@@ -13,6 +13,6 @@ package types
 trait ScInfixTypeElement extends ScTypeElement {
   def lOp: ScTypeElement = findChildByClassScala(classOf[ScTypeElement])
   def rOp: Option[ScTypeElement]
-  def ref: ScStableCodeReferenceElement =
-    findChildByClassScala(classOf[ScStableCodeReferenceElement])
+  def ref: ScStableCodeReferenceElement = findChildByClassScala(
+    classOf[ScStableCodeReferenceElement])
 }

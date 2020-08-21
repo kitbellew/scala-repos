@@ -107,22 +107,21 @@ private[poly] class BigDecimalSimpleRoots(
 
   def count: Int = isolated.size
 
-  def get(i: Int): BigDecimal =
-    if (i < 0 || i >= count) {
-      throw new IndexOutOfBoundsException(i.toString)
-    } else {
-      isolated(i) match {
-        case Point(value) =>
-          value.toBigDecimal(scale, RoundingMode.HALF_EVEN)
-        case Bounded(lb, ub, _) =>
-          new BigDecimal(
-            BigDecimalRootRefinement(poly, lb, ub, scale).approximateValue,
-            MathContext.UNLIMITED
-          )
-        case _ =>
-          throw new RuntimeException("invalid isolated root interval")
-      }
+  def get(i: Int): BigDecimal = if (i < 0 || i >= count) {
+    throw new IndexOutOfBoundsException(i.toString)
+  } else {
+    isolated(i) match {
+      case Point(value) =>
+        value.toBigDecimal(scale, RoundingMode.HALF_EVEN)
+      case Bounded(lb, ub, _) =>
+        new BigDecimal(
+          BigDecimalRootRefinement(poly, lb, ub, scale).approximateValue,
+          MathContext.UNLIMITED
+        )
+      case _ =>
+        throw new RuntimeException("invalid isolated root interval")
     }
+  }
 }
 
 private[poly] class BigDecimalRelativeRoots(
@@ -134,19 +133,18 @@ private[poly] class BigDecimalRelativeRoots(
 
   def count: Int = isolated.size
 
-  def get(i: Int): BigDecimal =
-    if (i < 0 || i >= count) {
-      throw new IndexOutOfBoundsException(i.toString)
-    } else {
-      isolated(i) match {
-        case Point(value) =>
-          value.toBigDecimal(mc)
-        case Bounded(lb, ub, _) =>
-          Algebraic.unsafeRoot(zpoly, i, lb, ub).toBigDecimal(mc)
-        case _ =>
-          throw new RuntimeException("invalid isolated root interval")
-      }
+  def get(i: Int): BigDecimal = if (i < 0 || i >= count) {
+    throw new IndexOutOfBoundsException(i.toString)
+  } else {
+    isolated(i) match {
+      case Point(value) =>
+        value.toBigDecimal(mc)
+      case Bounded(lb, ub, _) =>
+        Algebraic.unsafeRoot(zpoly, i, lb, ub).toBigDecimal(mc)
+      case _ =>
+        throw new RuntimeException("invalid isolated root interval")
     }
+  }
 }
 
 // FIXME: This is pretty hacky. We should implement proper exact real roots:
@@ -161,23 +159,21 @@ private[poly] class FixedRealRoots(
 
   def count: Int = isolated.size
 
-  def get(i: Int): Real =
-    if (i < 0 || i >= count) {
-      throw new IndexOutOfBoundsException(i.toString)
-    } else {
-      isolated(i) match {
-        case Point(value) =>
-          Real(value)
-        case Bounded(lb, ub, _) =>
-          Real(
-            Algebraic
-              .unsafeRoot(zpoly, i, lb, ub)
-              .toBigDecimal(
-                new MathContext(Real.digits, RoundingMode.HALF_EVEN)))
-        case _ =>
-          throw new RuntimeException("invalid isolated root interval")
-      }
+  def get(i: Int): Real = if (i < 0 || i >= count) {
+    throw new IndexOutOfBoundsException(i.toString)
+  } else {
+    isolated(i) match {
+      case Point(value) =>
+        Real(value)
+      case Bounded(lb, ub, _) =>
+        Real(
+          Algebraic
+            .unsafeRoot(zpoly, i, lb, ub)
+            .toBigDecimal(new MathContext(Real.digits, RoundingMode.HALF_EVEN)))
+      case _ =>
+        throw new RuntimeException("invalid isolated root interval")
     }
+  }
 }
 
 private[poly] class NumberRoots(

@@ -213,13 +213,12 @@ class StreamLayoutSpec extends AkkaSpec {
     var downstreamModule: Module = _
     var downstreamPort: InPort = _
 
-    override def subscribe(s: Subscriber[_ >: Any]): Unit =
-      s match {
-        case TestSubscriber(o, p) ⇒
-          downstreamModule = o
-          downstreamPort = p
-          s.onSubscribe(this)
-      }
+    override def subscribe(s: Subscriber[_ >: Any]): Unit = s match {
+      case TestSubscriber(o, p) ⇒
+        downstreamModule = o
+        downstreamPort = p
+        s.onSubscribe(this)
+    }
 
     override def request(n: Long): Unit = ()
     override def cancel(): Unit = ()
@@ -230,12 +229,11 @@ class StreamLayoutSpec extends AkkaSpec {
     var upstreamModule: Module = _
     var upstreamPort: OutPort = _
 
-    override def onSubscribe(s: Subscription): Unit =
-      s match {
-        case TestPublisher(o, p) ⇒
-          upstreamModule = o
-          upstreamPort = p
-      }
+    override def onSubscribe(s: Subscription): Unit = s match {
+      case TestPublisher(o, p) ⇒
+        upstreamModule = o
+        upstreamPort = p
+    }
 
     override def onError(t: Throwable): Unit = ()
     override def onComplete(): Unit = ()

@@ -44,15 +44,14 @@ private[deploy] object DeployTestUtils {
     appInfo
   }
 
-  def createDriverCommand(): Command =
-    new Command(
-      "org.apache.spark.FakeClass",
-      Seq("some arg --and-some options -g foo"),
-      Map(("K1", "V1"), ("K2", "V2")),
-      Seq("cp1", "cp2"),
-      Seq("lp1", "lp2"),
-      Seq("-Dfoo")
-    )
+  def createDriverCommand(): Command = new Command(
+    "org.apache.spark.FakeClass",
+    Seq("some arg --and-some options -g foo"),
+    Map(("K1", "V1"), ("K2", "V2")),
+    Seq("cp1", "cp2"),
+    Seq("lp1", "lp2"),
+    Seq("-Dfoo")
+  )
 
   def createDriverDesc(): DriverDescription =
     new DriverDescription(

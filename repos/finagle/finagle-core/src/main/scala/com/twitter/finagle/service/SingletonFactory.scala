@@ -17,14 +17,13 @@ class SingletonFactory[Req, Rep](service: Service[Req, Rep])
     extends ServiceFactory[Req, Rep] {
   private[this] var latch = new AsyncLatch
 
-  def apply(conn: ClientConnection) =
-    Future {
-      latch.incr()
-      new Service[Req, Rep] {
-        def apply(request: Req) = service(request)
-        override def close(deadline: Time) = { latch.decr(); Future.Done }
-      }
+  def apply(conn: ClientConnection) = Future {
+    latch.incr()
+    new Service[Req, Rep] {
+      def apply(request: Req) = service(request)
+      override def close(deadline: Time) = { latch.decr(); Future.Done }
     }
+  }
 
   def close(deadline: Time) = {
     val p = new Promise[Unit]

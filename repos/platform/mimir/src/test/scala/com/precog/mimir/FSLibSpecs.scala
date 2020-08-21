@@ -79,14 +79,13 @@ trait FSLibSpecs[M[+_]]
   }
 
   val testAPIKey = "testAPIKey"
-  def testAccount =
-    AccountDetails(
-      "00001",
-      "test@email.com",
-      new DateTime,
-      "testAPIKey",
-      Path.Root,
-      AccountPlan.Free)
+  def testAccount = AccountDetails(
+    "00001",
+    "test@email.com",
+    new DateTime,
+    "testAPIKey",
+    Path.Root,
+    AccountPlan.Free)
   val defaultEvaluationContext = EvaluationContext(
     testAPIKey,
     testAccount,

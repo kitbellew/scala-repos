@@ -47,45 +47,42 @@ trait ParFlatHashTable[T] extends scala.collection.mutable.FlatHashTable[T] {
 
     def remaining = totalsize - traversed
     def hasNext = traversed < totalsize
-    def next() =
-      if (hasNext) {
-        val r = entryToElem(itertable(idx))
-        traversed += 1
-        idx += 1
-        if (hasNext) scan()
-        r
-      } else Iterator.empty.next()
+    def next() = if (hasNext) {
+      val r = entryToElem(itertable(idx))
+      traversed += 1
+      idx += 1
+      if (hasNext) scan()
+      r
+    } else Iterator.empty.next()
     def dup = newIterator(idx, until, totalsize)
-    def split =
-      if (remaining > 1) {
-        val divpt = (until + idx) / 2
+    def split = if (remaining > 1) {
+      val divpt = (until + idx) / 2
 
-        val fstidx = idx
-        val fstuntil = divpt
-        val fsttotal =
-          calcNumElems(idx, divpt, itertable.length, sizeMapBucketSize)
-        val fstit = newIterator(fstidx, fstuntil, fsttotal)
+      val fstidx = idx
+      val fstuntil = divpt
+      val fsttotal =
+        calcNumElems(idx, divpt, itertable.length, sizeMapBucketSize)
+      val fstit = newIterator(fstidx, fstuntil, fsttotal)
 
-        val sndidx = divpt
-        val snduntil = until
-        val sndtotal = remaining - fsttotal
-        val sndit = newIterator(sndidx, snduntil, sndtotal)
+      val sndidx = divpt
+      val snduntil = until
+      val sndtotal = remaining - fsttotal
+      val sndit = newIterator(sndidx, snduntil, sndtotal)
 
-        Seq(fstit, sndit)
-      } else Seq(this)
+      Seq(fstit, sndit)
+    } else Seq(this)
 
-    override def debugInformation =
-      buildString { append =>
-        append("Parallel flat hash table iterator")
-        append("---------------------------------")
-        append("Traversed/total: " + traversed + " / " + totalsize)
-        append("Table idx/until: " + idx + " / " + until)
-        append("Table length: " + itertable.length)
-        append("Table: ")
-        append(arrayString(itertable, 0, itertable.length))
-        append("Sizemap: ")
-        append(arrayString(sizemap, 0, sizemap.length))
-      }
+    override def debugInformation = buildString { append =>
+      append("Parallel flat hash table iterator")
+      append("---------------------------------")
+      append("Traversed/total: " + traversed + " / " + totalsize)
+      append("Table idx/until: " + idx + " / " + until)
+      append("Table length: " + itertable.length)
+      append("Table: ")
+      append(arrayString(itertable, 0, itertable.length))
+      append("Sizemap: ")
+      append(arrayString(sizemap, 0, sizemap.length))
+    }
 
     protected def countElems(from: Int, until: Int) = {
       var count = 0

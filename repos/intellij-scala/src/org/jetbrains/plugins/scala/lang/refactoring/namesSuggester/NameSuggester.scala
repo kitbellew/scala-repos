@@ -38,11 +38,10 @@ import scala.collection.mutable.ArrayBuffer
   */
 
 object NameSuggester {
-  private def emptyValidator(project: Project) =
-    new NameValidator {
-      def getProject(): Project = project
-      def validateName(name: String, increaseNumber: Boolean): String = name
-    }
+  private def emptyValidator(project: Project) = new NameValidator {
+    def getProject(): Project = project
+    def validateName(name: String, increaseNumber: Boolean): String = name
+  }
   def suggestNames(expr: ScExpression): Array[String] =
     suggestNames(expr, emptyValidator(expr.getProject))
   def suggestNames(
@@ -142,17 +141,16 @@ object NameSuggester {
       }
     }
 
-    def addForFunctionType(ret: ScType, params: Seq[ScType]) =
-      params match {
-        case Seq() =>
-          add("function")
-          generateNamesByType(ret)
-        case Seq(param) =>
-          add("function")
-          addFromTwoTypes(param, ret, "To")
-        case _ =>
-          add("function")
-      }
+    def addForFunctionType(ret: ScType, params: Seq[ScType]) = params match {
+      case Seq() =>
+        add("function")
+        generateNamesByType(ret)
+      case Seq(param) =>
+        add("function")
+        addFromTwoTypes(param, ret, "To")
+      case _ =>
+        add("function")
+    }
 
     def addForParameterizedType(baseType: ScType, args: Seq[ScType]) {
       baseType match {

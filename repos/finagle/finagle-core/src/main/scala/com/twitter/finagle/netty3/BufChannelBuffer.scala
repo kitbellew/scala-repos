@@ -30,11 +30,10 @@ object BufChannelBufferFactory {
   /**
     * Get a ChannelBufferFactory with `endianness` ByteOrder
     */
-  def apply(endianness: ByteOrder): ChannelBufferFactory =
-    endianness match {
-      case ByteOrder.BIG_ENDIAN    => beFactory
-      case ByteOrder.LITTLE_ENDIAN => leFactory
-    }
+  def apply(endianness: ByteOrder): ChannelBufferFactory = endianness match {
+    case ByteOrder.BIG_ENDIAN    => beFactory
+    case ByteOrder.LITTLE_ENDIAN => leFactory
+  }
 }
 
 /**
@@ -97,23 +96,22 @@ object BufChannelBuffer {
     *
     * The returned ChannelBuffer should not be mutated.
     */
-  def apply(buf: Buf, endianness: ByteOrder): ChannelBuffer =
-    buf match {
-      case empty if empty.isEmpty =>
-        ChannelBuffers.EMPTY_BUFFER
+  def apply(buf: Buf, endianness: ByteOrder): ChannelBuffer = buf match {
+    case empty if empty.isEmpty =>
+      ChannelBuffers.EMPTY_BUFFER
 
-      case ChannelBufferBuf.Owned(cb) if endianness == cb.order =>
-        cb
+    case ChannelBufferBuf.Owned(cb) if endianness == cb.order =>
+      cb
 
-      case Buf.ByteArray.Owned(bytes, begin, end) =>
-        ChannelBuffers.wrappedBuffer(endianness, bytes, begin, end - begin)
+    case Buf.ByteArray.Owned(bytes, begin, end) =>
+      ChannelBuffers.wrappedBuffer(endianness, bytes, begin, end - begin)
 
-      case Buf.ByteBuffer.Owned(bb) =>
-        ChannelBuffers.wrappedBuffer(bb)
+    case Buf.ByteBuffer.Owned(bb) =>
+      ChannelBuffers.wrappedBuffer(bb)
 
-      case _ =>
-        new BufChannelBuffer(buf, endianness)
-    }
+    case _ =>
+      new BufChannelBuffer(buf, endianness)
+  }
 
   /** Creates a ChannelBuffer from `buf` with big-endian ByteOrder. */
   def apply(buf: Buf): ChannelBuffer = apply(buf, ByteOrder.BIG_ENDIAN)

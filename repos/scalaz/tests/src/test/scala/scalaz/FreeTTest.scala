@@ -11,41 +11,38 @@ import scalaz.syntax.monad._
 case class FreeTListOption[A](f: FreeT[List, Option, A])
 
 object FreeTListOption {
-  implicit def freeTListOptionMonad =
-    new MonadPlus[FreeTListOption]
-      with Traverse[FreeTListOption]
-      with BindRec[FreeTListOption] {
-      def point[A](a: => A): FreeTListOption[A] =
-        FreeTListOption(Monad[FreeT[List, Option, ?]].point(a))
+  implicit def freeTListOptionMonad = new MonadPlus[FreeTListOption]
+    with Traverse[FreeTListOption]
+    with BindRec[FreeTListOption] {
+    def point[A](a: => A): FreeTListOption[A] =
+      FreeTListOption(Monad[FreeT[List, Option, ?]].point(a))
 
-      def bind[A, B](fa: FreeTListOption[A])(
-          f: A => FreeTListOption[B]): FreeTListOption[B] =
-        FreeTListOption(Monad[FreeT[List, Option, ?]].bind(fa.f) { a =>
-          f(a).f
-        })
+    def bind[A, B](fa: FreeTListOption[A])(
+        f: A => FreeTListOption[B]): FreeTListOption[B] =
+      FreeTListOption(Monad[FreeT[List, Option, ?]].bind(fa.f) { a => f(a).f })
 
-      def tailrecM[A, B](f: A => FreeTListOption[A \/ B])(
-          a: A): FreeTListOption[B] =
-        FreeTListOption(
-          BindRec[FreeT[List, Option, ?]].tailrecM((x: A) => f(x).f)(a))
+    def tailrecM[A, B](f: A => FreeTListOption[A \/ B])(
+        a: A): FreeTListOption[B] =
+      FreeTListOption(
+        BindRec[FreeT[List, Option, ?]].tailrecM((x: A) => f(x).f)(a))
 
-      def plus[A](a: FreeTListOption[A], b: => FreeTListOption[A]) =
-        FreeTListOption(Plus[FreeT[List, Option, ?]].plus(a.f, b.f))
+    def plus[A](a: FreeTListOption[A], b: => FreeTListOption[A]) =
+      FreeTListOption(Plus[FreeT[List, Option, ?]].plus(a.f, b.f))
 
-      def empty[A] =
-        FreeTListOption(PlusEmpty[FreeT[List, Option, ?]].empty[A])
+    def empty[A] =
+      FreeTListOption(PlusEmpty[FreeT[List, Option, ?]].empty[A])
 
-      def traverseImpl[G[_]: Applicative, A, B](fa: FreeTListOption[A])(
-          f: A => G[B]) =
-        Functor[G].map(Traverse[FreeT[List, Option, ?]].traverseImpl(fa.f)(f))(
-          FreeTListOption.apply)
+    def traverseImpl[G[_]: Applicative, A, B](fa: FreeTListOption[A])(
+        f: A => G[B]) =
+      Functor[G].map(Traverse[FreeT[List, Option, ?]].traverseImpl(fa.f)(f))(
+        FreeTListOption.apply)
 
-      override def map[A, B](fa: FreeTListOption[A])(f: A => B) =
-        FreeTListOption(Monad[FreeT[List, Option, ?]].map(fa.f)(f))
+    override def map[A, B](fa: FreeTListOption[A])(f: A => B) =
+      FreeTListOption(Monad[FreeT[List, Option, ?]].map(fa.f)(f))
 
-      override def foldMap[A, B: Monoid](fa: FreeTListOption[A])(f: A => B) =
-        Foldable[FreeT[List, Option, ?]].foldMap(fa.f)(f)
-    }
+    override def foldMap[A, B: Monoid](fa: FreeTListOption[A])(f: A => B) =
+      Foldable[FreeT[List, Option, ?]].foldMap(fa.f)(f)
+  }
 
   implicit def freeTListOptionArb[A](implicit
       A: Arbitrary[A]): Arbitrary[FreeTListOption[A]] =
@@ -59,11 +56,10 @@ object FreeTListOption {
         .map(FreeTListOption.apply))
 
   implicit def freeTListOptionEq[A](implicit
-      A: Equal[A]): Equal[FreeTListOption[A]] =
-    new Equal[FreeTListOption[A]] {
-      def equal(a: FreeTListOption[A], b: FreeTListOption[A]) =
-        Equal[Option[A]].equal(a.f.runM(_.headOption), b.f.runM(_.headOption))
-    }
+      A: Equal[A]): Equal[FreeTListOption[A]] = new Equal[FreeTListOption[A]] {
+    def equal(a: FreeTListOption[A], b: FreeTListOption[A]) =
+      Equal[Option[A]].equal(a.f.runM(_.headOption), b.f.runM(_.headOption))
+  }
 }
 
 object FreeTTest extends SpecLite {

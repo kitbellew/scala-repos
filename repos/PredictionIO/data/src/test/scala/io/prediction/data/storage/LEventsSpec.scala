@@ -46,25 +46,24 @@ class LEventsSpec extends Specification with TestEvents {
 
   val appId = 1
 
-  def events(eventClient: LEvents) =
-    sequential ^ s2"""
+  def events(eventClient: LEvents) = sequential ^ s2"""
 
     init default ${initDefault(eventClient)}
     insert 3 test events and get back by event ID ${insertAndGetEvents(
-      eventClient)}
+    eventClient)}
     insert 3 test events with timezone and get back by event ID ${insertAndGetTimezone(
-      eventClient)}
+    eventClient)}
     insert and delete by ID ${insertAndDelete(eventClient)}
     insert test user events ${insertTestUserEvents(eventClient)}
     find user events ${findUserEvents(eventClient)}
     aggregate user properties ${aggregateUserProperties(eventClient)}
     aggregate one user properties ${aggregateOneUserProperties(eventClient)}
     aggregate non-existent user properties ${aggregateNonExistentUserProperties(
-      eventClient)}
+    eventClient)}
     init channel ${initChannel(eventClient)}
     insert 2 events to channel ${insertChannel(eventClient)}
     insert 1 event to channel and delete by ID  ${insertAndDeleteChannel(
-      eventClient)}
+    eventClient)}
     find events from channel ${findChannel(eventClient)}
     remove default ${removeDefault(eventClient)}
     remove channel ${removeChannel(eventClient)}
@@ -72,11 +71,10 @@ class LEventsSpec extends Specification with TestEvents {
   """
 
   val dbName = "test_pio_storage_events_" + hashCode
-  def hbDO =
-    Storage.getDataObject[LEvents](
-      StorageTestUtils.hbaseSourceName,
-      dbName
-    )
+  def hbDO = Storage.getDataObject[LEvents](
+    StorageTestUtils.hbaseSourceName,
+    dbName
+  )
 
   def jdbcDO =
     Storage.getDataObject[LEvents](StorageTestUtils.jdbcSourceName, dbName)

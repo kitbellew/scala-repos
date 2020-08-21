@@ -21,11 +21,10 @@ object CacheDirective {
       extends RequestDirective
       with ResponseDirective
       with ValueRenderable {
-    def render[R <: Rendering](r: R): r.type =
-      content match {
-        case Some(s) ⇒ r ~~ name ~~ '=' ~~# s
-        case None ⇒ r ~~ name
-      }
+    def render[R <: Rendering](r: R): r.type = content match {
+      case Some(s) ⇒ r ~~ name ~~ '=' ~~# s
+      case None ⇒ r ~~ name
+    }
   }
 
   def custom(
@@ -68,11 +67,10 @@ object CacheDirectives {
   final case class `max-stale`(deltaSeconds: Option[Long])
       extends RequestDirective
       with ValueRenderable {
-    def render[R <: Rendering](r: R): r.type =
-      deltaSeconds match {
-        case Some(s) ⇒ r ~~ productPrefix ~~ '=' ~~ s
-        case None ⇒ r ~~ productPrefix
-      }
+    def render[R <: Rendering](r: R): r.type = deltaSeconds match {
+      case Some(s) ⇒ r ~~ productPrefix ~~ '=' ~~ s
+      case None ⇒ r ~~ productPrefix
+    }
   }
 
   // http://tools.ietf.org/html/rfc7234#section-5.2.1.3
@@ -88,8 +86,8 @@ object CacheDirectives {
       extends SingletonValueRenderable
       with RequestDirective
       with ResponseDirective {
-    def apply(fieldNames: String*): `no-cache` =
-      new `no-cache`(immutable.Seq(fieldNames: _*))
+    def apply(fieldNames: String*): `no-cache` = new `no-cache`(
+      immutable.Seq(fieldNames: _*))
   }
 
   // http://tools.ietf.org/html/rfc7234#section-5.2.1.5
@@ -132,8 +130,8 @@ object CacheDirectives {
       extends FieldNamesDirective
       with ResponseDirective
   object `private` {
-    def apply(fieldNames: String*): `private` =
-      new `private`(immutable.Seq(fieldNames: _*))
+    def apply(fieldNames: String*): `private` = new `private`(
+      immutable.Seq(fieldNames: _*))
   }
 
   /** Java API */

@@ -765,27 +765,25 @@ object ScalaDocumentationProvider {
 
   private def parseModifiers(elem: ScModifierListOwner): String = {
     val buffer: StringBuilder = new StringBuilder("")
-    def accessQualifier(x: ScAccessModifier): String =
-      (x.getReference match {
-        case null => ""
-        case ref =>
-          ref.resolve match {
-            case clazz: PsiClass =>
-              "[<a href=\"psi_element://" +
-                escapeHtml(clazz.qualifiedName) + "\"><code>" +
-                (x.idText match {
-                  case Some(text) => text
-                  case None       => ""
-                }) + "</code></a>]"
-            case pack: PsiPackage =>
-              "[" + escapeHtml(pack.getQualifiedName) + "]"
-            case _ =>
-              x.idText match {
-                case Some(text) => "[" + text + "]"
+    def accessQualifier(x: ScAccessModifier): String = (x.getReference match {
+      case null => ""
+      case ref =>
+        ref.resolve match {
+          case clazz: PsiClass =>
+            "[<a href=\"psi_element://" +
+              escapeHtml(clazz.qualifiedName) + "\"><code>" +
+              (x.idText match {
+                case Some(text) => text
                 case None       => ""
-              }
-          }
-      }) + " "
+              }) + "</code></a>]"
+          case pack: PsiPackage => "[" + escapeHtml(pack.getQualifiedName) + "]"
+          case _ =>
+            x.idText match {
+              case Some(text) => "[" + text + "]"
+              case None       => ""
+            }
+        }
+    }) + " "
 
     buffer.append(elem.getModifierList.accessModifier match {
       case Some(x: ScAccessModifier) =>

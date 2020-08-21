@@ -39,14 +39,13 @@ private[internal] trait CommonOwners {
         while ((result ne NoSymbol) && (result ne sym) && !(sym isNestedIn result))
           result = result.owner
     }
-    def traverse(tp: Type) =
-      tp.normalize match {
-        case ThisType(sym) => register(sym)
-        case TypeRef(NoPrefix, sym, args) =>
-          register(sym.owner); args foreach traverse
-        case SingleType(NoPrefix, sym) => register(sym.owner)
-        case _                         => mapOver(tp)
-      }
+    def traverse(tp: Type) = tp.normalize match {
+      case ThisType(sym) => register(sym)
+      case TypeRef(NoPrefix, sym, args) =>
+        register(sym.owner); args foreach traverse
+      case SingleType(NoPrefix, sym) => register(sym.owner)
+      case _                         => mapOver(tp)
+    }
   }
 
   private lazy val commonOwnerMapObj = new CommonOwnerMap

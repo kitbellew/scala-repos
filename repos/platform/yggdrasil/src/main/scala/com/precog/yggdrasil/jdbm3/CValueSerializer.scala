@@ -53,37 +53,35 @@ private[jdbm3] object CTypeMappings {
   final val FPERIOD = 10.toByte
   final val FUNDEFINED = -1.toByte
 
-  def flagFor(tpe: CType): Byte =
-    tpe match {
-      case CString       => FSTRING
-      case CBoolean      => FBOOLEAN
-      case CLong         => FLONG
-      case CDouble       => FDOUBLE
-      case CNum          => FNUM
-      case CDate         => FDATE
-      case CPeriod       => FPERIOD
-      case CNull         => FNULL
-      case CEmptyObject  => FEMPTYOBJECT
-      case CEmptyArray   => FEMPTYARRAY
-      case CArrayType(_) => FARRAY
-      case CUndefined    => sys.error("Undefined is not a valid format")
-    }
+  def flagFor(tpe: CType): Byte = tpe match {
+    case CString       => FSTRING
+    case CBoolean      => FBOOLEAN
+    case CLong         => FLONG
+    case CDouble       => FDOUBLE
+    case CNum          => FNUM
+    case CDate         => FDATE
+    case CPeriod       => FPERIOD
+    case CNull         => FNULL
+    case CEmptyObject  => FEMPTYOBJECT
+    case CEmptyArray   => FEMPTYARRAY
+    case CArrayType(_) => FARRAY
+    case CUndefined    => sys.error("Undefined is not a valid format")
+  }
 
-  def fromFlag(b: Byte): CType =
-    b match {
-      case FSTRING      => CString
-      case FBOOLEAN     => CBoolean
-      case FLONG        => CLong
-      case FDOUBLE      => CDouble
-      case FNUM         => CNum
-      case FDATE        => CDate
-      case FPERIOD      => CPeriod
-      case FNULL        => CNull
-      case FEMPTYOBJECT => CEmptyObject
-      case FEMPTYARRAY  => CEmptyArray
-      case FARRAY       => sys.error("todo")
-      case invalid      => sys.error(invalid + " is not a valid format")
-    }
+  def fromFlag(b: Byte): CType = b match {
+    case FSTRING      => CString
+    case FBOOLEAN     => CBoolean
+    case FLONG        => CLong
+    case FDOUBLE      => CDouble
+    case FNUM         => CNum
+    case FDATE        => CDate
+    case FPERIOD      => CPeriod
+    case FNULL        => CNull
+    case FEMPTYOBJECT => CEmptyObject
+    case FEMPTYARRAY  => CEmptyArray
+    case FARRAY       => sys.error("todo")
+    case invalid      => sys.error(invalid + " is not a valid format")
+  }
 }
 
 //object CValueSerializer {

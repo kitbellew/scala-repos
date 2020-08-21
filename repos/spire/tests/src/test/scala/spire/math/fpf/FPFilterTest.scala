@@ -89,41 +89,37 @@ class FpFilterTest extends FunSuite with Checkers {
   case class Simplex(p: Point, q: Point, r: Point)
 
   // I'm not trying to test things that won't ever work.
-  def genSimpleDouble: Gen[Double] =
-    for {
-      n <- arbitrary[Long]
-    } yield {
-      (n >>> 11) * 1.1102230246251565e-16
-    }
+  def genSimpleDouble: Gen[Double] = for {
+    n <- arbitrary[Long]
+  } yield {
+    (n >>> 11) * 1.1102230246251565e-16
+  }
 
-  def genPoint: Gen[Point] =
-    for {
-      x <- genSimpleDouble
-      y <- genSimpleDouble
-    } yield Point(x, y)
+  def genPoint: Gen[Point] = for {
+    x <- genSimpleDouble
+    y <- genSimpleDouble
+  } yield Point(x, y)
 
   def genEpsilon: Gen[Double] =
     genSimpleDouble map (_ * FpFilter.Eps)
 
-  def genSimplex: Gen[Simplex] =
-    for {
-      p <- genPoint
-      q <- genPoint
-      r <- genPoint
-    } yield Simplex(p, q, r)
+  def genSimplex: Gen[Simplex] = for {
+    p <- genPoint
+    q <- genPoint
+    r <- genPoint
+  } yield Simplex(p, q, r)
 
-  def genDegenerateSimplex: Gen[Simplex] =
-    for {
-      p <- genPoint
-      q <- genPoint
-      ex <- genEpsilon
-      ey <- genEpsilon
-    } yield {
-      val dx = q.x - p.x
-      val dy = q.y - p.y
-      val r = Point(q.x + dx + ex, q.y + dy + ey)
-      Simplex(p, q, r)
-    }
+  def genDegenerateSimplex: Gen[Simplex] = for {
+    p <- genPoint
+    q <- genPoint
+    ex <- genEpsilon
+    ey <- genEpsilon
+  } yield {
+    val dx = q.x - p.x
+    val dy = q.y - p.y
+    val r = Point(q.x + dx + ex, q.y + dy + ey)
+    Simplex(p, q, r)
+  }
 
   def signExact(s: Simplex): Int = {
     import s._

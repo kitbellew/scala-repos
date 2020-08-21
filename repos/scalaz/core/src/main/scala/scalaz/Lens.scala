@@ -172,8 +172,8 @@ sealed abstract class LensFamily[A1, A2, B1, B2] {
 
   /** alias for `compose` */
   def <=<[C1, C2](
-      that: LensFamily[C1, C2, A1, A2]): LensFamily[C1, C2, B1, B2] =
-    compose(that)
+      that: LensFamily[C1, C2, A1, A2]): LensFamily[C1, C2, B1, B2] = compose(
+    that)
 
   def andThen[C1, C2](
       that: LensFamily[B1, B2, C1, C2]): LensFamily[A1, A2, C1, C2] =
@@ -181,8 +181,8 @@ sealed abstract class LensFamily[A1, A2, B1, B2] {
 
   /** alias for `andThen` */
   def >=>[C1, C2](
-      that: LensFamily[B1, B2, C1, C2]): LensFamily[A1, A2, C1, C2] =
-    andThen(that)
+      that: LensFamily[B1, B2, C1, C2]): LensFamily[A1, A2, C1, C2] = andThen(
+    that)
 
   /** Two lenses that view a value of the same type can be joined */
   def sum[C1, C2](that: => LensFamily[C1, C2, B1, B2])
@@ -344,10 +344,9 @@ trait LensFamilyFunctions {
 
 trait LensFunctions extends LensFamilyFunctions {
 
-  def lens[A, B](r: A => Store[B, A]): Lens[A, B] =
-    new Lens[A, B] {
-      def run(a: A): Store[B, A] = r(a)
-    }
+  def lens[A, B](r: A => Store[B, A]): Lens[A, B] = new Lens[A, B] {
+    def run(a: A): Store[B, A] = r(a)
+  }
 
   def lensg[A, B](set: A => B => A, get: A => B): Lens[A, B] =
     lens(a => Store(set(a), get(a)))
@@ -502,11 +501,10 @@ abstract class LensInstances extends LensInstances0 {
       lens: LensFamily[S1, S2, Set[K], Set[K]]) {
 
     /** Setting the value of this lens will change whether or not it is present in the set */
-    def contains(key: K) =
-      lensFamilyg[S1, S2, Boolean, Boolean](
-        s => b => lens.mod(m => if (b) m + key else m - key, s): Id[S2],
-        s => lens.get(s).contains(key)
-      )
+    def contains(key: K) = lensFamilyg[S1, S2, Boolean, Boolean](
+      s => b => lens.mod(m => if (b) m + key else m - key, s): Id[S2],
+      s => lens.get(s).contains(key)
+    )
 
     def &=(that: Set[K]): IndexedState[S1, S2, Set[K]] =
       lens %= (_ & that)

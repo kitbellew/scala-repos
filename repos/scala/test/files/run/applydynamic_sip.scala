@@ -1,14 +1,14 @@
 object Test extends App {
   object stubUpdate {
-    def update(as: Any*) =
-      println(".update" + as.toList.mkString("(", ", ", ")"))
+    def update(as: Any*) = println(
+      ".update" + as.toList.mkString("(", ", ", ")"))
   }
 
   object stub {
     def apply = { println(".apply"); stubUpdate }
     def apply(as: Any*) = println(".apply" + as.toList.mkString("(", ", ", ")"))
-    def update(as: Any*) =
-      println(".update" + as.toList.mkString("(", ", ", ")"))
+    def update(as: Any*) = println(
+      ".update" + as.toList.mkString("(", ", ", ")"))
   }
   class MyDynamic extends Dynamic {
     def applyDynamic[T](n: String)(as: Any*) = {

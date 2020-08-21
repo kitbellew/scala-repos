@@ -24,10 +24,9 @@ private object Level {
   def fromTitle(title: String): Level =
     TitleToLevel.getOrElse(title, new CustomLevel(title))
 
-  def fromFacetTitle(title: String): Level =
-    FacetTitleToLevel.getOrElse(
-      title,
-      throw new IllegalArgumentException("Unknown level title: " + title))
+  def fromFacetTitle(title: String): Level = FacetTitleToLevel.getOrElse(
+    title,
+    throw new IllegalArgumentException("Unknown level title: " + title))
 }
 
 private object ProjectLevel extends Level("project", "Project") {

@@ -87,11 +87,11 @@ trait AdditiveGroupSyntax extends AdditiveMonoidSyntax {
   implicit def additiveGroupOps[A: AdditiveGroup](a: A): AdditiveGroupOps[A] =
     new AdditiveGroupOps(a)
   implicit def literalIntAdditiveGroupOps(
-      lhs: Int): LiteralIntAdditiveGroupOps =
-    new LiteralIntAdditiveGroupOps(lhs)
+      lhs: Int): LiteralIntAdditiveGroupOps = new LiteralIntAdditiveGroupOps(
+    lhs)
   implicit def literalLongAdditiveGroupOps(
-      lhs: Long): LiteralLongAdditiveGroupOps =
-    new LiteralLongAdditiveGroupOps(lhs)
+      lhs: Long): LiteralLongAdditiveGroupOps = new LiteralLongAdditiveGroupOps(
+    lhs)
   implicit def literalDoubleAdditiveGroupOps(
       lhs: Double): LiteralDoubleAdditiveGroupOps =
     new LiteralDoubleAdditiveGroupOps(lhs)
@@ -134,8 +134,8 @@ trait MultiplicativeGroupSyntax extends MultiplicativeMonoidSyntax {
 trait SemiringSyntax
     extends AdditiveSemigroupSyntax
     with MultiplicativeSemigroupSyntax {
-  implicit def semiringOps[A: Semiring](a: A): SemiringOps[A] =
-    new SemiringOps(a)
+  implicit def semiringOps[A: Semiring](a: A): SemiringOps[A] = new SemiringOps(
+    a)
 }
 
 trait RigSyntax extends SemiringSyntax
@@ -148,11 +148,11 @@ trait EuclideanRingSyntax extends RingSyntax {
   implicit def euclideanRingOps[A: EuclideanRing](a: A): EuclideanRingOps[A] =
     new EuclideanRingOps(a)
   implicit def literalIntEuclideanRingOps(
-      lhs: Int): LiteralIntEuclideanRingOps =
-    new LiteralIntEuclideanRingOps(lhs)
+      lhs: Int): LiteralIntEuclideanRingOps = new LiteralIntEuclideanRingOps(
+    lhs)
   implicit def literalLongEuclideanRingOps(
-      lhs: Long): LiteralLongEuclideanRingOps =
-    new LiteralLongEuclideanRingOps(lhs)
+      lhs: Long): LiteralLongEuclideanRingOps = new LiteralLongEuclideanRingOps(
+    lhs)
   implicit def literalDoubleEuclideanRingOps(
       lhs: Double): LiteralDoubleEuclideanRingOps =
     new LiteralDoubleEuclideanRingOps(lhs)
@@ -224,8 +224,8 @@ trait PartialActionSyntax {
 
 trait ActionSyntax {
   implicit def leftActionOps[G](g: G): LeftActionOps[G] = new LeftActionOps(g)
-  implicit def rightActionOps[P](p: P): RightActionOps[P] =
-    new RightActionOps(p)
+  implicit def rightActionOps[P](p: P): RightActionOps[P] = new RightActionOps(
+    p)
 }
 
 trait IntervalSyntax {
@@ -255,8 +255,8 @@ trait UnboundSyntax {
 }
 
 trait TorsorSyntax {
-  implicit def torsorPointOps[P](p: P): TorsorPointOps[P] =
-    new TorsorPointOps(p)
+  implicit def torsorPointOps[P](p: P): TorsorPointOps[P] = new TorsorPointOps(
+    p)
 }
 
 trait IntegralSyntax
@@ -264,8 +264,8 @@ trait IntegralSyntax
     with ConvertableFromSyntax
     with OrderSyntax
     with SignedSyntax {
-  implicit def integralOps[A: Integral](a: A): IntegralOps[A] =
-    new IntegralOps(a)
+  implicit def integralOps[A: Integral](a: A): IntegralOps[A] = new IntegralOps(
+    a)
 }
 
 trait FractionalSyntax

@@ -44,21 +44,19 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
     *   - field accessors and superaccessors, except for lazy value accessors which become initializer
     *     methods in the impl class (because they can have arbitrary initializers)
     */
-  private def isImplementedStatically(sym: Symbol) =
-    (
-      sym.isMethod
-        && (!sym.hasFlag(
-          DEFERRED | SUPERACCESSOR) || (sym hasFlag lateDEFERRED))
-        && sym.owner.isTrait
-        && sym.isMethod
-        && (!sym.isModule || sym.hasFlag(PRIVATE | LIFTED))
-        && (!(sym hasFlag (ACCESSOR | SUPERACCESSOR)) || sym.isLazy)
-        && !sym.isPrivate
-        && !sym.hasAllFlags(LIFTED | MODULE | METHOD)
-        && !sym.isConstructor
-        && (!sym.hasFlag(notPRIVATE | LIFTED) || sym.hasFlag(
-          ACCESSOR | SUPERACCESSOR | MODULE))
-    )
+  private def isImplementedStatically(sym: Symbol) = (
+    sym.isMethod
+      && (!sym.hasFlag(DEFERRED | SUPERACCESSOR) || (sym hasFlag lateDEFERRED))
+      && sym.owner.isTrait
+      && sym.isMethod
+      && (!sym.isModule || sym.hasFlag(PRIVATE | LIFTED))
+      && (!(sym hasFlag (ACCESSOR | SUPERACCESSOR)) || sym.isLazy)
+      && !sym.isPrivate
+      && !sym.hasAllFlags(LIFTED | MODULE | METHOD)
+      && !sym.isConstructor
+      && (!sym.hasFlag(notPRIVATE | LIFTED) || sym.hasFlag(
+        ACCESSOR | SUPERACCESSOR | MODULE))
+  )
 
   private def isFieldWithBitmap(field: Symbol) = {
     field.info // ensure that nested objects are transformed
@@ -75,18 +73,17 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
     *        That's why they are excluded.
     *  Note: The `checkinit` option does not check if transient fields are initialized.
     */
-  private def needsInitFlag(sym: Symbol) =
-    (
-      settings.checkInit
-        && sym.isGetter
-        && !sym.isInitializedToDefault
-        && !isConstantType(sym.info.finalResultType) // SI-4742
-        && !sym.hasFlag(PARAMACCESSOR | SPECIALIZED | LAZY)
-        && !sym.accessed.hasFlag(PRESUPER)
-        && !sym.isOuterAccessor
-        && !(sym.owner isSubClass DelayedInitClass)
-        && !(sym.accessed hasAnnotation TransientAttr)
-    )
+  private def needsInitFlag(sym: Symbol) = (
+    settings.checkInit
+      && sym.isGetter
+      && !sym.isInitializedToDefault
+      && !isConstantType(sym.info.finalResultType) // SI-4742
+      && !sym.hasFlag(PARAMACCESSOR | SPECIALIZED | LAZY)
+      && !sym.accessed.hasFlag(PRESUPER)
+      && !sym.isOuterAccessor
+      && !(sym.owner isSubClass DelayedInitClass)
+      && !(sym.accessed hasAnnotation TransientAttr)
+  )
 
   /** Returns the symbol that is accessed by a super-accessor in a mixin composition.
     *
@@ -264,12 +261,11 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
   def addMixedinMembers(clazz: Symbol, unit: CompilationUnit) {
     def cloneAndAddMixinMember(
         mixinClass: Symbol,
-        mixinMember: Symbol): Symbol =
-      (
-        cloneAndAddMember(mixinClass, mixinMember, clazz)
-          setPos clazz.pos
-          resetFlag DEFERRED | lateDEFERRED
-      )
+        mixinMember: Symbol): Symbol = (
+      cloneAndAddMember(mixinClass, mixinMember, clazz)
+        setPos clazz.pos
+        resetFlag DEFERRED | lateDEFERRED
+    )
 
     /* Mix in members of implementation class mixinClass into class clazz */
     def mixinTraitForwarders(mixinClass: Symbol) {
@@ -458,16 +454,15 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
     private val bitmapKindForCategory = perRunCaches.newMap[Name, ClassSymbol]()
 
     // ByteClass, IntClass, LongClass
-    private def bitmapKind(field: Symbol): ClassSymbol =
-      bitmapKindForCategory(bitmapCategory(field))
+    private def bitmapKind(field: Symbol): ClassSymbol = bitmapKindForCategory(
+      bitmapCategory(field))
 
-    private def flagsPerBitmap(field: Symbol): Int =
-      bitmapKind(field) match {
-        case BooleanClass => 1
-        case ByteClass    => 8
-        case IntClass     => 32
-        case LongClass    => 64
-      }
+    private def flagsPerBitmap(field: Symbol): Int = bitmapKind(field) match {
+      case BooleanClass => 1
+      case ByteClass    => 8
+      case IntClass     => 32
+      case LongClass    => 64
+    }
 
     /** The first transform; called in a pre-order traversal at phase mixin
       *  (that is, every node is processed before its children).
@@ -575,16 +570,15 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
        */
       def add(stats: List[Tree], newDefs: List[Tree]) = {
         val newSyms = newDefs map (_.symbol)
-        def isNotDuplicate(tree: Tree) =
-          tree match {
-            case DefDef(_, _, _, _, _, _) =>
-              val sym = tree.symbol
-              !(sym.isDeferred &&
-                (newSyms exists (nsym =>
-                  nsym.name == sym.name && (nsym.tpe matches sym.tpe))))
-            case _ =>
-              true
-          }
+        def isNotDuplicate(tree: Tree) = tree match {
+          case DefDef(_, _, _, _, _, _) =>
+            val sym = tree.symbol
+            !(sym.isDeferred &&
+              (newSyms exists (nsym =>
+                nsym.name == sym.name && (nsym.tpe matches sym.tpe))))
+          case _ =>
+            true
+        }
         if (newDefs.isEmpty) stats
         else newDefs ::: (stats filter isNotDuplicate)
       }
@@ -596,21 +590,20 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
        *   super.A(xs)  where A is the super accessor's alias and xs are its formal parameters.
        * This rhs is typed and then mixin transformed.
        */
-      def completeSuperAccessor(stat: Tree) =
-        stat match {
-          case DefDef(_, _, _, vparams :: Nil, _, EmptyTree)
-              if stat.symbol.isSuperAccessor =>
-            val body = atPos(stat.pos)(
-              Apply(
-                SuperSelect(clazz, stat.symbol.alias),
-                vparams map (v => Ident(v.symbol))))
-            val pt = stat.symbol.tpe.resultType
+      def completeSuperAccessor(stat: Tree) = stat match {
+        case DefDef(_, _, _, vparams :: Nil, _, EmptyTree)
+            if stat.symbol.isSuperAccessor =>
+          val body = atPos(stat.pos)(
+            Apply(
+              SuperSelect(clazz, stat.symbol.alias),
+              vparams map (v => Ident(v.symbol))))
+          val pt = stat.symbol.tpe.resultType
 
-            copyDefDef(stat)(rhs =
-              enteringMixin(transform(localTyper.typed(body, pt))))
-          case _ =>
-            stat
-        }
+          copyDefDef(stat)(rhs =
+            enteringMixin(transform(localTyper.typed(body, pt))))
+        case _ =>
+          stat
+      }
 
       /*
        *  Return the bitmap field for 'offset'. Depending on the hierarchy it is possible to reuse

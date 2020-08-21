@@ -22,12 +22,10 @@ import org.apache.kafka.common.protocol.Errors
 case class OffsetMetadata(
     offset: Long,
     metadata: String = OffsetMetadata.NoMetadata) {
-  override def toString =
-    "OffsetMetadata[%d,%s]"
-      .format(
-        offset,
-        if (metadata != null && metadata.length > 0) metadata
-        else "NO_METADATA")
+  override def toString = "OffsetMetadata[%d,%s]"
+    .format(
+      offset,
+      if (metadata != null && metadata.length > 0) metadata else "NO_METADATA")
 }
 
 object OffsetMetadata {
@@ -49,11 +47,10 @@ case class OffsetAndMetadata(
 
   def metadata = offsetMetadata.metadata
 
-  override def toString =
-    "[%s,CommitTime %d,ExpirationTime %d]".format(
-      offsetMetadata,
-      commitTimestamp,
-      expireTimestamp)
+  override def toString = "[%s,CommitTime %d,ExpirationTime %d]".format(
+    offsetMetadata,
+    commitTimestamp,
+    expireTimestamp)
 }
 
 object OffsetAndMetadata {
@@ -61,20 +58,19 @@ object OffsetAndMetadata {
       offset: Long,
       metadata: String,
       commitTimestamp: Long,
-      expireTimestamp: Long) =
-    new OffsetAndMetadata(
-      OffsetMetadata(offset, metadata),
-      commitTimestamp,
-      expireTimestamp)
+      expireTimestamp: Long) = new OffsetAndMetadata(
+    OffsetMetadata(offset, metadata),
+    commitTimestamp,
+    expireTimestamp)
 
   def apply(offset: Long, metadata: String, timestamp: Long) =
     new OffsetAndMetadata(OffsetMetadata(offset, metadata), timestamp)
 
-  def apply(offset: Long, metadata: String) =
-    new OffsetAndMetadata(OffsetMetadata(offset, metadata))
+  def apply(offset: Long, metadata: String) = new OffsetAndMetadata(
+    OffsetMetadata(offset, metadata))
 
-  def apply(offset: Long) =
-    new OffsetAndMetadata(OffsetMetadata(offset, OffsetMetadata.NoMetadata))
+  def apply(offset: Long) = new OffsetAndMetadata(
+    OffsetMetadata(offset, OffsetMetadata.NoMetadata))
 }
 
 case class OffsetMetadataAndError(
@@ -110,10 +106,9 @@ object OffsetMetadataAndError {
     OffsetMetadata.InvalidOffsetMetadata,
     Errors.ILLEGAL_GENERATION.code)
 
-  def apply(offset: Long) =
-    new OffsetMetadataAndError(
-      OffsetMetadata(offset, OffsetMetadata.NoMetadata),
-      Errors.NONE.code)
+  def apply(offset: Long) = new OffsetMetadataAndError(
+    OffsetMetadata(offset, OffsetMetadata.NoMetadata),
+    Errors.NONE.code)
 
   def apply(error: Short) =
     new OffsetMetadataAndError(OffsetMetadata.InvalidOffsetMetadata, error)

@@ -191,22 +191,21 @@ class CodegenContext {
   /**
     * Returns a term name that is unique within this instance of a `CodegenContext`.
     */
-  def freshName(name: String): String =
-    synchronized {
-      val fullName = if (freshNamePrefix == "") {
-        name
-      } else {
-        s"${freshNamePrefix}_$name"
-      }
-      if (freshNameIds.contains(fullName)) {
-        val id = freshNameIds(fullName)
-        freshNameIds(fullName) = id + 1
-        s"$fullName$id"
-      } else {
-        freshNameIds += fullName -> 1
-        fullName
-      }
+  def freshName(name: String): String = synchronized {
+    val fullName = if (freshNamePrefix == "") {
+      name
+    } else {
+      s"${freshNamePrefix}_$name"
     }
+    if (freshNameIds.contains(fullName)) {
+      val id = freshNameIds(fullName)
+      freshNameIds(fullName) = id + 1
+      s"$fullName$id"
+    } else {
+      freshNameIds += fullName -> 1
+      fullName
+    }
+  }
 
   /**
     * Returns the specialized code to access a value from `inputRow` at `ordinal`.
@@ -288,71 +287,67 @@ class CodegenContext {
   /**
     * Returns the name used in accessor and setter for a Java primitive type.
     */
-  def primitiveTypeName(jt: String): String =
-    jt match {
-      case JAVA_INT => "Int"
-      case _        => boxedType(jt)
-    }
+  def primitiveTypeName(jt: String): String = jt match {
+    case JAVA_INT => "Int"
+    case _        => boxedType(jt)
+  }
 
   def primitiveTypeName(dt: DataType): String = primitiveTypeName(javaType(dt))
 
   /**
     * Returns the Java type for a DataType.
     */
-  def javaType(dt: DataType): String =
-    dt match {
-      case BooleanType              => JAVA_BOOLEAN
-      case ByteType                 => JAVA_BYTE
-      case ShortType                => JAVA_SHORT
-      case IntegerType | DateType   => JAVA_INT
-      case LongType | TimestampType => JAVA_LONG
-      case FloatType                => JAVA_FLOAT
-      case DoubleType               => JAVA_DOUBLE
-      case dt: DecimalType          => "Decimal"
-      case BinaryType               => "byte[]"
-      case StringType               => "UTF8String"
-      case CalendarIntervalType     => "CalendarInterval"
-      case _: StructType            => "InternalRow"
-      case _: ArrayType             => "ArrayData"
-      case _: MapType               => "MapData"
-      case udt: UserDefinedType[_]  => javaType(udt.sqlType)
-      case ObjectType(cls) if cls.isArray =>
-        s"${javaType(ObjectType(cls.getComponentType))}[]"
-      case ObjectType(cls) => cls.getName
-      case _               => "Object"
-    }
+  def javaType(dt: DataType): String = dt match {
+    case BooleanType              => JAVA_BOOLEAN
+    case ByteType                 => JAVA_BYTE
+    case ShortType                => JAVA_SHORT
+    case IntegerType | DateType   => JAVA_INT
+    case LongType | TimestampType => JAVA_LONG
+    case FloatType                => JAVA_FLOAT
+    case DoubleType               => JAVA_DOUBLE
+    case dt: DecimalType          => "Decimal"
+    case BinaryType               => "byte[]"
+    case StringType               => "UTF8String"
+    case CalendarIntervalType     => "CalendarInterval"
+    case _: StructType            => "InternalRow"
+    case _: ArrayType             => "ArrayData"
+    case _: MapType               => "MapData"
+    case udt: UserDefinedType[_]  => javaType(udt.sqlType)
+    case ObjectType(cls) if cls.isArray =>
+      s"${javaType(ObjectType(cls.getComponentType))}[]"
+    case ObjectType(cls) => cls.getName
+    case _               => "Object"
+  }
 
   /**
     * Returns the boxed type in Java.
     */
-  def boxedType(jt: String): String =
-    jt match {
-      case JAVA_BOOLEAN => "Boolean"
-      case JAVA_BYTE    => "Byte"
-      case JAVA_SHORT   => "Short"
-      case JAVA_INT     => "Integer"
-      case JAVA_LONG    => "Long"
-      case JAVA_FLOAT   => "Float"
-      case JAVA_DOUBLE  => "Double"
-      case other        => other
-    }
+  def boxedType(jt: String): String = jt match {
+    case JAVA_BOOLEAN => "Boolean"
+    case JAVA_BYTE    => "Byte"
+    case JAVA_SHORT   => "Short"
+    case JAVA_INT     => "Integer"
+    case JAVA_LONG    => "Long"
+    case JAVA_FLOAT   => "Float"
+    case JAVA_DOUBLE  => "Double"
+    case other        => other
+  }
 
   def boxedType(dt: DataType): String = boxedType(javaType(dt))
 
   /**
     * Returns the representation of default value for a given Java Type.
     */
-  def defaultValue(jt: String): String =
-    jt match {
-      case JAVA_BOOLEAN => "false"
-      case JAVA_BYTE    => "(byte)-1"
-      case JAVA_SHORT   => "(short)-1"
-      case JAVA_INT     => "-1"
-      case JAVA_LONG    => "-1L"
-      case JAVA_FLOAT   => "-1.0f"
-      case JAVA_DOUBLE  => "-1.0"
-      case _            => "null"
-    }
+  def defaultValue(jt: String): String = jt match {
+    case JAVA_BOOLEAN => "false"
+    case JAVA_BYTE    => "(byte)-1"
+    case JAVA_SHORT   => "(short)-1"
+    case JAVA_INT     => "-1"
+    case JAVA_LONG    => "-1L"
+    case JAVA_FLOAT   => "-1.0f"
+    case JAVA_DOUBLE  => "-1.0"
+    case _            => "null"
+  }
 
   def defaultValue(dt: DataType): String = defaultValue(javaType(dt))
 
@@ -468,11 +463,11 @@ class CodegenContext {
     * @param c1 name of the variable of expression 1's output
     * @param c2 name of the variable of expression 2's output
     */
-  def genGreater(dataType: DataType, c1: String, c2: String): String =
-    javaType(dataType) match {
-      case JAVA_BYTE | JAVA_SHORT | JAVA_INT | JAVA_LONG => s"$c1 > $c2"
-      case _                                             => s"(${genComp(dataType, c1, c2)}) > 0"
-    }
+  def genGreater(dataType: DataType, c1: String, c2: String): String = javaType(
+    dataType) match {
+    case JAVA_BYTE | JAVA_SHORT | JAVA_INT | JAVA_LONG => s"$c1 > $c2"
+    case _                                             => s"(${genComp(dataType, c1, c2)}) > 0"
+  }
 
   /**
     * Generates code to do null safe execution, i.e. only execute the code when the input is not

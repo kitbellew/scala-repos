@@ -37,11 +37,10 @@ trait PhaseAssembly {
       var visited = false
       var level = 0
 
-      def allPhaseNames(): String =
-        phaseobj match {
-          case None      => phasename
-          case Some(lst) => lst.map(_.phaseName).reduceLeft(_ + "," + _)
-        }
+      def allPhaseNames(): String = phaseobj match {
+        case None      => phasename
+        case Some(lst) => lst.map(_.phaseName).reduceLeft(_ + "," + _)
+      }
     }
 
     val nodes = new mutable.HashMap[String, Node]()

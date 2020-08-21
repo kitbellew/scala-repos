@@ -149,8 +149,8 @@ class ScalaVariableOfTypeMacro extends Macro {
 
   override def getDefaultValue: String = "x"
 
-  def validExprs(exprs: Array[Expression]): Boolean =
-    validExprsCount(exprs.length)
+  def validExprs(exprs: Array[Expression]): Boolean = validExprsCount(
+    exprs.length)
 
   def validExprs(exprs: Array[String]): Boolean = validExprsCount(exprs.length)
 

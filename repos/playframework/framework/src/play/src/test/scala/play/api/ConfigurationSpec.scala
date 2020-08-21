@@ -13,24 +13,23 @@ import scala.util.control.NonFatal
 
 object ConfigurationSpec extends Specification {
 
-  def exampleConfig =
-    Configuration.from(
-      Map(
-        "foo.bar1" -> "value1",
-        "foo.bar2" -> "value2",
-        "foo.bar3" -> null,
-        "blah.0" -> List(true, false, true),
-        "blah.1" -> List(1, 2, 3),
-        "blah.2" -> List(1.1, 2.2, 3.3),
-        "blah.3" -> List(1L, 2L, 3L),
-        "blah.4" -> List("one", "two", "three"),
-        "blah2" -> Map(
-          "blah3" -> Map(
-            "blah4" -> "value6"
-          )
+  def exampleConfig = Configuration.from(
+    Map(
+      "foo.bar1" -> "value1",
+      "foo.bar2" -> "value2",
+      "foo.bar3" -> null,
+      "blah.0" -> List(true, false, true),
+      "blah.1" -> List(1, 2, 3),
+      "blah.2" -> List(1.1, 2.2, 3.3),
+      "blah.3" -> List(1L, 2L, 3L),
+      "blah.4" -> List("one", "two", "three"),
+      "blah2" -> Map(
+        "blah3" -> Map(
+          "blah4" -> "value6"
         )
       )
     )
+  )
 
   "Configuration" should {
 

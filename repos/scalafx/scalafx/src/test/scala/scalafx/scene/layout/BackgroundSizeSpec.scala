@@ -44,8 +44,8 @@ class BackgroundSizeSpec
       classOf[jfxsl.BackgroundSize],
       classOf[BackgroundSize]) {
 
-  override protected def getScalaClassInstance =
-    new BackgroundSize(getJavaClassInstance) {}
+  override protected def getScalaClassInstance = new BackgroundSize(
+    getJavaClassInstance) {}
 
   override protected def getJavaClassInstance = BackgroundSize.Default
 }

@@ -51,14 +51,13 @@ object BlobMetadata {
 
   implicit val mimeTypeExtractor: Extractor[MimeType] =
     new Extractor[MimeType] {
-      def validated(jv: JValue) =
-        jv.validated[String].flatMap { ms =>
-          MimeTypes
-            .parseMimeTypes(ms)
-            .headOption
-            .toSuccess(
-              Error.invalid("Could not extract mime type from '%s'".format(ms)))
-        }
+      def validated(jv: JValue) = jv.validated[String].flatMap { ms =>
+        MimeTypes
+          .parseMimeTypes(ms)
+          .headOption
+          .toSuccess(
+            Error.invalid("Could not extract mime type from '%s'".format(ms)))
+      }
     }
 
   val schema = "mimeType" :: "size" :: "created" :: "authorities" :: HNil

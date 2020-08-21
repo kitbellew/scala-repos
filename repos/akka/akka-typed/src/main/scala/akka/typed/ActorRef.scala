@@ -50,11 +50,10 @@ abstract class ActorRef[-T] extends java.lang.Comparable[ActorRef[Any]] {
   def path: ActorPath = untypedRef.path
 
   override def toString = untypedRef.toString
-  override def equals(other: Any) =
-    other match {
-      case a: ActorRef[_] ⇒ a.untypedRef == untypedRef
-      case _ ⇒ false
-    }
+  override def equals(other: Any) = other match {
+    case a: ActorRef[_] ⇒ a.untypedRef == untypedRef
+    case _ ⇒ false
+  }
   override def hashCode = untypedRef.hashCode
   override def compareTo(other: ActorRef[Any]) =
     untypedRef.compareTo(other.untypedRef)

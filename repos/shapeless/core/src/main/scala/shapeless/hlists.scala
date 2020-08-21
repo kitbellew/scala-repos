@@ -35,11 +35,10 @@ sealed trait HList extends Product with Serializable
   * @author Miles Sabin
   */
 final case class ::[+H, +T <: HList](head: H, tail: T) extends HList {
-  override def toString =
-    head match {
-      case _: ::[_, _] => "(" + head + ") :: " + tail.toString
-      case _           => head + " :: " + tail.toString
-    }
+  override def toString = head match {
+    case _: ::[_, _] => "(" + head + ") :: " + tail.toString
+    case _           => head + " :: " + tail.toString
+  }
 }
 
 /**
@@ -73,8 +72,8 @@ object HList extends Dynamic {
   /**
     * Produces a HList of length `N` filled with `elem`.
     */
-  def fill[A](n: Nat)(elem: A)(implicit fill: Fill[n.N, A]): fill.Out =
-    fill(elem)
+  def fill[A](n: Nat)(elem: A)(implicit fill: Fill[n.N, A]): fill.Out = fill(
+    elem)
 
   /**
     * Produces a `N1`-length HList made of `N2`-length HLists filled with `elem`.

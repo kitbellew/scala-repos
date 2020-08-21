@@ -37,10 +37,9 @@ object GenerateRoundtripSources {
       .createModel(ignoreInvalidDefaults = false)
       .map(m =>
         new SourceCodeGenerator(m) {
-          override def Table =
-            new Table(_) {
-              override def autoIncLastAsOption = true
-            }
+          override def Table = new Table(_) {
+            override def autoIncLastAsOption = true
+          }
         })
     val db = Database.forURL(
       url = url,
@@ -112,22 +111,18 @@ class Tables(val profile: JdbcProfile) {
     def p = column[Option[Int]]("posts")
     def a = column[Option[Int]]("val") // scala keyword collision
     def s = column[Double]("schema_name") // slick Table no-arg method collision
-    def sx =
-      column[String](
-        "schema_name_x"
-      ) // column name collision after disambiguation
-    def t_ag =
-      column[Option[String]](
-        "tag"
-      ) // column name collision after disambiguation
-    def tt =
-      column[Option[String]](
-        "_table_tag"
-      ) // column name collision after disambiguation
-    def _underscore =
-      column[Option[String]](
-        "_underscore"
-      ) // column name collision after disambiguation
+    def sx = column[String](
+      "schema_name_x"
+    ) // column name collision after disambiguation
+    def t_ag = column[Option[String]](
+      "tag"
+    ) // column name collision after disambiguation
+    def tt = column[Option[String]](
+      "_table_tag"
+    ) // column name collision after disambiguation
+    def _underscore = column[Option[String]](
+      "_underscore"
+    ) // column name collision after disambiguation
     def * = (pk, pk2, a, c, s, sx, i1, p, t_ag, tt, _underscore)
     def idx1 = index("", i1) // idx column collision
     def idx2 = index("i2", i1) // idx column collision
@@ -228,11 +223,10 @@ class Tables(val profile: JdbcProfile) {
     def Option_Double =
       column[Option[Double]]("Option_Double", O.Default(Some(9.999)))
     //def java_math_BigDecimal = column[Option[java.math.BigDecimal]]("java_math_BigDecimal")
-    def Option_String =
-      column[Option[String]](
-        "Option_String",
-        O.Default(Some("someDefaultString")),
-        O.Length(254))
+    def Option_String = column[Option[String]](
+      "Option_String",
+      O.Default(Some("someDefaultString")),
+      O.Length(254))
     def Option_java_sql_Date =
       column[Option[java.sql.Date]]("Option_java_sql_Date")
     def Option_java_sql_Time =
@@ -246,40 +240,39 @@ class Tables(val profile: JdbcProfile) {
     def Option_java_sql_Option_Blob =
       column[Option[Option[java.sql.Blob]]]("Option_java_sql_Blob")
     //def Option_java_sql_Clob = column[Option[java.sql.Clob]]("Option_java_sql_Clob")
-    def * =
+    def * = (
+      `type`,
+      Boolean,
+      Byte,
+      Short,
+      Int,
+      Long,
+      Float,
+      Double,
+      String,
+      java_sql_Date,
+      java_sql_Time,
+      java_sql_Timestamp,
+      java_util_UUID,
+      java_sql_Blob //,java_sql_Clob
+      ,
+      None_Int,
       (
-        `type`,
-        Boolean,
-        Byte,
-        Short,
-        Int,
-        Long,
-        Float,
-        Double,
-        String,
-        java_sql_Date,
-        java_sql_Time,
-        java_sql_Timestamp,
-        java_util_UUID,
-        java_sql_Blob //,java_sql_Clob
-        ,
-        None_Int,
-        (
-          Option_Boolean,
-          Option_Byte,
-          Option_Short,
-          Option_Int,
-          Option_Long,
-          Option_Float,
-          Option_Double,
-          Option_String,
-          Option_java_sql_Date,
-          Option_java_sql_Time,
-          Option_java_sql_Timestamp,
-          Option_java_util_UUID,
-          Option_java_sql_Blob //,Option_java_sql_Clob
-        )
+        Option_Boolean,
+        Option_Byte,
+        Option_Short,
+        Option_Int,
+        Option_Long,
+        Option_Float,
+        Option_Double,
+        Option_String,
+        Option_java_sql_Date,
+        Option_java_sql_Time,
+        Option_java_sql_Timestamp,
+        Option_java_util_UUID,
+        Option_java_sql_Blob //,Option_java_sql_Clob
       )
+    )
     def pk = primaryKey("PK", (Int, Long))
   }
   val typeTest = TableQuery[TypeTest]
@@ -332,29 +325,28 @@ class Tables(val profile: JdbcProfile) {
     def p6i4 = column[Int]("p6i4", O.Default(64))
     def p6i5 = column[Int]("p6i5", O.Default(65))
     def p6i6 = column[Int]("p6i6", O.Default(66))
-    def * =
-      (
+    def * = (
+      id,
+      (p1i1, p1i2, p1i3, p1i4, p1i5, p1i6),
+      (p2i1, p2i2, p2i3, p2i4, p2i5, p2i6),
+      (p3i1, p3i2, p3i3, p3i4, p3i5, p3i6),
+      (p4i1, p4i2, p4i3, p4i4, p4i5, p4i6),
+      (p5i1, p5i2, p5i3, p5i4, p5i5, p5i6),
+      (p6i1, p6i2, p6i3, p6i4, p6i5, p6i6)
+    ).shaped <> ({ case (id, p1, p2, p3, p4, p5, p6) =>
+      // We could do this without .shaped but then we'd have to write a type annotation for the parameters
+      Whole(
         id,
-        (p1i1, p1i2, p1i3, p1i4, p1i5, p1i6),
-        (p2i1, p2i2, p2i3, p2i4, p2i5, p2i6),
-        (p3i1, p3i2, p3i3, p3i4, p3i5, p3i6),
-        (p4i1, p4i2, p4i3, p4i4, p4i5, p4i6),
-        (p5i1, p5i2, p5i3, p5i4, p5i5, p5i6),
-        (p6i1, p6i2, p6i3, p6i4, p6i5, p6i6)
-      ).shaped <> ({ case (id, p1, p2, p3, p4, p5, p6) =>
-        // We could do this without .shaped but then we'd have to write a type annotation for the parameters
-        Whole(
-          id,
-          Part.tupled.apply(p1),
-          Part.tupled.apply(p2),
-          Part.tupled.apply(p3),
-          Part.tupled.apply(p4),
-          Part.tupled.apply(p5),
-          Part.tupled.apply(p6))
-      }, { w: Whole =>
-        def f(p: Part) = Part.unapply(p).get
-        Some((w.id, f(w.p1), f(w.p2), f(w.p3), f(w.p4), f(w.p5), f(w.p6)))
-      })
+        Part.tupled.apply(p1),
+        Part.tupled.apply(p2),
+        Part.tupled.apply(p3),
+        Part.tupled.apply(p4),
+        Part.tupled.apply(p5),
+        Part.tupled.apply(p6))
+    }, { w: Whole =>
+      def f(p: Part) = Part.unapply(p).get
+      Some((w.id, f(w.p1), f(w.p2), f(w.p3), f(w.p4), f(w.p5), f(w.p6)))
+    })
   }
   val large = TableQuery[Large]
 }

@@ -110,10 +110,9 @@ case class ScExistentialType(
     update(quantified, unpacked)
   }
 
-  override def removeAbstracts =
-    ScExistentialType(
-      quantified.removeAbstracts,
-      wildcards.map(_.withoutAbstracts))
+  override def removeAbstracts = ScExistentialType(
+    quantified.removeAbstracts,
+    wildcards.map(_.withoutAbstracts))
 
   override def recursiveUpdate(
       update: ScType => (Boolean, ScType),
@@ -636,12 +635,11 @@ case class ScExistentialArgument(
     upperBound: ScType) {
   def unpack = new ScSkolemizedType(name, args, lowerBound, upperBound)
 
-  def withoutAbstracts: ScExistentialArgument =
-    ScExistentialArgument(
-      name,
-      args,
-      lowerBound.removeAbstracts,
-      upperBound.removeAbstracts)
+  def withoutAbstracts: ScExistentialArgument = ScExistentialArgument(
+    name,
+    args,
+    lowerBound.removeAbstracts,
+    upperBound.removeAbstracts)
 
   def recursiveUpdate(
       update: ScType => (Boolean, ScType),

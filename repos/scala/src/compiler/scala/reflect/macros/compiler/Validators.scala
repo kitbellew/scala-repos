@@ -41,10 +41,9 @@ trait Validators {
 
     private def checkMacroDefMacroImplCorrespondence() = {
       val atvars = atparams map freshVar
-      def atpeToRtpe(atpe: Type) =
-        atpe
-          .substSym(aparamss.flatten, rparamss.flatten)
-          .instantiateTypeParams(atparams, atvars)
+      def atpeToRtpe(atpe: Type) = atpe
+        .substSym(aparamss.flatten, rparamss.flatten)
+        .instantiateTypeParams(atparams, atvars)
 
       // we only check strict correspondence between value parameterss
       // type parameters of macro defs and macro impls don't have to coincide with each other
@@ -111,13 +110,11 @@ trait Validators {
         tparams: List[Symbol],
         paramss: List[List[Symbol]],
         ret: Type) {
-      private def tparams_s =
-        if (tparams.isEmpty) ""
-        else tparams.map(_.defString).mkString("[", ", ", "]")
-      private def paramss_s =
-        paramss map (ps =>
-          ps.map(s => s"${s.name}: ${s.tpe_*}")
-            .mkString("(", ", ", ")")) mkString ""
+      private def tparams_s = if (tparams.isEmpty) ""
+      else tparams.map(_.defString).mkString("[", ", ", "]")
+      private def paramss_s = paramss map (ps =>
+        ps.map(s => s"${s.name}: ${s.tpe_*}")
+          .mkString("(", ", ", ")")) mkString ""
       override def toString =
         "MacroImplSig(" + tparams_s + paramss_s + ret + ")"
     }
@@ -205,45 +202,42 @@ trait Validators {
         val implReturnType = sigma(increaseMetalevel(ctxPrefix, macroDefRet))
 
         object SigmaTypeMap extends TypeMap {
-          def mapPrefix(pre: Type) =
-            pre match {
-              case ThisType(sym) if sym == macroDef.owner =>
-                singleType(singleType(ctxPrefix, MacroContextPrefix), ExprValue)
-              case SingleType(NoPrefix, sym) =>
-                mfind(macroDdef.vparamss)(_.symbol == sym).fold(pre)(p =>
-                  singleType(singleType(NoPrefix, param(p)), ExprValue))
-              case _ =>
-                mapOver(pre)
-            }
-          def apply(tp: Type): Type =
-            tp match {
-              case TypeRef(pre, sym, args) =>
-                val pre1 = mapPrefix(pre)
-                val args1 = mapOverArgs(args, sym.typeParams)
-                if ((pre eq pre1) && (args eq args1)) tp
-                else typeRef(pre1, sym, args1)
-              case _ =>
-                mapOver(tp)
-            }
+          def mapPrefix(pre: Type) = pre match {
+            case ThisType(sym) if sym == macroDef.owner =>
+              singleType(singleType(ctxPrefix, MacroContextPrefix), ExprValue)
+            case SingleType(NoPrefix, sym) =>
+              mfind(macroDdef.vparamss)(_.symbol == sym).fold(pre)(p =>
+                singleType(singleType(NoPrefix, param(p)), ExprValue))
+            case _ =>
+              mapOver(pre)
+          }
+          def apply(tp: Type): Type = tp match {
+            case TypeRef(pre, sym, args) =>
+              val pre1 = mapPrefix(pre)
+              val args1 = mapOverArgs(args, sym.typeParams)
+              if ((pre eq pre1) && (args eq args1)) tp
+              else typeRef(pre1, sym, args1)
+            case _ =>
+              mapOver(tp)
+          }
         }
         def sigma(tpe: Type): Type = SigmaTypeMap(tpe)
 
         def makeParam(name: Name, pos: Position, tpe: Type, flags: Long) =
           macroDef.newValueParameter(name.toTermName, pos, flags) setInfo tpe
-        def param(tree: Tree): Symbol =
-          (
-            cache.getOrElseUpdate(
-              tree.symbol, {
-                val sym = tree.symbol
-                assert(sym.isTerm, s"sym = $sym, tree = $tree")
-                makeParam(
-                  sym.name,
-                  sym.pos,
-                  sigma(increaseMetalevel(ctxPrefix, sym.tpe)),
-                  sym.flags)
-              }
-            )
+        def param(tree: Tree): Symbol = (
+          cache.getOrElseUpdate(
+            tree.symbol, {
+              val sym = tree.symbol
+              assert(sym.isTerm, s"sym = $sym, tree = $tree")
+              makeParam(
+                sym.name,
+                sym.pos,
+                sigma(increaseMetalevel(ctxPrefix, sym.tpe)),
+                sym.flags)
+            }
           )
+        )
       }
 
       import SigGenerator._

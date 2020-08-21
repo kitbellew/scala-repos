@@ -578,8 +578,8 @@ object ClassLoaderEvolutionsReader {
   /**
     * Create a class loader evolutions reader for the given prefix.
     */
-  def forPrefix(prefix: String) =
-    new ClassLoaderEvolutionsReader(prefix = prefix)
+  def forPrefix(prefix: String) = new ClassLoaderEvolutionsReader(
+    prefix = prefix)
 }
 
 /**
@@ -608,16 +608,16 @@ object SimpleEvolutionsReader {
     *
     * @param data A map of database name to a sequence of evolutions.
     */
-  def from(data: (String, Seq[Evolution])*) =
-    new SimpleEvolutionsReader(data.toMap)
+  def from(data: (String, Seq[Evolution])*) = new SimpleEvolutionsReader(
+    data.toMap)
 
   /**
     * Create a simple evolutions reader from the given evolutions for the default database.
     *
     * @param evolutions The evolutions.
     */
-  def forDefault(evolutions: Evolution*) =
-    new SimpleEvolutionsReader(Map("default" -> evolutions))
+  def forDefault(evolutions: Evolution*) = new SimpleEvolutionsReader(
+    Map("default" -> evolutions))
 }
 
 /**

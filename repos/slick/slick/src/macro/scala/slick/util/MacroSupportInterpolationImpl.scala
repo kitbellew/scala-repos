@@ -18,10 +18,9 @@ object MacroSupportInterpolationImpl {
     def quoteIdentifier(t: Tree) =
       Apply(Ident(TermName("quoteIdentifier")), List(t))
     def symbolName(t: Tree) = Apply(Ident(TermName("symbolName")), List(t))
-    def toStr(t: Tree) =
-      Apply(
-        Select(Ident(definitions.StringClass.companion), TermName("valueOf")),
-        List(t))
+    def toStr(t: Tree) = Apply(
+      Select(Ident(definitions.StringClass.companion), TermName("valueOf")),
+      List(t))
     def append(t: Tree) =
       Apply(Select(sqlBuilder, TermName("+=").encodedName), List(t))
 
@@ -30,11 +29,10 @@ object MacroSupportInterpolationImpl {
       val sb = new StringBuilder
       val len = str.length
       var pos = 0
-      def flushSB: Unit =
-        if (!sb.isEmpty) {
-          exprs += append(Literal(Constant(sb.toString)))
-          sb.clear()
-        }
+      def flushSB: Unit = if (!sb.isEmpty) {
+        exprs += append(Literal(Constant(sb.toString)))
+        sb.clear()
+      }
       while (pos < len) {
         str.charAt(pos) match {
           case '\\' =>

@@ -16,8 +16,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.ScTypeAlias
 
 class ScTypeAliasDefinitionElementType
     extends ScTypeAliasElementType[ScTypeAlias]("type alias definition") {
-  def createElement(node: ASTNode): PsiElement =
-    new ScTypeAliasDefinitionImpl(node)
+  def createElement(node: ASTNode): PsiElement = new ScTypeAliasDefinitionImpl(
+    node)
 
   def createPsi(stub: ScTypeAliasStub) = new ScTypeAliasDefinitionImpl(stub)
 }

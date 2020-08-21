@@ -100,29 +100,27 @@ private[ui] class RDDOperationGraphListener(conf: SparkConf)
 
   /** Keep track of stages that have completed. */
   override def onStageCompleted(
-      stageCompleted: SparkListenerStageCompleted): Unit =
-    synchronized {
-      val stageId = stageCompleted.stageInfo.stageId
-      if (stageIdToJobId.contains(stageId)) {
-        // Note: Only do this if the stage has not already been cleaned up
-        // Otherwise, we may never clean this stage from `completedStageIds`
-        completedStageIds += stageCompleted.stageInfo.stageId
-      }
+      stageCompleted: SparkListenerStageCompleted): Unit = synchronized {
+    val stageId = stageCompleted.stageInfo.stageId
+    if (stageIdToJobId.contains(stageId)) {
+      // Note: Only do this if the stage has not already been cleaned up
+      // Otherwise, we may never clean this stage from `completedStageIds`
+      completedStageIds += stageCompleted.stageInfo.stageId
     }
+  }
 
   /** On job end, find all stages in this job that are skipped and mark them as such. */
-  override def onJobEnd(jobEnd: SparkListenerJobEnd): Unit =
-    synchronized {
-      val jobId = jobEnd.jobId
-      jobIdToStageIds.get(jobId).foreach { stageIds =>
-        val skippedStageIds = stageIds.filter { sid =>
-          !completedStageIds.contains(sid)
-        }
-        // Note: Only do this if the job has not already been cleaned up
-        // Otherwise, we may never clean this job from `jobIdToSkippedStageIds`
-        jobIdToSkippedStageIds(jobId) = skippedStageIds
+  override def onJobEnd(jobEnd: SparkListenerJobEnd): Unit = synchronized {
+    val jobId = jobEnd.jobId
+    jobIdToStageIds.get(jobId).foreach { stageIds =>
+      val skippedStageIds = stageIds.filter { sid =>
+        !completedStageIds.contains(sid)
       }
+      // Note: Only do this if the job has not already been cleaned up
+      // Otherwise, we may never clean this job from `jobIdToSkippedStageIds`
+      jobIdToSkippedStageIds(jobId) = skippedStageIds
     }
+  }
 
   /** Clean metadata for old stages if we have exceeded the number to retain. */
   private def trimStagesIfNecessary(): Unit = {

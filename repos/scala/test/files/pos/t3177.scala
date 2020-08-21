@@ -6,8 +6,8 @@ object InvariantFunctor {
   import Endo._
 
   implicit val EndoInvariantFunctor = new InvariantFunctor[Endo] {
-    def xmap[A, B](ma: Endo[A], f: A => B, g: B => A): Endo[B] =
-      (b: B) => f(ma(g(b)))
+    def xmap[A, B](ma: Endo[A], f: A => B, g: B => A): Endo[B] = (b: B) =>
+      f(ma(g(b)))
   }
 
   // The definition about fails with:
@@ -31,10 +31,9 @@ object InvariantFunctor {
 trait Endo[X]
 
 object Endo {
-  implicit def EndoTo[A](f: A => A): Endo[A] =
-    new Endo[A] {
-      def apply(a: A) = f(a)
-    }
+  implicit def EndoTo[A](f: A => A): Endo[A] = new Endo[A] {
+    def apply(a: A) = f(a)
+  }
 
   implicit def EndoFrom[A](e: Endo[A]): A => A = e.apply(_)
 }

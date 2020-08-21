@@ -39,15 +39,14 @@ object BroadcastStatsReceiver {
     def stat(names: String*): Stat =
       new BroadcastStat.Two(first.stat(names: _*), second.stat(names: _*))
 
-    def addGauge(names: String*)(f: => Float): Gauge =
-      new Gauge {
-        val firstGauge = first.addGauge(names: _*)(f)
-        val secondGauge = second.addGauge(names: _*)(f)
-        def remove(): Unit = {
-          firstGauge.remove()
-          secondGauge.remove()
-        }
+    def addGauge(names: String*)(f: => Float): Gauge = new Gauge {
+      val firstGauge = first.addGauge(names: _*)(f)
+      val secondGauge = second.addGauge(names: _*)(f)
+      def remove(): Unit = {
+        firstGauge.remove()
+        secondGauge.remove()
       }
+    }
 
     def statsReceivers: Seq[StatsReceiver] = Seq(first, second)
 
@@ -66,11 +65,10 @@ object BroadcastStatsReceiver {
     def stat(names: String*): Stat =
       BroadcastStat(srs.map { _.stat(names: _*) })
 
-    def addGauge(names: String*)(f: => Float): Gauge =
-      new Gauge {
-        val gauges = srs.map { _.addGauge(names: _*)(f) }
-        def remove(): Unit = gauges.foreach { _.remove() }
-      }
+    def addGauge(names: String*)(f: => Float): Gauge = new Gauge {
+      val gauges = srs.map { _.addGauge(names: _*)(f) }
+      def remove(): Unit = gauges.foreach { _.remove() }
+    }
 
     def statsReceivers: Seq[StatsReceiver] = srs
 
@@ -85,15 +83,14 @@ object BroadcastStatsReceiver {
   * For performance reason, we have specialized cases if n == (0, 1, 2, 3 or 4)
   */
 object BroadcastCounter {
-  def apply(counters: Seq[Counter]): Counter =
-    counters match {
-      case Seq()           => NullCounter
-      case Seq(counter)    => counter
-      case Seq(a, b)       => new Two(a, b)
-      case Seq(a, b, c)    => new Three(a, b, c)
-      case Seq(a, b, c, d) => new Four(a, b, c, d)
-      case more            => new N(more)
-    }
+  def apply(counters: Seq[Counter]): Counter = counters match {
+    case Seq()           => NullCounter
+    case Seq(counter)    => counter
+    case Seq(a, b)       => new Two(a, b)
+    case Seq(a, b, c)    => new Three(a, b, c)
+    case Seq(a, b, c, d) => new Four(a, b, c, d)
+    case more            => new N(more)
+  }
 
   private object NullCounter extends Counter {
     def incr(delta: Int): Unit = ()
@@ -135,15 +132,14 @@ object BroadcastCounter {
   * For performance reason, we have specialized cases if n == (0, 1, 2, 3 or 4)
   */
 object BroadcastStat {
-  def apply(stats: Seq[Stat]): Stat =
-    stats match {
-      case Seq()           => NullStat
-      case Seq(counter)    => counter
-      case Seq(a, b)       => new Two(a, b)
-      case Seq(a, b, c)    => new Three(a, b, c)
-      case Seq(a, b, c, d) => new Four(a, b, c, d)
-      case more            => new N(more)
-    }
+  def apply(stats: Seq[Stat]): Stat = stats match {
+    case Seq()           => NullStat
+    case Seq(counter)    => counter
+    case Seq(a, b)       => new Two(a, b)
+    case Seq(a, b, c)    => new Three(a, b, c)
+    case Seq(a, b, c, d) => new Four(a, b, c, d)
+    case more            => new N(more)
+  }
 
   private object NullStat extends Stat {
     def add(value: Float): Unit = ()

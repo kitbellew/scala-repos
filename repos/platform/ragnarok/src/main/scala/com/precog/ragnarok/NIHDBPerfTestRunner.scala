@@ -108,10 +108,9 @@ final class NIHDBPerfTestRunner[T](
 
   val storageTimeout = Timeout(testTimeout)
 
-  private def makeChef =
-    Chef(
-      VersionedCookedBlockFormat(Map(1 -> V1CookedBlockFormat)),
-      VersionedSegmentFormat(Map(1 -> V1SegmentFormat)))
+  private def makeChef = Chef(
+    VersionedCookedBlockFormat(Map(1 -> V1CookedBlockFormat)),
+    VersionedSegmentFormat(Map(1 -> V1SegmentFormat)))
 
   val chefs = (1 to 4).map { _ => actorSystem.actorOf(Props(makeChef)) }
   val masterChef =

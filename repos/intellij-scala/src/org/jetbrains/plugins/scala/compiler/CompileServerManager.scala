@@ -86,10 +86,9 @@ class CompileServerManager(project: Project) extends ProjectComponent {
     bar.updateWidget(Widget.ID)
   }
 
-  private def applicable =
-    running ||
-      ScalaCompileServerSettings.getInstance.COMPILE_SERVER_ENABLED &&
-        project.hasScala
+  private def applicable = running ||
+    ScalaCompileServerSettings.getInstance.COMPILE_SERVER_ENABLED &&
+      project.hasScala
 
   private def running = launcher.running
 

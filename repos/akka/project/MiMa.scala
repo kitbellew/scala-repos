@@ -66,23 +66,21 @@ object MiMa extends AutoPlugin {
   case class FilterAnyProblem(name: String)
       extends com.typesafe.tools.mima.core.ProblemFilter {
     import com.typesafe.tools.mima.core._
-    override def apply(p: Problem): Boolean =
-      p match {
-        case t: TemplateProblem =>
-          t.ref.fullName != name && t.ref.fullName != (name + '$')
-        case m: MemberProblem =>
-          m.ref.owner.fullName != name && m.ref.owner.fullName != (name + '$')
-      }
+    override def apply(p: Problem): Boolean = p match {
+      case t: TemplateProblem =>
+        t.ref.fullName != name && t.ref.fullName != (name + '$')
+      case m: MemberProblem =>
+        m.ref.owner.fullName != name && m.ref.owner.fullName != (name + '$')
+    }
   }
 
   case class FilterAnyProblemStartingWith(start: String)
       extends com.typesafe.tools.mima.core.ProblemFilter {
     import com.typesafe.tools.mima.core._
-    override def apply(p: Problem): Boolean =
-      p match {
-        case t: TemplateProblem => !t.ref.fullName.startsWith(start)
-        case m: MemberProblem   => !m.ref.owner.fullName.startsWith(start)
-      }
+    override def apply(p: Problem): Boolean = p match {
+      case t: TemplateProblem => !t.ref.fullName.startsWith(start)
+      case m: MemberProblem   => !m.ref.owner.fullName.startsWith(start)
+    }
   }
 
   val mimaIgnoredProblems = {

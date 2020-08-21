@@ -34,12 +34,11 @@ trait UnwrappedInstances extends LowPriorityUnwrappedInstances {
       gen: Generic.Aux[W, Repr],
       avh: AnyValHelper.Aux[Repr, UI],
       chain: Strict[Unwrapped.Aux[UI, UF]]
-  ) =
-    new Unwrapped[W] {
-      type U = UF
-      def unwrap(w: W): U = chain.value.unwrap(avh.unwrap(gen.to(w)))
-      def wrap(u: U): W = gen.from(avh.wrap(chain.value.wrap(u)))
-    }
+  ) = new Unwrapped[W] {
+    type U = UF
+    def unwrap(w: W): U = chain.value.unwrap(avh.unwrap(gen.to(w)))
+    def wrap(u: U): W = gen.from(avh.wrap(chain.value.wrap(u)))
+  }
 
   sealed trait AnyValHelper[Repr] extends Serializable {
     type U

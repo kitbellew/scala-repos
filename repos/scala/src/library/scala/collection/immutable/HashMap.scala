@@ -169,15 +169,14 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
   private[this] val defaultMerger: Merger[Any, Any] = liftMerger0((a, b) => a)
 
   private[this] def liftMerger0[A1, B1](
-      mergef: MergeFunction[A1, B1]): Merger[A1, B1] =
-    new Merger[A1, B1] {
-      self =>
-      def apply(kv1: (A1, B1), kv2: (A1, B1)): (A1, B1) = mergef(kv1, kv2)
-      val invert: Merger[A1, B1] = new Merger[A1, B1] {
-        def apply(kv1: (A1, B1), kv2: (A1, B1)): (A1, B1) = mergef(kv2, kv1)
-        def invert: Merger[A1, B1] = self
-      }
+      mergef: MergeFunction[A1, B1]): Merger[A1, B1] = new Merger[A1, B1] {
+    self =>
+    def apply(kv1: (A1, B1), kv2: (A1, B1)): (A1, B1) = mergef(kv1, kv2)
+    val invert: Merger[A1, B1] = new Merger[A1, B1] {
+      def apply(kv1: (A1, B1), kv2: (A1, B1)): (A1, B1) = mergef(kv2, kv1)
+      def invert: Merger[A1, B1] = self
     }
+  }
 
   /** $mapCanBuildFromInfo */
   implicit def canBuildFrom[A, B]: CanBuildFrom[Coll, (A, B), HashMap[A, B]] =
@@ -185,10 +184,10 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
   def empty[A, B]: HashMap[A, B] = EmptyHashMap.asInstanceOf[HashMap[A, B]]
 
   private object EmptyHashMap extends HashMap[Any, Nothing] {
-    override def head: (Any, Nothing) =
-      throw new NoSuchElementException("Empty Map")
-    override def tail: HashMap[Any, Nothing] =
-      throw new NoSuchElementException("Empty Map")
+    override def head: (Any, Nothing) = throw new NoSuchElementException(
+      "Empty Map")
+    override def tail: HashMap[Any, Nothing] = throw new NoSuchElementException(
+      "Empty Map")
   }
 
   // utility method to create a HashTrieMap from two leaf HashMaps (HashMap1 or HashMapCollision1) with non-colliding hash code)
@@ -543,96 +542,93 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
       i
     }
 
-    override def split: Seq[HashMap[A, B]] =
-      if (size == 1) Seq(this)
-      else {
-        val nodesize = Integer.bitCount(bitmap)
-        if (nodesize > 1) {
-          val splitpoint = nodesize / 2
-          val bitsplitpoint = posOf(nodesize / 2, bitmap)
-          val bm1 = bitmap & (-1 << bitsplitpoint)
-          val bm2 = bitmap & (-1 >>> (32 - bitsplitpoint))
+    override def split: Seq[HashMap[A, B]] = if (size == 1) Seq(this)
+    else {
+      val nodesize = Integer.bitCount(bitmap)
+      if (nodesize > 1) {
+        val splitpoint = nodesize / 2
+        val bitsplitpoint = posOf(nodesize / 2, bitmap)
+        val bm1 = bitmap & (-1 << bitsplitpoint)
+        val bm2 = bitmap & (-1 >>> (32 - bitsplitpoint))
 
-          val (e1, e2) = elems.splitAt(splitpoint)
-          val hm1 = new HashTrieMap(bm1, e1, e1.foldLeft(0)(_ + _.size))
-          val hm2 = new HashTrieMap(bm2, e2, e2.foldLeft(0)(_ + _.size))
+        val (e1, e2) = elems.splitAt(splitpoint)
+        val hm1 = new HashTrieMap(bm1, e1, e1.foldLeft(0)(_ + _.size))
+        val hm2 = new HashTrieMap(bm2, e2, e2.foldLeft(0)(_ + _.size))
 
-          List(hm1, hm2)
-        } else elems(0).split
-      }
+        List(hm1, hm2)
+      } else elems(0).split
+    }
 
     protected override def merge0[B1 >: B](
         that: HashMap[A, B1],
         level: Int,
-        merger: Merger[A, B1]): HashMap[A, B1] =
-      that match {
-        case hm: HashMap1[_, _] =>
-          this.updated0(
-            hm.key,
-            hm.hash,
-            level,
-            hm.value.asInstanceOf[B1],
-            hm.kv,
-            merger)
-        case hm: HashTrieMap[_, _] =>
-          val that = hm.asInstanceOf[HashTrieMap[A, B1]]
-          val thiselems = this.elems
-          val thatelems = that.elems
-          var thisbm = this.bitmap
-          var thatbm = that.bitmap
+        merger: Merger[A, B1]): HashMap[A, B1] = that match {
+      case hm: HashMap1[_, _] =>
+        this.updated0(
+          hm.key,
+          hm.hash,
+          level,
+          hm.value.asInstanceOf[B1],
+          hm.kv,
+          merger)
+      case hm: HashTrieMap[_, _] =>
+        val that = hm.asInstanceOf[HashTrieMap[A, B1]]
+        val thiselems = this.elems
+        val thatelems = that.elems
+        var thisbm = this.bitmap
+        var thatbm = that.bitmap
 
-          // determine the necessary size for the array
-          val subcount = Integer.bitCount(thisbm | thatbm)
+        // determine the necessary size for the array
+        val subcount = Integer.bitCount(thisbm | thatbm)
 
-          // construct a new array of appropriate size
-          val merged = new Array[HashMap[A, B1]](subcount)
+        // construct a new array of appropriate size
+        val merged = new Array[HashMap[A, B1]](subcount)
 
-          // run through both bitmaps and add elements to it
-          var i = 0
-          var thisi = 0
-          var thati = 0
-          var totalelems = 0
-          while (i < subcount) {
-            val thislsb = thisbm ^ (thisbm & (thisbm - 1))
-            val thatlsb = thatbm ^ (thatbm & (thatbm - 1))
+        // run through both bitmaps and add elements to it
+        var i = 0
+        var thisi = 0
+        var thati = 0
+        var totalelems = 0
+        while (i < subcount) {
+          val thislsb = thisbm ^ (thisbm & (thisbm - 1))
+          val thatlsb = thatbm ^ (thatbm & (thatbm - 1))
 
-            // collision
-            if (thislsb == thatlsb) {
-              val m =
-                thiselems(thisi).merge0(thatelems(thati), level + 5, merger)
+          // collision
+          if (thislsb == thatlsb) {
+            val m = thiselems(thisi).merge0(thatelems(thati), level + 5, merger)
+            totalelems += m.size
+            merged(i) = m
+            thisbm = thisbm & ~thislsb
+            thatbm = thatbm & ~thatlsb
+            thati += 1
+            thisi += 1
+          } else {
+            // condition below is due to 2 things:
+            // 1) no unsigned int compare on JVM
+            // 2) 0 (no lsb) should always be greater in comparison
+            if (unsignedCompare(thislsb - 1, thatlsb - 1)) {
+              val m = thiselems(thisi)
               totalelems += m.size
               merged(i) = m
               thisbm = thisbm & ~thislsb
-              thatbm = thatbm & ~thatlsb
-              thati += 1
               thisi += 1
             } else {
-              // condition below is due to 2 things:
-              // 1) no unsigned int compare on JVM
-              // 2) 0 (no lsb) should always be greater in comparison
-              if (unsignedCompare(thislsb - 1, thatlsb - 1)) {
-                val m = thiselems(thisi)
-                totalelems += m.size
-                merged(i) = m
-                thisbm = thisbm & ~thislsb
-                thisi += 1
-              } else {
-                val m = thatelems(thati)
-                totalelems += m.size
-                merged(i) = m
-                thatbm = thatbm & ~thatlsb
-                thati += 1
-              }
+              val m = thatelems(thati)
+              totalelems += m.size
+              merged(i) = m
+              thatbm = thatbm & ~thatlsb
+              thati += 1
             }
-            i += 1
           }
+          i += 1
+        }
 
-          new HashTrieMap[A, B1](this.bitmap | that.bitmap, merged, totalelems)
-        case hm: HashMapCollision1[_, _] =>
-          that.merge0(this, level, merger.invert)
-        case hm: HashMap[_, _] => this
-        case _                 => sys.error("section supposed to be unreachable.")
-      }
+        new HashTrieMap[A, B1](this.bitmap | that.bitmap, merged, totalelems)
+      case hm: HashMapCollision1[_, _] =>
+        that.merge0(this, level, merger.invert)
+      case hm: HashMap[_, _] => this
+      case _                 => sys.error("section supposed to be unreachable.")
+    }
   }
 
   /**

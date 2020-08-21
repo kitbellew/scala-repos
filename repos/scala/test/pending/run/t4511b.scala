@@ -12,12 +12,9 @@ class X3[@spec(Int) T](val interval: Interval[T]) { val x = interval }
 class Y3[@spec(Int) T](val interval: Interval[T]) { val y = Some(interval) }
 
 object Test {
-  def tryit(o: => Any) =
-    println(
-      try { "ok: " + o.getClass.getName }
-      catch {
-        case e => "FAIL: " + e + "\n" + e.getStackTrace.mkString("\n  ")
-      })
+  def tryit(o: => Any) = println(
+    try { "ok: " + o.getClass.getName }
+    catch { case e => "FAIL: " + e + "\n" + e.getStackTrace.mkString("\n  ") })
 
   def main(args: Array[String]) {
     tryit(new X1(new Interval(3)))

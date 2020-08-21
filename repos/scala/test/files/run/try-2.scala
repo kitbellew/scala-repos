@@ -40,12 +40,11 @@ object Test {
       case _: Throwable => Console.println("Huh?");
     }
 
-  def execute(f: => Unit) =
-    try {
-      f;
-    } catch {
-      case _: Throwable => ();
-    }
+  def execute(f: => Unit) = try {
+    f;
+  } catch {
+    case _: Throwable => ();
+  }
 
   def main(args: Array[String]): Unit = {
     execute(tryAllUnit);

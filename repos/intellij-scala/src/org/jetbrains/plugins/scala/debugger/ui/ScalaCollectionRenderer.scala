@@ -131,8 +131,8 @@ object ScalaCollectionRenderer {
     * @param name name encoded for jvm (for example, scala.collection.immutable.$colon$colon)
     * @return decoded nonqualified part (:: in example)
     */
-  def transformName(name: String) =
-    getNonQualifiedName(NameTransformer decode name)
+  def transformName(name: String) = getNonQualifiedName(
+    NameTransformer decode name)
 
   private def getNonQualifiedName(fullName: String): String = {
     val index =
@@ -311,11 +311,10 @@ object ScalaCollectionRenderer {
       renderer
     }
 
-    private def stableObjectEval(name: String) =
-      new ScalaFieldEvaluator(
-        new TypeEvaluator(JVMNameUtil.getJVMRawText(name)),
-        "MODULE$",
-        false)
+    private def stableObjectEval(name: String) = new ScalaFieldEvaluator(
+      new TypeEvaluator(JVMNameUtil.getJVMRawText(name)),
+      "MODULE$",
+      false)
 
     private def evaluateChildren(
         context: EvaluationContext,

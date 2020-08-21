@@ -24,24 +24,23 @@ class JuliaBenchmarks extends MyBenchmark {
     80
   }
 
-  def timeMandelComplex(reps: Int) =
-    run(reps) {
-      var total = 0
-      var r = -2.0
-      var i = 0
-      while (i < 25) {
-        var c = -1.0
-        var j = 0
-        while (j < 20) {
-          total += mandelComplex(Complex(r, c))
-          c = c + 0.1
-          j += 1
-        }
-        r = r + 0.1
-        i += 1
+  def timeMandelComplex(reps: Int) = run(reps) {
+    var total = 0
+    var r = -2.0
+    var i = 0
+    while (i < 25) {
+      var c = -1.0
+      var j = 0
+      while (j < 20) {
+        total += mandelComplex(Complex(r, c))
+        c = c + 0.1
+        j += 1
       }
-      total
+      r = r + 0.1
+      i += 1
     }
+    total
+  }
 
   def mandelFloat(c: FloatComplex): Int = {
     var z = c
@@ -54,24 +53,23 @@ class JuliaBenchmarks extends MyBenchmark {
     80
   }
 
-  def timeMandelFloat(reps: Int) =
-    run(reps) {
-      var total = 0
-      var r = -2.0
-      var i = 0
-      while (i < 25) {
-        var c = -1.0
-        var j = 0
-        while (j < 20) {
-          total += mandelFloat(FloatComplex(r.toFloat, c.toFloat))
-          c = c + 0.1
-          j += 1
-        }
-        r = r + 0.1
-        i += 1
+  def timeMandelFloat(reps: Int) = run(reps) {
+    var total = 0
+    var r = -2.0
+    var i = 0
+    while (i < 25) {
+      var c = -1.0
+      var j = 0
+      while (j < 20) {
+        total += mandelFloat(FloatComplex(r.toFloat, c.toFloat))
+        c = c + 0.1
+        j += 1
       }
-      total
+      r = r + 0.1
+      i += 1
     }
+    total
+  }
 
   def mandelFast(c: Long): Int = {
     var z = c
@@ -84,22 +82,21 @@ class JuliaBenchmarks extends MyBenchmark {
     80
   }
 
-  def timeMandelFast(reps: Int) =
-    run(reps) {
-      var total = 0
-      var r = -2.0
-      var i = 0
-      while (i < 25) {
-        var c = -1.0
-        var j = 0
-        while (j < 20) {
-          total += mandelFast(FastComplex(r.toFloat, c.toFloat))
-          c = c + 0.1
-          j += 1
-        }
-        r = r + 0.1
-        i += 1
+  def timeMandelFast(reps: Int) = run(reps) {
+    var total = 0
+    var r = -2.0
+    var i = 0
+    while (i < 25) {
+      var c = -1.0
+      var j = 0
+      while (j < 20) {
+        total += mandelFast(FastComplex(r.toFloat, c.toFloat))
+        c = c + 0.1
+        j += 1
       }
-      total
+      r = r + 0.1
+      i += 1
     }
+    total
+  }
 }

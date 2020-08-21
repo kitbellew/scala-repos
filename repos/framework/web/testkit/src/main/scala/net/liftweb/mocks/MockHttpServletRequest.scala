@@ -500,11 +500,10 @@ class MockHttpServletRequest(
       .flatMap(x => x) openOr -1L
   }
 
-  def getHeader(h: String): String =
-    headers.get(h) match {
-      case Some(v :: _) => v
-      case _            => null
-    }
+  def getHeader(h: String): String = headers.get(h) match {
+    case Some(v :: _) => v
+    case _            => null
+  }
 
   def getHeaderNames(): JEnum[String] = headers.keys.iterator
 

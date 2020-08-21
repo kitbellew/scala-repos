@@ -62,15 +62,12 @@ trait SqlProfile
       * Composition is such that given {{{A.ddl ++ B.ddl}}} the create phases will be
       * run in FIFO order and the drop phases will be run in LIFO order.
       */
-    override def ++(other: DDL): DDL =
-      new DDL {
-        protected lazy val createPhase1 =
-          self.createPhase1 ++ other.createPhase1
-        protected lazy val createPhase2 =
-          self.createPhase2 ++ other.createPhase2
-        protected lazy val dropPhase1 = other.dropPhase1 ++ self.dropPhase1
-        protected lazy val dropPhase2 = other.dropPhase2 ++ self.dropPhase2
-      }
+    override def ++(other: DDL): DDL = new DDL {
+      protected lazy val createPhase1 = self.createPhase1 ++ other.createPhase1
+      protected lazy val createPhase2 = self.createPhase2 ++ other.createPhase2
+      protected lazy val dropPhase1 = other.dropPhase1 ++ self.dropPhase1
+      protected lazy val dropPhase2 = other.dropPhase2 ++ self.dropPhase2
+    }
 
     override def hashCode() =
       Vector(
@@ -79,15 +76,14 @@ trait SqlProfile
         self.dropPhase1,
         self.dropPhase2).hashCode
 
-    override def equals(o: Any) =
-      o match {
-        case ddl: DDL =>
-          self.createPhase1 == ddl.createPhase1 &&
-            self.createPhase2 == ddl.createPhase2 &&
-            self.dropPhase1 == ddl.dropPhase1 &&
-            self.dropPhase2 == ddl.dropPhase2
-        case _ => false
-      }
+    override def equals(o: Any) = o match {
+      case ddl: DDL =>
+        self.createPhase1 == ddl.createPhase1 &&
+          self.createPhase2 == ddl.createPhase2 &&
+          self.dropPhase1 == ddl.dropPhase1 &&
+          self.dropPhase2 == ddl.dropPhase2
+      case _ => false
+    }
   }
 
   object DDL {
@@ -95,13 +91,12 @@ trait SqlProfile
         create1: Iterable[String],
         create2: Iterable[String],
         drop1: Iterable[String],
-        drop2: Iterable[String]): DDL =
-      new DDL {
-        protected def createPhase1 = create1
-        protected def createPhase2 = create2
-        protected def dropPhase1 = drop1
-        protected def dropPhase2 = drop2
-      }
+        drop2: Iterable[String]): DDL = new DDL {
+      protected def createPhase1 = create1
+      protected def createPhase2 = create2
+      protected def dropPhase1 = drop1
+      protected def dropPhase2 = drop2
+    }
 
     def apply(create1: Iterable[String], drop2: Iterable[String]): DDL =
       apply(create1, Nil, Nil, drop2)
@@ -140,11 +135,10 @@ trait SqlUtilsComponent { self: SqlProfile =>
     (s append '"').toString
   }
 
-  def quoteTableName(t: TableNode): String =
-    t.schemaName match {
-      case Some(s) => quoteIdentifier(s) + "." + quoteIdentifier(t.tableName)
-      case None    => quoteIdentifier(t.tableName)
-    }
+  def quoteTableName(t: TableNode): String = t.schemaName match {
+    case Some(s) => quoteIdentifier(s) + "." + quoteIdentifier(t.tableName)
+    case None    => quoteIdentifier(t.tableName)
+  }
 
   def likeEncode(s: String) = {
     val b = new StringBuilder
@@ -191,10 +185,9 @@ trait SqlAction[+R, +S <: NoStream, -E <: Effect] extends BasicAction[R, S, E] {
     */
   def overrideStatements(statements: Iterable[String]): ResultAction[R, S, E]
 
-  def getDumpInfo =
-    DumpInfo(
-      DumpInfo.simpleNameFor(getClass),
-      mainInfo = statements.mkString("[", "; ", "]"))
+  def getDumpInfo = DumpInfo(
+    DumpInfo.simpleNameFor(getClass),
+    mainInfo = statements.mkString("[", "; ", "]"))
 }
 
 trait SqlStreamingAction[+R, +T, -E <: Effect]

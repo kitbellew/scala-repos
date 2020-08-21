@@ -42,9 +42,8 @@ object Packet {
   val ErrorByte = 0xff.toByte
   val EofByte = 0xfe.toByte
 
-  def apply(s: Short, b: Buffer): Packet =
-    new Packet {
-      val seq = s
-      val body = b
-    }
+  def apply(s: Short, b: Buffer): Packet = new Packet {
+    val seq = s
+    val body = b
+  }
 }

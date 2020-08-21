@@ -25,12 +25,11 @@ class TopicMetadataResponse(
     underlying.topicsMetadata
   }
 
-  override def equals(other: Any) =
-    canEqual(other) && {
-      val otherTopicMetadataResponse =
-        other.asInstanceOf[kafka.javaapi.TopicMetadataResponse]
-      this.underlying.equals(otherTopicMetadataResponse.underlying)
-    }
+  override def equals(other: Any) = canEqual(other) && {
+    val otherTopicMetadataResponse =
+      other.asInstanceOf[kafka.javaapi.TopicMetadataResponse]
+    this.underlying.equals(otherTopicMetadataResponse.underlying)
+  }
 
   def canEqual(other: Any) =
     other.isInstanceOf[kafka.javaapi.TopicMetadataResponse]

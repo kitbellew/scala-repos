@@ -29,12 +29,11 @@ object CommandUtil {
   def aligned(
       pre: String,
       sep: String,
-      in: Seq[(String, String)]): Seq[String] =
-    if (in.isEmpty) Nil
-    else {
-      val width = in.map(_._1.length).max
-      in.map { case (a, b) => (pre + fill(a, width) + sep + b) }
-    }
+      in: Seq[(String, String)]): Seq[String] = if (in.isEmpty) Nil
+  else {
+    val width = in.map(_._1.length).max
+    in.map { case (a, b) => (pre + fill(a, width) + sep + b) }
+  }
   def fill(s: String, size: Int) = s + " " * math.max(size - s.length, 0)
 
   def withAttribute[T](s: State, key: AttributeKey[T], ifMissing: String)(

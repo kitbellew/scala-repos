@@ -648,11 +648,10 @@ private[spark] class ApplicationMaster(
     userThread
   }
 
-  private def resetAllocatorInterval(): Unit =
-    allocatorLock.synchronized {
-      nextAllocationInterval = initialAllocationInterval
-      allocatorLock.notifyAll()
-    }
+  private def resetAllocatorInterval(): Unit = allocatorLock.synchronized {
+    nextAllocationInterval = initialAllocationInterval
+    allocatorLock.notifyAll()
+  }
 
   /**
     * An [[RpcEndpoint]] that communicates with the driver's scheduler backend.

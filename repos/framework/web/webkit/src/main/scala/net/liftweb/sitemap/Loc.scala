@@ -75,12 +75,11 @@ trait Loc[T] {
   /**
     * Calculate HREF to this item using currentValue
     */
-  def calcDefaultHref: String =
-    currentValue
-      .map(p => link.createPath(p))
-      .toOption
-      .map(path => appendQueryParameters(path, currentValue))
-      .getOrElse("")
+  def calcDefaultHref: String = currentValue
+    .map(p => link.createPath(p))
+    .toOption
+    .map(path => appendQueryParameters(path, currentValue))
+    .getOrElse("")
 
   def defaultValue: Box[T]
 
@@ -168,11 +167,10 @@ trait Loc[T] {
       .toOption
       .map(ns => Text(appendQueryParameters(ns.text, currentValue)))
 
-  def createLink(in: T): Option[NodeSeq] =
-    link
-      .createLink(in)
-      .toOption
-      .map(ns => Text(appendQueryParameters(ns.text, Full(in))))
+  def createLink(in: T): Option[NodeSeq] = link
+    .createLink(in)
+    .toOption
+    .map(ns => Text(appendQueryParameters(ns.text, Full(in))))
 
   override def toString =
     "Loc(" + name + ", " + link + ", " + text + ", " + params + ")"
@@ -182,23 +180,21 @@ trait Loc[T] {
 
   def rewrite: LocRewrite = Empty
 
-  def rewritePF: Box[LiftRules.RewritePF] =
-    rewrite.map(rw =>
-      new NamedPartialFunction[RewriteRequest, RewriteResponse] {
-        def functionName =
-          rw match {
-            case rw: NamedPartialFunction[_, _] => rw.functionName
-            case _                              => "Unnamed"
-          }
+  def rewritePF: Box[LiftRules.RewritePF] = rewrite.map(rw =>
+    new NamedPartialFunction[RewriteRequest, RewriteResponse] {
+      def functionName = rw match {
+        case rw: NamedPartialFunction[_, _] => rw.functionName
+        case _                              => "Unnamed"
+      }
 
-        def isDefinedAt(in: RewriteRequest) = rw.isDefinedAt(in)
+      def isDefinedAt(in: RewriteRequest) = rw.isDefinedAt(in)
 
-        def apply(in: RewriteRequest): RewriteResponse = {
-          val (ret, param) = rw.apply(in)
-          requestValue.set(param)
-          ret
-        }
-      })
+      def apply(in: RewriteRequest): RewriteResponse = {
+        val (ret, param) = rw.apply(in)
+        requestValue.set(param)
+        ret
+      }
+    })
 
   /**
     * A `PartialFunction` that maps a snippet name, and an optional `Loc` value, in a `Tuple2`,
@@ -230,24 +226,22 @@ trait Loc[T] {
     * The method to calculate if this Loc is stateless.  By default
     * looks for the Loc.Stateless Param
     */
-  protected def calcStateless(): Boolean =
-    allParams.find {
-      case Loc.Stateless => true
-      case _             => false
-    }.isDefined
+  protected def calcStateless(): Boolean = allParams.find {
+    case Loc.Stateless => true
+    case _             => false
+  }.isDefined
 
   /**
     * Find the stateless calculation Loc params
     */
   protected def findStatelessCalc
-      : (Box[Loc.CalcStateless], Box[Loc.CalcParamStateless[T]]) =
-    (
-      allParams.collect { case v @ Loc.CalcStateless(_) =>
-        v
-      }.headOption,
-      allParams.collect { case v @ Loc.CalcParamStateless(_) =>
-        v
-      }.headOption)
+      : (Box[Loc.CalcStateless], Box[Loc.CalcParamStateless[T]]) = (
+    allParams.collect { case v @ Loc.CalcStateless(_) =>
+      v
+    }.headOption,
+    allParams.collect { case v @ Loc.CalcParamStateless(_) =>
+      v
+    }.headOption)
 
   /**
     * The cached Loc params
@@ -331,18 +325,17 @@ trait Loc[T] {
   }
 
   def earlyResponse: Box[LiftResponse] = {
-    def early(what: List[Loc.LocParam[T]]): Box[LiftResponse] =
-      what match {
-        case Nil => Empty
+    def early(what: List[Loc.LocParam[T]]): Box[LiftResponse] = what match {
+      case Nil => Empty
 
-        case Loc.EarlyResponse(func) :: xs =>
-          func() match {
-            case Full(r) => Full(r)
-            case _       => early(xs)
-          }
+      case Loc.EarlyResponse(func) :: xs =>
+        func() match {
+          case Full(r) => Full(r)
+          case _       => early(xs)
+        }
 
-        case x :: xs => early(xs)
-      }
+      case x :: xs => early(xs)
+    }
 
     early(allParams)
   }
@@ -729,10 +722,9 @@ object Loc {
       * to a snippet function (`NodeSeq` => `NodeSeq`).
       */
     def apply[A](pf: PartialFunction[(String, Box[A]), NodeSeq => NodeSeq])
-        : ValueSnippets[A] =
-      new ValueSnippets[A] {
-        def snippets = pf
-      }
+        : ValueSnippets[A] = new ValueSnippets[A] {
+      def snippets = pf
+    }
   }
 
   /**
@@ -772,8 +764,8 @@ object Loc {
       */
     def apply(name: String, func: => NodeSeq => NodeSeq): Snippet =
       new Snippet(name, func)
-    def unapply(in: Snippet): Option[(String, NodeSeq => NodeSeq)] =
-      Some(in.name -> in.func)
+    def unapply(in: Snippet): Option[(String, NodeSeq => NodeSeq)] = Some(
+      in.name -> in.func)
   }
 
   /**
@@ -972,24 +964,22 @@ object Loc {
   }
 
   object ExtLink {
-    def apply(url: String) =
-      new Link[Unit](Nil, false) {
-        override def createLink(value: Unit): Box[NodeSeq] = Full(Text(url))
+    def apply(url: String) = new Link[Unit](Nil, false) {
+      override def createLink(value: Unit): Box[NodeSeq] = Full(Text(url))
 
-        /**
-          * Is the Loc external
-          */
-        override def external_? = true
-      }
+      /**
+        * Is the Loc external
+        */
+      override def external_? = true
+    }
   }
 
-  implicit def strToFailMsg(in: => String): FailMsg =
-    () => {
-      RedirectWithState(
-        LiftRules.siteMapFailRedirectLocation.mkString("/", "/", ""),
-        RedirectState(Empty, in -> NoticeType.Error)
-      )
-    }
+  implicit def strToFailMsg(in: => String): FailMsg = () => {
+    RedirectWithState(
+      LiftRules.siteMapFailRedirectLocation.mkString("/", "/", ""),
+      RedirectState(Empty, in -> NoticeType.Error)
+    )
+  }
 
   implicit def strFuncToFailMsg(in: () => String): FailMsg = strToFailMsg(in())
 

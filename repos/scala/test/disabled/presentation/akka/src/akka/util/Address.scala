@@ -7,11 +7,10 @@ import java.net.InetSocketAddress
 
 object Address {
   def apply(hostname: String, port: Int) = new Address(hostname, port)
-  def apply(inetAddress: InetSocketAddress): Address =
-    inetAddress match {
-      case null => null
-      case inet => new Address(inet.getAddress.getHostAddress, inet.getPort)
-    }
+  def apply(inetAddress: InetSocketAddress): Address = inetAddress match {
+    case null => null
+    case inet => new Address(inet.getAddress.getHostAddress, inet.getPort)
+  }
 }
 
 class Address(val hostname: String, val port: Int) {

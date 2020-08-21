@@ -44,8 +44,8 @@ class BoundsSpec
       classOf[jfxg.Bounds],
       classOf[Bounds]) {
 
-  override protected def getScalaClassInstance =
-    new Bounds(getJavaClassInstance) {}
+  override protected def getScalaClassInstance = new Bounds(
+    getJavaClassInstance) {}
 
   override protected def getJavaClassInstance =
     new jfxg.BoundingBox(0, 0, 0, 0, 0, 0)

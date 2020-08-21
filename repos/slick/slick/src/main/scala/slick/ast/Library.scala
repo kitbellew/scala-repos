@@ -9,11 +9,10 @@ object Library {
   trait AggregateFunctionSymbol extends TermSymbol
   class JdbcFunction(name: String) extends FunctionSymbol(name) {
     override def hashCode = name.hashCode
-    override def equals(o: Any) =
-      o match {
-        case o: JdbcFunction => name == o.name
-        case _               => false
-      }
+    override def equals(o: Any) = o match {
+      case o: JdbcFunction => name == o.name
+      case _               => false
+    }
   }
   class SqlFunction(name: String) extends FunctionSymbol(name)
   class SqlOperator(name: String) extends FunctionSymbol(name)

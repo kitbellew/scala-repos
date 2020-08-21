@@ -252,10 +252,9 @@ object TestTransport {
       * @param c
       *   The constant the future will be completed with.
       */
-    def pushConstant(c: B): Unit =
-      push { (x) ⇒
-        Future.successful(c)
-      }
+    def pushConstant(c: B): Unit = push { (x) ⇒
+      Future.successful(c)
+    }
 
     /**
       * Changes the current behavior to return a failed future containing the given Throwable.
@@ -263,10 +262,9 @@ object TestTransport {
       * @param e
       *   The throwable the failed future will contain.
       */
-    def pushError(e: Throwable): Unit =
-      push { (x) ⇒
-        Future.failed(e)
-      }
+    def pushError(e: Throwable): Unit = push { (x) ⇒
+      Future.failed(e)
+    }
 
     /**
       * Enables control of the completion of the previously active behavior. Wraps the previous behavior in a new
@@ -508,10 +506,9 @@ object AssociationRegistry {
   private final val registries =
     scala.collection.mutable.Map[String, AssociationRegistry]()
 
-  def get(key: String): AssociationRegistry =
-    this.synchronized {
-      registries.getOrElseUpdate(key, new AssociationRegistry)
-    }
+  def get(key: String): AssociationRegistry = this.synchronized {
+    registries.getOrElseUpdate(key, new AssociationRegistry)
+  }
 
   def clear(): Unit = this.synchronized { registries.clear() }
 }

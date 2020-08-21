@@ -81,8 +81,8 @@ trait Counter2Like[
   override def valuesIterator =
     for (m <- data.valuesIterator; v <- m.valuesIterator) yield v
 
-  override def iterator =
-    for ((k1, m) <- data.iterator; (k2, v) <- m.iterator) yield (k1, k2) -> v
+  override def iterator = for ((k1, m) <- data.iterator; (k2, v) <- m.iterator)
+    yield (k1, k2) -> v
 
   def activeSize = size
 
@@ -98,12 +98,11 @@ trait Counter2Like[
       .mkString("Counter2(", ",\n", ")")
   }
 
-  override def equals(p1: Any): Boolean =
-    p1 match {
-      case x: Counter2[_, _, _] =>
-        x.activeIterator.toSet == activeIterator.toSet
-      case _ => false
-    }
+  override def equals(p1: Any): Boolean = p1 match {
+    case x: Counter2[_, _, _] =>
+      x.activeIterator.toSet == activeIterator.toSet
+    case _ => false
+  }
 
 }
 
@@ -127,17 +126,16 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
       with Serializable {
     def default = scalar.zero
 
-    def keySet: Set[(K1, K2)] =
-      new Set[(K1, K2)] {
-        def contains(k: (K1, K2)): Boolean =
-          data.contains(k._1) && data(k._1).contains(k._2)
+    def keySet: Set[(K1, K2)] = new Set[(K1, K2)] {
+      def contains(k: (K1, K2)): Boolean =
+        data.contains(k._1) && data(k._1).contains(k._2)
 
-        def +(elem: (K1, K2)): Set[(K1, K2)] = Set.empty ++ iterator + elem
-        def -(elem: (K1, K2)): Set[(K1, K2)] = Set.empty ++ iterator - elem
+      def +(elem: (K1, K2)): Set[(K1, K2)] = Set.empty ++ iterator + elem
+      def -(elem: (K1, K2)): Set[(K1, K2)] = Set.empty ++ iterator - elem
 
-        def iterator: Iterator[(K1, K2)] =
-          for ((k1, m) <- data.iterator; k2 <- m.keysIterator) yield (k1, k2)
-      }
+      def iterator: Iterator[(K1, K2)] =
+        for ((k1, m) <- data.iterator; k2 <- m.keysIterator) yield (k1, k2)
+    }
   }
 
   /** Returns a new empty counter. */
@@ -308,11 +306,10 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
   implicit def handholdCanMapRows[K1, K2, V]: CanCollapseAxis.HandHold[
     Counter2[K1, K2, V],
     Axis._0.type,
-    Counter[K1, V]] =
-    new CanCollapseAxis.HandHold[
-      Counter2[K1, K2, V],
-      Axis._0.type,
-      Counter[K1, V]]()
+    Counter[K1, V]] = new CanCollapseAxis.HandHold[
+    Counter2[K1, K2, V],
+    Axis._0.type,
+    Counter[K1, V]]()
 
   /**
     * Returns a Counter[K1, V]
@@ -326,30 +323,28 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
         Axis._1.type,
         Counter[K2, V],
         Counter[K2, R],
-        Counter2[K1, K2, R]] =
-    new CanCollapseAxis[
-      Counter2[K1, K2, V],
-      Axis._1.type,
-      Counter[K2, V],
-      Counter[K2, R],
-      Counter2[K1, K2, R]] {
-      def apply(from: Counter2[K1, K2, V], axis: Axis._1.type)(
-          f: (Counter[K2, V]) => Counter[K2, R]): Counter2[K1, K2, R] = {
-        val result = Counter2[K1, K2, R]()
-        for ((dom, c) <- from.data) {
-          result(dom, ::) := f(c)
-        }
-        result
+        Counter2[K1, K2, R]] = new CanCollapseAxis[
+    Counter2[K1, K2, V],
+    Axis._1.type,
+    Counter[K2, V],
+    Counter[K2, R],
+    Counter2[K1, K2, R]] {
+    def apply(from: Counter2[K1, K2, V], axis: Axis._1.type)(
+        f: (Counter[K2, V]) => Counter[K2, R]): Counter2[K1, K2, R] = {
+      val result = Counter2[K1, K2, R]()
+      for ((dom, c) <- from.data) {
+        result(dom, ::) := f(c)
       }
+      result
     }
+  }
   implicit def handholdCanMapCols[K1, K2, V]: CanCollapseAxis.HandHold[
     Counter2[K1, K2, V],
     Axis._1.type,
-    Counter[K2, V]] =
-    new CanCollapseAxis.HandHold[
-      Counter2[K1, K2, V],
-      Axis._1.type,
-      Counter[K2, V]]()
+    Counter[K2, V]] = new CanCollapseAxis.HandHold[
+    Counter2[K1, K2, V],
+    Axis._1.type,
+    Counter[K2, V]]()
 
   /**
     * This is just a curried version of scala.collection.Map.
@@ -379,22 +374,21 @@ trait LowPriorityCounter2 {
         Axis._0.type,
         Counter[K1, V],
         R,
-        Counter[K2, R]] =
-    new CanCollapseAxis[
-      Counter2[K1, K2, V],
-      Axis._0.type,
-      Counter[K1, V],
-      R,
-      Counter[K2, R]] {
-      def apply(from: Counter2[K1, K2, V], axis: Axis._0.type)(
-          f: (Counter[K1, V]) => R): Counter[K2, R] = {
-        val result = Counter[K2, R]()
-        for (dom <- from.keySet.map(_._2)) {
-          result(dom) = f(from(::, dom))
-        }
-        result
+        Counter[K2, R]] = new CanCollapseAxis[
+    Counter2[K1, K2, V],
+    Axis._0.type,
+    Counter[K1, V],
+    R,
+    Counter[K2, R]] {
+    def apply(from: Counter2[K1, K2, V], axis: Axis._0.type)(
+        f: (Counter[K1, V]) => R): Counter[K2, R] = {
+      val result = Counter[K2, R]()
+      for (dom <- from.keySet.map(_._2)) {
+        result(dom) = f(from(::, dom))
       }
+      result
     }
+  }
 
   /**
     * Returns a Counter[K1, V]
@@ -408,21 +402,20 @@ trait LowPriorityCounter2 {
         Axis._1.type,
         Counter[K2, V],
         R,
-        Counter[K1, R]] =
-    new CanCollapseAxis[
-      Counter2[K1, K2, V],
-      Axis._1.type,
-      Counter[K2, V],
-      R,
-      Counter[K1, R]] {
-      def apply(from: Counter2[K1, K2, V], axis: Axis._1.type)(
-          f: (Counter[K2, V]) => R): Counter[K1, R] = {
-        val result = Counter[K1, R]()
-        for ((dom, c) <- from.data) {
-          result(dom) = f(c)
-        }
-        result
+        Counter[K1, R]] = new CanCollapseAxis[
+    Counter2[K1, K2, V],
+    Axis._1.type,
+    Counter[K2, V],
+    R,
+    Counter[K1, R]] {
+    def apply(from: Counter2[K1, K2, V], axis: Axis._1.type)(
+        f: (Counter[K2, V]) => R): Counter[K1, R] = {
+      val result = Counter[K1, R]()
+      for ((dom, c) <- from.data) {
+        result(dom) = f(c)
       }
+      result
     }
+  }
 
 }

@@ -108,64 +108,61 @@ trait LinearRegressionLibModule[M[+_]]
         *      }
         */
 
-      implicit def coeffMonoid =
-        new Monoid[CoeffAcc] {
-          def zero = CoeffAcc(Array.empty[Double], 0, Set.empty[Int])
-          def append(r1: CoeffAcc, r2: => CoeffAcc) = {
-            if (r1.beta isEmpty) r2
-            else if (r2.beta isEmpty) r1
-            //columns are only `removed` if they are not present in *all* slices seen so far
-            //this semantic ensures that stdErr computing knows which columns to consider
-            else
-              CoeffAcc(
-                arraySum(r1.beta, r2.beta),
-                r1.count + r2.count,
-                r1.removed & r2.removed)
-          }
+      implicit def coeffMonoid = new Monoid[CoeffAcc] {
+        def zero = CoeffAcc(Array.empty[Double], 0, Set.empty[Int])
+        def append(r1: CoeffAcc, r2: => CoeffAcc) = {
+          if (r1.beta isEmpty) r2
+          else if (r2.beta isEmpty) r1
+          //columns are only `removed` if they are not present in *all* slices seen so far
+          //this semantic ensures that stdErr computing knows which columns to consider
+          else
+            CoeffAcc(
+              arraySum(r1.beta, r2.beta),
+              r1.count + r2.count,
+              r1.removed & r2.removed)
         }
+      }
 
-      implicit def stdErrorMonoid =
-        new Monoid[StdErrorAcc] {
-          def zero = StdErrorAcc(0, 0, new Matrix(Array(Array.empty[Double])))
+      implicit def stdErrorMonoid = new Monoid[StdErrorAcc] {
+        def zero = StdErrorAcc(0, 0, new Matrix(Array(Array.empty[Double])))
 
-          def append(t1: StdErrorAcc, t2: => StdErrorAcc) = {
-            def isEmpty(matrix: Matrix) = {
-              // there has to be a better way...
-              matrix.getArray.length == 1 && matrix.getArray.head.length == 0
+        def append(t1: StdErrorAcc, t2: => StdErrorAcc) = {
+          def isEmpty(matrix: Matrix) = {
+            // there has to be a better way...
+            matrix.getArray.length == 1 && matrix.getArray.head.length == 0
+          }
+
+          val matrixSum = {
+            if (isEmpty(t1.product)) {
+              t2.product
+            } else if (isEmpty(t2.product)) {
+              t1.product
+            } else {
+              assert(
+                t1.product.getColumnDimension == t2.product.getColumnDimension &&
+                  t1.product.getRowDimension == t2.product.getRowDimension)
+
+              t1.product plus t2.product
             }
+          }
 
-            val matrixSum = {
-              if (isEmpty(t1.product)) {
-                t2.product
-              } else if (isEmpty(t2.product)) {
-                t1.product
-              } else {
-                assert(
-                  t1.product.getColumnDimension == t2.product.getColumnDimension &&
-                    t1.product.getRowDimension == t2.product.getRowDimension)
+          StdErrorAcc(t1.rss + t2.rss, t1.tss + t2.tss, matrixSum)
+        }
+      }
 
-                t1.product plus t2.product
+      implicit def betaMonoid = new Monoid[Option[Array[Beta]]] {
+        def zero = None
+        def append(t1: Option[Array[Beta]], t2: => Option[Array[Beta]]) = {
+          t1 match {
+            case None => t2
+            case Some(c1) =>
+              t2 match {
+                case None     => Some(c1)
+                case Some(c2) => Some(c1 ++ c2)
               }
-            }
-
-            StdErrorAcc(t1.rss + t2.rss, t1.tss + t2.tss, matrixSum)
           }
         }
-
-      implicit def betaMonoid =
-        new Monoid[Option[Array[Beta]]] {
-          def zero = None
-          def append(t1: Option[Array[Beta]], t2: => Option[Array[Beta]]) = {
-            t1 match {
-              case None => t2
-              case Some(c1) =>
-                t2 match {
-                  case None     => Some(c1)
-                  case Some(c2) => Some(c1 ++ c2)
-                }
-            }
-          }
-        }
+      }
 
       // inserts the Double value `0` at all `indices` in `values`
       def insertZeroAt(
@@ -259,111 +256,109 @@ trait LinearRegressionLibModule[M[+_]]
         (xs map { _.toArray }, y0 map { _.toArray })
       }
 
-      def coefficientReducer: Reducer[CoeffAcc] =
-        new Reducer[CoeffAcc] {
-          def reduce(schema: CSchema, range: Range): CoeffAcc = {
-            val features = schema.columns(JArrayHomogeneousT(JNumberT))
+      def coefficientReducer: Reducer[CoeffAcc] = new Reducer[CoeffAcc] {
+        def reduce(schema: CSchema, range: Range): CoeffAcc = {
+          val features = schema.columns(JArrayHomogeneousT(JNumberT))
 
-            val count = {
-              var countAcc = 0L
-              RangeUtil.loop(range) { i =>
-                if (Column.isDefinedAt(features.toArray, i)) countAcc += 1L
-              }
-              countAcc
+          val count = {
+            var countAcc = 0L
+            RangeUtil.loop(range) { i =>
+              if (Column.isDefinedAt(features.toArray, i)) countAcc += 1L
             }
+            countAcc
+          }
 
-            val (xs, y0) = makeArrays(features, range)
+          val (xs, y0) = makeArrays(features, range)
 
-            val matrixX0 = xs map { arr => new Matrix(arr) }
+          val matrixX0 = xs map { arr => new Matrix(arr) }
 
-            // FIXME ultimately we do not want to throw an IllegalArgumentException here
-            // once the framework is in place, we will return the empty set and issue a warning to the user
-            val matrixX1 = matrixX0 map { mx =>
-              if (mx.getRowDimension < mx.getColumnDimension) {
-                throw new IllegalArgumentException(
-                  "Matrix is rank deficient. Not enough rows to determine model.")
-              } else {
-                mx
-              }
+          // FIXME ultimately we do not want to throw an IllegalArgumentException here
+          // once the framework is in place, we will return the empty set and issue a warning to the user
+          val matrixX1 = matrixX0 map { mx =>
+            if (mx.getRowDimension < mx.getColumnDimension) {
+              throw new IllegalArgumentException(
+                "Matrix is rank deficient. Not enough rows to determine model.")
+            } else {
+              mx
             }
+          }
 
-            def removeColumn(matrix: Matrix, colDim: Int, idx: Int): Matrix = {
-              val ids = 0 until colDim
-              val columnIndices = ids.take(idx) ++ ids.drop(idx + 1)
-              val rowDim = matrix.getRowDimension
+          def removeColumn(matrix: Matrix, colDim: Int, idx: Int): Matrix = {
+            val ids = 0 until colDim
+            val columnIndices = ids.take(idx) ++ ids.drop(idx + 1)
+            val rowDim = matrix.getRowDimension
 
-              matrix.getMatrix(0, rowDim - 1, columnIndices.toArray)
-            }
+            matrix.getMatrix(0, rowDim - 1, columnIndices.toArray)
+          }
 
-            // returns a matrix with independent columns and
-            // the set of column indices removed from original matrix
-            def findDependents(matrix0: Matrix): (Matrix, Set[Int]) = {
-              val matrixRank0 = matrix0.rank
-              val colDim0 = matrix0.getColumnDimension
+          // returns a matrix with independent columns and
+          // the set of column indices removed from original matrix
+          def findDependents(matrix0: Matrix): (Matrix, Set[Int]) = {
+            val matrixRank0 = matrix0.rank
+            val colDim0 = matrix0.getColumnDimension
 
-              def inner(
-                  matrix: Matrix,
-                  idx: Int,
-                  colDim: Int,
-                  removed: Set[Int]): (Matrix, Set[Int]) = {
-                if (idx <= colDim) {
-                  if (matrixRank0 == colDim) {
-                    (matrix, removed)
-                  } else if (matrixRank0 < colDim) {
-                    val retained = removeColumn(matrix, colDim, idx)
-                    val rank = retained.rank
+            def inner(
+                matrix: Matrix,
+                idx: Int,
+                colDim: Int,
+                removed: Set[Int]): (Matrix, Set[Int]) = {
+              if (idx <= colDim) {
+                if (matrixRank0 == colDim) {
+                  (matrix, removed)
+                } else if (matrixRank0 < colDim) {
+                  val retained = removeColumn(matrix, colDim, idx)
+                  val rank = retained.rank
 
-                    if (rank == matrixRank0)
-                      inner(
-                        retained,
-                        idx,
-                        colDim - 1,
-                        removed + (idx + removed.size))
-                    else if (rank < matrixRank0)
-                      inner(matrix, idx + 1, colDim, removed)
-                    else
-                      sys.error(
-                        "Rank cannot increase when a column is removed.")
-                  } else {
-                    sys.error(
-                      "Matrix cannot have rank larger than number of columns.")
-                  }
+                  if (rank == matrixRank0)
+                    inner(
+                      retained,
+                      idx,
+                      colDim - 1,
+                      removed + (idx + removed.size))
+                  else if (rank < matrixRank0)
+                    inner(matrix, idx + 1, colDim, removed)
+                  else
+                    sys.error("Rank cannot increase when a column is removed.")
                 } else {
                   sys.error(
-                    "Failed to find dependent columns. Should never reach this case.")
+                    "Matrix cannot have rank larger than number of columns.")
                 }
+              } else {
+                sys.error(
+                  "Failed to find dependent columns. Should never reach this case.")
               }
-
-              inner(matrix0, 1, colDim0, Set.empty[Int])
             }
 
-            val cleaned: Option[(Matrix, Set[Int])] = matrixX1 map {
-              findDependents
-            }
-
-            val matrixY = y0 map { case arr => new Matrix(Array(arr)) }
-
-            val matrixX = for {
-              (x, _) <- cleaned
-              y <- matrixY
-            } yield {
-              x.solve(y.transpose)
-            }
-
-            val res =
-              matrixX map { _.getArray flatten } getOrElse Array.empty[Double]
-
-            // We weight the results to handle slices of different sizes.
-            // Even though we canonicalize the slices to bound their size,
-            // but their sizes still may vary
-            val weightedRes0 = res map { _ * count }
-
-            val removed = cleaned map { _._2 } getOrElse Set.empty[Int]
-            val weightedRes = insertZeroAt(weightedRes0, removed.toArray)
-
-            CoeffAcc(weightedRes, count, removed)
+            inner(matrix0, 1, colDim0, Set.empty[Int])
           }
+
+          val cleaned: Option[(Matrix, Set[Int])] = matrixX1 map {
+            findDependents
+          }
+
+          val matrixY = y0 map { case arr => new Matrix(Array(arr)) }
+
+          val matrixX = for {
+            (x, _) <- cleaned
+            y <- matrixY
+          } yield {
+            x.solve(y.transpose)
+          }
+
+          val res =
+            matrixX map { _.getArray flatten } getOrElse Array.empty[Double]
+
+          // We weight the results to handle slices of different sizes.
+          // Even though we canonicalize the slices to bound their size,
+          // but their sizes still may vary
+          val weightedRes0 = res map { _ * count }
+
+          val removed = cleaned map { _._2 } getOrElse Set.empty[Int]
+          val weightedRes = insertZeroAt(weightedRes0, removed.toArray)
+
+          CoeffAcc(weightedRes, count, removed)
         }
+      }
 
       def stdErrorReducer(acc: CoeffAcc): Reducer[StdErrorAcc] =
         new Reducer[StdErrorAcc] {

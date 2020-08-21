@@ -112,21 +112,20 @@ trait StringLike[+Repr]
     *  - `LF` - line feed   (`0x0A` hex)
     *  - `FF` - form feed   (`0x0C` hex)
     */
-  def linesWithSeparators: Iterator[String] =
-    new AbstractIterator[String] {
-      val str = self.toString
-      private val len = str.length
-      private var index = 0
-      def hasNext: Boolean = index < len
-      def next(): String = {
-        if (index >= len)
-          throw new NoSuchElementException("next on empty iterator")
-        val start = index
-        while (index < len && !isLineBreak(apply(index))) index += 1
-        index += 1
-        str.substring(start, index min len)
-      }
+  def linesWithSeparators: Iterator[String] = new AbstractIterator[String] {
+    val str = self.toString
+    private val len = str.length
+    private var index = 0
+    def hasNext: Boolean = index < len
+    def next(): String = {
+      if (index >= len)
+        throw new NoSuchElementException("next on empty iterator")
+      val start = index
+      while (index < len && !isLineBreak(apply(index))) index += 1
+      index += 1
+      str.substring(start, index min len)
     }
+  }
 
   /** Return all lines in this string in an iterator, excluding trailing line
     *  end characters, i.e., apply `.stripLineEnd` to all lines
@@ -212,11 +211,10 @@ trait StringLike[+Repr]
     */
   def stripMargin: String = stripMargin('|')
 
-  private def escape(ch: Char): String =
-    if ((ch >= 'a') && (ch <= 'z') ||
-      (ch >= 'A') && (ch <= 'Z') ||
-      (ch >= '0' && ch <= '9')) ch.toString
-    else "\\" + ch
+  private def escape(ch: Char): String = if ((ch >= 'a') && (ch <= 'z') ||
+    (ch >= 'A') && (ch <= 'Z') ||
+    (ch >= '0' && ch <= '9')) ch.toString
+  else "\\" + ch
 
   /** Split this string around the separator character
     *
@@ -340,11 +338,10 @@ trait StringLike[+Repr]
   override def toArray[B >: Char: ClassTag]: Array[B] =
     toString.toCharArray.asInstanceOf[Array[B]]
 
-  private def unwrapArg(arg: Any): AnyRef =
-    arg match {
-      case x: ScalaNumber => x.underlying
-      case x              => x.asInstanceOf[AnyRef]
-    }
+  private def unwrapArg(arg: Any): AnyRef = arg match {
+    case x: ScalaNumber => x.underlying
+    case x              => x.asInstanceOf[AnyRef]
+  }
 
   /** Uses the underlying string as a pattern (in a fashion similar to
     *  printf in C), and uses the supplied arguments to fill in the

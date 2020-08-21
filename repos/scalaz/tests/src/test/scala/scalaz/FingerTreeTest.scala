@@ -138,11 +138,10 @@ object FingerTreeTest extends SpecLite {
 
     case class TestInstance(arr: Array[Int], index: Int)
 
-    implicit def myGen: Arbitrary[TestInstance] =
-      Arbitrary(for {
-        arr <- arbitrary[Array[Int]] if arr.nonEmpty
-        m <- Gen.choose(0, arr.length - 1)
-      } yield TestInstance(arr, m))
+    implicit def myGen: Arbitrary[TestInstance] = Arbitrary(for {
+      arr <- arbitrary[Array[Int]] if arr.nonEmpty
+      m <- Gen.choose(0, arr.length - 1)
+    } yield TestInstance(arr, m))
 
     "have a length" ! forAll { xs: Array[Int] =>
       IndSeq(xs: _*).length == xs.length

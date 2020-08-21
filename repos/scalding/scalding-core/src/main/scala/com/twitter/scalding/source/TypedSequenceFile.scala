@@ -34,13 +34,12 @@ class TypedSequenceFile[T](val path: String)
   override def setter[U <: T] =
     TupleSetter.asSubSetter[T, U](TupleSetter.singleSetter[T])
   override def toString: String = "TypedSequenceFile(%s)".format(path)
-  override def equals(that: Any): Boolean =
-    that match {
-      case null => false
-      case t: TypedSequenceFile[_] =>
-        t.p == p // horribly named fields in the SequenceFile case class
-      case _ => false
-    }
+  override def equals(that: Any): Boolean = that match {
+    case null => false
+    case t: TypedSequenceFile[_] =>
+      t.p == p // horribly named fields in the SequenceFile case class
+    case _ => false
+  }
   override def hashCode = path.hashCode
 }
 

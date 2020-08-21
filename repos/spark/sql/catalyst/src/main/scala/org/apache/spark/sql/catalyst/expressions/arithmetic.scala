@@ -27,8 +27,8 @@ case class UnaryMinus(child: Expression)
     extends UnaryExpression
     with ExpectsInputTypes {
 
-  override def inputTypes: Seq[AbstractDataType] =
-    Seq(TypeCollection.NumericAndInterval)
+  override def inputTypes: Seq[AbstractDataType] = Seq(
+    TypeCollection.NumericAndInterval)
 
   override def dataType: DataType = child.dataType
 
@@ -73,8 +73,8 @@ case class UnaryPositive(child: Expression)
     with ExpectsInputTypes {
   override def prettyName: String = "positive"
 
-  override def inputTypes: Seq[AbstractDataType] =
-    Seq(TypeCollection.NumericAndInterval)
+  override def inputTypes: Seq[AbstractDataType] = Seq(
+    TypeCollection.NumericAndInterval)
 
   override def dataType: DataType = child.dataType
 
@@ -147,8 +147,8 @@ abstract class BinaryArithmetic extends BinaryOperator {
 }
 
 private[sql] object BinaryArithmetic {
-  def unapply(e: BinaryArithmetic): Option[(Expression, Expression)] =
-    Some((e.left, e.right))
+  def unapply(e: BinaryArithmetic): Option[(Expression, Expression)] = Some(
+    (e.left, e.right))
 }
 
 case class Add(left: Expression, right: Expression) extends BinaryArithmetic {

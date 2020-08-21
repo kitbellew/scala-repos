@@ -9,9 +9,8 @@ class IssuesServiceSpec extends FunSuite with ServiceSpecBase {
     withTestDB { implicit session =>
       val user1 = generateNewUserWithDBRepository("user1", "repo1")
 
-      def getCommitStatues =
-        dummyService.getCommitStatues(
-          List(("user1", "repo1", 1), ("user1", "repo1", 2)))
+      def getCommitStatues = dummyService.getCommitStatues(
+        List(("user1", "repo1", 1), ("user1", "repo1", 2)))
 
       assert(getCommitStatues == Map.empty)
 

@@ -161,11 +161,10 @@ object lasso extends UFunc {
       def apply(
           data: DenseMatrix[Double],
           outputs: DenseVector[Double],
-          lambda: Double): LassoResult =
-        LassoCalculator(
-          data.copy,
-          outputs.copy,
-          lambda,
-          new Array[Double](math.max(1, data.rows * data.cols * 2))).result
+          lambda: Double): LassoResult = LassoCalculator(
+        data.copy,
+        outputs.copy,
+        lambda,
+        new Array[Double](math.max(1, data.rows * data.cols * 2))).result
     }
 }

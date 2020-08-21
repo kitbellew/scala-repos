@@ -203,12 +203,11 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
             isAccessible
           }
 
-          def pos =
-            callGraph
-              .callsites(ownerMethod)
-              .get(invocation)
-              .map(_.callsitePosition)
-              .getOrElse(NoPosition)
+          def pos = callGraph
+            .callsites(ownerMethod)
+            .get(invocation)
+            .map(_.callsitePosition)
+            .getOrElse(NoPosition)
           val stackSize: Either[RewriteClosureApplyToClosureBodyFailed, Int] =
             bodyAccessible match {
               case Left(w) => Left(RewriteClosureAccessCheckFailed(pos, w))
@@ -450,11 +449,10 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
       lambdaBodyHandle.getOwner,
       lambdaBodyHandle.getName,
       lambdaBodyHandle.getDesc)
-    def bodyMethodIsBeingCompiled =
-      byteCodeRepository
-        .classNodeAndSource(lambdaBodyHandle.getOwner)
-        .map(_._2 == CompilationUnit)
-        .getOrElse(false)
+    def bodyMethodIsBeingCompiled = byteCodeRepository
+      .classNodeAndSource(lambdaBodyHandle.getOwner)
+      .map(_._2 == CompilationUnit)
+      .getOrElse(false)
     val callee = bodyMethod.map({ case (bodyMethodNode, bodyMethodDeclClass) =>
       val bodyDeclClassType = classBTypeFromParsedClassfile(bodyMethodDeclClass)
       val canInlineFromSource =

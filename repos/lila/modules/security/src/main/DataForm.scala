@@ -101,15 +101,14 @@ final class DataForm(
       _.samePasswords
     ))
 
-  def changeEmail(user: User) =
-    Form(
-      mapping(
-        "email" -> acceptableUniqueEmail(user.some),
-        "passwd" -> nonEmptyText
-      )(ChangeEmail.apply)(ChangeEmail.unapply))
+  def changeEmail(user: User) = Form(
+    mapping(
+      "email" -> acceptableUniqueEmail(user.some),
+      "passwd" -> nonEmptyText
+    )(ChangeEmail.apply)(ChangeEmail.unapply))
 
-  def modEmail(user: User) =
-    Form(single("email" -> acceptableUniqueEmail(user.some)))
+  def modEmail(user: User) = Form(
+    single("email" -> acceptableUniqueEmail(user.some)))
 
   val closeAccount = Form(single("passwd" -> nonEmptyText))
 }

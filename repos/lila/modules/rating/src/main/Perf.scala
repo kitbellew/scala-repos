@@ -15,19 +15,17 @@ case class Perf(
   def intRating = glicko.rating.toInt
   def intDeviation = glicko.deviation.toInt
 
-  def progress: Int =
-    ~recent.headOption.flatMap { head =>
-      recent.lastOption map (head -)
-    }
+  def progress: Int = ~recent.headOption.flatMap { head =>
+    recent.lastOption map (head -)
+  }
 
-  def add(g: Glicko, date: DateTime): Perf =
-    copy(
-      glicko = g,
-      nb = nb + 1,
-      recent =
-        if (nb < 10) recent
-        else (g.intRating :: recent) take Perf.recentMaxSize,
-      latest = date.some)
+  def add(g: Glicko, date: DateTime): Perf = copy(
+    glicko = g,
+    nb = nb + 1,
+    recent =
+      if (nb < 10) recent
+      else (g.intRating :: recent) take Perf.recentMaxSize,
+    latest = date.some)
 
   def add(r: Rating, date: DateTime): Option[Perf] = {
     val glicko = Glicko(r.getRating, r.getRatingDeviation, r.getVolatility)
@@ -36,19 +34,17 @@ case class Perf(
 
   def addOrReset(monitor: lila.mon.IncPath, msg: => String)(
       r: Rating,
-      date: DateTime): Perf =
-    add(r, date) | {
-      lila.log("rating").error(s"Crazy Glicko2 $msg")
-      lila.mon.incPath(monitor)()
-      add(Glicko.default, date)
-    }
+      date: DateTime): Perf = add(r, date) | {
+    lila.log("rating").error(s"Crazy Glicko2 $msg")
+    lila.mon.incPath(monitor)()
+    add(Glicko.default, date)
+  }
 
-  def toRating =
-    new Rating(
-      math.max(Glicko.minRating, glicko.rating),
-      glicko.deviation,
-      glicko.volatility,
-      nb)
+  def toRating = new Rating(
+    math.max(Glicko.minRating, glicko.rating),
+    glicko.deviation,
+    glicko.volatility,
+    nb)
 
   def isEmpty = nb == 0
   def nonEmpty = !isEmpty
@@ -72,18 +68,16 @@ case object Perf {
 
     import Glicko.glickoBSONHandler
 
-    def reads(r: BSON.Reader): Perf =
-      Perf(
-        glicko = r.getO[Glicko]("gl") | Glicko.default,
-        nb = r intD "nb",
-        latest = r dateO "la",
-        recent = r intsD "re")
+    def reads(r: BSON.Reader): Perf = Perf(
+      glicko = r.getO[Glicko]("gl") | Glicko.default,
+      nb = r intD "nb",
+      latest = r dateO "la",
+      recent = r intsD "re")
 
-    def writes(w: BSON.Writer, o: Perf) =
-      BSONDocument(
-        "gl" -> o.glicko,
-        "nb" -> w.int(o.nb),
-        "re" -> w.intsO(o.recent),
-        "la" -> o.latest.map(w.date))
+    def writes(w: BSON.Writer, o: Perf) = BSONDocument(
+      "gl" -> o.glicko,
+      "nb" -> w.int(o.nb),
+      "re" -> w.intsO(o.recent),
+      "la" -> o.latest.map(w.date))
   }
 }

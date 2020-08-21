@@ -128,10 +128,9 @@ object BasicClient {
     }
 
   val client = new Service[String, String] {
-    def apply(req: String) =
-      bridge flatMap { svc =>
-        svc(req) ensure svc.close()
-      }
+    def apply(req: String) = bridge flatMap { svc =>
+      svc(req) ensure svc.close()
+    }
   }
   //#explicitbridge
 }

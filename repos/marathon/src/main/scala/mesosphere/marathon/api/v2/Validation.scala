@@ -12,11 +12,11 @@ import scala.reflect.ClassTag
 import scala.util.Try
 
 object Validation {
-  def validateOrThrow[T](t: T)(implicit validator: Validator[T]): T =
-    validate(t) match {
-      case Success    => t
-      case f: Failure => throw new ValidationFailedException(t, f)
-    }
+  def validateOrThrow[T](t: T)(implicit validator: Validator[T]): T = validate(
+    t) match {
+    case Success    => t
+    case f: Failure => throw new ValidationFailedException(t, f)
+  }
 
   implicit def optional[T](implicit
       validator: Validator[T]): Validator[Option[T]] = {

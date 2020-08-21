@@ -127,8 +127,8 @@ case class ScalaSig(
     Entry(index, entryType, byteCode)
   }
 
-  def parseEntry(index: Int) =
-    applyRule(ScalaSigParsers.parseEntry(ScalaSigEntryParsers.entry)(index))
+  def parseEntry(index: Int) = applyRule(
+    ScalaSigParsers.parseEntry(ScalaSigEntryParsers.entry)(index))
 
   implicit def applyRule[A](parser: ScalaSigParsers.Parser[A]) =
     ScalaSigParsers.expect(parser)(this)
@@ -152,19 +152,19 @@ object ScalaSigParsers extends RulesWithState with MemoisableRules {
   val symTab = read(_.table)
   val size = symTab ^^ (_.size)
 
-  def entry(index: Int) =
-    memo(("entry", index)) {
-      cond(_ hasEntry index) -~ read(_ getEntry index) >-> { entry =>
-        Success(entry, entry.entryType)
-      }
+  def entry(index: Int) = memo(("entry", index)) {
+    cond(_ hasEntry index) -~ read(_ getEntry index) >-> { entry =>
+      Success(entry, entry.entryType)
     }
+  }
 
   def parseEntry[A](parser: ScalaSigEntryParsers.EntryParser[A])(
       index: Int): Parser[A] =
     entry(index) -~ parser >> { a => entry => Success(entry.scalaSig, a) }
 
-  def allEntries[A](f: ScalaSigEntryParsers.EntryParser[A]) =
-    size >> { n => anyOf((0 until n) map parseEntry(f)) }
+  def allEntries[A](f: ScalaSigEntryParsers.EntryParser[A]) = size >> { n =>
+    anyOf((0 until n) map parseEntry(f))
+  }
 
   lazy val entries = allEntries(ScalaSigEntryParsers.entry) as "entries"
   lazy val symbols = allEntries(ScalaSigEntryParsers.symbol) as "symbols"
@@ -183,13 +183,14 @@ object ScalaSigEntryParsers extends RulesWithState with MemoisableRules {
   type EntryParser[A] = Rule[A, String]
 
   implicit def byteCodeEntryParser[A](
-      rule: ScalaSigAttributeParsers.Parser[A]): EntryParser[A] =
-    apply { entry =>
+      rule: ScalaSigAttributeParsers.Parser[A]): EntryParser[A] = apply {
+    entry =>
       rule(entry.byteCode) mapOut (entry setByteCode _)
-    }
+  }
 
-  def toEntry[A](index: Int) =
-    apply { sigEntry => ScalaSigParsers.entry(index)(sigEntry.scalaSig) }
+  def toEntry[A](index: Int) = apply { sigEntry =>
+    ScalaSigParsers.entry(index)(sigEntry.scalaSig)
+  }
 
   def parseEntry[A](parser: EntryParser[A])(index: Int) =
     (toEntry(index) -~ parser)
@@ -295,11 +296,10 @@ object ScalaSigEntryParsers extends RulesWithState with MemoisableRules {
   lazy val topLevelClass = classSymbol filter isTopLevelClass
   lazy val topLevelObject = objectSymbol filter isTopLevel
 
-  def isTopLevel(symbol: Symbol) =
-    symbol.parent match {
-      case Some(ext: ExternalSymbol) => true
-      case _                         => false
-    }
+  def isTopLevel(symbol: Symbol) = symbol.parent match {
+    case Some(ext: ExternalSymbol) => true
+    case _                         => false
+  }
   def isTopLevelClass(symbol: Symbol) = !symbol.isModule && isTopLevel(symbol)
 }
 

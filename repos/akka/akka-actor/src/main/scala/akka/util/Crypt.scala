@@ -12,14 +12,14 @@ object Crypt {
 
   lazy val random = SecureRandom.getInstance("SHA1PRNG")
 
-  def md5(text: String): String =
-    md5(unifyLineSeparator(text).getBytes("ASCII"))
+  def md5(text: String): String = md5(
+    unifyLineSeparator(text).getBytes("ASCII"))
 
   def md5(bytes: Array[Byte]): String =
     digest(bytes, MessageDigest.getInstance("MD5"))
 
-  def sha1(text: String): String =
-    sha1(unifyLineSeparator(text).getBytes("ASCII"))
+  def sha1(text: String): String = sha1(
+    unifyLineSeparator(text).getBytes("ASCII"))
 
   def sha1(bytes: Array[Byte]): String =
     digest(bytes, MessageDigest.getInstance("SHA1"))

@@ -321,11 +321,10 @@ final class RhinoJSEnv private (
     val ordering = Ordering.by[TimedTask, Deadline](_.deadline).reverse
     val taskQ = mutable.PriorityQueue.empty(ordering)
 
-    def ensure[T: ClassTag](v: AnyRef, errMsg: String) =
-      v match {
-        case v: T => v
-        case _    => sys.error(errMsg)
-      }
+    def ensure[T: ClassTag](v: AnyRef, errMsg: String) = v match {
+      case v: T => v
+      case _    => sys.error(errMsg)
+    }
 
     scope.addFunction(
       "setTimeout",
@@ -583,66 +582,59 @@ object RhinoJSEnv {
     private[this] val js2jvm = mutable.Queue.empty[String]
     private[this] val jvm2js = mutable.Queue.empty[String]
 
-    def sendToJS(msg: String): Unit =
-      synchronized {
-        ensureOpen(_closedJVM)
-        jvm2js.enqueue(msg)
-        notifyAll()
+    def sendToJS(msg: String): Unit = synchronized {
+      ensureOpen(_closedJVM)
+      jvm2js.enqueue(msg)
+      notifyAll()
+    }
+
+    def sendToJVM(msg: String): Unit = synchronized {
+      ensureOpen(_closedJS)
+      js2jvm.enqueue(msg)
+      notifyAll()
+    }
+
+    def recvJVM(timeout: Duration): String = synchronized {
+      val deadline = OptDeadline(timeout)
+
+      while (js2jvm.isEmpty && ensureOpen(_closedJS) && !deadline.isOverdue)
+        wait(deadline.millisLeft)
+
+      if (js2jvm.isEmpty)
+        throw new TimeoutException("Timeout expired")
+      js2jvm.dequeue()
+    }
+
+    def recvJS(): String = synchronized {
+      while (jvm2js.isEmpty && ensureOpen(_closedJVM))
+        wait()
+
+      jvm2js.dequeue()
+    }
+
+    def recvJS(deadline: Deadline): Option[String] = synchronized {
+      var expired = false
+      while (jvm2js.isEmpty && !expired && ensureOpen(_closedJVM)) {
+        val timeLeft = deadline.timeLeft.toMillis
+        if (timeLeft > 0)
+          wait(timeLeft)
+        else
+          expired = true
       }
 
-    def sendToJVM(msg: String): Unit =
-      synchronized {
-        ensureOpen(_closedJS)
-        js2jvm.enqueue(msg)
-        notifyAll()
-      }
+      if (expired) None
+      else Some(jvm2js.dequeue())
+    }
 
-    def recvJVM(timeout: Duration): String =
-      synchronized {
-        val deadline = OptDeadline(timeout)
+    def closeJS(): Unit = synchronized {
+      _closedJS = true
+      notifyAll()
+    }
 
-        while (js2jvm.isEmpty && ensureOpen(_closedJS) && !deadline.isOverdue)
-          wait(deadline.millisLeft)
-
-        if (js2jvm.isEmpty)
-          throw new TimeoutException("Timeout expired")
-        js2jvm.dequeue()
-      }
-
-    def recvJS(): String =
-      synchronized {
-        while (jvm2js.isEmpty && ensureOpen(_closedJVM))
-          wait()
-
-        jvm2js.dequeue()
-      }
-
-    def recvJS(deadline: Deadline): Option[String] =
-      synchronized {
-        var expired = false
-        while (jvm2js.isEmpty && !expired && ensureOpen(_closedJVM)) {
-          val timeLeft = deadline.timeLeft.toMillis
-          if (timeLeft > 0)
-            wait(timeLeft)
-          else
-            expired = true
-        }
-
-        if (expired) None
-        else Some(jvm2js.dequeue())
-      }
-
-    def closeJS(): Unit =
-      synchronized {
-        _closedJS = true
-        notifyAll()
-      }
-
-    def closeJVM(): Unit =
-      synchronized {
-        _closedJVM = true
-        notifyAll()
-      }
+    def closeJVM(): Unit = synchronized {
+      _closedJVM = true
+      notifyAll()
+    }
 
     /** Throws if the channel is closed and returns true */
     private def ensureOpen(closed: Boolean): Boolean = {

@@ -51,8 +51,8 @@ class JavaDoubleRDD(val srdd: RDD[scala.Double])
     * Set this RDD's storage level to persist its values across operations after the first time
     * it is computed. Can only be called once on each RDD.
     */
-  def persist(newLevel: StorageLevel): JavaDoubleRDD =
-    fromRDD(srdd.persist(newLevel))
+  def persist(newLevel: StorageLevel): JavaDoubleRDD = fromRDD(
+    srdd.persist(newLevel))
 
   /**
     * Mark the RDD as non-persistent, and remove all blocks for it from memory and disk.
@@ -65,8 +65,8 @@ class JavaDoubleRDD(val srdd: RDD[scala.Double])
     *
     * @param blocking Whether to block until all blocks are deleted.
     */
-  def unpersist(blocking: Boolean): JavaDoubleRDD =
-    fromRDD(srdd.unpersist(blocking))
+  def unpersist(blocking: Boolean): JavaDoubleRDD = fromRDD(
+    srdd.unpersist(blocking))
 
   // first() has to be overridden here in order for its return type to be Double instead of Object.
   override def first(): JDouble = srdd.first()
@@ -81,8 +81,8 @@ class JavaDoubleRDD(val srdd: RDD[scala.Double])
   /**
     * Return a new RDD containing the distinct elements in this RDD.
     */
-  def distinct(numPartitions: Int): JavaDoubleRDD =
-    fromRDD(srdd.distinct(numPartitions))
+  def distinct(numPartitions: Int): JavaDoubleRDD = fromRDD(
+    srdd.distinct(numPartitions))
 
   /**
     * Return a new RDD containing only the elements that satisfy a predicate.
@@ -93,8 +93,8 @@ class JavaDoubleRDD(val srdd: RDD[scala.Double])
   /**
     * Return a new RDD that is reduced into `numPartitions` partitions.
     */
-  def coalesce(numPartitions: Int): JavaDoubleRDD =
-    fromRDD(srdd.coalesce(numPartitions))
+  def coalesce(numPartitions: Int): JavaDoubleRDD = fromRDD(
+    srdd.coalesce(numPartitions))
 
   /**
     * Return a new RDD that is reduced into `numPartitions` partitions.
@@ -111,8 +111,8 @@ class JavaDoubleRDD(val srdd: RDD[scala.Double])
     * If you are decreasing the number of partitions in this RDD, consider using `coalesce`,
     * which can avoid performing a shuffle.
     */
-  def repartition(numPartitions: Int): JavaDoubleRDD =
-    fromRDD(srdd.repartition(numPartitions))
+  def repartition(numPartitions: Int): JavaDoubleRDD = fromRDD(
+    srdd.repartition(numPartitions))
 
   /**
     * Return an RDD with the elements from `this` that are not in `other`.
@@ -154,8 +154,8 @@ class JavaDoubleRDD(val srdd: RDD[scala.Double])
     * Return the union of this RDD and another one. Any identical elements will appear multiple
     * times (use `.distinct()` to eliminate them).
     */
-  def union(other: JavaDoubleRDD): JavaDoubleRDD =
-    fromRDD(srdd.union(other.srdd))
+  def union(other: JavaDoubleRDD): JavaDoubleRDD = fromRDD(
+    srdd.union(other.srdd))
 
   /**
     * Return the intersection of this RDD and another one. The output will not contain any duplicate
@@ -163,8 +163,8 @@ class JavaDoubleRDD(val srdd: RDD[scala.Double])
     *
     * Note that this method performs a shuffle internally.
     */
-  def intersection(other: JavaDoubleRDD): JavaDoubleRDD =
-    fromRDD(srdd.intersection(other.srdd))
+  def intersection(other: JavaDoubleRDD): JavaDoubleRDD = fromRDD(
+    srdd.intersection(other.srdd))
 
   // Double RDD functions
 

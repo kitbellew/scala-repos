@@ -51,11 +51,10 @@ abstract class CreateEntityQuickFix(
       file: PsiFile): Boolean = {
     if (!super.isAvailable(project, editor, file)) return false
 
-    def checkBlock(expr: ScExpression) =
-      blockFor(expr) match {
-        case Success(bl) => !bl.isInCompiledFile
-        case _           => false
-      }
+    def checkBlock(expr: ScExpression) = blockFor(expr) match {
+      case Success(bl) => !bl.isInCompiledFile
+      case _           => false
+    }
 
     ref match {
       case Both(
@@ -166,8 +165,8 @@ object CreateEntityQuickFix {
 
   private def blockFor(exp: ScExpression): Try[ScExtendsBlock] = {
     object ParentExtendsBlock {
-      def unapply(e: PsiElement): Option[ScExtendsBlock] =
-        Option(PsiTreeUtil.getParentOfType(exp, classOf[ScExtendsBlock]))
+      def unapply(e: PsiElement): Option[ScExtendsBlock] = Option(
+        PsiTreeUtil.getParentOfType(exp, classOf[ScExtendsBlock]))
     }
 
     exp match {

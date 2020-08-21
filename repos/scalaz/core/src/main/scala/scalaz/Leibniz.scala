@@ -73,10 +73,9 @@ object Leibniz extends LeibnizInstances {
   type ===[A, B] = Leibniz[⊥, ⊤, A, B]
 
   /** Equality is reflexive -- we rely on subtyping to expand this type */
-  implicit def refl[A]: Leibniz[A, A, A, A] =
-    new Leibniz[A, A, A, A] {
-      def subst[F[_ >: A <: A]](p: F[A]): F[A] = p
-    }
+  implicit def refl[A]: Leibniz[A, A, A, A] = new Leibniz[A, A, A, A] {
+    def subst[F[_ >: A <: A]](p: F[A]): F[A] = p
+  }
 
   /** We can witness equality by using it to convert between types
     * We rely on subtyping to enable this to work for any Leibniz arrow

@@ -70,13 +70,12 @@ object BitSet extends BitSetFactory[BitSet] {
   val empty: BitSet = new BitSet1(0L)
 
   /** A builder that takes advantage of mutable BitSets. */
-  def newBuilder: Builder[Int, BitSet] =
-    new Builder[Int, BitSet] {
-      private[this] val b = new mutable.BitSet
-      def +=(x: Int) = { b += x; this }
-      def clear() = b.clear()
-      def result() = b.toImmutable
-    }
+  def newBuilder: Builder[Int, BitSet] = new Builder[Int, BitSet] {
+    private[this] val b = new mutable.BitSet
+    def +=(x: Int) = { b += x; this }
+    def clear() = b.clear()
+    def result() = b.toImmutable
+  }
 
   /** $bitsetCanBuildFrom */
   implicit def canBuildFrom: CanBuildFrom[BitSet, Int, BitSet] =
@@ -151,8 +150,8 @@ object BitSet extends BitSetFactory[BitSet] {
   class BitSetN(val elems: Array[Long]) extends BitSet {
     protected def nwords = elems.length
     protected def word(idx: Int) = if (idx < nwords) elems(idx) else 0L
-    protected def updateWord(idx: Int, w: Long): BitSet =
-      fromBitMaskNoCopy(updateArray(elems, idx, w))
+    protected def updateWord(idx: Int, w: Long): BitSet = fromBitMaskNoCopy(
+      updateArray(elems, idx, w))
     override def tail: BitSet = {
       val n = nwords
       var i = 0

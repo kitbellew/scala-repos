@@ -48,8 +48,8 @@ object BroadcastedColumns {
 
   implicit class BroadcastColumnsDMToIndexedSeq[T](
       bc: BroadcastedColumns[DenseMatrix[T], DenseVector[T]]) {
-    def toIndexedSeq: IndexedSeq[DenseVector[T]] =
-      new BroadcastedDMColsISeq(bc.underlying)
+    def toIndexedSeq: IndexedSeq[DenseVector[T]] = new BroadcastedDMColsISeq(
+      bc.underlying)
   }
 
   implicit def canMapValues[T, ColumnType, ResultColumn, Result](implicit

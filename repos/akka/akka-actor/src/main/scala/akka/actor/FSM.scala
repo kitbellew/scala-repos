@@ -192,18 +192,17 @@ object FSM {
       *
       * Use Duration.Inf to deactivate an existing timeout.
       */
-    def forMax(timeout: Duration): State[S, D] =
-      timeout match {
-        case f: FiniteDuration ⇒ copy(timeout = Some(f))
-        case Duration.Inf ⇒
-          copy(timeout =
-            SomeMaxFiniteDuration
-          ) // we map the Infinite duration to a special marker,
-        case _ ⇒
-          copy(timeout =
-            None
-          ) // that means "cancel stateTimeout". This marker is needed
-      } // so we do not have to break source/binary compat.
+    def forMax(timeout: Duration): State[S, D] = timeout match {
+      case f: FiniteDuration ⇒ copy(timeout = Some(f))
+      case Duration.Inf ⇒
+        copy(timeout =
+          SomeMaxFiniteDuration
+        ) // we map the Infinite duration to a special marker,
+      case _ ⇒
+        copy(timeout =
+          None
+        ) // that means "cancel stateTimeout". This marker is needed
+    } // so we do not have to break source/binary compat.
     // TODO: Can be removed once we can break State#timeout signature to `Option[Duration]`
 
     /**
@@ -424,10 +423,9 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
     *
     * @return descriptor for staying in current state
     */
-  final def stay(): State =
-    goto(currentState.stateName).withNotification(
-      false
-    ) // cannot directly use currentState because of the timeout field
+  final def stay(): State = goto(currentState.stateName).withNotification(
+    false
+  ) // cannot directly use currentState because of the timeout field
 
   /**
     * Produce change descriptor to stop this FSM actor with reason "Normal".
@@ -503,8 +501,8 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
     * Set state timeout explicitly. This method can safely be used from within a
     * state handler.
     */
-  final def setStateTimeout(state: S, timeout: Timeout): Unit =
-    stateTimeouts(state) = timeout
+  final def setStateTimeout(state: S, timeout: Timeout): Unit = stateTimeouts(
+    state) = timeout
 
   /**
     * INTERNAL API, used for testing.
@@ -591,13 +589,12 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
   /**
     * Return next state data (available in onTransition handlers)
     */
-  final def nextStateData =
-    nextState match {
-      case null ⇒
-        throw new IllegalStateException(
-          "nextStateData is only available during onTransition")
-      case x ⇒ x.stateData
-    }
+  final def nextStateData = nextState match {
+    case null ⇒
+      throw new IllegalStateException(
+        "nextStateData is only available during onTransition")
+    case x ⇒ x.stateData
+  }
 
   /*
    * ****************************************************************
@@ -806,12 +803,11 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
     * By default [[FSM.Failure]] is logged at error level and other reason
     * types are not logged. It is possible to override this behavior.
     */
-  protected def logTermination(reason: Reason): Unit =
-    reason match {
-      case Failure(ex: Throwable) ⇒ log.error(ex, "terminating due to Failure")
-      case Failure(msg: AnyRef) ⇒ log.error(msg.toString)
-      case _ ⇒
-    }
+  protected def logTermination(reason: Reason): Unit = reason match {
+    case Failure(ex: Throwable) ⇒ log.error(ex, "terminating due to Failure")
+    case Failure(msg: AnyRef) ⇒ log.error(msg.toString)
+    case _ ⇒
+  }
 }
 
 /**

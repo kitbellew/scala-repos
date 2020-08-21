@@ -66,8 +66,8 @@ object ManagedQueryTestSupport {
   // with a StreamT[TestFuture, ?] by using `sink` in ManagedQueryModule.
   implicit def transformThroughFuture[M[+_]](implicit t: M ~> Future) =
     new (M ~> TestFuture) {
-      def apply[A](ma: M[A]): TestFuture[A] =
-        WriterT(t(ma) map (Tag(None) -> _))
+      def apply[A](ma: M[A]): TestFuture[A] = WriterT(
+        t(ma) map (Tag(None) -> _))
     }
 }
 
@@ -97,11 +97,10 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
     Path.Root,
     AccountPlan.Free)
 
-  def dropStreamToFuture =
-    implicitly[Hoist[StreamT]].hoist[TestFuture, Future](
-      new (TestFuture ~> Future) {
-        def apply[A](fa: TestFuture[A]): Future[A] = fa.value
-      })
+  def dropStreamToFuture = implicitly[Hoist[StreamT]].hoist[TestFuture, Future](
+    new (TestFuture ~> Future) {
+      def apply[A](fa: TestFuture[A]): Future[A] = fa.value
+    })
 
   def waitForJobCompletion(jobId: JobId): Future[Job] = {
     import JobState._

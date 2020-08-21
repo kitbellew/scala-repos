@@ -12,23 +12,20 @@ private[http] class PayloadSizeHandler(maxRequestPayloadSize: Int)
 
   override def messageReceived(
       ctx: ChannelHandlerContext,
-      m: MessageEvent): Unit =
-    m.getMessage match {
-      case request: HttpRequest
-          if HttpHeaders.getContentLength(
-            request,
-            -1) > maxRequestPayloadSize =>
-        val tooLargeResponse =
-          PayloadSizeHandler.mkTooLargeResponse(request.getProtocolVersion)
-        val writeF = Channels.future(ctx.getChannel)
+      m: MessageEvent): Unit = m.getMessage match {
+    case request: HttpRequest
+        if HttpHeaders.getContentLength(request, -1) > maxRequestPayloadSize =>
+      val tooLargeResponse =
+        PayloadSizeHandler.mkTooLargeResponse(request.getProtocolVersion)
+      val writeF = Channels.future(ctx.getChannel)
 
-        // hang up after the 413 is sent.
-        Channels.write(ctx, writeF, tooLargeResponse, m.getRemoteAddress)
-        writeF.addListener(ChannelFutureListener.CLOSE)
+      // hang up after the 413 is sent.
+      Channels.write(ctx, writeF, tooLargeResponse, m.getRemoteAddress)
+      writeF.addListener(ChannelFutureListener.CLOSE)
 
-      // todo: should we enforce the payload limit on responses?
-      case _ => super.messageReceived(ctx, m)
-    }
+    // todo: should we enforce the payload limit on responses?
+    case _ => super.messageReceived(ctx, m)
+  }
 }
 
 private[codec] object PayloadSizeHandler {

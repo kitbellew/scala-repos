@@ -57,8 +57,8 @@ import org.scalatest.WordSpec
 import com.twitter.scalding.Config
 
 class ScaldingSerializationSpecs extends WordSpec {
-  implicit def tupleExtractor[T <: (Long, _)]: TimeExtractor[T] =
-    TimeExtractor(_._1)
+  implicit def tupleExtractor[T <: (Long, _)]: TimeExtractor[T] = TimeExtractor(
+    _._1)
 
   "ScaldingPlatform" should {
     "serialize Hadoop Jobs for single step jobs" in {

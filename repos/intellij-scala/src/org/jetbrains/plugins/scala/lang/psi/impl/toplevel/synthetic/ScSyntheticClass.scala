@@ -41,8 +41,8 @@ abstract class SyntheticNamedElement(val manager: PsiManager, name: String)
   override def getText = ""
   def setName(newName: String): PsiElement =
     throw new IncorrectOperationException("nonphysical element")
-  override def copy =
-    throw new IncorrectOperationException("nonphysical element")
+  override def copy = throw new IncorrectOperationException(
+    "nonphysical element")
   override def accept(v: PsiElementVisitor) {
     throw new IncorrectOperationException("should not call")
   }

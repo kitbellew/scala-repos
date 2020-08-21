@@ -168,11 +168,10 @@ class KMeansModel private[ml] (
     * thrown if `trainingSummary == None`.
     */
   @Since("2.0.0")
-  def summary: KMeansSummary =
-    trainingSummary.getOrElse {
-      throw new SparkException(
-        s"No training summary available for the ${this.getClass.getSimpleName}")
-    }
+  def summary: KMeansSummary = trainingSummary.getOrElse {
+    throw new SparkException(
+      s"No training summary available for the ${this.getClass.getSimpleName}")
+  }
 }
 
 @Since("1.6.0")

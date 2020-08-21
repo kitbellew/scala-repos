@@ -25,11 +25,10 @@ class ScalatraRenderContext(
     res: HttpServletResponse)
     extends ServletRenderContext(engine, out, req, res, kernel.servletContext) {
 
-  def flash: scala.collection.Map[String, Any] =
-    kernel match {
-      case flashMapSupport: FlashMapSupport => flashMapSupport.flash(request)
-      case _                                => Map.empty
-    }
+  def flash: scala.collection.Map[String, Any] = kernel match {
+    case flashMapSupport: FlashMapSupport => flashMapSupport.flash(request)
+    case _                                => Map.empty
+  }
 
   def session: HttpSession = kernel.session(request)
 
@@ -39,53 +38,46 @@ class ScalatraRenderContext(
 
   def multiParams: MultiParams = kernel.multiParams(request)
 
-  def format: String =
-    kernel match {
-      case af: ApiFormats => af.format(request, response)
-      case _              => ""
-    }
+  def format: String = kernel match {
+    case af: ApiFormats => af.format(request, response)
+    case _              => ""
+  }
 
   @deprecated(
     "`format` now means the same as `responseFormat`, `responseFormat` will be removed eventually",
     "2.3")
   def responseFormat: String = format
 
-  def fileMultiParams: FileMultiParams =
-    kernel match {
-      case fu: FileUploadSupport => fu.fileMultiParams(request)
-      case _                     => new FileMultiParams()
-    }
+  def fileMultiParams: FileMultiParams = kernel match {
+    case fu: FileUploadSupport => fu.fileMultiParams(request)
+    case _                     => new FileMultiParams()
+  }
 
-  def fileParams: scala.collection.Map[String, FileItem] =
-    kernel match {
-      case fu: FileUploadSupport => fu.fileParams(request)
-      case _                     => Map.empty
-    }
+  def fileParams: scala.collection.Map[String, FileItem] = kernel match {
+    case fu: FileUploadSupport => fu.fileParams(request)
+    case _                     => Map.empty
+  }
 
-  def csrfKey =
-    kernel match {
-      case csrfTokenSupport: CsrfTokenSupport => csrfTokenSupport.csrfKey
-      case _                                  => ""
-    }
+  def csrfKey = kernel match {
+    case csrfTokenSupport: CsrfTokenSupport => csrfTokenSupport.csrfKey
+    case _                                  => ""
+  }
 
-  def csrfToken =
-    kernel match {
-      case csrfTokenSupport: CsrfTokenSupport =>
-        csrfTokenSupport.csrfToken(request)
-      case _ => ""
-    }
-  def xsrfKey =
-    kernel match {
-      case csrfTokenSupport: XsrfTokenSupport => csrfTokenSupport.xsrfKey
-      case _                                  => ""
-    }
+  def csrfToken = kernel match {
+    case csrfTokenSupport: CsrfTokenSupport =>
+      csrfTokenSupport.csrfToken(request)
+    case _ => ""
+  }
+  def xsrfKey = kernel match {
+    case csrfTokenSupport: XsrfTokenSupport => csrfTokenSupport.xsrfKey
+    case _                                  => ""
+  }
 
-  def xsrfToken =
-    kernel match {
-      case csrfTokenSupport: XsrfTokenSupport =>
-        csrfTokenSupport.xsrfToken(request)
-      case _ => ""
-    }
+  def xsrfToken = kernel match {
+    case csrfTokenSupport: XsrfTokenSupport =>
+      csrfTokenSupport.xsrfToken(request)
+    case _ => ""
+  }
 
   /**
     * Calculate a URL for a reversible route and some params.

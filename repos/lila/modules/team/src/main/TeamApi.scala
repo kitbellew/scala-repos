@@ -23,35 +23,33 @@ final class TeamApi(
 
   def request(id: String) = $find.byId[Request](id)
 
-  def create(setup: TeamSetup, me: User): Option[Fu[Team]] =
-    me.canTeam option {
-      val s = setup.trim
-      val team = Team.make(
-        name = s.name,
-        location = s.location,
-        description = s.description,
-        open = s.isOpen,
-        createdBy = me)
-      $insert(team) >>
-        MemberRepo.add(team.id, me.id) >>- {
-        (cached.teamIdsCache invalidate me.id)
-        (forum ! MakeTeam(team.id, team.name))
-        (indexer ! InsertTeam(team))
-        (timeline ! Propagate(
-          TeamCreate(me.id, team.id)
-        ).toFollowersOf(me.id))
-      } inject team
-    }
+  def create(setup: TeamSetup, me: User): Option[Fu[Team]] = me.canTeam option {
+    val s = setup.trim
+    val team = Team.make(
+      name = s.name,
+      location = s.location,
+      description = s.description,
+      open = s.isOpen,
+      createdBy = me)
+    $insert(team) >>
+      MemberRepo.add(team.id, me.id) >>- {
+      (cached.teamIdsCache invalidate me.id)
+      (forum ! MakeTeam(team.id, team.name))
+      (indexer ! InsertTeam(team))
+      (timeline ! Propagate(
+        TeamCreate(me.id, team.id)
+      ).toFollowersOf(me.id))
+    } inject team
+  }
 
-  def update(team: Team, edit: TeamEdit, me: User): Funit =
-    edit.trim |> { e =>
-      team.copy(
-        location = e.location,
-        description = e.description,
-        open = e.isOpen) |> { team =>
-        $update(team) >>- (indexer ! InsertTeam(team))
-      }
+  def update(team: Team, edit: TeamEdit, me: User): Funit = edit.trim |> { e =>
+    team.copy(
+      location = e.location,
+      description = e.description,
+      open = e.isOpen) |> { team =>
+      $update(team) >>- (indexer ! InsertTeam(team))
     }
+  }
 
   def mine(me: User): Fu[List[Team]] = $find.byIds[Team](cached teamIds me.id)
 
@@ -60,22 +58,20 @@ final class TeamApi(
   def hasCreatedRecently(me: User): Fu[Boolean] =
     TeamRepo.userHasCreatedSince(me.id, creationPeriod)
 
-  def requestsWithUsers(team: Team): Fu[List[RequestWithUser]] =
-    for {
-      requests ← RequestRepo findByTeam team.id
-      users ← $find.byOrderedIds[User](requests map (_.user))
-    } yield requests zip users map { case (request, user) =>
-      RequestWithUser(request, user)
-    }
+  def requestsWithUsers(team: Team): Fu[List[RequestWithUser]] = for {
+    requests ← RequestRepo findByTeam team.id
+    users ← $find.byOrderedIds[User](requests map (_.user))
+  } yield requests zip users map { case (request, user) =>
+    RequestWithUser(request, user)
+  }
 
-  def requestsWithUsers(user: User): Fu[List[RequestWithUser]] =
-    for {
-      teamIds ← TeamRepo teamIdsByCreator user.id
-      requests ← RequestRepo findByTeams teamIds
-      users ← $find.byOrderedIds[User](requests map (_.user))
-    } yield requests zip users map { case (request, user) =>
-      RequestWithUser(request, user)
-    }
+  def requestsWithUsers(user: User): Fu[List[RequestWithUser]] = for {
+    teamIds ← TeamRepo teamIdsByCreator user.id
+    requests ← RequestRepo findByTeams teamIds
+    users ← $find.byOrderedIds[User](requests map (_.user))
+  } yield requests zip users map { case (request, user) =>
+    RequestWithUser(request, user)
+  }
 
   def join(teamId: String)(implicit ctx: UserContext): Fu[Option[Requesting]] =
     for {
@@ -89,11 +85,10 @@ final class TeamApi(
       })
     } yield result
 
-  def requestable(teamId: String, user: User): Fu[Option[Team]] =
-    for {
-      teamOption ← $find.byId[Team](teamId)
-      able ← teamOption.??(requestable(_, user))
-    } yield teamOption filter (_ => able)
+  def requestable(teamId: String, user: User): Fu[Option[Team]] = for {
+    teamOption ← $find.byId[Team](teamId)
+    able ← teamOption.??(requestable(_, user))
+  } yield teamOption filter (_ => able)
 
   def requestable(team: Team, user: User): Fu[Boolean] =
     RequestRepo.exists(team.id, user.id).map {
@@ -134,13 +129,12 @@ final class TeamApi(
       }
     } recover lila.db.recoverDuplicateKey(e => ())
 
-  def quit(teamId: String)(implicit ctx: UserContext): Fu[Option[Team]] =
-    for {
-      teamOption ← $find.byId[Team](teamId)
-      result ← ~(teamOption |@| ctx.me)({ case (team, user) =>
-        doQuit(team, user.id) inject team.some
-      })
-    } yield result
+  def quit(teamId: String)(implicit ctx: UserContext): Fu[Option[Team]] = for {
+    teamOption ← $find.byId[Team](teamId)
+    result ← ~(teamOption |@| ctx.me)({ case (team, user) =>
+      doQuit(team, user.id) inject team.some
+    })
+  } yield result
 
   def doQuit(team: Team, userId: String): Funit =
     belongsTo(team.id, userId) ?? {

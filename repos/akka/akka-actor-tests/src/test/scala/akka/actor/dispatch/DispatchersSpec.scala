@@ -110,10 +110,9 @@ class DispatchersSpec
   def ofType[T <: MessageDispatcher: ClassTag]: (MessageDispatcher) ⇒ Boolean =
     _.getClass == implicitly[ClassTag[T]].runtimeClass
 
-  def typesAndValidators: Map[String, (MessageDispatcher) ⇒ Boolean] =
-    Map(
-      "PinnedDispatcher" -> ofType[PinnedDispatcher],
-      "Dispatcher" -> ofType[Dispatcher])
+  def typesAndValidators: Map[String, (MessageDispatcher) ⇒ Boolean] = Map(
+    "PinnedDispatcher" -> ofType[PinnedDispatcher],
+    "Dispatcher" -> ofType[Dispatcher])
 
   def validTypes = typesAndValidators.keys.toList
 

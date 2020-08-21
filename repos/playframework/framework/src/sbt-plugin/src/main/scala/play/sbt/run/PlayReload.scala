@@ -128,21 +128,19 @@ object PlayReload {
               new xsbti.Problem {
                 def message = error._3
                 def category = ""
-                def position =
-                  new xsbti.Position {
-                    def line = xsbti.Maybe.just(error._2.toInt)
-                    def lineContent = ""
-                    def offset = xsbti.Maybe.nothing[java.lang.Integer]
-                    def pointer =
-                      maybePosition
-                        .map(pos =>
-                          xsbti.Maybe.just(
-                            (pos - 1).asInstanceOf[java.lang.Integer]))
-                        .getOrElse(xsbti.Maybe.nothing[java.lang.Integer])
-                    def pointerSpace = xsbti.Maybe.nothing[String]
-                    def sourceFile = xsbti.Maybe.just(file(error._1))
-                    def sourcePath = xsbti.Maybe.just(error._1)
-                  }
+                def position = new xsbti.Position {
+                  def line = xsbti.Maybe.just(error._2.toInt)
+                  def lineContent = ""
+                  def offset = xsbti.Maybe.nothing[java.lang.Integer]
+                  def pointer = maybePosition
+                    .map(pos =>
+                      xsbti.Maybe.just(
+                        (pos - 1).asInstanceOf[java.lang.Integer]))
+                    .getOrElse(xsbti.Maybe.nothing[java.lang.Integer])
+                  def pointerSpace = xsbti.Maybe.nothing[String]
+                  def sourceFile = xsbti.Maybe.just(file(error._1))
+                  def sourcePath = xsbti.Maybe.just(error._1)
+                }
                 def severity = xsbti.Severity.Error
               }
             }

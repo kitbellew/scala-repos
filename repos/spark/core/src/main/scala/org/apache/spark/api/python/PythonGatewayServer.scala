@@ -32,35 +32,34 @@ import org.apache.spark.util.Utils
   * This process is launched (via SparkSubmit) by the PySpark driver (see java_gateway.py).
   */
 private[spark] object PythonGatewayServer extends Logging {
-  def main(args: Array[String]): Unit =
-    Utils.tryOrExit {
-      // Start a GatewayServer on an ephemeral port
-      val gatewayServer: GatewayServer = new GatewayServer(null, 0)
-      gatewayServer.start()
-      val boundPort: Int = gatewayServer.getListeningPort
-      if (boundPort == -1) {
-        logError("GatewayServer failed to bind; exiting")
-        System.exit(1)
-      } else {
-        logDebug(s"Started PythonGatewayServer on port $boundPort")
-      }
-
-      // Communicate the bound port back to the caller via the caller-specified callback port
-      val callbackHost = sys.env("_PYSPARK_DRIVER_CALLBACK_HOST")
-      val callbackPort = sys.env("_PYSPARK_DRIVER_CALLBACK_PORT").toInt
-      logDebug(
-        s"Communicating GatewayServer port to Python driver at $callbackHost:$callbackPort")
-      val callbackSocket = new Socket(callbackHost, callbackPort)
-      val dos = new DataOutputStream(callbackSocket.getOutputStream)
-      dos.writeInt(boundPort)
-      dos.close()
-      callbackSocket.close()
-
-      // Exit on EOF or broken pipe to ensure that this process dies when the Python driver dies:
-      while (System.in.read() != -1) {
-        // Do nothing
-      }
-      logDebug("Exiting due to broken pipe from Python driver")
-      System.exit(0)
+  def main(args: Array[String]): Unit = Utils.tryOrExit {
+    // Start a GatewayServer on an ephemeral port
+    val gatewayServer: GatewayServer = new GatewayServer(null, 0)
+    gatewayServer.start()
+    val boundPort: Int = gatewayServer.getListeningPort
+    if (boundPort == -1) {
+      logError("GatewayServer failed to bind; exiting")
+      System.exit(1)
+    } else {
+      logDebug(s"Started PythonGatewayServer on port $boundPort")
     }
+
+    // Communicate the bound port back to the caller via the caller-specified callback port
+    val callbackHost = sys.env("_PYSPARK_DRIVER_CALLBACK_HOST")
+    val callbackPort = sys.env("_PYSPARK_DRIVER_CALLBACK_PORT").toInt
+    logDebug(
+      s"Communicating GatewayServer port to Python driver at $callbackHost:$callbackPort")
+    val callbackSocket = new Socket(callbackHost, callbackPort)
+    val dos = new DataOutputStream(callbackSocket.getOutputStream)
+    dos.writeInt(boundPort)
+    dos.close()
+    callbackSocket.close()
+
+    // Exit on EOF or broken pipe to ensure that this process dies when the Python driver dies:
+    while (System.in.read() != -1) {
+      // Do nothing
+    }
+    logDebug("Exiting due to broken pipe from Python driver")
+    System.exit(0)
+  }
 }

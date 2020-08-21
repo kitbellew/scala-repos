@@ -22,17 +22,16 @@ trait IssueCommentComponent extends TemplateComponent { self: Profile =>
     val content = column[String]("CONTENT")
     val registeredDate = column[java.util.Date]("REGISTERED_DATE")
     val updatedDate = column[java.util.Date]("UPDATED_DATE")
-    def * =
-      (
-        userName,
-        repositoryName,
-        issueId,
-        commentId,
-        action,
-        commentedUserName,
-        content,
-        registeredDate,
-        updatedDate) <> (IssueComment.tupled, IssueComment.unapply)
+    def * = (
+      userName,
+      repositoryName,
+      issueId,
+      commentId,
+      action,
+      commentedUserName,
+      content,
+      registeredDate,
+      updatedDate) <> (IssueComment.tupled, IssueComment.unapply)
 
     def byPrimaryKey(commentId: Int) = this.commentId === commentId.bind
   }
@@ -70,20 +69,19 @@ trait CommitCommentComponent extends TemplateComponent { self: Profile =>
     val registeredDate = column[java.util.Date]("REGISTERED_DATE")
     val updatedDate = column[java.util.Date]("UPDATED_DATE")
     val issueId = column[Option[Int]]("ISSUE_ID")
-    def * =
-      (
-        userName,
-        repositoryName,
-        commitId,
-        commentId,
-        commentedUserName,
-        content,
-        fileName,
-        oldLine,
-        newLine,
-        registeredDate,
-        updatedDate,
-        issueId) <> (CommitComment.tupled, CommitComment.unapply)
+    def * = (
+      userName,
+      repositoryName,
+      commitId,
+      commentId,
+      commentedUserName,
+      content,
+      fileName,
+      oldLine,
+      newLine,
+      registeredDate,
+      updatedDate,
+      issueId) <> (CommitComment.tupled, CommitComment.unapply)
 
     def byPrimaryKey(commentId: Int) = this.commentId === commentId.bind
   }

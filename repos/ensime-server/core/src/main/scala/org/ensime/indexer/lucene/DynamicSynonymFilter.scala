@@ -86,9 +86,8 @@ class DynamicSynonymFilter(input: TokenStream, engine: SynonymEngine)
   }
 
   // Lucene being stupid higher up the hierarchy
-  override def equals(other: Any): Boolean =
-    other match {
-      case that: DynamicSynonymFilter => this eq that
-      case _                          => false
-    }
+  override def equals(other: Any): Boolean = other match {
+    case that: DynamicSynonymFilter => this eq that
+    case _                          => false
+  }
 }

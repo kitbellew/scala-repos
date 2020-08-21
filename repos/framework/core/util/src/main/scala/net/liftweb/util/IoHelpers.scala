@@ -89,8 +89,8 @@ trait IoHelpers {
   /**
     * Read an entire file into an Array[Byte]
     */
-  def readWholeFile(file: File): Array[Byte] =
-    readWholeStream(new FileInputStream(file))
+  def readWholeFile(file: File): Array[Byte] = readWholeStream(
+    new FileInputStream(file))
 
   /**
     * Read all data from a stream into an Array[Byte]

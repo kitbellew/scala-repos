@@ -23,44 +23,43 @@ object Osgi {
     "osgiHeaders",
     "Headers and processing instructions for BND.")
 
-  def settings: Seq[Setting[_]] =
-    Seq(
-      bundleName := description.value,
-      bundleSymbolicName := organization.value + "." + name.value,
-      headers := {
-        val v = VersionUtil.versionProperties.value.osgiVersion
-        Seq(
-          "Bundle-Name" -> bundleName.value,
-          "Bundle-SymbolicName" -> bundleSymbolicName.value,
-          "ver" -> v,
-          "Export-Package" -> ("*;version=${ver}"),
-          "Import-Package" -> ("scala.*;version=\"${range;[==,=+);${ver}}\",*"),
-          "Bundle-Version" -> v,
-          "Bundle-RequiredExecutionEnvironment" -> "JavaSE-1.8",
-          "-eclipse" -> "false"
-        )
-      },
-      bundle <<= Def.task {
-        val res = (products in Compile in packageBin).value
-        bundleTask(
-          headers.value.toMap,
-          (products in Compile in packageBin).value,
-          (artifactPath in (Compile, packageBin)).value,
-          res,
-          streams.value)
-      },
-      packagedArtifact in (Compile, packageBin) <<= (
-        artifact in (Compile, packageBin),
-        bundle).identityMap,
-      // Also create OSGi source bundles:
-      artifact in (Compile, packageBin) ~= (_.copy(`type` = "bundle")),
-      packageOptions in (Compile, packageSrc) += Package.ManifestAttributes(
-        "Bundle-Name" -> (description.value + " Sources"),
-        "Bundle-SymbolicName" -> (bundleSymbolicName.value + ".source"),
-        "Bundle-Version" -> versionProperties.value.osgiVersion,
-        "Eclipse-SourceBundle" -> (bundleSymbolicName.value + ";version=\"" + versionProperties.value.osgiVersion + "\";roots:=\".\"")
+  def settings: Seq[Setting[_]] = Seq(
+    bundleName := description.value,
+    bundleSymbolicName := organization.value + "." + name.value,
+    headers := {
+      val v = VersionUtil.versionProperties.value.osgiVersion
+      Seq(
+        "Bundle-Name" -> bundleName.value,
+        "Bundle-SymbolicName" -> bundleSymbolicName.value,
+        "ver" -> v,
+        "Export-Package" -> ("*;version=${ver}"),
+        "Import-Package" -> ("scala.*;version=\"${range;[==,=+);${ver}}\",*"),
+        "Bundle-Version" -> v,
+        "Bundle-RequiredExecutionEnvironment" -> "JavaSE-1.8",
+        "-eclipse" -> "false"
       )
+    },
+    bundle <<= Def.task {
+      val res = (products in Compile in packageBin).value
+      bundleTask(
+        headers.value.toMap,
+        (products in Compile in packageBin).value,
+        (artifactPath in (Compile, packageBin)).value,
+        res,
+        streams.value)
+    },
+    packagedArtifact in (Compile, packageBin) <<= (
+      artifact in (Compile, packageBin),
+      bundle).identityMap,
+    // Also create OSGi source bundles:
+    artifact in (Compile, packageBin) ~= (_.copy(`type` = "bundle")),
+    packageOptions in (Compile, packageSrc) += Package.ManifestAttributes(
+      "Bundle-Name" -> (description.value + " Sources"),
+      "Bundle-SymbolicName" -> (bundleSymbolicName.value + ".source"),
+      "Bundle-Version" -> versionProperties.value.osgiVersion,
+      "Eclipse-SourceBundle" -> (bundleSymbolicName.value + ";version=\"" + versionProperties.value.osgiVersion + "\";roots:=\".\"")
     )
+  )
 
   def bundleTask(
       headers: Map[String, String],

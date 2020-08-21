@@ -31,8 +31,8 @@ class EncoderSpec extends WordSpec with CodecSpecSupport {
     }
   }
 
-  def dummyCompress(s: String): String =
-    dummyCompress(ByteString(s, "UTF8")).utf8String
+  def dummyCompress(s: String): String = dummyCompress(
+    ByteString(s, "UTF8")).utf8String
   def dummyCompress(bytes: ByteString): ByteString =
     DummyCompressor.compressAndFinish(bytes)
 

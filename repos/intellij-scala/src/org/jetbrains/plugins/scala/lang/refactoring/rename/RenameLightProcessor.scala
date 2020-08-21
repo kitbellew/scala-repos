@@ -65,15 +65,14 @@ class RenameLightProcessor extends RenamePsiElementProcessor {
     }
   }
 
-  private def originalElement(element: PsiElement) =
-    element match {
-      case f: FakePsiMethod                   => null
-      case f: ScFunctionWrapper               => f.function
-      case d: PsiTypedDefinitionWrapper       => d.typedDefinition
-      case d: StaticPsiTypedDefinitionWrapper => d.typedDefinition
-      case p: StaticPsiMethodWrapper          => p.method
-      case _                                  => element
-    }
+  private def originalElement(element: PsiElement) = element match {
+    case f: FakePsiMethod                   => null
+    case f: ScFunctionWrapper               => f.function
+    case d: PsiTypedDefinitionWrapper       => d.typedDefinition
+    case d: StaticPsiTypedDefinitionWrapper => d.typedDefinition
+    case p: StaticPsiMethodWrapper          => p.method
+    case _                                  => element
+  }
 
   override def renameElement(
       element: PsiElement,

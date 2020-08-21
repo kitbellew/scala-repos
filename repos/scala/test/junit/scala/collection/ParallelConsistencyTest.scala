@@ -17,8 +17,8 @@ class ParallelConsistencyTest {
       // This method is surely sequential & safe -- want all access to go through here
       def seq = theSeq
 
-      def notSeq =
-        throw new Exception("Access to parallel collection not via .seq")
+      def notSeq = throw new Exception(
+        "Access to parallel collection not via .seq")
 
       // These methods could possibly be used dangerously explicitly or internally
       // (apply could also be used safely; if it is, do test with mustCallSeq)

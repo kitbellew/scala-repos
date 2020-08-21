@@ -66,12 +66,11 @@ object DebuggerTestUtil {
 
   def discoverJre(paths: Seq[String], versionMajor: String): Option[String] = {
     import java.io._
-    def isJDK(f: File) =
-      f.listFiles().exists { b =>
-        b.getName == "bin" && b
-          .listFiles()
-          .exists(x => x.getName == "javac.exe" || x.getName == "javac")
-      }
+    def isJDK(f: File) = f.listFiles().exists { b =>
+      b.getName == "bin" && b
+        .listFiles()
+        .exists(x => x.getName == "javac.exe" || x.getName == "javac")
+    }
     def inJvm(path: String, suffix: String) = {
       val postfix =
         if (path.startsWith("/Library")) "/Contents/Home"

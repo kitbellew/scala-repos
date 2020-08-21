@@ -496,9 +496,8 @@ class IntStats(r: Vec[Int]) extends VecStats[Int] {
   def prod: Int = r.filterFoldLeft(si.notMissing)(1)(_ * _)
   def countif(test: Int => Boolean): Int =
     r.filterFoldLeft(t => si.notMissing(t) && test(t))(0)((a, b) => a + 1)
-  def logsum: Double =
-    r.filterFoldLeft(si.notMissing)(0d)((x, y) =>
-      x + math.log(y.asInstanceOf[Double]))
+  def logsum: Double = r.filterFoldLeft(si.notMissing)(0d)((x, y) =>
+    x + math.log(y.asInstanceOf[Double]))
   def mean: Double = sum.asInstanceOf[Double] / count
   def median: Double = _median(r)
   def geomean: Double = math.exp(logsum / count)

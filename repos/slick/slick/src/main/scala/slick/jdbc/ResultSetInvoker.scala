@@ -35,11 +35,10 @@ abstract class ResultSetInvoker[+R] extends Invoker[R] { self =>
 
 object ResultSetInvoker {
   def apply[R](f: JdbcBackend#Session => ResultSet)(implicit
-      conv: PositionedResult => R): Invoker[R] =
-    new ResultSetInvoker[R] {
-      def createResultSet(session: JdbcBackend#Session) = f(session)
-      def extractValue(pr: PositionedResult) = conv(pr)
-    }
+      conv: PositionedResult => R): Invoker[R] = new ResultSetInvoker[R] {
+    def createResultSet(session: JdbcBackend#Session) = f(session)
+    def extractValue(pr: PositionedResult) = conv(pr)
+  }
 }
 
 object ResultSetAction {

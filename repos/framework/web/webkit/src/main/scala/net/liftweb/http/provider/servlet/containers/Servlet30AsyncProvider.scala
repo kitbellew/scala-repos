@@ -87,9 +87,8 @@ class Servlet30AsyncProvider(req: HTTPRequest)
 
   private lazy val servletReq = (req.asInstanceOf[HTTPRequestServlet]).req
 
-  def suspendResumeSupport_? : Boolean =
-    hasContinuations_? &&
-      isSupported.invoke(servletReq).asInstanceOf[Boolean]
+  def suspendResumeSupport_? : Boolean = hasContinuations_? &&
+    isSupported.invoke(servletReq).asInstanceOf[Boolean]
 
   def resumeInfo: Option[(Req, LiftResponse)] = None
 

@@ -15,24 +15,23 @@ object Release {
     "branch-version",
     "The version to use if Play is on a branch.")
 
-  def settings: Seq[Setting[_]] =
-    Seq(
-      // Disable cross building because we're using sbt-doge cross building
-      releaseCrossBuild := false,
-      releaseProcess := Seq[ReleaseStep](
-        checkSnapshotDependencies,
-        inquireVersions,
-        setReleaseVersion,
-        commitReleaseVersion,
-        tagRelease,
-        releaseStepCommandAndRemaining("+publishSigned"),
-        releaseStepTask(bintrayRelease in thisProjectRef.value),
-        releaseStepCommand("sonatypeRelease"),
-        setNextVersion,
-        commitNextVersion,
-        pushChanges
-      )
+  def settings: Seq[Setting[_]] = Seq(
+    // Disable cross building because we're using sbt-doge cross building
+    releaseCrossBuild := false,
+    releaseProcess := Seq[ReleaseStep](
+      checkSnapshotDependencies,
+      inquireVersions,
+      setReleaseVersion,
+      commitReleaseVersion,
+      tagRelease,
+      releaseStepCommandAndRemaining("+publishSigned"),
+      releaseStepTask(bintrayRelease in thisProjectRef.value),
+      releaseStepCommand("sonatypeRelease"),
+      setNextVersion,
+      commitNextVersion,
+      pushChanges
     )
+  )
 
   /**
     * sbt release's releaseStepCommand does not execute remaining commands, which sbt-doge relies on

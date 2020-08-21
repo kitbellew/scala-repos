@@ -100,8 +100,8 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
     * Serializes the given AnyRef/java.lang.Object according to the Serialization configuration
     * to either an Array of Bytes or an Exception if one was thrown.
     */
-  def serialize(o: AnyRef): Try[Array[Byte]] =
-    Try(findSerializerFor(o).toBinary(o))
+  def serialize(o: AnyRef): Try[Array[Byte]] = Try(
+    findSerializerFor(o).toBinary(o))
 
   /**
     * Deserializes the given array of bytes using the specified serializer id,

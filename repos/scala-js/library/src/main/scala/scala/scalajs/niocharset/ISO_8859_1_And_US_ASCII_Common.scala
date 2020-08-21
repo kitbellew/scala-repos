@@ -25,12 +25,10 @@ private[niocharset] abstract class ISO_8859_1_And_US_ASCII_Common protected ( //
     private val maxValue: Int)
     extends Charset(name, aliases) {
 
-  def contains(that: Charset): Boolean =
-    that match {
-      case that: ISO_8859_1_And_US_ASCII_Common =>
-        this.maxValue >= that.maxValue
-      case _ => false
-    }
+  def contains(that: Charset): Boolean = that match {
+    case that: ISO_8859_1_And_US_ASCII_Common => this.maxValue >= that.maxValue
+    case _                                    => false
+  }
 
   def newDecoder(): CharsetDecoder = new Decoder
   def newEncoder(): CharsetEncoder = new Encoder

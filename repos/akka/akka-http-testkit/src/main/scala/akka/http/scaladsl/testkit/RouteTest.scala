@@ -65,8 +65,8 @@ trait RouteTest
     else
       sys.error("This value is only available inside of a `check` construct!")
 
-  def check[T](body: ⇒ T): RouteTestResult ⇒ T =
-    result ⇒ dynRR.withValue(result.awaitResult)(body)
+  def check[T](body: ⇒ T): RouteTestResult ⇒ T = result ⇒
+    dynRR.withValue(result.awaitResult)(body)
 
   private def responseSafe =
     if (dynRR.value ne null) dynRR.value.response else "<not available anymore>"
@@ -77,8 +77,8 @@ trait RouteTest
   def chunks: immutable.Seq[HttpEntity.ChunkStreamPart] = result.chunks
   def entityAs[T: FromEntityUnmarshaller: ClassTag](implicit
       timeout: Duration = 1.second): T = {
-    def msg(e: Throwable) =
-      s"Could not unmarshal entity to type '${implicitly[ClassTag[T]]}' for `entityAs` assertion: $e\n\nResponse was: $responseSafe"
+    def msg(e: Throwable) = s"Could not unmarshal entity to type '${implicitly[
+      ClassTag[T]]}' for `entityAs` assertion: $e\n\nResponse was: $responseSafe"
     Await.result(
       Unmarshal(responseEntity).to[T].fast.recover[T] { case error ⇒
         failTest(msg(error))
@@ -106,16 +106,14 @@ trait RouteTest
     response.headers.find(_.is(name.toLowerCase))
   def status: StatusCode = response.status
 
-  def closingExtension: String =
-    chunks.lastOption match {
-      case Some(HttpEntity.LastChunk(extension, _)) ⇒ extension
-      case _ ⇒ ""
-    }
-  def trailer: immutable.Seq[HttpHeader] =
-    chunks.lastOption match {
-      case Some(HttpEntity.LastChunk(_, trailer)) ⇒ trailer
-      case _ ⇒ Nil
-    }
+  def closingExtension: String = chunks.lastOption match {
+    case Some(HttpEntity.LastChunk(extension, _)) ⇒ extension
+    case _ ⇒ ""
+  }
+  def trailer: immutable.Seq[HttpHeader] = chunks.lastOption match {
+    case Some(HttpEntity.LastChunk(_, trailer)) ⇒ trailer
+    case _ ⇒ Nil
+  }
 
   def rejections: immutable.Seq[Rejection] = result.rejections
   def rejection: Rejection = {

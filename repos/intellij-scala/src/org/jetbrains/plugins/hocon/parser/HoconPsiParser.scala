@@ -391,11 +391,9 @@ class HoconPsiParser extends PsiParser {
 
       def tryParseNull =
         tryParse(passKeyword("null") && matches(endingMatcher), Null)
-      def tryParseBoolean =
-        tryParse(
-          (passKeyword("true") || passKeyword("false")) && matches(
-            endingMatcher),
-          Boolean)
+      def tryParseBoolean = tryParse(
+        (passKeyword("true") || passKeyword("false")) && matches(endingMatcher),
+        Boolean)
       def tryParseNumber =
         tryParse(passNumber() && matches(endingMatcher), Number)
 
@@ -438,44 +436,43 @@ class HoconPsiParser extends PsiParser {
 
     }
 
-    def passNumber(): Boolean =
-      matchesUnquoted(IntegerPattern) && {
-        val textBuilder = new StringBuilder
-        // we need to detect whitespaces between tokens forming a number to behave as if number is a single token
-        val integerRawTokenIdx = builder.rawTokenIndex
+    def passNumber(): Boolean = matchesUnquoted(IntegerPattern) && {
+      val textBuilder = new StringBuilder
+      // we need to detect whitespaces between tokens forming a number to behave as if number is a single token
+      val integerRawTokenIdx = builder.rawTokenIndex
+      textBuilder ++= builder.getTokenText
+      advanceLexer()
+
+      val gotPeriod = matches(Period)
+      val noPeriodWhitespace =
+        gotPeriod && builder.rawTokenIndex == integerRawTokenIdx + 1
+
+      if (gotPeriod) {
         textBuilder ++= builder.getTokenText
         advanceLexer()
-
-        val gotPeriod = matches(Period)
-        val noPeriodWhitespace =
-          gotPeriod && builder.rawTokenIndex == integerRawTokenIdx + 1
-
-        if (gotPeriod) {
-          textBuilder ++= builder.getTokenText
-          advanceLexer()
-        }
-
-        val gotDecimalPart = gotPeriod && matchesUnquoted(DecimalPartPattern)
-        val noDecimalPartWhitespace =
-          gotDecimalPart && builder.rawTokenIndex == integerRawTokenIdx + 2
-
-        if (gotDecimalPart) {
-          textBuilder ++= builder.getTokenText
-          advanceLexer()
-        }
-
-        lazy val isValid = {
-          val text = textBuilder.result()
-          try {
-            if (gotPeriod) text.toDouble else text.toLong
-            true
-          } catch {
-            case e: NumberFormatException => false
-          }
-        }
-
-        (!gotPeriod || noPeriodWhitespace) && (!gotDecimalPart || noDecimalPartWhitespace) && isValid
       }
+
+      val gotDecimalPart = gotPeriod && matchesUnquoted(DecimalPartPattern)
+      val noDecimalPartWhitespace =
+        gotDecimalPart && builder.rawTokenIndex == integerRawTokenIdx + 2
+
+      if (gotDecimalPart) {
+        textBuilder ++= builder.getTokenText
+        advanceLexer()
+      }
+
+      lazy val isValid = {
+        val text = textBuilder.result()
+        try {
+          if (gotPeriod) text.toDouble else text.toLong
+          true
+        } catch {
+          case e: NumberFormatException => false
+        }
+      }
+
+      (!gotPeriod || noPeriodWhitespace) && (!gotDecimalPart || noDecimalPartWhitespace) && isValid
+    }
 
     def parseArray(): Unit = {
       val marker = builder.mark()

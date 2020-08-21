@@ -6,8 +6,8 @@ import scala.reflect.ClassTag
 
 final class SlickLogger(val slf4jLogger: Slf4jLogger) {
   @inline
-  def debug(msg: => String, n: => Dumpable): Unit =
-    debug(msg + "\n" + SlickLogger.treePrinter.get(n))
+  def debug(msg: => String, n: => Dumpable): Unit = debug(
+    msg + "\n" + SlickLogger.treePrinter.get(n))
 
   @inline
   def debug(msg: => String, n: => Dumpable, mark: (Dumpable => Boolean)): Unit =
@@ -37,8 +37,8 @@ final class SlickLogger(val slf4jLogger: Slf4jLogger) {
   }
 
   @inline
-  def warn(msg: => String, n: => Dumpable): Unit =
-    warn(msg + "\n" + SlickLogger.treePrinter.get(n))
+  def warn(msg: => String, n: => Dumpable): Unit = warn(
+    msg + "\n" + SlickLogger.treePrinter.get(n))
 
   @inline
   def info(msg: => String) {

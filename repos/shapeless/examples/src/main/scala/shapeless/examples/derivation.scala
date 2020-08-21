@@ -43,16 +43,14 @@ object TypeClassesDemo {
   case class RefMutual(m: Option[Mutual]) extends ADT
   case class Show2Dep(i: Int) extends ADT
 
-  implicit def showExtCtor: Show[ExtCtor] =
-    new Show[ExtCtor] {
-      def show(t: ExtCtor) = s"ExtCtor!(${t.b})"
-    }
+  implicit def showExtCtor: Show[ExtCtor] = new Show[ExtCtor] {
+    def show(t: ExtCtor) = s"ExtCtor!(${t.b})"
+  }
 
-  implicit def showShow2Dep: Show[Show2Dep] =
-    new Show[Show2Dep] {
-      def show(t: Show2Dep) =
-        "Show2Dep: >" + implicitly[Show2[Show2Dep]].show2(t) + "<"
-    }
+  implicit def showShow2Dep: Show[Show2Dep] = new Show[Show2Dep] {
+    def show(t: Show2Dep) =
+      "Show2Dep: >" + implicitly[Show2[Show2Dep]].show2(t) + "<"
+  }
 
   sealed trait ADT2
   case class Ctor2a(s: String) extends ADT2

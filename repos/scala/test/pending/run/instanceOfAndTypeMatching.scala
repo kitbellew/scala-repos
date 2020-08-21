@@ -47,11 +47,10 @@ class Outer {
     def passInner2(other: Outer.this.Inner) = () // same as above
     def passInnerSharp(other: Outer#Inner) = () // pass any Inner
 
-    def compareSimpleWithTypeMatch(other: Any) =
-      other match {
-        case _: Inner => true
-        case _        => false
-      }
+    def compareSimpleWithTypeMatch(other: Any) = other match {
+      case _: Inner => true
+      case _        => false
+    }
     def compareSimpleWithInstanceOf(other: Any) = other.isInstanceOf[Inner]
 
     def compareSharpWithTypeMatch(other: Any) = {
@@ -62,11 +61,10 @@ class Outer {
     }
     def compareSharpWithInstanceOf(other: Any) = other.isInstanceOf[Outer#Inner]
 
-    def comparePathWithTypeMatch(other: Any) =
-      other match {
-        case _: Outer.this.Inner => true
-        case _                   => false
-      }
+    def comparePathWithTypeMatch(other: Any) = other match {
+      case _: Outer.this.Inner => true
+      case _                   => false
+    }
     def comparePathWithInstanceOf(other: Any) =
       other.isInstanceOf[Outer.this.Inner]
   }
@@ -85,11 +83,10 @@ class Outer {
       // is there any way to refer to Outer#MethodInner? Not that there should be.
 
       def compareWithInstanceOf(other: Any) = other.isInstanceOf[MethodInner]
-      def compareWithTypeMatch(other: Any) =
-        other match {
-          case _: MethodInner => true
-          case _              => false
-        }
+      def compareWithTypeMatch(other: Any) = other match {
+        case _: MethodInner => true
+        case _              => false
+      }
     }
 
     new MethodInner

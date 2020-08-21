@@ -144,12 +144,12 @@ object MersenneTwister64
         new MersenneTwister64(mt, mti)
     }
 
-  def fromArray(arr: Array[Long]): MersenneTwister64 =
-    fromSeed((Utils.seedFromArray(N, arr), N + 1))
+  def fromArray(arr: Array[Long]): MersenneTwister64 = fromSeed(
+    (Utils.seedFromArray(N, arr), N + 1))
 
-  def fromBytes(bytes: Array[Byte]): MersenneTwister64 =
-    fromArray(Pack.longsFromBytes(bytes, bytes.length / 8))
+  def fromBytes(bytes: Array[Byte]): MersenneTwister64 = fromArray(
+    Pack.longsFromBytes(bytes, bytes.length / 8))
 
-  def fromTime(time: Long = System.nanoTime): MersenneTwister64 =
-    fromSeed((Utils.seedFromLong(N, Utils.longFromTime(time)), N + 1))
+  def fromTime(time: Long = System.nanoTime): MersenneTwister64 = fromSeed(
+    (Utils.seedFromLong(N, Utils.longFromTime(time)), N + 1))
 }

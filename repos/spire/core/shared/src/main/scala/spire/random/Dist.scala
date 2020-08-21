@@ -99,13 +99,12 @@ trait Dist[@sp A] extends Any { self =>
   def iterate(n: Int, f: A => Dist[A]): Dist[A] =
     if (n == 0) this else flatMap(f).iterate(n - 1, f)
 
-  def iterateUntil(pred: A => Boolean, f: A => Dist[A]): Dist[A] =
-    new Dist[A] {
-      @tailrec def loop(gen: Generator, a: A): A =
-        if (pred(a)) a else loop(gen, f(a)(gen))
+  def iterateUntil(pred: A => Boolean, f: A => Dist[A]): Dist[A] = new Dist[A] {
+    @tailrec def loop(gen: Generator, a: A): A =
+      if (pred(a)) a else loop(gen, f(a)(gen))
 
-      def apply(gen: Generator): A = loop(gen, self(gen))
-    }
+    def apply(gen: Generator): A = loop(gen, self(gen))
+  }
 
   final def zip[B](that: Dist[B]): Dist[(A, B)] =
     new DistFromGen(g => (this(g), that(g)))
@@ -194,20 +193,20 @@ trait DistRing[A] extends DistRng[A] with Ring[Dist[A]] {
 
 trait DistEuclideanRing[A] extends EuclideanRing[Dist[A]] with DistRing[A] {
   def alg: EuclideanRing[A]
-  def quot(x: Dist[A], y: Dist[A]): Dist[A] =
-    new DistFromGen(g => alg.quot(x(g), y(g)))
-  def mod(x: Dist[A], y: Dist[A]): Dist[A] =
-    new DistFromGen(g => alg.mod(x(g), y(g)))
-  def gcd(x: Dist[A], y: Dist[A]): Dist[A] =
-    new DistFromGen(g => alg.gcd(x(g), y(g)))
+  def quot(x: Dist[A], y: Dist[A]): Dist[A] = new DistFromGen(g =>
+    alg.quot(x(g), y(g)))
+  def mod(x: Dist[A], y: Dist[A]): Dist[A] = new DistFromGen(g =>
+    alg.mod(x(g), y(g)))
+  def gcd(x: Dist[A], y: Dist[A]): Dist[A] = new DistFromGen(g =>
+    alg.gcd(x(g), y(g)))
 }
 
 trait DistField[A] extends Field[Dist[A]] with DistEuclideanRing[A] {
   def alg: Field[A]
-  def div(x: Dist[A], y: Dist[A]): Dist[A] =
-    new DistFromGen(g => alg.div(x(g), y(g)))
-  override def reciprocal(x: Dist[A]): Dist[A] =
-    new DistFromGen(g => alg.reciprocal(x(g)))
+  def div(x: Dist[A], y: Dist[A]): Dist[A] = new DistFromGen(g =>
+    alg.div(x(g), y(g)))
+  override def reciprocal(x: Dist[A]): Dist[A] = new DistFromGen(g =>
+    alg.reciprocal(x(g)))
 }
 
 trait DistModule[V, K] extends Module[Dist[V], Dist[K]] {
@@ -217,12 +216,12 @@ trait DistModule[V, K] extends Module[Dist[V], Dist[K]] {
   def zero: Dist[V] = Dist.constant(alg.zero)
   def plus(x: Dist[V], y: Dist[V]): Dist[V] = new DistFromGen(g => x(g) + y(g))
   def negate(x: Dist[V]): Dist[V] = new DistFromGen(g => -x(g))
-  override def minus(x: Dist[V], y: Dist[V]): Dist[V] =
-    new DistFromGen(g => x(g) - y(g))
-  def timesl(k: Dist[K], v: Dist[V]): Dist[V] =
-    new DistFromGen(g => k(g) *: v(g))
-  def timesr(k: Dist[K], v: Dist[V]): Dist[V] =
-    new DistFromGen(g => v(g) :* k(g))
+  override def minus(x: Dist[V], y: Dist[V]): Dist[V] = new DistFromGen(g =>
+    x(g) - y(g))
+  def timesl(k: Dist[K], v: Dist[V]): Dist[V] = new DistFromGen(g =>
+    k(g) *: v(g))
+  def timesr(k: Dist[K], v: Dist[V]): Dist[V] = new DistFromGen(g =>
+    v(g) :* k(g))
 }
 
 trait DistVectorSpace[V, K]
@@ -232,8 +231,8 @@ trait DistVectorSpace[V, K]
 
   override def scalar: Field[Dist[K]] = Dist.field(alg.scalar)
 
-  override def divr(v: Dist[V], k: Dist[K]): Dist[V] =
-    new DistFromGen(g => v(g) :/ k(g))
+  override def divr(v: Dist[V], k: Dist[K]): Dist[V] = new DistFromGen(g =>
+    v(g) :/ k(g))
 }
 
 trait DistNormedVectorSpace[V, K]
@@ -352,35 +351,31 @@ object Dist extends DistInstances8 {
     new DistFromGen(_.nextInt(d) + from)
   }
 
-  def natural(maxDigits: Int): Dist[Natural] =
-    new Dist[Natural] {
-      @tailrec
-      private def loop(g: Generator, i: Int, size: Int, n: Natural): Natural =
-        if (i < size) loop(g, i + 1, size, Natural.Digit(g.next[UInt], n))
-        else n
+  def natural(maxDigits: Int): Dist[Natural] = new Dist[Natural] {
+    @tailrec
+    private def loop(g: Generator, i: Int, size: Int, n: Natural): Natural =
+      if (i < size) loop(g, i + 1, size, Natural.Digit(g.next[UInt], n)) else n
 
-      def apply(gen: Generator): Natural =
-        loop(gen, 1, gen.nextInt(maxDigits) + 1, Natural.End(gen.next[UInt]))
-    }
+    def apply(gen: Generator): Natural =
+      loop(gen, 1, gen.nextInt(maxDigits) + 1, Natural.End(gen.next[UInt]))
+  }
 
-  def safelong(maxBytes: Int): Dist[SafeLong] =
-    if (maxBytes <= 0) {
-      throw new IllegalArgumentException(
-        "need positive maxBytes, got %s" format maxBytes)
-    } else if (maxBytes < 8) {
-      val n = (8 - maxBytes) * 8
-      new DistFromGen(g => SafeLong(g.nextLong >>> n))
-    } else if (maxBytes == 8) {
-      new DistFromGen(g => SafeLong(g.nextLong))
-    } else {
-      bigint(maxBytes).map(SafeLong(_))
-    }
+  def safelong(maxBytes: Int): Dist[SafeLong] = if (maxBytes <= 0) {
+    throw new IllegalArgumentException(
+      "need positive maxBytes, got %s" format maxBytes)
+  } else if (maxBytes < 8) {
+    val n = (8 - maxBytes) * 8
+    new DistFromGen(g => SafeLong(g.nextLong >>> n))
+  } else if (maxBytes == 8) {
+    new DistFromGen(g => SafeLong(g.nextLong))
+  } else {
+    bigint(maxBytes).map(SafeLong(_))
+  }
 
-  def bigint(maxBytes: Int): Dist[BigInt] =
-    new Dist[BigInt] {
-      def apply(gen: Generator): BigInt =
-        BigInt(gen.generateBytes(gen.nextInt(maxBytes) + 1))
-    }
+  def bigint(maxBytes: Int): Dist[BigInt] = new Dist[BigInt] {
+    def apply(gen: Generator): BigInt = BigInt(
+      gen.generateBytes(gen.nextInt(maxBytes) + 1))
+  }
 
   def bigdecimal(maxBytes: Int, maxScale: Int): Dist[BigDecimal] =
     new Dist[BigDecimal] {
@@ -428,25 +423,23 @@ object Dist extends DistInstances8 {
       maxInputs: Int): Dist[Map[A, B]] =
     list[(A, B)](minInputs, maxInputs).map(_.toMap)
 
-  def oneOf[A: ClassTag](as: A*): Dist[A] =
-    new Dist[A] {
-      private val arr = as.toArray
-      def apply(gen: Generator): A = arr(gen.nextInt(arr.length))
-    }
+  def oneOf[A: ClassTag](as: A*): Dist[A] = new Dist[A] {
+    private val arr = as.toArray
+    def apply(gen: Generator): A = arr(gen.nextInt(arr.length))
+  }
 
-  def cycleOf[A: ClassTag](as: A*): Dist[A] =
-    new Dist[A] {
-      private val arr = as.toArray
-      private var i = 0
-      def apply(gen: Generator): A = {
-        val a = arr(i)
-        i = (i + 1) % arr.length
-        a
-      }
+  def cycleOf[A: ClassTag](as: A*): Dist[A] = new Dist[A] {
+    private val arr = as.toArray
+    private var i = 0
+    def apply(gen: Generator): A = {
+      val a = arr(i)
+      i = (i + 1) % arr.length
+      a
     }
+  }
 
-  def gaussianFromDouble[A: Field]: DistFromGen[A] =
-    new DistFromGen[A](g => Field[A].fromDouble(g.nextGaussian))
+  def gaussianFromDouble[A: Field]: DistFromGen[A] = new DistFromGen[A](g =>
+    Field[A].fromDouble(g.nextGaussian))
 }
 
 trait DistInstances0 {

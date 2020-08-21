@@ -37,8 +37,9 @@ object Credentials {
     private[this] val value = ".+".r
 
     def auth = key ~ ":" ~ value ^^ { case k ~ ":" ~ v => (k, v) }
-    def content: Parser[Map[String, String]] =
-      rep(auth) ^^ { auths => Map(auths: _*) }
+    def content: Parser[Map[String, String]] = rep(auth) ^^ { auths =>
+      Map(auths: _*)
+    }
 
     def apply(in: String): Map[String, String] = {
       parseAll(content, in) match {
@@ -49,8 +50,8 @@ object Credentials {
     }
   }
 
-  def apply(file: File): Map[String, String] =
-    parser(Source.fromFile(file).mkString)
+  def apply(file: File): Map[String, String] = parser(
+    Source.fromFile(file).mkString)
 
   def apply(data: String): Map[String, String] = parser(data)
 
@@ -66,8 +67,8 @@ object Credentials {
   * Java interface to Credentials.
   */
 class Credentials {
-  def read(data: String): java.util.Map[String, String] =
-    Credentials(data).asJava
+  def read(data: String): java.util.Map[String, String] = Credentials(
+    data).asJava
   def read(file: File): java.util.Map[String, String] = Credentials(file).asJava
   def byName(name: String): java.util.Map[String, String] =
     Credentials.byName(name).asJava

@@ -597,29 +597,27 @@ object Req {
       Map())
   }
 
-  private def fixURI(uri: String) =
-    uri indexOf ";jsessionid" match {
-      case -1    => uri
-      case x @ _ => uri.substring(0, x)
-    }
+  private def fixURI(uri: String) = uri indexOf ";jsessionid" match {
+    case -1    => uri
+    case x @ _ => uri.substring(0, x)
+  }
 
   /**
     * Create a nil request... useful for testing
     */
-  def nil =
-    new Req(
-      NilPath,
-      "",
-      GetRequest,
-      Empty,
-      null,
-      System.nanoTime,
-      System.nanoTime,
-      false,
-      () => ParamCalcInfo(Nil, Map.empty, Nil, Empty),
-      Map()) {
-      override lazy val standardRequest_? = false
-    }
+  def nil = new Req(
+    NilPath,
+    "",
+    GetRequest,
+    Empty,
+    null,
+    System.nanoTime,
+    System.nanoTime,
+    false,
+    () => ParamCalcInfo(Nil, Map.empty, Nil, Empty),
+    Map()) {
+    override lazy val standardRequest_? = false
+  }
 
   def parsePath(in: String): ParsePath = {
     val p1 = fixURI((in match {
@@ -754,8 +752,8 @@ object Req {
       S.legacyIeCompatibilityMode
     )
 
-  def unapply(in: Req): Option[(List[String], String, RequestType)] =
-    Some((in.path.partPath, in.path.suffix, in.requestType))
+  def unapply(in: Req): Option[(List[String], String, RequestType)] = Some(
+    (in.path.partPath, in.path.suffix, in.requestType))
 }
 
 /**
@@ -905,9 +903,8 @@ class Req(
     private[http] val addlParams: Map[String, String])
     extends HasParams
     with UserAgentCalculator {
-  override def toString =
-    "Req(" + paramNames + ", " + params + ", " + path +
-      ", " + contextPath + ", " + requestType + ", " + contentType + ")"
+  override def toString = "Req(" + paramNames + ", " + params + ", " + path +
+    ", " + contextPath + ", " + requestType + ", " + contentType + ")"
 
   def this(
       _path: ParsePath,
@@ -918,18 +915,17 @@ class Req(
       _nanoStart: Long,
       _nanoEnd: Long,
       _paramCalculator: () => ParamCalcInfo,
-      _addlParams: Map[String, String]) =
-    this(
-      _path,
-      _contextPath,
-      _requestType,
-      _contentType,
-      _request,
-      _nanoStart,
-      _nanoEnd,
-      false,
-      _paramCalculator,
-      _addlParams)
+      _addlParams: Map[String, String]) = this(
+    _path,
+    _contextPath,
+    _requestType,
+    _contentType,
+    _request,
+    _nanoStart,
+    _nanoEnd,
+    false,
+    _paramCalculator,
+    _addlParams)
 
   /**
     * Build a new Req, the same except with a different path.
@@ -1003,26 +999,24 @@ class Req(
   /**
     * Returns true if the content-type is text/xml or application/xml
     */
-  def xml_? =
-    contentType != null && contentType.dmap(false) {
-      _.toLowerCase match {
-        case x if x.startsWith("text/xml")        => true
-        case x if x.startsWith("application/xml") => true
-        case _                                    => false
-      }
+  def xml_? = contentType != null && contentType.dmap(false) {
+    _.toLowerCase match {
+      case x if x.startsWith("text/xml")        => true
+      case x if x.startsWith("application/xml") => true
+      case _                                    => false
     }
+  }
 
   /**
     * Returns true if the content-type is text/json or application/json
     */
-  def json_? =
-    contentType != null && contentType.dmap(false) {
-      _.toLowerCase match {
-        case x if x.startsWith("text/json")        => true
-        case x if x.startsWith("application/json") => true
-        case _                                     => false
-      }
+  def json_? = contentType != null && contentType.dmap(false) {
+    _.toLowerCase match {
+      case x if x.startsWith("text/json")        => true
+      case x if x.startsWith("application/json") => true
+      case _                                     => false
     }
+  }
 
   /**
     * Returns true if the X-Requested-With header is set to XMLHttpRequest.
@@ -1095,11 +1089,10 @@ class Req(
   def headers(name: String): List[String] =
     headers.filter(_._1.equalsIgnoreCase(name)).map(_._2)
 
-  def header(name: String): Box[String] =
-    headers(name) match {
-      case x :: _ => Full(x)
-      case _      => Empty
-    }
+  def header(name: String): Box[String] = headers(name) match {
+    case x :: _ => Full(x)
+    case _      => Empty
+  }
 
   /**
     * Get the name of the params
@@ -1188,10 +1181,9 @@ class Req(
       def r = """; *charset=(.*)""".r
       def r2 = """[^=]*$""".r
 
-      def charSet: String =
-        contentType
-          .flatMap(ct => r.findFirstIn(ct).flatMap(r2.findFirstIn))
-          .getOrElse("UTF-8")
+      def charSet: String = contentType
+        .flatMap(ct => r.findFirstIn(ct).flatMap(r2.findFirstIn))
+        .getOrElse("UTF-8")
 
       body.map(b =>
         JsonParser.parse(
@@ -1281,11 +1273,10 @@ class Req(
   lazy val buildMenu: CompleteMenu = location.map(_.buildMenu) openOr
     CompleteMenu(Nil)
 
-  private def initIfUnitted[T](f: T): T =
-    S.session match {
-      case Full(_) => f
-      case _       => S.statelessInit(this)(f)
-    }
+  private def initIfUnitted[T](f: T): T = S.session match {
+    case Full(_) => f
+    case _       => S.statelessInit(this)(f)
+  }
 
   /**
     * Compute the Not Found via a Template
@@ -1406,9 +1397,8 @@ class Req(
       id <- boxParseInternetDate(ims)
     } yield id
 
-  def testIfModifiedSince(when: Long): Boolean =
-    (when == 0L) ||
-      ((when / 1000L) > ((ifModifiedSince.map(_.getTime) openOr 0L) / 1000L))
+  def testIfModifiedSince(when: Long): Boolean = (when == 0L) ||
+    ((when / 1000L) > ((ifModifiedSince.map(_.getTime) openOr 0L) / 1000L))
 
   def testFor304(
       lastModified: Long,

@@ -39,18 +39,17 @@ case class Authorities private (accountIds: Set[AccountId]) {
   def expand(ownerAccountId: AccountId) =
     this.copy(accountIds = this.accountIds + ownerAccountId)
 
-  def sha1 =
-    Hashing
-      .sha1()
-      .hashString(accountIds.toList.sorted.toString, Charsets.UTF_8)
-      .toString
+  def sha1 = Hashing
+    .sha1()
+    .hashString(accountIds.toList.sorted.toString, Charsets.UTF_8)
+    .toString
 
   def render = accountIds.mkString("[", ", ", "]")
 }
 
 object Authorities {
-  def apply(accountIds: NonEmptyList[AccountId]): Authorities =
-    apply(accountIds.list.toSet)
+  def apply(accountIds: NonEmptyList[AccountId]): Authorities = apply(
+    accountIds.list.toSet)
 
   def apply(firstAccountId: AccountId, others: AccountId*): Authorities =
     apply(others.toSet + firstAccountId)

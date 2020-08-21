@@ -49,28 +49,27 @@ object Parameter {
     * we log a failure to encode and transparently write a SQL NULL to
     * the wire.
     */
-  def unsafeWrap(value: Any): Parameter =
-    value match {
-      case v: String             => wrap(v)
-      case v: Boolean            => wrap(v)
-      case v: Byte               => wrap(v)
-      case v: Short              => wrap(v)
-      case v: Int                => wrap(v)
-      case v: Long               => wrap(v)
-      case v: Float              => wrap(v)
-      case v: Double             => wrap(v)
-      case v: Array[Byte]        => wrap(v)
-      case v: Value              => wrap(v)
-      case v: java.sql.Timestamp => wrap(v)
-      case v: java.sql.Date      => wrap(v)
-      case null                  => Parameter.NullParameter
-      case v                     =>
-        // Unsupported type. Write the error to log, and write the type as null.
-        // This allows us to safely skip writing the parameter without corrupting the buffer.
-        log.warning(
-          s"Unknown parameter ${v.getClass.getName} will be treated as SQL NULL.")
-        Parameter.NullParameter
-    }
+  def unsafeWrap(value: Any): Parameter = value match {
+    case v: String             => wrap(v)
+    case v: Boolean            => wrap(v)
+    case v: Byte               => wrap(v)
+    case v: Short              => wrap(v)
+    case v: Int                => wrap(v)
+    case v: Long               => wrap(v)
+    case v: Float              => wrap(v)
+    case v: Double             => wrap(v)
+    case v: Array[Byte]        => wrap(v)
+    case v: Value              => wrap(v)
+    case v: java.sql.Timestamp => wrap(v)
+    case v: java.sql.Date      => wrap(v)
+    case null                  => Parameter.NullParameter
+    case v                     =>
+      // Unsupported type. Write the error to log, and write the type as null.
+      // This allows us to safely skip writing the parameter without corrupting the buffer.
+      log.warning(
+        s"Unknown parameter ${v.getClass.getName} will be treated as SQL NULL.")
+      Parameter.NullParameter
+  }
 
   object NullParameter extends Parameter {
     type A = Null

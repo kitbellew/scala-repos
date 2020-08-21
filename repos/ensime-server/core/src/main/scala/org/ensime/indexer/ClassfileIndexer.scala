@@ -151,8 +151,8 @@ trait ClassfileIndexer {
     protected def addRef(seen: FullyQualifiedName): Unit = addRefs(seen :: Nil)
 
     private val fieldVisitor = new FieldVisitor(ASM5) {
-      override def visitAnnotation(desc: String, visible: Boolean) =
-        handleAnn(desc)
+      override def visitAnnotation(desc: String, visible: Boolean) = handleAnn(
+        desc)
       override def visitTypeAnnotation(
           typeRef: Int,
           typePath: TypePath,
@@ -210,8 +210,8 @@ trait ClassfileIndexer {
       addRef(ClassName.fromDescriptor(desc))
       annVisitor
     }
-    override def visitAnnotation(desc: String, visible: Boolean) =
-      handleAnn(desc)
+    override def visitAnnotation(desc: String, visible: Boolean) = handleAnn(
+      desc)
     override def visitTypeAnnotation(
         typeRef: Int,
         typePath: TypePath,
@@ -289,8 +289,8 @@ trait ClassfileIndexer {
       internalRefs :+= ClassName.fromDescriptor(desc)
       annVisitor
     }
-    override def visitAnnotation(desc: String, visible: Boolean) =
-      handleAnn(desc)
+    override def visitAnnotation(desc: String, visible: Boolean) = handleAnn(
+      desc)
     override def visitAnnotationDefault() = annVisitor
     override def visitInsnAnnotation(
         typeRef: Int,

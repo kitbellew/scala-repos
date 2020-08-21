@@ -151,14 +151,14 @@ final class Source[+Out, +Mat](private[stream] override val module: Module)
     * operation has no effect on an empty Flow (because the attributes apply
     * only to the contained processing stages).
     */
-  override def addAttributes(attr: Attributes): Repr[Out] =
-    withAttributes(module.attributes and attr)
+  override def addAttributes(attr: Attributes): Repr[Out] = withAttributes(
+    module.attributes and attr)
 
   /**
     * Add a ``name`` attribute to this Flow.
     */
-  override def named(name: String): Repr[Out] =
-    addAttributes(Attributes.name(name))
+  override def named(name: String): Repr[Out] = addAttributes(
+    Attributes.name(name))
 
   /**
     * Put an asynchronous boundary around this `Source`
@@ -198,8 +198,8 @@ final class Source[+Out, +Mat](private[stream] override val module: Module)
 object Source {
 
   /** INTERNAL API */
-  private[stream] def shape[T](name: String): SourceShape[T] =
-    SourceShape(Outlet(name + ".out"))
+  private[stream] def shape[T](name: String): SourceShape[T] = SourceShape(
+    Outlet(name + ".out"))
 
   /**
     * Helper to create [[Source]] from `Publisher`.
@@ -236,12 +236,11 @@ object Source {
     * A graph with the shape of a source logically is a source, this method makes
     * it so also in type.
     */
-  def fromGraph[T, M](g: Graph[SourceShape[T], M]): Source[T, M] =
-    g match {
-      case s: Source[T, M] ⇒ s
-      case s: javadsl.Source[T, M] ⇒ s.asScala
-      case other ⇒ new Source(other.module)
-    }
+  def fromGraph[T, M](g: Graph[SourceShape[T], M]): Source[T, M] = g match {
+    case s: Source[T, M] ⇒ s
+    case s: javadsl.Source[T, M] ⇒ s.asScala
+    case other ⇒ new Source(other.module)
+  }
 
   /**
     * Helper to create [[Source]] from `Iterable`.

@@ -17,8 +17,8 @@ class HttpTransport(repository: RemoteRepository) extends AbstractTransporter {
         throw new IllegalArgumentException(
           s" URL (${task.getLocation}) is not absolute.")
     }
-  private def toResource(task: TransportTask): Resource =
-    new URLResource(toURL(task))
+  private def toResource(task: TransportTask): Resource = new URLResource(
+    toURL(task))
   override def implPeek(peek: PeekTask): Unit = {
     if (!toResource(peek).exists())
       throw new NotFoundException(s"Could not find ${peek.getLocation}")

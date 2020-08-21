@@ -34,8 +34,8 @@ object Binding {
 
   def apply[A](initial: String)(implicit
       ma: Manifest[A],
-      tcFactory: TypeConverterFactory[A]): Binding =
-    apply(FieldDescriptor[A](initial))
+      tcFactory: TypeConverterFactory[A]): Binding = apply(
+    FieldDescriptor[A](initial))
   def apply[A](initial: FieldDescriptor[A])(implicit
       ma: Manifest[A],
       tcFactory: TypeConverterFactory[A]): Binding = {
@@ -58,9 +58,8 @@ object Binding {
     def transform(transformer: (T) => T): Binding =
       new PartialBinding(field transform transformer)
 
-    def validate: Binding =
-      throw new BindingException(
-        "Databinding needs to happen before validation")
+    def validate: Binding = throw new BindingException(
+      "Databinding needs to happen before validation")
   }
 
   private class DefaultBinding[I, A](
@@ -140,11 +139,10 @@ sealed trait Binding {
   def validateWith(validators: BindingValidator[T]*): Binding
   def transform(transformer: T => T): Binding
 
-  def original: Option[S] =
-    field match {
-      case v: DataboundFieldDescriptor[_, _] => Some(v.original.asInstanceOf[S])
-      case _                                 => None
-    }
+  def original: Option[S] = field match {
+    case v: DataboundFieldDescriptor[_, _] => Some(v.original.asInstanceOf[S])
+    case _                                 => None
+  }
 
   implicit def typeConverter: TypeConverter[S, T]
 

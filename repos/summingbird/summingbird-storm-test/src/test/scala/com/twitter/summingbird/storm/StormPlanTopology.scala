@@ -42,14 +42,13 @@ object StormPlanTopology extends Properties("StormDag") {
   implicit def sink1: Storm#Sink[Int] = Storm.sink((_) => Future.Unit)
   implicit def sink2: Storm#Sink[(Int, Int)] = Storm.sink((_) => Future.Unit)
 
-  implicit def testStore: Storm#Store[Int, Int] =
-    MergeableStoreFactory.from {
-      MergeableStore.fromStore[(Int, BatchID), Int](
-        new JMapStore[(Int, BatchID), Int]())
-    }
+  implicit def testStore: Storm#Store[Int, Int] = MergeableStoreFactory.from {
+    MergeableStore.fromStore[(Int, BatchID), Int](
+      new JMapStore[(Int, BatchID), Int]())
+  }
 
-  implicit def arbSource1: Arbitrary[Producer[Storm, Int]] =
-    Arbitrary(Gen.listOfN(5000, Arbitrary.arbitrary[Int]).map { x: List[Int] =>
+  implicit def arbSource1: Arbitrary[Producer[Storm, Int]] = Arbitrary(
+    Gen.listOfN(5000, Arbitrary.arbitrary[Int]).map { x: List[Int] =>
       Storm.source(TraversableSpout(x))
     })
   implicit def arbSource2: Arbitrary[KeyedProducer[Storm, Int, Int]] =
@@ -58,8 +57,8 @@ object StormPlanTopology extends Properties("StormDag") {
         IdentityKeyedProducer(Storm.source(TraversableSpout(x)))
     })
 
-  implicit def arbService2: Arbitrary[Storm#Service[Int, Int]] =
-    Arbitrary(Arbitrary.arbitrary[Int => Option[Int]].map { fn =>
+  implicit def arbService2: Arbitrary[Storm#Service[Int, Int]] = Arbitrary(
+    Arbitrary.arbitrary[Int => Option[Int]].map { fn =>
       ReadableServiceFactory[Int, Int](() => ReadableStore.fromFn(fn))
     })
 
@@ -67,8 +66,8 @@ object StormPlanTopology extends Properties("StormDag") {
     tail <- oneOf(summed, written)
   } yield tail
 
-  implicit def genProducer: Arbitrary[TailProducer[Storm, Any]] =
-    Arbitrary(genDag)
+  implicit def genProducer: Arbitrary[TailProducer[Storm, Any]] = Arbitrary(
+    genDag)
 
   val testFn = { i: Int => List((i -> i)) }
 

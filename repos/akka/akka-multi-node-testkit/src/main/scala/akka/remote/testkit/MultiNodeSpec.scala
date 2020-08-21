@@ -391,8 +391,8 @@ abstract class MultiNodeSpec(
     * val serviceA = system.actorSelection(node("master") / "user" / "serviceA")
     * }}}
     */
-  def node(role: RoleName): ActorPath =
-    RootActorPath(testConductor.getAddressFor(role).await)
+  def node(role: RoleName): ActorPath = RootActorPath(
+    testConductor.getAddressFor(role).await)
 
   def muteDeadLetters(messageClasses: Class[_]*)(
       sys: ActorSystem = system): Unit =

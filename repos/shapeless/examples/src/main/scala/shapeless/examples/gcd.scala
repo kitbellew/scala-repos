@@ -44,8 +44,9 @@ object GCDExamples {
       new GCD[X, Y] { type Out = Out0 }
     implicit def gcd2[X <: Nat, Y <: Nat, Out0 <: Nat](implicit
         ev0: LT[Y, X],
-        ev1: Aux[Y, X, Out0]): Aux[X, Y, Out0] =
-      new GCD[X, Y] { type Out = Out0 }
+        ev1: Aux[Y, X, Out0]): Aux[X, Y, Out0] = new GCD[X, Y] {
+      type Out = Out0
+    }
   }
 
   import GCD._

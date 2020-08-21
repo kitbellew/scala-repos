@@ -18,8 +18,8 @@ class ReplReporter(intp: IMain)
       intp.settings,
       Console.in,
       new ReplStrippingWriter(intp)) {
-  def printUntruncatedMessage(msg: String) =
-    withoutTruncating(printMessage(msg))
+  def printUntruncatedMessage(msg: String) = withoutTruncating(
+    printMessage(msg))
 
   /** Whether very long lines can be truncated.  This exists so important
     *  debugging information (like printing the classpath) is not rendered
@@ -34,19 +34,18 @@ class ReplReporter(intp: IMain)
     finally _truncationOK = saved
   }
 
-  override def warning(pos: Position, msg: String): Unit =
-    withoutTruncating(super.warning(pos, msg))
-  override def error(pos: Position, msg: String): Unit =
-    withoutTruncating(super.error(pos, msg))
+  override def warning(pos: Position, msg: String): Unit = withoutTruncating(
+    super.warning(pos, msg))
+  override def error(pos: Position, msg: String): Unit = withoutTruncating(
+    super.error(pos, msg))
 
   import scala.io.AnsiColor.{RED, YELLOW, RESET}
 
-  def severityColor(severity: Severity): String =
-    severity match {
-      case ERROR   => RED
-      case WARNING => YELLOW
-      case INFO    => RESET
-    }
+  def severityColor(severity: Severity): String = severity match {
+    case ERROR   => RED
+    case WARNING => YELLOW
+    case INFO    => RESET
+  }
 
   override def print(pos: Position, msg: String, severity: Severity) {
     val prefix =

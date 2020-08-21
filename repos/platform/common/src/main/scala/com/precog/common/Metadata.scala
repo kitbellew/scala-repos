@@ -40,24 +40,22 @@ import shapeless._
 sealed trait MetadataType
 
 object MetadataType {
-  def toName(metadataType: MetadataType): String =
-    metadataType match {
-      case BooleanValueStats    => "BooleanValueStats"
-      case LongValueStats       => "LongValueStats"
-      case DoubleValueStats     => "DoubleValueStats"
-      case BigDecimalValueStats => "BigDecimalValueStats"
-      case StringValueStats     => "StringValueStats"
-    }
+  def toName(metadataType: MetadataType): String = metadataType match {
+    case BooleanValueStats    => "BooleanValueStats"
+    case LongValueStats       => "LongValueStats"
+    case DoubleValueStats     => "DoubleValueStats"
+    case BigDecimalValueStats => "BigDecimalValueStats"
+    case StringValueStats     => "StringValueStats"
+  }
 
-  def fromName(name: String): Option[MetadataType] =
-    name match {
-      case "BooleanValueStats"    => Option(BooleanValueStats)
-      case "LongValueStats"       => Option(LongValueStats)
-      case "DoubleValueStats"     => Option(DoubleValueStats)
-      case "BigDecimalValueStats" => Option(BigDecimalValueStats)
-      case "StringValueStats"     => Option(StringValueStats)
-      case _                      => None
-    }
+  def fromName(name: String): Option[MetadataType] = name match {
+    case "BooleanValueStats"    => Option(BooleanValueStats)
+    case "LongValueStats"       => Option(LongValueStats)
+    case "DoubleValueStats"     => Option(DoubleValueStats)
+    case "BigDecimalValueStats" => Option(BigDecimalValueStats)
+    case "StringValueStats"     => Option(StringValueStats)
+    case _                      => None
+  }
 }
 
 sealed trait Metadata {
@@ -121,10 +119,9 @@ object Metadata {
           .getOrElse(meta))
       }
 
-    def combineMetadata(m1: Metadata, m2: Metadata) =
-      m1.merge(m2)
-        .getOrElse(
-          sys.error("Invalid attempt to combine incompatible metadata"))
+    def combineMetadata(m1: Metadata, m2: Metadata) = m1
+      .merge(m2)
+      .getOrElse(sys.error("Invalid attempt to combine incompatible metadata"))
   }
 }
 
@@ -146,12 +143,11 @@ case class BooleanValueStats(count: Long, trueCount: Long)
       bdf: BigDecimalValueStats => A,
       sf: StringValueStats => A): A = bf(this)
 
-  def merge(that: Metadata) =
-    that match {
-      case BooleanValueStats(count, trueCount) =>
-        Some(BooleanValueStats(this.count + count, this.trueCount + trueCount))
-      case _ => None
-    }
+  def merge(that: Metadata) = that match {
+    case BooleanValueStats(count, trueCount) =>
+      Some(BooleanValueStats(this.count + count, this.trueCount + trueCount))
+    case _ => None
+  }
 }
 
 object BooleanValueStats extends MetadataType {
@@ -175,16 +171,15 @@ case class LongValueStats(count: Long, min: Long, max: Long)
       bdf: BigDecimalValueStats => A,
       sf: StringValueStats => A): A = lf(this)
 
-  def merge(that: Metadata) =
-    that match {
-      case LongValueStats(count, min, max) =>
-        Some(
-          LongValueStats(
-            this.count + count,
-            this.min.min(min),
-            this.max.max(max)))
-      case _ => None
-    }
+  def merge(that: Metadata) = that match {
+    case LongValueStats(count, min, max) =>
+      Some(
+        LongValueStats(
+          this.count + count,
+          this.min.min(min),
+          this.max.max(max)))
+    case _ => None
+  }
 }
 
 object LongValueStats extends MetadataType {
@@ -207,16 +202,15 @@ case class DoubleValueStats(count: Long, min: Double, max: Double)
       bdf: BigDecimalValueStats => A,
       sf: StringValueStats => A): A = df(this)
 
-  def merge(that: Metadata) =
-    that match {
-      case DoubleValueStats(count, min, max) =>
-        Some(
-          DoubleValueStats(
-            this.count + count,
-            this.min min min,
-            this.max max max))
-      case _ => None
-    }
+  def merge(that: Metadata) = that match {
+    case DoubleValueStats(count, min, max) =>
+      Some(
+        DoubleValueStats(
+          this.count + count,
+          this.min min min,
+          this.max max max))
+    case _ => None
+  }
 }
 
 object DoubleValueStats extends MetadataType {
@@ -240,16 +234,15 @@ case class BigDecimalValueStats(count: Long, min: BigDecimal, max: BigDecimal)
       bdf: BigDecimalValueStats => A,
       sf: StringValueStats => A): A = bdf(this)
 
-  def merge(that: Metadata) =
-    that match {
-      case BigDecimalValueStats(count, min, max) =>
-        Some(
-          BigDecimalValueStats(
-            this.count + count,
-            this.min min min,
-            this.max max max))
-      case _ => None
-    }
+  def merge(that: Metadata) = that match {
+    case BigDecimalValueStats(count, min, max) =>
+      Some(
+        BigDecimalValueStats(
+          this.count + count,
+          this.min min min,
+          this.max max max))
+    case _ => None
+  }
 }
 
 object BigDecimalValueStats extends MetadataType {
@@ -273,16 +266,15 @@ case class StringValueStats(count: Long, min: String, max: String)
       bdf: BigDecimalValueStats => A,
       sf: StringValueStats => A): A = sf(this)
 
-  def merge(that: Metadata) =
-    that match {
-      case StringValueStats(count, min, max) =>
-        Some(
-          StringValueStats(
-            this.count + count,
-            Order[String].min(this.min, min),
-            Order[String].max(this.max, max)))
-      case _ => None
-    }
+  def merge(that: Metadata) = that match {
+    case StringValueStats(count, min, max) =>
+      Some(
+        StringValueStats(
+          this.count + count,
+          Order[String].min(this.min, min),
+          Order[String].max(this.max, max)))
+    case _ => None
+  }
 }
 
 object StringValueStats extends MetadataType {

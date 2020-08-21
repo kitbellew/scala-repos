@@ -84,9 +84,9 @@ object Logger {
       className
   }
 
-  def apply(cls: Class[_]): Logger =
-    if (ranSetup) new WrappedLogger(LoggerFactory.getLogger(loggerNameFor(cls)))
-    else null
+  def apply(cls: Class[_]): Logger = if (ranSetup)
+    new WrappedLogger(LoggerFactory.getLogger(loggerNameFor(cls)))
+  else null
   def apply(name: String): Logger =
     if (ranSetup) new WrappedLogger(LoggerFactory.getLogger(name)) else null
 
@@ -158,10 +158,9 @@ object MDC {
 trait Logger {
   private lazy val logger: SLF4JLogger = _logger
 
-  protected def _logger =
-    if (Logger.ranSetup)
-      LoggerFactory.getLogger(Logger.loggerNameFor(this.getClass))
-    else null
+  protected def _logger = if (Logger.ranSetup)
+    LoggerFactory.getLogger(Logger.loggerNameFor(this.getClass))
+  else null
 
   def assertLog(assertion: Boolean, msg: => String) = if (assertion) info(msg)
 

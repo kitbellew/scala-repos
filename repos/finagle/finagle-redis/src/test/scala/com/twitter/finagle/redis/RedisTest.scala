@@ -121,35 +121,34 @@ trait RedisClientServerIntegrationTest
   protected def assertMBulkReply(
       reply: Future[Reply],
       expects: List[String],
-      contains: Boolean = false) =
-    Await.result(reply) match {
-      case MBulkReply(msgs) =>
-        contains match {
-          case true =>
-            assert(
-              expects.isEmpty == false,
-              "Test did no supply a list of expected replies.")
-            val newMsgs = ReplyFormat.toString(msgs)
-            expects.foreach({ msg =>
-              val doesMBulkReplyContainMessage = newMsgs.contains(msg)
-              assert(doesMBulkReplyContainMessage == true)
+      contains: Boolean = false) = Await.result(reply) match {
+    case MBulkReply(msgs) =>
+      contains match {
+        case true =>
+          assert(
+            expects.isEmpty == false,
+            "Test did no supply a list of expected replies.")
+          val newMsgs = ReplyFormat.toString(msgs)
+          expects.foreach({ msg =>
+            val doesMBulkReplyContainMessage = newMsgs.contains(msg)
+            assert(doesMBulkReplyContainMessage == true)
+          })
+        case false =>
+          val actualMessages = ReplyFormat
+            .toChannelBuffers(msgs)
+            .map({ msg =>
+              chanBuf2String(msg)
             })
-          case false =>
-            val actualMessages = ReplyFormat
-              .toChannelBuffers(msgs)
-              .map({ msg =>
-                chanBuf2String(msg)
-              })
-            assert(actualMessages == expects)
-        }
-      case EmptyMBulkReply() => {
-        val isEmpty = true
-        val actualReply = expects.isEmpty
-        assert(actualReply == isEmpty)
+          assert(actualMessages == expects)
       }
-      case r: Reply => fail("Expected MBulkReply, got %s".format(r))
-      case _        => fail("Expected MBulkReply")
+    case EmptyMBulkReply() => {
+      val isEmpty = true
+      val actualReply = expects.isEmpty
+      assert(actualReply == isEmpty)
     }
+    case r: Reply => fail("Expected MBulkReply, got %s".format(r))
+    case _        => fail("Expected MBulkReply")
+  }
 
   def assertBulkReply(reply: Future[Reply], expects: String) =
     Await.result(reply) match {

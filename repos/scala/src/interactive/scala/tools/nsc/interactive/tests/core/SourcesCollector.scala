@@ -15,7 +15,7 @@ private[tests] object SourcesCollector {
     base.walk.filter(filter).map(source).toList.toArray.sortBy(_.file.name)
   }
 
-  private def source(file: Path): SourceFile =
-    source(AbstractFile.getFile(file.toFile))
+  private def source(file: Path): SourceFile = source(
+    AbstractFile.getFile(file.toFile))
   private def source(file: AbstractFile): SourceFile = new BatchSourceFile(file)
 }

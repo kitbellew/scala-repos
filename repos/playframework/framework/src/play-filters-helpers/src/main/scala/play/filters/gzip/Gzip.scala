@@ -133,10 +133,9 @@ object Gzip {
         }
       }
 
-      def feedEmpty[A](state: State, k: K[Bytes, A]) =
-        new CheckDoneBytes {
-          def continue[B](k: K[Bytes, B]) = Cont(step(state, k))
-        } &> k(Input.Empty)
+      def feedEmpty[A](state: State, k: K[Bytes, A]) = new CheckDoneBytes {
+        def continue[B](k: K[Bytes, B]) = Cont(step(state, k))
+      } &> k(Input.Empty)
 
       def feedHeader[A](k: K[Bytes, A]) = {
         // First need to write the Gzip header
@@ -299,10 +298,9 @@ object Gzip {
         }
       }
 
-      def feedEmpty[A](state: State, k: K[Bytes, A]) =
-        new CheckDoneBytes {
-          def continue[B](k: K[Bytes, B]) = Cont(step(state, k))
-        } &> k(Input.Empty)
+      def feedEmpty[A](state: State, k: K[Bytes, A]) = new CheckDoneBytes {
+        def continue[B](k: K[Bytes, B]) = Cont(step(state, k))
+      } &> k(Input.Empty)
 
       def done[A](a: A = Unit): Iteratee[Bytes, A] = Done[Bytes, A](a)
 
@@ -401,39 +399,36 @@ object Gzip {
         }
       }
 
-      def readShort(crc: CRC32): Iteratee[Bytes, Int] =
-        for {
-          bytes <- take(2, "Not enough bytes for extra field length", crc)
-        } yield {
-          littleEndianToShort(bytes)
-        }
+      def readShort(crc: CRC32): Iteratee[Bytes, Int] = for {
+        bytes <- take(2, "Not enough bytes for extra field length", crc)
+      } yield {
+        littleEndianToShort(bytes)
+      }
 
-      def readInt(error: String, crc: CRC32): Iteratee[Bytes, Int] =
-        for {
-          bytes <- take(4, error, crc)
-        } yield {
-          littleEndianToInt(bytes)
-        }
+      def readInt(error: String, crc: CRC32): Iteratee[Bytes, Int] = for {
+        bytes <- take(4, error, crc)
+      } yield {
+        littleEndianToInt(bytes)
+      }
 
       def take(
           n: Int,
           error: String,
           crc: CRC32,
-          bytes: Bytes = new Bytes(0)): Iteratee[Bytes, Bytes] =
-        Cont {
-          case Input.EOF   => Error(error, Input.EOF)
-          case Input.Empty => take(n, error, crc, bytes)
-          case Input.El(b) => {
-            val splitted = b.splitAt(n)
-            crc.update(splitted._1)
-            splitted match {
-              case (needed, left) if needed.length == n =>
-                Done(bytes ++ needed, maybeEmpty(left))
-              case (partial, _) =>
-                take(n - partial.length, error, crc, bytes ++ partial)
-            }
+          bytes: Bytes = new Bytes(0)): Iteratee[Bytes, Bytes] = Cont {
+        case Input.EOF   => Error(error, Input.EOF)
+        case Input.Empty => take(n, error, crc, bytes)
+        case Input.El(b) => {
+          val splitted = b.splitAt(n)
+          crc.update(splitted._1)
+          splitted match {
+            case (needed, left) if needed.length == n =>
+              Done(bytes ++ needed, maybeEmpty(left))
+            case (partial, _) =>
+              take(n - partial.length, error, crc, bytes ++ partial)
           }
         }
+      }
 
       def drop(n: Int, error: String, crc: CRC32): Iteratee[Bytes, Unit] =
         Cont {
@@ -453,18 +448,17 @@ object Gzip {
       def dropWhileIncluding(
           p: Byte => Boolean,
           error: String,
-          crc: CRC32): Iteratee[Bytes, Unit] =
-        Cont {
-          case Input.EOF   => Error(error, Input.EOF)
-          case Input.Empty => dropWhileIncluding(p, error, crc)
-          case Input.El(b) =>
-            val left = b.dropWhile(p)
-            crc.update(b, 0, b.length - left.length)
-            left match {
-              case none if none.isEmpty => dropWhileIncluding(p, error, crc)
-              case some                 => Done(Unit, maybeEmpty(some.drop(1)))
-            }
-        }
+          crc: CRC32): Iteratee[Bytes, Unit] = Cont {
+        case Input.EOF   => Error(error, Input.EOF)
+        case Input.Empty => dropWhileIncluding(p, error, crc)
+        case Input.El(b) =>
+          val left = b.dropWhile(p)
+          crc.update(b, 0, b.length - left.length)
+          left match {
+            case none if none.isEmpty => dropWhileIncluding(p, error, crc)
+            case some                 => Done(Unit, maybeEmpty(some.drop(1)))
+          }
+      }
     }
   }
 

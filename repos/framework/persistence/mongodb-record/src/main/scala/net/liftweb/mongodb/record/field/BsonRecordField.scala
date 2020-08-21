@@ -57,31 +57,28 @@ class BsonRecordField[
   }
 
   def owner = rec
-  def asJs =
-    asJValue match {
-      case JNothing => JsNull
-      case jv =>
-        new JsExp {
-          lazy val toJsCmd = compactRender(jv)
-        }
-    }
+  def asJs = asJValue match {
+    case JNothing => JsNull
+    case jv =>
+      new JsExp {
+        lazy val toJsCmd = compactRender(jv)
+      }
+  }
   def toForm: Box[NodeSeq] = Empty
   def defaultValue = valueMeta.createRecord
 
   def setFromString(s: String): Box[SubRecordType] = valueMeta.fromJsonString(s)
 
-  def setFromAny(in: Any): Box[SubRecordType] =
-    in match {
-      case dbo: DBObject => setBox(Full(valueMeta.fromDBObject(dbo)))
-      case _             => genericSetFromAny(in)
-    }
+  def setFromAny(in: Any): Box[SubRecordType] = in match {
+    case dbo: DBObject => setBox(Full(valueMeta.fromDBObject(dbo)))
+    case _             => genericSetFromAny(in)
+  }
 
   def asJValue: JValue = valueBox.map(_.asJValue) openOr (JNothing: JValue)
-  def setFromJValue(jvalue: JValue): Box[SubRecordType] =
-    jvalue match {
-      case JNothing | JNull if optional_? => setBox(Empty)
-      case _                              => setBox(valueMeta.fromJValue(jvalue))
-    }
+  def setFromJValue(jvalue: JValue): Box[SubRecordType] = jvalue match {
+    case JNothing | JNull if optional_? => setBox(Empty)
+    case _                              => setBox(valueMeta.fromJValue(jvalue))
+  }
 }
 
 /*
@@ -113,13 +110,12 @@ class BsonRecordListField[
 
   override def asJValue: JValue = JArray(value.map(_.asJValue))
 
-  override def setFromJValue(jvalue: JValue) =
-    jvalue match {
-      case JNothing | JNull if optional_? => setBox(Empty)
-      case JArray(arr) =>
-        setBox(Full(arr.map(jv => {
-          valueMeta.fromJValue(jv) openOr valueMeta.createRecord
-        })))
-      case other => setBox(FieldHelpers.expectedA("JArray", other))
-    }
+  override def setFromJValue(jvalue: JValue) = jvalue match {
+    case JNothing | JNull if optional_? => setBox(Empty)
+    case JArray(arr) =>
+      setBox(Full(arr.map(jv => {
+        valueMeta.fromJValue(jv) openOr valueMeta.createRecord
+      })))
+    case other => setBox(FieldHelpers.expectedA("JArray", other))
+  }
 }

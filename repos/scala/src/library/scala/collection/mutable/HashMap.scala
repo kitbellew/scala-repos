@@ -100,10 +100,9 @@ class HashMap[A, B] private[collection] (
     foreachEntry(e => f((e.key, e.value)))
 
   /* Override to avoid tuple allocation in foreach */
-  override def keySet: scala.collection.Set[A] =
-    new DefaultKeySet {
-      override def foreach[U](f: A => U) = foreachEntry(e => f(e.key))
-    }
+  override def keySet: scala.collection.Set[A] = new DefaultKeySet {
+    override def foreach[U](f: A => U) = foreachEntry(e => f(e.key))
+  }
 
   /* Override to avoid tuple allocation in foreach */
   override def values: scala.collection.Iterable[B] =
@@ -112,27 +111,24 @@ class HashMap[A, B] private[collection] (
     }
 
   /* Override to avoid tuple allocation */
-  override def keysIterator: Iterator[A] =
-    new AbstractIterator[A] {
-      val iter = entriesIterator
-      def hasNext = iter.hasNext
-      def next() = iter.next().key
-    }
+  override def keysIterator: Iterator[A] = new AbstractIterator[A] {
+    val iter = entriesIterator
+    def hasNext = iter.hasNext
+    def next() = iter.next().key
+  }
 
   /* Override to avoid tuple allocation */
-  override def valuesIterator: Iterator[B] =
-    new AbstractIterator[B] {
-      val iter = entriesIterator
-      def hasNext = iter.hasNext
-      def next() = iter.next().value
-    }
+  override def valuesIterator: Iterator[B] = new AbstractIterator[B] {
+    val iter = entriesIterator
+    def hasNext = iter.hasNext
+    def next() = iter.next().value
+  }
 
   /** Toggles whether a size map is used to track hash map statistics.
     */
-  def useSizeMap(t: Boolean) =
-    if (t) {
-      if (!isSizeMapDefined) sizeMapInitAndRebuild()
-    } else sizeMapDisable()
+  def useSizeMap(t: Boolean) = if (t) {
+    if (!isSizeMapDefined) sizeMapInitAndRebuild()
+  } else sizeMapDisable()
 
   protected def createNewEntry[B1](key: A, value: B1): Entry = {
     new Entry(key, value.asInstanceOf[B])

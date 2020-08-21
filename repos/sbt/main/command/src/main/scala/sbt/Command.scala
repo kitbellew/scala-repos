@@ -186,11 +186,10 @@ private final class Help0(
     val detail: Map[String, String],
     val more: Set[String])
     extends Help {
-  def ++(h: Help): Help =
-    new Help0(
-      Help0.this.brief ++ h.brief,
-      Help0.this.detail ++ h.detail,
-      more ++ h.more)
+  def ++(h: Help): Help = new Help0(
+    Help0.this.brief ++ h.brief,
+    Help0.this.detail ++ h.detail,
+    more ++ h.more)
 }
 object Help {
   val empty: Help = briefDetail(Nil)

@@ -184,8 +184,9 @@ class CircuitBreaker(
     * @param callback Handler to be invoked on state change
     * @return CircuitBreaker for fluent usage
     */
-  def onOpen(callback: ⇒ Unit): CircuitBreaker =
-    onOpen(new Runnable { def run = callback })
+  def onOpen(callback: ⇒ Unit): CircuitBreaker = onOpen(new Runnable {
+    def run = callback
+  })
 
   /**
     * Java API for onOpen
@@ -206,8 +207,9 @@ class CircuitBreaker(
     * @param callback Handler to be invoked on state change
     * @return CircuitBreaker for fluent usage
     */
-  def onHalfOpen(callback: ⇒ Unit): CircuitBreaker =
-    onHalfOpen(new Runnable { def run = callback })
+  def onHalfOpen(callback: ⇒ Unit): CircuitBreaker = onHalfOpen(new Runnable {
+    def run = callback
+  })
 
   /**
     * JavaAPI for onHalfOpen
@@ -228,8 +230,9 @@ class CircuitBreaker(
     * @param callback Handler to be invoked on state change
     * @return CircuitBreaker for fluent usage
     */
-  def onClose(callback: ⇒ Unit): CircuitBreaker =
-    onClose(new Runnable { def run = callback })
+  def onClose(callback: ⇒ Unit): CircuitBreaker = onClose(new Runnable {
+    def run = callback
+  })
 
   /**
     * JavaAPI for onClose
@@ -325,9 +328,8 @@ class CircuitBreaker(
       */
     def callThrough[T](body: ⇒ Future[T]): Future[T] = {
 
-      def materialize[U](value: ⇒ Future[U]): Future[U] =
-        try value
-        catch { case NonFatal(t) ⇒ Future.failed(t) }
+      def materialize[U](value: ⇒ Future[U]): Future[U] = try value
+      catch { case NonFatal(t) ⇒ Future.failed(t) }
 
       if (callTimeout == Duration.Zero) {
         materialize(body)

@@ -81,14 +81,13 @@ object JsonTests extends TestSuite {
 
   val tests = TestSuite {
     'pass {
-      def test(p: P[_], s: String) =
-        p.parse(s) match {
-          case Parsed.Success(v, i) =>
-            val expectedIndex = s.length
-            assert(i == expectedIndex)
-          case f: Parsed.Failure =>
-            throw new Exception(f.extra.traced.fullStack.mkString("\n"))
-        }
+      def test(p: P[_], s: String) = p.parse(s) match {
+        case Parsed.Success(v, i) =>
+          val expectedIndex = s.length
+          assert(i == expectedIndex)
+        case f: Parsed.Failure =>
+          throw new Exception(f.extra.traced.fullStack.mkString("\n"))
+      }
 
       'parts {
         * - test(number, "12031.33123E-2")

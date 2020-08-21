@@ -26,33 +26,30 @@ class ParallelRangeCheck(val tasksupport: TaskSupport)
   def ofSize(vals: Seq[Gen[Int]], sz: Int) =
     throw new UnsupportedOperationException
 
-  override def instances(vals: Seq[Gen[Int]]): Gen[Seq[Int]] =
-    sized { start =>
-      sized { end =>
-        sized { step =>
-          new Range(start, end, if (step != 0) step else 1)
-        }
+  override def instances(vals: Seq[Gen[Int]]): Gen[Seq[Int]] = sized { start =>
+    sized { end =>
+      sized { step =>
+        new Range(start, end, if (step != 0) step else 1)
       }
     }
+  }
 
-  def fromSeq(a: Seq[Int]) =
-    a match {
-      case r: Range =>
-        val pr = ParRange(r.start, r.end, r.step, false)
-        pr.tasksupport = tasksupport
-        pr
-      case _ =>
-        val pa = new parallel.mutable.ParArray[Int](a.length)
-        pa.tasksupport = tasksupport
-        for (i <- 0 until a.length) pa(i) = a(i)
-        pa
-    }
+  def fromSeq(a: Seq[Int]) = a match {
+    case r: Range =>
+      val pr = ParRange(r.start, r.end, r.step, false)
+      pr.tasksupport = tasksupport
+      pr
+    case _ =>
+      val pa = new parallel.mutable.ParArray[Int](a.length)
+      pa.tasksupport = tasksupport
+      for (i <- 0 until a.length) pa(i) = a(i)
+      pa
+  }
 
-  override def traversable2Seq(t: Traversable[Int]): Seq[Int] =
-    t match {
-      case r: Range => r
-      case _        => t.toSeq
-    }
+  override def traversable2Seq(t: Traversable[Int]): Seq[Int] = t match {
+    case r: Range => r
+    case _        => t.toSeq
+  }
 
   def values = Seq(choose(-100, 100))
 

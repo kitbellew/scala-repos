@@ -46,10 +46,9 @@ object Service {
     * @param op [[scala.Function]] that returns a [[scalafx.concurrent.Task]] to be invoked after this was started on
     *           the JavaFX Application Thread.
     */
-  def apply[T](op: => jfxc.Task[T]) =
-    new Service[T](new jfxc.Service[T] {
-      protected def createTask = op
-    }) {}
+  def apply[T](op: => jfxc.Task[T]) = new Service[T](new jfxc.Service[T] {
+    protected def createTask = op
+  }) {}
 }
 
 /**

@@ -15,10 +15,10 @@ class CheckedTest
   import Arbitrary.arbitrary
 
   case class NotZero[A](value: A)
-  implicit def arbNotZeroLong =
-    Arbitrary(arbitrary[Long] filter (_ != 0L) map (NotZero(_)))
-  implicit def arbNotZeroInt =
-    Arbitrary(arbitrary[Int] filter (_ != 0L) map (NotZero(_)))
+  implicit def arbNotZeroLong = Arbitrary(
+    arbitrary[Long] filter (_ != 0L) map (NotZero(_)))
+  implicit def arbNotZeroInt = Arbitrary(
+    arbitrary[Int] filter (_ != 0L) map (NotZero(_)))
 
   def checkForLongOverflow(value: BigInt, check: => Long) = {
     if (value.isValidLong) {

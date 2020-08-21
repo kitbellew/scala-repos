@@ -69,46 +69,45 @@ private[http] object Utf8Decoder extends StreamingCharsetDecoder {
       var currentCodePoint = 0
       var currentState = Utf8Accept
 
-      def decode(bytes: ByteString, endOfInput: Boolean): Try[String] =
-        Try {
-          val result = new StringBuilder(bytes.size)
-          val length = bytes.size
+      def decode(bytes: ByteString, endOfInput: Boolean): Try[String] = Try {
+        val result = new StringBuilder(bytes.size)
+        val length = bytes.size
 
-          def step(byte: Int): Unit = {
-            val chClass = characterClasses(byte)
-            currentCodePoint =
-              if (currentState == Utf8Accept) // first byte
-                (0xff >> chClass) & byte // take as much bits as the characterClass says
-              else // continuation byte
-                (0x3f & byte) | (currentCodePoint << 6) // take 6 bits
-            currentState = states(currentState + chClass)
+        def step(byte: Int): Unit = {
+          val chClass = characterClasses(byte)
+          currentCodePoint =
+            if (currentState == Utf8Accept) // first byte
+              (0xff >> chClass) & byte // take as much bits as the characterClass says
+            else // continuation byte
+              (0x3f & byte) | (currentCodePoint << 6) // take 6 bits
+          currentState = states(currentState + chClass)
 
-            currentState match {
-              case Utf8Accept ⇒
-                if (currentCodePoint <= 0xffff)
-                  // fits in single UTF-16 char
-                  result.append(currentCodePoint.toChar)
-                else {
-                  // create surrogate pair
-                  result.append((0xd7c0 + (currentCodePoint >> 10)).toChar)
-                  result.append((0xdc00 + (currentCodePoint & 0x3ff)).toChar)
-                }
-              case Utf8Reject ⇒ fail("Invalid UTF-8 input")
-              case _ ⇒ // valid intermediate state, need more input
-            }
+          currentState match {
+            case Utf8Accept ⇒
+              if (currentCodePoint <= 0xffff)
+                // fits in single UTF-16 char
+                result.append(currentCodePoint.toChar)
+              else {
+                // create surrogate pair
+                result.append((0xd7c0 + (currentCodePoint >> 10)).toChar)
+                result.append((0xdc00 + (currentCodePoint & 0x3ff)).toChar)
+              }
+            case Utf8Reject ⇒ fail("Invalid UTF-8 input")
+            case _ ⇒ // valid intermediate state, need more input
           }
-
-          var offset = 0
-          while (offset < length) {
-            step(bytes(offset) & 0xff)
-            offset += 1
-          }
-
-          if (endOfInput && currentState != Utf8Accept)
-            fail("Truncated UTF-8 input")
-          else
-            result.toString()
         }
+
+        var offset = 0
+        while (offset < length) {
+          step(bytes(offset) & 0xff)
+          offset += 1
+        }
+
+        if (endOfInput && currentState != Utf8Accept)
+          fail("Truncated UTF-8 input")
+        else
+          result.toString()
+      }
 
       def fail(msg: String): Nothing = throw new IllegalArgumentException(msg)
     }

@@ -25,9 +25,8 @@ trait JavaReflectionRuntimes {
       args => {
         val implObj =
           if (isBundle) {
-            def isMacroContext(clazz: Class[_]) =
-              clazz == classOf[BlackboxContext] || clazz == classOf[
-                WhiteboxContext]
+            def isMacroContext(clazz: Class[_]) = clazz == classOf[
+              BlackboxContext] || clazz == classOf[WhiteboxContext]
             def isBundleCtor(ctor: jConstructor[_]) =
               ctor.getParameterTypes match {
                 case Array(param) if isMacroContext(param) => true

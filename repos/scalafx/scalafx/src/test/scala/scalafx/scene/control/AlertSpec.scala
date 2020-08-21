@@ -48,6 +48,6 @@ class AlertSpec
 
   override protected def getJavaClassInstance =
     new jfxsc.Alert(jfxsc.Alert.AlertType.CONFIRMATION)
-  override protected def getScalaClassInstance =
-    new Alert(Alert.AlertType.Confirmation)
+  override protected def getScalaClassInstance = new Alert(
+    Alert.AlertType.Confirmation)
 }

@@ -167,24 +167,22 @@ trait ItemsList[T <: Mapper[T]] {
     current ++= successAdd
   }
 
-  def sortBy(field: MappedField[_, T]) =
-    (sortField, ascending) match {
-      case (Some(f), true) if f eq field =>
-        ascending = false
-      case _ | null =>
+  def sortBy(field: MappedField[_, T]) = (sortField, ascending) match {
+    case (Some(f), true) if f eq field =>
+      ascending = false
+    case _ | null =>
+      sortField = Some(field)
+      ascending = true
+  }
+  def sortFn(field: MappedField[_, T]) = (sortField, ascending) match {
+    case (Some(f), true) if f eq field =>
+      () => ascending = false
+    case _ | null =>
+      () => {
         sortField = Some(field)
         ascending = true
-    }
-  def sortFn(field: MappedField[_, T]) =
-    (sortField, ascending) match {
-      case (Some(f), true) if f eq field =>
-        () => ascending = false
-      case _ | null =>
-        () => {
-          sortField = Some(field)
-          ascending = true
-        }
-    }
+      }
+  }
 
   reload
 }
@@ -260,13 +258,12 @@ trait ItemsListEditor[T <: Mapper[T]] {
 
   def onInsert: Unit = items.add
   def onRemove(item: T): Unit = items.remove(item)
-  def onSubmit: Unit =
-    try {
-      items.save
-    } catch {
-      case e: java.sql.SQLException =>
-        S.error("Not all items could be saved!")
-    }
+  def onSubmit: Unit = try {
+    items.save
+  } catch {
+    case e: java.sql.SQLException =>
+      S.error("Not all items could be saved!")
+  }
   def sortFn(f: MappedField[_, T]): () => Unit = items.sortFn(f)
 
   val fieldFilter: MappedField[_, T] => Boolean = (f: MappedField[_, T]) => true
@@ -274,9 +271,8 @@ trait ItemsListEditor[T <: Mapper[T]] {
   def customBind(item: T): NodeSeq => NodeSeq = (ns: NodeSeq) => ns
 
   def edit: (NodeSeq) => NodeSeq = {
-    def unsavedScript =
-      (<head>{
-        Script(Run("""
+    def unsavedScript = (<head>{
+      Script(Run("""
                            var safeToContinue = false
                            window.onbeforeunload = function(evt) {{  // thanks Tim!
                              if(!safeToContinue) {{
@@ -287,7 +283,7 @@ trait ItemsListEditor[T <: Mapper[T]] {
                              }}
                            }}
     """))
-      }</head>)
+    }</head>)
     val noPrompt = "onclick" -> "safeToContinue=true"
     val optScript =
       if ((items.added.length + items.removed.length == 0) &&

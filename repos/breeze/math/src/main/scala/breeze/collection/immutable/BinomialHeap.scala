@@ -47,28 +47,26 @@ class BinomialHeap[T <% Ordered[T]]
   private def merge(
       l1: List[Node[T]],
       l2: List[Node[T]],
-      acc: List[Node[T]]): List[Node[T]] =
-    (l1, l2) match {
-      case (Nil, l2) => acc.reverse ++ l2
-      case (l1, Nil) => acc.reverse ++ l1
-      case (n1 :: r1, n2 :: r2) =>
-        if (n1.rank < n2.rank) merge(r1, l2, n1 :: acc)
-        else if (n2.rank < n1.rank) merge(l1, r2, n2 :: acc)
-        else insertTree(n1 link n2, merge(r1, r2, acc))
-    }
+      acc: List[Node[T]]): List[Node[T]] = (l1, l2) match {
+    case (Nil, l2) => acc.reverse ++ l2
+    case (l1, Nil) => acc.reverse ++ l1
+    case (n1 :: r1, n2 :: r2) =>
+      if (n1.rank < n2.rank) merge(r1, l2, n1 :: acc)
+      else if (n2.rank < n1.rank) merge(l1, r2, n2 :: acc)
+      else insertTree(n1 link n2, merge(r1, r2, acc))
+  }
 
   def min = get.get
 
-  protected override def newBuilder =
-    new Builder[T, BinomialHeap[T]] {
-      var heap = BinomialHeap.empty[T]
+  protected override def newBuilder = new Builder[T, BinomialHeap[T]] {
+    var heap = BinomialHeap.empty[T]
 
-      def result() = heap
+    def result() = heap
 
-      def clear() = heap = BinomialHeap.empty[T]
+    def clear() = heap = BinomialHeap.empty[T]
 
-      def +=(elem: T) = { heap += elem; this }
-    }
+    def +=(elem: T) = { heap += elem; this }
+  }
 
   lazy val get = if (trees.isEmpty) None else Some(findMin(trees))
   private def findMin(trees: List[Node[T]]): T = {
@@ -85,15 +83,14 @@ class BinomialHeap[T <% Ordered[T]]
   def delMin() = {
     if (trees.isEmpty) this
     else {
-      def getMin(t: List[Node[T]]): (Node[T], List[Node[T]]) =
-        t match {
-          case (n :: Nil) => (n, Nil)
-          case (n :: ts) => {
-            val (n2, ts2) = getMin(ts)
-            if (n.x <= n2.x) (n, ts) else (n2, n :: ts2)
-          }
-          case _ => throw new IllegalArgumentException("Shouldn't get Nil!")
+      def getMin(t: List[Node[T]]): (Node[T], List[Node[T]]) = t match {
+        case (n :: Nil) => (n, Nil)
+        case (n :: ts) => {
+          val (n2, ts2) = getMin(ts)
+          if (n.x <= n2.x) (n, ts) else (n2, n :: ts2)
         }
+        case _ => throw new IllegalArgumentException("Shouldn't get Nil!")
+      }
       val (Node(_, x, t1), t2) = getMin(trees)
       merge(t1.reverse, t2, Nil)
       mkHeap(merge(t1.reverse, t2, Nil), size - 1)
@@ -123,10 +120,9 @@ object BinomialHeap {
     }
   }
 
-  def empty[T <% Ordered[T]]: BinomialHeap[T] =
-    new BinomialHeap[T] {
-      override val trees = Nil
-    }
+  def empty[T <% Ordered[T]]: BinomialHeap[T] = new BinomialHeap[T] {
+    override val trees = Nil
+  }
 
   private def mkHeap[T <% Ordered[T]](ns: List[Node[T]], sz: Int) =
     new BinomialHeap[T] {

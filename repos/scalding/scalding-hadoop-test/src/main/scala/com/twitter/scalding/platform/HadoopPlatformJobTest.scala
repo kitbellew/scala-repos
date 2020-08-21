@@ -112,8 +112,8 @@ case class HadoopPlatformJobTest(
     }
   }
 
-  private def initJob(cons: Args => Job): Job =
-    cons(Mode.putMode(cluster.mode, new Args(argsMap)))
+  private def initJob(cons: Args => Job): Job = cons(
+    Mode.putMode(cluster.mode, new Args(argsMap)))
 
   @annotation.tailrec
   private final def runJob(job: Job) {

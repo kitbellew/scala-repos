@@ -126,12 +126,11 @@ trait ScFunction
 
   def hasUnitResultType = {
     @tailrec
-    def hasUnitRT(t: ScType): Boolean =
-      t match {
-        case UnitType                   => true
-        case ScMethodType(result, _, _) => hasUnitRT(result)
-        case _                          => false
-      }
+    def hasUnitRT(t: ScType): Boolean = t match {
+      case UnitType                   => true
+      case ScMethodType(result, _, _) => hasUnitRT(result)
+      case _                          => false
+    }
     hasUnitRT(methodType)
   }
 
@@ -374,8 +373,9 @@ trait ScFunction
 
   def clauses: Option[ScParameters] = Some(paramClauses)
 
-  def paramTypes: Seq[ScType] =
-    parameters.map { _.getType(TypingContext.empty).getOrNothing }
+  def paramTypes: Seq[ScType] = parameters.map {
+    _.getType(TypingContext.empty).getOrNothing
+  }
 
   @CachedInsidePsiElement(this, ModCount.getBlockModificationCount)
   def effectiveParameterClauses: Seq[ScParameterClause] =
@@ -476,12 +476,11 @@ trait ScFunction
     result
   }
 
-  def getTypeParameterList =
-    new FakePsiTypeParameterList(
-      getManager,
-      getLanguage,
-      typeParameters.toArray,
-      this)
+  def getTypeParameterList = new FakePsiTypeParameterList(
+    getManager,
+    getLanguage,
+    typeParameters.toArray,
+    this)
 
   def hasTypeParameters = typeParameters.nonEmpty
 
@@ -746,17 +745,16 @@ trait ScFunction
 
   override protected def isSimilarMemberForNavigation(
       m: ScMember,
-      strictCheck: Boolean) =
-    m match {
-      case f: ScFunction =>
-        f.name == name && {
-          if (strictCheck)
-            new PhysicalSignature(this, ScSubstitutor.empty)
-              .paramTypesEquiv(new PhysicalSignature(f, ScSubstitutor.empty))
-          else true
-        }
-      case _ => false
-    }
+      strictCheck: Boolean) = m match {
+    case f: ScFunction =>
+      f.name == name && {
+        if (strictCheck)
+          new PhysicalSignature(this, ScSubstitutor.empty)
+            .paramTypesEquiv(new PhysicalSignature(f, ScSubstitutor.empty))
+        else true
+      }
+    case _ => false
+  }
 
   def hasAssign =
     getNode.getChildren(TokenSet.create(ScalaTokenTypes.tASSIGN)).nonEmpty

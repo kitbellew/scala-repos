@@ -24,10 +24,9 @@ final class WeakHashSet[A <: AnyRef](
 
   import WeakHashSet._
 
-  def this() =
-    this(
-      initialCapacity = WeakHashSet.defaultInitialCapacity,
-      loadFactor = WeakHashSet.defaultLoadFactor)
+  def this() = this(
+    initialCapacity = WeakHashSet.defaultInitialCapacity,
+    loadFactor = WeakHashSet.defaultLoadFactor)
 
   type This = WeakHashSet[A]
 
@@ -135,113 +134,102 @@ final class WeakHashSet[A <: AnyRef](
     threshold = computeThreshold
 
     @tailrec
-    def tableLoop(oldBucket: Int): Unit =
-      if (oldBucket < oldTable.size) {
-        @tailrec
-        def linkedListLoop(entry: Entry[A]): Unit =
-          entry match {
-            case null => ()
-            case _ => {
-              val bucket = bucketFor(entry.hash)
-              val oldNext = entry.tail
-              entry.tail = table(bucket)
-              table(bucket) = entry
-              linkedListLoop(oldNext)
-            }
-          }
-        linkedListLoop(oldTable(oldBucket))
-
-        tableLoop(oldBucket + 1)
+    def tableLoop(oldBucket: Int): Unit = if (oldBucket < oldTable.size) {
+      @tailrec
+      def linkedListLoop(entry: Entry[A]): Unit = entry match {
+        case null => ()
+        case _ => {
+          val bucket = bucketFor(entry.hash)
+          val oldNext = entry.tail
+          entry.tail = table(bucket)
+          table(bucket) = entry
+          linkedListLoop(oldNext)
+        }
       }
+      linkedListLoop(oldTable(oldBucket))
+
+      tableLoop(oldBucket + 1)
+    }
     tableLoop(0)
   }
 
   // from scala.reflect.internal.Set, find an element or null if it isn't contained
-  override def findEntry(elem: A): A =
-    elem match {
-      case null =>
-        throw new NullPointerException("WeakHashSet cannot hold nulls")
-      case _ => {
-        removeStaleEntries()
-        val hash = elem.hashCode
-        val bucket = bucketFor(hash)
+  override def findEntry(elem: A): A = elem match {
+    case null => throw new NullPointerException("WeakHashSet cannot hold nulls")
+    case _ => {
+      removeStaleEntries()
+      val hash = elem.hashCode
+      val bucket = bucketFor(hash)
 
-        @tailrec
-        def linkedListLoop(entry: Entry[A]): A =
-          entry match {
-            case null => null.asInstanceOf[A]
-            case _ => {
-              val entryElem = entry.get
-              if (elem == entryElem) entryElem
-              else linkedListLoop(entry.tail)
-            }
-          }
-
-        linkedListLoop(table(bucket))
-      }
-    }
-  // add an element to this set unless it's already in there and return the element
-  def findEntryOrUpdate(elem: A): A =
-    elem match {
-      case null =>
-        throw new NullPointerException("WeakHashSet cannot hold nulls")
-      case _ => {
-        removeStaleEntries()
-        val hash = elem.hashCode
-        val bucket = bucketFor(hash)
-        val oldHead = table(bucket)
-
-        def add() = {
-          table(bucket) = new Entry(elem, hash, oldHead, queue)
-          count += 1
-          if (count > threshold) resize()
-          elem
+      @tailrec
+      def linkedListLoop(entry: Entry[A]): A = entry match {
+        case null => null.asInstanceOf[A]
+        case _ => {
+          val entryElem = entry.get
+          if (elem == entryElem) entryElem
+          else linkedListLoop(entry.tail)
         }
-
-        @tailrec
-        def linkedListLoop(entry: Entry[A]): A =
-          entry match {
-            case null => add()
-            case _ => {
-              val entryElem = entry.get
-              if (elem == entryElem) entryElem
-              else linkedListLoop(entry.tail)
-            }
-          }
-
-        linkedListLoop(oldHead)
       }
+
+      linkedListLoop(table(bucket))
     }
+  }
+  // add an element to this set unless it's already in there and return the element
+  def findEntryOrUpdate(elem: A): A = elem match {
+    case null => throw new NullPointerException("WeakHashSet cannot hold nulls")
+    case _ => {
+      removeStaleEntries()
+      val hash = elem.hashCode
+      val bucket = bucketFor(hash)
+      val oldHead = table(bucket)
+
+      def add() = {
+        table(bucket) = new Entry(elem, hash, oldHead, queue)
+        count += 1
+        if (count > threshold) resize()
+        elem
+      }
+
+      @tailrec
+      def linkedListLoop(entry: Entry[A]): A = entry match {
+        case null => add()
+        case _ => {
+          val entryElem = entry.get
+          if (elem == entryElem) entryElem
+          else linkedListLoop(entry.tail)
+        }
+      }
+
+      linkedListLoop(oldHead)
+    }
+  }
 
   // add an element to this set unless it's already in there and return this set
-  override def +(elem: A): this.type =
-    elem match {
-      case null =>
-        throw new NullPointerException("WeakHashSet cannot hold nulls")
-      case _ => {
-        removeStaleEntries()
-        val hash = elem.hashCode
-        val bucket = bucketFor(hash)
-        val oldHead = table(bucket)
+  override def +(elem: A): this.type = elem match {
+    case null => throw new NullPointerException("WeakHashSet cannot hold nulls")
+    case _ => {
+      removeStaleEntries()
+      val hash = elem.hashCode
+      val bucket = bucketFor(hash)
+      val oldHead = table(bucket)
 
-        def add() {
-          table(bucket) = new Entry(elem, hash, oldHead, queue)
-          count += 1
-          if (count > threshold) resize()
-        }
-
-        @tailrec
-        def linkedListLoop(entry: Entry[A]): Unit =
-          entry match {
-            case null                     => add()
-            case _ if (elem == entry.get) => ()
-            case _                        => linkedListLoop(entry.tail)
-          }
-
-        linkedListLoop(oldHead)
-        this
+      def add() {
+        table(bucket) = new Entry(elem, hash, oldHead, queue)
+        count += 1
+        if (count > threshold) resize()
       }
+
+      @tailrec
+      def linkedListLoop(entry: Entry[A]): Unit = entry match {
+        case null                     => add()
+        case _ if (elem == entry.get) => ()
+        case _                        => linkedListLoop(entry.tail)
+      }
+
+      linkedListLoop(oldHead)
+      this
     }
+  }
 
   def +=(elem: A) = this + elem
 
@@ -249,25 +237,24 @@ final class WeakHashSet[A <: AnyRef](
   override def addEntry(x: A) { this += x }
 
   // remove an element from this set and return this set
-  override def -(elem: A): this.type =
-    elem match {
-      case null => this
-      case _ => {
-        removeStaleEntries()
-        val bucket = bucketFor(elem.hashCode)
+  override def -(elem: A): this.type = elem match {
+    case null => this
+    case _ => {
+      removeStaleEntries()
+      val bucket = bucketFor(elem.hashCode)
 
-        @tailrec
-        def linkedListLoop(prevEntry: Entry[A], entry: Entry[A]): Unit =
-          entry match {
-            case null                     => ()
-            case _ if (elem == entry.get) => remove(bucket, prevEntry, entry)
-            case _                        => linkedListLoop(entry, entry.tail)
-          }
+      @tailrec
+      def linkedListLoop(prevEntry: Entry[A], entry: Entry[A]): Unit =
+        entry match {
+          case null                     => ()
+          case _ if (elem == entry.get) => remove(bucket, prevEntry, entry)
+          case _                        => linkedListLoop(entry, entry.tail)
+        }
 
-        linkedListLoop(null, table(bucket))
-        this
-      }
+      linkedListLoop(null, table(bucket))
+      this
     }
+  }
 
   def -=(elem: A) = this - elem
 
@@ -339,15 +326,14 @@ final class WeakHashSet[A <: AnyRef](
         }
       }
 
-      def next(): A =
-        if (lookaheadelement == null)
-          throw new IndexOutOfBoundsException("next on an empty iterator")
-        else {
-          val result = lookaheadelement
-          lookaheadelement = null.asInstanceOf[A]
-          entry = entry.tail
-          result
-        }
+      def next(): A = if (lookaheadelement == null)
+        throw new IndexOutOfBoundsException("next on an empty iterator")
+      else {
+        val result = lookaheadelement
+        lookaheadelement = null.asInstanceOf[A]
+        entry = entry.tail
+        result
+      }
     }
   }
 

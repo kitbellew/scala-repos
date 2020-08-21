@@ -15,6 +15,6 @@ trait SeqViewLike[
 
   trait Reversed extends Transformed[A] with super[GenSeqViewLike].Reversed
 
-  protected def newReversed: Transformed[A] =
-    new AbstractTransformed[A] with Reversed
+  protected def newReversed: Transformed[A] = new AbstractTransformed[A]
+    with Reversed
 }

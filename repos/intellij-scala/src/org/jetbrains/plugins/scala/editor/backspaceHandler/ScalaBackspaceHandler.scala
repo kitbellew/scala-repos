@@ -118,10 +118,10 @@ class ScalaBackspaceHandler extends BackspaceHandlerDelegate {
       }
     }
 
-    def needCorrecrWiki(element: PsiElement) =
-      (element.getNode.getElementType.isInstanceOf[ScaladocSyntaxElementType]
-        || element.getText == "{{{") && (element.getParent.getLastChild != element ||
-        element.getText == "'''" && element.getPrevSibling != null && element.getPrevSibling.getText == "'")
+    def needCorrecrWiki(element: PsiElement) = (element.getNode.getElementType
+      .isInstanceOf[ScaladocSyntaxElementType]
+      || element.getText == "{{{") && (element.getParent.getLastChild != element ||
+      element.getText == "'''" && element.getPrevSibling != null && element.getPrevSibling.getText == "'")
   }
 
   /*
@@ -170,10 +170,8 @@ class ScalaBackspaceHandler extends BackspaceHandlerDelegate {
       if (stack.isEmpty) Some(true) else None
     }
 
-    @inline def fixBrace(): Unit =
-      if (hasLeft.exists(!_)) extensions.inWriteAction {
-        document.deleteString(offset, offset + 1)
-      }
+    @inline def fixBrace(): Unit = if (hasLeft.exists(!_))
+      extensions.inWriteAction { document.deleteString(offset, offset + 1) }
 
     (c, c1) match {
       case ('{', '}') => fixBrace()

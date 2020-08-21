@@ -49,33 +49,27 @@ object `package` {
   implicit class RichVFS(val vfs: DefaultFileSystemManager) extends AnyVal {
     implicit def toFileObject(f: File): FileObject = vfile(f)
 
-    private def withContext[T](msg: String)(t: => T): T =
-      try { t }
-      catch {
-        case e: FileSystemException =>
-          throw new FileSystemException(e.getMessage + " in " + msg, e)
-      }
+    private def withContext[T](msg: String)(t: => T): T = try { t }
+    catch {
+      case e: FileSystemException =>
+        throw new FileSystemException(e.getMessage + " in " + msg, e)
+    }
 
-    def vfile(name: String) =
-      withContext(s"$name =>")(
-        vfs.resolveFile(name.intern)
-      )
-    def vfile(file: File) =
-      withContext(s"$file =>")(
-        vfs.toFileObject(file)
-      )
-    def vres(path: String) =
-      withContext(s"$path =>")(
-        vfs.resolveFile(("res:" + path).intern)
-      )
-    def vjar(jar: File) =
-      withContext(s"$jar =>")(
-        vfs.resolveFile(("jar:" + jar.getAbsolutePath).intern)
-      )
-    def vjar(jar: FileObject) =
-      withContext(s"$jar =>")(
-        vfs.resolveFile(("jar:" + jar.getName.getURI).intern)
-      )
+    def vfile(name: String) = withContext(s"$name =>")(
+      vfs.resolveFile(name.intern)
+    )
+    def vfile(file: File) = withContext(s"$file =>")(
+      vfs.toFileObject(file)
+    )
+    def vres(path: String) = withContext(s"$path =>")(
+      vfs.resolveFile(("res:" + path).intern)
+    )
+    def vjar(jar: File) = withContext(s"$jar =>")(
+      vfs.resolveFile(("jar:" + jar.getAbsolutePath).intern)
+    )
+    def vjar(jar: FileObject) = withContext(s"$jar =>")(
+      vfs.resolveFile(("jar:" + jar.getName.getURI).intern)
+    )
 
     // WORKAROUND https://issues.apache.org/jira/browse/VFS-594
     def nuke(jar: FileObject) = {

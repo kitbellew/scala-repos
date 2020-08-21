@@ -74,11 +74,10 @@ trait CounterLike[
 
   override def toString: String = data.mkString("Counter(", ", ", ")")
 
-  override def equals(p1: Any): Boolean =
-    p1 match {
-      case x: Counter[K, V] => x.data == this.data
-      case _                => false
-    }
+  override def equals(p1: Any): Boolean = p1 match {
+    case x: Counter[K, V] => x.data == this.data
+    case _                => false
+  }
 
   override def hashCode(): Int = data.hashCode()
 

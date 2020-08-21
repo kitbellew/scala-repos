@@ -21,8 +21,8 @@ import scala.collection.JavaConverters._
 import com.twitter.summingbird.{WrappingConfig, ReadableMap}
 
 object StormConfig {
-  def apply(backingConfig: BacktypeStormConfig) =
-    WrappingConfig(new WrappedBacktypeStormConfig(backingConfig))
+  def apply(backingConfig: BacktypeStormConfig) = WrappingConfig(
+    new WrappedBacktypeStormConfig(backingConfig))
 }
 
 class WrappedBacktypeStormConfig(backingConfig: BacktypeStormConfig)

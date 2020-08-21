@@ -20,14 +20,13 @@ package com.twitter.scalding.db
 case class Definition(toStr: String) extends AnyVal
 
 object DBColumnDefinition {
-  def apply(col: ColumnDefinition): DBColumnDefinition =
-    DBColumnDefinition(
-      col.jdbcType,
-      col.name,
-      col.nullable,
-      col.sizeOpt,
-      col.defaultValue,
-      SqlTypeName(col.jdbcType.toString))
+  def apply(col: ColumnDefinition): DBColumnDefinition = DBColumnDefinition(
+    col.jdbcType,
+    col.name,
+    col.nullable,
+    col.sizeOpt,
+    col.defaultValue,
+    SqlTypeName(col.jdbcType.toString))
 }
 
 case class DBColumnDefinition(

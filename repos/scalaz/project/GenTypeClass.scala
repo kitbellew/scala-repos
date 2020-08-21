@@ -14,12 +14,11 @@ case class TypeClass(
   def packageString0 = pack.map("package " + _).mkString("\n")
   def packageString = pack.mkString(".")
   def fqn = (pack :+ name).mkString(".")
-  def doc =
-    "[[" + fqn + "]]" + (if (extendsList.nonEmpty)
-                           " extends " + extendsList
-                             .map(tc => "[[" + tc.fqn + "]]")
-                             .mkString(" with ")
-                         else "")
+  def doc = "[[" + fqn + "]]" + (if (extendsList.nonEmpty)
+                                   " extends " + extendsList
+                                     .map(tc => "[[" + tc.fqn + "]]")
+                                     .mkString(" with ")
+                                 else "")
 }
 
 object TypeClass {
@@ -128,60 +127,59 @@ object TypeClass {
 
   lazy val bindRec = TypeClass("BindRec", *->*, extendsList = Seq(bind))
 
-  def core: List[TypeClass] =
-    List(
-      semigroup,
-      monoid,
-      equal,
-      show,
-      order,
-      enum,
-      plusEmpty,
-      isEmpty,
-      optional,
-      invariantFunctor,
-      functor,
-      contravariant,
-      divide,
-      divisible,
-      apply,
-      applicative,
-      align,
-      zip,
-      unzip,
-      cozip,
-      bind,
-      monad,
-      cobind,
-      comonad,
-      plus,
-      applicativePlus,
-      monadPlus,
-      foldable,
-      foldable1,
-      traverse,
-      traverse1,
-      associative,
-      bifunctor,
-      bifoldable,
-      bitraverse,
-      catchable,
-      nondeterminism,
-      compose,
-      category,
-      choice,
-      split,
-      profunctor,
-      strong,
-      proChoice,
-      arrow,
-      monadState,
-      monadError,
-      monadTell,
-      monadReader,
-      comonadStore,
-      bindRec
-    )
+  def core: List[TypeClass] = List(
+    semigroup,
+    monoid,
+    equal,
+    show,
+    order,
+    enum,
+    plusEmpty,
+    isEmpty,
+    optional,
+    invariantFunctor,
+    functor,
+    contravariant,
+    divide,
+    divisible,
+    apply,
+    applicative,
+    align,
+    zip,
+    unzip,
+    cozip,
+    bind,
+    monad,
+    cobind,
+    comonad,
+    plus,
+    applicativePlus,
+    monadPlus,
+    foldable,
+    foldable1,
+    traverse,
+    traverse1,
+    associative,
+    bifunctor,
+    bifoldable,
+    bitraverse,
+    catchable,
+    nondeterminism,
+    compose,
+    category,
+    choice,
+    split,
+    profunctor,
+    strong,
+    proChoice,
+    arrow,
+    monadState,
+    monadError,
+    monadTell,
+    monadReader,
+    comonadStore,
+    bindRec
+  )
   lazy val concurrent = Seq[TypeClass]()
   def effect = Seq(liftIO, monadIO, liftControlIO, monadControlIO, resource)
 }
@@ -300,28 +298,26 @@ object GenTypeClass {
     def extendsListText(
         suffix: String,
         parents: Seq[String] = extendsList,
-        cti: String = classifiedTypeIdent) =
-      parents match {
-        case Seq() => ""
-        case es =>
-          es.map(n => n + suffix + "[" + cti + "]")
-            .mkString("extends ", " with ", "")
-      }
-    def extendsToSyntaxListText =
-      kind match {
-        case Kind.*->* | Kind.*^*->* =>
-          "extends To" + typeClassName + "Ops0" + (extendsList match {
-            case Seq() => ""
-            case es =>
-              es.map(n => "To" + n + "Ops").mkString(" with ", " with ", "")
-          })
-        case _ =>
-          extendsList match {
-            case Seq() => ""
-            case es =>
-              es.map(n => "To" + n + "Ops").mkString("extends ", " with ", "")
-          }
-      }
+        cti: String = classifiedTypeIdent) = parents match {
+      case Seq() => ""
+      case es =>
+        es.map(n => n + suffix + "[" + cti + "]")
+          .mkString("extends ", " with ", "")
+    }
+    def extendsToSyntaxListText = kind match {
+      case Kind.*->* | Kind.*^*->* =>
+        "extends To" + typeClassName + "Ops0" + (extendsList match {
+          case Seq() => ""
+          case es =>
+            es.map(n => "To" + n + "Ops").mkString(" with ", " with ", "")
+        })
+      case _ =>
+        extendsList match {
+          case Seq() => ""
+          case es =>
+            es.map(n => "To" + n + "Ops").mkString("extends ", " with ", "")
+        }
+    }
     val extendsLikeList = extendsListText("")
 
     val syntaxPackString = tc.syntaxPack

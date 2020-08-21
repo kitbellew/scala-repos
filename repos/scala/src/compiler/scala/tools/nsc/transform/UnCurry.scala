@@ -107,28 +107,26 @@ abstract class UnCurry
     // than spewing stack traces at end users for internal errors. Examples
     // which hit at this point should not be hard to come by, but the immediate
     // motivation can be seen in continuations-neg/t3718.
-    override def transform(tree: Tree): Tree =
-      (
-        try postTransform(mainTransform(tree))
-        catch {
-          case ex: TypeError =>
-            reporter.error(ex.pos, ex.msg)
-            debugStack(ex)
-            EmptyTree
-        }
-      )
+    override def transform(tree: Tree): Tree = (
+      try postTransform(mainTransform(tree))
+      catch {
+        case ex: TypeError =>
+          reporter.error(ex.pos, ex.msg)
+          debugStack(ex)
+          EmptyTree
+      }
+    )
 
     /* Is tree a reference `x` to a call by name parameter that needs to be converted to
      * x.apply()? Note that this is not the case if `x` is used as an argument to another
      * call by name parameter.
      */
-    def isByNameRef(tree: Tree) =
-      (
-        tree.isTerm
-          && (tree.symbol ne null)
-          && (isByName(tree.symbol))
-          && !byNameArgs(tree)
-      )
+    def isByNameRef(tree: Tree) = (
+      tree.isTerm
+        && (tree.symbol ne null)
+        && (isByName(tree.symbol))
+        && !byNameArgs(tree)
+    )
 
 // ------- Handling non-local returns -------------------------------------------------
 
@@ -212,14 +210,13 @@ abstract class UnCurry
 // ------ Transforming anonymous functions and by-name-arguments ----------------
 
     /** Undo eta expansion for parameterless and nullary methods */
-    def deEta(fun: Function): Tree =
-      fun match {
-        case Function(List(), expr) if isByNameRef(expr) =>
-          noApply += expr
-          expr
-        case _ =>
-          fun
-      }
+    def deEta(fun: Function): Tree = fun match {
+      case Function(List(), expr) if isByNameRef(expr) =>
+        noApply += expr
+        expr
+      case _ =>
+        fun
+    }
 
     /**  Transform a function node (x_1,...,x_n) => body of type FunctionN[T_1, .., T_N, R] to
       *
@@ -402,11 +399,10 @@ abstract class UnCurry
         } else {
           log(
             s"Argument '$arg' at line ${arg.pos.line} is $formal from ${fun.fullName}")
-          def canUseDirectly(recv: Tree) =
-            (
-              recv.tpe.typeSymbol.isSubClass(FunctionClass(0))
-                && treeInfo.isExprSafeToInline(recv)
-            )
+          def canUseDirectly(recv: Tree) = (
+            recv.tpe.typeSymbol.isSubClass(FunctionClass(0))
+              && treeInfo.isExprSafeToInline(recv)
+          )
           arg match {
             // don't add a thunk for by-name argument if argument already is an application of
             // a Function0. We can then remove the application and use the existing Function0.
@@ -435,27 +431,24 @@ abstract class UnCurry
       }
     }
 
-    private def isSelfSynchronized(ddef: DefDef) =
-      ddef.rhs match {
-        case Apply(fn @ TypeApply(Select(sel, _), _), _) =>
-          fn.symbol == Object_synchronized && sel.symbol == ddef.symbol.enclClass && !ddef.symbol.enclClass.isTrait
-        case _ => false
-      }
+    private def isSelfSynchronized(ddef: DefDef) = ddef.rhs match {
+      case Apply(fn @ TypeApply(Select(sel, _), _), _) =>
+        fn.symbol == Object_synchronized && sel.symbol == ddef.symbol.enclClass && !ddef.symbol.enclClass.isTrait
+      case _ => false
+    }
 
     /** If an eligible method is entirely wrapped in a call to synchronized
       *  locked on the same instance, remove the synchronized scaffolding and
       *  mark the method symbol SYNCHRONIZED for bytecode generation.
       */
-    private def translateSynchronized(tree: Tree) =
-      tree match {
-        case dd @ DefDef(_, _, _, _, _, Apply(fn, body :: Nil))
-            if isSelfSynchronized(dd) =>
-          log(
-            "Translating " + dd.symbol.defString + " into synchronized method")
-          dd.symbol setFlag SYNCHRONIZED
-          deriveDefDef(dd)(_ => body)
-        case _ => tree
-      }
+    private def translateSynchronized(tree: Tree) = tree match {
+      case dd @ DefDef(_, _, _, _, _, Apply(fn, body :: Nil))
+          if isSelfSynchronized(dd) =>
+        log("Translating " + dd.symbol.defString + " into synchronized method")
+        dd.symbol setFlag SYNCHRONIZED
+        deriveDefDef(dd)(_ => body)
+      case _ => tree
+    }
     def isNonLocalReturn(ret: Return) =
       ret.symbol != currentOwner.enclMethod || currentOwner.isLazy || currentOwner.isAnonymousFunction
 
@@ -623,110 +616,107 @@ abstract class UnCurry
       result modifyType uncurry
     }
 
-    def postTransform(tree: Tree): Tree =
-      exitingUncurry {
-        def applyUnary(): Tree = {
-          // TODO_NMT: verify that the inner tree of a type-apply also gets parens if the
-          // whole tree is a polymorphic nullary method application
-          def removeNullary() =
-            tree.tpe match {
-              case MethodType(_, _) => tree
-              case tp               => tree setType MethodType(Nil, tp.resultType)
-            }
-          if (tree.symbol.isMethod && !tree.tpe.isInstanceOf[PolyType])
-            gen.mkApplyIfNeeded(removeNullary())
-          else if (tree.isType)
-            TypeTree(tree.tpe) setPos tree.pos
-          else
-            tree
+    def postTransform(tree: Tree): Tree = exitingUncurry {
+      def applyUnary(): Tree = {
+        // TODO_NMT: verify that the inner tree of a type-apply also gets parens if the
+        // whole tree is a polymorphic nullary method application
+        def removeNullary() = tree.tpe match {
+          case MethodType(_, _) => tree
+          case tp               => tree setType MethodType(Nil, tp.resultType)
         }
+        if (tree.symbol.isMethod && !tree.tpe.isInstanceOf[PolyType])
+          gen.mkApplyIfNeeded(removeNullary())
+        else if (tree.isType)
+          TypeTree(tree.tpe) setPos tree.pos
+        else
+          tree
+      }
 
-        def isThrowable(pat: Tree): Boolean =
-          pat match {
-            case Typed(Ident(nme.WILDCARD), tpt) =>
-              tpt.tpe =:= ThrowableTpe
-            case Bind(_, pat) =>
-              isThrowable(pat)
-            case _ =>
-              false
+      def isThrowable(pat: Tree): Boolean = pat match {
+        case Typed(Ident(nme.WILDCARD), tpt) =>
+          tpt.tpe =:= ThrowableTpe
+        case Bind(_, pat) =>
+          isThrowable(pat)
+        case _ =>
+          false
+      }
+
+      tree match {
+        /* Some uncurry post transformations add members to templates.
+         *
+         * Members registered by `addMembers` for the current template are added
+         * once the template transformation has finished.
+         *
+         * In particular, this case will add:
+         * - synthetic Java varargs forwarders for repeated parameters
+         */
+        case Template(_, _, _) =>
+          localTyper = typer.atOwner(tree, currentClass)
+          useNewMembers(currentClass) { newMembers =>
+            deriveTemplate(tree)(transformTrees(newMembers) ::: _)
           }
 
-        tree match {
-          /* Some uncurry post transformations add members to templates.
-           *
-           * Members registered by `addMembers` for the current template are added
-           * once the template transformation has finished.
-           *
-           * In particular, this case will add:
-           * - synthetic Java varargs forwarders for repeated parameters
-           */
-          case Template(_, _, _) =>
-            localTyper = typer.atOwner(tree, currentClass)
-            useNewMembers(currentClass) { newMembers =>
-              deriveTemplate(tree)(transformTrees(newMembers) ::: _)
+        case dd @ DefDef(_, _, _, vparamss0, _, rhs0) =>
+          val ddSym = dd.symbol
+          val (newParamss, newRhs): (List[List[ValDef]], Tree) =
+            if (dependentParamTypeErasure isDependent dd)
+              dependentParamTypeErasure erase dd
+            else {
+              val vparamss1 = vparamss0 match {
+                case _ :: Nil => vparamss0
+                case _        => vparamss0.flatten :: Nil
+              }
+              (vparamss1, rhs0)
             }
 
-          case dd @ DefDef(_, _, _, vparamss0, _, rhs0) =>
-            val ddSym = dd.symbol
-            val (newParamss, newRhs): (List[List[ValDef]], Tree) =
-              if (dependentParamTypeErasure isDependent dd)
-                dependentParamTypeErasure erase dd
-              else {
-                val vparamss1 = vparamss0 match {
-                  case _ :: Nil => vparamss0
-                  case _        => vparamss0.flatten :: Nil
-                }
-                (vparamss1, rhs0)
+          // A no-arg method with ConstantType result type can safely be reduced to the corresponding Literal
+          // (only pure methods are typed as ConstantType). We could also do this for methods with arguments,
+          // after ensuring the arguments are not referenced.
+          val literalRhsIfConst =
+            if (newParamss.head.isEmpty) { // We know newParamss.length == 1 from above
+              ddSym.info.resultType match {
+                case tp @ ConstantType(value) =>
+                  Literal(
+                    value) setType tp setPos newRhs.pos // inlining of gen.mkAttributedQualifier(tp)
+                case _ => newRhs
               }
+            } else newRhs
 
-            // A no-arg method with ConstantType result type can safely be reduced to the corresponding Literal
-            // (only pure methods are typed as ConstantType). We could also do this for methods with arguments,
-            // after ensuring the arguments are not referenced.
-            val literalRhsIfConst =
-              if (newParamss.head.isEmpty) { // We know newParamss.length == 1 from above
-                ddSym.info.resultType match {
-                  case tp @ ConstantType(value) =>
-                    Literal(
-                      value) setType tp setPos newRhs.pos // inlining of gen.mkAttributedQualifier(tp)
-                  case _ => newRhs
-                }
-              } else newRhs
+          val flatdd = copyDefDef(dd)(
+            vparamss = newParamss,
+            rhs = nonLocalReturnKeys get ddSym match {
+              case Some(k) =>
+                atPos(newRhs.pos)(
+                  nonLocalReturnTry(literalRhsIfConst, k, ddSym))
+              case None => literalRhsIfConst
+            }
+          )
+          addJavaVarargsForwarders(dd, flatdd)
 
-            val flatdd = copyDefDef(dd)(
-              vparamss = newParamss,
-              rhs = nonLocalReturnKeys get ddSym match {
-                case Some(k) =>
-                  atPos(newRhs.pos)(
-                    nonLocalReturnTry(literalRhsIfConst, k, ddSym))
-                case None => literalRhsIfConst
-              }
-            )
-            addJavaVarargsForwarders(dd, flatdd)
+        case tree: Try =>
+          if (tree.catches exists (cd => !treeInfo.isCatchCase(cd)))
+            devWarning("VPM BUG - illegal try/catch " + tree.catches)
+          tree
 
-          case tree: Try =>
-            if (tree.catches exists (cd => !treeInfo.isCatchCase(cd)))
-              devWarning("VPM BUG - illegal try/catch " + tree.catches)
-            tree
+        case Apply(Apply(fn, args), args1) =>
+          treeCopy.Apply(tree, fn, args ::: args1)
 
-          case Apply(Apply(fn, args), args1) =>
-            treeCopy.Apply(tree, fn, args ::: args1)
-
-          case Ident(name) =>
-            assert(name != tpnme.WILDCARD_STAR, tree)
-            applyUnary()
-          case Select(_, _) | TypeApply(_, _) =>
-            applyUnary()
-          case ret @ Return(expr) if isNonLocalReturn(ret) =>
-            log(
-              "non-local return from %s to %s"
-                .format(currentOwner.enclMethod, ret.symbol))
-            atPos(ret.pos)(nonLocalReturnThrow(expr, ret.symbol))
-          case TypeTree() =>
-            tree
-          case _ =>
-            if (tree.isType) TypeTree(tree.tpe) setPos tree.pos else tree
-        }
+        case Ident(name) =>
+          assert(name != tpnme.WILDCARD_STAR, tree)
+          applyUnary()
+        case Select(_, _) | TypeApply(_, _) =>
+          applyUnary()
+        case ret @ Return(expr) if isNonLocalReturn(ret) =>
+          log(
+            "non-local return from %s to %s"
+              .format(currentOwner.enclMethod, ret.symbol))
+          atPos(ret.pos)(nonLocalReturnThrow(expr, ret.symbol))
+        case TypeTree() =>
+          tree
+        case _ =>
+          if (tree.isType) TypeTree(tree.tpe) setPos tree.pos else tree
       }
+    }
 
     /**
       * When we concatenate parameter lists, formal parameter types that were dependent

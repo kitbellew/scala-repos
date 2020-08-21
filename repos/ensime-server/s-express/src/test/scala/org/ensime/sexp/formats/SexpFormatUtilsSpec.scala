@@ -61,11 +61,10 @@ class SexpFormatUtilsSpec extends FormatSpec with SexpFormats {
   it should "support safe readers" in {
     val safe = safeReader(
       new SexpReader[SexpString] {
-        def read(value: Sexp) =
-          value match {
-            case s: SexpString => s
-            case x             => deserializationError(x)
-          }
+        def read(value: Sexp) = value match {
+          case s: SexpString => s
+          case x             => deserializationError(x)
+        }
       }
     )
 

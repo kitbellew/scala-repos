@@ -109,11 +109,11 @@ private[process] trait ProcessBuilderImpl {
       new SequenceBuilder(this, other)
 
     def run(): Process = run(connectInput = false)
-    def run(connectInput: Boolean): Process =
-      run(BasicIO.standard(connectInput))
+    def run(connectInput: Boolean): Process = run(
+      BasicIO.standard(connectInput))
     def run(log: ProcessLogger): Process = run(log, connectInput = false)
-    def run(log: ProcessLogger, connectInput: Boolean): Process =
-      run(BasicIO(connectInput, log))
+    def run(log: ProcessLogger, connectInput: Boolean): Process = run(
+      BasicIO(connectInput, log))
 
     def !! = slurp(None, withIn = false)
     def !!(log: ProcessLogger) = slurp(Some(log), withIn = false)
@@ -185,8 +185,8 @@ private[process] trait ProcessBuilderImpl {
 
     def #<<(f: File): ProcessBuilder = #<<(new FileInput(f))
     def #<<(u: URL): ProcessBuilder = #<<(new URLInput(u))
-    def #<<(s: => InputStream): ProcessBuilder =
-      #<<(new IStreamBuilder(s, "<input stream>"))
+    def #<<(s: => InputStream): ProcessBuilder = #<<(
+      new IStreamBuilder(s, "<input stream>"))
     def #<<(b: ProcessBuilder): ProcessBuilder =
       new PipedBuilder(b, new FileOutput(base, true), false)
   }

@@ -19,6 +19,6 @@ object SprayHttpResponse {
               result.entityJson)}\nErrors:\n${errors.mkString("\n")}")
       }
     }
-  def responseResult: HttpResponse => RestResult[HttpResponse] =
-    response => RestResult(response)
+  def responseResult: HttpResponse => RestResult[HttpResponse] = response =>
+    RestResult(response)
 }

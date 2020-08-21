@@ -74,13 +74,12 @@ case class OffsetRequest(
   def this(
       requestInfo: Map[TopicAndPartition, PartitionOffsetRequestInfo],
       correlationId: Int,
-      replicaId: Int) =
-    this(
-      requestInfo,
-      OffsetRequest.CurrentVersion,
-      correlationId,
-      OffsetRequest.DefaultClientId,
-      replicaId)
+      replicaId: Int) = this(
+    requestInfo,
+    OffsetRequest.CurrentVersion,
+    correlationId,
+    OffsetRequest.DefaultClientId,
+    replicaId)
 
   lazy val requestInfoGroupedByTopic = requestInfo.groupBy(_._1.topic)
 

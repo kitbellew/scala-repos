@@ -193,11 +193,10 @@ package mongotestdocs {
     def meta = StringDateDoc
   }
   object StringDateDoc extends MongoDocumentMeta[StringDateDoc] {
-    override def formats =
-      new DefaultFormats {
-        override def dateFormatter =
-          new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'")
-      } + new DateSerializer + new ObjectIdSerializer
+    override def formats = new DefaultFormats {
+      override def dateFormatter =
+        new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'")
+    } + new DateSerializer + new ObjectIdSerializer
   }
 
 }

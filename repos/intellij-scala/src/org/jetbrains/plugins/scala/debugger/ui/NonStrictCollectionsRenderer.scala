@@ -196,19 +196,17 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
   def isExpandable(
       value: Value,
       evaluationContext: EvaluationContext,
-      parentDescriptor: NodeDescriptor) =
-    value match {
-      case objectRef: ObjectReferenceImpl =>
-        ScalaCollectionRenderer.nonEmpty(objectRef, evaluationContext)
-      case _ => false
-    }
+      parentDescriptor: NodeDescriptor) = value match {
+    case objectRef: ObjectReferenceImpl =>
+      ScalaCollectionRenderer.nonEmpty(objectRef, evaluationContext)
+    case _ => false
+  }
 
-  def isApplicable(tpe: Type): Boolean =
-    tpe match {
-      case refType: ReferenceType if !mustNotExpandStreams =>
-        isStream(tpe) || isView(tpe)
-      case _ => false
-    }
+  def isApplicable(tpe: Type): Boolean = tpe match {
+    case refType: ReferenceType if !mustNotExpandStreams =>
+      isStream(tpe) || isView(tpe)
+    case _ => false
+  }
 
   private def isView(tpe: Type): Boolean =
     DebuggerUtils.instanceOf(tpe, ScalaCollectionRenderer.viewClassName)

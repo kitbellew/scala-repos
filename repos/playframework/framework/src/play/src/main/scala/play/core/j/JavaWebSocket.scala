@@ -27,8 +27,8 @@ object JavaWebSocket extends JavaHelpers {
 
   def webSocketWrapper[A](
       retrieveWebSocket: => CompletionStage[LegacyWebSocket[A]])(implicit
-      transformer: MessageFlowTransformer[A, A]): WebSocket =
-    WebSocket { request =>
+      transformer: MessageFlowTransformer[A, A]): WebSocket = WebSocket {
+    request =>
       val javaContext = createJavaContext(request)
 
       val javaWebSocket =
@@ -84,7 +84,7 @@ object JavaWebSocket extends JavaHelpers {
           )
         }
       }
-    }
+  }
 
   // -- Bytes
 

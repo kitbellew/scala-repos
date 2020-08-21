@@ -242,15 +242,15 @@ object WSClientAutobahnTest extends App {
   }
   object CaseStatus {
     import DefaultJsonProtocol._
-    implicit def caseStatusFormat: JsonFormat[CaseStatus] =
-      jsonFormat1(CaseStatus.apply)
+    implicit def caseStatusFormat: JsonFormat[CaseStatus] = jsonFormat1(
+      CaseStatus.apply)
   }
 
   // {"id": "1.1.1", "description": "Send text message with payload 0."}
   case class CaseInfo(id: String, description: String)
   object CaseInfo {
     import DefaultJsonProtocol._
-    implicit def caseInfoFormat: JsonFormat[CaseInfo] =
-      jsonFormat2(CaseInfo.apply)
+    implicit def caseInfoFormat: JsonFormat[CaseInfo] = jsonFormat2(
+      CaseInfo.apply)
   }
 }

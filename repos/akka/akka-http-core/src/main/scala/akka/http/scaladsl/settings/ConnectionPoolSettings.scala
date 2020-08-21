@@ -54,6 +54,6 @@ abstract class ConnectionPoolSettings extends js.ConnectionPoolSettings {
 object ConnectionPoolSettings
     extends SettingsCompanion[ConnectionPoolSettings] {
   override def apply(config: Config) = ConnectionPoolSettingsImpl(config)
-  override def apply(configOverrides: String) =
-    ConnectionPoolSettingsImpl(configOverrides)
+  override def apply(configOverrides: String) = ConnectionPoolSettingsImpl(
+    configOverrides)
 }

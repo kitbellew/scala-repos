@@ -42,22 +42,20 @@ trait ArrowTests[F[_, _]]
     new RuleSet {
       def name: String = "arrow"
       def bases: Seq[(String, RuleSet)] = Nil
-      def parents: Seq[RuleSet] =
-        Seq(
-          category[A, B, C, D],
-          split[A, B, C, D, E, G],
-          strong[A, B, C, D, E, G]
-        )
-      def props: Seq[(String, Prop)] =
-        Seq(
-          "arrow identity" -> laws.arrowIdentity[A],
-          "arrow composition" -> forAll(laws.arrowComposition[A, B, C] _),
-          "arrow extension" -> forAll(laws.arrowExtension[A, B, C] _),
-          "arrow functor" -> forAll(laws.arrowFunctor[A, B, C, D] _),
-          "arrow exchange" -> forAll(laws.arrowExchange[A, B, C, D] _),
-          "arrow unit" -> forAll(laws.arrowUnit[A, B, C] _),
-          "arrow association" -> forAll(laws.arrowAssociation[A, B, C, D] _)
-        )
+      def parents: Seq[RuleSet] = Seq(
+        category[A, B, C, D],
+        split[A, B, C, D, E, G],
+        strong[A, B, C, D, E, G]
+      )
+      def props: Seq[(String, Prop)] = Seq(
+        "arrow identity" -> laws.arrowIdentity[A],
+        "arrow composition" -> forAll(laws.arrowComposition[A, B, C] _),
+        "arrow extension" -> forAll(laws.arrowExtension[A, B, C] _),
+        "arrow functor" -> forAll(laws.arrowFunctor[A, B, C, D] _),
+        "arrow exchange" -> forAll(laws.arrowExchange[A, B, C, D] _),
+        "arrow unit" -> forAll(laws.arrowUnit[A, B, C] _),
+        "arrow association" -> forAll(laws.arrowAssociation[A, B, C, D] _)
+      )
     }
 }
 

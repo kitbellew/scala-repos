@@ -280,41 +280,48 @@ trait TraversableViewLike[
   /** Boilerplate method, to override in each subclass
     *  This method could be eliminated if Scala had virtual classes
     */
-  protected def newForced[B](xs: => GenSeq[B]): Transformed[B] =
-    new { val forced = xs } with AbstractTransformed[B] with Forced[B]
+  protected def newForced[B](xs: => GenSeq[B]): Transformed[B] = new {
+    val forced = xs
+  } with AbstractTransformed[B] with Forced[B]
   protected def newAppended[B >: A](that: GenTraversable[B]): Transformed[B] =
     new { val rest = that } with AbstractTransformed[B] with Appended[B]
   protected def newPrepended[B >: A](that: GenTraversable[B]): Transformed[B] =
     new { val fst = that } with AbstractTransformed[B] with Prepended[B]
-  protected def newMapped[B](f: A => B): Transformed[B] =
-    new { val mapping = f } with AbstractTransformed[B] with Mapped[B]
+  protected def newMapped[B](f: A => B): Transformed[B] = new {
+    val mapping = f
+  } with AbstractTransformed[B] with Mapped[B]
   protected def newFlatMapped[B](
-      f: A => GenTraversableOnce[B]): Transformed[B] =
-    new { val mapping = f } with AbstractTransformed[B] with FlatMapped[B]
-  protected def newFiltered(p: A => Boolean): Transformed[A] =
-    new { val pred = p } with AbstractTransformed[A] with Filtered
-  protected def newSliced(_endpoints: SliceInterval): Transformed[A] =
-    new { val endpoints = _endpoints } with AbstractTransformed[A] with Sliced
-  protected def newDroppedWhile(p: A => Boolean): Transformed[A] =
-    new { val pred = p } with AbstractTransformed[A] with DroppedWhile
-  protected def newTakenWhile(p: A => Boolean): Transformed[A] =
-    new { val pred = p } with AbstractTransformed[A] with TakenWhile
+      f: A => GenTraversableOnce[B]): Transformed[B] = new { val mapping = f }
+  with AbstractTransformed[B] with FlatMapped[B]
+  protected def newFiltered(p: A => Boolean): Transformed[A] = new {
+    val pred = p
+  } with AbstractTransformed[A] with Filtered
+  protected def newSliced(_endpoints: SliceInterval): Transformed[A] = new {
+    val endpoints = _endpoints
+  } with AbstractTransformed[A] with Sliced
+  protected def newDroppedWhile(p: A => Boolean): Transformed[A] = new {
+    val pred = p
+  } with AbstractTransformed[A] with DroppedWhile
+  protected def newTakenWhile(p: A => Boolean): Transformed[A] = new {
+    val pred = p
+  } with AbstractTransformed[A] with TakenWhile
 
-  protected def newTaken(n: Int): Transformed[A] =
-    newSliced(SliceInterval(0, n))
-  protected def newDropped(n: Int): Transformed[A] =
-    newSliced(SliceInterval(n, Int.MaxValue))
+  protected def newTaken(n: Int): Transformed[A] = newSliced(
+    SliceInterval(0, n))
+  protected def newDropped(n: Int): Transformed[A] = newSliced(
+    SliceInterval(n, Int.MaxValue))
 
   override def filter(p: A => Boolean): This = newFiltered(p)
   override def withFilter(p: A => Boolean): This = newFiltered(p)
   override def partition(p: A => Boolean): (This, This) =
     (newFiltered(p), newFiltered(!p(_)))
-  override def init: This =
-    newSliced(SliceInterval(0, size - 1)) // !!! can't call size here.
+  override def init: This = newSliced(
+    SliceInterval(0, size - 1)
+  ) // !!! can't call size here.
   override def drop(n: Int): This = newDropped(n)
   override def take(n: Int): This = newTaken(n)
-  override def slice(from: Int, until: Int): This =
-    newSliced(SliceInterval(from, until))
+  override def slice(from: Int, until: Int): This = newSliced(
+    SliceInterval(from, until))
   override def dropWhile(p: A => Boolean): This = newDroppedWhile(p)
   override def takeWhile(p: A => Boolean): This = newTakenWhile(p)
   override def span(p: A => Boolean): (This, This) =

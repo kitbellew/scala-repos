@@ -45,24 +45,22 @@ object Def extends Init[Scope] with TaskMacroExtra {
   def displayRelative(
       current: ProjectRef,
       multi: Boolean,
-      project: Reference): String =
-    project match {
-      case BuildRef(current.build)      => "{.}/"
-      case `current`                    => if (multi) current.project + "/" else ""
-      case ProjectRef(current.build, x) => x + "/"
-      case _                            => Reference.display(project) + "/"
-    }
+      project: Reference): String = project match {
+    case BuildRef(current.build)      => "{.}/"
+    case `current`                    => if (multi) current.project + "/" else ""
+    case ProjectRef(current.build, x) => x + "/"
+    case _                            => Reference.display(project) + "/"
+  }
   def displayFull(scoped: ScopedKey[_]): String = displayFull(scoped, None)
   def displayFull(scoped: ScopedKey[_], keyNameColor: Option[String]): String =
     Scope.display(scoped.scope, colored(scoped.key.label, keyNameColor))
   def displayMasked(scoped: ScopedKey[_], mask: ScopeMask): String =
     Scope.displayMasked(scoped.scope, scoped.key.label, mask)
 
-  def colored(s: String, color: Option[String]): String =
-    color match {
-      case Some(c) => c + s + scala.Console.RESET
-      case None    => s
-    }
+  def colored(s: String, color: Option[String]): String = color match {
+    case Some(c) => c + s + scala.Console.RESET
+    case None    => s
+  }
 
   override def deriveAllowed[T](
       s: Setting[T],
@@ -104,8 +102,8 @@ object Def extends Init[Scope] with TaskMacroExtra {
   def toISParser[T](p: Initialize[Parser[T]]): Initialize[State => Parser[T]] =
     p(toSParser)
   def toIParser[T](
-      p: Initialize[InputTask[T]]): Initialize[State => Parser[Task[T]]] =
-    p(_.parser)
+      p: Initialize[InputTask[T]]): Initialize[State => Parser[Task[T]]] = p(
+    _.parser)
 
   import language.experimental.macros
   import std.TaskMacro.{

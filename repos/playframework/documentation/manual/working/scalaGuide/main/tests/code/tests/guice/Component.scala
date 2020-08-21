@@ -22,9 +22,8 @@ import play.api.{Environment, Configuration}
 import play.api.inject.Module
 
 class ComponentModule extends Module {
-  def bindings(env: Environment, conf: Configuration) =
-    Seq(
-      bind[Component].to[DefaultComponent]
-    )
+  def bindings(env: Environment, conf: Configuration) = Seq(
+    bind[Component].to[DefaultComponent]
+  )
 }
 // #component-module

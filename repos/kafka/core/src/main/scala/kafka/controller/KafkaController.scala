@@ -85,12 +85,10 @@ class ControllerContext(val zkUtils: ZkUtils, val zkSessionTimeout: Int) {
   }
 
   // getter
-  def liveBrokers =
-    liveBrokersUnderlying.filter(broker =>
-      !shuttingDownBrokerIds.contains(broker.id))
-  def liveBrokerIds =
-    liveBrokerIdsUnderlying.filter(brokerId =>
-      !shuttingDownBrokerIds.contains(brokerId))
+  def liveBrokers = liveBrokersUnderlying.filter(broker =>
+    !shuttingDownBrokerIds.contains(broker.id))
+  def liveBrokerIds = liveBrokerIdsUnderlying.filter(brokerId =>
+    !shuttingDownBrokerIds.contains(brokerId))
 
   def liveOrShuttingDownBrokerIds = liveBrokerIdsUnderlying
   def liveOrShuttingDownBrokers = liveBrokersUnderlying

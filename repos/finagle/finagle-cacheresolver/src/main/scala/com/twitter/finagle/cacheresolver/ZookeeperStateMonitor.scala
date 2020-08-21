@@ -121,58 +121,51 @@ trait ZookeeperStateMonitor {
     * applyZKData implementation to process the data string.
     */
   def applyZKData(data: Array[Byte]): Unit
-  def loadZKData =
-    () =>
-      synchronized {
-        loadZKDataCounter.incr()
+  def loadZKData = () =>
+    synchronized {
+      loadZKDataCounter.incr()
 
-        // read cache pool config data and leave a node data watch
-        val data = zkClient
-          .get(
-            Amount.of(DefaultZKWaitTimeout.inMilliseconds, Time.MILLISECONDS))
-          .getData(zkPath, true, null)
+      // read cache pool config data and leave a node data watch
+      val data = zkClient
+        .get(Amount.of(DefaultZKWaitTimeout.inMilliseconds, Time.MILLISECONDS))
+        .getData(zkPath, true, null)
 
-        applyZKData(data)
-      }
+      applyZKData(data)
+    }
 
   /**
     * Load the zookeeper node children as well as leaving a children watch, then invoke the
     * applyZKChildren implementation to process the children list.
     */
   def applyZKChildren(children: List[String]): Unit = {} // no-op by default
-  def loadZKChildren =
-    () =>
-      synchronized {
-        loadZKChildrenCounter.incr()
+  def loadZKChildren = () =>
+    synchronized {
+      loadZKChildrenCounter.incr()
 
-        // get children list and leave a node children watch
-        val children = zkClient
-          .get(
-            Amount.of(DefaultZKWaitTimeout.inMilliseconds, Time.MILLISECONDS))
-          .getChildren(zkPath, true, null)
+      // get children list and leave a node children watch
+      val children = zkClient
+        .get(Amount.of(DefaultZKWaitTimeout.inMilliseconds, Time.MILLISECONDS))
+        .getChildren(zkPath, true, null)
 
-        applyZKChildren(children.toList)
-      }
+      applyZKChildren(children.toList)
+    }
 
   /**
     * Reconnect to the zookeeper, this maybe invoked when zookeeper connection expired and the
     * node data watcher previously registered got dropped, hence re-attache the data wather here.
     */
-  def reconnectZK =
-    () =>
-      synchronized {
-        reconnectZKCounter.incr()
+  def reconnectZK = () =>
+    synchronized {
+      reconnectZKCounter.incr()
 
-        // reset watch for node data and children
-        val data = zkClient
-          .get(
-            Amount.of(DefaultZKWaitTimeout.inMilliseconds, Time.MILLISECONDS))
-          .getData(zkPath, true, null)
-        val children = zkClient
-          .get(
-            Amount.of(DefaultZKWaitTimeout.inMilliseconds, Time.MILLISECONDS))
-          .getChildren(zkPath, true, null)
-      }
+      // reset watch for node data and children
+      val data = zkClient
+        .get(Amount.of(DefaultZKWaitTimeout.inMilliseconds, Time.MILLISECONDS))
+        .getData(zkPath, true, null)
+      val children = zkClient
+        .get(Amount.of(DefaultZKWaitTimeout.inMilliseconds, Time.MILLISECONDS))
+        .getChildren(zkPath, true, null)
+    }
 
   // Register top-level connection watcher to monitor zk change.
   // This watcher will live across different zk connection

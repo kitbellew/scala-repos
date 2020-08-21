@@ -25,11 +25,10 @@ object ClusterHeartbeatSenderStateSpec {
 
     def markNodeAsAvailable(): Unit = status = Up
 
-    override def isAvailable: Boolean =
-      status match {
-        case Unknown | Up ⇒ true
-        case Down ⇒ false
-      }
+    override def isAvailable: Boolean = status match {
+      case Unknown | Up ⇒ true
+      case Down ⇒ false
+    }
 
     override def isMonitoring: Boolean = status != Unknown
 

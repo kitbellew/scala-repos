@@ -85,23 +85,21 @@ private object ScalaGoToSuperActionHandler {
       file: PsiFile,
       offset: Int): (Seq[PsiElement], Seq[PsiElement]) = {
     var element = file.findElementAt(offset)
-    def test(e: PsiElement): Boolean =
-      e match {
-        case _: ScTemplateDefinition | _: ScFunction | _: ScValue |
-            _: ScVariable | _: ScTypeAlias | _: ScObject =>
-          true
-        case _ => false
-      }
+    def test(e: PsiElement): Boolean = e match {
+      case _: ScTemplateDefinition | _: ScFunction | _: ScValue |
+          _: ScVariable | _: ScTypeAlias | _: ScObject =>
+        true
+      case _ => false
+    }
     while (element != null && !test(element)) element = element.getParent
 
     def templateSupers(template: ScTemplateDefinition): Array[PsiElement] = {
-      def ignored =
-        Set(
-          "java.lang.Object",
-          "scala.ScalaObject",
-          "scala.Any",
-          "scala.AnyRef",
-          "scala.AnyVal")
+      def ignored = Set(
+        "java.lang.Object",
+        "scala.ScalaObject",
+        "scala.Any",
+        "scala.AnyRef",
+        "scala.AnyVal")
       val supers = template.supers.filterNot((x: PsiClass) =>
         ignored.contains(x.qualifiedName))
       mutable.HashSet[PsiClass](supers: _*).toArray

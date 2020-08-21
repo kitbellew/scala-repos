@@ -14,11 +14,10 @@ class BijectionTest extends WordSpec {
       if (i % 2 == 0) Foo(i) else fail("not really a bijection, natch")
   }
 
-  def isAFoo(i: Int) =
-    i match {
-      case fooject(f) => "a foo! " + f.toString
-      case _          => "not a foo"
-    }
+  def isAFoo(i: Int) = i match {
+    case fooject(f) => "a foo! " + f.toString
+    case _          => "not a foo"
+  }
 
   "Bijection" should {
     "return the original when inverting the inverse" in {

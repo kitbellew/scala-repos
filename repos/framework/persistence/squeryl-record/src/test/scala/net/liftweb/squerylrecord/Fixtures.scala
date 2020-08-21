@@ -122,12 +122,11 @@ class SpecialField[OwnerType <: Record[OwnerType]](rec: OwnerType)
   override def classOfPersistentField = classOf[String]
   override def defaultValue = ""
   override def setFromString(s: String) = setBox(Full(s))
-  override def setFromAny(c: Any) =
-    c match {
-      case Full(v) => setBox(Full(v.toString))
-      case None    => setBox(None)
-      case v       => setBox(Full(v.toString))
-    }
+  override def setFromAny(c: Any) = c match {
+    case Full(v) => setBox(Full(v.toString))
+    case None    => setBox(None)
+    case v       => setBox(Full(v.toString))
+  }
   override def setFromJValue(jValue: JValue) = setBox(Full(jValue.toString))
   override def asJValue: JValue = JString(get)
   override def asJs = Str(get)

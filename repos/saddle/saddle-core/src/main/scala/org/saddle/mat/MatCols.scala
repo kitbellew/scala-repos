@@ -68,8 +68,8 @@ class MatCols[A: ST](cols: IndexedSeq[Vec[A]])
   }
 
   // take all vectors except those at points in loc
-  def without(locs: Array[Int]): MatCols[A] =
-    MatCols(array.remove(this.toArray, locs))
+  def without(locs: Array[Int]): MatCols[A] = MatCols(
+    array.remove(this.toArray, locs))
 
   // take all vecs that match provided type, along with their locations
   private[saddle] def takeType[B: ST]: (IndexedSeq[Vec[B]], Array[Int]) = {

@@ -66,12 +66,11 @@ case class LTuple2[T, U](_1: T, _2: U) {
 
   override val hashCode: Int = scala.runtime.ScalaRunTime._hashCode(this)
 
-  override def equals(other: Any): Boolean =
-    other match {
-      case LTuple2(oT1, oT2) =>
-        hashCode == other.hashCode && _1 == oT1 && _2 == oT2
-      case _ => false
-    }
+  override def equals(other: Any): Boolean = other match {
+    case LTuple2(oT1, oT2) =>
+      hashCode == other.hashCode && _1 == oT1 && _2 == oT2
+    case _ => false
+  }
 
 }
 
@@ -330,14 +329,13 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
     */
   private def setLower(
       lb: InclusiveLower[Timestamp],
-      interv: Interval[Timestamp]): Interval[Timestamp] =
-    interv match {
-      case u @ ExclusiveUpper(_) => lb && u
-      case u @ InclusiveUpper(_) => lb && u
-      case Intersection(_, u)    => lb && u
-      case Empty()               => Empty()
-      case _                     => lb // Otherwise the upperbound is infinity.
-    }
+      interv: Interval[Timestamp]): Interval[Timestamp] = interv match {
+    case u @ ExclusiveUpper(_) => lb && u
+    case u @ InclusiveUpper(_) => lb && u
+    case Intersection(_, u)    => lb && u
+    case Empty()               => Empty()
+    case _                     => lb // Otherwise the upperbound is infinity.
+  }
 
   /**
     * Reads the input data after the last batch written.

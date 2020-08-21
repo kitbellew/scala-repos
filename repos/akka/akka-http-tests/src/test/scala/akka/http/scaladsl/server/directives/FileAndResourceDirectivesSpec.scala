@@ -282,10 +282,9 @@ class FileAndResourceDirectivesSpec
   "listDirectoryContents" should {
     val base = new File(getClass.getClassLoader.getResource("").toURI).getPath
     new File(base, "subDirectory/emptySub").mkdir()
-    def eraseDateTime(s: String) =
-      s.replaceAll(
-        """\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d""",
-        "xxxx-xx-xx xx:xx:xx")
+    def eraseDateTime(s: String) = s.replaceAll(
+      """\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d""",
+      "xxxx-xx-xx xx:xx:xx")
     implicit val settings =
       RoutingSettings.default.withRenderVanityFooter(false)
 

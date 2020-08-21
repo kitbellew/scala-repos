@@ -77,13 +77,12 @@ class MyRDD(
       context: TaskContext): Iterator[(Int, Int)] =
     throw new RuntimeException("should not be reached")
 
-  override def getPartitions: Array[Partition] =
-    (0 until numPartitions)
-      .map(i =>
-        new Partition {
-          override def index: Int = i
-        })
-      .toArray
+  override def getPartitions: Array[Partition] = (0 until numPartitions)
+    .map(i =>
+      new Partition {
+        override def index: Int = i
+      })
+    .toArray
 
   override def getPreferredLocations(partition: Partition): Seq[String] = {
     if (locations.isDefinedAt(partition.index)) {

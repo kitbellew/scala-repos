@@ -87,12 +87,11 @@ sealed abstract class HList extends Product {
     new HCons[E, Self](elem, this.asInstanceOf[Self])
 
   /** Concatenate another HList to this HList, returning a new HList. */
-  final def :::[L <: HList](l: L): :::[L] =
-    l.fold[HList, PrependHead, Self](
-      new TypedFunction2[HList, HList, HList, PrependHead] {
-        def apply[P1 <: HList, P2 <: HList](p1: P1, p2: P2) = p1.head :: p2
-      },
-      self)
+  final def :::[L <: HList](l: L): :::[L] = l.fold[HList, PrependHead, Self](
+    new TypedFunction2[HList, HList, HList, PrependHead] {
+      def apply[P1 <: HList, P2 <: HList](p1: P1, p2: P2) = p1.head :: p2
+    },
+    self)
 
   /** Drop the first `n` elements from this HList. */
   @inline final def drop[N <: Nat](n: N): Drop[N] =
@@ -144,11 +143,10 @@ sealed abstract class HList extends Product {
   }
 
   override final lazy val hashCode: Int = toList.hashCode
-  override final def equals(that: Any) =
-    that match {
-      case that: HList => toList == that.toList
-      case _           => false
-    }
+  override final def equals(that: Any) = that match {
+    case that: HList => toList == that.toList
+    case _           => false
+  }
   final def canEqual(that: Any) = that.isInstanceOf[HList]
 }
 
@@ -163,8 +161,8 @@ final object HList {
       extends MappedScalaProductShape[Level, HList, M, U, P] {
     def buildValue(elems: IndexedSeq[Any]) =
       elems.foldRight(HNil: HList)(_ :: _)
-    def copy(shapes: Seq[Shape[_ <: ShapeLevel, _, _, _]]) =
-      new HListShape(shapes)
+    def copy(shapes: Seq[Shape[_ <: ShapeLevel, _, _, _]]) = new HListShape(
+      shapes)
   }
   implicit def hnilShape[Level <: ShapeLevel] =
     new HListShape[Level, HNil.type, HNil.type, HNil.type](Nil)

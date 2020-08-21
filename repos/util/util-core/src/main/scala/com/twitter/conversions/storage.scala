@@ -30,11 +30,11 @@ object storage {
     def gigabyte: StorageUnit = gigabytes
     def gigabytes: StorageUnit = new StorageUnit(wrapped * 1024 * 1024 * 1024)
     def terabyte: StorageUnit = terabytes
-    def terabytes: StorageUnit =
-      new StorageUnit(wrapped * 1024 * 1024 * 1024 * 1024)
+    def terabytes: StorageUnit = new StorageUnit(
+      wrapped * 1024 * 1024 * 1024 * 1024)
     def petabyte: StorageUnit = petabytes
-    def petabytes: StorageUnit =
-      new StorageUnit(wrapped * 1024 * 1024 * 1024 * 1024 * 1024)
+    def petabytes: StorageUnit = new StorageUnit(
+      wrapped * 1024 * 1024 * 1024 * 1024 * 1024)
 
     def thousand: Long = wrapped * 1000
     def million: Long = wrapped * 1000 * 1000

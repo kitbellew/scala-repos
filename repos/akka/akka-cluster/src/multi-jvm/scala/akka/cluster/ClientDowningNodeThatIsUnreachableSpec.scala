@@ -50,9 +50,8 @@ abstract class ClientDowningNodeThatIsUnreachableSpec(
     extends MultiNodeSpec(multiNodeConfig)
     with MultiNodeClusterSpec {
 
-  def this(failureDetectorPuppet: Boolean) =
-    this(
-      ClientDowningNodeThatIsUnreachableMultiNodeConfig(failureDetectorPuppet))
+  def this(failureDetectorPuppet: Boolean) = this(
+    ClientDowningNodeThatIsUnreachableMultiNodeConfig(failureDetectorPuppet))
 
   import multiNodeConfig._
 

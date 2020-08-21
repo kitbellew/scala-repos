@@ -15,10 +15,9 @@ case class ByteArray(value: Array[Byte]) {
 
   def toHexStr = Converters hex2Str value
 
-  def showBytes: String =
-    value map { b =>
-      "%08d" format { b & 0xff }.toBinaryString.toInt
-    } mkString ","
+  def showBytes: String = value map { b =>
+    "%08d" format { b & 0xff }.toBinaryString.toInt
+  } mkString ","
 
   override def toString = toHexStr
 }
@@ -40,14 +39,13 @@ object ByteArray {
 
   implicit object JsByteArrayFormat extends OFormat[ByteArray] {
 
-    def reads(json: JsValue) =
-      (for {
-        hexStr ← json str "$binary"
-        bytes ← fromHexStr(hexStr).toOption
-      } yield bytes) match {
-        case None     => JsError(s"error reading ByteArray from $json")
-        case Some(ba) => JsSuccess(ba)
-      }
+    def reads(json: JsValue) = (for {
+      hexStr ← json str "$binary"
+      bytes ← fromHexStr(hexStr).toOption
+    } yield bytes) match {
+      case None     => JsError(s"error reading ByteArray from $json")
+      case Some(ba) => JsSuccess(ba)
+    }
 
     def writes(byteArray: ByteArray) =
       Json.obj("$binary" -> byteArray.toHexStr, "$type" -> binarySubType)

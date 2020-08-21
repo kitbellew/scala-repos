@@ -96,50 +96,40 @@ package object time {
 
     def millisOfDay = cast(_millisOfDay)
     def secondOfDay = cast(_secondOfDay)
-    def minuteOfDay =
-      cast(
-        getField(DateTimeFieldType.minuteOfDay.getField(chrono), isTime = true))
-    def clockhourOfDay =
-      cast(
-        getField(
-          DateTimeFieldType.clockhourOfDay.getField(chrono),
-          isTime = true))
-    def hourOfHalfday =
-      cast(
-        getField(
-          DateTimeFieldType.hourOfHalfday.getField(chrono),
-          isTime = true))
-    def clockhourOfHalfday =
-      cast(
-        getField(
-          DateTimeFieldType.clockhourOfHalfday.getField(chrono),
-          isTime = true))
-    def halfdayOfDay =
-      cast(
-        getField(
-          DateTimeFieldType.halfdayOfDay.getField(chrono),
-          isTime = true))
-    def hourOfDay =
-      cast(
-        getField(DateTimeFieldType.hourOfDay.getField(chrono), isTime = true))
+    def minuteOfDay = cast(
+      getField(DateTimeFieldType.minuteOfDay.getField(chrono), isTime = true))
+    def clockhourOfDay = cast(
+      getField(
+        DateTimeFieldType.clockhourOfDay.getField(chrono),
+        isTime = true))
+    def hourOfHalfday = cast(
+      getField(DateTimeFieldType.hourOfHalfday.getField(chrono), isTime = true))
+    def clockhourOfHalfday = cast(
+      getField(
+        DateTimeFieldType.clockhourOfHalfday.getField(chrono),
+        isTime = true))
+    def halfdayOfDay = cast(
+      getField(DateTimeFieldType.halfdayOfDay.getField(chrono), isTime = true))
+    def hourOfDay = cast(
+      getField(DateTimeFieldType.hourOfDay.getField(chrono), isTime = true))
 
     def dayOfWeek = cast(getField(DateTimeFieldType.dayOfWeek.getField(chrono)))
-    def dayOfMonth =
-      cast(getField(DateTimeFieldType.dayOfMonth.getField(chrono)))
+    def dayOfMonth = cast(
+      getField(DateTimeFieldType.dayOfMonth.getField(chrono)))
     def dayOfYear = cast(getField(DateTimeFieldType.dayOfYear.getField(chrono)))
-    def weekOfWeekyear =
-      cast(getField(DateTimeFieldType.weekOfWeekyear.getField(chrono)))
+    def weekOfWeekyear = cast(
+      getField(DateTimeFieldType.weekOfWeekyear.getField(chrono)))
     def weekyear = cast(getField(DateTimeFieldType.weekyear.getField(chrono)))
-    def weekyearOfCentury =
-      cast(getField(DateTimeFieldType.weekyearOfCentury.getField(chrono)))
-    def monthOfYear =
-      cast(getField(DateTimeFieldType.monthOfYear.getField(chrono)))
+    def weekyearOfCentury = cast(
+      getField(DateTimeFieldType.weekyearOfCentury.getField(chrono)))
+    def monthOfYear = cast(
+      getField(DateTimeFieldType.monthOfYear.getField(chrono)))
     def year = cast(getField(DateTimeFieldType.year.getField(chrono)))
     def yearOfEra = cast(getField(DateTimeFieldType.yearOfEra.getField(chrono)))
-    def yearOfCentury =
-      cast(getField(DateTimeFieldType.yearOfCentury.getField(chrono)))
-    def centuryOfEra =
-      cast(getField(DateTimeFieldType.centuryOfEra.getField(chrono)))
+    def yearOfCentury = cast(
+      getField(DateTimeFieldType.yearOfCentury.getField(chrono)))
+    def centuryOfEra = cast(
+      getField(DateTimeFieldType.centuryOfEra.getField(chrono)))
     def era = cast(getField(DateTimeFieldType.era.getField(chrono)))
 
     protected def getField(
@@ -150,14 +140,14 @@ package object time {
       else
         getFieldFast(field)
 
-    protected def extractor(unit: Long, range: Long): Vec[Int] =
-      times.map { (t: Long) =>
+    protected def extractor(unit: Long, range: Long): Vec[Int] = times.map {
+      (t: Long) =>
         if (t >= 0L) {
           ((t / unit) % range).toInt
         } else {
           (range - 1L + (((t + 1L) / unit) % range)).toInt
         }
-      }
+    }
 
     /**
       * Using Joda time's PreciseDateTimeField logic directly allows much faster extraction of the
@@ -210,10 +200,9 @@ package object time {
   /**
     * Provides an implicit ordering for DateTime
     */
-  implicit def dtOrdering =
-    new Ordering[DateTime] {
-      def compare(x: DateTime, y: DateTime) = x.compareTo(y)
-    }
+  implicit def dtOrdering = new Ordering[DateTime] {
+    def compare(x: DateTime, y: DateTime) = x.compareTo(y)
+  }
 
   // Convenience methods for constructing ReadablePeriod instances
 

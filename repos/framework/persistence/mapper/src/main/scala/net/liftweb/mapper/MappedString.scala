@@ -143,11 +143,10 @@ abstract class MappedString[T <: Mapper[T]](val fieldOwner: T, val maxLen: Int)
   protected def i_is_! = data.get
   protected def i_was_! = orgData.get
 
-  def asJsonValue: Box[JsonAST.JValue] =
-    Full(get match {
-      case null => JsonAST.JNull
-      case str  => JsonAST.JString(str)
-    })
+  def asJsonValue: Box[JsonAST.JValue] = Full(get match {
+    case null => JsonAST.JNull
+    case str  => JsonAST.JString(str)
+  })
 
   /**
     * Called after the field is saved to the database
@@ -284,12 +283,11 @@ abstract class MappedString[T <: Mapper[T]](val fieldOwner: T, val maxLen: Int)
 }
 
 private[mapper] object IsElem {
-  def unapply(in: NodeSeq): Option[Elem] =
-    in match {
-      case e: Elem      => Some(e)
-      case Seq(e: Elem) => Some(e)
-      case _            => None
-    }
+  def unapply(in: NodeSeq): Option[Elem] = in match {
+    case e: Elem      => Some(e)
+    case Seq(e: Elem) => Some(e)
+    case _            => None
+  }
 }
 
 sealed trait BoxedStringToken

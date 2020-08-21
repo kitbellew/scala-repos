@@ -41,8 +41,8 @@ object ReadOnlyFloatWrapper {
   /** Creates a new ReadOnlyFloatWrapper instance.
     * @param value the initial value of the wrapped value
     */
-  def apply(value: Float) =
-    new ReadOnlyFloatWrapper(new jfxbp.ReadOnlyFloatWrapper(value))
+  def apply(value: Float) = new ReadOnlyFloatWrapper(
+    new jfxbp.ReadOnlyFloatWrapper(value))
 }
 
 /** Wrapper for [[http://docs.oracle.com/javase/8/javafx/api/javafx/beans/property/ReadOnlyFloatWrapper.html javafx.beans.property.ReadOnlyFloatWrapper]] */

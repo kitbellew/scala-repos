@@ -9,11 +9,10 @@ abstract class Charset protected (canonicalName: String, aliases: Array[String])
     with Comparable[Charset] {
   final def name(): String = canonicalName
 
-  override final def equals(that: Any): Boolean =
-    that match {
-      case that: Charset => this.name == that.name
-      case _             => false
-    }
+  override final def equals(that: Any): Boolean = that match {
+    case that: Charset => this.name == that.name
+    case _             => false
+  }
 
   override final def toString(): String = name()
 

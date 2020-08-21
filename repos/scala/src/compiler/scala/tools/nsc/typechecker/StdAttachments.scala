@@ -51,19 +51,17 @@ trait StdAttachments {
   /** Determines whether the target is either an original or a result of a macro expansion.
     *  The parameter is of type `Any`, because macros can expand both into trees and into annotations.
     */
-  def hasMacroExpansionAttachment(any: Any): Boolean =
-    any match {
-      case tree: Tree => tree.hasAttachment[MacroExpansionAttachment]
-      case _          => false
-    }
+  def hasMacroExpansionAttachment(any: Any): Boolean = any match {
+    case tree: Tree => tree.hasAttachment[MacroExpansionAttachment]
+    case _          => false
+  }
 
   /** Returns the original tree of the macro expansion if the argument is a macro expansion or EmptyTree otherwise.
     */
-  def macroExpandee(tree: Tree): Tree =
-    tree.attachments
-      .get[MacroExpansionAttachment]
-      .map(_.expandee)
-      .getOrElse(EmptyTree)
+  def macroExpandee(tree: Tree): Tree = tree.attachments
+    .get[MacroExpansionAttachment]
+    .map(_.expandee)
+    .getOrElse(EmptyTree)
 
   /** After macro expansion is completed, links the expandee and the expansion result by annotating them both with a `MacroExpansionAttachment`.
     *  The `expanded` parameter is of type `Any`, because macros can expand both into trees and into annotations.

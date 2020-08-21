@@ -179,8 +179,8 @@ trait Symbols { self: Universe =>
       *
       *  @group Conversions
       */
-    def asType: TypeSymbol =
-      throw new ScalaReflectionException(s"$this is not a type")
+    def asType: TypeSymbol = throw new ScalaReflectionException(
+      s"$this is not a type")
 
     /** Does this symbol represent the definition of a term?
       *  Note that every symbol is either a term or a type.
@@ -196,8 +196,8 @@ trait Symbols { self: Universe =>
       *
       *  @group Conversions
       */
-    def asTerm: TermSymbol =
-      throw new ScalaReflectionException(s"$this is not a term")
+    def asTerm: TermSymbol = throw new ScalaReflectionException(
+      s"$this is not a term")
 
     /** Does this symbol represent the definition of a method?
       *  If yes, `isTerm` is also guaranteed to be true.
@@ -248,8 +248,8 @@ trait Symbols { self: Universe =>
       *
       *  @group Conversions
       */
-    def asModule: ModuleSymbol =
-      throw new ScalaReflectionException(s"$this is not a module")
+    def asModule: ModuleSymbol = throw new ScalaReflectionException(
+      s"$this is not a module")
 
     /** Does this symbol represent the definition of a class or trait?
       *  If yes, `isType` is also guaranteed to be true.
@@ -274,8 +274,8 @@ trait Symbols { self: Universe =>
       *
       *  @group Conversions
       */
-    def asClass: ClassSymbol =
-      throw new ScalaReflectionException(s"$this is not a class")
+    def asClass: ClassSymbol = throw new ScalaReflectionException(
+      s"$this is not a class")
 
     /** Source file if this symbol is created during this compilation run,
       *  or a class file if this symbol is loaded from a *.class or *.jar.

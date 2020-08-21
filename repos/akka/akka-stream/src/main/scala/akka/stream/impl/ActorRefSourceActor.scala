@@ -46,20 +46,19 @@ private[akka] class ActorRefSourceActor(
   protected val buffer =
     if (bufferSize == 0) null else Buffer[Any](bufferSize, maxFixedBufferSize)
 
-  def receive =
-    ({
-      case Cancel ⇒
-        context.stop(self)
+  def receive = ({
+    case Cancel ⇒
+      context.stop(self)
 
-      case _: Status.Success ⇒
-        if (bufferSize == 0 || buffer.isEmpty)
-          context.stop(self) // will complete the stream successfully
-        else context.become(drainBufferThenComplete)
+    case _: Status.Success ⇒
+      if (bufferSize == 0 || buffer.isEmpty)
+        context.stop(self) // will complete the stream successfully
+      else context.become(drainBufferThenComplete)
 
-      case Status.Failure(cause) if isActive ⇒
-        onErrorThenStop(cause)
+    case Status.Failure(cause) if isActive ⇒
+      onErrorThenStop(cause)
 
-    }: Receive).orElse(requestElem).orElse(receiveElem)
+  }: Receive).orElse(requestElem).orElse(receiveElem)
 
   def requestElem: Receive = { case _: Request ⇒
     // totalDemand is tracked by super

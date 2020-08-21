@@ -43,14 +43,13 @@ private[akka] object Reflect {
     * @param clazz the class which to instantiate an instance of
     * @return a new instance from the default constructor of the given class
     */
-  private[akka] def instantiate[T](clazz: Class[T]): T =
-    try clazz.newInstance
-    catch {
-      case iae: IllegalAccessException ⇒
-        val ctor = clazz.getDeclaredConstructor()
-        ctor.setAccessible(true)
-        ctor.newInstance()
-    }
+  private[akka] def instantiate[T](clazz: Class[T]): T = try clazz.newInstance
+  catch {
+    case iae: IllegalAccessException ⇒
+      val ctor = clazz.getDeclaredConstructor()
+      ctor.setAccessible(true)
+      ctor.newInstance()
+  }
 
   /**
     * INTERNAL API
@@ -130,8 +129,8 @@ private[akka] object Reflect {
     * @param clazz the class which to instantiate an instance of
     * @return a function which when applied will create a new instance from the default constructor of the given class
     */
-  private[akka] def instantiator[T](clazz: Class[T]): () ⇒ T =
-    () ⇒ instantiate(clazz)
+  private[akka] def instantiator[T](clazz: Class[T]): () ⇒ T = () ⇒
+    instantiate(clazz)
 
   def findMarker(root: Class[_], marker: Class[_]): Type = {
     @tailrec def rec(curr: Class[_]): Type = {

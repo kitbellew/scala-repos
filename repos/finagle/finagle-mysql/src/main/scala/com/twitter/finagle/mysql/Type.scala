@@ -41,35 +41,34 @@ object Type {
     * Retrieves the MySQL type code for the given parameter. If the parameter
     * type mapping is unknown -1 is returned.
     */
-  private[mysql] def getCode(any: Any): Short =
-    any match {
-      // primitives
-      case s: String  => VarChar
-      case b: Boolean => Tiny
-      case b: Byte    => Tiny
-      case s: Short   => Short
-      case i: Int     => Long
-      case l: Long    => LongLong
-      case f: Float   => Float
-      case d: Double  => Double
-      case null       => Null
-      // blobs
-      case b: Array[Byte] if b.length <= 255      => TinyBlob
-      case b: Array[Byte] if b.length <= 65535    => Blob
-      case b: Array[Byte] if b.length <= 16777215 => MediumBlob
-      // Date and Time
-      case t: java.sql.Timestamp  => Timestamp
-      case d: java.sql.Date       => Date
-      case d: java.util.Date      => DateTime
-      case RawValue(typ, _, _, _) => typ
-      case StringValue(_)         => VarChar
-      case ByteValue(_)           => Tiny
-      case ShortValue(_)          => Short
-      case IntValue(_)            => Long
-      case LongValue(_)           => LongLong
-      case FloatValue(_)          => Float
-      case DoubleValue(_)         => Double
-      case NullValue              => Null
-      case _                      => -1
-    }
+  private[mysql] def getCode(any: Any): Short = any match {
+    // primitives
+    case s: String  => VarChar
+    case b: Boolean => Tiny
+    case b: Byte    => Tiny
+    case s: Short   => Short
+    case i: Int     => Long
+    case l: Long    => LongLong
+    case f: Float   => Float
+    case d: Double  => Double
+    case null       => Null
+    // blobs
+    case b: Array[Byte] if b.length <= 255      => TinyBlob
+    case b: Array[Byte] if b.length <= 65535    => Blob
+    case b: Array[Byte] if b.length <= 16777215 => MediumBlob
+    // Date and Time
+    case t: java.sql.Timestamp  => Timestamp
+    case d: java.sql.Date       => Date
+    case d: java.util.Date      => DateTime
+    case RawValue(typ, _, _, _) => typ
+    case StringValue(_)         => VarChar
+    case ByteValue(_)           => Tiny
+    case ShortValue(_)          => Short
+    case IntValue(_)            => Long
+    case LongValue(_)           => LongLong
+    case FloatValue(_)          => Float
+    case DoubleValue(_)         => Double
+    case NullValue              => Null
+    case _                      => -1
+  }
 }

@@ -110,12 +110,11 @@ object PlayDocsValidation {
     val relativeLinks = mutable.ListBuffer[LinkRef]()
     val externalLinks = mutable.ListBuffer[LinkRef]()
 
-    def stripFragment(path: String) =
-      if (path.contains("#")) {
-        path.dropRight(path.length - path.indexOf('#'))
-      } else {
-        path
-      }
+    def stripFragment(path: String) = if (path.contains("#")) {
+      path.dropRight(path.length - path.indexOf('#'))
+    } else {
+      path
+    }
 
     def parseMarkdownFile(markdownFile: File): String = {
 
@@ -196,42 +195,41 @@ object PlayDocsValidation {
       }
 
       val codeReferenceSerializer = new ToHtmlSerializerPlugin() {
-        def visit(node: Node, visitor: Visitor, printer: Printer) =
-          node match {
-            case code: CodeReferenceNode => {
+        def visit(node: Node, visitor: Visitor, printer: Printer) = node match {
+          case code: CodeReferenceNode => {
 
-              // Label is after the #, or if no #, then is the link label
-              val (source, label) = code.getSource.split("#", 2) match {
-                case Array(source, label) => (source, label)
-                case Array(source)        => (source, code.getLabel)
-              }
-
-              // The file is either relative to current page page or absolute, under the root
-              val sourceFile = if (source.startsWith("/")) {
-                source.drop(1)
-              } else {
-                markdownFile.getParentFile.getCanonicalPath
-                  .stripPrefix(base.getCanonicalPath)
-                  .stripPrefix("/") + "/" + source
-              }
-
-              val sourcePos = code.getStartIndex + code.getLabel.length + 4
-              val labelPos = if (code.getSource.contains("#")) {
-                sourcePos + source.length + 1
-              } else {
-                code.getStartIndex + 2
-              }
-
-              codeSamples += CodeSampleRef(
-                sourceFile,
-                label,
-                markdownFile,
-                sourcePos,
-                labelPos)
-              true
+            // Label is after the #, or if no #, then is the link label
+            val (source, label) = code.getSource.split("#", 2) match {
+              case Array(source, label) => (source, label)
+              case Array(source)        => (source, code.getLabel)
             }
-            case _ => false
+
+            // The file is either relative to current page page or absolute, under the root
+            val sourceFile = if (source.startsWith("/")) {
+              source.drop(1)
+            } else {
+              markdownFile.getParentFile.getCanonicalPath
+                .stripPrefix(base.getCanonicalPath)
+                .stripPrefix("/") + "/" + source
+            }
+
+            val sourcePos = code.getStartIndex + code.getLabel.length + 4
+            val labelPos = if (code.getSource.contains("#")) {
+              sourcePos + source.length + 1
+            } else {
+              code.getStartIndex + 2
+            }
+
+            codeSamples += CodeSampleRef(
+              sourceFile,
+              label,
+              markdownFile,
+              sourcePos,
+              labelPos)
+            true
           }
+          case _ => false
+        }
       }
 
       val astRoot = processor.parseMarkdown(IO.read(markdownFile).toCharArray)
@@ -267,36 +265,35 @@ object PlayDocsValidation {
         .build)
 
     val codeReferenceSerializer = new ToHtmlSerializerPlugin() {
-      def visit(node: Node, visitor: Visitor, printer: Printer) =
-        node match {
-          case code: CodeReferenceNode => {
+      def visit(node: Node, visitor: Visitor, printer: Printer) = node match {
+        case code: CodeReferenceNode => {
 
-            // Label is after the #, or if no #, then is the link label
-            val (source, label) = code.getSource.split("#", 2) match {
-              case Array(source, label) => (source, label)
-              case Array(source)        => (source, code.getLabel)
-            }
-
-            // The file is either relative to current page page or absolute, under the root
-            val sourceFile = if (source.startsWith("/")) {
-              source.drop(1)
-            } else {
-              filename.dropRight(
-                filename.length - filename.lastIndexOf('/') + 1) + source
-            }
-
-            val sourcePos = code.getStartIndex + code.getLabel.length + 4
-            val labelPos = if (code.getSource.contains("#")) {
-              sourcePos + source.length + 1
-            } else {
-              code.getStartIndex + 2
-            }
-
-            codeSamples += CodeSample(sourceFile, label, sourcePos, labelPos)
-            true
+          // Label is after the #, or if no #, then is the link label
+          val (source, label) = code.getSource.split("#", 2) match {
+            case Array(source, label) => (source, label)
+            case Array(source)        => (source, code.getLabel)
           }
-          case _ => false
+
+          // The file is either relative to current page page or absolute, under the root
+          val sourceFile = if (source.startsWith("/")) {
+            source.drop(1)
+          } else {
+            filename.dropRight(
+              filename.length - filename.lastIndexOf('/') + 1) + source
+          }
+
+          val sourcePos = code.getStartIndex + code.getLabel.length + 4
+          val labelPos = if (code.getSource.contains("#")) {
+            sourcePos + source.length + 1
+          } else {
+            code.getStartIndex + 2
+          }
+
+          codeSamples += CodeSample(sourceFile, label, sourcePos, labelPos)
+          true
         }
+        case _ => false
+      }
     }
 
     val astRoot = processor.parseMarkdown(markdownSource.toCharArray)
@@ -659,33 +656,32 @@ object PlayDocsValidation {
       log: Logger,
       file: File,
       position: Int,
-      errorMessage: String) =
-    synchronized {
-      // Load the source
-      val lines = IO.readLines(file)
-      // Calculate the line and col
-      // Tuple is (total chars seen, line no, col no, Option[line])
-      val (_, lineNo, colNo, line) =
-        lines.foldLeft((0, 0, 0, None: Option[String])) { (state, line) =>
-          state match {
-            case (_, _, _, Some(_)) => state
-            case (total, l, c, None) => {
-              if (total + line.length < position) {
-                (total + line.length + 1, l + 1, c, None)
-              } else {
-                (0, l + 1, position - total + 1, Some(line))
-              }
+      errorMessage: String) = synchronized {
+    // Load the source
+    val lines = IO.readLines(file)
+    // Calculate the line and col
+    // Tuple is (total chars seen, line no, col no, Option[line])
+    val (_, lineNo, colNo, line) =
+      lines.foldLeft((0, 0, 0, None: Option[String])) { (state, line) =>
+        state match {
+          case (_, _, _, Some(_)) => state
+          case (total, l, c, None) => {
+            if (total + line.length < position) {
+              (total + line.length + 1, l + 1, c, None)
+            } else {
+              (0, l + 1, position - total + 1, Some(line))
             }
           }
         }
-      log.error(errorMessage + " at " + file.getAbsolutePath + ":" + lineNo)
-      line.foreach { l =>
-        log.error(l)
-        log.error(l.take(colNo - 1).map {
-          case '\t' => '\t'; case _ => ' '
-        } + "^")
       }
+    log.error(errorMessage + " at " + file.getAbsolutePath + ":" + lineNo)
+    line.foreach { l =>
+      log.error(l)
+      log.error(l.take(colNo - 1).map {
+        case '\t' => '\t'; case _ => ' '
+      } + "^")
     }
+  }
 }
 
 class AggregateFileRepository(repos: Seq[FileRepository])
@@ -696,11 +692,11 @@ class AggregateFileRepository(repos: Seq[FileRepository])
   private def fromFirstRepo[A](load: FileRepository => Option[A]) =
     repos.collectFirst(Function.unlift(load))
 
-  def loadFile[A](path: String)(loader: (InputStream) => A) =
-    fromFirstRepo(_.loadFile(path)(loader))
+  def loadFile[A](path: String)(loader: (InputStream) => A) = fromFirstRepo(
+    _.loadFile(path)(loader))
 
-  def handleFile[A](path: String)(handler: (FileHandle) => A) =
-    fromFirstRepo(_.handleFile(path)(handler))
+  def handleFile[A](path: String)(handler: (FileHandle) => A) = fromFirstRepo(
+    _.handleFile(path)(handler))
 
   def findFileWithName(name: String) = fromFirstRepo(_.findFileWithName(name))
 }

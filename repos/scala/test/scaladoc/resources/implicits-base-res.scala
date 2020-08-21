@@ -48,10 +48,10 @@ object A {
     sys.error("not implemented")
   implicit def enrichA6[Z: MyNumeric](a: A[Z]) = new MyNumericA[Z](a)
   // TODO: Add H <: Double and see why it crashes for C and D -- context bounds, need to check!
-  implicit def enrichA7[H <: Double: Manifest](a: A[H]) =
-    new ManifestA[H](a) with MyTraversableOps[H] {
-      def convToTraversableOps(x: H): H = sys.error("no")
-    }
+  implicit def enrichA7[H <: Double: Manifest](a: A[H]) = new ManifestA[H](a)
+    with MyTraversableOps[H] {
+    def convToTraversableOps(x: H): H = sys.error("no")
+  }
 }
 
 /** Class B

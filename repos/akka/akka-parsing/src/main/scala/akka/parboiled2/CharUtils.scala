@@ -39,8 +39,8 @@ object CharUtils {
     * Returns the lower-case hex digit corresponding to the last 4 bits of the given Long.
     * (fast branchless implementation)
     */
-  def lowerHexDigit(long: Long): Char =
-    lowerHexDigit_internal((long & 0x0fL).toInt)
+  def lowerHexDigit(long: Long): Char = lowerHexDigit_internal(
+    (long & 0x0fL).toInt)
 
   /**
     * Returns the lower-case hex digit corresponding to the last 4 bits of the given Int.
@@ -55,8 +55,8 @@ object CharUtils {
     * Returns the upper-case hex digit corresponding to the last 4 bits of the given Long.
     * (fast branchless implementation)
     */
-  def upperHexDigit(long: Long): Char =
-    upperHexDigit_internal((long & 0x0fL).toInt)
+  def upperHexDigit(long: Long): Char = upperHexDigit_internal(
+    (long & 0x0fL).toInt)
 
   /**
     * Returns the upper-case hex digit corresponding to the last 4 bits of the given Int.
@@ -110,8 +110,8 @@ object CharUtils {
   /**
     * Returns a String representing the given long in signed decimal representation.
     */
-  def signedDecimalString(long: Long): String =
-    new String(signedDecimalChars(long))
+  def signedDecimalString(long: Long): String = new String(
+    signedDecimalChars(long))
 
   /**
     * Computes the number of characters required for the signed decimal representation of the given integer.
@@ -194,15 +194,14 @@ object CharUtils {
   def toUpperCase(c: Char): Char =
     if (CharPredicate.LowerAlpha(c)) (c + 0x20).toChar else c
 
-  def escape(c: Char): String =
-    c match {
-      case '\t' ⇒ "\\t"
-      case '\r' ⇒ "\\r"
-      case '\n' ⇒ "\\n"
-      case EOI ⇒ "EOI"
-      case x if Character.isISOControl(x) ⇒ "\\u%04x" format c.toInt
-      case x ⇒ x.toString
-    }
+  def escape(c: Char): String = c match {
+    case '\t' ⇒ "\\t"
+    case '\r' ⇒ "\\r"
+    case '\n' ⇒ "\\n"
+    case EOI ⇒ "EOI"
+    case x if Character.isISOControl(x) ⇒ "\\u%04x" format c.toInt
+    case x ⇒ x.toString
+  }
 
   val escapedChars = CharPredicate("\t\r\n", EOI, Character.isISOControl _)
 

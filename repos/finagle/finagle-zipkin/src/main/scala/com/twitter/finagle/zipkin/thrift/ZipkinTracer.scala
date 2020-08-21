@@ -67,10 +67,9 @@ private object Json {
   def deserialize[T: Manifest](node: JsonNode): T =
     mapper.readValue(node.traverse, typeReference[T])
 
-  private[this] def typeReference[T: Manifest] =
-    new TypeReference[T] {
-      override def getType = typeFromManifest(manifest[T])
-    }
+  private[this] def typeReference[T: Manifest] = new TypeReference[T] {
+    override def getType = typeFromManifest(manifest[T])
+  }
 
   private[this] def typeFromManifest(m: Manifest[_]): Type =
     if (m.typeArguments.isEmpty) m.runtimeClass
@@ -95,43 +94,41 @@ object ZipkinTracer {
     new Event.Type {
       val id = "Trace"
 
-      def serialize(event: Event) =
-        event match {
-          case Event(etype, _, _, _: Annotation.BinaryAnnotation, _, _, _)
-              if etype eq this =>
-            Throw(
-              new IllegalArgumentException("unsupported format: " + event)
-                with NoStacktrace)
+      def serialize(event: Event) = event match {
+        case Event(etype, _, _, _: Annotation.BinaryAnnotation, _, _, _)
+            if etype eq this =>
+          Throw(
+            new IllegalArgumentException("unsupported format: " + event)
+              with NoStacktrace)
 
-          case Event(etype, when, _, ann: Annotation, _, tid, sid)
-              if etype eq this =>
-            val (t, s) = serializeTrace(tid, sid)
-            val data = Json.Envelope(id, when.inMilliseconds, t, s, ann)
-            Try(Buf.Utf8(Json.serialize(data)))
+        case Event(etype, when, _, ann: Annotation, _, tid, sid)
+            if etype eq this =>
+          val (t, s) = serializeTrace(tid, sid)
+          val data = Json.Envelope(id, when.inMilliseconds, t, s, ann)
+          Try(Buf.Utf8(Json.serialize(data)))
 
-          case _ =>
-            Throw(new IllegalArgumentException("unknown format: " + event))
+        case _ =>
+          Throw(new IllegalArgumentException("unknown format: " + event))
+      }
+
+      def deserialize(buf: Buf) = for {
+        env <- Buf.Utf8.unapply(buf) match {
+          case None      => Throw(new IllegalArgumentException("unknown format"))
+          case Some(str) => Try(Json.deserialize[Json.Envelope](str))
         }
-
-      def deserialize(buf: Buf) =
-        for {
-          env <- Buf.Utf8.unapply(buf) match {
-            case None      => Throw(new IllegalArgumentException("unknown format"))
-            case Some(str) => Try(Json.deserialize[Json.Envelope](str))
-          }
-          if env.id == id
-        } yield {
-          val when = Time.fromMilliseconds(env.when)
-          // This line fails without the JsonDeserialize annotation in Envelope.
-          val tid = env.traceId.getOrElse(Event.NoTraceId)
-          val sid = env.spanId.getOrElse(Event.NoSpanId)
-          Event(
-            this,
-            when,
-            objectVal = env.data,
-            traceIdVal = tid,
-            spanIdVal = sid)
-        }
+        if env.id == id
+      } yield {
+        val when = Time.fromMilliseconds(env.when)
+        // This line fails without the JsonDeserialize annotation in Envelope.
+        val tid = env.traceId.getOrElse(Event.NoTraceId)
+        val sid = env.spanId.getOrElse(Event.NoSpanId)
+        Event(
+          this,
+          when,
+          objectVal = env.data,
+          traceIdVal = tid,
+          spanIdVal = sid)
+      }
     }
   }
 
@@ -147,8 +144,8 @@ object ZipkinTracer {
       scribePort: Int = Host().getPort,
       statsReceiver: StatsReceiver = NullStatsReceiver,
       sampleRate: Float = Sampler.DefaultSampleRate
-  ): Tracer.Factory =
-    () => mk(scribeHost, scribePort, statsReceiver, sampleRate)
+  ): Tracer.Factory = () =>
+    mk(scribeHost, scribePort, statsReceiver, sampleRate)
 
   /**
     * @param host Host to send trace data to
@@ -169,8 +166,8 @@ object ZipkinTracer {
     * @param sr stats receiver to send successes/failures to
     */
   @deprecated("Use mk() instead", "6.1.0")
-  def apply(sr: StatsReceiver): Tracer.Factory =
-    () => mk(Host().getHostName, Host().getPort, sr, Sampler.DefaultSampleRate)
+  def apply(sr: StatsReceiver): Tracer.Factory = () =>
+    mk(Host().getHostName, Host().getPort, sr, Sampler.DefaultSampleRate)
 
   /**
     * Util method since named parameters can't be called from Java
@@ -209,13 +206,12 @@ class SamplingTracer(
   /**
     * Tracer that supports sampling. Will pass through a subset of the records.
     */
-  def this() =
-    this(
-      RawZipkinTracer(
-        Host().getHostName,
-        Host().getPort,
-        DefaultStatsReceiver.scope("zipkin")),
-      sampleRateFlag())
+  def this() = this(
+    RawZipkinTracer(
+      Host().getHostName,
+      Host().getPort,
+      DefaultStatsReceiver.scope("zipkin")),
+    sampleRateFlag())
 
   private[this] val sampler = new Sampler
   setSampleRate(initialSampleRate)

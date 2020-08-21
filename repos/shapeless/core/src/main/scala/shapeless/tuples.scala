@@ -6,8 +6,8 @@ object Tuple {
   /**
     * Produces a tuple of length `N` filled with `elem`.
     */
-  def fill[A](n: Nat)(elem: A)(implicit fill: Fill[n.N, A]): fill.Out =
-    fill(elem)
+  def fill[A](n: Nat)(elem: A)(implicit fill: Fill[n.N, A]): fill.Out = fill(
+    elem)
 
   /**
     * Produces a `N1`-length tuple made of `N2`-length tuples filled with `elem`.

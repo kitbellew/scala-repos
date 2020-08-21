@@ -85,14 +85,13 @@ trait EvaluatorTestSupport[M[+_]]
 
   def newGroupId = groupId.getAndIncrement
 
-  def testAccount =
-    AccountDetails(
-      "00001",
-      "test@email.com",
-      new DateTime,
-      "testAPIKey",
-      Path.Root,
-      AccountPlan.Free)
+  def testAccount = AccountDetails(
+    "00001",
+    "test@email.com",
+    new DateTime,
+    "testAPIKey",
+    Path.Root,
+    AccountPlan.Free)
 
   val defaultEvaluationContext = EvaluationContext(
     "testAPIKey",
@@ -115,57 +114,56 @@ trait EvaluatorTestSupport[M[+_]]
   def vfs = sys.error("VFS metadata not supported in test.")
 
   trait TableCompanion extends BaseBlockStoreTestTableCompanion {
-    override def load(table: Table, apiKey: APIKey, jtpe: JType) =
-      EitherT {
-        table.toJson map { events =>
-          val eventsV = events.toStream.traverse[
-            ({ type λ[α] = Validation[ResourceError, α] })#λ,
-            Stream[JValue]] {
-            case JString(pathStr) =>
-              success {
-                indexLock synchronized { // block the WHOLE WORLD
-                  val path = Path(pathStr)
+    override def load(table: Table, apiKey: APIKey, jtpe: JType) = EitherT {
+      table.toJson map { events =>
+        val eventsV = events.toStream.traverse[
+          ({ type λ[α] = Validation[ResourceError, α] })#λ,
+          Stream[JValue]] {
+          case JString(pathStr) =>
+            success {
+              indexLock synchronized { // block the WHOLE WORLD
+                val path = Path(pathStr)
 
-                  val index = initialIndices get path getOrElse {
-                    initialIndices += (path -> currentIndex)
-                    currentIndex
-                  }
+                val index = initialIndices get path getOrElse {
+                  initialIndices += (path -> currentIndex)
+                  currentIndex
+                }
 
-                  val prefix = "filesystem"
-                  val target = path.path
-                    .replaceAll("/$", ".json")
-                    .replaceAll("^/" + prefix, prefix)
+                val prefix = "filesystem"
+                val target = path.path
+                  .replaceAll("/$", ".json")
+                  .replaceAll("^/" + prefix, prefix)
 
-                  val src =
-                    if (target startsWith prefix)
-                      io.Source.fromFile(
-                        new File(target.substring(prefix.length)))
-                    else
-                      io.Source.fromInputStream(
-                        getClass.getResourceAsStream(target))
+                val src =
+                  if (target startsWith prefix)
+                    io.Source.fromFile(
+                      new File(target.substring(prefix.length)))
+                  else
+                    io.Source.fromInputStream(
+                      getClass.getResourceAsStream(target))
 
-                  val parsed: Stream[JValue] =
-                    src.getLines map JParser.parseUnsafe toStream
+                val parsed: Stream[JValue] =
+                  src.getLines map JParser.parseUnsafe toStream
 
-                  currentIndex += parsed.length
+                currentIndex += parsed.length
 
-                  parsed zip (Stream from index) map { case (value, id) =>
-                    JObject(
-                      JField("key", JArray(JNum(id) :: Nil)) :: JField(
-                        "value",
-                        value) :: Nil)
-                  }
+                parsed zip (Stream from index) map { case (value, id) =>
+                  JObject(
+                    JField("key", JArray(JNum(id) :: Nil)) :: JField(
+                      "value",
+                      value) :: Nil)
                 }
               }
+            }
 
-            case x =>
-              failure(ResourceError.corrupt(
-                "Attempted to load JSON as a table from something that wasn't a string: " + x))
-          }
-
-          eventsV.disjunction.map(ss => fromJson(ss.flatten))
+          case x =>
+            failure(ResourceError.corrupt(
+              "Attempted to load JSON as a table from something that wasn't a string: " + x))
         }
+
+        eventsV.disjunction.map(ss => fromJson(ss.flatten))
       }
+    }
   }
 
   object Table extends TableCompanion

@@ -28,18 +28,18 @@ trait RouteTestResultComponent {
         : Option[Either[immutable.Seq[Rejection], HttpResponse]] = None
     private[this] val latch = new CountDownLatch(1)
 
-    def handled: Boolean =
-      synchronized { result.isDefined && result.get.isRight }
+    def handled: Boolean = synchronized {
+      result.isDefined && result.get.isRight
+    }
 
-    def rejections: immutable.Seq[Rejection] =
-      synchronized {
-        result match {
-          case Some(Left(rejections)) ⇒ rejections
-          case Some(Right(response)) ⇒
-            failTest("Request was not rejected, response was " + response)
-          case None ⇒ failNeitherCompletedNorRejected()
-        }
+    def rejections: immutable.Seq[Rejection] = synchronized {
+      result match {
+        case Some(Left(rejections)) ⇒ rejections
+        case Some(Right(response)) ⇒
+          failTest("Request was not rejected, response was " + response)
+        case None ⇒ failNeitherCompletedNorRejected()
       }
+    }
 
     def response: HttpResponse = rawResponse.copy(entity = entity)
 
@@ -55,18 +55,17 @@ trait RouteTestResultComponent {
 
     def ~>[T](f: RouteTestResult ⇒ T): T = f(this)
 
-    private def rawResponse: HttpResponse =
-      synchronized {
-        result match {
-          case Some(Right(response)) ⇒ response
-          case Some(Left(Nil)) ⇒ failTest("Request was rejected")
-          case Some(Left(rejection :: Nil)) ⇒
-            failTest("Request was rejected with rejection " + rejection)
-          case Some(Left(rejections)) ⇒
-            failTest("Request was rejected with rejections " + rejections)
-          case None ⇒ failNeitherCompletedNorRejected()
-        }
+    private def rawResponse: HttpResponse = synchronized {
+      result match {
+        case Some(Right(response)) ⇒ response
+        case Some(Left(Nil)) ⇒ failTest("Request was rejected")
+        case Some(Left(rejection :: Nil)) ⇒
+          failTest("Request was rejected with rejection " + rejection)
+        case Some(Left(rejections)) ⇒
+          failTest("Request was rejected with rejections " + rejections)
+        case None ⇒ failNeitherCompletedNorRejected()
       }
+    }
 
     private[testkit] def handleResult(rr: RouteResult)(implicit
         ec: ExecutionContext): Unit =

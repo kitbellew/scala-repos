@@ -37,19 +37,18 @@ object PolyDefns extends Cases {
     def apply(t: L) = value(t)
     def apply()(implicit ev: HNil =:= L) = value(HNil)
     def apply[T](t: T)(implicit ev: (T :: HNil) =:= L) = value(t :: HNil)
-    def apply[T, U](t: T, u: U)(implicit ev: (T :: U :: HNil) =:= L) =
-      value(t :: u :: HNil)
+    def apply[T, U](t: T, u: U)(implicit ev: (T :: U :: HNil) =:= L) = value(
+      t :: u :: HNil)
   }
 
   object Case extends CaseInst {
     type Aux[P, L <: HList, Result0] = Case[P, L] { type Result = Result0 }
     type Hom[P, T] = Aux[P, T :: HNil, T]
 
-    def apply[P, L <: HList, R](v: L => R): Aux[P, L, R] =
-      new Case[P, L] {
-        type Result = R
-        val value = v
-      }
+    def apply[P, L <: HList, R](v: L => R): Aux[P, L, R] = new Case[P, L] {
+      type Result = R
+      val value = v
+    }
 
     implicit def materializeFromValue1[P, F[_], T]: Case[P, F[T] :: HNil] =
       macro PolyMacros.materializeFromValueImpl[P, F[T], T]
@@ -61,11 +60,10 @@ object PolyDefns extends Cases {
   type Case0[P] = Case[P, HNil]
   object Case0 {
     type Aux[P, T] = Case.Aux[P, HNil, T]
-    def apply[P, T](v: T): Aux[P, T] =
-      new Case[P, HNil] {
-        type Result = T
-        val value = (l: HNil) => v
-      }
+    def apply[P, T](v: T): Aux[P, T] = new Case[P, HNil] {
+      type Result = T
+      val value = (l: HNil) => v
+    }
   }
 
   /**
@@ -79,11 +77,10 @@ object PolyDefns extends Cases {
     implicit def composeCase[C, F <: Poly, G <: Poly, T, U, V](implicit
         unpack: Unpack2[C, Compose, F, G],
         cG: Case1.Aux[G, T, U],
-        cF: Case1.Aux[F, U, V]) =
-      new Case[C, T :: HNil] {
-        type Result = V
-        val value = (t: T :: HNil) => cF(cG.value(t))
-      }
+        cF: Case1.Aux[F, U, V]) = new Case[C, T :: HNil] {
+      type Result = V
+      val value = (t: T :: HNil) => cF(cG.value(t))
+    }
   }
 
   /**
@@ -156,11 +153,10 @@ object PolyDefns extends Cases {
   }
 
   trait LowPriorityLiftU extends Poly {
-    implicit def default[L <: HList] =
-      new ProductCase[L] {
-        type Result = HNil
-        val value = (l: L) => HNil
-      }
+    implicit def default[L <: HList] = new ProductCase[L] {
+      type Result = HNil
+      val value = (l: L) => HNil
+    }
   }
 
   /**
@@ -231,11 +227,10 @@ trait Poly extends PolyApply with Serializable {
     /** The type of a case of this polymorphic function of the form `T => T` */
     type Hom[T] = Aux[T :: HNil, T]
 
-    def apply[L <: HList, R](v: L => R) =
-      new ProductCase[L] {
-        type Result = R
-        val value = v
-      }
+    def apply[L <: HList, R](v: L => R) = new ProductCase[L] {
+      type Result = R
+      val value = v
+    }
   }
 
   def use[T, L <: HList, R](t: T)(implicit cb: CaseBuilder[T, L, R]) = cb(t)
@@ -283,11 +278,10 @@ object Poly extends PolyInst {
 trait Poly0 extends Poly {
   type Case0[T] = ProductCase.Aux[HNil, T]
 
-  def at[T](t: T) =
-    new ProductCase[HNil] {
-      type Result = T
-      val value = (l: HNil) => t
-    }
+  def at[T](t: T) = new ProductCase[HNil] {
+    type Result = T
+    val value = (l: HNil) => t
+  }
 }
 
 @macrocompat.bundle

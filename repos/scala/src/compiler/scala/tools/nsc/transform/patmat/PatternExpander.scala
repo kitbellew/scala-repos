@@ -124,14 +124,13 @@ trait PatternExpander[Pattern, Type] {
     private def typeStrings =
       fixed.map("" + _) ::: (if (hasSeq) List("" + repeated) else Nil)
 
-    def offeringString =
-      if (isErroneous) "<error>"
-      else
-        typeStrings match {
-          case Nil       => "Boolean"
-          case tp :: Nil => tp
-          case tps       => tps.mkString("(", ", ", ")")
-        }
+    def offeringString = if (isErroneous) "<error>"
+    else
+      typeStrings match {
+        case Nil       => "Boolean"
+        case tp :: Nil => tp
+        case tps       => tps.mkString("(", ", ", ")")
+      }
     override def toString = "%s => %s".format(whole, offeringString)
   }
 

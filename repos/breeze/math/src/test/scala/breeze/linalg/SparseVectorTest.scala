@@ -402,8 +402,8 @@ class SparseVectorOps_DoubleTest
     }
   }
 
-  def genScalar: Arbitrary[Double] =
-    Arbitrary(Arbitrary.arbitrary[Double].map { _ % 1e10 })
+  def genScalar: Arbitrary[Double] = Arbitrary(
+    Arbitrary.arbitrary[Double].map { _ % 1e10 })
 }
 
 /**
@@ -438,8 +438,8 @@ class SparseVectorOps_FloatTest
     }
   }
 
-  def genScalar: Arbitrary[Float] =
-    Arbitrary(Arbitrary.arbitrary[Float].map { _ % 1000 })
+  def genScalar: Arbitrary[Float] = Arbitrary(
+    Arbitrary.arbitrary[Float].map { _ % 1000 })
 
 }
 
@@ -474,6 +474,6 @@ class SparseVectorOps_IntTest
     }
   }
 
-  def genScalar: Arbitrary[Int] =
-    Arbitrary(Arbitrary.arbitrary[Int].map { _ % 1000 })
+  def genScalar: Arbitrary[Int] = Arbitrary(
+    Arbitrary.arbitrary[Int].map { _ % 1000 })
 }

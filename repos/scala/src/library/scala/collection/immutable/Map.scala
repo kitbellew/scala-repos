@@ -110,8 +110,8 @@ object Map extends ImmutableMapFactory[Map] {
       with Map[Any, Nothing]
       with Serializable {
     override def size: Int = 0
-    override def apply(key: Any) =
-      throw new NoSuchElementException("key not found: " + key)
+    override def apply(key: Any) = throw new NoSuchElementException(
+      "key not found: " + key)
     override def contains(key: Any) = false
     def get(key: Any): Option[Nothing] = None
     def iterator: Iterator[(Any, Nothing)] = Iterator.empty
@@ -126,9 +126,8 @@ object Map extends ImmutableMapFactory[Map] {
       with Map[A, B]
       with Serializable {
     override def size = 1
-    override def apply(key: A) =
-      if (key == key1) value1
-      else throw new NoSuchElementException("key not found: " + key)
+    override def apply(key: A) = if (key == key1) value1
+    else throw new NoSuchElementException("key not found: " + key)
     override def contains(key: A) = key == key1
     def get(key: A): Option[B] =
       if (key == key1) Some(value1) else None

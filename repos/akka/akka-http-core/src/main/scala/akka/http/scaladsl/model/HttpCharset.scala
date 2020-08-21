@@ -90,8 +90,8 @@ object HttpCharset {
   def custom(value: String, aliases: String*): HttpCharset =
     HttpCharset(value)(immutable.Seq(aliases: _*))
 
-  private[http] def findNioCharset(name: String): Try[Charset] =
-    Try(Charset.forName(name))
+  private[http] def findNioCharset(name: String): Try[Charset] = Try(
+    Charset.forName(name))
 }
 
 // see http://www.iana.org/assignments/character-sets

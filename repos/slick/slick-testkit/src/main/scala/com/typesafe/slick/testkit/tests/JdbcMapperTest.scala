@@ -20,11 +20,10 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
       def last = column[String]("last")
       def * = id.? ~: baseProjection <> (User.tupled, User.unapply _)
       def baseProjection = first ~ last
-      def forUpdate =
-        baseProjection.shaped <>
-          ({ case (f, l) => User(None, f, l) }, { u: User =>
-            Some((u.first, u.last))
-          })
+      def forUpdate = baseProjection.shaped <>
+        ({ case (f, l) => User(None, f, l) }, { u: User =>
+          Some((u.first, u.last))
+        })
       def asFoo =
         forUpdate <> ((u: User) => Foo(u), (f: Foo[User]) => Some(f.value))
     }
@@ -162,43 +161,40 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
       def p4i5 = column[Int]("p4i5")
       def p4i6 = column[Int]("p4i6")
       // Composable bidirectional mappings
-      def m1 =
-        (
-          id,
-          (p1i1, p1i2, p1i3, p1i4, p1i5, p1i6).mapTo[Part],
-          (p2i1, p2i2, p2i3, p2i4, p2i5, p2i6) <> (Part.tupled, Part.unapply _),
-          (p3i1, p3i2, p3i3, p3i4, p3i5, p3i6).mapTo[Part],
-          (p4i1, p4i2, p4i3, p4i4, p4i5, p4i6).mapTo[Part]
-        ).mapTo[Whole]
+      def m1 = (
+        id,
+        (p1i1, p1i2, p1i3, p1i4, p1i5, p1i6).mapTo[Part],
+        (p2i1, p2i2, p2i3, p2i4, p2i5, p2i6) <> (Part.tupled, Part.unapply _),
+        (p3i1, p3i2, p3i3, p3i4, p3i5, p3i6).mapTo[Part],
+        (p4i1, p4i2, p4i3, p4i4, p4i5, p4i6).mapTo[Part]
+      ).mapTo[Whole]
       // Manually composed mapping functions
-      def m2 =
-        (
+      def m2 = (
+        id,
+        (p1i1, p1i2, p1i3, p1i4, p1i5, p1i6),
+        (p2i1, p2i2, p2i3, p2i4, p2i5, p2i6),
+        (p3i1, p3i2, p3i3, p3i4, p3i5, p3i6),
+        (p4i1, p4i2, p4i3, p4i4, p4i5, p4i6)
+      ).shaped <> ({ case (id, p1, p2, p3, p4) =>
+        // We could do this without .shaped but then we'd have to write a type annotation for the parameters
+        Whole(
           id,
-          (p1i1, p1i2, p1i3, p1i4, p1i5, p1i6),
-          (p2i1, p2i2, p2i3, p2i4, p2i5, p2i6),
-          (p3i1, p3i2, p3i3, p3i4, p3i5, p3i6),
-          (p4i1, p4i2, p4i3, p4i4, p4i5, p4i6)
-        ).shaped <> ({ case (id, p1, p2, p3, p4) =>
-          // We could do this without .shaped but then we'd have to write a type annotation for the parameters
-          Whole(
-            id,
-            Part.tupled.apply(p1),
-            Part.tupled.apply(p2),
-            Part.tupled.apply(p3),
-            Part.tupled.apply(p4))
-        }, { w: Whole =>
-          def f(p: Part) = Part.unapply(p).get
-          Some((w.id, f(w.p1), f(w.p2), f(w.p3), f(w.p4)))
-        })
+          Part.tupled.apply(p1),
+          Part.tupled.apply(p2),
+          Part.tupled.apply(p3),
+          Part.tupled.apply(p4))
+      }, { w: Whole =>
+        def f(p: Part) = Part.unapply(p).get
+        Some((w.id, f(w.p1), f(w.p2), f(w.p3), f(w.p4)))
+      })
       // HList-based wide case class mapping
-      def m3 =
-        (
-          id ::
-            p1i1 :: p1i2 :: p1i3 :: p1i4 :: p1i5 :: p1i6 ::
-            p2i1 :: p2i2 :: p2i3 :: p2i4 :: p2i5 :: p2i6 ::
-            p3i1 :: p3i2 :: p3i3 :: p3i4 :: p3i5 :: p3i6 ::
-            p4i1 :: p4i2 :: p4i3 :: p4i4 :: p4i5 :: p4i6 :: HNil
-        ).mapTo[BigCase]
+      def m3 = (
+        id ::
+          p1i1 :: p1i2 :: p1i3 :: p1i4 :: p1i5 :: p1i6 ::
+          p2i1 :: p2i2 :: p2i3 :: p2i4 :: p2i5 :: p2i6 ::
+          p3i1 :: p3i2 :: p3i3 :: p3i4 :: p3i5 :: p3i6 ::
+          p4i1 :: p4i2 :: p4i3 :: p4i4 :: p4i5 :: p4i6 :: HNil
+      ).mapTo[BigCase]
       def * = m1
     }
     val ts = TableQuery[T]
@@ -315,21 +311,19 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
       def canEqual(that: Any): Boolean = that.isInstanceOf[C]
       def productArity: Int = 2
       def productElement(n: Int): Any = Seq(a, b)(n)
-      override def equals(a: Any) =
-        a match {
-          case that: C => this.a == that.a && this.b == that.b
-          case _       => false
-        }
+      override def equals(a: Any) = a match {
+        case that: C => this.a == that.a && this.b == that.b
+        case _       => false
+      }
     }
     class LiftedC(val a: Rep[Int], val b: Rep[Option[String]]) extends Product {
       def canEqual(that: Any): Boolean = that.isInstanceOf[LiftedC]
       def productArity: Int = 2
       def productElement(n: Int): Any = Seq(a, b)(n)
-      override def equals(a: Any) =
-        a match {
-          case that: LiftedC => this.a == that.a && this.b == that.b
-          case _             => false
-        }
+      override def equals(a: Any) = a match {
+        case that: LiftedC => this.a == that.a && this.b == that.b
+        case _             => false
+      }
     }
     implicit object cShape
         extends ProductClassShape(
@@ -368,8 +362,8 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
         P <: Pair[_, _]](val shapes: Seq[Shape[_, _, _, _]])
         extends MappedScalaProductShape[Level, Pair[_, _], M, U, P] {
       def buildValue(elems: IndexedSeq[Any]) = Pair(elems(0), elems(1))
-      def copy(shapes: Seq[Shape[_ <: ShapeLevel, _, _, _]]) =
-        new PairShape(shapes)
+      def copy(shapes: Seq[Shape[_ <: ShapeLevel, _, _, _]]) = new PairShape(
+        shapes)
     }
     implicit def pairShape[Level <: ShapeLevel, M1, M2, U1, U2, P1, P2](implicit
         s1: Shape[_ <: Level, M1, U1, P1],
@@ -506,13 +500,12 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
     class T(tag: Tag) extends Table[Data](tag, "T_fastpath") {
       def a = column[Int]("A")
       def b = column[Int]("B")
-      def * =
-        (a, b)
-          .<>(Data.tupled, Data.unapply _)
-          .fastPath(new FastPath(_) {
-            val (a, b) = (next[Int], next[Int])
-            override def read(r: Reader) = Data(a.read(r), b.read(r))
-          })
+      def * = (a, b)
+        .<>(Data.tupled, Data.unapply _)
+        .fastPath(new FastPath(_) {
+          val (a, b) = (next[Int], next[Int])
+          override def read(r: Reader) = Data(a.read(r), b.read(r))
+        })
       def auto = (a, b).mapTo[Data]
     }
     val ts = TableQuery[T]

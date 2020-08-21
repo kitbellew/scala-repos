@@ -8,9 +8,8 @@ private final case class Device(
     userId: String,
     seenAt: DateTime) {
 
-  def deviceId =
-    platform match {
-      case "ios" => _id.grouped(8).mkString("<", " ", ">")
-      case _     => _id
-    }
+  def deviceId = platform match {
+    case "ios" => _id.grouped(8).mkString("<", " ", ">")
+    case _     => _id
+  }
 }

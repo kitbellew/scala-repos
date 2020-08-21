@@ -132,8 +132,9 @@ class ActivationTrackerTest
     val probe = TestProbe()
     def awaitActivation() = at.tell(AwaitActivation(actor.ref), probe.ref)
     def awaitDeActivation() = at.tell(AwaitDeActivation(actor.ref), probe.ref)
-    def verifyActivated()(implicit timeout: FiniteDuration) =
-      within(timeout) { probe.expectMsg(EndpointActivated(actor.ref)) }
+    def verifyActivated()(implicit timeout: FiniteDuration) = within(timeout) {
+      probe.expectMsg(EndpointActivated(actor.ref))
+    }
     def verifyDeActivated()(implicit timeout: FiniteDuration) =
       within(timeout) { probe.expectMsg(EndpointDeActivated(actor.ref)) }
 

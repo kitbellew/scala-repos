@@ -35,10 +35,9 @@ import org.jetbrains.plugins.scala.project._
 class ScDocResolvableCodeReferenceImpl(node: ASTNode)
     extends ScStableCodeReferenceElementImpl(node)
     with ScDocResolvableCodeReference {
-  private def is2_10plus: Boolean =
-    this.scalaLanguageLevel
-      .map(_ >= ScalaLanguageLevel.Scala_2_10)
-      .getOrElse(true)
+  private def is2_10plus: Boolean = this.scalaLanguageLevel
+    .map(_ >= ScalaLanguageLevel.Scala_2_10)
+    .getOrElse(true)
 
   override def multiResolve(incomplete: Boolean): Array[ResolveResult] = {
     val s = super.multiResolve(incomplete)

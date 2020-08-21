@@ -136,12 +136,11 @@ object BadResponse {
   * 401 Unauthorized Response.
   */
 case class UnauthorizedResponse(realm: String) extends LiftResponse {
-  def toResponse =
-    InMemoryResponse(
-      Array(),
-      List("WWW-Authenticate" -> ("Basic realm=\"" + realm + "\"")),
-      Nil,
-      401)
+  def toResponse = InMemoryResponse(
+    Array(),
+    List("WWW-Authenticate" -> ("Basic realm=\"" + realm + "\"")),
+    Nil,
+    401)
 }
 
 object Qop extends Enumeration {
@@ -171,18 +170,17 @@ class UnauthorizedDigestResponse(
     nonce: String,
     opaque: String)
     extends UnauthorizedResponse(realm) {
-  override def toResponse =
-    InMemoryResponse(
-      Array(),
-      List(
-        "WWW-Authenticate" -> (
-          "Digest realm=\"" + realm + "\", " +
-            "qop=\"" + qop + "\", " +
-            "nonce=\"" + nonce + "\", " +
-            "opaque=\"" + opaque + "\""
-        )),
-      Nil,
-      401)
+  override def toResponse = InMemoryResponse(
+    Array(),
+    List(
+      "WWW-Authenticate" -> (
+        "Digest realm=\"" + realm + "\", " +
+          "qop=\"" + qop + "\", " +
+          "nonce=\"" + nonce + "\", " +
+          "opaque=\"" + opaque + "\""
+      )),
+    Nil,
+    401)
 }
 
 object ForbiddenResponse {
@@ -198,12 +196,11 @@ object ForbiddenResponse {
 case class ForbiddenResponse(message: String)
     extends LiftResponse
     with HeaderDefaults {
-  def toResponse =
-    InMemoryResponse(
-      message.getBytes("UTF-8"),
-      "Content-Type" -> "text/plain; charset=utf-8" :: headers,
-      cookies,
-      403)
+  def toResponse = InMemoryResponse(
+    message.getBytes("UTF-8"),
+    "Content-Type" -> "text/plain; charset=utf-8" :: headers,
+    cookies,
+    403)
 }
 
 object NotFoundResponse {
@@ -218,12 +215,11 @@ object NotFoundResponse {
 case class NotFoundResponse(message: String)
     extends LiftResponse
     with HeaderDefaults {
-  def toResponse =
-    InMemoryResponse(
-      message.getBytes("UTF-8"),
-      "Content-Type" -> "text/plain; charset=utf-8" :: headers,
-      cookies,
-      404)
+  def toResponse = InMemoryResponse(
+    message.getBytes("UTF-8"),
+    "Content-Type" -> "text/plain; charset=utf-8" :: headers,
+    cookies,
+    404)
 }
 
 /**
@@ -316,12 +312,11 @@ case class BadGatewayResponse() extends LiftResponse with HeaderDefaults {
   * to fulfill the request.
   */
 case class ServiceUnavailableResponse(retryAfter: Long) extends LiftResponse {
-  def toResponse =
-    InMemoryResponse(
-      Array(),
-      List("Retry-After" -> retryAfter.toString),
-      Nil,
-      503)
+  def toResponse = InMemoryResponse(
+    Array(),
+    List("Retry-After" -> retryAfter.toString),
+    Nil,
+    503)
 }
 
 object JavaScriptResponse {
@@ -449,10 +444,9 @@ final case class InMemoryResponse(
 
   def size = data.length
 
-  override def toString =
-    "InMemoryResponse(" + (new String(
-      data,
-      "UTF-8")) + ", " + headers + ", " + cookies + ", " + code + ")"
+  override def toString = "InMemoryResponse(" + (new String(
+    data,
+    "UTF-8")) + ", " + headers + ", " + cookies + ", " + code + ")"
 }
 
 final case class StreamingResponse(
@@ -547,12 +541,11 @@ object RedirectResponse {
 case class RedirectResponse(uri: String, request: Req, cookies: HTTPCookie*)
     extends LiftResponse {
   // The Location URI is not resolved here, instead it is resolved with context path prior of sending the actual response
-  def toResponse =
-    InMemoryResponse(
-      Array(),
-      List("Location" -> uri, "Content-Type" -> "text/plain"),
-      cookies.toList,
-      302)
+  def toResponse = InMemoryResponse(
+    Array(),
+    List("Location" -> uri, "Content-Type" -> "text/plain"),
+    cookies.toList,
+    302)
 }
 
 /**
@@ -576,12 +569,11 @@ object SeeOtherResponse {
 case class SeeOtherResponse(uri: String, request: Req, cookies: HTTPCookie*)
     extends LiftResponse {
   // The Location URI is not resolved here, instead it is resolved with context path prior of sending the actual response
-  def toResponse =
-    InMemoryResponse(
-      Array(),
-      List("Location" -> uri, "Content-Type" -> "text/plain"),
-      cookies.toList,
-      303)
+  def toResponse = InMemoryResponse(
+    Array(),
+    List("Location" -> uri, "Content-Type" -> "text/plain"),
+    cookies.toList,
+    303)
 }
 
 object DoRedirectResponse {

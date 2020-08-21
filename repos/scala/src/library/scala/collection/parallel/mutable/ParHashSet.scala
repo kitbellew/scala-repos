@@ -86,16 +86,15 @@ class ParHashSet[T] private[collection] (contents: FlatHashTable.Contents[T])
   }
 
   import scala.collection.DebugUtils._
-  override def debugInformation =
-    buildString { append =>
-      append("Parallel flat hash table set")
-      append("No. elems: " + tableSize)
-      append("Table length: " + table.length)
-      append("Table: ")
-      append(arrayString(table, 0, table.length))
-      append("Sizemap: ")
-      append(arrayString(sizemap, 0, sizemap.length))
-    }
+  override def debugInformation = buildString { append =>
+    append("Parallel flat hash table set")
+    append("No. elems: " + tableSize)
+    append("Table length: " + table.length)
+    append("Table: ")
+    append(arrayString(table, 0, table.length))
+    append("Sizemap: ")
+    append(arrayString(sizemap, 0, sizemap.length))
+  }
 
 }
 
@@ -353,7 +352,6 @@ private[parallel] object ParHashSetCombiner {
   private[mutable] val discriminantmask = ((1 << discriminantbits) - 1)
   private[mutable] val nonmasklength = 32 - discriminantbits
 
-  def apply[T] =
-    new ParHashSetCombiner[T](
-      FlatHashTable.defaultLoadFactor) {} //with EnvironmentPassingCombiner[T, ParHashSet[T]]
+  def apply[T] = new ParHashSetCombiner[T](
+    FlatHashTable.defaultLoadFactor) {} //with EnvironmentPassingCombiner[T, ParHashSet[T]]
 }

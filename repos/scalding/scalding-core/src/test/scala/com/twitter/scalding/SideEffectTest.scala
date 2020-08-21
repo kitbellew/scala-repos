@@ -23,11 +23,10 @@ import org.scalatest.{Matchers, WordSpec}
 class Zip(args: Args) extends Job(args) {
 
   //import RichPipe._
-  def createState =
-    new {
-      var lastLine: String = null
-      def release() {}
-    }
+  def createState = new {
+    var lastLine: String = null
+    def release() {}
+  }
 
   val zipped = Tsv("line", ('line)).pipe
     .using { createState }
@@ -76,11 +75,10 @@ class SideEffectTest extends WordSpec with Matchers with FieldConversions {
 class ZipBuffer(args: Args) extends Job(args) {
 
   //import RichPipe._
-  def createState =
-    new {
-      var lastLine: String = null
-      def release() {}
-    }
+  def createState = new {
+    var lastLine: String = null
+    def release() {}
+  }
 
   val zipped = Tsv("line", ('line)).pipe
     .map('line -> 'oddOrEven) { line: String =>

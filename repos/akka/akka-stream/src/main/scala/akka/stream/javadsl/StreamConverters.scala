@@ -74,8 +74,8 @@ object StreamConverters {
     * The [[InputStream]] will be closed when the stream flowing into this [[Sink]] completes, and
     * closing the [[InputStream]] will cancel this [[Sink]].
     */
-  def asInputStream(): Sink[ByteString, InputStream] =
-    new Sink(scaladsl.StreamConverters.asInputStream())
+  def asInputStream(): Sink[ByteString, InputStream] = new Sink(
+    scaladsl.StreamConverters.asInputStream())
 
   /**
     * Creates a Sink which when materialized will return an [[java.io.InputStream]] which it is possible

@@ -29,12 +29,11 @@ class AliasingFrame[V <: Value](nLocals: Int, nStack: Int)
     init(src)
   }
 
-  override def toString: String =
-    super.toString + " - " + aliases.toList
-      .filter(s => s != null && s.size > 1)
-      .map(_.toString)
-      .distinct
-      .mkString(",")
+  override def toString: String = super.toString + " - " + aliases.toList
+    .filter(s => s != null && s.size > 1)
+    .map(_.toString)
+    .distinct
+    .mkString(",")
 
   /**
     * For every value the set of values that are aliases of it.
@@ -460,59 +459,56 @@ class AliasSet(var set: Object /*SmallBitSet | Array[Long]*/, var size: Int) {
     */
   def iterator: IntIterator = andNotIterator(this, empty, null)
 
-  def +=(value: Int): Unit =
-    this.set match {
-      case s: SmallBitSet =>
-        (size: @switch) match {
-          case 0 => s.a = value; size = 1
-          case 1 => if (value != s.a) { s.b = value; size = 2 }
-          case 2 => if (value != s.a && value != s.b) { s.c = value; size = 3 }
-          case 3 =>
-            if (value != s.a && value != s.b && value != s.c) {
-              s.d = value; size = 4
-            }
-          case 4 =>
-            if (value != s.a && value != s.b && value != s.c && value != s.d) {
-              this.set = bsEmpty
-              this.size = 0
-              bsAdd(this, s.a)
-              bsAdd(this, s.b)
-              bsAdd(this, s.c)
-              bsAdd(this, s.d)
-              bsAdd(this, value)
-            }
-        }
-      case bits: Array[Long] =>
-        bsAdd(this, value)
-    }
+  def +=(value: Int): Unit = this.set match {
+    case s: SmallBitSet =>
+      (size: @switch) match {
+        case 0 => s.a = value; size = 1
+        case 1 => if (value != s.a) { s.b = value; size = 2 }
+        case 2 => if (value != s.a && value != s.b) { s.c = value; size = 3 }
+        case 3 =>
+          if (value != s.a && value != s.b && value != s.c) {
+            s.d = value; size = 4
+          }
+        case 4 =>
+          if (value != s.a && value != s.b && value != s.c && value != s.d) {
+            this.set = bsEmpty
+            this.size = 0
+            bsAdd(this, s.a)
+            bsAdd(this, s.b)
+            bsAdd(this, s.c)
+            bsAdd(this, s.d)
+            bsAdd(this, value)
+          }
+      }
+    case bits: Array[Long] =>
+      bsAdd(this, value)
+  }
 
-  def -=(value: Int): Unit =
-    this.set match {
-      case s: SmallBitSet =>
-        (size: @switch) match {
-          case 0 =>
-          case 1 =>
-            if (value == s.a) { s.a = -1; size = 0 }
-          case 2 =>
-            if (value == s.a) { s.a = s.b; s.b = -1; size = 1 }
-            else if (value == s.b) { s.b = -1; size = 1 }
-          case 3 =>
-            if (value == s.a) { s.a = s.b; s.b = s.c; s.c = -1; size = 2 }
-            else if (value == s.b) { s.b = s.c; s.c = -1; size = 2 }
-            else if (value == s.c) { s.c = -1; size = 2 }
-          case 4 =>
-            if (value == s.a) {
-              s.a = s.b; s.b = s.c; s.c = s.d; s.d = -1; size = 3
-            } else if (value == s.b) {
-              s.b = s.c; s.c = s.d; s.d = -1; size = 3
-            } else if (value == s.c) { s.c = s.d; s.d = -1; size = 3 }
-            else if (value == s.d) { s.d = -1; size = 3 }
-        }
-      case bits: Array[Long] =>
-        bsRemove(this, value)
-        if (this.size == 4)
-          this.set = bsToSmall(this.set.asInstanceOf[Array[Long]])
-    }
+  def -=(value: Int): Unit = this.set match {
+    case s: SmallBitSet =>
+      (size: @switch) match {
+        case 0 =>
+        case 1 =>
+          if (value == s.a) { s.a = -1; size = 0 }
+        case 2 =>
+          if (value == s.a) { s.a = s.b; s.b = -1; size = 1 }
+          else if (value == s.b) { s.b = -1; size = 1 }
+        case 3 =>
+          if (value == s.a) { s.a = s.b; s.b = s.c; s.c = -1; size = 2 }
+          else if (value == s.b) { s.b = s.c; s.c = -1; size = 2 }
+          else if (value == s.c) { s.c = -1; size = 2 }
+        case 4 =>
+          if (value == s.a) {
+            s.a = s.b; s.b = s.c; s.c = s.d; s.d = -1; size = 3
+          } else if (value == s.b) { s.b = s.c; s.c = s.d; s.d = -1; size = 3 }
+          else if (value == s.c) { s.c = s.d; s.d = -1; size = 3 }
+          else if (value == s.d) { s.d = -1; size = 3 }
+      }
+    case bits: Array[Long] =>
+      bsRemove(this, value)
+      if (this.size == 4)
+        this.set = bsToSmall(this.set.asInstanceOf[Array[Long]])
+  }
 
   override def clone(): AliasSet = {
     val resSet = this.set match {

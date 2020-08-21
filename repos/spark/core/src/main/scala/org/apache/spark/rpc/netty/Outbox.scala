@@ -244,14 +244,13 @@ private[netty] class Outbox(nettyEnv: NettyRpcEnv, val address: RpcAddress) {
     assert(messages.isEmpty)
   }
 
-  private def closeClient(): Unit =
-    synchronized {
-      // Not sure if `client.close` is idempotent. Just for safety.
-      if (client != null) {
-        client.close()
-      }
-      client = null
+  private def closeClient(): Unit = synchronized {
+    // Not sure if `client.close` is idempotent. Just for safety.
+    if (client != null) {
+      client.close()
     }
+    client = null
+  }
 
   /**
     * Stop [[Outbox]]. The remaining messages in the [[Outbox]] will be notified with a

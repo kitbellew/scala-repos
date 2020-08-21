@@ -35,13 +35,12 @@ class TaskOpFactoryHelper(
       localVolumes: Iterable[LocalVolume],
       oldTask: Option[Task] = None): TaskOp.ReserveAndCreateVolumes = {
 
-    def createOperations =
-      Seq(
-        offerOperationFactory.reserve(frameworkId, newTask.taskId, resources),
-        offerOperationFactory.createVolumes(
-          frameworkId,
-          newTask.taskId,
-          localVolumes))
+    def createOperations = Seq(
+      offerOperationFactory.reserve(frameworkId, newTask.taskId, resources),
+      offerOperationFactory.createVolumes(
+        frameworkId,
+        newTask.taskId,
+        localVolumes))
 
     TaskOp.ReserveAndCreateVolumes(
       newTask,

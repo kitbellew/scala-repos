@@ -27,32 +27,30 @@ private class HashedWheelTimer(underlying: netty.Timer) extends Timer {
       period: Duration
   )(
       f: => Unit
-  ): TimerTask =
-    new TimerTask {
-      var isCancelled = false
-      var ref: TimerTask = schedule(when) { loop() }
+  ): TimerTask = new TimerTask {
+    var isCancelled = false
+    var ref: TimerTask = schedule(when) { loop() }
 
-      def loop(): Unit = {
-        f
-        synchronized {
-          if (!isCancelled) ref = schedule(period.fromNow) { loop() }
-        }
-      }
-
-      def cancel() {
-        synchronized {
-          isCancelled = true
-          ref.cancel()
-        }
+    def loop(): Unit = {
+      f
+      synchronized {
+        if (!isCancelled) ref = schedule(period.fromNow) { loop() }
       }
     }
+
+    def cancel() {
+      synchronized {
+        isCancelled = true
+        ref.cancel()
+      }
+    }
+  }
 
   def stop(): Unit = underlying.stop()
 
-  private[this] def toTimerTask(task: netty.Timeout) =
-    new TimerTask {
-      def cancel(): Unit = task.cancel()
-    }
+  private[this] def toTimerTask(task: netty.Timeout) = new TimerTask {
+    def cancel(): Unit = task.cancel()
+  }
 }
 
 /**
@@ -73,11 +71,10 @@ object HashedWheelTimer {
   /**
     * Create a default `HashedWheelTimer`.
     */
-  def apply(): Timer =
-    HashedWheelTimer(
-      Executors.defaultThreadFactory(),
-      TickDuration,
-      TicksPerWheel)
+  def apply(): Timer = HashedWheelTimer(
+    Executors.defaultThreadFactory(),
+    TickDuration,
+    TicksPerWheel)
 
   /**
     * Create a `HashedWheelTimer` with custom [[ThreadFactory]], [[Duration]]
@@ -122,8 +119,8 @@ object HashedWheelTimer {
   /**
     * Create a `HashedWheelTimer` based on a netty.HashedWheelTimer.
     */
-  def apply(nettyTimer: netty.HashedWheelTimer): Timer =
-    new HashedWheelTimer(nettyTimer)
+  def apply(nettyTimer: netty.HashedWheelTimer): Timer = new HashedWheelTimer(
+    nettyTimer)
 
   // Note: this uses the default `ticksPerWheel` size of 512 and 10 millisecond
   // ticks, which gives ~5100 milliseconds worth of scheduling. This should

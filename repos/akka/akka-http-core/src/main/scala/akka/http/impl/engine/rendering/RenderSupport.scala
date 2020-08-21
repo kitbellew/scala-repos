@@ -66,26 +66,24 @@ private object RenderSupport {
 
   class ChunkTransformer
       extends StatefulStage[HttpEntity.ChunkStreamPart, ByteString] {
-    override def initial =
-      new State {
-        override def onPush(
-            chunk: HttpEntity.ChunkStreamPart,
-            ctx: Context[ByteString]): SyncDirective = {
-          val bytes = renderChunk(chunk)
-          if (chunk.isLastChunk) ctx.pushAndFinish(bytes)
-          else ctx.push(bytes)
-        }
+    override def initial = new State {
+      override def onPush(
+          chunk: HttpEntity.ChunkStreamPart,
+          ctx: Context[ByteString]): SyncDirective = {
+        val bytes = renderChunk(chunk)
+        if (chunk.isLastChunk) ctx.pushAndFinish(bytes)
+        else ctx.push(bytes)
       }
+    }
     override def onUpstreamFinish(
         ctx: Context[ByteString]): TerminationDirective =
       terminationEmit(Iterator.single(defaultLastChunkBytes), ctx)
   }
 
   object CheckContentLengthTransformer {
-    def flow(contentLength: Long) =
-      Flow[ByteString]
-        .transform(() ⇒ new CheckContentLengthTransformer(contentLength))
-        .named("checkContentLength")
+    def flow(contentLength: Long) = Flow[ByteString]
+      .transform(() ⇒ new CheckContentLengthTransformer(contentLength))
+      .named("checkContentLength")
   }
 
   class CheckContentLengthTransformer(length: Long)

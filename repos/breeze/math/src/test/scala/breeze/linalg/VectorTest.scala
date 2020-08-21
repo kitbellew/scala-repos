@@ -105,8 +105,8 @@ class VectorOps_DoubleTest
     }
   }
 
-  def genScalar: Arbitrary[Double] =
-    Arbitrary(Arbitrary.arbitrary[Double].map { _ % 1e10 })
+  def genScalar: Arbitrary[Double] = Arbitrary(
+    Arbitrary.arbitrary[Double].map { _ % 1e10 })
 }
 
 @RunWith(classOf[JUnitRunner])
@@ -147,8 +147,8 @@ class VectorOps_FloatTest
     }
   }
 
-  def genScalar: Arbitrary[Float] =
-    Arbitrary(Arbitrary.arbitrary[Float].map { _ % 1000f })
+  def genScalar: Arbitrary[Float] = Arbitrary(
+    Arbitrary.arbitrary[Float].map { _ % 1000f })
 }
 
 @RunWith(classOf[JUnitRunner])
@@ -186,8 +186,8 @@ class VectorOps_IntTest extends TensorSpaceTestBase[Vector[Int], Int, Int] {
     }
   }
 
-  def genScalar: Arbitrary[Int] =
-    Arbitrary(Arbitrary.arbitrary[Int].map { _ % 1000 })
+  def genScalar: Arbitrary[Int] = Arbitrary(
+    Arbitrary.arbitrary[Int].map { _ % 1000 })
 }
 
 @RunWith(classOf[JUnitRunner])
@@ -224,9 +224,8 @@ class VectorOps_ComplexTest
     }
   }
 
-  implicit def genScalar: Arbitrary[Complex] =
-    Arbitrary {
-      for (r <- Arbitrary.arbitrary[Double]; i <- Arbitrary.arbitrary[Double])
-        yield Complex(r % 100, i % 100)
-    }
+  implicit def genScalar: Arbitrary[Complex] = Arbitrary {
+    for (r <- Arbitrary.arbitrary[Double]; i <- Arbitrary.arbitrary[Double])
+      yield Complex(r % 100, i % 100)
+  }
 }

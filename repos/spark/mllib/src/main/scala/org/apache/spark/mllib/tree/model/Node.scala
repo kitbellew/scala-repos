@@ -135,23 +135,21 @@ class Node @Since("1.2.0") (
     * Get the number of nodes in tree below this node, including leaf nodes.
     * E.g., if this is a leaf, returns 0.  If both children are leaves, returns 2.
     */
-  private[tree] def numDescendants: Int =
-    if (isLeaf) {
-      0
-    } else {
-      2 + leftNode.get.numDescendants + rightNode.get.numDescendants
-    }
+  private[tree] def numDescendants: Int = if (isLeaf) {
+    0
+  } else {
+    2 + leftNode.get.numDescendants + rightNode.get.numDescendants
+  }
 
   /**
     * Get depth of tree from this node.
     * E.g.: Depth 0 means this is a leaf node.
     */
-  private[tree] def subtreeDepth: Int =
-    if (isLeaf) {
-      0
-    } else {
-      1 + math.max(leftNode.get.subtreeDepth, rightNode.get.subtreeDepth)
-    }
+  private[tree] def subtreeDepth: Int = if (isLeaf) {
+    0
+  } else {
+    1 + math.max(leftNode.get.subtreeDepth, rightNode.get.subtreeDepth)
+  }
 
   /**
     * Recursive print function.
@@ -200,16 +198,15 @@ private[spark] object Node {
   /**
     * Return a node with the given node id (but nothing else set).
     */
-  def emptyNode(nodeIndex: Int): Node =
-    new Node(
-      nodeIndex,
-      new Predict(Double.MinValue),
-      -1.0,
-      false,
-      None,
-      None,
-      None,
-      None)
+  def emptyNode(nodeIndex: Int): Node = new Node(
+    nodeIndex,
+    new Predict(Double.MinValue),
+    -1.0,
+    false,
+    None,
+    None,
+    None,
+    None)
 
   /**
     * Construct a node with nodeIndex, predict, impurity and isLeaf parameters.
@@ -248,13 +245,12 @@ private[spark] object Node {
   /**
     * Return the level of a tree which the given node is in.
     */
-  def indexToLevel(nodeIndex: Int): Int =
-    if (nodeIndex == 0) {
-      throw new IllegalArgumentException(s"0 is not a valid node index.")
-    } else {
-      java.lang.Integer.numberOfTrailingZeros(
-        java.lang.Integer.highestOneBit(nodeIndex))
-    }
+  def indexToLevel(nodeIndex: Int): Int = if (nodeIndex == 0) {
+    throw new IllegalArgumentException(s"0 is not a valid node index.")
+  } else {
+    java.lang.Integer.numberOfTrailingZeros(
+      java.lang.Integer.highestOneBit(nodeIndex))
+  }
 
   /**
     * Returns true if this is a left child.

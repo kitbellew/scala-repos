@@ -97,11 +97,10 @@ private[sql] case class LogicalRDD(
     LogicalRDD(output.map(_.newInstance()), rdd)(sqlContext)
       .asInstanceOf[this.type]
 
-  override def sameResult(plan: LogicalPlan): Boolean =
-    plan match {
-      case LogicalRDD(_, otherRDD) => rdd.id == otherRDD.id
-      case _                       => false
-    }
+  override def sameResult(plan: LogicalPlan): Boolean = plan match {
+    case LogicalRDD(_, otherRDD) => rdd.id == otherRDD.id
+    case _                       => false
+  }
 
   override def producedAttributes: AttributeSet = outputSet
 
@@ -151,12 +150,11 @@ private[sql] case class DataSourceScan(
   override val nodeName: String = relation.toString
 
   // Ignore rdd when checking results
-  override def sameResult(plan: SparkPlan): Boolean =
-    plan match {
-      case other: DataSourceScan =>
-        relation == other.relation && metadata == other.metadata
-      case _ => false
-    }
+  override def sameResult(plan: SparkPlan): Boolean = plan match {
+    case other: DataSourceScan =>
+      relation == other.relation && metadata == other.metadata
+    case _ => false
+  }
 
   private[sql] override lazy val metrics = Map(
     "numOutputRows" -> SQLMetrics

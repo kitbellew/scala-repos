@@ -376,14 +376,13 @@ private[camel] trait ActorProducerFixture
       "mocksystem"))
     when(sys.name) thenReturn ("mocksystem")
 
-    def camelWithMocks =
-      new DefaultCamel(sys) {
-        override val log = mock[LoggingAdapter]
-        override lazy val template = mock[ProducerTemplate]
-        override lazy val context = mock[DefaultCamelContext]
-        override val settings = new CamelSettings(
-          ConfigFactory
-            .parseString("""
+    def camelWithMocks = new DefaultCamel(sys) {
+      override val log = mock[LoggingAdapter]
+      override lazy val template = mock[ProducerTemplate]
+      override lazy val context = mock[DefaultCamelContext]
+      override val settings = new CamelSettings(
+        ConfigFactory
+          .parseString("""
           akka {
             camel {
               jmx = off
@@ -395,9 +394,10 @@ private[camel] trait ActorProducerFixture
               }
             }
           }
-        """).withFallback(config),
-          sys.dynamicAccess)
-      }
+        """)
+          .withFallback(config),
+        sys.dynamicAccess)
+    }
     camel = camelWithMocks
 
     exchange = mock[CamelExchangeAdapter]
@@ -474,11 +474,10 @@ private[camel] trait ActorProducerFixture
     when(exchange.isOutCapable) thenReturn outCapable
   }
 
-  def echoActor =
-    system.actorOf(
-      Props(new Actor {
-        def receive = { case msg ⇒ sender() ! "received " + msg }
-      }),
-      name = "echoActor")
+  def echoActor = system.actorOf(
+    Props(new Actor {
+      def receive = { case msg ⇒ sender() ! "received " + msg }
+    }),
+    name = "echoActor")
 
 }

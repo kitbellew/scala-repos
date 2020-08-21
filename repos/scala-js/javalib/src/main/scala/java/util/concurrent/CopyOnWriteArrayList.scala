@@ -266,8 +266,8 @@ class CopyOnWriteArrayList[E <: AnyRef] private (private var inner: js.Array[E])
         fromIndex + index,
         fromIndex,
         toIndex) {
-        override protected def onSizeChanged(delta: Int): Unit =
-          changeSize(delta)
+        override protected def onSizeChanged(delta: Int): Unit = changeSize(
+          delta)
       }
     }
 

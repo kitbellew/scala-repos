@@ -80,10 +80,9 @@ object ScalaJSPlugin extends AutoPlugin {
         executable: String = "node",
         args: Seq[String] = Seq.empty,
         env: Map[String, String] = Map.empty
-    ): Def.Initialize[Task[NodeJSEnv]] =
-      Def.task {
-        new NodeJSEnv(executable, args, env)
-      }
+    ): Def.Initialize[Task[NodeJSEnv]] = Def.task {
+      new NodeJSEnv(executable, args, env)
+    }
 
     /**
       *  Creates a [[sbt.Def.Initialize Def.Initialize]] for a PhantomJSEnv. Use
@@ -106,11 +105,10 @@ object ScalaJSPlugin extends AutoPlugin {
         args: Seq[String] = Seq.empty,
         env: Map[String, String] = Map.empty,
         autoExit: Boolean = true
-    ): Def.Initialize[Task[PhantomJSEnv]] =
-      Def.task {
-        val loader = scalaJSPhantomJSClassLoader.value
-        new PhantomJSEnv(executable, args, env, autoExit, loader)
-      }
+    ): Def.Initialize[Task[PhantomJSEnv]] = Def.task {
+      val loader = scalaJSPhantomJSClassLoader.value
+      new PhantomJSEnv(executable, args, env, autoExit, loader)
+    }
 
     // All our public-facing keys
 
@@ -315,9 +313,8 @@ object ScalaJSPlugin extends AutoPlugin {
     )
   }
 
-  override def projectSettings: Seq[Setting[_]] =
-    (
-      scalaJSAbstractSettings ++
-        scalaJSEcosystemSettings
-    )
+  override def projectSettings: Seq[Setting[_]] = (
+    scalaJSAbstractSettings ++
+      scalaJSEcosystemSettings
+  )
 }

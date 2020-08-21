@@ -75,14 +75,13 @@ object UnliftableProps extends QuasiquoteProperties("unliftable") {
     assert(s.isInstanceOf[scala.Symbol] && s == 'foo)
   }
 
-  implicit def unliftList[T: Unliftable]: Unliftable[List[T]] =
-    Unliftable {
-      case q"scala.collection.immutable.List(..$args)" if args.forall {
-            implicitly[Unliftable[T]].unapply(_).nonEmpty
-          } =>
-        val ut = implicitly[Unliftable[T]]
-        args.flatMap { ut.unapply(_) }
-    }
+  implicit def unliftList[T: Unliftable]: Unliftable[List[T]] = Unliftable {
+    case q"scala.collection.immutable.List(..$args)" if args.forall {
+          implicitly[Unliftable[T]].unapply(_).nonEmpty
+        } =>
+      val ut = implicitly[Unliftable[T]]
+      args.flatMap { ut.unapply(_) }
+  }
 
   property("unlift list (1)") = test {
     val orig = List(1, 2)

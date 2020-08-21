@@ -251,12 +251,11 @@ class Atom[A] extends Source[A] with Sink[A] {
 }
 
 object Atom {
-  def atom[A](f: => Unit): Atom[A] =
-    new Atom[A] {
-      override def populate() = {
-        f
-      }
+  def atom[A](f: => Unit): Atom[A] = new Atom[A] {
+    override def populate() = {
+      f
     }
+  }
 
   def atom[A]: Atom[A] = new Atom[A]
 }

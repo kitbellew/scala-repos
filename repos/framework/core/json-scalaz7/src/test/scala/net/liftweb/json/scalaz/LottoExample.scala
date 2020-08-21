@@ -22,9 +22,8 @@ object LottoExample extends Specification {
     """{"id":5,"winning-numbers":[2,45,34,23,7,5],"winners":[{"winner-id":23,"numbers":[2,45,34,23,3,5]},{"winner-id":54,"numbers":[52,3,12,11,18,22]}]}""")
 
   // Lotto line must have exactly 6 numbers
-  def len(x: Int) =
-    (xs: List[Int]) =>
-      if (xs.length != x) Fail("len", xs.length + " != " + x) else xs.success
+  def len(x: Int) = (xs: List[Int]) =>
+    if (xs.length != x) Fail("len", xs.length + " != " + x) else xs.success
 
   implicit def winnerJSON: JSONR[Winner] = {
     val numbersResult = (jValue: JValue) =>

@@ -78,8 +78,8 @@ final class Sink[-In, +Mat](private[stream] override val module: Module)
   /**
     * Add a ``name`` attribute to this Flow.
     */
-  override def named(name: String): Sink[In, Mat] =
-    addAttributes(Attributes.name(name))
+  override def named(name: String): Sink[In, Mat] = addAttributes(
+    Attributes.name(name))
 
   /**
     * Put an asynchronous boundary around this `Sink`
@@ -93,8 +93,8 @@ final class Sink[-In, +Mat](private[stream] override val module: Module)
 object Sink {
 
   /** INTERNAL API */
-  private[stream] def shape[T](name: String): SinkShape[T] =
-    SinkShape(Inlet(name + ".in"))
+  private[stream] def shape[T](name: String): SinkShape[T] = SinkShape(
+    Inlet(name + ".in"))
 
   /**
     * A graph with the shape of a sink logically is a sink, this method makes
@@ -160,15 +160,13 @@ object Sink {
     *
     * See also [[lastOption]].
     */
-  def last[T]: Sink[T, Future[T]] =
-    Sink
-      .fromGraph(new LastOptionStage[T])
-      .withAttributes(DefaultAttributes.lastSink)
-      .mapMaterializedValue(e ⇒
-        e.map(
-          _.getOrElse(
-            throw new NoSuchElementException("last of empty stream")))(
-          ExecutionContexts.sameThreadExecutionContext))
+  def last[T]: Sink[T, Future[T]] = Sink
+    .fromGraph(new LastOptionStage[T])
+    .withAttributes(DefaultAttributes.lastSink)
+    .mapMaterializedValue(e ⇒
+      e.map(
+        _.getOrElse(throw new NoSuchElementException("last of empty stream")))(
+        ExecutionContexts.sameThreadExecutionContext))
 
   /**
     * A `Sink` that materializes into a `Future` of the optional last value received.
@@ -177,10 +175,9 @@ object Sink {
     *
     * See also [[last]].
     */
-  def lastOption[T]: Sink[T, Future[Option[T]]] =
-    Sink
-      .fromGraph(new LastOptionStage[T])
-      .withAttributes(DefaultAttributes.lastOptionSink)
+  def lastOption[T]: Sink[T, Future[Option[T]]] = Sink
+    .fromGraph(new LastOptionStage[T])
+    .withAttributes(DefaultAttributes.lastOptionSink)
 
   /**
     * A `Sink` that keeps on collecting incoming elements until upstream terminates.

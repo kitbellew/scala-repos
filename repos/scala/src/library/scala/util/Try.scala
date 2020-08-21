@@ -140,8 +140,8 @@ sealed abstract class Try[+T] extends Product with Serializable {
     def map[U](f: T => U): Try[U] = Try.this filter p map f
     def flatMap[U](f: T => Try[U]): Try[U] = Try.this filter p flatMap f
     def foreach[U](f: T => U): Unit = Try.this filter p foreach f
-    def withFilter(q: T => Boolean): WithFilter =
-      new WithFilter(x => p(x) && q(x))
+    def withFilter(q: T => Boolean): WithFilter = new WithFilter(x =>
+      p(x) && q(x))
   }
 
   /**
@@ -286,8 +286,8 @@ final case class Success[+T](value: T) extends Try[T] {
       : Try[U] = this
   override def recoverWith[U >: T](
       @deprecatedName('f) pf: PartialFunction[Throwable, Try[U]]): Try[U] = this
-  override def failed: Try[Throwable] =
-    Failure(new UnsupportedOperationException("Success.failed"))
+  override def failed: Try[Throwable] = Failure(
+    new UnsupportedOperationException("Success.failed"))
   override def toOption: Option[T] = Some(value)
   override def toEither: Either[Throwable, T] = Right(value)
   override def fold[U](fa: Throwable => U, fb: T => U): U =

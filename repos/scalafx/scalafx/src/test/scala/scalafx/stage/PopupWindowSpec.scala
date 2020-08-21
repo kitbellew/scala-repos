@@ -45,8 +45,8 @@ class PopupWindowSpec
       classOf[PopupWindow])
     with RunOnApplicationThread {
 
-  override protected def getScalaClassInstance =
-    new PopupWindow(this.getJavaClassInstance) {}
+  override protected def getScalaClassInstance = new PopupWindow(
+    this.getJavaClassInstance) {}
 
   override protected def getJavaClassInstance = new jfxs.PopupWindow {}
 

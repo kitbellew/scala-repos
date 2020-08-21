@@ -46,10 +46,9 @@ object DBSpec extends org.specs2.mutable.Specification {
 
   // ---
 
-  def callable(res: String) =
-    new ConnectionCallable[String] {
-      def call(con: java.sql.Connection) = res
-    }
+  def callable(res: String) = new ConnectionCallable[String] {
+    def call(con: java.sql.Connection) = res
+  }
 
   lazy val fakeApp = {
     acolyte.jdbc.Driver.register("test", acolyte.jdbc.CompositeHandler.empty())

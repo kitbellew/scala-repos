@@ -319,29 +319,27 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
   }
 
   case class testFor(route: Route) {
-    def apply(expectedResponse: String = null): String ⇒ Unit =
-      exampleString ⇒
-        """(accept|reject)\s+\[([^\]]+)\]""".r.findFirstMatchIn(
-          exampleString) match {
-          case Some(uri) ⇒
-            uri.group(1) match {
-              case "accept" if expectedResponse eq null ⇒
-                failTest(
-                  "Example '" + exampleString + "' was missing an expectedResponse")
-              case "reject" if expectedResponse ne null ⇒
-                failTest(
-                  "Example '" + exampleString + "' had an expectedResponse")
-              case _ ⇒
-            }
+    def apply(expectedResponse: String = null): String ⇒ Unit = exampleString ⇒
+      """(accept|reject)\s+\[([^\]]+)\]""".r.findFirstMatchIn(
+        exampleString) match {
+        case Some(uri) ⇒
+          uri.group(1) match {
+            case "accept" if expectedResponse eq null ⇒
+              failTest(
+                "Example '" + exampleString + "' was missing an expectedResponse")
+            case "reject" if expectedResponse ne null ⇒
+              failTest(
+                "Example '" + exampleString + "' had an expectedResponse")
+            case _ ⇒
+          }
 
-            Get(uri.group(2)) ~> route ~> check {
-              if (expectedResponse eq null) handled shouldEqual false
-              else responseAs[String] shouldEqual expectedResponse
-            }
-          case None ⇒
-            failTest(
-              "Example '" + exampleString + "' doesn't contain a test uri")
-        }
+          Get(uri.group(2)) ~> route ~> check {
+            if (expectedResponse eq null) handled shouldEqual false
+            else responseAs[String] shouldEqual expectedResponse
+          }
+        case None ⇒
+          failTest("Example '" + exampleString + "' doesn't contain a test uri")
+      }
   }
 
   import akka.http.scaladsl.model.StatusCodes._

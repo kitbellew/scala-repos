@@ -130,8 +130,9 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
   @inline def invokeLater(f: => Unit) =
     ApplicationManager.getApplication.invokeLater(toRunnable(f))
 
-  @inline def toRunnable(f: => Unit) =
-    new Runnable { override def run(): Unit = f }
+  @inline def toRunnable(f: => Unit) = new Runnable {
+    override def run(): Unit = f
+  }
 
   @inline def inReadAction(f: => Unit) =
     ApplicationManager.getApplication.runReadAction(toRunnable(f))

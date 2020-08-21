@@ -33,15 +33,13 @@ class RulesImpl extends Rules {
   // thread-safety via synchronization on `this`
   private[this] var rules = List.empty[Rule]
 
-  def iterable: Iterable[Rule] =
-    synchronized {
-      rules
-    }
+  def iterable: Iterable[Rule] = synchronized {
+    rules
+  }
 
-  def add(rule: Rule): Unit =
-    synchronized {
-      rules = rule :: rules
-    }
+  def add(rule: Rule): Unit = synchronized {
+    rules = rule :: rules
+  }
 
 }
 

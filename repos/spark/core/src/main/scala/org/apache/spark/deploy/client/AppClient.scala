@@ -108,21 +108,19 @@ private[spark] class AppClient(
     private def tryRegisterAllMasters(): Array[JFuture[_]] = {
       for (masterAddress <- masterRpcAddresses) yield {
         registerMasterThreadPool.submit(new Runnable {
-          override def run(): Unit =
-            try {
-              if (registered.get) {
-                return
-              }
-              logInfo(
-                "Connecting to master " + masterAddress.toSparkURL + "...")
-              val masterRef =
-                rpcEnv.setupEndpointRef(masterAddress, Master.ENDPOINT_NAME)
-              masterRef.send(RegisterApplication(appDescription, self))
-            } catch {
-              case ie: InterruptedException => // Cancelled
-              case NonFatal(e) =>
-                logWarning(s"Failed to connect to master $masterAddress", e)
+          override def run(): Unit = try {
+            if (registered.get) {
+              return
             }
+            logInfo("Connecting to master " + masterAddress.toSparkURL + "...")
+            val masterRef =
+              rpcEnv.setupEndpointRef(masterAddress, Master.ENDPOINT_NAME)
+            masterRef.send(RegisterApplication(appDescription, self))
+          } catch {
+            case ie: InterruptedException => // Cancelled
+            case NonFatal(e) =>
+              logWarning(s"Failed to connect to master $masterAddress", e)
+          }
         })
       }
     }

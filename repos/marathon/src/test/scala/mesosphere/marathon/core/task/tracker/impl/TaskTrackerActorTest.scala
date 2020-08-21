@@ -220,21 +220,19 @@ class TaskTrackerActorTest
   }
 
   class Fixture {
-    def failProps =
-      Props(new Actor {
-        override def receive: Receive = { case _: Any =>
-          throw new RuntimeException("severe simulated failure")
-        }
-      })
+    def failProps = Props(new Actor {
+      override def receive: Receive = { case _: Any =>
+        throw new RuntimeException("severe simulated failure")
+      }
+    })
 
     lazy val spyProbe = TestProbe()
 
-    def spyActor =
-      Props(new Actor {
-        override def receive: Receive = { case msg: Any =>
-          spyProbe.ref.forward(msg)
-        }
-      })
+    def spyActor = Props(new Actor {
+      override def receive: Receive = { case msg: Any =>
+        spyProbe.ref.forward(msg)
+      }
+    })
 
     def updaterProps(trackerRef: ActorRef): Props = spyActor
     lazy val taskLoader = mock[TaskLoader]

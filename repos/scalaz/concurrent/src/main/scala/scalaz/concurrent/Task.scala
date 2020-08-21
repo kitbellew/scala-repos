@@ -377,8 +377,8 @@ object Task {
     * call stack. The standard trampolining primitive, useful for avoiding
     * stack overflows.
     */
-  def suspend[A](a: => Task[A]): Task[A] =
-    new Task(Future.suspend(Try(a.get) match {
+  def suspend[A](a: => Task[A]): Task[A] = new Task(
+    Future.suspend(Try(a.get) match {
       case -\/(e) => Future.now(-\/(e))
       case \/-(f) => f
     }))

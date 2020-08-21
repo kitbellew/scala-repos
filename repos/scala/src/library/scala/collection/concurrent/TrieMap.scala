@@ -41,39 +41,38 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
 
   @tailrec private def GCAS_Complete(
       m: MainNode[K, V],
-      ct: TrieMap[K, V]): MainNode[K, V] =
-    if (m eq null) null
-    else {
-      // complete the GCAS
-      val prev = /*READ*/ m.prev
-      val ctr = ct.readRoot(abort = true)
+      ct: TrieMap[K, V]): MainNode[K, V] = if (m eq null) null
+  else {
+    // complete the GCAS
+    val prev = /*READ*/ m.prev
+    val ctr = ct.readRoot(abort = true)
 
-      prev match {
-        case null =>
-          m
-        case fn: FailedNode[_, _] => // try to commit to previous value
-          if (CAS(m, fn.prev)) fn.prev
-          else GCAS_Complete( /*READ*/ mainnode, ct)
-        case vn: MainNode[_, _] =>
-          // Assume that you've read the root from the generation G.
-          // Assume that the snapshot algorithm is correct.
-          // ==> you can only reach nodes in generations <= G.
-          // ==> `gen` is <= G.
-          // We know that `ctr.gen` is >= G.
-          // ==> if `ctr.gen` = `gen` then they are both equal to G.
-          // ==> otherwise, we know that either `ctr.gen` > G, `gen` < G,
-          //     or both
-          if ((ctr.gen eq gen) && ct.nonReadOnly) {
-            // try to commit
-            if (m.CAS_PREV(prev, null)) m
-            else GCAS_Complete(m, ct)
-          } else {
-            // try to abort
-            m.CAS_PREV(prev, new FailedNode(prev))
-            GCAS_Complete( /*READ*/ mainnode, ct)
-          }
-      }
+    prev match {
+      case null =>
+        m
+      case fn: FailedNode[_, _] => // try to commit to previous value
+        if (CAS(m, fn.prev)) fn.prev
+        else GCAS_Complete( /*READ*/ mainnode, ct)
+      case vn: MainNode[_, _] =>
+        // Assume that you've read the root from the generation G.
+        // Assume that the snapshot algorithm is correct.
+        // ==> you can only reach nodes in generations <= G.
+        // ==> `gen` is <= G.
+        // We know that `ctr.gen` is >= G.
+        // ==> if `ctr.gen` = `gen` then they are both equal to G.
+        // ==> otherwise, we know that either `ctr.gen` > G, `gen` < G,
+        //     or both
+        if ((ctr.gen eq gen) && ct.nonReadOnly) {
+          // try to commit
+          if (m.CAS_PREV(prev, null)) m
+          else GCAS_Complete(m, ct)
+        } else {
+          // try to abort
+          m.CAS_PREV(prev, new FailedNode(prev))
+          GCAS_Complete( /*READ*/ mainnode, ct)
+        }
     }
+  }
 
   def GCAS(
       old: MainNode[K, V],
@@ -336,14 +335,13 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
           }
         }
       case tn: TNode[K, V] => // 3) non-live node
-        def cleanReadOnly(tn: TNode[K, V]) =
-          if (ct.nonReadOnly) {
-            clean(parent, ct, lev - 5)
-            RESTART // used to be throw RestartException
-          } else {
-            if (tn.hc == hc && tn.k == k) tn.v.asInstanceOf[AnyRef]
-            else null
-          }
+        def cleanReadOnly(tn: TNode[K, V]) = if (ct.nonReadOnly) {
+          clean(parent, ct, lev - 5)
+          RESTART // used to be throw RestartException
+        } else {
+          if (tn.hc == hc && tn.k == k) tn.v.asInstanceOf[AnyRef]
+          else null
+        }
         cleanReadOnly(tn)
       case ln: LNode[K, V] => // 5) an l-node
         ln.get(k).asInstanceOf[Option[AnyRef]].orNull
@@ -463,17 +461,16 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
   }
 
   /* this is a quiescent method! */
-  def string(lev: Int) =
-    "%sINode -> %s".format(
-      "  " * lev,
-      mainnode match {
-        case null            => "<null>"
-        case tn: TNode[_, _] => "TNode(%s, %s, %d, !)".format(tn.k, tn.v, tn.hc)
-        case cn: CNode[_, _] => cn.string(lev)
-        case ln: LNode[_, _] => ln.string(lev)
-        case x               => "<elem: %s>".format(x)
-      }
-    )
+  def string(lev: Int) = "%sINode -> %s".format(
+    "  " * lev,
+    mainnode match {
+      case null            => "<null>"
+      case tn: TNode[_, _] => "TNode(%s, %s, %d, !)".format(tn.k, tn.v, tn.hc)
+      case cn: CNode[_, _] => cn.string(lev)
+      case ln: LNode[_, _] => ln.string(lev)
+      case x               => "<elem: %s>".format(x)
+    }
+  )
 
 }
 
@@ -648,12 +645,12 @@ private[collection] final class CNode[K, V](
       case _               => inode
     }
 
-  def toContracted(lev: Int): MainNode[K, V] =
-    if (array.length == 1 && lev > 0) array(0) match {
+  def toContracted(lev: Int): MainNode[K, V] = if (array.length == 1 && lev > 0)
+    array(0) match {
       case sn: SNode[K, V] => sn.copyTombed
       case _               => this
     }
-    else this
+  else this
 
   // - if the branching factor is 1 for this CNode, and the child
   //   is a tombed SNode, returns its tombed version
@@ -686,22 +683,20 @@ private[collection] final class CNode[K, V](
     "CNode %x\n%s".format(bitmap, array.map(_.string(lev + 1)).mkString("\n"))
 
   /* quiescently consistent - don't call concurrently to anything involving a GCAS!! */
-  private def collectElems: Seq[(K, V)] =
-    array flatMap {
-      case sn: SNode[K, V] => Some(sn.kvPair)
-      case in: INode[K, V] =>
-        in.mainnode match {
-          case tn: TNode[K, V] => Some(tn.kvPair)
-          case ln: LNode[K, V] => ln.listmap.toList
-          case cn: CNode[K, V] => cn.collectElems
-        }
-    }
+  private def collectElems: Seq[(K, V)] = array flatMap {
+    case sn: SNode[K, V] => Some(sn.kvPair)
+    case in: INode[K, V] =>
+      in.mainnode match {
+        case tn: TNode[K, V] => Some(tn.kvPair)
+        case ln: LNode[K, V] => ln.listmap.toList
+        case cn: CNode[K, V] => cn.collectElems
+      }
+  }
 
-  private def collectLocalElems: Seq[String] =
-    array flatMap {
-      case sn: SNode[K, V] => Some(sn.kvPair._2.toString)
-      case in: INode[K, V] => Some(in.toString.drop(14) + "(" + in.gen + ")")
-    }
+  private def collectLocalElems: Seq[String] = array flatMap {
+    case sn: SNode[K, V] => Some(sn.kvPair._2.toString)
+    case in: INode[K, V] => Some(in.toString.drop(14) + "(" + in.gen + ")")
+  }
 
   override def toString = {
     val elems = collectLocalElems
@@ -717,22 +712,21 @@ private[concurrent] object CNode {
       y: SNode[K, V],
       yhc: Int,
       lev: Int,
-      gen: Gen): MainNode[K, V] =
-    if (lev < 35) {
-      val xidx = (xhc >>> lev) & 0x1f
-      val yidx = (yhc >>> lev) & 0x1f
-      val bmp = (1 << xidx) | (1 << yidx)
-      if (xidx == yidx) {
-        val subinode = new INode[K, V](gen) //(TrieMap.inodeupdater)
-        subinode.mainnode = dual(x, xhc, y, yhc, lev + 5, gen)
-        new CNode(bmp, Array(subinode), gen)
-      } else {
-        if (xidx < yidx) new CNode(bmp, Array(x, y), gen)
-        else new CNode(bmp, Array(y, x), gen)
-      }
+      gen: Gen): MainNode[K, V] = if (lev < 35) {
+    val xidx = (xhc >>> lev) & 0x1f
+    val yidx = (yhc >>> lev) & 0x1f
+    val bmp = (1 << xidx) | (1 << yidx)
+    if (xidx == yidx) {
+      val subinode = new INode[K, V](gen) //(TrieMap.inodeupdater)
+      subinode.mainnode = dual(x, xhc, y, yhc, lev + 5, gen)
+      new CNode(bmp, Array(subinode), gen)
     } else {
-      new LNode(x.k, x.v, y.k, y.v)
+      if (xidx < yidx) new CNode(bmp, Array(x, y), gen)
+      else new CNode(bmp, Array(y, x), gen)
     }
+  } else {
+    new LNode(x.k, x.v, y.k, y.v)
+  }
 
 }
 
@@ -777,16 +771,15 @@ final class TrieMap[K, V] private (
   @volatile /*private*/
   var root = r
 
-  def this(hashf: Hashing[K], ef: Equiv[K]) =
-    this(
-      INode.newRootNode,
-      AtomicReferenceFieldUpdater.newUpdater(
-        classOf[TrieMap[K, V]],
-        classOf[AnyRef],
-        "root"),
-      hashf,
-      ef
-    )
+  def this(hashf: Hashing[K], ef: Equiv[K]) = this(
+    INode.newRootNode,
+    AtomicReferenceFieldUpdater.newUpdater(
+      classOf[TrieMap[K, V]],
+      classOf[AnyRef],
+      "root"),
+    hashf,
+    ef
+  )
 
   def this() = this(Hashing.default, Equiv.universal)
 
@@ -1132,40 +1125,37 @@ private[collection] class TrieMapIterator[K, V](
 
   def hasNext = (current ne null) || (subiter ne null)
 
-  def next() =
-    if (hasNext) {
-      var r: (K, V) = null
-      if (subiter ne null) {
-        r = subiter.next()
-        checkSubiter()
-      } else {
-        r = current.kvPair
-        advance()
-      }
-      r
-    } else Iterator.empty.next()
-
-  private def readin(in: INode[K, V]) =
-    in.gcasRead(ct) match {
-      case cn: CNode[K, V] =>
-        depth += 1
-        stack(depth) = cn.array
-        stackpos(depth) = -1
-        advance()
-      case tn: TNode[K, V] =>
-        current = tn
-      case ln: LNode[K, V] =>
-        subiter = ln.listmap.iterator
-        checkSubiter()
-      case null =>
-        current = null
-    }
-
-  private def checkSubiter() =
-    if (!subiter.hasNext) {
-      subiter = null
+  def next() = if (hasNext) {
+    var r: (K, V) = null
+    if (subiter ne null) {
+      r = subiter.next()
+      checkSubiter()
+    } else {
+      r = current.kvPair
       advance()
     }
+    r
+  } else Iterator.empty.next()
+
+  private def readin(in: INode[K, V]) = in.gcasRead(ct) match {
+    case cn: CNode[K, V] =>
+      depth += 1
+      stack(depth) = cn.array
+      stackpos(depth) = -1
+      advance()
+    case tn: TNode[K, V] =>
+      current = tn
+    case ln: LNode[K, V] =>
+      subiter = ln.listmap.iterator
+      checkSubiter()
+    case null =>
+      current = null
+  }
+
+  private def checkSubiter() = if (!subiter.hasNext) {
+    subiter = null
+    advance()
+  }
 
   private def initialize() {
     assert(ct.isReadOnly)
@@ -1174,22 +1164,21 @@ private[collection] class TrieMapIterator[K, V](
     readin(r)
   }
 
-  def advance(): Unit =
-    if (depth >= 0) {
-      val npos = stackpos(depth) + 1
-      if (npos < stack(depth).length) {
-        stackpos(depth) = npos
-        stack(depth)(npos) match {
-          case sn: SNode[K, V] =>
-            current = sn
-          case in: INode[K, V] =>
-            readin(in)
-        }
-      } else {
-        depth -= 1
-        advance()
+  def advance(): Unit = if (depth >= 0) {
+    val npos = stackpos(depth) + 1
+    if (npos < stack(depth).length) {
+      stackpos(depth) = npos
+      stack(depth)(npos) match {
+        case sn: SNode[K, V] =>
+          current = sn
+        case in: INode[K, V] =>
+          readin(in)
       }
-    } else current = null
+    } else {
+      depth -= 1
+      advance()
+    }
+  } else current = null
 
   protected def newIterator(_lev: Int, _ct: TrieMap[K, V], _mustInit: Boolean) =
     new TrieMapIterator[K, V](_lev, _ct, _mustInit)
@@ -1216,41 +1205,40 @@ private[collection] class TrieMapIterator[K, V](
   /** Returns a sequence of iterators over subsets of this iterator.
     *  It's used to ease the implementation of splitters for a parallel version of the TrieMap.
     */
-  protected def subdivide(): Seq[Iterator[(K, V)]] =
-    if (subiter ne null) {
-      // the case where an LNode is being iterated
-      val it = newIterator(level + 1, ct, _mustInit = false)
-      it.depth = -1
-      it.subiter = this.subiter
-      it.current = null
-      this.subiter = null
-      advance()
-      this.level += 1
-      Seq(it, this)
-    } else if (depth == -1) {
-      this.level += 1
-      Seq(this)
-    } else {
-      var d = 0
-      while (d <= depth) {
-        val rem = stack(d).length - 1 - stackpos(d)
-        if (rem > 0) {
-          val (arr1, arr2) = stack(d).drop(stackpos(d) + 1).splitAt(rem / 2)
-          stack(d) = arr1
-          stackpos(d) = -1
-          val it = newIterator(level + 1, ct, _mustInit = false)
-          it.stack(0) = arr2
-          it.stackpos(0) = -1
-          it.depth = 0
-          it.advance() // <-- fix it
-          this.level += 1
-          return Seq(this, it)
-        }
-        d += 1
+  protected def subdivide(): Seq[Iterator[(K, V)]] = if (subiter ne null) {
+    // the case where an LNode is being iterated
+    val it = newIterator(level + 1, ct, _mustInit = false)
+    it.depth = -1
+    it.subiter = this.subiter
+    it.current = null
+    this.subiter = null
+    advance()
+    this.level += 1
+    Seq(it, this)
+  } else if (depth == -1) {
+    this.level += 1
+    Seq(this)
+  } else {
+    var d = 0
+    while (d <= depth) {
+      val rem = stack(d).length - 1 - stackpos(d)
+      if (rem > 0) {
+        val (arr1, arr2) = stack(d).drop(stackpos(d) + 1).splitAt(rem / 2)
+        stack(d) = arr1
+        stackpos(d) = -1
+        val it = newIterator(level + 1, ct, _mustInit = false)
+        it.stack(0) = arr2
+        it.stackpos(0) = -1
+        it.depth = 0
+        it.advance() // <-- fix it
+        this.level += 1
+        return Seq(this, it)
       }
-      this.level += 1
-      Seq(this)
+      d += 1
     }
+    this.level += 1
+    Seq(this)
+  }
 
   @deprecated("This method will be removed", "2.12.0")
   def printDebug() {

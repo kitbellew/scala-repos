@@ -92,15 +92,14 @@ private[spark] class YarnRMClient(args: ApplicationMasterArguments)
     */
   def unregister(
       status: FinalApplicationStatus,
-      diagnostics: String = ""): Unit =
-    synchronized {
-      if (registered) {
-        amClient.unregisterApplicationMaster(
-          status,
-          diagnostics,
-          uiHistoryAddress)
-      }
+      diagnostics: String = ""): Unit = synchronized {
+    if (registered) {
+      amClient.unregisterApplicationMaster(
+        status,
+        diagnostics,
+        uiHistoryAddress)
     }
+  }
 
   /** Returns the attempt ID. */
   def getAttemptId(): ApplicationAttemptId = {

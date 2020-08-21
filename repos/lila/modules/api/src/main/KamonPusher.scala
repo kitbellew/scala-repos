@@ -53,14 +53,13 @@ import kamon.statsd._
 class KeepDotsMetricKeyGenerator(config: Config)
     extends SimpleMetricKeyGenerator(config) {
 
-  override def createNormalizer(strategy: String): Normalizer =
-    strategy match {
-      case "keep-dots" =>
-        (s: String) ⇒
-          s
-            .replace(": ", "-")
-            .replace(" ", "_")
-            .replace("/", ".")
-      case _ => super.createNormalizer(strategy)
-    }
+  override def createNormalizer(strategy: String): Normalizer = strategy match {
+    case "keep-dots" =>
+      (s: String) ⇒
+        s
+          .replace(": ", "-")
+          .replace(" ", "_")
+          .replace("/", ".")
+    case _ => super.createNormalizer(strategy)
+  }
 }

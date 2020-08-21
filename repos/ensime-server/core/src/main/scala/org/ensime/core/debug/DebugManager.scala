@@ -110,11 +110,10 @@ class DebugManager(
     broadcaster ! DebugVMDisconnectEvent
   }
 
-  def vmOptions(): List[String] =
-    List(
-      "-classpath",
-      config.runtimeClasspath.mkString("\"", File.pathSeparator, "\"")
-    ) ++ config.debugVMArgs
+  def vmOptions(): List[String] = List(
+    "-classpath",
+    config.runtimeClasspath.mkString("\"", File.pathSeparator, "\"")
+  ) ++ config.debugVMArgs
 
   def withVM[T](action: (VM => T)): Option[T] = {
     maybeVM.synchronized {

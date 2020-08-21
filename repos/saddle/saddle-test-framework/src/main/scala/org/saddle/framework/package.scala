@@ -10,8 +10,8 @@ package object framework {
   implicit def dt = dateTimeEpochToNow
 
   /** Yield an arbitrary Double List of size 100 */
-  implicit def arbList: Arbitrary[List[Double]] =
-    Arbitrary(Gen.listOfN(100, boundedDouble))
+  implicit def arbList: Arbitrary[List[Double]] = Arbitrary(
+    Gen.listOfN(100, boundedDouble))
 
   /** Yield an arbitrary 100 x 100 Matrix. */
   implicit def arbMatrix[S: ClassManifest: Gen]: Arbitrary[Mat[S]] =
@@ -76,6 +76,6 @@ package object framework {
   /** Yield an arbitrary 100 x 100 Series. */
   def arbFrameOfN[X: Gen: Ordering: ClassManifest, S: ClassManifest: Gen](
       cols: Int,
-      rows: Int): Arbitrary[Frame[X, Int, S]] =
-    Arbitrary(genFrameOfN[X, S](cols, rows))
+      rows: Int): Arbitrary[Frame[X, Int, S]] = Arbitrary(
+    genFrameOfN[X, S](cols, rows))
 }

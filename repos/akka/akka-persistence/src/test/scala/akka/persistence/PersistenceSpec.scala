@@ -131,6 +131,6 @@ trait PersistenceMatchers {
     }
   }
 
-  def beIndependentlyOrdered(prefixes: String*) =
-    new IndependentlyOrdered(prefixes.toList)
+  def beIndependentlyOrdered(prefixes: String*) = new IndependentlyOrdered(
+    prefixes.toList)
 }

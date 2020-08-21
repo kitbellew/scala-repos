@@ -506,14 +506,13 @@ object Printers {
         // JavaScript expressions
 
         case JSNew(ctor, args) =>
-          def containsOnlySelectsFromAtom(tree: Tree): Boolean =
-            tree match {
-              case JSDotSelect(qual, _)     => containsOnlySelectsFromAtom(qual)
-              case JSBracketSelect(qual, _) => containsOnlySelectsFromAtom(qual)
-              case VarRef(_)                => true
-              case This()                   => true
-              case _                        => false // in particular, Apply
-            }
+          def containsOnlySelectsFromAtom(tree: Tree): Boolean = tree match {
+            case JSDotSelect(qual, _)     => containsOnlySelectsFromAtom(qual)
+            case JSBracketSelect(qual, _) => containsOnlySelectsFromAtom(qual)
+            case VarRef(_)                => true
+            case This()                   => true
+            case _                        => false // in particular, Apply
+          }
           if (containsOnlySelectsFromAtom(ctor)) {
             print("new ")
             print(ctor)
@@ -845,49 +844,47 @@ object Printers {
     def printRefType(tpe: ReferenceType): Unit =
       print(tpe.asInstanceOf[Type])
 
-    def print(tpe: Type): Unit =
-      tpe match {
-        case AnyType              => print("any")
-        case NothingType          => print("nothing")
-        case UndefType            => print("void")
-        case BooleanType          => print("boolean")
-        case IntType              => print("int")
-        case LongType             => print("long")
-        case FloatType            => print("float")
-        case DoubleType           => print("number")
-        case StringType           => print("string")
-        case NullType             => print("null")
-        case ClassType(className) => print(className)
-        case NoType               => print("<notype>")
+    def print(tpe: Type): Unit = tpe match {
+      case AnyType              => print("any")
+      case NothingType          => print("nothing")
+      case UndefType            => print("void")
+      case BooleanType          => print("boolean")
+      case IntType              => print("int")
+      case LongType             => print("long")
+      case FloatType            => print("float")
+      case DoubleType           => print("number")
+      case StringType           => print("string")
+      case NullType             => print("null")
+      case ClassType(className) => print(className)
+      case NoType               => print("<notype>")
 
-        case ArrayType(base, dims) =>
-          print(base)
-          for (i <- 1 to dims)
-            print("[]")
+      case ArrayType(base, dims) =>
+        print(base)
+        for (i <- 1 to dims)
+          print("[]")
 
-        case RecordType(fields) =>
-          print('(')
-          var first = false
-          for (RecordType.Field(name, _, tpe, mutable) <- fields) {
-            if (first) first = false
-            else print(", ")
-            if (mutable)
-              print("var ")
-            print(name)
-            print(": ")
-            print(tpe)
-          }
-          print(')')
-      }
+      case RecordType(fields) =>
+        print('(')
+        var first = false
+        for (RecordType.Field(name, _, tpe, mutable) <- fields) {
+          if (first) first = false
+          else print(", ")
+          if (mutable)
+            print("var ")
+          print(name)
+          print(": ")
+          print(tpe)
+        }
+        print(')')
+    }
 
     protected def print(ident: Ident): Unit =
       printEscapeJS(ident.name, out)
 
-    private final def print(propName: PropertyName): Unit =
-      propName match {
-        case lit: StringLiteral => print(lit: Tree)
-        case ident: Ident       => print(ident)
-      }
+    private final def print(propName: PropertyName): Unit = propName match {
+      case lit: StringLiteral => print(lit: Tree)
+      case ident: Ident       => print(ident)
+    }
 
     protected def print(s: String): Unit =
       out.write(s)

@@ -38,17 +38,16 @@ object TypecheckingMacros {
       reify(())
     }
 
-    def treeToString(t: Tree): String =
-      t match {
-        case Literal(Constant(str: String)) => str
+    def treeToString(t: Tree): String = t match {
+      case Literal(Constant(str: String)) => str
 
-        case Apply(Select(t1, name), List(t2)) if name.decoded == "+" =>
-          treeToString(t1) + treeToString(t2)
+      case Apply(Select(t1, name), List(t2)) if name.decoded == "+" =>
+        treeToString(t1) + treeToString(t2)
 
-        case _ =>
-          c.abort(t.pos, "Expected literal string.")
+      case _ =>
+        c.abort(t.pos, "Expected literal string.")
 
-      }
+    }
   }
 
   def typeError(c: Context)(code: c.Expr[String]): c.Expr[Unit] = {

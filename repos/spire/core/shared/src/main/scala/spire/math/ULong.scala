@@ -70,17 +70,15 @@ class ULong(val signed: Long) extends AnyVal {
   final def ===(that: ULong): Boolean = this.signed == that.signed
   final def =!=(that: ULong): Boolean = this.signed != that.signed
 
-  final def <=(that: ULong): Boolean =
-    if (this.signed >= 0L)
-      this.signed <= that.signed || that.signed < 0L
-    else
-      that.signed >= this.signed && that.signed < 0L
+  final def <=(that: ULong): Boolean = if (this.signed >= 0L)
+    this.signed <= that.signed || that.signed < 0L
+  else
+    that.signed >= this.signed && that.signed < 0L
 
-  final def <(that: ULong): Boolean =
-    if (this.signed >= 0L)
-      this.signed < that.signed || that.signed < 0L
-    else
-      that.signed > this.signed && that.signed < 0L
+  final def <(that: ULong): Boolean = if (this.signed >= 0L)
+    this.signed < that.signed || that.signed < 0L
+  else
+    that.signed > this.signed && that.signed < 0L
 
   @inline final def >=(that: ULong): Boolean = that <= this
   @inline final def >(that: ULong): Boolean = that < this
@@ -176,10 +174,10 @@ private[math] class ULongBitString extends BitString[ULong] with Serializable {
   def toHexString(n: ULong): String = java.lang.Long.toHexString(n.signed)
 
   def bitCount(n: ULong): Int = java.lang.Long.bitCount(n.signed)
-  def highestOneBit(n: ULong): ULong =
-    ULong(java.lang.Long.highestOneBit(n.signed))
-  def lowestOneBit(n: ULong): ULong =
-    ULong(java.lang.Long.lowestOneBit(n.signed))
+  def highestOneBit(n: ULong): ULong = ULong(
+    java.lang.Long.highestOneBit(n.signed))
+  def lowestOneBit(n: ULong): ULong = ULong(
+    java.lang.Long.lowestOneBit(n.signed))
   def numberOfLeadingZeros(n: ULong): Int =
     java.lang.Long.numberOfLeadingZeros(n.signed)
   def numberOfTrailingZeros(n: ULong): Int =
@@ -188,10 +186,10 @@ private[math] class ULongBitString extends BitString[ULong] with Serializable {
   def leftShift(n: ULong, i: Int): ULong = n << i
   def rightShift(n: ULong, i: Int): ULong = n >> i
   def signedRightShift(n: ULong, i: Int): ULong = n >>> i
-  def rotateLeft(n: ULong, i: Int): ULong =
-    ULong(java.lang.Long.rotateLeft(n.signed, i))
-  def rotateRight(n: ULong, i: Int): ULong =
-    ULong(java.lang.Long.rotateRight(n.signed, i))
+  def rotateLeft(n: ULong, i: Int): ULong = ULong(
+    java.lang.Long.rotateLeft(n.signed, i))
+  def rotateRight(n: ULong, i: Int): ULong = ULong(
+    java.lang.Long.rotateRight(n.signed, i))
 }
 
 private[math] trait ULongIsSigned extends Signed[ULong] {

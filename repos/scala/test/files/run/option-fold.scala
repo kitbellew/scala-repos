@@ -4,12 +4,11 @@ object Test {
   case class C(x: Int) extends A
 
   def f[T](x: Option[T]) = x.fold(List.empty[T])(List(_))
-  def g(x: Option[A]) =
-    x.fold(-1) {
-      case B    => 0
-      case C(x) => x
-      case _    => ???
-    }
+  def g(x: Option[A]) = x.fold(-1) {
+    case B    => 0
+    case C(x) => x
+    case _    => ???
+  }
 
   def main(args: Array[String]): Unit = {
     println(f(None)) //List()

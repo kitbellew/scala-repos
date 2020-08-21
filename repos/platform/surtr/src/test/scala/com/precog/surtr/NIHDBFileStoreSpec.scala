@@ -155,10 +155,9 @@ class NIHDBFileStoreSpec
     }
   }
 
-  override def map(fs: => Fragments): Fragments =
-    fs ^ step {
-      logger.info("Unlocking actor")
-      //projectionSystem.release
-      IOUtils.recursiveDelete(yggConfig.tmpDir).unsafePerformIO
-    }
+  override def map(fs: => Fragments): Fragments = fs ^ step {
+    logger.info("Unlocking actor")
+    //projectionSystem.release
+    IOUtils.recursiveDelete(yggConfig.tmpDir).unsafePerformIO
+  }
 }

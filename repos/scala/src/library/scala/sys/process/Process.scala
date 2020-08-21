@@ -241,6 +241,6 @@ trait ProcessImplicits {
     * be the command to be executed, and the remaining will be its arguments.
     * When using this, arguments may contain spaces.
     */
-  implicit def stringSeqToProcess(command: Seq[String]): ProcessBuilder =
-    apply(command)
+  implicit def stringSeqToProcess(command: Seq[String]): ProcessBuilder = apply(
+    command)
 }

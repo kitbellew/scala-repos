@@ -80,15 +80,11 @@ class ScMacroDefinitionImpl private (
 
   override def toString: String = "ScMacroDefinition: " + name
 
-  def returnTypeInner: TypeResult[ScType] =
-    returnTypeElement match {
-      case None =>
-        Success(
-          doGetType(),
-          Some(this)
-        ) // TODO look up type from the macro impl.
-      case Some(rte: ScTypeElement) => rte.getType(TypingContext.empty)
-    }
+  def returnTypeInner: TypeResult[ScType] = returnTypeElement match {
+    case None =>
+      Success(doGetType(), Some(this)) // TODO look up type from the macro impl.
+    case Some(rte: ScTypeElement) => rte.getType(TypingContext.empty)
+  }
 
   def body: Option[ScExpression] = {
     val stub = getStub

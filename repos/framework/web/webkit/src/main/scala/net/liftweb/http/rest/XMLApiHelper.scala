@@ -111,12 +111,11 @@ trait XMLApiHelper {
     * element is returned with no contents and the "success" attribute set to
     * "false".
     */
-  implicit def canNodeToResponse(in: Box[Seq[Node]]): LiftResponse =
-    in match {
-      case Full(n)            => buildResponse(true, Empty, n)
-      case Failure(msg, _, _) => buildResponse(false, Full(Text(msg)), Text(""))
-      case _                  => buildResponse(false, Empty, Text(""))
-    }
+  implicit def canNodeToResponse(in: Box[Seq[Node]]): LiftResponse = in match {
+    case Full(n)            => buildResponse(true, Empty, n)
+    case Failure(msg, _, _) => buildResponse(false, Full(Text(msg)), Text(""))
+    case _                  => buildResponse(false, Empty, Text(""))
+  }
 
   /**
     * Converts a Seq[Node] into a root element with the "success" attribute

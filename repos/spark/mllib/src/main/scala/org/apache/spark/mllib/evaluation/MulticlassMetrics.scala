@@ -204,10 +204,10 @@ class MulticlassMetrics @Since("1.1.0") (
     * @param beta the beta parameter.
     */
   @Since("1.1.0")
-  def weightedFMeasure(beta: Double): Double =
-    labelCountByClass.map { case (category, count) =>
+  def weightedFMeasure(beta: Double): Double = labelCountByClass.map {
+    case (category, count) =>
       fMeasure(category, beta) * count.toDouble / labelCount
-    }.sum
+  }.sum
 
   /**
     * Returns weighted averaged f1-measure

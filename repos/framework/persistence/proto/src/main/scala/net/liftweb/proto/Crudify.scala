@@ -731,8 +731,8 @@ trait Crudify {
     * This method can be used to obscure the primary key.  This is more secure
     * because end users will not have access to the primary key.
     */
-  def obscurePrimaryKey(in: TheCrudType): String =
-    obscurePrimaryKey(in.primaryKeyFieldAsString)
+  def obscurePrimaryKey(in: TheCrudType): String = obscurePrimaryKey(
+    in.primaryKeyFieldAsString)
 
   /**
     * This method can be used to obscure the primary key.  This is more secure
@@ -799,17 +799,16 @@ trait Crudify {
           node <- bindNode(html)
         } yield node
 
-      def doSubmit() =
-        item.validate match {
-          case Nil =>
-            S.notice(noticeMsg)
-            item.save
-            S.redirectTo(from)
+      def doSubmit() = item.validate match {
+        case Nil =>
+          S.notice(noticeMsg)
+          item.save
+          S.redirectTo(from)
 
-          case xs =>
-            S.error(xs)
-            snipName.foreach(S.mapSnippet(_, loop))
-        }
+        case xs =>
+          S.error(xs)
+          snipName.foreach(S.mapSnippet(_, loop))
+      }
 
       val bind =
         ".field" #> doFields _ &

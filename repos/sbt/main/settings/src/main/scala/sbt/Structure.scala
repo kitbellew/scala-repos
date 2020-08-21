@@ -284,10 +284,9 @@ object Scoped {
     def get(settings: Settings[Scope]): Option[Task[S]] =
       settings.get(scope, key)
 
-    def ? : Initialize[Task[Option[S]]] =
-      Def.optional(scopedKey) {
-        case None => mktask { None }; case Some(t) => t map some.fn
-      }
+    def ? : Initialize[Task[Option[S]]] = Def.optional(scopedKey) {
+      case None => mktask { None }; case Some(t) => t map some.fn
+    }
     def ??[T >: S](or: => T): Initialize[Task[T]] =
       Def.optional(scopedKey)(_ getOrElse mktask(or))
     def or[T >: S](i: Initialize[Task[T]]): Initialize[Task[T]] =
@@ -332,8 +331,8 @@ object Scoped {
   sealed abstract class RichInitTaskBase[S, R[_]] {
     protected def onTask[T](f: Task[S] => Task[T]): Initialize[R[T]]
 
-    def flatMap[T](f: S => Task[T]): Initialize[R[T]] =
-      flatMapR(f compose successM)
+    def flatMap[T](f: S => Task[T]): Initialize[R[T]] = flatMapR(
+      f compose successM)
     def map[T](f: S => T): Initialize[R[T]] = mapR(f compose successM)
     def andFinally(fin: => Unit): Initialize[R[S]] = onTask(_ andFinally fin)
     def doFinally(t: Task[Unit]): Initialize[R[S]] = onTask(_ doFinally t)
@@ -347,8 +346,8 @@ object Scoped {
     @deprecated(
       "Use the `result` method to create a task that returns the full Result of this task.  Then, call `flatMap` on the new task.",
       "0.13.0")
-    def flatMapR[T](f: Result[S] => Task[T]): Initialize[R[T]] =
-      onTask(_ flatMapR f)
+    def flatMapR[T](f: Result[S] => Task[T]): Initialize[R[T]] = onTask(
+      _ flatMapR f)
 
     @deprecated(
       "Use the `result` method to create a task that returns the full Result of this task.  Then, call `map` on the new task.",
@@ -358,14 +357,14 @@ object Scoped {
     @deprecated(
       "Use the `failure` method to create a task that returns Incomplete when this task fails and then call `flatMap` on the new task.",
       "0.13.0")
-    def flatFailure[T](f: Incomplete => Task[T]): Initialize[R[T]] =
-      flatMapR(f compose failM)
+    def flatFailure[T](f: Incomplete => Task[T]): Initialize[R[T]] = flatMapR(
+      f compose failM)
 
     @deprecated(
       "Use the `failure` method to create a task that returns Incomplete when this task fails and then call `map` on the new task.",
       "0.13.0")
-    def mapFailure[T](f: Incomplete => T): Initialize[R[T]] =
-      mapR(f compose failM)
+    def mapFailure[T](f: Incomplete => T): Initialize[R[T]] = mapR(
+      f compose failM)
   }
 
   type AnyInitTask = Initialize[Task[T]] forSome { type T }
@@ -429,8 +428,8 @@ object Scoped {
           ScopedTaskable[B],
           ScopedTaskable[C],
           ScopedTaskable[D],
-          ScopedTaskable[E])): RichTaskable5[A, B, C, D, E] =
-    new RichTaskable5(t5)
+          ScopedTaskable[E])): RichTaskable5[A, B, C, D, E] = new RichTaskable5(
+    t5)
   implicit def t6ToTable6[A, B, C, D, E, F](
       t6: (
           ScopedTaskable[A],
@@ -520,12 +519,12 @@ object Scoped {
         AList.asplit[K, Task](a))
 
     def flatMap[T](f: Fun[Id, Task[T]]): App[T] = onTasks(_.flatMap(convert(f)))
-    def flatMapR[T](f: Fun[Result, Task[T]]): App[T] =
-      onTasks(_.flatMapR(convert(f)))
+    def flatMapR[T](f: Fun[Result, Task[T]]): App[T] = onTasks(
+      _.flatMapR(convert(f)))
     def map[T](f: Fun[Id, T]): App[T] = onTasks(_.mapR(convert(f) compose allM))
     def mapR[T](f: Fun[Result, T]): App[T] = onTasks(_.mapR(convert(f)))
-    def flatFailure[T](f: Seq[Incomplete] => Task[T]): App[T] =
-      onTasks(_ flatFailure f)
+    def flatFailure[T](f: Seq[Incomplete] => Task[T]): App[T] = onTasks(
+      _ flatFailure f)
     def mapFailure[T](f: Seq[Incomplete] => T): App[T] = onTasks(_ mapFailure f)
   }
   type ST[X] = ScopedTaskable[X]
@@ -725,8 +724,8 @@ object Scoped {
           Initialize[G],
           Initialize[H],
           Initialize[I],
-          Initialize[J])): Apply10[A, B, C, D, E, F, G, H, I, J] =
-    new Apply10(t10)
+          Initialize[J])): Apply10[A, B, C, D, E, F, G, H, I, J] = new Apply10(
+    t10)
   implicit def t11ToApp11[A, B, C, D, E, F, G, H, I, J, K](
       t11: (
           Initialize[A],
@@ -749,10 +748,10 @@ object Scoped {
   def mkTuple2[A, B] = (a: A, b: B) => (a, b)
   def mkTuple3[A, B, C] = (a: A, b: B, c: C) => (a, b, c)
   def mkTuple4[A, B, C, D] = (a: A, b: B, c: C, d: D) => (a, b, c, d)
-  def mkTuple5[A, B, C, D, E] =
-    (a: A, b: B, c: C, d: D, e: E) => (a, b, c, d, e)
-  def mkTuple6[A, B, C, D, E, F] =
-    (a: A, b: B, c: C, d: D, e: E, f: F) => (a, b, c, d, e, f)
+  def mkTuple5[A, B, C, D, E] = (a: A, b: B, c: C, d: D, e: E) =>
+    (a, b, c, d, e)
+  def mkTuple6[A, B, C, D, E, F] = (a: A, b: B, c: C, d: D, e: E, f: F) =>
+    (a, b, c, d, e, f)
   def mkTuple7[A, B, C, D, E, F, G] =
     (a: A, b: B, c: C, d: D, e: E, f: F, g: G) => (a, b, c, d, e, f, g)
   def mkTuple8[A, B, C, D, E, F, G, H] =
@@ -769,54 +768,51 @@ object Scoped {
   def mkTuple12[A, B, C, D, E, F, G, H, I, J, K, L] =
     (a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L) =>
       (a, b, c, d, e, f, g, h, i, j, k, l)
-  def mkTuple13[A, B, C, D, E, F, G, H, I, J, K, L, N] =
-    (
-        a: A,
-        b: B,
-        c: C,
-        d: D,
-        e: E,
-        f: F,
-        g: G,
-        h: H,
-        i: I,
-        j: J,
-        k: K,
-        l: L,
-        n: N) => (a, b, c, d, e, f, g, h, i, j, k, l, n)
-  def mkTuple14[A, B, C, D, E, F, G, H, I, J, K, L, N, O] =
-    (
-        a: A,
-        b: B,
-        c: C,
-        d: D,
-        e: E,
-        f: F,
-        g: G,
-        h: H,
-        i: I,
-        j: J,
-        k: K,
-        l: L,
-        n: N,
-        o: O) => (a, b, c, d, e, f, g, h, i, j, k, l, n, o)
-  def mkTuple15[A, B, C, D, E, F, G, H, I, J, K, L, N, O, P] =
-    (
-        a: A,
-        b: B,
-        c: C,
-        d: D,
-        e: E,
-        f: F,
-        g: G,
-        h: H,
-        i: I,
-        j: J,
-        k: K,
-        l: L,
-        n: N,
-        o: O,
-        p: P) => (a, b, c, d, e, f, g, h, i, j, k, l, n, o, p)
+  def mkTuple13[A, B, C, D, E, F, G, H, I, J, K, L, N] = (
+      a: A,
+      b: B,
+      c: C,
+      d: D,
+      e: E,
+      f: F,
+      g: G,
+      h: H,
+      i: I,
+      j: J,
+      k: K,
+      l: L,
+      n: N) => (a, b, c, d, e, f, g, h, i, j, k, l, n)
+  def mkTuple14[A, B, C, D, E, F, G, H, I, J, K, L, N, O] = (
+      a: A,
+      b: B,
+      c: C,
+      d: D,
+      e: E,
+      f: F,
+      g: G,
+      h: H,
+      i: I,
+      j: J,
+      k: K,
+      l: L,
+      n: N,
+      o: O) => (a, b, c, d, e, f, g, h, i, j, k, l, n, o)
+  def mkTuple15[A, B, C, D, E, F, G, H, I, J, K, L, N, O, P] = (
+      a: A,
+      b: B,
+      c: C,
+      d: D,
+      e: E,
+      f: F,
+      g: G,
+      h: H,
+      i: I,
+      j: J,
+      k: K,
+      l: L,
+      n: N,
+      o: O,
+      p: P) => (a, b, c, d, e, f, g, h, i, j, k, l, n, o, p)
 
   final class Apply2[A, B](t2: (Initialize[A], Initialize[B])) {
     def apply[T](z: (A, B) => T) =
@@ -831,9 +827,8 @@ object Scoped {
   }
   final class Apply4[A, B, C, D](
       t4: (Initialize[A], Initialize[B], Initialize[C], Initialize[D])) {
-    def apply[T](z: (A, B, C, D) => T) =
-      Def.app[AList.T4K[A, B, C, D]#l, T](t4)(z.tupled)(
-        AList.tuple4[A, B, C, D])
+    def apply[T](z: (A, B, C, D) => T) = Def.app[AList.T4K[A, B, C, D]#l, T](
+      t4)(z.tupled)(AList.tuple4[A, B, C, D])
     def identity = apply(mkTuple4)
   }
   final class Apply5[A, B, C, D, E](

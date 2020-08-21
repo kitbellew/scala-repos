@@ -127,11 +127,11 @@ object ZipperTest extends SpecLite {
   def insertionTest(
       name: String,
       insertion: (Zipper[Int], Int) => Zipper[Int],
-      pred: (Zipper[Int], Zipper[Int], Int) => Prop) =
-    name ! forAll { (z: Zipper[Int], e: Int) =>
+      pred: (Zipper[Int], Zipper[Int], Int) => Prop) = name ! forAll {
+    (z: Zipper[Int], e: Int) =>
       val zi = insertion(z, e)
       pred(zi, z, e)
-    }
+  }
 
   val leftAndFocusChanged: (Zipper[Int], Zipper[Int], Int) => Prop = {
     (zNew, zOld, newFocus) =>
@@ -475,18 +475,17 @@ object ZipperTest extends SpecLite {
     true
   }
 
-  def minSizeIntZipper(size: Int): Gen[Zipper[Int]] =
-    for {
-      leftSize <- Gen.choose(0, size - 2)
-      rightSize = size - 1 - leftSize
-      lefts <- Gen.containerOfN[Stream, Int](
-        leftSize,
-        implicitly[Arbitrary[Int]].arbitrary)
-      rights <- Gen.containerOfN[Stream, Int](
-        rightSize,
-        implicitly[Arbitrary[Int]].arbitrary)
-      focus <- arbitrary[Int]
-    } yield zipper(lefts, focus, rights)
+  def minSizeIntZipper(size: Int): Gen[Zipper[Int]] = for {
+    leftSize <- Gen.choose(0, size - 2)
+    rightSize = size - 1 - leftSize
+    lefts <- Gen.containerOfN[Stream, Int](
+      leftSize,
+      implicitly[Arbitrary[Int]].arbitrary)
+    rights <- Gen.containerOfN[Stream, Int](
+      rightSize,
+      implicitly[Arbitrary[Int]].arbitrary)
+    focus <- arbitrary[Int]
+  } yield zipper(lefts, focus, rights)
 
   "findNext should not blow the stack" ! forAll(minSizeIntZipper(10 * 1000)) {
     z =>

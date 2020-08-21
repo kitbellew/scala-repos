@@ -47,8 +47,8 @@ trait DecimalTypedField extends NumericTypedField[BigDecimal] {
       setBox(tryo(BigDecimal(s)))
     }
 
-  def set_!(in: BigDecimal): BigDecimal =
-    new BigDecimal(in.bigDecimal.setScale(scale, context.getRoundingMode))
+  def set_!(in: BigDecimal): BigDecimal = new BigDecimal(
+    in.bigDecimal.setScale(scale, context.getRoundingMode))
 
   def asJValue: JValue = asJString(_.toString)
   def setFromJValue(jvalue: JValue) =

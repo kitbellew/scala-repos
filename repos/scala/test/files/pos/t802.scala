@@ -19,10 +19,9 @@ trait Test {
   trait File {
     def parens0: parens.BraceImpl;
     def bracks0: bracks.BraceImpl;
-    def braces(b: BracesImpl) =
-      b match {
-        case b if b == parens => parens0;
-        case b if b == bracks => bracks0;
-      }
+    def braces(b: BracesImpl) = b match {
+      case b if b == parens => parens0;
+      case b if b == bracks => bracks0;
+    }
   }
 }

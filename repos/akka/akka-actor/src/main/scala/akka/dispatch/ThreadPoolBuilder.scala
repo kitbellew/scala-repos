@@ -40,22 +40,22 @@ object ThreadPoolConfig {
         floor),
       ceiling)
 
-  def arrayBlockingQueue(capacity: Int, fair: Boolean): QueueFactory =
-    () ⇒ new ArrayBlockingQueue[Runnable](capacity, fair)
+  def arrayBlockingQueue(capacity: Int, fair: Boolean): QueueFactory = () ⇒
+    new ArrayBlockingQueue[Runnable](capacity, fair)
 
-  def synchronousQueue(fair: Boolean): QueueFactory =
-    () ⇒ new SynchronousQueue[Runnable](fair)
+  def synchronousQueue(fair: Boolean): QueueFactory = () ⇒
+    new SynchronousQueue[Runnable](fair)
 
-  def linkedBlockingQueue(): QueueFactory =
-    () ⇒ new LinkedBlockingQueue[Runnable]()
+  def linkedBlockingQueue(): QueueFactory = () ⇒
+    new LinkedBlockingQueue[Runnable]()
 
-  def linkedBlockingQueue(capacity: Int): QueueFactory =
-    () ⇒ new LinkedBlockingQueue[Runnable](capacity)
+  def linkedBlockingQueue(capacity: Int): QueueFactory = () ⇒
+    new LinkedBlockingQueue[Runnable](capacity)
 
   def reusableQueue(queue: BlockingQueue[Runnable]): QueueFactory = () ⇒ queue
 
-  def reusableQueue(queueFactory: QueueFactory): QueueFactory =
-    reusableQueue(queueFactory())
+  def reusableQueue(queueFactory: QueueFactory): QueueFactory = reusableQueue(
+    queueFactory())
 }
 
 /**
@@ -233,8 +233,8 @@ final case class MonitorableThreadFactory(
     t
   }
 
-  def newThread(runnable: Runnable): Thread =
-    wire(new Thread(runnable, name + "-" + counter.incrementAndGet()))
+  def newThread(runnable: Runnable): Thread = wire(
+    new Thread(runnable, name + "-" + counter.incrementAndGet()))
 
   def withName(newName: String): MonitorableThreadFactory = copy(newName)
 

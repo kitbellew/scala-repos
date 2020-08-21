@@ -19,13 +19,12 @@ object ProdServerStartSpec extends Specification {
     try {
       block(temp)
     } finally {
-      def rm(file: File): Unit =
-        file match {
-          case dir if dir.isDirectory =>
-            dir.listFiles().foreach(rm)
-            dir.delete()
-          case f => f.delete()
-        }
+      def rm(file: File): Unit = file match {
+        case dir if dir.isDirectory =>
+          dir.listFiles().foreach(rm)
+          dir.delete()
+        case f => f.delete()
+      }
       rm(temp)
     }
   }
@@ -36,14 +35,13 @@ object ProdServerStartSpec extends Specification {
       returnCode: Int = -1)
       extends Exception(s"Exit with $message, $returnCode", cause.orNull)
 
-  def exitResult[A](f: => A): Either[(String, Option[String]), A] =
-    try Right(f)
-    catch {
-      case ExitException(message, cause, _) =>
-        val causeMessage: Option[String] =
-          cause.flatMap(c => Option(c.getMessage))
-        Left((message, causeMessage))
-    }
+  def exitResult[A](f: => A): Either[(String, Option[String]), A] = try Right(f)
+  catch {
+    case ExitException(message, cause, _) =>
+      val causeMessage: Option[String] =
+        cause.flatMap(c => Option(c.getMessage))
+      Left((message, causeMessage))
+  }
 
   /** A mocked ServerProcess */
   class FakeServerProcess(
@@ -92,8 +90,8 @@ object ProdServerStartSpec extends Specification {
   }
 
   class FakeServerProvider extends ServerProvider {
-    override def createServer(context: ServerProvider.Context) =
-      new FakeServer(context)
+    override def createServer(context: ServerProvider.Context) = new FakeServer(
+      context)
   }
 
   "ProdServerStartSpec.start" should {

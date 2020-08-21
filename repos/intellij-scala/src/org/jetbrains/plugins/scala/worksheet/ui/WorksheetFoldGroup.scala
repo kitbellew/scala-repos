@@ -61,21 +61,15 @@ class WorksheetFoldGroup(
     traverseAndChange(collapsedRegion, expand = false)
   }
 
-  def getCorrespondInfo =
-    regions map {
-      case FoldRegionInfo(
-            region: WorksheetFoldRegionDelegate,
-            _,
-            leftStart,
-            spaces,
-            lsLength) =>
-        (
-          region.getStartOffset,
-          region.getEndOffset,
+  def getCorrespondInfo = regions map {
+    case FoldRegionInfo(
+          region: WorksheetFoldRegionDelegate,
+          _,
           leftStart,
           spaces,
-          lsLength)
-    }
+          lsLength) =>
+      (region.getStartOffset, region.getEndOffset, leftStart, spaces, lsLength)
+  }
 
   private def traverseAndChange(
       target: WorksheetFoldRegionDelegate,
@@ -97,11 +91,10 @@ class WorksheetFoldGroup(
     true
   }
 
-  protected def serialize() =
-    regions map {
-      case FoldRegionInfo(region, expanded, trueStart, spaces, lsLength) =>
-        s"${region.getStartOffset},${region.getEndOffset},$expanded,$trueStart,$spaces,$lsLength"
-    } mkString "|"
+  protected def serialize() = regions map {
+    case FoldRegionInfo(region, expanded, trueStart, spaces, lsLength) =>
+      s"${region.getStartOffset},${region.getEndOffset},$expanded,$trueStart,$spaces,$lsLength"
+  } mkString "|"
 
   protected def deserialize(elem: String) {
     val folding = viewerEditor.getFoldingModel.asInstanceOf[FoldingModelImpl]
@@ -190,11 +183,10 @@ class WorksheetFoldGroup(
       trueStart: Int,
       spaces: Int,
       lsLength: Int) {
-    override def equals(obj: scala.Any): Boolean =
-      obj match {
-        case info: FoldRegionInfo => this.region.equals(info.region)
-        case _                    => false
-      }
+    override def equals(obj: scala.Any): Boolean = obj match {
+      case info: FoldRegionInfo => this.region.equals(info.region)
+      case _                    => false
+    }
 
     override def hashCode(): Int = region.hashCode()
   }

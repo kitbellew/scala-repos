@@ -79,8 +79,8 @@ abstract class Expression extends TreeNode[Expression] {
 
   def nullable: Boolean
 
-  def references: AttributeSet =
-    AttributeSet(children.flatMap(_.references.iterator))
+  def references: AttributeSet = AttributeSet(
+    children.flatMap(_.references.iterator))
 
   /** Returns the result of evaluating this expression on a given input Row */
   def eval(input: InternalRow = null): Any
@@ -192,11 +192,10 @@ abstract class Expression extends TreeNode[Expression] {
     */
   def prettyName: String = getClass.getSimpleName.toLowerCase
 
-  private def flatArguments =
-    productIterator.flatMap {
-      case t: Traversable[_] => t
-      case single            => single :: Nil
-    }
+  private def flatArguments = productIterator.flatMap {
+    case t: Traversable[_] => t
+    case single            => single :: Nil
+  }
 
   override def simpleString: String = toString
 
@@ -512,8 +511,8 @@ abstract class BinaryOperator extends BinaryExpression with ExpectsInputTypes {
 }
 
 private[sql] object BinaryOperator {
-  def unapply(e: BinaryOperator): Option[(Expression, Expression)] =
-    Some((e.left, e.right))
+  def unapply(e: BinaryOperator): Option[(Expression, Expression)] = Some(
+    (e.left, e.right))
 }
 
 /**

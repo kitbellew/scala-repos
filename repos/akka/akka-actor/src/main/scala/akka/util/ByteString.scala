@@ -136,8 +136,8 @@ object ByteString {
 
     def asByteBuffer: ByteBuffer = toByteString1.asByteBuffer
 
-    def asByteBuffers: scala.collection.immutable.Iterable[ByteBuffer] =
-      List(asByteBuffer)
+    def asByteBuffers: scala.collection.immutable.Iterable[ByteBuffer] = List(
+      asByteBuffer)
 
     def decodeString(charset: String): String =
       if (isEmpty) "" else new String(bytes, charset)
@@ -210,8 +210,8 @@ object ByteString {
       else buffer
     }
 
-    def asByteBuffers: scala.collection.immutable.Iterable[ByteBuffer] =
-      List(asByteBuffer)
+    def asByteBuffers: scala.collection.immutable.Iterable[ByteBuffer] = List(
+      asByteBuffer)
 
     def decodeString(charset: String): String =
       new String(if (length == bytes.length) bytes else toArray, charset)
@@ -426,9 +426,8 @@ sealed abstract class ByteString
   // *must* be overridden by derived classes. This construction is necessary
   // to specialize the return type, as the method is already implemented in
   // a parent trait.
-  override def iterator: ByteIterator =
-    throw new UnsupportedOperationException(
-      "Method iterator is not implemented in ByteString")
+  override def iterator: ByteIterator = throw new UnsupportedOperationException(
+    "Method iterator is not implemented in ByteString")
 
   override def head: Byte = apply(0)
   override def tail: ByteString = drop(1)
@@ -470,10 +469,9 @@ sealed abstract class ByteString
     *
     * @return this ByteString copied into a byte array
     */
-  protected[ByteString] def toArray: Array[Byte] =
-    toArray[
-      Byte
-    ] // protected[ByteString] == public to Java but hidden to Scala * fnizz *
+  protected[ByteString] def toArray: Array[Byte] = toArray[
+    Byte
+  ] // protected[ByteString] == public to Java but hidden to Scala * fnizz *
 
   override def toArray[B >: Byte](implicit arg0: ClassTag[B]): Array[B] =
     iterator.toArray
@@ -976,14 +974,13 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
     * Directly wraps this ByteStringBuilder in an OutputStream. Write
     * operations on the stream are forwarded to the builder.
     */
-  def asOutputStream: java.io.OutputStream =
-    new java.io.OutputStream {
-      def write(b: Int): Unit = builder += b.toByte
+  def asOutputStream: java.io.OutputStream = new java.io.OutputStream {
+    def write(b: Int): Unit = builder += b.toByte
 
-      override def write(b: Array[Byte], off: Int, len: Int): Unit = {
-        builder.putBytes(b, off, len)
-      }
+    override def write(b: Array[Byte], off: Int, len: Int): Unit = {
+      builder.putBytes(b, off, len)
     }
+  }
 
   /**
     * Tests whether this ByteStringBuilder is empty.

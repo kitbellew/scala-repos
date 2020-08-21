@@ -98,11 +98,10 @@ class ScalaInheritedMembersNodeProvider
   def getShortcut: Array[Shortcut] =
     KeymapManager.getInstance.getActiveKeymap.getShortcuts("FileStructurePopup")
 
-  def getPresentation: ActionPresentation =
-    new ActionPresentationData(
-      IdeBundle.message("action.structureview.show.inherited"),
-      null,
-      IconLoader.getIcon("/hierarchy/supertypes.png"))
+  def getPresentation: ActionPresentation = new ActionPresentationData(
+    IdeBundle.message("action.structureview.show.inherited"),
+    null,
+    IconLoader.getIcon("/hierarchy/supertypes.png"))
 
   def getName: String = "SCALA_SHOW_INHERITED"
 }

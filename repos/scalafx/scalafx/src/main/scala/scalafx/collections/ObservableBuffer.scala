@@ -437,14 +437,13 @@ class ObservableBuffer[T](
   /**
     * Creates a new [[http://www.scala-lang.org/api/current/scala/collection/Iterator.html `Iterator`]].
     */
-  def iterator =
-    new Iterator[T] {
-      val it = delegate.iterator
+  def iterator = new Iterator[T] {
+    val it = delegate.iterator
 
-      def hasNext = it.hasNext
+    def hasNext = it.hasNext
 
-      def next() = it.next()
-    }
+    def next() = it.next()
+  }
 
   /**
     * Length of this $OB.

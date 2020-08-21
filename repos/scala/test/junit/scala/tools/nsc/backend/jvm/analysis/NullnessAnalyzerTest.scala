@@ -35,11 +35,10 @@ class NullnessAnalyzerTest extends ClearAfterClass {
 
   def newNullnessAnalyzer(
       methodNode: MethodNode,
-      classInternalName: InternalName = "C") =
-    new AsmAnalyzer(
-      methodNode,
-      classInternalName,
-      new NullnessAnalyzer(noOptCompiler.genBCode.bTypes))
+      classInternalName: InternalName = "C") = new AsmAnalyzer(
+    methodNode,
+    classInternalName,
+    new NullnessAnalyzer(noOptCompiler.genBCode.bTypes))
 
   def testNullness(
       analyzer: AsmAnalyzer[NullnessValue],

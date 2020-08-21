@@ -54,14 +54,14 @@ trait ExistentialsAndSkolems {
         safeBound(t.typeSymbol.existentialBound.bounds.hi)
       else t
 
-    def hiBound(s: Symbol): Type =
-      safeBound(s.existentialBound.bounds.hi) match {
-        case tp @ RefinedType(parents, decls) =>
-          val parents1 = parents mapConserve safeBound
-          if (parents eq parents1) tp
-          else copyRefinedType(tp, parents1, decls)
-        case tp => tp
-      }
+    def hiBound(s: Symbol): Type = safeBound(
+      s.existentialBound.bounds.hi) match {
+      case tp @ RefinedType(parents, decls) =>
+        val parents1 = parents mapConserve safeBound
+        if (parents eq parents1) tp
+        else copyRefinedType(tp, parents1, decls)
+      case tp => tp
+    }
 
     // Hanging onto lower bound in case anything interesting
     // happens with it.
@@ -98,9 +98,8 @@ trait ExistentialsAndSkolems {
         case x: TypeName => x
         case x           => tpnme.singletonName(x)
       }
-      def rawOwner0 =
-        rawOwner orElse abort(
-          s"no owner provided for existential transform over raw parameter: $sym")
+      def rawOwner0 = rawOwner orElse abort(
+        s"no owner provided for existential transform over raw parameter: $sym")
       val bound = allBounds(sym)
       val sowner = if (isRawParameter(sym)) rawOwner0 else sym.owner
       val quantified = sowner.newExistential(name, sym.pos)

@@ -64,16 +64,15 @@ object ContentDisplay
   @deprecated("Use Top; TOP will be removed in a future release", "2.2.60")
   val TOP = Top
 
-  protected override def unsortedValues: Array[ContentDisplay] =
-    Array(
-      Top,
-      Right,
-      Bottom,
-      Left,
-      Center,
-      GraphicOnly,
-      TextOnly
-    )
+  protected override def unsortedValues: Array[ContentDisplay] = Array(
+    Top,
+    Right,
+    Bottom,
+    Left,
+    Center,
+    GraphicOnly,
+    TextOnly
+  )
 }
 
 sealed case class ContentDisplay(override val delegate: jfxsc.ContentDisplay)

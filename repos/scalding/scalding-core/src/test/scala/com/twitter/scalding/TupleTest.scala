@@ -20,8 +20,8 @@ import cascading.tuple.{TupleEntry, Tuple => CTuple}
 import org.scalatest.{Matchers, WordSpec}
 
 class TupleTest extends WordSpec with Matchers {
-  def get[T](ctup: CTuple)(implicit tc: TupleConverter[T]) =
-    tc(new TupleEntry(ctup))
+  def get[T](ctup: CTuple)(implicit tc: TupleConverter[T]) = tc(
+    new TupleEntry(ctup))
   def set[T](t: T)(implicit ts: TupleSetter[T]): CTuple = ts(t)
 
   def arityConvMatches[T](t: T, ar: Int)(implicit

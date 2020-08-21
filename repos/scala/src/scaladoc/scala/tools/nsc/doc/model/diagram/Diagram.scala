@@ -36,9 +36,8 @@ case class InheritanceDiagram(
     extends Diagram {
   def nodes =
     thisNode :: superClasses ::: subClasses ::: incomingImplicits ::: outgoingImplicits
-  def edges =
-    (thisNode -> (superClasses ::: outgoingImplicits)) ::
-      (subClasses ::: incomingImplicits).map(_ -> List(thisNode))
+  def edges = (thisNode -> (superClasses ::: outgoingImplicits)) ::
+    (subClasses ::: incomingImplicits).map(_ -> List(thisNode))
 
   override def isInheritanceDiagram = true
   lazy val depthInfo = new DepthInfo {
@@ -58,27 +57,25 @@ sealed abstract class Node {
   def tpl: Option[TemplateEntity]
 
   /** shortcut to get a DocTemplateEntity */
-  def doctpl: Option[DocTemplateEntity] =
-    tpl match {
-      case Some(tpl) =>
-        tpl match {
-          case d: DocTemplateEntity => Some(d)
-          case _                    => None
-        }
-      case _ => None
-    }
+  def doctpl: Option[DocTemplateEntity] = tpl match {
+    case Some(tpl) =>
+      tpl match {
+        case d: DocTemplateEntity => Some(d)
+        case _                    => None
+      }
+    case _ => None
+  }
   /* shortcuts to find the node type without matching */
   def isThisNode = false
   def isNormalNode = false
-  def isClassNode =
-    if (tpl.isDefined)
-      (tpl.get.isClass || tpl.get.qualifiedName == "scala.AnyRef")
-    else false
+  def isClassNode = if (tpl.isDefined)
+    (tpl.get.isClass || tpl.get.qualifiedName == "scala.AnyRef")
+  else false
   def isTraitNode = if (tpl.isDefined) tpl.get.isTrait else false
   def isObjectNode = if (tpl.isDefined) tpl.get.isObject else false
-  def isTypeNode =
-    if (doctpl.isDefined) doctpl.get.isAbstractType || doctpl.get.isAliasType
-    else false
+  def isTypeNode = if (doctpl.isDefined)
+    doctpl.get.isAbstractType || doctpl.get.isAliasType
+  else false
   def isOtherNode = !(isClassNode || isTraitNode || isObjectNode || isTypeNode)
   def isImplicitNode = false
   def isOutsideNode = false
@@ -98,8 +95,8 @@ sealed abstract class Node {
 //     }
 //   }
 object Node {
-  def unapply(n: Node): Option[(TypeEntity, Option[TemplateEntity])] =
-    Some((n.tpe, n.tpl))
+  def unapply(n: Node): Option[(TypeEntity, Option[TemplateEntity])] = Some(
+    (n.tpe, n.tpl))
 }
 object ClassNode {
   def unapply(n: Node): Option[(TypeEntity, Option[TemplateEntity])] =

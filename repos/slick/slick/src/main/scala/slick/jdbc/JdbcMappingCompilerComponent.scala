@@ -43,18 +43,16 @@ trait JdbcMappingCompilerComponent { self: JdbcProfile =>
 
     override def createGetOrElseResultConverter[T](
         rc: ResultConverter[JdbcResultConverterDomain, Option[T]],
-        default: () => T) =
-      rc match {
-        case rc: OptionResultConverter[_] => rc.getOrElse(default)
-        case _                            => super.createGetOrElseResultConverter[T](rc, default)
-      }
+        default: () => T) = rc match {
+      case rc: OptionResultConverter[_] => rc.getOrElse(default)
+      case _                            => super.createGetOrElseResultConverter[T](rc, default)
+    }
 
     override def createIsDefinedResultConverter[T](
-        rc: ResultConverter[JdbcResultConverterDomain, Option[T]]) =
-      rc match {
-        case rc: OptionResultConverter[_] => rc.isDefined
-        case _                            => super.createIsDefinedResultConverter(rc)
-      }
+        rc: ResultConverter[JdbcResultConverterDomain, Option[T]]) = rc match {
+      case rc: OptionResultConverter[_] => rc.isDefined
+      case _                            => super.createIsDefinedResultConverter(rc)
+    }
 
     override def createTypeMappingResultConverter(
         rc: ResultConverter[JdbcResultConverterDomain, Any],

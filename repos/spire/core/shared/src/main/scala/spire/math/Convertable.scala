@@ -233,8 +233,8 @@ private[math] trait ConvertableToSafeLong extends ConvertableTo[SafeLong] {
   def fromReal(a: Real): SafeLong =
     if (a.isValidInt) SafeLong(a.toInt) else fromRational(a.toRational)
 
-  def fromType[B: ConvertableFrom](b: B): SafeLong =
-    SafeLong(ConvertableFrom[B].toBigInt(b))
+  def fromType[B: ConvertableFrom](b: B): SafeLong = SafeLong(
+    ConvertableFrom[B].toBigInt(b))
 }
 
 private[math] trait ConvertableToNumber extends ConvertableTo[Number] {
@@ -252,8 +252,8 @@ private[math] trait ConvertableToNumber extends ConvertableTo[Number] {
       a.toRational.getOrElse(Rational(a.toBigDecimal(MathContext.DECIMAL64))))
   def fromReal(a: Real): Number = Number(a.toRational)
 
-  def fromType[B: ConvertableFrom](b: B): Number =
-    Number(ConvertableFrom[B].toDouble(b))
+  def fromType[B: ConvertableFrom](b: B): Number = Number(
+    ConvertableFrom[B].toDouble(b))
 }
 
 private[math] trait ConvertableToNatural extends ConvertableTo[Natural] {
@@ -272,8 +272,8 @@ private[math] trait ConvertableToNatural extends ConvertableTo[Natural] {
   def fromReal(a: Real): Natural =
     if (a.isValidInt) Natural(a.toInt) else fromRational(a.toRational)
 
-  def fromType[B: ConvertableFrom](b: B): Natural =
-    Natural(ConvertableFrom[B].toBigInt(b))
+  def fromType[B: ConvertableFrom](b: B): Natural = Natural(
+    ConvertableFrom[B].toBigInt(b))
 }
 
 object ConvertableTo {

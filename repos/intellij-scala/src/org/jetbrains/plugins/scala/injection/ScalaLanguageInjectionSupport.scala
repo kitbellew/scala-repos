@@ -12,8 +12,8 @@ class ScalaLanguageInjectionSupport extends AbstractLanguageInjectionSupport {
 
   override def getId: String = SUPPORT_ID
 
-  override def getPatternClasses: Array[Class[_]] =
-    Array(classOf[ScalaPatterns])
+  override def getPatternClasses: Array[Class[_]] = Array(
+    classOf[ScalaPatterns])
 
   override def useDefaultInjector(host: PsiLanguageInjectionHost): Boolean =
     false

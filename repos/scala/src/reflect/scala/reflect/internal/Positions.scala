@@ -189,22 +189,22 @@ trait Positions extends api.Positions { self: SymbolTable =>
   private def insert(
       rs: List[Range],
       t: Tree,
-      conflicting: ListBuffer[Tree]): List[Range] =
-    rs match {
-      case List() =>
-        assert(conflicting.nonEmpty)
-        rs
-      case r :: rs1 =>
-        assert(!t.pos.isTransparent)
-        if (r.isFree && (r.pos includes t.pos)) {
+      conflicting: ListBuffer[Tree]): List[Range] = rs match {
+    case List() =>
+      assert(conflicting.nonEmpty)
+      rs
+    case r :: rs1 =>
+      assert(!t.pos.isTransparent)
+      if (r.isFree && (r.pos includes t.pos)) {
 //      inform("subdividing "+r+"/"+t.pos)
-          maybeFree(t.pos.end, r.pos.end) ::: List(
-            Range(t.pos, t)) ::: maybeFree(r.pos.start, t.pos.start) ::: rs1
-        } else {
-          if (!r.isFree && (r.pos overlaps t.pos)) conflicting += r.tree
-          r :: insert(rs1, t, conflicting)
-        }
-    }
+        maybeFree(t.pos.end, r.pos.end) ::: List(Range(t.pos, t)) ::: maybeFree(
+          r.pos.start,
+          t.pos.start) ::: rs1
+      } else {
+        if (!r.isFree && (r.pos overlaps t.pos)) conflicting += r.tree
+        r :: insert(rs1, t, conflicting)
+      }
+  }
 
   /** Replace elem `t` of `ts` by `replacement` list. */
   private def replace(
@@ -236,24 +236,23 @@ trait Positions extends api.Positions { self: SymbolTable =>
     *                without children.
     *  @param  trees  The children to position. All children must be positionable.
     */
-  private def setChildrenPos(pos: Position, trees: List[Tree]): Unit =
-    try {
-      for (tree <- trees) {
-        if (!tree.isEmpty && tree.canHaveAttrs && tree.pos == NoPosition) {
-          val children = tree.children
-          if (children.isEmpty) {
-            tree setPos pos.focus
-          } else {
-            setChildrenPos(pos, children)
-            tree setPos wrappingPos(pos, children)
-          }
+  private def setChildrenPos(pos: Position, trees: List[Tree]): Unit = try {
+    for (tree <- trees) {
+      if (!tree.isEmpty && tree.canHaveAttrs && tree.pos == NoPosition) {
+        val children = tree.children
+        if (children.isEmpty) {
+          tree setPos pos.focus
+        } else {
+          setChildrenPos(pos, children)
+          tree setPos wrappingPos(pos, children)
         }
       }
-    } catch {
-      case ex: Exception =>
-        inform("error while set children pos " + pos + " of " + trees)
-        throw ex
     }
+  } catch {
+    case ex: Exception =>
+      inform("error while set children pos " + pos + " of " + trees)
+      throw ex
+  }
 
   class ValidateException(msg: String) extends Exception(msg)
 

@@ -144,12 +144,11 @@ object Configuration {
     */
   def from(data: Map[String, Any]): Configuration = {
 
-    def toJava(data: Any): Any =
-      data match {
-        case map: Map[_, _]        => map.mapValues(toJava).asJava
-        case iterable: Iterable[_] => iterable.map(toJava).asJava
-        case v                     => v
-      }
+    def toJava(data: Any): Any = data match {
+      case map: Map[_, _]        => map.mapValues(toJava).asJava
+      case iterable: Iterable[_] => iterable.map(toJava).asJava
+      case v                     => v
+    }
 
     Configuration(
       ConfigFactory.parseMap(
@@ -1127,8 +1126,8 @@ private[play] class PlayConfig(val underlying: Config) {
 
 private[play] object PlayConfig {
   def apply(underlying: Config) = new PlayConfig(underlying)
-  def apply(configuration: Configuration) =
-    new PlayConfig(configuration.underlying)
+  def apply(configuration: Configuration) = new PlayConfig(
+    configuration.underlying)
 }
 
 /**
@@ -1136,12 +1135,11 @@ private[play] object PlayConfig {
   */
 private[play] trait ConfigLoader[A] { self =>
   def load(config: Config, path: String): A
-  def map[B](f: A => B): ConfigLoader[B] =
-    new ConfigLoader[B] {
-      def load(config: Config, path: String): B = {
-        f(self.load(config, path))
-      }
+  def map[B](f: A => B): ConfigLoader[B] = new ConfigLoader[B] {
+    def load(config: Config, path: String): B = {
+      f(self.load(config, path))
     }
+  }
 }
 
 private[play] object ConfigLoader {

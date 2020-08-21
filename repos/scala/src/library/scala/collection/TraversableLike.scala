@@ -242,10 +242,9 @@ trait TraversableLike[+A, +Repr]
 
   def flatMap[B, That](f: A => GenTraversableOnce[B])(implicit
       bf: CanBuildFrom[Repr, B, That]): That = {
-    def builder =
-      bf(
-        repr
-      ) // extracted to keep method size under 35 bytes, so that it can be JIT-inlined
+    def builder = bf(
+      repr
+    ) // extracted to keep method size under 35 bytes, so that it can be JIT-inlined
     val b = builder
     for (x <- this) b ++= f(x).seq
     b.result
@@ -641,11 +640,10 @@ trait TraversableLike[+A, +Repr]
     *
     *  @return a non-strict view of this $coll.
     */
-  def view =
-    new TraversableView[A, Repr] {
-      protected lazy val underlying = self.repr
-      override def foreach[U](f: A => U) = self foreach f
-    }
+  def view = new TraversableView[A, Repr] {
+    protected lazy val underlying = self.repr
+    override def foreach[U](f: A => U) = self foreach f
+  }
 
   /** Creates a non-strict view of a slice of this $coll.
     *

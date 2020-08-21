@@ -241,11 +241,10 @@ trait SpecializedLiftActor[T] extends SimpleActor[T] {
     * You can wrap calls around the evaluation of the mailbox.  This allows you to set up
     * the environment.
     */
-  protected def around[R](f: => R): R =
-    aroundLoans match {
-      case Nil => f
-      case xs  => CommonLoanWrapper(xs)(f)
-    }
+  protected def around[R](f: => R): R = aroundLoans match {
+    case Nil => f
+    case xs  => CommonLoanWrapper(xs)(f)
+  }
   private def proc2(ignoreProcessing: Boolean) {
     var clearProcessing = true
     baseMailbox.synchronized {
@@ -495,23 +494,21 @@ trait LiftActor
     Full(future.get)
   }
 
-  override protected def testTranslate(f: Any => Boolean)(v: Any) =
-    v match {
-      case MsgWithResp(msg, _) => f(msg)
-      case v                   => f(v)
-    }
+  override protected def testTranslate(f: Any => Boolean)(v: Any) = v match {
+    case MsgWithResp(msg, _) => f(msg)
+    case v                   => f(v)
+  }
 
-  override protected def execTranslate(f: Any => Unit)(v: Any) =
-    v match {
-      case MsgWithResp(msg, future) =>
-        responseFuture = future
-        try {
-          f(msg)
-        } finally {
-          responseFuture = null
-        }
-      case v => f(v)
-    }
+  override protected def execTranslate(f: Any => Unit)(v: Any) = v match {
+    case MsgWithResp(msg, future) =>
+      responseFuture = future
+      try {
+        f(msg)
+      } finally {
+        responseFuture = null
+      }
+    case v => f(v)
+  }
 
   /**
     * The Actor should call this method with a reply
@@ -553,11 +550,10 @@ object LiftActorJ {
       }
     }
 
-  private def getBaseClasses(clz: Class[_]): List[Class[_]] =
-    clz match {
-      case null => Nil
-      case clz  => clz :: getBaseClasses(clz.getSuperclass)
-    }
+  private def getBaseClasses(clz: Class[_]): List[Class[_]] = clz match {
+    case null => Nil
+    case clz  => clz :: getBaseClasses(clz.getSuperclass)
+  }
 
   private def receiver(in: Method): Boolean = {
     in.getParameterTypes().length == 1 &&

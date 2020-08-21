@@ -135,28 +135,26 @@ package object templates {
   /**
     * Extract the local names out from the route, as tuple. See PR#4244
     */
-  def tupleNames(route: Route) =
-    route.call.parameters
-      .filterNot(_.isEmpty)
-      .map { params =>
-        params.map(x => safeKeyword(x.name)).mkString(", ")
-      }
-      .map("(" + _ + ") =>")
-      .getOrElse("")
+  def tupleNames(route: Route) = route.call.parameters
+    .filterNot(_.isEmpty)
+    .map { params =>
+      params.map(x => safeKeyword(x.name)).mkString(", ")
+    }
+    .map("(" + _ + ") =>")
+    .getOrElse("")
 
   /**
     * Extract the local names out from the route, as List. See PR#4244
     */
-  def listNames(route: Route) =
-    route.call.parameters
-      .filterNot(_.isEmpty)
-      .map { params =>
-        params
-          .map(x => "(" + safeKeyword(x.name) + ": " + x.typeName + ")")
-          .mkString(":: ")
-      }
-      .map("case " + _ + " :: Nil =>")
-      .getOrElse("")
+  def listNames(route: Route) = route.call.parameters
+    .filterNot(_.isEmpty)
+    .map { params =>
+      params
+        .map(x => "(" + safeKeyword(x.name) + ": " + x.typeName + ")")
+        .mkString(":: ")
+    }
+    .map("case " + _ + " :: Nil =>")
+    .getOrElse("")
 
   /**
     * Extract the local names out from the route
@@ -332,20 +330,19 @@ package object templates {
   /**
     * Generate the parameter signature for the reverse route call for the given routes.
     */
-  def reverseSignature(routes: Seq[Route]) =
-    reverseParameters(routes)
-      .map(p =>
-        safeKeyword(p._1.name) + ":" + p._1.typeName + {
-          Option(routes.map(_.call.parameters.get(p._2).default).distinct)
-            .filter(_.size == 1)
-            .flatMap(_.headOption)
-            .map {
-              case None          => ""
-              case Some(default) => " = " + default
-            }
-            .getOrElse("")
-        })
-      .mkString(", ")
+  def reverseSignature(routes: Seq[Route]) = reverseParameters(routes)
+    .map(p =>
+      safeKeyword(p._1.name) + ":" + p._1.typeName + {
+        Option(routes.map(_.call.parameters.get(p._2).default).distinct)
+          .filter(_.size == 1)
+          .flatMap(_.headOption)
+          .map {
+            case None          => ""
+            case Some(default) => " = " + default
+          }
+          .getOrElse("")
+      })
+    .mkString(", ")
 
   /**
     * Generate the reverse call

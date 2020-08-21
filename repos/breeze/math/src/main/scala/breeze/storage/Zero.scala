@@ -38,10 +38,9 @@ object Zero extends ZeroLowPriority {
     else refDefault
   }
 
-  def apply[T](v: T): Zero[T] =
-    new Zero[T] {
-      def zero = v
-    }
+  def apply[T](v: T): Zero[T] = new Zero[T] {
+    def zero = v
+  }
 
   implicit object IntZero extends Zero[Int] {
     override def zero = 0
@@ -97,7 +96,7 @@ trait ZeroVeryLowPriority { this: Zero.type =>
 
 trait ZeroLowPriority extends ZeroVeryLowPriority { this: Zero.type =>
 
-  implicit def zeroFromSemiring[T: Semiring] =
-    Zero(implicitly[Semiring[T]].zero)
+  implicit def zeroFromSemiring[T: Semiring] = Zero(
+    implicitly[Semiring[T]].zero)
 
 }

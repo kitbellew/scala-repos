@@ -31,11 +31,10 @@ class FunctionTupleSyntacticSugarInspection extends LocalInspectionTool {
     if (!holder.getFile.isInstanceOf[ScalaFile]) return new PsiElementVisitor {}
 
     object QualifiedName {
-      def unapply(p: PsiElement): Option[String] =
-        p match {
-          case x: PsiClass => Some(x.qualifiedName)
-          case _           => None
-        }
+      def unapply(p: PsiElement): Option[String] = p match {
+        case x: PsiClass => Some(x.qualifiedName)
+        case _           => None
+      }
     }
 
     import org.jetbrains.plugins.scala.codeInspection.sugar.FunctionTupleSyntacticSugarInspection._

@@ -109,10 +109,9 @@ import org.apache.spark.sql.types.IntegerType
   */
 object DistinctAggregationRewriter extends Rule[LogicalPlan] {
 
-  def apply(plan: LogicalPlan): LogicalPlan =
-    plan transformUp { case a: Aggregate =>
-      rewrite(a)
-    }
+  def apply(plan: LogicalPlan): LogicalPlan = plan transformUp {
+    case a: Aggregate => rewrite(a)
+  }
 
   def rewrite(a: Aggregate): Aggregate = {
 

@@ -43,13 +43,13 @@ trait HsqldbProfile extends JdbcProfile {
   class ModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
       implicit ec: ExecutionContext)
       extends JdbcModelBuilder(mTables, ignoreInvalidDefaults) {
-    override def createTableNamer(mTable: MTable): TableNamer =
-      new TableNamer(mTable) {
-        override def schema =
-          super.schema.filter(_ != "PUBLIC") // remove default schema
-        override def catalog =
-          super.catalog.filter(_ != "PUBLIC") // remove default catalog
-      }
+    override def createTableNamer(mTable: MTable): TableNamer = new TableNamer(
+      mTable) {
+      override def schema =
+        super.schema.filter(_ != "PUBLIC") // remove default schema
+      override def catalog =
+        super.catalog.filter(_ != "PUBLIC") // remove default catalog
+    }
   }
 
   override def createModelBuilder(
@@ -84,26 +84,25 @@ trait HsqldbProfile extends JdbcProfile {
     override protected val supportsLiteralGroupBy = true
     override protected val quotedJdbcFns = Some(Nil)
 
-    override def expr(c: Node, skipParens: Boolean = false): Unit =
-      c match {
-        case l @ LiteralNode(v: String)
-            if (v ne null) && jdbcTypeFor(l.nodeType).sqlType != Types.CHAR =>
-          /* Hsqldb treats string literals as type CHARACTER and pads them with
-           * spaces in some expressions, so we cast all string literals to
-           * VARCHAR. The length is only 16M instead of 2^31-1 in order to leave
-           * enough room for concatenating strings (which extends the size even if
-           * it is not needed). */
-          b"cast("
-          super.expr(c)
-          b" as varchar(16777216))"
-        /* Hsqldb uses the SQL:2008 syntax for NEXTVAL */
-        case Library.NextValue(SequenceNode(name)) => b"(next value for `$name)"
-        case Library.CurrentValue(_*) =>
-          throw new SlickException("Hsqldb does not support CURRVAL")
-        case RowNumber(_) =>
-          b"rownum()" // Hsqldb uses Oracle ROWNUM semantics but needs parens
-        case _ => super.expr(c, skipParens)
-      }
+    override def expr(c: Node, skipParens: Boolean = false): Unit = c match {
+      case l @ LiteralNode(v: String)
+          if (v ne null) && jdbcTypeFor(l.nodeType).sqlType != Types.CHAR =>
+        /* Hsqldb treats string literals as type CHARACTER and pads them with
+         * spaces in some expressions, so we cast all string literals to
+         * VARCHAR. The length is only 16M instead of 2^31-1 in order to leave
+         * enough room for concatenating strings (which extends the size even if
+         * it is not needed). */
+        b"cast("
+        super.expr(c)
+        b" as varchar(16777216))"
+      /* Hsqldb uses the SQL:2008 syntax for NEXTVAL */
+      case Library.NextValue(SequenceNode(name)) => b"(next value for `$name)"
+      case Library.CurrentValue(_*) =>
+        throw new SlickException("Hsqldb does not support CURRVAL")
+      case RowNumber(_) =>
+        b"rownum()" // Hsqldb uses Oracle ROWNUM semantics but needs parens
+      case _ => super.expr(c, skipParens)
+    }
 
     override protected def buildJoin(j: Join): Unit = {
       /* Re-balance inner joins to the left because Hsqldb does not supported RHS nesting. Paths
@@ -136,13 +135,12 @@ trait HsqldbProfile extends JdbcProfile {
 
     override protected def buildFetchOffsetClause(
         fetch: Option[Node],
-        offset: Option[Node]) =
-      (fetch, offset) match {
-        case (Some(t), Some(d)) => b"\nlimit $t offset $d"
-        case (Some(t), None)    => b"\nlimit $t"
-        case (None, Some(d))    => b"\noffset $d"
-        case _                  =>
-      }
+        offset: Option[Node]) = (fetch, offset) match {
+      case (Some(t), Some(d)) => b"\nlimit $t offset $d"
+      case (Some(t), None)    => b"\nlimit $t"
+      case (None, Some(d))    => b"\noffset $d"
+      case _                  =>
+    }
   }
 
   class JdbcTypes extends super.JdbcTypes {

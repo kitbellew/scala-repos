@@ -98,11 +98,10 @@ private[repl] trait SparkILoopInit {
   //   () => intp.bind("lastWarnings", "" + typeTag[List[(Position, String)]], intp.lastWarnings _),
   // )
 
-  protected def postInitThunks =
-    List[Option[() => Unit]](
-      Some(intp.setContextClassLoader _),
-      if (isReplPower) Some(() => enablePowerMode(true)) else None
-    ).flatten
+  protected def postInitThunks = List[Option[() => Unit]](
+    Some(intp.setContextClassLoader _),
+    if (isReplPower) Some(() => enablePowerMode(true)) else None
+  ).flatten
   // ++ (
   //   warningsThunks
   // )
@@ -152,19 +151,17 @@ private[repl] trait SparkILoopInit {
   // code to be executed only after the interpreter is initialized
   // and the lazy val `global` can be accessed without risk of deadlock.
   private var pendingThunks: List[() => Unit] = Nil
-  protected def addThunk(body: => Unit) =
-    synchronized {
-      pendingThunks :+= (() => body)
-    }
-  protected def runThunks(): Unit =
-    synchronized {
-      if (pendingThunks.nonEmpty)
-        logDebug("Clearing " + pendingThunks.size + " thunks.")
+  protected def addThunk(body: => Unit) = synchronized {
+    pendingThunks :+= (() => body)
+  }
+  protected def runThunks(): Unit = synchronized {
+    if (pendingThunks.nonEmpty)
+      logDebug("Clearing " + pendingThunks.size + " thunks.")
 
-      while (pendingThunks.nonEmpty) {
-        val thunk = pendingThunks.head
-        pendingThunks = pendingThunks.tail
-        thunk()
-      }
+    while (pendingThunks.nonEmpty) {
+      val thunk = pendingThunks.head
+      pendingThunks = pendingThunks.tail
+      thunk()
     }
+  }
 }

@@ -48,21 +48,19 @@ sealed abstract class FreeAp[F[_], A] {
   /**
     * The natural transformation from `FreeAp[F,_]` to `FreeAp[G,_]`
     */
-  def hoist[G[_]](f: F ~> G): FreeAp[G, A] =
-    this match {
-      case Pure(a)  => Pure(a)
-      case x @ Ap() => FreeAp(f(x.v()), x.k() hoist f)
-    }
+  def hoist[G[_]](f: F ~> G): FreeAp[G, A] = this match {
+    case Pure(a)  => Pure(a)
+    case x @ Ap() => FreeAp(f(x.v()), x.k() hoist f)
+  }
 
   /**
     * Interprets this free `F` program using the semantics of the
     * `Applicative` instance for `F`.
     */
-  def retract(implicit F: Applicative[F]): F[A] =
-    this match {
-      case Pure(a)  => Applicative[F].pure(a)
-      case x @ Ap() => Applicative[F].ap(x.v())(x.k().retract)
-    }
+  def retract(implicit F: Applicative[F]): F[A] = this match {
+    case Pure(a)  => Applicative[F].pure(a)
+    case x @ Ap() => Applicative[F].ap(x.v())(x.k().retract)
+  }
 
   /**
     * Embeds this program in the free monad on `F`.
@@ -73,19 +71,17 @@ sealed abstract class FreeAp[F[_], A] {
     })
 
   /** Idiomatic function application */
-  def ap[B](f: FreeAp[F, A => B]): FreeAp[F, B] =
-    f match {
-      case Pure(g) => map(g)
-      case x @ Ap() =>
-        FreeAp(x.v(), ap(x.k().map(g => (a: A) => (b: x.I) => g(b)(a))))
-    }
+  def ap[B](f: FreeAp[F, A => B]): FreeAp[F, B] = f match {
+    case Pure(g) => map(g)
+    case x @ Ap() =>
+      FreeAp(x.v(), ap(x.k().map(g => (a: A) => (b: x.I) => g(b)(a))))
+  }
 
   /** Append a function to the end of this program */
-  def map[B](f: A => B): FreeAp[F, B] =
-    this match {
-      case Pure(a)  => Pure(f(a))
-      case x @ Ap() => FreeAp(x.v(), x.k().map(f compose _))
-    }
+  def map[B](f: A => B): FreeAp[F, B] = this match {
+    case Pure(a)  => Pure(f(a))
+    case x @ Ap() => FreeAp(x.v(), x.k().map(f compose _))
+  }
 }
 
 object FreeAp {

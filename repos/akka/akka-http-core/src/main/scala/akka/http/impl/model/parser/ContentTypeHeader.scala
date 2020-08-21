@@ -12,11 +12,10 @@ private[parser] trait ContentTypeHeader {
   this: Parser with CommonRules with CommonActions ⇒
 
   // http://tools.ietf.org/html/rfc7231#section-3.1.1.5
-  def `content-type` =
-    rule {
-      `media-type` ~ EOI ~> ((main, sub, params) ⇒
-        headers.`Content-Type`(contentType(main, sub, params)))
-    }
+  def `content-type` = rule {
+    `media-type` ~ EOI ~> ((main, sub, params) ⇒
+      headers.`Content-Type`(contentType(main, sub, params)))
+  }
 
   @tailrec private def contentType(
       main: String,

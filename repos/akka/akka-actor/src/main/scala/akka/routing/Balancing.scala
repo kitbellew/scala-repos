@@ -83,8 +83,8 @@ final case class BalancingPool(
     */
   def this(nr: Int) = this(nrOfInstances = nr)
 
-  override def createRouter(system: ActorSystem): Router =
-    new Router(BalancingRoutingLogic())
+  override def createRouter(system: ActorSystem): Router = new Router(
+    BalancingRoutingLogic())
 
   /**
     * Setting the supervisor strategy to be used for the “head” Router actor.

@@ -44,8 +44,8 @@ class ParentSpec
       classOf[jfxs.Parent],
       classOf[Parent]) {
 
-  override protected def getScalaClassInstance =
-    new Parent(getJavaClassInstance) {}
+  override protected def getScalaClassInstance = new Parent(
+    getJavaClassInstance) {}
 
   override protected def getJavaClassInstance = new jfxs.Group
 

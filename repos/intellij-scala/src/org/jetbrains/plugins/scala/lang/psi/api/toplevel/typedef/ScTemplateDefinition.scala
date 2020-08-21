@@ -215,16 +215,15 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
   def superTypes: List[ScType] = extendsBlock.superTypes
   def supers: Seq[PsiClass] = extendsBlock.supers
 
-  def allTypeAliases =
-    TypeDefinitionMembers
-      .getTypes(this)
-      .allFirstSeq()
-      .flatMap(n =>
-        n.map { case (_, x) =>
-          (x.info, x.substitutor)
-        }) ++ syntheticTypeDefinitions
-      .filter(!_.isObject)
-      .map((_, ScSubstitutor.empty))
+  def allTypeAliases = TypeDefinitionMembers
+    .getTypes(this)
+    .allFirstSeq()
+    .flatMap(n =>
+      n.map { case (_, x) =>
+        (x.info, x.substitutor)
+      }) ++ syntheticTypeDefinitions
+    .filter(!_.isObject)
+    .map((_, ScSubstitutor.empty))
 
   def allTypeAliasesIncludingSelfType = {
     selfType match {
@@ -244,23 +243,22 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
     }
   }
 
-  def allVals =
-    TypeDefinitionMembers
-      .getSignatures(this)
-      .allFirstSeq()
-      .flatMap(n =>
-        n.filter { case (_, x) =>
-          !x.info.isInstanceOf[PhysicalSignature] &&
-            (x.info.namedElement match {
-              case v =>
-                ScalaPsiUtil.nameContext(v) match {
-                  case _: ScVariable => v.name == x.info.name
-                  case _: ScValue    => v.name == x.info.name
-                  case _             => true
-                }
-            })
-        })
-      .map { case (_, n) => (n.info.namedElement, n.substitutor) }
+  def allVals = TypeDefinitionMembers
+    .getSignatures(this)
+    .allFirstSeq()
+    .flatMap(n =>
+      n.filter { case (_, x) =>
+        !x.info.isInstanceOf[PhysicalSignature] &&
+          (x.info.namedElement match {
+            case v =>
+              ScalaPsiUtil.nameContext(v) match {
+                case _: ScVariable => v.name == x.info.name
+                case _: ScValue    => v.name == x.info.name
+                case _             => true
+              }
+          })
+      })
+    .map { case (_, n) => (n.info.namedElement, n.substitutor) }
 
   def allValsIncludingSelfType = {
     selfType match {
@@ -326,11 +324,10 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
     }
   }
 
-  def allSignatures =
-    TypeDefinitionMembers
-      .getSignatures(this)
-      .allFirstSeq()
-      .flatMap(_.map { case (_, n) => n.info })
+  def allSignatures = TypeDefinitionMembers
+    .getSignatures(this)
+    .allFirstSeq()
+    .flatMap(_.map { case (_, n) => n.info })
 
   def allSignaturesIncludingSelfType = {
     selfType match {
@@ -350,11 +347,10 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
     }
   }
 
-  def isScriptFileClass =
-    getContainingFile match {
-      case file: ScalaFile => file.isScriptFile(false)
-      case _               => false
-    }
+  def isScriptFileClass = getContainingFile match {
+    case file: ScalaFile => file.isScriptFile(false)
+    case _               => false
+  }
 
   def processDeclarations(
       processor: PsiScopeProcessor,
@@ -607,7 +603,7 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
 
 object ScTemplateDefinition {
   object ExtendsBlock {
-    def unapply(definition: ScTemplateDefinition): Some[ScExtendsBlock] =
-      Some(definition.extendsBlock)
+    def unapply(definition: ScTemplateDefinition): Some[ScExtendsBlock] = Some(
+      definition.extendsBlock)
   }
 }

@@ -297,8 +297,8 @@ class ScObjectImpl protected (
   private var emptyObjectConstructorModCount: Long = 0L
 
   @Cached(synchronized = false, ModCount.getBlockModificationCount, this)
-  override def getConstructors: Array[PsiMethod] =
-    Array(new EmptyPrivateConstructor(this))
+  override def getConstructors: Array[PsiMethod] = Array(
+    new EmptyPrivateConstructor(this))
 
   override def isPhysical: Boolean = {
     if (isSyntheticObject) false

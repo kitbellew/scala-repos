@@ -20,9 +20,8 @@ class SkinBaseSpec
       classOf[SkinBase[jfxsc.Button]])
     with RunOnApplicationThread {
 
-  override protected def getScalaClassInstance =
-    new SkinBase[jfxsc.Button](
-      new jfxsc.SkinBase[jfxsc.Button](new jfxsc.Button) {}) {}
+  override protected def getScalaClassInstance = new SkinBase[jfxsc.Button](
+    new jfxsc.SkinBase[jfxsc.Button](new jfxsc.Button) {}) {}
 
   override protected def getJavaClassInstance =
     new jfxsc.SkinBase[jfxsc.Button](new jfxsc.Button) {}

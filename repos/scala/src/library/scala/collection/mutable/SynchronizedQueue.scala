@@ -37,8 +37,9 @@ class SynchronizedQueue[A] extends Queue[A] {
     *
     *  @param  elem        the element to insert
     */
-  override def +=(elem: A): this.type =
-    synchronized[this.type] { super.+=(elem) }
+  override def +=(elem: A): this.type = synchronized[this.type] {
+    super.+=(elem)
+  }
 
   /** Adds all elements provided by a `TraversableOnce` object
     *  at the end of the queue. The elements are prepended in the order they
@@ -68,8 +69,9 @@ class SynchronizedQueue[A] extends Queue[A] {
     *  @param p   the predicate used for choosing the first element
     *  @return the first element of the queue for which p yields true
     */
-  override def dequeueFirst(p: A => Boolean): Option[A] =
-    synchronized { super.dequeueFirst(p) }
+  override def dequeueFirst(p: A => Boolean): Option[A] = synchronized {
+    super.dequeueFirst(p)
+  }
 
   /** Returns all elements in the queue which satisfy the
     *  given predicate, and removes those elements from the queue.
@@ -78,8 +80,9 @@ class SynchronizedQueue[A] extends Queue[A] {
     *  @return    a sequence of all elements in the queue for which
     *             p yields true.
     */
-  override def dequeueAll(p: A => Boolean): Seq[A] =
-    synchronized { super.dequeueAll(p) }
+  override def dequeueAll(p: A => Boolean): Seq[A] = synchronized {
+    super.dequeueAll(p)
+  }
 
   /** Returns the first element in the queue, or throws an error if there
     *  is no element contained in the queue.

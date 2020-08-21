@@ -38,16 +38,15 @@ class ServerTransportParams[A <: Stack.Parameterized[A]](
       caCertificatePath: Option[String],
       ciphers: Option[String],
       nextProtocols: Option[String]
-  ): A =
-    self.configured(
-      Transport.TLSServerEngine(
-        Some(() =>
-          Ssl.server(
-            certificatePath,
-            keyPath,
-            caCertificatePath.orNull,
-            ciphers.orNull,
-            nextProtocols.orNull
-          ))
-      ))
+  ): A = self.configured(
+    Transport.TLSServerEngine(
+      Some(() =>
+        Ssl.server(
+          certificatePath,
+          keyPath,
+          caCertificatePath.orNull,
+          ciphers.orNull,
+          nextProtocols.orNull
+        ))
+    ))
 }

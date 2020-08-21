@@ -36,11 +36,10 @@ trait Solver extends parser.AST with typer.Binder {
       partialPred: PartialFunction[Node, Boolean]): Expr => Option[Expr] = {
     val predicate = partialPred.lift andThen { _ getOrElse false }
 
-    def sigmaFormal(d: Dispatch): Option[Expr] =
-      d.binding match {
-        case FormalBinding(let) => sigma get ((d.name, let))
-        case _                  => None
-      }
+    def sigmaFormal(d: Dispatch): Option[Expr] = d.binding match {
+      case FormalBinding(let) => sigma get ((d.name, let))
+      case _                  => None
+    }
 
     // VERY IMPORTANT!!!  each rule must represent a monotonic reduction in tree complexity
     lazy val Rules: Set[PartialFunction[Expr, Set[Expr]]] = Set(
@@ -155,43 +154,41 @@ trait Solver extends parser.AST with typer.Binder {
       }
     )
 
-    def inner(tree: Expr): Expr => Option[Expr] =
-      tree match {
-        case n if predicate(n) => Some apply _
+    def inner(tree: Expr): Expr => Option[Expr] = tree match {
+      case n if predicate(n) => Some apply _
 
-        case tree @ Dispatch(_, id, actuals) => {
-          tree.binding match {
-            case LetBinding(let) => {
-              val ids = let.params map { Identifier(Vector(), _) }
-              val sigma2 =
-                sigma ++ (ids zip Stream.continually(let) zip actuals)
-              solve(let.left, sigma2)(partialPred) // not inner!
-            }
-
-            case FormalBinding(let) => {
-              val actualM = sigma get ((id, let))
-              val resultM = actualM map { solve(_, sigma)(partialPred) }
-              resultM getOrElse sys.error("er...?")
-            }
-
-            case _ => const(None) _
+      case tree @ Dispatch(_, id, actuals) => {
+        tree.binding match {
+          case LetBinding(let) => {
+            val ids = let.params map { Identifier(Vector(), _) }
+            val sigma2 = sigma ++ (ids zip Stream.continually(let) zip actuals)
+            solve(let.left, sigma2)(partialPred) // not inner!
           }
-        }
 
-        case Add(loc, left, right) =>
-          solveBinary(tree, left, right)(sub(loc), sub(loc))
-        case Sub(loc, left, right) =>
-          solveBinary(tree, left, right)(
-            add(loc),
-            sub(loc) andThen { _ andThen neg(loc) })
-        case Mul(loc, left, right) =>
-          solveBinary(tree, left, right)(div(loc), div(loc))
-        case Div(loc, left, right) =>
-          solveBinary(tree, left, right)(mul(loc), flip(div(loc)))
-        case Neg(loc, child) => inner(child) andThen { _ map neg(loc) }
-        case Paren(_, child) => inner(child)
-        case _               => const(None) _
+          case FormalBinding(let) => {
+            val actualM = sigma get ((id, let))
+            val resultM = actualM map { solve(_, sigma)(partialPred) }
+            resultM getOrElse sys.error("er...?")
+          }
+
+          case _ => const(None) _
+        }
       }
+
+      case Add(loc, left, right) =>
+        solveBinary(tree, left, right)(sub(loc), sub(loc))
+      case Sub(loc, left, right) =>
+        solveBinary(tree, left, right)(
+          add(loc),
+          sub(loc) andThen { _ andThen neg(loc) })
+      case Mul(loc, left, right) =>
+        solveBinary(tree, left, right)(div(loc), div(loc))
+      case Div(loc, left, right) =>
+        solveBinary(tree, left, right)(mul(loc), flip(div(loc)))
+      case Neg(loc, child) => inner(child) andThen { _ map neg(loc) }
+      case Paren(_, child) => inner(child)
+      case _               => const(None) _
+    }
 
     def solveBinary(tree: Expr, left: Expr, right: Expr)(
         invertLeft: Expr => Expr => Expr,
@@ -248,44 +245,42 @@ trait Solver extends parser.AST with typer.Binder {
       }
     }
 
-    def isSimplified(tree: Expr) =
-      tree match {
-        case Add(_, left, right) => !isSubtree(left) || !isSubtree(right)
-        case Sub(_, left, right) => !isSubtree(left) || !isSubtree(right)
-        case Mul(_, left, right) => !isSubtree(left) || !isSubtree(right)
-        case Div(_, left, right) => !isSubtree(left) || !isSubtree(right)
-        case _                   => !isSubtree(tree)
-      }
+    def isSimplified(tree: Expr) = tree match {
+      case Add(_, left, right) => !isSubtree(left) || !isSubtree(right)
+      case Sub(_, left, right) => !isSubtree(left) || !isSubtree(right)
+      case Mul(_, left, right) => !isSubtree(left) || !isSubtree(right)
+      case Div(_, left, right) => !isSubtree(left) || !isSubtree(right)
+      case _                   => !isSubtree(tree)
+    }
 
     def possibilities(expr: Expr): Set[Expr] =
       Rules filter { _ isDefinedAt expr } flatMap { _(expr) }
 
     def isSubtree(tree: Node): Boolean = {
-      def inner(tree: Node, sigma: Sigma): Boolean =
-        tree match {
-          case tree if predicate(tree) => true
+      def inner(tree: Node, sigma: Sigma): Boolean = tree match {
+        case tree if predicate(tree) => true
 
-          case tree @ Dispatch(_, id, actuals) => {
-            tree.binding match {
-              case LetBinding(let) => {
-                val ids = let.params map { Identifier(Vector(), _) }
-                val sigma2 =
-                  sigma ++ (ids zip Stream.continually(let) zip actuals)
-                inner(let.left, sigma2)
-              }
-
-              case FormalBinding(let) => {
-                val actualM = sigma get ((id, let))
-                val resultM = actualM map { inner(_, sigma) }
-                resultM getOrElse sys.error("er...?")
-              }
-
-              case _ => false
+        case tree @ Dispatch(_, id, actuals) => {
+          tree.binding match {
+            case LetBinding(let) => {
+              val ids = let.params map { Identifier(Vector(), _) }
+              val sigma2 =
+                sigma ++ (ids zip Stream.continually(let) zip actuals)
+              inner(let.left, sigma2)
             }
-          }
 
-          case _ => tree.children map { inner(_, sigma) } exists identity
+            case FormalBinding(let) => {
+              val actualM = sigma get ((id, let))
+              val resultM = actualM map { inner(_, sigma) }
+              resultM getOrElse sys.error("er...?")
+            }
+
+            case _ => false
+          }
         }
+
+        case _ => tree.children map { inner(_, sigma) } exists identity
+      }
 
       inner(tree, sigma)
     }

@@ -122,17 +122,15 @@ trait ContextErrors {
     def parents = tp.parents filterNot isTrivialTopType
     def onlyAny = tp.parents forall (_.typeSymbol == AnyClass)
     def parents_s = (if (parents.isEmpty) tp.parents else parents) mkString ", "
-    def what =
-      (
-        if (tp.typeSymbol.isAbstractType) {
-          val descr =
-            if (onlyAny) "unbounded" else "bounded only by " + parents_s
-          s"$name is $descr, which means AnyRef is not a known parent"
-        } else if (tp.typeSymbol.isAnonOrRefinementClass)
-          s"the parents of this type ($parents_s) extend Any, not AnyRef"
-        else
-          s"$name extends Any, not AnyRef"
-      )
+    def what = (
+      if (tp.typeSymbol.isAbstractType) {
+        val descr = if (onlyAny) "unbounded" else "bounded only by " + parents_s
+        s"$name is $descr, which means AnyRef is not a known parent"
+      } else if (tp.typeSymbol.isAnonOrRefinementClass)
+        s"the parents of this type ($parents_s) extend Any, not AnyRef"
+      else
+        s"$name extends Any, not AnyRef"
+    )
     if (isPrimitiveValueType(found) || isTrivialTopType(tp)) ""
     else
       "\n" +
@@ -170,11 +168,10 @@ trait ContextErrors {
     def errMsg = {
       val paramName = param.name
       val paramTp = param.tpe
-      def evOrParam =
-        (if (paramName startsWith nme.EVIDENCE_PARAM_PREFIX)
-           "evidence parameter of type"
-         else
-           s"parameter $paramName:")
+      def evOrParam = (if (paramName startsWith nme.EVIDENCE_PARAM_PREFIX)
+                         "evidence parameter of type"
+                       else
+                         s"parameter $paramName:")
       paramTp.typeSymbolDirect match {
         case ImplicitNotFoundMsg(msg) => msg.format(paramName, paramTp)
         case _                        => s"could not find implicit value for $evOrParam $paramTp"
@@ -209,11 +206,10 @@ trait ContextErrors {
         // SI-3971 unwrapping to the outermost Apply helps prevent confusion with the
         // error message point.
         def callee = {
-          def unwrap(t: Tree): Tree =
-            t match {
-              case Apply(app: Apply, _) => unwrap(app)
-              case _                    => t
-            }
+          def unwrap(t: Tree): Tree = t match {
+            case Apply(app: Apply, _) => unwrap(app)
+            case _                    => t
+          }
           unwrap(tree)
         }
 
@@ -986,10 +982,9 @@ trait ContextErrors {
       def MacroTooFewArgumentsError(expandee: Tree) =
         macroExpansionError2(expandee, "too few arguments for macro invocation")
 
-      def MacroTooManyArgumentsError(expandee: Tree) =
-        macroExpansionError2(
-          expandee,
-          "too many arguments for macro invocation")
+      def MacroTooManyArgumentsError(expandee: Tree) = macroExpansionError2(
+        expandee,
+        "too many arguments for macro invocation")
 
       def MacroGeneratedAbort(expandee: Tree, ex: AbortMacroException) = {
         // errors have been reported by the macro itself, so we do nothing here
@@ -1054,11 +1049,10 @@ trait ContextErrors {
       }
 
       def MacroFreeSymbolError(expandee: Tree, sym: FreeSymbol) = {
-        def template(kind: String) =
-          (
-            s"Macro expansion contains free $kind variable %s. Have you forgotten to use %s? "
-              + s"If you have troubles tracking free $kind variables, consider using -Xlog-free-${kind}s"
-          )
+        def template(kind: String) = (
+          s"Macro expansion contains free $kind variable %s. Have you forgotten to use %s? "
+            + s"If you have troubles tracking free $kind variables, consider using -Xlog-free-${kind}s"
+        )
         val forgotten =
           (
             if (sym.isTerm) "splice when splicing this variable into a reifee"
@@ -1100,11 +1094,10 @@ trait ContextErrors {
     }
 
     /** This file will be the death of me. */
-    protected def macroImplementationNotFoundMessage(name: Name): String =
-      (
-        s"""|macro implementation not found: $name
+    protected def macroImplementationNotFoundMessage(name: Name): String = (
+      s"""|macro implementation not found: $name
           |(the most common reason for that is that you cannot use macro implementations in the same compilation run that defines them)""".stripMargin
-      )
+    )
   }
 
   trait InferencerContextErrors {

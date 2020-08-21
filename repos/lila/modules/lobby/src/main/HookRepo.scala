@@ -13,12 +13,11 @@ object HookRepo {
   def findCompatible(hook: Hook): Vector[Hook] =
     hooks filter (_ compatibleWith hook)
 
-  def truncateIfNeeded =
-    if (size >= hardLimit) {
-      logger.warn(s"Found ${size} hooks, cleaning up!")
-      cleanupOld
-      hooks = hooks.take(hardLimit / 2)
-    }
+  def truncateIfNeeded = if (size >= hardLimit) {
+    logger.warn(s"Found ${size} hooks, cleaning up!")
+    cleanupOld
+    hooks = hooks.take(hardLimit / 2)
+  }
 
   def vector = hooks
 

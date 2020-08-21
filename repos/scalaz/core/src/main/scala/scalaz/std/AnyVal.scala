@@ -78,17 +78,17 @@ trait AnyValInstances {
       def order(a1: Boolean @@ Disjunction, a2: Boolean @@ Disjunction) =
         Order[Boolean].order(Tag.unwrap(a1), Tag.unwrap(a2))
 
-      def succ(b: Boolean @@ Disjunction) =
-        Disjunction(Enum[Boolean].succ(Tag.unwrap(b)))
+      def succ(b: Boolean @@ Disjunction) = Disjunction(
+        Enum[Boolean].succ(Tag.unwrap(b)))
 
-      def pred(b: Boolean @@ Disjunction) =
-        Disjunction(Enum[Boolean].pred(Tag.unwrap(b)))
+      def pred(b: Boolean @@ Disjunction) = Disjunction(
+        Enum[Boolean].pred(Tag.unwrap(b)))
 
-      override def succn(n: Int, b: Boolean @@ Disjunction) =
-        Disjunction(Enum[Boolean].succn(n, Tag.unwrap(b)))
+      override def succn(n: Int, b: Boolean @@ Disjunction) = Disjunction(
+        Enum[Boolean].succn(n, Tag.unwrap(b)))
 
-      override def predn(n: Int, b: Boolean @@ Disjunction) =
-        Disjunction(Enum[Boolean].predn(n, Tag.unwrap(b)))
+      override def predn(n: Int, b: Boolean @@ Disjunction) = Disjunction(
+        Enum[Boolean].predn(n, Tag.unwrap(b)))
 
       override def min = Disjunction.subst(Enum[Boolean].min)
 
@@ -107,17 +107,17 @@ trait AnyValInstances {
       def order(a1: Boolean @@ Conjunction, a2: Boolean @@ Conjunction) =
         Order[Boolean].order(Tag.unwrap(a1), Tag.unwrap(a2))
 
-      def succ(b: Boolean @@ Conjunction) =
-        Conjunction(Enum[Boolean].succ(Tag.unwrap(b)))
+      def succ(b: Boolean @@ Conjunction) = Conjunction(
+        Enum[Boolean].succ(Tag.unwrap(b)))
 
-      def pred(b: Boolean @@ Conjunction) =
-        Conjunction(Enum[Boolean].pred(Tag.unwrap(b)))
+      def pred(b: Boolean @@ Conjunction) = Conjunction(
+        Enum[Boolean].pred(Tag.unwrap(b)))
 
-      override def succn(n: Int, b: Boolean @@ Conjunction) =
-        Conjunction(Enum[Boolean].succn(n, Tag.unwrap(b)))
+      override def succn(n: Int, b: Boolean @@ Conjunction) = Conjunction(
+        Enum[Boolean].succn(n, Tag.unwrap(b)))
 
-      override def predn(n: Int, b: Boolean @@ Conjunction) =
-        Conjunction(Enum[Boolean].predn(n, Tag.unwrap(b)))
+      override def predn(n: Int, b: Boolean @@ Conjunction) = Conjunction(
+        Enum[Boolean].predn(n, Tag.unwrap(b)))
 
       override def min = Conjunction.subst(Enum[Boolean].min)
 
@@ -159,17 +159,17 @@ trait AnyValInstances {
       def order(a1: Byte @@ Multiplication, a2: Byte @@ Multiplication) =
         Order[Byte].order(Tag.unwrap(a1), Tag.unwrap(a2))
 
-      def succ(b: Byte @@ Multiplication) =
-        Multiplication(Enum[Byte].succ(Tag.unwrap(b)))
+      def succ(b: Byte @@ Multiplication) = Multiplication(
+        Enum[Byte].succ(Tag.unwrap(b)))
 
-      def pred(b: Byte @@ Multiplication) =
-        Multiplication(Enum[Byte].pred(Tag.unwrap(b)))
+      def pred(b: Byte @@ Multiplication) = Multiplication(
+        Enum[Byte].pred(Tag.unwrap(b)))
 
-      override def succn(n: Int, b: Byte @@ Multiplication) =
-        Multiplication(Enum[Byte].succn(n, Tag.unwrap(b)))
+      override def succn(n: Int, b: Byte @@ Multiplication) = Multiplication(
+        Enum[Byte].succn(n, Tag.unwrap(b)))
 
-      override def predn(n: Int, b: Byte @@ Multiplication) =
-        Multiplication(Enum[Byte].predn(n, Tag.unwrap(b)))
+      override def predn(n: Int, b: Byte @@ Multiplication) = Multiplication(
+        Enum[Byte].predn(n, Tag.unwrap(b)))
 
       override def min = Multiplication.subst(Enum[Byte].min)
 
@@ -211,17 +211,17 @@ trait AnyValInstances {
       def order(a1: Char @@ Multiplication, a2: Char @@ Multiplication) =
         Order[Char].order(Tag.unwrap(a1), Tag.unwrap(a2))
 
-      def succ(b: Char @@ Multiplication) =
-        Multiplication(Enum[Char].succ(Tag.unwrap(b)))
+      def succ(b: Char @@ Multiplication) = Multiplication(
+        Enum[Char].succ(Tag.unwrap(b)))
 
-      def pred(b: Char @@ Multiplication) =
-        Multiplication(Enum[Char].pred(Tag.unwrap(b)))
+      def pred(b: Char @@ Multiplication) = Multiplication(
+        Enum[Char].pred(Tag.unwrap(b)))
 
-      override def succn(n: Int, b: Char @@ Multiplication) =
-        Multiplication(Enum[Char].succn(n, Tag.unwrap(b)))
+      override def succn(n: Int, b: Char @@ Multiplication) = Multiplication(
+        Enum[Char].succn(n, Tag.unwrap(b)))
 
-      override def predn(n: Int, b: Char @@ Multiplication) =
-        Multiplication(Enum[Char].predn(n, Tag.unwrap(b)))
+      override def predn(n: Int, b: Char @@ Multiplication) = Multiplication(
+        Enum[Char].predn(n, Tag.unwrap(b)))
 
       override def min = Multiplication.subst(Enum[Char].min)
 
@@ -259,17 +259,17 @@ trait AnyValInstances {
 
       def zero: Short @@ Multiplication = Multiplication(1)
 
-      def succ(b: Short @@ Multiplication) =
-        Multiplication(Enum[Short].succ(Tag.unwrap(b)))
+      def succ(b: Short @@ Multiplication) = Multiplication(
+        Enum[Short].succ(Tag.unwrap(b)))
 
-      def pred(b: Short @@ Multiplication) =
-        Multiplication(Enum[Short].pred(Tag.unwrap(b)))
+      def pred(b: Short @@ Multiplication) = Multiplication(
+        Enum[Short].pred(Tag.unwrap(b)))
 
-      override def succn(n: Int, b: Short @@ Multiplication) =
-        Multiplication(Enum[Short].succn(n, Tag.unwrap(b)))
+      override def succn(n: Int, b: Short @@ Multiplication) = Multiplication(
+        Enum[Short].succn(n, Tag.unwrap(b)))
 
-      override def predn(n: Int, b: Short @@ Multiplication) =
-        Multiplication(Enum[Short].predn(n, Tag.unwrap(b)))
+      override def predn(n: Int, b: Short @@ Multiplication) = Multiplication(
+        Enum[Short].predn(n, Tag.unwrap(b)))
 
       override def min = Multiplication.subst(Enum[Short].min)
 
@@ -308,17 +308,17 @@ trait AnyValInstances {
 
       def zero: Int @@ Multiplication = Multiplication(1)
 
-      def succ(b: Int @@ Multiplication) =
-        Multiplication(Enum[Int].succ(Tag.unwrap(b)))
+      def succ(b: Int @@ Multiplication) = Multiplication(
+        Enum[Int].succ(Tag.unwrap(b)))
 
-      def pred(b: Int @@ Multiplication) =
-        Multiplication(Enum[Int].pred(Tag.unwrap(b)))
+      def pred(b: Int @@ Multiplication) = Multiplication(
+        Enum[Int].pred(Tag.unwrap(b)))
 
-      override def succn(n: Int, b: Int @@ Multiplication) =
-        Multiplication(Enum[Int].succn(n, Tag.unwrap(b)))
+      override def succn(n: Int, b: Int @@ Multiplication) = Multiplication(
+        Enum[Int].succn(n, Tag.unwrap(b)))
 
-      override def predn(n: Int, b: Int @@ Multiplication) =
-        Multiplication(Enum[Int].predn(n, Tag.unwrap(b)))
+      override def predn(n: Int, b: Int @@ Multiplication) = Multiplication(
+        Enum[Int].predn(n, Tag.unwrap(b)))
 
       override def min = Multiplication.subst(Enum[Int].min)
 
@@ -357,17 +357,17 @@ trait AnyValInstances {
 
       def zero: Long @@ Multiplication = Multiplication(1)
 
-      def succ(b: Long @@ Multiplication) =
-        Multiplication(Enum[Long].succ(Tag.unwrap(b)))
+      def succ(b: Long @@ Multiplication) = Multiplication(
+        Enum[Long].succ(Tag.unwrap(b)))
 
-      def pred(b: Long @@ Multiplication) =
-        Multiplication(Enum[Long].pred(Tag.unwrap(b)))
+      def pred(b: Long @@ Multiplication) = Multiplication(
+        Enum[Long].pred(Tag.unwrap(b)))
 
-      override def succn(n: Int, b: Long @@ Multiplication) =
-        Multiplication(Enum[Long].succn(n, Tag.unwrap(b)))
+      override def succn(n: Int, b: Long @@ Multiplication) = Multiplication(
+        Enum[Long].succn(n, Tag.unwrap(b)))
 
-      override def predn(n: Int, b: Long @@ Multiplication) =
-        Multiplication(Enum[Long].predn(n, Tag.unwrap(b)))
+      override def predn(n: Int, b: Long @@ Multiplication) = Multiplication(
+        Enum[Long].predn(n, Tag.unwrap(b)))
 
       override def min = Multiplication.subst(Enum[Long].min)
 

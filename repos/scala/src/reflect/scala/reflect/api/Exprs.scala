@@ -118,10 +118,9 @@ trait Exprs { self: Universe =>
 
     override def canEqual(x: Any) = x.isInstanceOf[Expr[_]]
 
-    override def equals(x: Any) =
-      x.isInstanceOf[Expr[_]] && this.mirror == x
-        .asInstanceOf[Expr[_]]
-        .mirror && this.tree == x.asInstanceOf[Expr[_]].tree
+    override def equals(x: Any) = x.isInstanceOf[Expr[_]] && this.mirror == x
+      .asInstanceOf[Expr[_]]
+      .mirror && this.tree == x.asInstanceOf[Expr[_]].tree
 
     override def hashCode = mirror.hashCode * 31 + tree.hashCode
 

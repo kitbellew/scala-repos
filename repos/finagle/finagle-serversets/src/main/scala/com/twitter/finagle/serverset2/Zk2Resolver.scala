@@ -31,11 +31,10 @@ private[serverset2] object Zk2Resolver {
   case class State(addr: Addr, limbo: Int, size: Int)
 
   /** Compute the size of an Addr, where non-bound equates to a size of zero. */
-  def sizeOf(addr: Addr): Int =
-    addr match {
-      case Addr.Bound(set, _) => set.size
-      case _                  => 0
-    }
+  def sizeOf(addr: Addr): Int = addr match {
+    case Addr.Bound(set, _) => set.size
+    case _                  => 0
+  }
 
   /**
     * The prefix to use for scoping stats of a ZK ensemble. The input
@@ -69,13 +68,12 @@ class Zk2Resolver(
     extends Resolver {
   import Zk2Resolver._
 
-  def this() =
-    this(
-      DefaultStatsReceiver.scope("zk2"),
-      40.seconds,
-      5.seconds,
-      5.minutes,
-      DefaultTimer.twitter)
+  def this() = this(
+    DefaultStatsReceiver.scope("zk2"),
+    40.seconds,
+    5.seconds,
+    5.minutes,
+    DefaultTimer.twitter)
 
   def this(statsReceiver: StatsReceiver) =
     this(statsReceiver, 40.seconds, 5.seconds, 5.minutes, DefaultTimer.twitter)
@@ -296,15 +294,14 @@ class Zk2Resolver(
     * - <path>: A ServerSet path (e.g. /twitter/service/userservice/prod/server)
     * - <endpoint>: An endpoint name (optional)
     */
-  def bind(arg: String): Var[Addr] =
-    arg.split("!") match {
-      case Array(hosts, path) =>
-        addrOf(hosts, path, None)
+  def bind(arg: String): Var[Addr] = arg.split("!") match {
+    case Array(hosts, path) =>
+      addrOf(hosts, path, None)
 
-      case Array(hosts, path, endpoint) =>
-        addrOf(hosts, path, Some(endpoint))
+    case Array(hosts, path, endpoint) =>
+      addrOf(hosts, path, Some(endpoint))
 
-      case _ =>
-        throw new IllegalArgumentException(s"Invalid address '${arg}'")
-    }
+    case _ =>
+      throw new IllegalArgumentException(s"Invalid address '${arg}'")
+  }
 }

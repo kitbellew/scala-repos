@@ -97,8 +97,8 @@ abstract class AbstractTransportAdapter(
       remoteAddress: Address,
       statusPromise: Promise[AssociationHandle]): Unit
 
-  override def schemeIdentifier: String =
-    augmentScheme(wrappedTransport.schemeIdentifier)
+  override def schemeIdentifier: String = augmentScheme(
+    wrappedTransport.schemeIdentifier)
 
   override def isResponsibleFor(address: Address): Boolean =
     wrappedTransport.isResponsibleFor(address)
@@ -126,14 +126,13 @@ abstract class AbstractTransportAdapter(
     * @return
     *  The address this Transport is listening to.
     */
-  private[akka] def boundAddress: Address =
-    wrappedTransport match {
-      // Need to do like this in the backport of #15007 to 2.3.x for binary compatibility reasons
-      case t: AbstractTransportAdapter ⇒ t.boundAddress
-      case t: netty.NettyTransport ⇒ t.boundAddress
-      case t: TestTransport ⇒ t.boundAddress
-      case _ ⇒ null
-    }
+  private[akka] def boundAddress: Address = wrappedTransport match {
+    // Need to do like this in the backport of #15007 to 2.3.x for binary compatibility reasons
+    case t: AbstractTransportAdapter ⇒ t.boundAddress
+    case t: netty.NettyTransport ⇒ t.boundAddress
+    case t: TestTransport ⇒ t.boundAddress
+    case _ ⇒ null
+  }
 
   override def associate(remoteAddress: Address): Future[AssociationHandle] = {
     // Prepare a future, and pass its promise to the manager

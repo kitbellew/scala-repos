@@ -230,8 +230,8 @@ object Encoders {
     *
     * @since 1.6.0
     */
-  def javaSerialization[T](clazz: Class[T]): Encoder[T] =
-    javaSerialization(ClassTag[T](clazz))
+  def javaSerialization[T](clazz: Class[T]): Encoder[T] = javaSerialization(
+    ClassTag[T](clazz))
 
   /** Throws an exception if T is not a public class. */
   private def validatePublicClass[T: ClassTag](): Unit = {

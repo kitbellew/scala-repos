@@ -415,8 +415,8 @@ sealed trait DebugLocation extends RpcResponse
 case class DebugObjectReference(objectId: DebugObjectId) extends DebugLocation
 
 object DebugObjectReference {
-  def apply(objId: Long): DebugObjectReference =
-    new DebugObjectReference(DebugObjectId(objId))
+  def apply(objId: Long): DebugObjectReference = new DebugObjectReference(
+    DebugObjectId(objId))
 }
 
 case class DebugStackSlot(threadId: DebugThreadId, frame: Int, offset: Int)

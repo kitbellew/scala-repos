@@ -78,12 +78,12 @@ object TypedActorSpec {
 
     def futureComposePigdogFrom(foo: Foo): Future[String]
 
-    def failingFuturePigdog(): Future[String] =
-      throw new IllegalStateException("expected")
+    def failingFuturePigdog(): Future[String] = throw new IllegalStateException(
+      "expected")
 
     @throws(classOf[TimeoutException])
-    def failingOptionPigdog(): Option[String] =
-      throw new IllegalStateException("expected")
+    def failingOptionPigdog(): Option[String] = throw new IllegalStateException(
+      "expected")
 
     @throws(classOf[TimeoutException])
     def failingJOptionPigdog(): JOption[String] =
@@ -203,14 +203,14 @@ object TypedActorSpec {
 
     override def preStart(): Unit = ensureContextAvailable(latch.countDown())
 
-    override def postStop(): Unit =
-      ensureContextAvailable(for (i ← 1 to 3) latch.countDown())
+    override def postStop(): Unit = ensureContextAvailable(
+      for (i ← 1 to 3) latch.countDown())
 
     override def preRestart(reason: Throwable, message: Option[Any]): Unit =
       ensureContextAvailable(for (i ← 1 to 5) latch.countDown())
 
-    override def postRestart(reason: Throwable): Unit =
-      ensureContextAvailable(for (i ← 1 to 7) latch.countDown())
+    override def postRestart(reason: Throwable): Unit = ensureContextAvailable(
+      for (i ← 1 to 7) latch.countDown())
 
     override def onReceive(msg: Any, sender: ActorRef): Unit = {
       ensureContextAvailable(msg match {

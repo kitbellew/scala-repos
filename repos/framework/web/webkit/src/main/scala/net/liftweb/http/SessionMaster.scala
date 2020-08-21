@@ -175,15 +175,13 @@ object SessionMaster extends LiftActor with Loggable {
       }
     }
 
-  private def lockRead[T](f: => T): T =
-    this.synchronized {
-      f
-    }
+  private def lockRead[T](f: => T): T = this.synchronized {
+    f
+  }
 
-  private def lockWrite[T](f: => T): T =
-    this.synchronized {
-      f
-    }
+  private def lockWrite[T](f: => T): T = this.synchronized {
+    f
+  }
 
   /**
     * Adds a new session to SessionMaster

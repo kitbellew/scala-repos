@@ -126,75 +126,74 @@ class RichPipe(val pipe: Pipe)
     * Beginning of block with access to expensive nonserializable state. The state object should
     * contain a function release() for resource management purpose.
     */
-  def using[C <: { def release() }](bf: => C) =
-    new {
+  def using[C <: { def release() }](bf: => C) = new {
 
-      /**
-        * For pure side effect.
-        */
-      def foreach[A](f: Fields)(fn: (C, A) => Unit)(implicit
-          conv: TupleConverter[A],
-          set: TupleSetter[Unit],
-          flowDef: FlowDef,
-          mode: Mode) = {
-        conv.assertArityMatches(f)
-        val newPipe = new Each(
-          pipe,
-          f,
-          new SideEffectMapFunction(
-            bf,
-            fn,
-            new Function1[C, Unit] with java.io.Serializable {
-              def apply(c: C) { c.release() }
-            },
-            Fields.NONE,
-            conv,
-            set))
-        NullSource.writeFrom(newPipe)(flowDef, mode)
-        newPipe
-      }
-
-      /**
-        * map with state
-        */
-      def map[A, T](fs: (Fields, Fields))(fn: (C, A) => T)(implicit
-          conv: TupleConverter[A],
-          set: TupleSetter[T]) = {
-        conv.assertArityMatches(fs._1)
-        set.assertArityMatches(fs._2)
-        val mf = new SideEffectMapFunction(
+    /**
+      * For pure side effect.
+      */
+    def foreach[A](f: Fields)(fn: (C, A) => Unit)(implicit
+        conv: TupleConverter[A],
+        set: TupleSetter[Unit],
+        flowDef: FlowDef,
+        mode: Mode) = {
+      conv.assertArityMatches(f)
+      val newPipe = new Each(
+        pipe,
+        f,
+        new SideEffectMapFunction(
           bf,
           fn,
           new Function1[C, Unit] with java.io.Serializable {
             def apply(c: C) { c.release() }
           },
-          fs._2,
+          Fields.NONE,
           conv,
-          set)
-        new Each(pipe, fs._1, mf, defaultMode(fs._1, fs._2))
-      }
-
-      /**
-        * flatMap with state
-        */
-      def flatMap[A, T](fs: (Fields, Fields))(
-          fn: (C, A) => TraversableOnce[T])(implicit
-          conv: TupleConverter[A],
-          set: TupleSetter[T]) = {
-        conv.assertArityMatches(fs._1)
-        set.assertArityMatches(fs._2)
-        val mf = new SideEffectFlatMapFunction(
-          bf,
-          fn,
-          new Function1[C, Unit] with java.io.Serializable {
-            def apply(c: C) { c.release() }
-          },
-          fs._2,
-          conv,
-          set)
-        new Each(pipe, fs._1, mf, defaultMode(fs._1, fs._2))
-      }
+          set))
+      NullSource.writeFrom(newPipe)(flowDef, mode)
+      newPipe
     }
+
+    /**
+      * map with state
+      */
+    def map[A, T](fs: (Fields, Fields))(fn: (C, A) => T)(implicit
+        conv: TupleConverter[A],
+        set: TupleSetter[T]) = {
+      conv.assertArityMatches(fs._1)
+      set.assertArityMatches(fs._2)
+      val mf = new SideEffectMapFunction(
+        bf,
+        fn,
+        new Function1[C, Unit] with java.io.Serializable {
+          def apply(c: C) { c.release() }
+        },
+        fs._2,
+        conv,
+        set)
+      new Each(pipe, fs._1, mf, defaultMode(fs._1, fs._2))
+    }
+
+    /**
+      * flatMap with state
+      */
+    def flatMap[A, T](fs: (Fields, Fields))(
+        fn: (C, A) => TraversableOnce[T])(implicit
+        conv: TupleConverter[A],
+        set: TupleSetter[T]) = {
+      conv.assertArityMatches(fs._1)
+      set.assertArityMatches(fs._2)
+      val mf = new SideEffectFlatMapFunction(
+        bf,
+        fn,
+        new Function1[C, Unit] with java.io.Serializable {
+          def apply(c: C) { c.release() }
+        },
+        fs._2,
+        conv,
+        set)
+      new Each(pipe, fs._1, mf, defaultMode(fs._1, fs._2))
+    }
+  }
 
   /**
     * Keep only the given fields, and discard the rest.
@@ -214,8 +213,8 @@ class RichPipe(val pipe: Pipe)
   /**
     * Insert a function into the pipeline:
     */
-  def thenDo[T, U](pfn: (T) => U)(implicit in: (RichPipe) => T): U =
-    pfn(in(this))
+  def thenDo[T, U](pfn: (T) => U)(implicit in: (RichPipe) => T): U = pfn(
+    in(this))
 
   /**
     * group the Pipe based on fields
@@ -794,11 +793,10 @@ class RichPipe(val pipe: Pipe)
     */
   private[scalding] def applyFlowConfigProperties(flowDef: FlowDef): Pipe = {
     case class ToVisit[T](queue: Queue[T], inQueue: Set[T]) {
-      def maybeAdd(t: T): ToVisit[T] =
-        if (inQueue(t)) this
-        else {
-          ToVisit(queue :+ t, inQueue + t)
-        }
+      def maybeAdd(t: T): ToVisit[T] = if (inQueue(t)) this
+      else {
+        ToVisit(queue :+ t, inQueue + t)
+      }
       def next: Option[(T, ToVisit[T])] =
         if (inQueue.isEmpty) None
         else Some((queue.head, ToVisit(queue.tail, inQueue - queue.head)))

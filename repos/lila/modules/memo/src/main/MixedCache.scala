@@ -11,17 +11,16 @@ final class MixedCache[K, V] private (
     val invalidate: K => Funit,
     logger: lila.log.Logger) {
 
-  def get(k: K): V =
-    try {
-      cache get k
-    } catch {
-      case e: java.util.concurrent.ExecutionException =>
-        logger.debug(e.getMessage)
-        default(k)
-      case e: com.google.common.util.concurrent.UncheckedExecutionException =>
-        logger.debug(e.getMessage)
-        default(k)
-    }
+  def get(k: K): V = try {
+    cache get k
+  } catch {
+    case e: java.util.concurrent.ExecutionException =>
+      logger.debug(e.getMessage)
+      default(k)
+    case e: com.google.common.util.concurrent.UncheckedExecutionException =>
+      logger.debug(e.getMessage)
+      default(k)
+  }
 }
 
 object MixedCache {

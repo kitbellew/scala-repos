@@ -31,8 +31,8 @@ trait ScTypeElement extends ScalaPsiElement with TypingContextOwner {
 
   override def toString: String = super.toString
 
-  def getTypeNoConstructor(ctx: TypingContext): TypeResult[ScType] =
-    getType(ctx)
+  def getTypeNoConstructor(ctx: TypingContext): TypeResult[ScType] = getType(
+    ctx)
 
   def getNonValueType(
       ctx: TypingContext,

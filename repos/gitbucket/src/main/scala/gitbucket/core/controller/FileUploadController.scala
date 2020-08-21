@@ -44,15 +44,14 @@ class FileUploadController extends ScalatraServlet with FileUploadSupport {
 
   private def execute(
       f: (FileItem, String) => Unit,
-      mimeTypeChcker: (String) => Boolean) =
-    fileParams.get("file") match {
-      case Some(file) if (mimeTypeChcker(file.name)) =>
-        defining(FileUtil.generateFileId) { fileId =>
-          f(file, fileId)
+      mimeTypeChcker: (String) => Boolean) = fileParams.get("file") match {
+    case Some(file) if (mimeTypeChcker(file.name)) =>
+      defining(FileUtil.generateFileId) { fileId =>
+        f(file, fileId)
 
-          Ok(fileId)
-        }
-      case _ => BadRequest
-    }
+        Ok(fileId)
+      }
+    case _ => BadRequest
+  }
 
 }

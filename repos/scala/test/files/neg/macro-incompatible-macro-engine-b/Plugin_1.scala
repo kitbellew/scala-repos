@@ -14,18 +14,17 @@ class Plugin(val global: Global) extends NscPlugin {
   addMacroPlugin(MacroPlugin)
 
   object MacroPlugin extends MacroPlugin {
-    def fixupBinding(tree: Tree) =
-      new Transformer {
-        override def transform(tree: Tree) = {
-          tree match {
-            case Literal(const @ Constant(x)) if tree.tpe == null =>
-              tree setType ConstantType(const)
-            case _ if tree.tpe == null => tree setType NoType
-            case _                     => ;
-          }
-          super.transform(tree)
+    def fixupBinding(tree: Tree) = new Transformer {
+      override def transform(tree: Tree) = {
+        tree match {
+          case Literal(const @ Constant(x)) if tree.tpe == null =>
+            tree setType ConstantType(const)
+          case _ if tree.tpe == null => tree setType NoType
+          case _                     => ;
         }
-      }.transform(tree)
+        super.transform(tree)
+      }
+    }.transform(tree)
 
     override def pluginsTypedMacroBody(
         typer: Typer,

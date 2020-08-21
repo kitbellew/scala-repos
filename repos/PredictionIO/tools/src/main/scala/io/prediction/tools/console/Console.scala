@@ -1222,10 +1222,9 @@ object Console extends Logging {
     }
   }
 
-  def jarFilesAt(path: File): Array[File] =
-    recursiveListFiles(path) filter {
-      _.getName.toLowerCase.endsWith(".jar")
-    }
+  def jarFilesAt(path: File): Array[File] = recursiveListFiles(path) filter {
+    _.getName.toLowerCase.endsWith(".jar")
+  }
 
   def jarFilesForScala: Array[File] = {
     val libFiles = jarFilesForScalaFilter(jarFilesAt(new File("lib")))

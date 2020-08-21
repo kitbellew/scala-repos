@@ -76,13 +76,12 @@ object MongoAccountServer
     (accountManager, Stoppable.fromFuture(accountManager.close()))
   }
 
-  def APIKeyFinder(config: Configuration) =
-    new CachingAPIKeyFinder(
-      WebAPIKeyFinder(config).map(_.withM[Future]) valueOr { errs =>
-        sys.error(
-          "Unable to build new WebAPIKeyFinder: " + errs.list
-            .mkString("\n", "\n", ""))
-      })
+  def APIKeyFinder(config: Configuration) = new CachingAPIKeyFinder(
+    WebAPIKeyFinder(config).map(_.withM[Future]) valueOr { errs =>
+      sys.error(
+        "Unable to build new WebAPIKeyFinder: " + errs.list
+          .mkString("\n", "\n", ""))
+    })
 
   def RootKey(config: Configuration) = config[String]("rootKey")
 

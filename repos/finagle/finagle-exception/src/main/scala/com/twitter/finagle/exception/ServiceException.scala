@@ -35,15 +35,14 @@ sealed private[exception] case class ServiceException private[ServiceException] 
     * This is the only way to make new ServiceException so it can be guaranteed that none will
     * have fewer than the minimum elements per the chickadee specification.
     */
-  def this(name: String, e: Throwable, timestamp: Time, traceId: Long) =
-    this(
-      Map(
-        "name" -> name,
-        "exceptionContents" -> ExceptionContents(e).jsonValue,
-        "timestamp" -> timestamp.inMillis,
-        "traceId" -> traceId
-      )
+  def this(name: String, e: Throwable, timestamp: Time, traceId: Long) = this(
+    Map(
+      "name" -> name,
+      "exceptionContents" -> ExceptionContents(e).jsonValue,
+      "timestamp" -> timestamp.inMillis,
+      "traceId" -> traceId
     )
+  )
 
   /**
     * Include a client address
@@ -53,8 +52,8 @@ sealed private[exception] case class ServiceException private[ServiceException] 
   /**
     * Include a source (i.e. server) address
     */
-  def withSource(address: String) =
-    copy(jsonValue.updated("sourceAddress", address))
+  def withSource(address: String) = copy(
+    jsonValue.updated("sourceAddress", address))
 
   /**
     * Increment the cardinality of the ServiceException, adding the element if it does not

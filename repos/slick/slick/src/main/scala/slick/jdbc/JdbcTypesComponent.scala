@@ -53,11 +53,10 @@ trait JdbcTypesComponent extends RelationalTypesComponent { self: JdbcProfile =>
     override def toString =
       s"MappedJdbcType[${classTag.runtimeClass.getName} -> $tmd]"
     override def hashCode = tmd.hashCode() + classTag.hashCode()
-    override def equals(o: Any) =
-      o match {
-        case o: MappedJdbcType[_, _] => tmd == o.tmd && classTag == o.classTag
-        case _                       => false
-      }
+    override def equals(o: Any) = o match {
+      case o: MappedJdbcType[_, _] => tmd == o.tmd && classTag == o.classTag
+      case _                       => false
+    }
   }
 
   object MappedJdbcType extends MappedColumnTypeFactory {
@@ -76,25 +75,24 @@ trait JdbcTypesComponent extends RelationalTypesComponent { self: JdbcProfile =>
     def unapply(t: Type) = Some((jdbcTypeFor(t), t.isInstanceOf[OptionType]))
   }
 
-  def jdbcTypeFor(t: Type): JdbcType[Any] =
-    ((t.structural match {
-      case tmd: JdbcType[_]             => tmd
-      case ScalaBaseType.booleanType    => columnTypes.booleanJdbcType
-      case ScalaBaseType.bigDecimalType => columnTypes.bigDecimalJdbcType
-      case ScalaBaseType.byteType       => columnTypes.byteJdbcType
-      case ScalaBaseType.charType       => columnTypes.charJdbcType
-      case ScalaBaseType.doubleType     => columnTypes.doubleJdbcType
-      case ScalaBaseType.floatType      => columnTypes.floatJdbcType
-      case ScalaBaseType.intType        => columnTypes.intJdbcType
-      case ScalaBaseType.longType       => columnTypes.longJdbcType
-      case ScalaBaseType.nullType       => columnTypes.nullJdbcType
-      case ScalaBaseType.shortType      => columnTypes.shortJdbcType
-      case ScalaBaseType.stringType     => columnTypes.stringJdbcType
-      case t: OptionType                => jdbcTypeFor(t.elementType)
-      case t: ErasedScalaBaseType[_, _] => jdbcTypeFor(t.erasure)
-      case t =>
-        throw new SlickException("JdbcProfile has no JdbcType for type " + t)
-    }): JdbcType[_]).asInstanceOf[JdbcType[Any]]
+  def jdbcTypeFor(t: Type): JdbcType[Any] = ((t.structural match {
+    case tmd: JdbcType[_]             => tmd
+    case ScalaBaseType.booleanType    => columnTypes.booleanJdbcType
+    case ScalaBaseType.bigDecimalType => columnTypes.bigDecimalJdbcType
+    case ScalaBaseType.byteType       => columnTypes.byteJdbcType
+    case ScalaBaseType.charType       => columnTypes.charJdbcType
+    case ScalaBaseType.doubleType     => columnTypes.doubleJdbcType
+    case ScalaBaseType.floatType      => columnTypes.floatJdbcType
+    case ScalaBaseType.intType        => columnTypes.intJdbcType
+    case ScalaBaseType.longType       => columnTypes.longJdbcType
+    case ScalaBaseType.nullType       => columnTypes.nullJdbcType
+    case ScalaBaseType.shortType      => columnTypes.shortJdbcType
+    case ScalaBaseType.stringType     => columnTypes.stringJdbcType
+    case t: OptionType                => jdbcTypeFor(t.elementType)
+    case t: ErasedScalaBaseType[_, _] => jdbcTypeFor(t.erasure)
+    case t =>
+      throw new SlickException("JdbcProfile has no JdbcType for type " + t)
+  }): JdbcType[_]).asInstanceOf[JdbcType[Any]]
 
   def defaultSqlTypeName(tmd: JdbcType[_], sym: Option[FieldSymbol]): String =
     tmd.sqlType match {
@@ -260,18 +258,17 @@ trait JdbcTypesComponent extends RelationalTypesComponent { self: JdbcProfile =>
       def getValue(r: ResultSet, idx: Int) = r.getString(idx)
       def updateValue(v: String, r: ResultSet, idx: Int) =
         r.updateString(idx, v)
-      override def valueToSQLLiteral(value: String) =
-        if (value eq null) "NULL"
-        else {
-          val sb = new StringBuilder
-          sb append '\''
-          for (c <- value) c match {
-            case '\'' => sb append "''"
-            case _    => sb append c
-          }
-          sb append '\''
-          sb.toString
+      override def valueToSQLLiteral(value: String) = if (value eq null) "NULL"
+      else {
+        val sb = new StringBuilder
+        sb append '\''
+        for (c <- value) c match {
+          case '\'' => sb append "''"
+          case _    => sb append c
         }
+        sb append '\''
+        sb.toString
+      }
     }
 
     class TimeJdbcType extends DriverJdbcType[Time] {
@@ -302,31 +299,29 @@ trait JdbcTypesComponent extends RelationalTypesComponent { self: JdbcProfile =>
       def updateValue(v: UUID, r: ResultSet, idx: Int) =
         r.updateBytes(idx, toBytes(v))
       override def hasLiteralForm = false
-      def toBytes(uuid: UUID) =
-        if (uuid eq null) null
-        else {
-          val msb = uuid.getMostSignificantBits
-          val lsb = uuid.getLeastSignificantBits
-          val buff = new Array[Byte](16)
-          for (i <- 0 until 8) {
-            buff(i) = ((msb >> (8 * (7 - i))) & 255).toByte
-            buff(8 + i) = ((lsb >> (8 * (7 - i))) & 255).toByte
-          }
-          buff
+      def toBytes(uuid: UUID) = if (uuid eq null) null
+      else {
+        val msb = uuid.getMostSignificantBits
+        val lsb = uuid.getLeastSignificantBits
+        val buff = new Array[Byte](16)
+        for (i <- 0 until 8) {
+          buff(i) = ((msb >> (8 * (7 - i))) & 255).toByte
+          buff(8 + i) = ((lsb >> (8 * (7 - i))) & 255).toByte
         }
-      def fromBytes(data: Array[Byte]) =
-        if (data eq null) null
-        else {
-          var msb = 0L
-          var lsb = 0L
-          for (i <- 0 until 8) {
-            msb = (msb << 8) | (data(i) & 0xff)
-          }
-          for (i <- 8 until 16) {
-            lsb = (lsb << 8) | (data(i) & 0xff)
-          }
-          new UUID(msb, lsb)
+        buff
+      }
+      def fromBytes(data: Array[Byte]) = if (data eq null) null
+      else {
+        var msb = 0L
+        var lsb = 0L
+        for (i <- 0 until 8) {
+          msb = (msb << 8) | (data(i) & 0xff)
         }
+        for (i <- 8 until 16) {
+          lsb = (lsb << 8) | (data(i) & 0xff)
+        }
+        new UUID(msb, lsb)
+      }
     }
 
     class BigDecimalJdbcType

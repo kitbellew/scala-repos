@@ -23,10 +23,9 @@ private[akka] trait Dispatch { this: ActorCell ⇒
   @volatile private var _mailboxDoNotCallMeDirectly: Mailbox =
     _ //This must be volatile since it isn't protected by the mailbox status
 
-  @inline final def mailbox: Mailbox =
-    Unsafe.instance
-      .getObjectVolatile(this, AbstractActorCell.mailboxOffset)
-      .asInstanceOf[Mailbox]
+  @inline final def mailbox: Mailbox = Unsafe.instance
+    .getObjectVolatile(this, AbstractActorCell.mailboxOffset)
+    .asInstanceOf[Mailbox]
 
   @tailrec final def swapMailbox(newMailbox: Mailbox): Mailbox = {
     val oldMailbox = mailbox
@@ -141,9 +140,8 @@ private[akka] trait Dispatch { this: ActorCell ⇒
   }
 
   // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
-  final def suspend(): Unit =
-    try dispatcher.systemDispatch(this, Suspend())
-    catch handleException
+  final def suspend(): Unit = try dispatcher.systemDispatch(this, Suspend())
+  catch handleException
 
   // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
   final def resume(causedByFailure: Throwable): Unit =
@@ -156,9 +154,8 @@ private[akka] trait Dispatch { this: ActorCell ⇒
     catch handleException
 
   // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
-  final def stop(): Unit =
-    try dispatcher.systemDispatch(this, Terminate())
-    catch handleException
+  final def stop(): Unit = try dispatcher.systemDispatch(this, Terminate())
+  catch handleException
 
   def sendMessage(msg: Envelope): Unit =
     try {

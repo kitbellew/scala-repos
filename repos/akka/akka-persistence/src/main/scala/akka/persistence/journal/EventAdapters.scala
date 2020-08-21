@@ -138,9 +138,8 @@ private[akka] object EventAdapters {
   private[akka] case class CombinedReadEventAdapter(
       adapters: immutable.Seq[EventAdapter])
       extends EventAdapter {
-    private def onlyReadSideException =
-      new IllegalStateException(
-        "CombinedReadEventAdapter must not be used when writing (creating manifests) events!")
+    private def onlyReadSideException = new IllegalStateException(
+      "CombinedReadEventAdapter must not be used when writing (creating manifests) events!")
     override def manifest(event: Any): String = throw onlyReadSideException
     override def toJournal(event: Any): Any = throw onlyReadSideException
 

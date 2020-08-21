@@ -120,28 +120,26 @@ class UnrolledBuffer[T](implicit val tag: ClassTag[T])
     sz = 0
   }
 
-  def iterator: Iterator[T] =
-    new AbstractIterator[T] {
-      var pos: Int = -1
-      var node: Unrolled[T] = headptr
-      scan()
+  def iterator: Iterator[T] = new AbstractIterator[T] {
+    var pos: Int = -1
+    var node: Unrolled[T] = headptr
+    scan()
 
-      private def scan() {
-        pos += 1
-        while (pos >= node.size) {
-          pos = 0
-          node = node.next
-          if (node eq null) return
-        }
+    private def scan() {
+      pos += 1
+      while (pos >= node.size) {
+        pos = 0
+        node = node.next
+        if (node eq null) return
       }
-      def hasNext = node ne null
-      def next =
-        if (hasNext) {
-          val r = node.array(pos)
-          scan()
-          r
-        } else Iterator.empty.next()
     }
+    def hasNext = node ne null
+    def next = if (hasNext) {
+      val r = node.array(pos)
+      scan()
+      r
+    } else Iterator.empty.next()
+  }
 
   // this should be faster than the iterator
   override def foreach[U](f: T => U) = headptr.foreach(f)
@@ -232,15 +230,14 @@ object UnrolledBuffer extends ClassTagTraversableFactory[UnrolledBuffer] {
       if (buff eq null) unrolledlength else buff.calcNextLength(array.length)
 
     // adds and returns itself or the new unrolled if full
-    @tailrec final def append(elem: T): Unrolled[T] =
-      if (size < array.length) {
-        array(size) = elem
-        size += 1
-        this
-      } else {
-        next = new Unrolled[T](0, new Array[T](nextlength), null, buff)
-        next append elem
-      }
+    @tailrec final def append(elem: T): Unrolled[T] = if (size < array.length) {
+      array(size) = elem
+      size += 1
+      this
+    } else {
+      next = new Unrolled[T](0, new Array[T](nextlength), null, buff)
+      next append elem
+    }
     def foreach[U](f: T => U) {
       var unrolled = this
       var i = 0
@@ -262,22 +259,21 @@ object UnrolledBuffer extends ClassTagTraversableFactory[UnrolledBuffer] {
       if (idx < size) array(idx) = newelem else next.update(idx - size, newelem)
     @tailrec final def locate(idx: Int): Unrolled[T] =
       if (idx < size) this else next.locate(idx - size)
-    def prepend(elem: T) =
-      if (size < array.length) {
-        // shift the elements of the array right
-        // then insert the element
-        shiftright()
-        array(0) = elem
-        size += 1
-        this
-      } else {
-        // allocate a new node and store element
-        // then make it point to this
-        val newhead = new Unrolled[T](buff)
-        newhead append elem
-        newhead.next = this
-        newhead
-      }
+    def prepend(elem: T) = if (size < array.length) {
+      // shift the elements of the array right
+      // then insert the element
+      shiftright()
+      array(0) = elem
+      size += 1
+      this
+    } else {
+      // allocate a new node and store element
+      // then make it point to this
+      val newhead = new Unrolled[T](buff)
+      newhead append elem
+      newhead.next = this
+      newhead
+    }
     // shifts right assuming enough space
     private def shiftright() {
       var i = size - 1
@@ -364,15 +360,14 @@ object UnrolledBuffer extends ClassTagTraversableFactory[UnrolledBuffer] {
       tryMergeWithNext()
     }
 
-    override def toString =
-      array
-        .take(size)
-        .mkString(
-          "Unrolled@%08x".format(
-            System.identityHashCode(
-              this)) + "[" + size + "/" + array.length + "](",
-          ", ",
-          ")") + " -> " + (if (next ne null) next.toString else "")
+    override def toString = array
+      .take(size)
+      .mkString(
+        "Unrolled@%08x".format(
+          System.identityHashCode(
+            this)) + "[" + size + "/" + array.length + "](",
+        ", ",
+        ")") + " -> " + (if (next ne null) next.toString else "")
   }
 
 }

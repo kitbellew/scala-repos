@@ -94,8 +94,8 @@ class AddBenchmarks {
   }
 
   @Benchmark
-  def addComplexesGeneric(state: ComplexState): Complex[Double] =
-    addGeneric(state.values)
+  def addComplexesGeneric(state: ComplexState): Complex[Double] = addGeneric(
+    state.values)
 
   @Benchmark
   def addFastComplexes(state: FastComplexState): Long = {

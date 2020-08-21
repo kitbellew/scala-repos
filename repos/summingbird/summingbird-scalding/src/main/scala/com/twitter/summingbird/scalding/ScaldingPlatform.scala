@@ -77,20 +77,19 @@ object Scalding {
           InclusiveLower(Timestamp(l.timestamp)),
           ExclusiveUpper(Timestamp(u.timestamp + 1L)))
       }
-      override def invert(in: Interval[Timestamp]) =
-        in match {
-          case Intersection(lb, ub) =>
-            val low = lb match {
-              case InclusiveLower(l) => l
-              case ExclusiveLower(l) => l.next
-            }
-            val high = ub match {
-              case InclusiveUpper(u) => u
-              case ExclusiveUpper(u) => u.prev
-            }
-            Success(DateRange(low.toRichDate, high.toRichDate))
-          case _ => Failure(new RuntimeException("Unbounded interval!"))
-        }
+      override def invert(in: Interval[Timestamp]) = in match {
+        case Intersection(lb, ub) =>
+          val low = lb match {
+            case InclusiveLower(l) => l
+            case ExclusiveLower(l) => l.next
+          }
+          val high = ub match {
+            case InclusiveUpper(u) => u
+            case ExclusiveUpper(u) => u.prev
+          }
+          Success(DateRange(low.toRichDate, high.toRichDate))
+        case _ => Failure(new RuntimeException("Unbounded interval!"))
+      }
     }
 
   def emptyFlowProducer[T]: FlowProducer[TypedPipe[T]] =
@@ -160,10 +159,9 @@ object Scalding {
 
   private def bisectingMinify(mode: Mode, desired: DateRange)(
       factory: (DateRange) => SSource): Option[DateRange] = {
-    def isGood(end: Long): Boolean =
-      STry(
-        factory(DateRange(desired.start, RichDate(end))).validateTaps(
-          mode)).isSuccess
+    def isGood(end: Long): Boolean = STry(
+      factory(DateRange(desired.start, RichDate(end))).validateTaps(
+        mode)).isSuccess
     val DateRange(start, end) = desired
     if (isGood(start.timestamp)) {
       // The invariant is that low isGood, low < upper, and upper isGood == false

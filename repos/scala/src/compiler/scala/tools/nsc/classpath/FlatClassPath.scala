@@ -34,9 +34,8 @@ trait FlatClassPath extends ClassFileLookup[AbstractFile] {
     val foundClassFromClassFiles = classes(pkg)
       .find(_.name == simpleClassName)
 
-    def findClassInSources =
-      sources(pkg)
-        .find(_.name == simpleClassName)
+    def findClassInSources = sources(pkg)
+      .find(_.name == simpleClassName)
 
     foundClassFromClassFiles orElse findClassInSources
   }

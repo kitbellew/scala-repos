@@ -188,52 +188,48 @@ class BinaryFieldTestRecord
 
   object mandatoryBinaryField extends BinaryField(this) {
     // compare the elements of the Array
-    override def equals(other: Any): Boolean =
-      other match {
-        case that: BinaryField[_] =>
-          this.value.zip(that.value).filter(t => t._1 != t._2).length == 0
-        case _ => false
-      }
+    override def equals(other: Any): Boolean = other match {
+      case that: BinaryField[_] =>
+        this.value.zip(that.value).filter(t => t._1 != t._2).length == 0
+      case _ => false
+    }
   }
   object legacyOptionalBinaryField extends BinaryField(this) {
     override def optional_? = true
     // compare the elements of the Array
-    override def equals(other: Any): Boolean =
-      other match {
-        case that: BinaryField[_] =>
-          (this.valueBox, that.valueBox) match {
-            case (Empty, Empty) => true
-            case (Full(a), Full(b)) =>
-              a.zip(b).filter(t => t._1 != t._2).length == 0
-            case _ => false
-          }
-        case _ => false
-      }
+    override def equals(other: Any): Boolean = other match {
+      case that: BinaryField[_] =>
+        (this.valueBox, that.valueBox) match {
+          case (Empty, Empty) => true
+          case (Full(a), Full(b)) =>
+            a.zip(b).filter(t => t._1 != t._2).length == 0
+          case _ => false
+        }
+      case _ => false
+    }
   }
   object optionalBinaryField extends OptionalBinaryField(this) {
     // compare the elements of the Array
-    override def equals(other: Any): Boolean =
-      other match {
-        case that: OptionalBinaryField[_] =>
-          (this.valueBox, that.valueBox) match {
-            case (Empty, Empty) => true
-            case (Full(a), Full(b)) =>
-              a.zip(b).filter(t => t._1 != t._2).length == 0
-            case _ => false
-          }
-        case _ => false
-      }
-  }
-
-  override def equals(other: Any): Boolean =
-    other match {
-      case that: BinaryFieldTestRecord =>
-        this.id.value == that.id.value &&
-          this.mandatoryBinaryField == that.mandatoryBinaryField &&
-          this.legacyOptionalBinaryField == that.legacyOptionalBinaryField &&
-          this.optionalBinaryField == that.optionalBinaryField
+    override def equals(other: Any): Boolean = other match {
+      case that: OptionalBinaryField[_] =>
+        (this.valueBox, that.valueBox) match {
+          case (Empty, Empty) => true
+          case (Full(a), Full(b)) =>
+            a.zip(b).filter(t => t._1 != t._2).length == 0
+          case _ => false
+        }
       case _ => false
     }
+  }
+
+  override def equals(other: Any): Boolean = other match {
+    case that: BinaryFieldTestRecord =>
+      this.id.value == that.id.value &&
+        this.mandatoryBinaryField == that.mandatoryBinaryField &&
+        this.legacyOptionalBinaryField == that.legacyOptionalBinaryField &&
+        this.optionalBinaryField == that.optionalBinaryField
+    case _ => false
+  }
 }
 object BinaryFieldTestRecord
     extends BinaryFieldTestRecord

@@ -72,12 +72,11 @@ class StubVFSMetadata[M[+_]](
     }
 
   private def getPathMeta(
-      path: Path): EitherT[M, ResourceError, Map[ColumnRef, Long]] =
-    EitherT {
-      M.point(
-        projectionMetadata.get(path) \/> NotFound(
-          "No metadata found for path %s".format(path.path)))
-    }
+      path: Path): EitherT[M, ResourceError, Map[ColumnRef, Long]] = EitherT {
+    M.point(
+      projectionMetadata.get(path) \/> NotFound(
+        "No metadata found for path %s".format(path.path)))
+  }
 
   def pathStructure(
       apiKey: APIKey,

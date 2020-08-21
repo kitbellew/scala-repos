@@ -123,23 +123,22 @@ object Msgs extends DispatchSnippet {
         args: (
             List[(NodeSeq, Box[String])],
             NoticeType.Value,
-            SessionVar[Box[AjaxMessageMeta]])): NodeSeq =
-      args match {
-        case (messages, noticeType, ajaxStorage) =>
-          // get current settings
-          val title = ajaxStorage.get.map(_.title) openOr Text("")
-          val styles = ajaxStorage.get.flatMap(_.cssClasses)
+            SessionVar[Box[AjaxMessageMeta]])): NodeSeq = args match {
+      case (messages, noticeType, ajaxStorage) =>
+        // get current settings
+        val title = ajaxStorage.get.map(_.title) openOr Text("")
+        val styles = ajaxStorage.get.flatMap(_.cssClasses)
 
-          // Compute the resulting div
-          f(messages).toList.map(e => (<li>{e}</li>)) match {
-            case Nil => Nil
-            case msgList => {
-              val ret = <div id={noticeType.id}>{title}<ul>{msgList}</ul></div>
-              styles.foldLeft(ret)((xml, style) =>
-                xml % new UnprefixedAttribute("class", Text(style), Null))
-            }
+        // Compute the resulting div
+        f(messages).toList.map(e => (<li>{e}</li>)) match {
+          case Nil => Nil
+          case msgList => {
+            val ret = <div id={noticeType.id}>{title}<ul>{msgList}</ul></div>
+            styles.foldLeft(ret)((xml, style) =>
+              xml % new UnprefixedAttribute("class", Text(style), Null))
           }
-      }
+        }
+    }
 
     // Render all three types together
     List(

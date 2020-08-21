@@ -136,11 +136,10 @@ trait MarathonConf
     default = None
   )
 
-  def expectedResourceRoles: Set[String] =
-    mesosRole.get match {
-      case Some(role) => Set(role, "*")
-      case None       => Set("*")
-    }
+  def expectedResourceRoles: Set[String] = mesosRole.get match {
+    case Some(role) => Set(role, "*")
+    case None       => Set("*")
+  }
 
   lazy val defaultAcceptedResourceRolesSet =
     defaultAcceptedResourceRoles.get.getOrElse(expectedResourceRoles)

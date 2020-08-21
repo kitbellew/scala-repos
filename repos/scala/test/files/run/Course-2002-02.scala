@@ -16,17 +16,14 @@ object M0 {
 object M1 {
   def cube(x: Int): Double = x * x * x
 
-  def sumInts(a: Int, b: Int): Double =
-    if (a > b) 0
-    else a + sumInts(a + 1, b);
+  def sumInts(a: Int, b: Int): Double = if (a > b) 0
+  else a + sumInts(a + 1, b);
 
-  def sumCubes(a: Int, b: Int): Double =
-    if (a > b) 0
-    else cube(a) + sumCubes(a + 1, b);
+  def sumCubes(a: Int, b: Int): Double = if (a > b) 0
+  else cube(a) + sumCubes(a + 1, b);
 
-  def sumReciprocals(a: Int, b: Int): Double =
-    if (a > b) 0
-    else 1.0 / a + sumReciprocals(a + 1, b);
+  def sumReciprocals(a: Int, b: Int): Double = if (a > b) 0
+  else 1.0 / a + sumReciprocals(a + 1, b);
 
   def sumPi(n: Int): Double = {
     def element(x: Int): Double = 4.0 / (4 * x + 1) - 4.0 / (4 * x - 1);

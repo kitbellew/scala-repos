@@ -245,8 +245,8 @@ class RFormulaModel private[feature] (
     }
   }
 
-  override def copy(extra: ParamMap): RFormulaModel =
-    copyValues(new RFormulaModel(uid, resolvedFormula, pipelineModel))
+  override def copy(extra: ParamMap): RFormulaModel = copyValues(
+    new RFormulaModel(uid, resolvedFormula, pipelineModel))
 
   override def toString: String =
     s"RFormulaModel(${resolvedFormula}) (uid=$uid)"
@@ -472,8 +472,8 @@ private class VectorAttributeRewriter(
         schema.fields.filter(_.name == vectorCol))
   }
 
-  override def copy(extra: ParamMap): VectorAttributeRewriter =
-    defaultCopy(extra)
+  override def copy(extra: ParamMap): VectorAttributeRewriter = defaultCopy(
+    extra)
 
   override def write: MLWriter =
     new VectorAttributeRewriter.VectorAttributeRewriterWriter(this)

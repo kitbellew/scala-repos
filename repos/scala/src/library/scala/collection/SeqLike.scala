@@ -701,13 +701,12 @@ trait SeqLike[+A, +Repr]
     */
   def indices: Range = 0 until length
 
-  override def view =
-    new SeqView[A, Repr] {
-      protected lazy val underlying = self.repr
-      override def iterator = self.iterator
-      override def length = self.length
-      override def apply(idx: Int) = self.apply(idx)
-    }
+  override def view = new SeqView[A, Repr] {
+    protected lazy val underlying = self.repr
+    override def iterator = self.iterator
+    override def length = self.length
+    override def apply(idx: Int) = self.apply(idx)
+  }
 
   override def view(from: Int, until: Int) = view.slice(from, until)
 
@@ -734,39 +733,37 @@ object SeqLike {
       W: Seq[B],
       n0: Int,
       n1: Int,
-      forward: Boolean) =
-    W match {
-      case iso: IndexedSeq[_] =>
-        // Already optimized for indexing--use original (or custom view of original)
-        if (forward && n0 == 0 && n1 == W.length)
-          iso.asInstanceOf[IndexedSeq[B]]
-        else if (forward) new AbstractSeq[B] with IndexedSeq[B] {
-          val length = n1 - n0
-          def apply(x: Int) = iso(n0 + x).asInstanceOf[B]
-        }
-        else
-          new AbstractSeq[B] with IndexedSeq[B] {
-            def length = n1 - n0
-            def apply(x: Int) = iso(n1 - 1 - x).asInstanceOf[B]
-          }
-      case _ =>
-        // W is probably bad at indexing.  Pack in array (in correct orientation)
-        // Would be marginally faster to special-case each direction
+      forward: Boolean) = W match {
+    case iso: IndexedSeq[_] =>
+      // Already optimized for indexing--use original (or custom view of original)
+      if (forward && n0 == 0 && n1 == W.length) iso.asInstanceOf[IndexedSeq[B]]
+      else if (forward) new AbstractSeq[B] with IndexedSeq[B] {
+        val length = n1 - n0
+        def apply(x: Int) = iso(n0 + x).asInstanceOf[B]
+      }
+      else
         new AbstractSeq[B] with IndexedSeq[B] {
-          private[this] val Warr = new Array[AnyRef](n1 - n0)
-          private[this] val delta = if (forward) 1 else -1
-          private[this] val done = if (forward) n1 - n0 else -1
-          val wit = W.iterator.drop(n0)
-          var i = if (forward) 0 else (n1 - n0 - 1)
-          while (i != done) {
-            Warr(i) = wit.next().asInstanceOf[AnyRef]
-            i += delta
-          }
-
-          val length = n1 - n0
-          def apply(x: Int) = Warr(x).asInstanceOf[B]
+          def length = n1 - n0
+          def apply(x: Int) = iso(n1 - 1 - x).asInstanceOf[B]
         }
-    }
+    case _ =>
+      // W is probably bad at indexing.  Pack in array (in correct orientation)
+      // Would be marginally faster to special-case each direction
+      new AbstractSeq[B] with IndexedSeq[B] {
+        private[this] val Warr = new Array[AnyRef](n1 - n0)
+        private[this] val delta = if (forward) 1 else -1
+        private[this] val done = if (forward) n1 - n0 else -1
+        val wit = W.iterator.drop(n0)
+        var i = if (forward) 0 else (n1 - n0 - 1)
+        while (i != done) {
+          Warr(i) = wit.next().asInstanceOf[AnyRef]
+          i += delta
+        }
+
+        val length = n1 - n0
+        def apply(x: Int) = Warr(x).asInstanceOf[B]
+      }
+  }
 
   /** Make a jump table for KMP search.
     *

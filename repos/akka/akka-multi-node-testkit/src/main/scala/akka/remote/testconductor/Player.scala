@@ -41,15 +41,14 @@ import akka.dispatch.{UnboundedMessageQueueSemantics, RequiresMessageQueue}
 trait Player { this: TestConductorExt ⇒
 
   private var _client: ActorRef = _
-  private def client =
-    _client match {
-      case null ⇒
-        throw new IllegalStateException("TestConductor client not yet started")
-      case _ if system.whenTerminated.isCompleted ⇒
-        throw new IllegalStateException(
-          "TestConductor unavailable because system is terminated; you need to startNewSystem() before this point")
-      case x ⇒ x
-    }
+  private def client = _client match {
+    case null ⇒
+      throw new IllegalStateException("TestConductor client not yet started")
+    case _ if system.whenTerminated.isCompleted ⇒
+      throw new IllegalStateException(
+        "TestConductor unavailable because system is terminated; you need to startNewSystem() before this point")
+    case x ⇒ x
+  }
 
   /**
     * Connect to the conductor on the given port (the host is taken from setting

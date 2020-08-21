@@ -28,46 +28,41 @@ class StackTraceTest extends Expecting {
   def sampler: String = sample
 
   // repackage with message
-  def resample: String =
-    try { sample }
-    catch { case e: Throwable => throw new RuntimeException("resample", e) }
+  def resample: String = try { sample }
+  catch { case e: Throwable => throw new RuntimeException("resample", e) }
   def resampler: String = resample
 
   // simple wrapper
-  def wrapper: String =
-    try { sample }
-    catch { case e: Throwable => throw new RuntimeException(e) }
+  def wrapper: String = try { sample }
+  catch { case e: Throwable => throw new RuntimeException(e) }
   // another onion skin
-  def rewrapper: String =
-    try { wrapper }
-    catch { case e: Throwable => throw new RuntimeException(e) }
+  def rewrapper: String = try { wrapper }
+  catch { case e: Throwable => throw new RuntimeException(e) }
   def rewrapperer: String = rewrapper
 
   // only an insane wretch would do this
-  def insane: String =
-    try { sample }
-    catch {
-      case e: Throwable =>
-        val t = new RuntimeException(e)
-        e initCause t
-        throw t
-    }
+  def insane: String = try { sample }
+  catch {
+    case e: Throwable =>
+      val t = new RuntimeException(e)
+      e initCause t
+      throw t
+  }
   def insaner: String = insane
 
   /** Java 7 */
   val suppressable = isJavaAtLeast("1.7")
   type Suppressing = { def addSuppressed(t: Throwable): Unit }
 
-  def repressed: String =
-    try { sample }
-    catch {
-      case e: Throwable =>
-        val t = new RuntimeException("My problem")
-        if (suppressable) {
-          t.asInstanceOf[Suppressing] addSuppressed e
-        }
-        throw t
-    }
+  def repressed: String = try { sample }
+  catch {
+    case e: Throwable =>
+      val t = new RuntimeException("My problem")
+      if (suppressable) {
+        t.asInstanceOf[Suppressing] addSuppressed e
+      }
+      throw t
+  }
   def represser: String = repressed
 
   // evaluating s should throw, p trims stack trace, t is the test of resulting trace string
@@ -93,8 +88,8 @@ class StackTraceTest extends Expecting {
       assert(res.length > 5)
     }
   }
-  @Test def showsOnlyPrefix() =
-    probe(sample)(_.getMethodName == "sample") { s =>
+  @Test def showsOnlyPrefix() = probe(sample)(_.getMethodName == "sample") {
+    s =>
       val res = s.lines.toList
       /*
     expect {
@@ -102,9 +97,9 @@ class StackTraceTest extends Expecting {
     }
        */
       assert(res.length == 3)
-    }
-  @Test def showsCause() =
-    probe(resampler)(_.getMethodName != "resampler") { s =>
+  }
+  @Test def showsCause() = probe(resampler)(_.getMethodName != "resampler") {
+    s =>
       val res = s.lines.toList
       /*
     expect {
@@ -114,7 +109,7 @@ class StackTraceTest extends Expecting {
        */
       assert(res.length == 6)
       assert(res exists (_ startsWith CausedBy.toString))
-    }
+  }
   @Test def showsWrappedExceptions() =
     probe(rewrapperer)(_.getMethodName != "rewrapperer") { s =>
       val res = s.lines.toList
@@ -133,8 +128,8 @@ class StackTraceTest extends Expecting {
         case s if s startsWith CausedBy.toString => s
       }).size == 2)
     }
-  @Test def dontBlowOnCycle() =
-    probe(insaner)(_.getMethodName != "insaner") { s =>
+  @Test def dontBlowOnCycle() = probe(insaner)(_.getMethodName != "insaner") {
+    s =>
       val res = s.lines.toList
       /*
     expect {
@@ -144,7 +139,7 @@ class StackTraceTest extends Expecting {
        */
       assert(res.length == 7)
       assert(res exists (_ startsWith CausedBy.toString))
-    }
+  }
 
   /** Java 7, but shouldn't bomb on Java 6.
     *

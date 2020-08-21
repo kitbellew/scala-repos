@@ -1076,8 +1076,8 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
       (Opcode.forCode(op.toByte), length, fin, mask)
     }
 
-    def expectProtocolErrorOnNetwork(): Unit =
-      expectCloseCodeOnNetwork(Protocol.CloseCodes.ProtocolError)
+    def expectProtocolErrorOnNetwork(): Unit = expectCloseCodeOnNetwork(
+      Protocol.CloseCodes.ProtocolError)
     def expectCloseCodeOnNetwork(expectedCode: Int): Unit = {
       val (opcode, length, true, mask) = expectFrameHeaderOnNetwork()
       opcode shouldEqual Opcode.Close

@@ -18,11 +18,10 @@
 package org.apache.spark.sql.catalyst.expressions
 
 protected class AttributeEquals(val a: Attribute) {
-  override def hashCode(): Int =
-    a match {
-      case ar: AttributeReference => ar.exprId.hashCode()
-      case a                      => a.hashCode()
-    }
+  override def hashCode(): Int = a match {
+    case ar: AttributeReference => ar.exprId.hashCode()
+    case a                      => a.hashCode()
+  }
 
   override def equals(other: Any): Boolean =
     (a, other.asInstanceOf[AttributeEquals].a) match {
@@ -38,8 +37,8 @@ object AttributeSet {
   val empty = apply(Iterable.empty)
 
   /** Constructs a new [[AttributeSet]] that contains a single [[Attribute]]. */
-  def apply(a: Attribute): AttributeSet =
-    new AttributeSet(Set(new AttributeEquals(a)))
+  def apply(a: Attribute): AttributeSet = new AttributeSet(
+    Set(new AttributeEquals(a)))
 
   /** Constructs a new [[AttributeSet]] given a sequence of [[Expression Expressions]]. */
   def apply(baseSet: Iterable[Expression]): AttributeSet = {
@@ -67,14 +66,13 @@ class AttributeSet private (val baseSet: Set[AttributeEquals])
     with Serializable {
 
   /** Returns true if the members of this AttributeSet and other are the same. */
-  override def equals(other: Any): Boolean =
-    other match {
-      case otherSet: AttributeSet =>
-        otherSet.size == baseSet.size && baseSet
-          .map(_.a)
-          .forall(otherSet.contains)
-      case _ => false
-    }
+  override def equals(other: Any): Boolean = other match {
+    case otherSet: AttributeSet =>
+      otherSet.size == baseSet.size && baseSet
+        .map(_.a)
+        .forall(otherSet.contains)
+    case _ => false
+  }
 
   /** Returns true if this set contains an Attribute with the same expression id as `elem` */
   def contains(elem: NamedExpression): Boolean =
@@ -109,8 +107,8 @@ class AttributeSet private (val baseSet: Set[AttributeEquals])
     * Returns a new [[AttributeSet]] that contains all of the [[Attribute Attributes]] found
     * in `other`.
     */
-  def ++(other: AttributeSet): AttributeSet =
-    new AttributeSet(baseSet ++ other.baseSet)
+  def ++(other: AttributeSet): AttributeSet = new AttributeSet(
+    baseSet ++ other.baseSet)
 
   /**
     * Returns a new [[AttributeSet]] contain only the [[Attribute Attributes]] where `f` evaluates to

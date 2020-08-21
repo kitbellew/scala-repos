@@ -9,18 +9,18 @@ class ValueInt(val x: Int) extends AnyVal with Gen[Int] {
   // Gen<java.lang.Object> ValueInt.extension$plus(int,Gen<java.lang.Object>,Gen<java.lang.Object>)
   def plus(x1: Gen[Int], x2: Gen[Int]): Gen[Int] = new ValueInt(x + x1.x + x2.x)
   // int ValueInt.extension$iplus(int,int,int)
-  def iplus(x1: ValueInt, x2: ValueInt): ValueInt =
-    new ValueInt(x + x1.x + x2.x)
+  def iplus(x1: ValueInt, x2: ValueInt): ValueInt = new ValueInt(
+    x + x1.x + x2.x)
 }
 class RefInt(val x: Int) extends AnyRef with Gen[Int] {
   def plus(x1: Gen[Int], x2: Gen[Int]): Gen[Int] = new RefInt(x + x1.x + x2.x)
   def rplus(x1: RefInt, x2: RefInt): RefInt = new RefInt(x + x1.x + x2.x)
 }
 class RefInteger(val x: java.lang.Integer) extends AnyRef with Gen[Integer] {
-  def plus(x1: Gen[Integer], x2: Gen[Integer]): Gen[Integer] =
-    new RefInteger(x + x1.x + x2.x)
-  def bplus(x1: RefInteger, x2: RefInteger): RefInteger =
-    new RefInteger(x + x1.x + x2.x)
+  def plus(x1: Gen[Integer], x2: Gen[Integer]): Gen[Integer] = new RefInteger(
+    x + x1.x + x2.x)
+  def bplus(x1: RefInteger, x2: RefInteger): RefInteger = new RefInteger(
+    x + x1.x + x2.x)
 }
 
 class Val[Q](val value: Int) extends AnyVal

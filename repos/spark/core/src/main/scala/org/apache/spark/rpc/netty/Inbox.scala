@@ -176,31 +176,29 @@ private[netty] class Inbox(
     }
   }
 
-  def post(message: InboxMessage): Unit =
-    inbox.synchronized {
-      if (stopped) {
-        // We already put "OnStop" into "messages", so we should drop further messages
-        onDrop(message)
-      } else {
-        messages.add(message)
-        false
-      }
+  def post(message: InboxMessage): Unit = inbox.synchronized {
+    if (stopped) {
+      // We already put "OnStop" into "messages", so we should drop further messages
+      onDrop(message)
+    } else {
+      messages.add(message)
+      false
     }
+  }
 
-  def stop(): Unit =
-    inbox.synchronized {
-      // The following codes should be in `synchronized` so that we can make sure "OnStop" is the last
-      // message
-      if (!stopped) {
-        // We should disable concurrent here. Then when RpcEndpoint.onStop is called, it's the only
-        // thread that is processing messages. So `RpcEndpoint.onStop` can release its resources
-        // safely.
-        enableConcurrent = false
-        stopped = true
-        messages.add(OnStop)
-        // Note: The concurrent events in messages will be processed one by one.
-      }
+  def stop(): Unit = inbox.synchronized {
+    // The following codes should be in `synchronized` so that we can make sure "OnStop" is the last
+    // message
+    if (!stopped) {
+      // We should disable concurrent here. Then when RpcEndpoint.onStop is called, it's the only
+      // thread that is processing messages. So `RpcEndpoint.onStop` can release its resources
+      // safely.
+      enableConcurrent = false
+      stopped = true
+      messages.add(OnStop)
+      // Note: The concurrent events in messages will be processed one by one.
     }
+  }
 
   def isEmpty: Boolean = inbox.synchronized { messages.isEmpty }
 

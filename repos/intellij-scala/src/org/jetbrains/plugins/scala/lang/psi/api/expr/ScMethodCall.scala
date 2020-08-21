@@ -20,16 +20,15 @@ trait ScMethodCall extends ScExpression with MethodInvocation {
     }
   }
 
-  def args: ScArgumentExprList =
-    findChildByClassScala(classOf[ScArgumentExprList])
+  def args: ScArgumentExprList = findChildByClassScala(
+    classOf[ScArgumentExprList])
 
   override def accept(visitor: ScalaElementVisitor) {
     visitor.visitMethodCallExpression(this)
   }
 
-  override def isUpdateCall: Boolean =
-    getContext.isInstanceOf[ScAssignStmt] &&
-      getContext.asInstanceOf[ScAssignStmt].getLExpression == this
+  override def isUpdateCall: Boolean = getContext.isInstanceOf[ScAssignStmt] &&
+    getContext.asInstanceOf[ScAssignStmt].getLExpression == this
 
   def updateExpression(): Option[ScExpression] = {
     getContext match {

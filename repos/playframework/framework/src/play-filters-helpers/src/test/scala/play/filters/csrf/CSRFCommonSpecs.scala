@@ -28,9 +28,8 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
     play.api.Play.privateMaybeApplication.get.injector.instanceOf[CSRFAddToken]
   def csrfCheck =
     play.api.Play.privateMaybeApplication.get.injector.instanceOf[CSRFCheck]
-  def crypto =
-    play.api.Play.privateMaybeApplication.get.injector
-      .instanceOf[CSRFTokenSigner]
+  def crypto = play.api.Play.privateMaybeApplication.get.injector
+    .instanceOf[CSRFTokenSigner]
 
   val Boundary = "83ff53821b7c"
   def multiPartFormDataBody(tokenName: String, tokenValue: String) = {
@@ -242,15 +241,13 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
     }
 
     "work with unsigned cookie tokens" in {
-      def csrfCheckRequest =
-        buildCsrfCheckRequest(
-          false,
-          "play.filters.csrf.cookie.name" -> "csrf",
-          "play.filters.csrf.token.sign" -> "false")
-      def csrfAddToken =
-        buildCsrfAddToken(
-          "play.filters.csrf.cookie.name" -> "csrf",
-          "play.filters.csrf.token.sign" -> "false")
+      def csrfCheckRequest = buildCsrfCheckRequest(
+        false,
+        "play.filters.csrf.cookie.name" -> "csrf",
+        "play.filters.csrf.token.sign" -> "false")
+      def csrfAddToken = buildCsrfAddToken(
+        "play.filters.csrf.cookie.name" -> "csrf",
+        "play.filters.csrf.token.sign" -> "false")
       def generate = crypto.generateToken
       def addToken(req: WSRequest, token: String) =
         req.withCookies("csrf" -> token)
@@ -269,15 +266,13 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
     }
 
     "work with secure cookie tokens" in {
-      def csrfCheckRequest =
-        buildCsrfCheckRequest(
-          false,
-          "play.filters.csrf.cookie.name" -> "csrf",
-          "play.filters.csrf.cookie.secure" -> "true")
-      def csrfAddToken =
-        buildCsrfAddToken(
-          "play.filters.csrf.cookie.name" -> "csrf",
-          "play.filters.csrf.cookie.secure" -> "true")
+      def csrfCheckRequest = buildCsrfCheckRequest(
+        false,
+        "play.filters.csrf.cookie.name" -> "csrf",
+        "play.filters.csrf.cookie.secure" -> "true")
+      def csrfAddToken = buildCsrfAddToken(
+        "play.filters.csrf.cookie.name" -> "csrf",
+        "play.filters.csrf.cookie.secure" -> "true")
       def generate = crypto.generateSignedToken
       def addToken(req: WSRequest, token: String) =
         req.withCookies("csrf" -> token)
@@ -324,11 +319,10 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
     }
 
     "allow configuring a header bypass" in {
-      def csrfCheckRequest =
-        buildCsrfCheckRequest(
-          false,
-          "play.filters.csrf.header.bypassHeaders.X-Requested-With" -> "*",
-          "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck")
+      def csrfCheckRequest = buildCsrfCheckRequest(
+        false,
+        "play.filters.csrf.header.bypassHeaders.X-Requested-With" -> "*",
+        "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck")
 
       "accept requests with nocheck header" in {
         csrfCheckRequest(

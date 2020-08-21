@@ -109,18 +109,17 @@ class ScalaLoggingSpec extends Specification with Mockito {
 
         val logger = Logger(this.getClass())
 
-        def index =
-          AccessLoggingAction {
-            try {
-              val result = riskyCalculation
-              Ok(s"Result=$result")
-            } catch {
-              case t: Throwable => {
-                logger.error("Exception with riskyCalculation", t)
-                InternalServerError("Error in calculation: " + t.getMessage())
-              }
+        def index = AccessLoggingAction {
+          try {
+            val result = riskyCalculation
+            Ok(s"Result=$result")
+          } catch {
+            case t: Throwable => {
+              logger.error("Exception with riskyCalculation", t)
+              InternalServerError("Error in calculation: " + t.getMessage())
             }
           }
+        }
       }
       //#logging-pattern-mix
 

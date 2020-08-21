@@ -44,22 +44,18 @@ trait LowPriorityEquiv {
 }
 
 object Equiv extends LowPriorityEquiv {
-  def reference[T <: AnyRef]: Equiv[T] =
-    new Equiv[T] {
-      def equiv(x: T, y: T) = x eq y
-    }
-  def universal[T]: Equiv[T] =
-    new Equiv[T] {
-      def equiv(x: T, y: T) = x == y
-    }
-  def fromComparator[T](cmp: Comparator[T]): Equiv[T] =
-    new Equiv[T] {
-      def equiv(x: T, y: T) = cmp.compare(x, y) == 0
-    }
-  def fromFunction[T](cmp: (T, T) => Boolean): Equiv[T] =
-    new Equiv[T] {
-      def equiv(x: T, y: T) = cmp(x, y)
-    }
+  def reference[T <: AnyRef]: Equiv[T] = new Equiv[T] {
+    def equiv(x: T, y: T) = x eq y
+  }
+  def universal[T]: Equiv[T] = new Equiv[T] {
+    def equiv(x: T, y: T) = x == y
+  }
+  def fromComparator[T](cmp: Comparator[T]): Equiv[T] = new Equiv[T] {
+    def equiv(x: T, y: T) = cmp.compare(x, y) == 0
+  }
+  def fromFunction[T](cmp: (T, T) => Boolean): Equiv[T] = new Equiv[T] {
+    def equiv(x: T, y: T) = cmp(x, y)
+  }
   def by[T, S: Equiv](f: T => S): Equiv[T] =
     fromFunction((x, y) => implicitly[Equiv[S]].equiv(f(x), f(y)))
 

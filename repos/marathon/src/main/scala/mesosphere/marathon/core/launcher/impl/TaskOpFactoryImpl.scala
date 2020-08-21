@@ -89,55 +89,47 @@ class TaskOpFactoryImpl @Inject() (config: MarathonConf, clock: Clock)
      *  - schedule a ReserveAndCreate TaskOp
      */
 
-    def maybeLaunchOnReservation =
-      if (needToLaunch) {
-        val maybeVolumeMatch =
-          PersistentVolumeMatcher.matchVolumes(offer, app, request.reserved)
+    def maybeLaunchOnReservation = if (needToLaunch) {
+      val maybeVolumeMatch =
+        PersistentVolumeMatcher.matchVolumes(offer, app, request.reserved)
 
-        maybeVolumeMatch.flatMap { volumeMatch =>
-          val matchingReservedResourcesWithoutVolumes =
-            ResourceMatcher.matchResources(
-              offer,
-              app,
-              tasks.values,
-              ResourceSelector(
-                config.mesosRole.get.toSet,
-                reserved = true,
-                requiredLabels = TaskLabels.labelsForTask(
-                  request.frameworkId,
-                  volumeMatch.task)
-              )
-            )
-
-          matchingReservedResourcesWithoutVolumes.flatMap {
-            otherResourcesMatch =>
-              launchOnReservation(
-                app,
-                offer,
-                volumeMatch.task,
-                matchingReservedResourcesWithoutVolumes,
-                maybeVolumeMatch)
-          }
-        }
-      } else None
-
-    def maybeReserveAndCreateVolumes =
-      if (needToReserve) {
-        val matchingResourcesForReservation =
+      maybeVolumeMatch.flatMap { volumeMatch =>
+        val matchingReservedResourcesWithoutVolumes =
           ResourceMatcher.matchResources(
             offer,
             app,
             tasks.values,
-            ResourceSelector(acceptedResourceRoles, reserved = false)
+            ResourceSelector(
+              config.mesosRole.get.toSet,
+              reserved = true,
+              requiredLabels =
+                TaskLabels.labelsForTask(request.frameworkId, volumeMatch.task)
+            )
           )
-        matchingResourcesForReservation.map { resourceMatch =>
-          reserveAndCreateVolumes(
-            request.frameworkId,
+
+        matchingReservedResourcesWithoutVolumes.flatMap { otherResourcesMatch =>
+          launchOnReservation(
             app,
             offer,
-            resourceMatch)
+            volumeMatch.task,
+            matchingReservedResourcesWithoutVolumes,
+            maybeVolumeMatch)
         }
-      } else None
+      }
+    } else None
+
+    def maybeReserveAndCreateVolumes = if (needToReserve) {
+      val matchingResourcesForReservation =
+        ResourceMatcher.matchResources(
+          offer,
+          app,
+          tasks.values,
+          ResourceSelector(acceptedResourceRoles, reserved = false)
+        )
+      matchingResourcesForReservation.map { resourceMatch =>
+        reserveAndCreateVolumes(request.frameworkId, app, offer, resourceMatch)
+      }
+    } else None
 
     maybeLaunchOnReservation orElse maybeReserveAndCreateVolumes
   }

@@ -9,11 +9,10 @@ trait CollaboratorComponent extends TemplateComponent { self: Profile =>
       extends Table[Collaborator](tag, "COLLABORATOR")
       with BasicTemplate {
     val collaboratorName = column[String]("COLLABORATOR_NAME")
-    def * =
-      (
-        userName,
-        repositoryName,
-        collaboratorName) <> (Collaborator.tupled, Collaborator.unapply)
+    def * = (
+      userName,
+      repositoryName,
+      collaboratorName) <> (Collaborator.tupled, Collaborator.unapply)
 
     def byPrimaryKey(owner: String, repository: String, collaborator: String) =
       byRepository(

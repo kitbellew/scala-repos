@@ -167,28 +167,26 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
 
       // todo. refactor when fixing SI-5498
       def className: String = {
-        def loop(sym: Symbol): String =
-          sym match {
-            case sym if sym.isTopLevel =>
-              val suffix = if (sym.isModuleClass) "$" else ""
-              sym.fullName + suffix
-            case sym =>
-              val separator = if (sym.owner.isModuleClass) "" else "$"
-              loop(sym.owner) + separator + sym.javaSimpleName.toString
-          }
+        def loop(sym: Symbol): String = sym match {
+          case sym if sym.isTopLevel =>
+            val suffix = if (sym.isModuleClass) "$" else ""
+            sym.fullName + suffix
+          case sym =>
+            val separator = if (sym.owner.isModuleClass) "" else "$"
+            loop(sym.owner) + separator + sym.javaSimpleName.toString
+        }
 
         loop(owner)
       }
 
       def signature: List[List[Fingerprint]] = {
-        def fingerprint(tpe: Type): Fingerprint =
-          tpe.dealiasWiden match {
-            case TypeRef(_, RepeatedParamClass, underlying :: Nil) =>
-              fingerprint(underlying)
-            case ExprClassOf(_) => LiftedTyped
-            case TreeType()     => LiftedUntyped
-            case _              => Other
-          }
+        def fingerprint(tpe: Type): Fingerprint = tpe.dealiasWiden match {
+          case TypeRef(_, RepeatedParamClass, underlying :: Nil) =>
+            fingerprint(underlying)
+          case ExprClassOf(_) => LiftedTyped
+          case TreeType()     => LiftedUntyped
+          case _              => Other
+        }
 
         val transformed = transformTypeTagEvidenceParams(
           macroImplRef,
@@ -296,8 +294,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
         MacroImplBinding.unpickle(pickle)
     }
 
-  def isBlackbox(expandee: Tree): Boolean =
-    isBlackbox(dissectApplied(expandee).core.symbol)
+  def isBlackbox(expandee: Tree): Boolean = isBlackbox(
+    dissectApplied(expandee).core.symbol)
   def isBlackbox(macroDef: Symbol): Boolean = pluginsIsBlackbox(macroDef)
 
   /** Default implementation of `isBlackbox`.
@@ -330,27 +328,26 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
               val implToDef = flatMap2(implParamss, macroDdef.vparamss)(
                 map2(_, _)((_, _))).toMap
               object UnsigmaTypeMap extends TypeMap {
-                def apply(tp: Type): Type =
-                  tp match {
-                    case TypeRef(pre, sym, args) =>
-                      val pre1 = pre match {
-                        case SingleType(
-                              SingleType(SingleType(NoPrefix, c), prefix),
-                              value)
-                            if c == implCtxParam && prefix == MacroContextPrefix && value == ExprValue =>
-                          ThisType(macroDdef.symbol.owner)
-                        case SingleType(SingleType(NoPrefix, implParam), value)
-                            if value == ExprValue =>
-                          implToDef get implParam map (defParam =>
-                            SingleType(NoPrefix, defParam.symbol)) getOrElse pre
-                        case _ =>
-                          pre
-                      }
-                      val args1 = args map mapOver
-                      TypeRef(pre1, sym, args1)
-                    case _ =>
-                      mapOver(tp)
-                  }
+                def apply(tp: Type): Type = tp match {
+                  case TypeRef(pre, sym, args) =>
+                    val pre1 = pre match {
+                      case SingleType(
+                            SingleType(SingleType(NoPrefix, c), prefix),
+                            value)
+                          if c == implCtxParam && prefix == MacroContextPrefix && value == ExprValue =>
+                        ThisType(macroDdef.symbol.owner)
+                      case SingleType(SingleType(NoPrefix, implParam), value)
+                          if value == ExprValue =>
+                        implToDef get implParam map (defParam =>
+                          SingleType(NoPrefix, defParam.symbol)) getOrElse pre
+                      case _ =>
+                        pre
+                    }
+                    val args1 = args map mapOver
+                    TypeRef(pre1, sym, args1)
+                  case _ =>
+                    mapOver(tp)
+                }
               }
 
               UnsigmaTypeMap(tpe)
@@ -432,11 +429,10 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
         .original orElse duplicateAndKeepPositions(expandeeTree)
     } with UnaffiliatedMacroContext {
       val prefix = Expr[Nothing](prefixTree)(TypeTag.Nothing)
-      override def toString =
-        "MacroContext(%s@%s +%d)".format(
-          expandee.symbol.name,
-          expandee.pos,
-          enclosingMacros.length - 1 /* exclude myself */ )
+      override def toString = "MacroContext(%s@%s +%d)".format(
+        expandee.symbol.name,
+        expandee.pos,
+        enclosingMacros.length - 1 /* exclude myself */ )
     }
   }
 
@@ -1039,22 +1035,21 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
     */
   def macroExpandAll(typer: Typer, expandee: Tree): Tree =
     new Transformer {
-      override def transform(tree: Tree) =
-        super.transform(tree match {
-          // todo. expansion should work from the inside out
-          case tree
-              if (delayed contains tree) && calculateUndetparams(
-                tree).isEmpty && !tree.isErroneous =>
-            val context =
-              tree.attachments.get[MacroRuntimeAttachment].get.typerContext
-            delayed -= tree
-            context.implicitsEnabled = typer.context.implicitsEnabled
-            context.enrichmentEnabled = typer.context.enrichmentEnabled
-            context.macrosEnabled = typer.context.macrosEnabled
-            macroExpand(newTyper(context), tree, EXPRmode, WildcardType)
-          case _ =>
-            tree
-        })
+      override def transform(tree: Tree) = super.transform(tree match {
+        // todo. expansion should work from the inside out
+        case tree
+            if (delayed contains tree) && calculateUndetparams(
+              tree).isEmpty && !tree.isErroneous =>
+          val context =
+            tree.attachments.get[MacroRuntimeAttachment].get.typerContext
+          delayed -= tree
+          context.implicitsEnabled = typer.context.implicitsEnabled
+          context.enrichmentEnabled = typer.context.enrichmentEnabled
+          context.macrosEnabled = typer.context.macrosEnabled
+          macroExpand(newTyper(context), tree, EXPRmode, WildcardType)
+        case _ =>
+          tree
+      })
     }.transform(expandee)
 }
 
@@ -1068,13 +1063,12 @@ object MacrosStats {
 class Fingerprint private[Fingerprint] (val value: Int) extends AnyVal {
   def paramPos = { assert(isTag, this); value }
   def isTag = value >= 0
-  override def toString =
-    this match {
-      case Other         => "Other"
-      case LiftedTyped   => "Expr"
-      case LiftedUntyped => "Tree"
-      case _             => s"Tag($value)"
-    }
+  override def toString = this match {
+    case Other         => "Other"
+    case LiftedTyped   => "Expr"
+    case LiftedUntyped => "Tree"
+    case _             => s"Tag($value)"
+  }
 }
 
 object Fingerprint {

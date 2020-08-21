@@ -63,13 +63,11 @@ trait RouterConfig extends Serializable {
     * Is the message handled by the router head actor or the
     * [[#routingLogicController]] actor.
     */
-  def isManagementMessage(msg: Any): Boolean =
-    msg match {
-      case _: AutoReceivedMessage | _: Terminated |
-          _: RouterManagementMesssage ⇒
-        true
-      case _ ⇒ false
-    }
+  def isManagementMessage(msg: Any): Boolean = msg match {
+    case _: AutoReceivedMessage | _: Terminated | _: RouterManagementMesssage ⇒
+      true
+    case _ ⇒ false
+  }
 
   /*
    * Specify that this router should stop itself when all routees have terminated (been removed).
@@ -303,8 +301,8 @@ case object FromConfig extends FromConfig {
       routerDispatcher: String = Dispatchers.DefaultDispatcherId) =
     new FromConfig(resizer, supervisorStrategy, routerDispatcher)
 
-  @inline final def unapply(fc: FromConfig): Option[String] =
-    Some(fc.routerDispatcher)
+  @inline final def unapply(fc: FromConfig): Option[String] = Some(
+    fc.routerDispatcher)
 }
 
 /**

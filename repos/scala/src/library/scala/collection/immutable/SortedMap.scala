@@ -66,8 +66,8 @@ trait SortedMap[A, +B]
     *  @return   A new map with the new binding added to this map
     *  @note     needs to be overridden in subclasses
     */
-  def +[B1 >: B](kv: (A, B1)): SortedMap[A, B1] =
-    throw new AbstractMethodError("SortedMap.+")
+  def +[B1 >: B](kv: (A, B1)): SortedMap[A, B1] = throw new AbstractMethodError(
+    "SortedMap.+")
 
   /** Adds two or more elements to this collection and returns
     *  a new collection.
@@ -90,34 +90,32 @@ trait SortedMap[A, +B]
   override def ++[B1 >: B](xs: GenTraversableOnce[(A, B1)]): SortedMap[A, B1] =
     ((repr: SortedMap[A, B1]) /: xs.seq)(_ + _)
 
-  override def filterKeys(p: A => Boolean): SortedMap[A, B] =
-    new FilteredKeys(p) with SortedMap.Default[A, B] {
-      implicit def ordering: Ordering[A] = self.ordering
-      override def rangeImpl(
-          from: Option[A],
-          until: Option[A]): SortedMap[A, B] =
-        self.rangeImpl(from, until).filterKeys(p)
-      override def iteratorFrom(start: A) =
-        self iteratorFrom start filter { case (k, _) => p(k) }
-      override def keysIteratorFrom(start: A) =
-        self keysIteratorFrom start filter p
-      override def valuesIteratorFrom(start: A) =
-        self iteratorFrom start collect { case (k, v) if p(k) => v }
+  override def filterKeys(p: A => Boolean): SortedMap[A, B] = new FilteredKeys(
+    p) with SortedMap.Default[A, B] {
+    implicit def ordering: Ordering[A] = self.ordering
+    override def rangeImpl(from: Option[A], until: Option[A]): SortedMap[A, B] =
+      self.rangeImpl(from, until).filterKeys(p)
+    override def iteratorFrom(start: A) = self iteratorFrom start filter {
+      case (k, _) => p(k)
     }
+    override def keysIteratorFrom(start: A) =
+      self keysIteratorFrom start filter p
+    override def valuesIteratorFrom(start: A) =
+      self iteratorFrom start collect { case (k, v) if p(k) => v }
+  }
 
-  override def mapValues[C](f: B => C): SortedMap[A, C] =
-    new MappedValues(f) with SortedMap.Default[A, C] {
-      implicit def ordering: Ordering[A] = self.ordering
-      override def rangeImpl(
-          from: Option[A],
-          until: Option[A]): SortedMap[A, C] =
-        self.rangeImpl(from, until).mapValues(f)
-      override def iteratorFrom(start: A) =
-        self iteratorFrom start map { case (k, v) => (k, f(v)) }
-      override def keysIteratorFrom(start: A) = self keysIteratorFrom start
-      override def valuesIteratorFrom(start: A) =
-        self valuesIteratorFrom start map f
+  override def mapValues[C](f: B => C): SortedMap[A, C] = new MappedValues(f)
+    with SortedMap.Default[A, C] {
+    implicit def ordering: Ordering[A] = self.ordering
+    override def rangeImpl(from: Option[A], until: Option[A]): SortedMap[A, C] =
+      self.rangeImpl(from, until).mapValues(f)
+    override def iteratorFrom(start: A) = self iteratorFrom start map {
+      case (k, v) => (k, f(v))
     }
+    override def keysIteratorFrom(start: A) = self keysIteratorFrom start
+    override def valuesIteratorFrom(start: A) =
+      self valuesIteratorFrom start map f
+  }
 
 }
 

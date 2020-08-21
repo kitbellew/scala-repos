@@ -307,14 +307,12 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
 
   test("window function with udaf") {
     val udaf = new UserDefinedAggregateFunction {
-      def inputSchema: StructType =
-        new StructType()
-          .add("a", LongType)
-          .add("b", LongType)
+      def inputSchema: StructType = new StructType()
+        .add("a", LongType)
+        .add("b", LongType)
 
-      def bufferSchema: StructType =
-        new StructType()
-          .add("product", LongType)
+      def bufferSchema: StructType = new StructType()
+        .add("product", LongType)
 
       def dataType: DataType = LongType
 

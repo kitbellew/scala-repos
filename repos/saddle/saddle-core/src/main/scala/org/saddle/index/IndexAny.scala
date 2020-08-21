@@ -43,8 +43,8 @@ class IndexAny[T: ST: ORD](keys: Vec[T]) extends Index[T] {
   // get the key at the position specified
   def raw(idx: Int): T = keys(idx)
 
-  def take(locs: Array[Int]): Index[T] =
-    Index(array.take(keys, locs, IndexImpl.sentinelErr))
+  def take(locs: Array[Int]): Index[T] = Index(
+    array.take(keys, locs, IndexImpl.sentinelErr))
 
   def without(locs: Array[Int]): Index[T] = Index(array.remove(keys, locs))
 

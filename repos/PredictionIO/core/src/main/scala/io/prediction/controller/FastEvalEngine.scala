@@ -75,12 +75,11 @@ object FastEvalEngineWorkflow {
       preparatorParams: (String, Params),
       algorithmParamsList: Seq[(String, Params)],
       servingParams: (String, Params)) {
-    def this(ep: EngineParams) =
-      this(
-        ep.dataSourceParams,
-        ep.preparatorParams,
-        ep.algorithmParamsList,
-        ep.servingParams)
+    def this(ep: EngineParams) = this(
+      ep.dataSourceParams,
+      ep.preparatorParams,
+      ep.algorithmParamsList,
+      ep.servingParams)
   }
 
   def getDataSourceResult[TD, EI, PD, Q, P, A](

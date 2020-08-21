@@ -87,8 +87,8 @@ class AkkaProtocolSpec
   def testHeartbeat = InboundPayload(codec.constructHeartbeat)
   def testPayload = InboundPayload(testMsgPdu)
 
-  def testDisassociate(info: DisassociateInfo) =
-    InboundPayload(codec.constructDisassociate(info))
+  def testDisassociate(info: DisassociateInfo) = InboundPayload(
+    codec.constructDisassociate(info))
   def testAssociate(uid: Int, cookie: Option[String]) =
     InboundPayload(
       codec.constructAssociate(HandshakeInfo(remoteAkkaAddress, uid, cookie)))

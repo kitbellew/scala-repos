@@ -78,8 +78,9 @@ class TypeOperatorTests {
   }
 
   object Foo {
-    implicit def mkFoo: Foo { type T = Int } =
-      new Foo { type T = Int; val t = 23 }
+    implicit def mkFoo: Foo { type T = Int } = new Foo {
+      type T = Int; val t = 23
+    }
   }
 
   trait Foo2[U] {
@@ -88,8 +89,9 @@ class TypeOperatorTests {
   }
 
   object Foo2 {
-    implicit def mkFoo2: Foo2[Char] { type T = Int } =
-      new Foo2[Char] { type T = Int; val t = 23 }
+    implicit def mkFoo2: Foo2[Char] { type T = Int } = new Foo2[Char] {
+      type T = Int; val t = 23
+    }
   }
 
   trait Bar[T] {
@@ -98,10 +100,12 @@ class TypeOperatorTests {
   }
 
   object Bar {
-    implicit def mkBar1: Bar[Boolean] { type U = Int } =
-      new Bar[Boolean] { type U = Int; val tu = Right(23) }
-    implicit def mkBar2: Bar[String] { type U = Double } =
-      new Bar[String] { type U = Double; val tu = Right(13.0) }
+    implicit def mkBar1: Bar[Boolean] { type U = Int } = new Bar[Boolean] {
+      type U = Int; val tu = Right(23)
+    }
+    implicit def mkBar2: Bar[String] { type U = Double } = new Bar[String] {
+      type U = Double; val tu = Right(13.0)
+    }
   }
 
   @Test

@@ -47,14 +47,13 @@ private[spark] class ReliableRDDCheckpointData[T: ClassTag](
     * Return the directory to which this RDD was checkpointed.
     * If the RDD is not checkpointed yet, return None.
     */
-  def getCheckpointDir: Option[String] =
-    RDDCheckpointData.synchronized {
-      if (isCheckpointed) {
-        Some(cpDir.toString)
-      } else {
-        None
-      }
+  def getCheckpointDir: Option[String] = RDDCheckpointData.synchronized {
+    if (isCheckpointed) {
+      Some(cpDir.toString)
+    } else {
+      None
     }
+  }
 
   /**
     * Materialize this RDD and write its content to a reliable DFS.

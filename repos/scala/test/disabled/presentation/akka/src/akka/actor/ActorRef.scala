@@ -181,8 +181,8 @@ trait ActorRef extends ActorRefShared with java.lang.Comparable[ActorRef] {
     * The default is also that all actors that are created and spawned from within this actor
     * is sharing the same dispatcher as its creator.
     */
-  def setDispatcher(dispatcher: MessageDispatcher) =
-    this.dispatcher = dispatcher
+  def setDispatcher(dispatcher: MessageDispatcher) = this.dispatcher =
+    dispatcher
   def getDispatcher(): MessageDispatcher = dispatcher
 
   /**
@@ -242,11 +242,10 @@ trait ActorRef extends ActorRefShared with java.lang.Comparable[ActorRef] {
   /**
     * Is the actor running?
     */
-  def isRunning: Boolean =
-    _status match {
-      case ActorRefInternals.BEING_RESTARTED | ActorRefInternals.RUNNING => true
-      case _                                                             => false
-    }
+  def isRunning: Boolean = _status match {
+    case ActorRefInternals.BEING_RESTARTED | ActorRefInternals.RUNNING => true
+    case _                                                             => false
+  }
 
   /**
     * Is the actor shut down?
@@ -722,15 +721,14 @@ class LocalActorRef private[akka] (
   /**
     * Sets the dispatcher for this actor. Needs to be invoked before the actor is started.
     */
-  def dispatcher_=(md: MessageDispatcher): Unit =
-    guard.withGuard {
-      if (!isBeingRestarted) {
-        if (!isRunning) _dispatcher = md
-        else
-          throw new ActorInitializationException(
-            "Can not swap dispatcher for " + toString + " after it has been started")
-      }
+  def dispatcher_=(md: MessageDispatcher): Unit = guard.withGuard {
+    if (!isBeingRestarted) {
+      if (!isRunning) _dispatcher = md
+      else
+        throw new ActorInitializationException(
+          "Can not swap dispatcher for " + toString + " after it has been started")
     }
+  }
 
   /**
     * Get the dispatcher for this actor.
@@ -740,58 +738,56 @@ class LocalActorRef private[akka] (
   /**
     * Starts up the actor and its message queue.
     */
-  def start(): ActorRef =
-    guard.withGuard {
-      if (isShutdown)
-        throw new ActorStartException(
-          "Can't restart an actor that has been shut down with 'stop' or 'exit'")
-      if (!isRunning) {
-        dispatcher.attach(this)
+  def start(): ActorRef = guard.withGuard {
+    if (isShutdown)
+      throw new ActorStartException(
+        "Can't restart an actor that has been shut down with 'stop' or 'exit'")
+    if (!isRunning) {
+      dispatcher.attach(this)
 
-        _status = ActorRefInternals.RUNNING
+      _status = ActorRefInternals.RUNNING
 
-        // If we are not currently creating this ActorRef instance
-        if ((actorInstance ne null) && (actorInstance.get ne null))
-          initializeActorInstance
+      // If we are not currently creating this ActorRef instance
+      if ((actorInstance ne null) && (actorInstance.get ne null))
+        initializeActorInstance
 
-        if (isClientManaged_?)
-          Actor.remote.registerClientManagedActor(
-            homeAddress.get.getAddress.getHostAddress,
-            homeAddress.get.getPort,
-            uuid)
+      if (isClientManaged_?)
+        Actor.remote.registerClientManagedActor(
+          homeAddress.get.getAddress.getHostAddress,
+          homeAddress.get.getPort,
+          uuid)
 
-        checkReceiveTimeout //Schedule the initial Receive timeout
-      }
-      this
+      checkReceiveTimeout //Schedule the initial Receive timeout
     }
+    this
+  }
 
   /**
     * Shuts down the actor its dispatcher and message queue.
     */
-  def stop() =
-    guard.withGuard {
-      if (isRunning) {
-        receiveTimeout = None
-        cancelReceiveTimeout
-        dispatcher.detach(this)
-        _status = ActorRefInternals.SHUTDOWN
-        try {
-          actor.postStop
-        } finally {
-          currentMessage = null
-          Actor.registry.unregister(this)
-          if (isRemotingEnabled) {
-            if (isClientManaged_?)
-              Actor.remote.unregisterClientManagedActor(
-                homeAddress.get.getAddress.getHostAddress,
-                homeAddress.get.getPort,
-                uuid)
-            Actor.remote.unregister(this)
-          }
-          setActorSelfFields(actorInstance.get, null)
+  def stop() = guard.withGuard {
+    if (isRunning) {
+      receiveTimeout = None
+      cancelReceiveTimeout
+      dispatcher.detach(this)
+      _status = ActorRefInternals.SHUTDOWN
+      try {
+        actor.postStop
+      } finally {
+        currentMessage = null
+        Actor.registry.unregister(this)
+        if (isRemotingEnabled) {
+          if (isClientManaged_?)
+            Actor.remote.unregisterClientManagedActor(
+              homeAddress.get.getAddress.getHostAddress,
+              homeAddress.get.getPort,
+              uuid)
+          Actor.remote.unregister(this)
         }
-      } //else if (isBeingRestarted) throw new ActorKilledException("Actor [" + toString + "] is being restarted.")
-    }
+        setActorSelfFields(actorInstance.get, null)
+      }
+    } //else if (isBeingRestarted) throw new ActorKilledException("Actor [" + toString + "] is being restarted.")
+  }
 
   /**
     * Links an other actor to this actor. Links are unidirectional and means that a the linking actor will
@@ -803,45 +799,42 @@ class LocalActorRef private[akka] (
     * <p/>
     * To be invoked from within the actor itself.
     */
-  def link(actorRef: ActorRef): Unit =
-    guard.withGuard {
-      val actorRefSupervisor = actorRef.supervisor
-      val hasSupervisorAlready = actorRefSupervisor.isDefined
-      if (hasSupervisorAlready && actorRefSupervisor.get.uuid == uuid)
-        return // we already supervise this guy
-      else if (hasSupervisorAlready)
-        throw new IllegalActorStateException(
-          "Actor can only have one supervisor [" + actorRef + "], e.g. link(actor) fails")
-      else {
-        _linkedActors.put(actorRef.uuid, actorRef)
-        actorRef.supervisor = Some(this)
-      }
+  def link(actorRef: ActorRef): Unit = guard.withGuard {
+    val actorRefSupervisor = actorRef.supervisor
+    val hasSupervisorAlready = actorRefSupervisor.isDefined
+    if (hasSupervisorAlready && actorRefSupervisor.get.uuid == uuid)
+      return // we already supervise this guy
+    else if (hasSupervisorAlready)
+      throw new IllegalActorStateException(
+        "Actor can only have one supervisor [" + actorRef + "], e.g. link(actor) fails")
+    else {
+      _linkedActors.put(actorRef.uuid, actorRef)
+      actorRef.supervisor = Some(this)
     }
+  }
 
   /**
     * Unlink the actor.
     * <p/>
     * To be invoked from within the actor itself.
     */
-  def unlink(actorRef: ActorRef) =
-    guard.withGuard {
-      if (_linkedActors.remove(actorRef.uuid) eq null)
-        throw new IllegalActorStateException(
-          "Actor [" + actorRef + "] is not a linked actor, can't unlink")
+  def unlink(actorRef: ActorRef) = guard.withGuard {
+    if (_linkedActors.remove(actorRef.uuid) eq null)
+      throw new IllegalActorStateException(
+        "Actor [" + actorRef + "] is not a linked actor, can't unlink")
 
-      actorRef.supervisor = None
-    }
+    actorRef.supervisor = None
+  }
 
   /**
     * Atomically start and link an actor.
     * <p/>
     * To be invoked from within the actor itself.
     */
-  def startLink(actorRef: ActorRef): Unit =
-    guard.withGuard {
-      link(actorRef)
-      actorRef.start()
-    }
+  def startLink(actorRef: ActorRef): Unit = guard.withGuard {
+    link(actorRef)
+    actorRef.start()
+  }
 
   /**
     * Atomically create (from actor class) and start an actor.
@@ -913,8 +906,8 @@ class LocalActorRef private[akka] (
 
   // ========= AKKA PROTECTED FUNCTIONS =========
 
-  protected[akka] def supervisor_=(sup: Option[ActorRef]): Unit =
-    _supervisor = sup
+  protected[akka] def supervisor_=(sup: Option[ActorRef]): Unit = _supervisor =
+    sup
 
   protected[akka] def postMessageToMailbox(
       message: Any,
@@ -1360,19 +1353,17 @@ private[akka] case class RemoteActorRef private[akka] (
         "Expected a future from remote call to actor " + toString)
   }
 
-  def start: ActorRef =
-    synchronized {
-      _status = ActorRefInternals.RUNNING
-      this
-    }
+  def start: ActorRef = synchronized {
+    _status = ActorRefInternals.RUNNING
+    this
+  }
 
-  def stop: Unit =
-    synchronized {
-      if (_status == ActorRefInternals.RUNNING) {
-        _status = ActorRefInternals.SHUTDOWN
-        postMessageToMailbox(RemoteActorSystemMessage.Stop, None)
-      }
+  def stop: Unit = synchronized {
+    if (_status == ActorRefInternals.RUNNING) {
+      _status = ActorRefInternals.SHUTDOWN
+      postMessageToMailbox(RemoteActorSystemMessage.Stop, None)
     }
+  }
 
   protected[akka] def registerSupervisorAsRemoteActor: Option[Uuid] = None
 
@@ -1416,8 +1407,8 @@ private[akka] case class RemoteActorRef private[akka] (
     unsupported
   protected[akka] def supervisor_=(sup: Option[ActorRef]): Unit = unsupported
   protected[akka] def actorInstance: AtomicReference[Actor] = unsupported
-  private def unsupported =
-    throw new UnsupportedOperationException("Not supported for RemoteActorRef")
+  private def unsupported = throw new UnsupportedOperationException(
+    "Not supported for RemoteActorRef")
 }
 
 /**
@@ -1612,14 +1603,13 @@ trait ScalaActorRef extends ActorRefShared { ref: ActorRef =>
     * <p/>
     * Throws an IllegalStateException if unable to determine what to reply to.
     */
-  def reply(message: Any) =
-    if (!reply_?(message))
-      throw new IllegalActorStateException(
-        "\n\tNo sender in scope, can't reply. " +
-          "\n\tYou have probably: " +
-          "\n\t\t1. Sent a message to an Actor from an instance that is NOT an Actor." +
-          "\n\t\t2. Invoked a method on an TypedActor from an instance NOT an TypedActor." +
-          "\n\tElse you might want to use 'reply_?' which returns Boolean(true) if success and Boolean(false) if no sender in scope")
+  def reply(message: Any) = if (!reply_?(message))
+    throw new IllegalActorStateException(
+      "\n\tNo sender in scope, can't reply. " +
+        "\n\tYou have probably: " +
+        "\n\t\t1. Sent a message to an Actor from an instance that is NOT an Actor." +
+        "\n\t\t2. Invoked a method on an TypedActor from an instance NOT an TypedActor." +
+        "\n\tElse you might want to use 'reply_?' which returns Boolean(true) if success and Boolean(false) if no sender in scope")
 
   /**
     * Use <code>reply_?(..)</code> to reply with a message to the original sender of the message currently

@@ -52,11 +52,10 @@ object Tx {
     *
     * Note: Updates here must also be done at [[com.twitter.concurrent.Txs.newConstTx()]].
     */
-  def const[T](msg: T): Tx[T] =
-    new Tx[T] {
-      def ack() = Future.value(Commit(msg))
-      def nack() {}
-    }
+  def const[T](msg: T): Tx[T] = new Tx[T] {
+    def ack() = Future.value(Commit(msg))
+    def nack() {}
+  }
 
   /**
     * Analog of `Option.apply()` for Java compatibility.
@@ -88,38 +87,37 @@ object Tx {
     val lock = new {}
 
     class Party[U](msg: U) extends Tx[U] {
-      def ack(): Future[Result[U]] =
-        lock.synchronized {
-          state match {
-            case Idle =>
-              val p = new Promise[Result[U]]
-              state = Ackd(
-                this,
-                {
-                  case true  => p.setValue(Commit(msg))
-                  case false => p.setValue(Abort)
-                })
-              p
+      def ack(): Future[Result[U]] = lock.synchronized {
+        state match {
+          case Idle =>
+            val p = new Promise[Result[U]]
+            state = Ackd(
+              this,
+              {
+                case true  => p.setValue(Commit(msg))
+                case false => p.setValue(Abort)
+              })
+            p
 
-            case Ackd(who, confirm) if who ne this =>
-              confirm(true)
-              state = Done
-              Future.value(Commit(msg))
+          case Ackd(who, confirm) if who ne this =>
+            confirm(true)
+            state = Done
+            Future.value(Commit(msg))
 
-            case Nackd(who) if who ne this =>
-              state = Done
-              Future.value(Abort)
+          case Nackd(who) if who ne this =>
+            state = Done
+            Future.value(Abort)
 
-            case Ackd(_, _) =>
-              throw AlreadyAckd
+          case Ackd(_, _) =>
+            throw AlreadyAckd
 
-            case Nackd(_) =>
-              throw AlreadyNackd
+          case Nackd(_) =>
+            throw AlreadyNackd
 
-            case Done =>
-              throw AlreadyDone
-          }
+          case Done =>
+            throw AlreadyDone
         }
+      }
 
       def nack() {
         lock.synchronized {

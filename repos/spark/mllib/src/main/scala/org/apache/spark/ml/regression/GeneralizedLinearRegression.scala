@@ -303,8 +303,8 @@ class GeneralizedLinearRegression @Since("2.0.0") (
   }
 
   @Since("2.0.0")
-  override def copy(extra: ParamMap): GeneralizedLinearRegression =
-    defaultCopy(extra)
+  override def copy(extra: ParamMap): GeneralizedLinearRegression = defaultCopy(
+    extra)
 }
 
 @Since("2.0.0")
@@ -764,11 +764,10 @@ class GeneralizedLinearRegressionModel private[ml] (
     * thrown if `trainingSummary == None`.
     */
   @Since("2.0.0")
-  def summary: GeneralizedLinearRegressionSummary =
-    trainingSummary.getOrElse {
-      throw new SparkException(
-        "No training summary available for this GeneralizedLinearRegressionModel")
-    }
+  def summary: GeneralizedLinearRegressionSummary = trainingSummary.getOrElse {
+    throw new SparkException(
+      "No training summary available for this GeneralizedLinearRegressionModel")
+  }
 
   private[regression] def setSummary(
       summary: GeneralizedLinearRegressionSummary): this.type = {

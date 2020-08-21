@@ -212,8 +212,8 @@ private[parquet] class CatalystRowConverter(
       .toArray
   }
 
-  override def getConverter(fieldIndex: Int): Converter =
-    fieldConverters(fieldIndex)
+  override def getConverter(fieldIndex: Int): Converter = fieldConverters(
+    fieldIndex)
 
   override def end(): Unit = {
     var i = 0
@@ -651,8 +651,8 @@ private[parquet] class CatalystRowConverter(
           })
       )
 
-      override def getConverter(fieldIndex: Int): Converter =
-        converters(fieldIndex)
+      override def getConverter(fieldIndex: Int): Converter = converters(
+        fieldIndex)
 
       override def end(): Unit = {
         currentKeys += currentKey

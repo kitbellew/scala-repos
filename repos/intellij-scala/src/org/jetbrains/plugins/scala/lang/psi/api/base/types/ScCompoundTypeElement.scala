@@ -11,8 +11,8 @@ package types
   */
 
 trait ScCompoundTypeElement extends ScTypeElement {
-  def components: Seq[ScTypeElement] =
-    findChildrenByClassScala(classOf[ScTypeElement]).toSeq
+  def components: Seq[ScTypeElement] = findChildrenByClassScala(
+    classOf[ScTypeElement]).toSeq
   def refinement = findChild(classOf[ScRefinement])
 }
 

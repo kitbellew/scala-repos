@@ -23,15 +23,14 @@ trait ScalaRun {
 }
 class ForkRun(config: ForkOptions) extends ScalaRun {
   @deprecated("Use the `ForkRun(ForkOptions) constructor`", "0.13.0")
-  def this(options: ForkScalaRun) =
-    this(
-      ForkOptions(
-        options.javaHome,
-        options.outputStrategy,
-        options.scalaJars.toSeq,
-        options.workingDirectory,
-        options.runJVMOptions,
-        options.connectInput))
+  def this(options: ForkScalaRun) = this(
+    ForkOptions(
+      options.javaHome,
+      options.outputStrategy,
+      options.scalaJars.toSeq,
+      options.workingDirectory,
+      options.runJVMOptions,
+      options.connectInput))
 
   def run(
       mainClass: String,
@@ -82,9 +81,8 @@ class Run(instance: ScalaInstance, trapExit: Boolean, nativeTmp: File)
       catch {
         case e: java.lang.reflect.InvocationTargetException => throw e.getCause
       }
-    def directExecute() =
-      try { execute(); None }
-      catch { case e: Exception => log.trace(e); Some(e.toString) }
+    def directExecute() = try { execute(); None }
+    catch { case e: Exception => log.trace(e); Some(e.toString) }
 
     if (trapExit) Run.executeTrapExit(execute(), log) else directExecute()
   }

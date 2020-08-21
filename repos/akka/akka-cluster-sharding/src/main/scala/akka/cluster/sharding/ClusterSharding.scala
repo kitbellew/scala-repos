@@ -417,13 +417,12 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
     * The entity type must be registered with the [[#start]] method before it can be used here.
     * Messages to the entity is always sent via the `ShardRegion`.
     */
-  def shardRegion(typeName: String): ActorRef =
-    regions.get(typeName) match {
-      case null ⇒
-        throw new IllegalArgumentException(
-          s"Shard type [$typeName] must be started first")
-      case ref ⇒ ref
-    }
+  def shardRegion(typeName: String): ActorRef = regions.get(typeName) match {
+    case null ⇒
+      throw new IllegalArgumentException(
+        s"Shard type [$typeName] must be started first")
+    case ref ⇒ ref
+  }
 
 }
 

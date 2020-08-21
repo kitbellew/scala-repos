@@ -229,8 +229,8 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
     *
     * The returned [[akka.stream.scaladsl.BidiFlow]] can only be materialized once.
     */
-  def serverLayer()(implicit mat: Materializer): ServerLayer =
-    serverLayer(ServerSettings(system))
+  def serverLayer()(implicit mat: Materializer): ServerLayer = serverLayer(
+    ServerSettings(system))
 
   /**
     * Constructs a [[akka.http.scaladsl.Http.ServerLayer]] stage using the given [[akka.http.scaladsl.settings.ServerSettings]]. The returned [[akka.stream.scaladsl.BidiFlow]] isn't reusable and
@@ -906,13 +906,12 @@ object Http extends ExtensionId[HttpExt] with ExtensionIdProvider {
     def shutdown()(implicit ec: ExecutionContextExecutor): Future[Done] =
       gatewayFuture.flatMap(_.shutdown())
 
-    private[http] def toJava =
-      new akka.http.javadsl.HostConnectionPool {
-        override def setup = HostConnectionPool.this.setup
-        override def shutdown(
-            executor: ExecutionContextExecutor): CompletionStage[Done] =
-          HostConnectionPool.this.shutdown()(executor).toJava
-      }
+    private[http] def toJava = new akka.http.javadsl.HostConnectionPool {
+      override def setup = HostConnectionPool.this.setup
+      override def shutdown(
+          executor: ExecutionContextExecutor): CompletionStage[Done] =
+        HostConnectionPool.this.shutdown()(executor).toJava
+    }
   }
 
   //////////////////// EXTENSION SETUP ///////////////////

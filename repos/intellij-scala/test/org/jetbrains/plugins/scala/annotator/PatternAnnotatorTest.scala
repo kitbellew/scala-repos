@@ -16,11 +16,8 @@ class PatternAnnotatorTest
 
   private def fruitless(exprType: String, patType: String) =
     ScalaBundle.message("fruitless.type.test", exprType, patType)
-  private def incompatible(exprType: String, patType: String) =
-    ScalaBundle.message(
-      "scrutinee.incompatible.pattern.type",
-      exprType,
-      patType)
+  private def incompatible(exprType: String, patType: String) = ScalaBundle
+    .message("scrutinee.incompatible.pattern.type", exprType, patType)
   private def cannotBeUsed(typeText: String) =
     s"type $typeText cannot be used in a type pattern or isInstanceOf test"
   private def patternTypeIncompatible(found: String, required: String) =

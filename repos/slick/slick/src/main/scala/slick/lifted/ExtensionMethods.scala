@@ -326,14 +326,14 @@ trait ExtensionMethodConversions {
   implicit def anyColumnExtensionMethods[B1: BaseTypedType](
       c: Rep[B1]): AnyExtensionMethods = new AnyExtensionMethods(c.toNode)
   implicit def anyOptionColumnExtensionMethods[B1: BaseTypedType](
-      c: Rep[Option[B1]]): AnyExtensionMethods =
-    new AnyExtensionMethods(c.toNode)
+      c: Rep[Option[B1]]): AnyExtensionMethods = new AnyExtensionMethods(
+    c.toNode)
   implicit def anyValueExtensionMethods[B1: BaseTypedType](
-      v: B1): AnyExtensionMethods =
-    new AnyExtensionMethods(LiteralNode(implicitly[TypedType[B1]], v))
+      v: B1): AnyExtensionMethods = new AnyExtensionMethods(
+    LiteralNode(implicitly[TypedType[B1]], v))
   implicit def anyOptionValueExtensionMethods[B1: BaseTypedType](
-      v: Option[B1]): AnyExtensionMethods =
-    new AnyExtensionMethods(LiteralNode(implicitly[TypedType[Option[B1]]], v))
+      v: Option[B1]): AnyExtensionMethods = new AnyExtensionMethods(
+    LiteralNode(implicitly[TypedType[Option[B1]]], v))
   implicit def singleColumnQueryExtensionMethods[B1: BaseTypedType, C[_]](
       q: Query[Rep[B1], _, C]): SingleColumnQueryExtensionMethods[B1, B1, C] =
     new SingleColumnQueryExtensionMethods[B1, B1, C](q)

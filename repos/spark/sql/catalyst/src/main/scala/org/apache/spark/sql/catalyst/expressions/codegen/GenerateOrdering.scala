@@ -173,11 +173,10 @@ class LazilyGeneratedOrdering(val ordering: Seq[SortOrder])
     generatedOrdering.compare(a, b)
   }
 
-  private def readObject(in: ObjectInputStream): Unit =
-    Utils.tryOrIOException {
-      in.defaultReadObject()
-      generatedOrdering = GenerateOrdering.generate(ordering)
-    }
+  private def readObject(in: ObjectInputStream): Unit = Utils.tryOrIOException {
+    in.defaultReadObject()
+    generatedOrdering = GenerateOrdering.generate(ordering)
+  }
 }
 
 object LazilyGeneratedOrdering {

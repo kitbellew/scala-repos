@@ -53,51 +53,49 @@ case class ScCompoundType(
     else componentsDepth
   }
 
-  override def removeAbstracts =
-    ScCompoundType(
-      components.map(_.removeAbstracts),
-      signatureMap.map { case (s: Signature, tp: ScType) =>
-        def updateTypeParam(tp: TypeParameter): TypeParameter = {
-          new TypeParameter(
-            tp.name,
-            tp.typeParams.map(updateTypeParam),
-            () => tp.lowerType().removeAbstracts,
-            () => tp.upperType().removeAbstracts,
-            tp.ptp)
-        }
-
-        val pTypes: List[Seq[() => ScType]] =
-          s.substitutedTypes.map(_.map(f => () => f().removeAbstracts))
-        val tParams: Array[TypeParameter] =
-          if (s.typeParams.length == 0) TypeParameter.EMPTY_ARRAY
-          else s.typeParams.map(updateTypeParam)
-        val rt: ScType = tp.removeAbstracts
-        (
-          new Signature(
-            s.name,
-            pTypes,
-            s.paramLength,
-            tParams,
-            ScSubstitutor.empty,
-            s.namedElement match {
-              case fun: ScFunction =>
-                ScFunction.getCompoundCopy(
-                  pTypes.map(_.map(_()).toList),
-                  tParams.toList,
-                  rt,
-                  fun)
-              case b: ScBindingPattern =>
-                ScBindingPattern.getCompoundCopy(rt, b)
-              case f: ScFieldId => ScFieldId.getCompoundCopy(rt, f)
-              case named        => named
-            },
-            s.hasRepeatedParam),
-          rt)
-      },
-      typesMap.map { case (s: String, sign) =>
-        (s, sign.updateTypes(_.removeAbstracts))
+  override def removeAbstracts = ScCompoundType(
+    components.map(_.removeAbstracts),
+    signatureMap.map { case (s: Signature, tp: ScType) =>
+      def updateTypeParam(tp: TypeParameter): TypeParameter = {
+        new TypeParameter(
+          tp.name,
+          tp.typeParams.map(updateTypeParam),
+          () => tp.lowerType().removeAbstracts,
+          () => tp.upperType().removeAbstracts,
+          tp.ptp)
       }
-    )
+
+      val pTypes: List[Seq[() => ScType]] =
+        s.substitutedTypes.map(_.map(f => () => f().removeAbstracts))
+      val tParams: Array[TypeParameter] =
+        if (s.typeParams.length == 0) TypeParameter.EMPTY_ARRAY
+        else s.typeParams.map(updateTypeParam)
+      val rt: ScType = tp.removeAbstracts
+      (
+        new Signature(
+          s.name,
+          pTypes,
+          s.paramLength,
+          tParams,
+          ScSubstitutor.empty,
+          s.namedElement match {
+            case fun: ScFunction =>
+              ScFunction.getCompoundCopy(
+                pTypes.map(_.map(_()).toList),
+                tParams.toList,
+                rt,
+                fun)
+            case b: ScBindingPattern => ScBindingPattern.getCompoundCopy(rt, b)
+            case f: ScFieldId        => ScFieldId.getCompoundCopy(rt, f)
+            case named               => named
+          },
+          s.hasRepeatedParam),
+        rt)
+    },
+    typesMap.map { case (s: String, sign) =>
+      (s, sign.updateTypes(_.removeAbstracts))
+    }
+  )
 
   import scala.collection.immutable.{HashSet => IHashSet}
 
@@ -309,12 +307,11 @@ object ScCompoundType {
       subst: ScSubstitutor): ScCompoundType = {
     val signatureMapVal: mutable.HashMap[Signature, ScType] =
       new mutable.HashMap[Signature, ScType] {
-        override def elemHashCode(s: Signature) =
-          s.name.hashCode * 31 + {
-            val length = s.paramLength
-            if (length.sum == 0) List(0).hashCode()
-            else length.hashCode()
-          }
+        override def elemHashCode(s: Signature) = s.name.hashCode * 31 + {
+          val length = s.paramLength
+          if (length.sum == 0) List(0).hashCode()
+          else length.hashCode()
+        }
       }
     val typesVal = new mutable.HashMap[String, TypeAliasSignature]
 

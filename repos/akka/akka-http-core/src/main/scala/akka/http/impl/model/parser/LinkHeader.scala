@@ -14,76 +14,67 @@ private[parser] trait LinkHeader {
   import CharacterClasses._
 
   // http://tools.ietf.org/html/rfc5988#section-5
-  def `link` =
-    rule {
-      zeroOrMore(`link-value`).separatedBy(listSep) ~ EOI ~> (Link(_))
-    }
+  def `link` = rule {
+    zeroOrMore(`link-value`).separatedBy(listSep) ~ EOI ~> (Link(_))
+  }
 
-  def `link-value` =
-    rule {
-      ws('<') ~ UriReference('>') ~ ws('>') ~ oneOrMore(
-        ws(';') ~ `link-param`) ~> (sanitize(_)) ~> (LinkValue(_, _: _*))
-    }
+  def `link-value` = rule {
+    ws('<') ~ UriReference('>') ~ ws('>') ~ oneOrMore(
+      ws(';') ~ `link-param`) ~> (sanitize(_)) ~> (LinkValue(_, _: _*))
+  }
 
-  def `link-param` =
-    rule(
-      ws("rel") ~ ws('=') ~ `relation-types` ~> LinkParams.rel
-        | ws("anchor") ~ ws('=') ~ ws('"') ~ UriReference('"') ~ ws(
-          '"') ~> LinkParams.anchor
-        | ws("rev") ~ ws('=') ~ `relation-types` ~> LinkParams.rev
-        | ws("hreflang") ~ ws('=') ~ language ~> LinkParams.hreflang
-        | ws("media") ~ ws('=') ~ word ~> LinkParams.media
-        | ws("title") ~ ws('=') ~ word ~> LinkParams.title
-        | ws("title*") ~ ws(
-          '=') ~ word ~> LinkParams.`title*` // support full `ext-value` notation from http://tools.ietf.org/html/rfc5987#section-3.2.1
-        | ws("type") ~ ws('=') ~ (ws('"') ~ `link-media-type` ~ ws(
-          '"') | `link-media-type`) ~> LinkParams.`type`)
+  def `link-param` = rule(
+    ws("rel") ~ ws('=') ~ `relation-types` ~> LinkParams.rel
+      | ws("anchor") ~ ws('=') ~ ws('"') ~ UriReference('"') ~ ws(
+        '"') ~> LinkParams.anchor
+      | ws("rev") ~ ws('=') ~ `relation-types` ~> LinkParams.rev
+      | ws("hreflang") ~ ws('=') ~ language ~> LinkParams.hreflang
+      | ws("media") ~ ws('=') ~ word ~> LinkParams.media
+      | ws("title") ~ ws('=') ~ word ~> LinkParams.title
+      | ws("title*") ~ ws(
+        '=') ~ word ~> LinkParams.`title*` // support full `ext-value` notation from http://tools.ietf.org/html/rfc5987#section-3.2.1
+      | ws("type") ~ ws('=') ~ (ws('"') ~ `link-media-type` ~ ws(
+        '"') | `link-media-type`) ~> LinkParams.`type`)
   // TODO: support `link-extension`
 
-  def `relation-types` =
-    rule(
-      ws('"') ~ oneOrMore(`relation-type`).separatedBy(
-        oneOrMore(SP)) ~> (_.mkString(" ")) ~ ws('"')
-        | `relation-type` ~ OWS)
+  def `relation-types` = rule(
+    ws('"') ~ oneOrMore(`relation-type`).separatedBy(
+      oneOrMore(SP)) ~> (_.mkString(" ")) ~ ws('"')
+      | `relation-type` ~ OWS)
 
   def `relation-type` = rule { `reg-rel-type` | `ext-rel-type` }
 
-  def `reg-rel-type` =
-    rule {
-      capture(LOWER_ALPHA ~ zeroOrMore(`reg-rel-type-octet`)) ~ !VCHAR
-    }
+  def `reg-rel-type` = rule {
+    capture(LOWER_ALPHA ~ zeroOrMore(`reg-rel-type-octet`)) ~ !VCHAR
+  }
 
-  def `ext-rel-type` =
-    rule {
-      URI
-    }
+  def `ext-rel-type` = rule {
+    URI
+  }
 
   ////////////////////////////// helpers ///////////////////////////////////
 
-  def UriReference(terminationChar: Char) =
-    rule {
-      capture(oneOrMore(!terminationChar ~ VCHAR)) ~> (newUriParser(_)
-        .parseUriReference())
-    }
+  def UriReference(terminationChar: Char) = rule {
+    capture(oneOrMore(!terminationChar ~ VCHAR)) ~> (newUriParser(_)
+      .parseUriReference())
+  }
 
-  def URI =
-    rule {
-      capture(oneOrMore(!'"' ~ !';' ~ !',' ~ VCHAR)) ~> { s ⇒
-        try new UriParser(s).parseUriReference()
-        catch {
-          case IllegalUriException(info) ⇒
-            throw ParsingException(
-              info.withSummaryPrepended("Illegal `Link` header relation-type"))
-        }
-        s
+  def URI = rule {
+    capture(oneOrMore(!'"' ~ !';' ~ !',' ~ VCHAR)) ~> { s ⇒
+      try new UriParser(s).parseUriReference()
+      catch {
+        case IllegalUriException(info) ⇒
+          throw ParsingException(
+            info.withSummaryPrepended("Illegal `Link` header relation-type"))
       }
+      s
     }
+  }
 
-  def `link-media-type` =
-    rule {
-      `media-type` ~> ((mt, st, pm) ⇒
-        getMediaType(mt, st, pm contains "charset", pm.toMap))
-    }
+  def `link-media-type` = rule {
+    `media-type` ~> ((mt, st, pm) ⇒
+      getMediaType(mt, st, pm contains "charset", pm.toMap))
+  }
 
   // filter out subsequent `rel`, `media`, `title`, `type` and `type*` params
   @tailrec private def sanitize(

@@ -111,17 +111,16 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
 
     // The qualified identifier immediately following the `macro` keyword
     // may only refer to a method.
-    def isInMacroDef =
-      getContext match {
-        case _: ScMacroDefinition =>
-          prevSiblings.exists {
-            case l: LeafPsiElement
-                if l.getNode.getElementType == ScalaTokenTypes.kMACRO =>
-              true
-            case _ => false
-          }
-        case _ => false
-      }
+    def isInMacroDef = getContext match {
+      case _: ScMacroDefinition =>
+        prevSiblings.exists {
+          case l: LeafPsiElement
+              if l.getNode.getElementType == ScalaTokenTypes.kMACRO =>
+            true
+          case _ => false
+        }
+      case _ => false
+    }
 
     val result = getContext match {
       case _: ScStableCodeReferenceElement => stableQualRef
@@ -298,14 +297,13 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
     }
   }
 
-  def getSameNameVariants: Array[ResolveResult] =
-    doResolve(
+  def getSameNameVariants: Array[ResolveResult] = doResolve(
+    this,
+    new CompletionProcessor(
+      getKinds(incomplete = true),
       this,
-      new CompletionProcessor(
-        getKinds(incomplete = true),
-        this,
-        false,
-        Some(refName)))
+      false,
+      Some(refName)))
 
   override def delete() {
     getContext match {

@@ -88,9 +88,8 @@ private[process] trait ProcessImpl {
   private[process] abstract class CompoundProcess extends BasicProcess {
     def isAlive() = processThread.isAlive()
     def destroy() = destroyer()
-    def exitValue() =
-      getExitValue._2() getOrElse scala.sys.error(
-        "No exit code: process destroyed.")
+    def exitValue() = getExitValue._2() getOrElse scala.sys.error(
+      "No exit code: process destroyed.")
     def start() = getExitValue
 
     protected lazy val (processThread, getExitValue, destroyer) = {

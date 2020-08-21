@@ -146,11 +146,10 @@ object expand {
     import c.mirror.universe._
 
     class InlineTerm(name: TermName, value: Tree) extends Transformer {
-      override def transform(tree: Tree): Tree =
-        tree match {
-          case Ident(`name`) => value
-          case _             => super.transform(tree)
-        }
+      override def transform(tree: Tree): Tree = tree match {
+        case Ident(`name`) => value
+        case _             => super.transform(tree)
+      }
     }
 
     val termTypeMap = typeMap.map { case (name, tpe) =>
@@ -158,29 +157,28 @@ object expand {
     }
 
     new Transformer() {
-      override def transform(tree: Tree): Tree =
-        tree match {
-          case Ident(x) if typeMap.contains(x) =>
-            TypeTree(typeMap(x))
-          case Ident(x) if termTypeMap.contains(x) =>
-            termTypeMap(x)
-          case Apply(aa @ Ident(x), args) if valExpansions.contains(x) =>
-            val (tname, tmap) = valExpansions(x)
-            val mappedTree = tmap(typeMap(tname))
-            mappedTree match {
-              case fn @ Function(fargs, body) =>
-                (fargs zip args).foldLeft(body) { (currentBody, pair) =>
-                  val (fa, a) = pair
-                  new InlineTerm(fa.name, a).transform(currentBody)
-                }
-              case x => x
-            }
-          case Ident(x) if valExpansions.contains(x) =>
-            val (tname, tmap) = valExpansions(x)
-            tmap(typeMap(tname))
-          case _ =>
-            super.transform(tree)
-        }
+      override def transform(tree: Tree): Tree = tree match {
+        case Ident(x) if typeMap.contains(x) =>
+          TypeTree(typeMap(x))
+        case Ident(x) if termTypeMap.contains(x) =>
+          termTypeMap(x)
+        case Apply(aa @ Ident(x), args) if valExpansions.contains(x) =>
+          val (tname, tmap) = valExpansions(x)
+          val mappedTree = tmap(typeMap(tname))
+          mappedTree match {
+            case fn @ Function(fargs, body) =>
+              (fargs zip args).foldLeft(body) { (currentBody, pair) =>
+                val (fa, a) = pair
+                new InlineTerm(fa.name, a).transform(currentBody)
+              }
+            case x => x
+          }
+        case Ident(x) if valExpansions.contains(x) =>
+          val (tname, tmap) = valExpansions(x)
+          tmap(typeMap(tname))
+        case _ =>
+          super.transform(tree)
+      }
     } transform rhs
   }
 

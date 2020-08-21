@@ -215,15 +215,14 @@ class TaskOpFactoryImplTest
       MTH.residentLaunchedTask(appId, volumeIds: _*)
     def offer = MTH.makeBasicOffer().build()
     def offerWithSpaceForLocalVolume = MTH.makeBasicOffer(disk = 1025).build()
-    def insufficientOffer =
-      MTH
-        .makeBasicOffer(
-          cpus = 0.01,
-          mem = 1,
-          disk = 0.01,
-          beginPort = 31000,
-          endPort = 31001)
-        .build()
+    def insufficientOffer = MTH
+      .makeBasicOffer(
+        cpus = 0.01,
+        mem = 1,
+        disk = 0.01,
+        beginPort = 31000,
+        endPort = 31001)
+      .build()
 
     def offerWithVolumes(taskId: String, localVolumeIds: LocalVolumeId*) =
       MTH.offerWithVolumes(taskId, localVolumeIds: _*)

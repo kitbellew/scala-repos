@@ -8,25 +8,23 @@ trait Pool[A] {
 }
 
 class SimplePool[A](items: mutable.Queue[Future[A]]) extends Pool[A] {
-  def this(items: Seq[A]) =
-    this {
-      val queue = new mutable.Queue[Future[A]]
-      queue ++= items map { item => Future(item) }
-      queue
-    }
+  def this(items: Seq[A]) = this {
+    val queue = new mutable.Queue[Future[A]]
+    queue ++= items map { item => Future(item) }
+    queue
+  }
 
   private val requests = new mutable.Queue[Promise[A]]
 
-  def reserve() =
-    synchronized {
-      if (items.isEmpty) {
-        val future = new Promise[A]
-        requests += future
-        future
-      } else {
-        items.dequeue()
-      }
+  def reserve() = synchronized {
+    if (items.isEmpty) {
+      val future = new Promise[A]
+      requests += future
+      future
+    } else {
+      items.dequeue()
     }
+  }
 
   def release(item: A) {
     items += Future[A](item)
@@ -69,20 +67,19 @@ private class HealthyQueue[A](
     this
   }
 
-  override def dequeue() =
-    synchronized {
-      if (isEmpty) throw new NoSuchElementException("queue empty")
+  override def dequeue() = synchronized {
+    if (isEmpty) throw new NoSuchElementException("queue empty")
 
-      self.dequeue() flatMap { item =>
-        if (isHealthy(item)) {
-          Future(item)
-        } else {
-          val item = makeItem()
-          synchronized {
-            this += item
-            dequeue()
-          }
+    self.dequeue() flatMap { item =>
+      if (isHealthy(item)) {
+        Future(item)
+      } else {
+        val item = makeItem()
+        synchronized {
+          this += item
+          dequeue()
         }
       }
     }
+  }
 }

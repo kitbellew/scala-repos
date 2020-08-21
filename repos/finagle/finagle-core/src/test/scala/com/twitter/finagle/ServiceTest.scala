@@ -105,14 +105,13 @@ class ServiceTest extends FunSuite with MockitoSugar {
     var statusCalled = false
 
     val underlyingFactory = new ServiceFactory[Unit, Unit] {
-      def apply(conn: ClientConnection) =
-        Future.value(new Service[Unit, Unit] {
-          def apply(request: Unit): Future[Unit] = Future.Unit
-          override def close(deadline: Time) = {
-            serviceCloseCalled = true
-            Future.Done
-          }
-        })
+      def apply(conn: ClientConnection) = Future.value(new Service[Unit, Unit] {
+        def apply(request: Unit): Future[Unit] = Future.Unit
+        override def close(deadline: Time) = {
+          serviceCloseCalled = true
+          Future.Done
+        }
+      })
       override def close(deadline: Time) = {
         factoryCloseCalled = true
         Future.Done

@@ -82,15 +82,14 @@ private[scalding] case class HadoopFlowPCounterImpl(
 
 object Stat {
 
-  def apply(k: StatKey)(implicit uid: UniqueID): Stat =
-    new Stat {
-      // This is materialized on the mappers, and will throw an exception if users incBy before then
-      private[this] lazy val cntr =
-        CounterImpl(RuntimeStats.getFlowProcessForUniqueId(uid), k)
+  def apply(k: StatKey)(implicit uid: UniqueID): Stat = new Stat {
+    // This is materialized on the mappers, and will throw an exception if users incBy before then
+    private[this] lazy val cntr =
+      CounterImpl(RuntimeStats.getFlowProcessForUniqueId(uid), k)
 
-      def incBy(amount: Long): Unit = cntr.increment(amount)
-      def key: StatKey = k
-    }
+    def incBy(amount: Long): Unit = cntr.increment(amount)
+    def key: StatKey = k
+  }
 }
 
 object Stats {

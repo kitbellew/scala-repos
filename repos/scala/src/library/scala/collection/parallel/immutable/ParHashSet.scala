@@ -69,49 +69,44 @@ class ParHashSet[T] private[immutable] (private[this] val trie: HashSet[T])
 
   protected override def reuse[S, That](
       oldc: Option[Combiner[S, That]],
-      newc: Combiner[S, That]) =
-    oldc match {
-      case Some(old) => old
-      case None      => newc
-    }
+      newc: Combiner[S, That]) = oldc match {
+    case Some(old) => old
+    case None      => newc
+  }
 
   class ParHashSetIterator(var triter: Iterator[T], val sz: Int)
       extends IterableSplitter[T] {
     var i = 0
-    def dup =
-      triter match {
-        case t: TrieIterator[_] =>
-          dupFromIterator(t.dupIterator)
-        case _ =>
-          val buff = triter.toBuffer
-          triter = buff.iterator
-          dupFromIterator(buff.iterator)
-      }
+    def dup = triter match {
+      case t: TrieIterator[_] =>
+        dupFromIterator(t.dupIterator)
+      case _ =>
+        val buff = triter.toBuffer
+        triter = buff.iterator
+        dupFromIterator(buff.iterator)
+    }
     private def dupFromIterator(it: Iterator[T]) = {
       val phit = new ParHashSetIterator(it, sz)
       phit.i = i
       phit
     }
-    def split: Seq[IterableSplitter[T]] =
-      if (remaining < 2) Seq(this)
-      else
-        triter match {
-          case t: TrieIterator[_] =>
-            val previousRemaining = remaining
-            val ((fst, fstlength), snd) = t.split
-            val sndlength = previousRemaining - fstlength
-            Seq(
-              new ParHashSetIterator(fst, fstlength),
-              new ParHashSetIterator(snd, sndlength)
-            )
-          case _ =>
-            // iterator of the collision map case
-            val buff = triter.toBuffer
-            val (fp, sp) = buff.splitAt(buff.length / 2)
-            Seq(fp, sp) map { b =>
-              new ParHashSetIterator(b.iterator, b.length)
-            }
-        }
+    def split: Seq[IterableSplitter[T]] = if (remaining < 2) Seq(this)
+    else
+      triter match {
+        case t: TrieIterator[_] =>
+          val previousRemaining = remaining
+          val ((fst, fstlength), snd) = t.split
+          val sndlength = previousRemaining - fstlength
+          Seq(
+            new ParHashSetIterator(fst, fstlength),
+            new ParHashSetIterator(snd, sndlength)
+          )
+        case _ =>
+          // iterator of the collision map case
+          val buff = triter.toBuffer
+          val (fp, sp) = buff.splitAt(buff.length / 2)
+          Seq(fp, sp) map { b => new ParHashSetIterator(b.iterator, b.length) }
+      }
     def next(): T = {
       i += 1
       triter.next()
@@ -227,16 +222,14 @@ private[immutable] abstract class HashSetCombiner[T]
         new CreateTrie(bucks, root, offset, fp),
         new CreateTrie(bucks, root, offset + fp, howmany - fp))
     }
-    def shouldSplitFurther =
-      howmany > scala.collection.parallel
-        .thresholdFromSize(root.length, combinerTaskSupport.parallelismLevel)
+    def shouldSplitFurther = howmany > scala.collection.parallel
+      .thresholdFromSize(root.length, combinerTaskSupport.parallelismLevel)
   }
 }
 
 object HashSetCombiner {
-  def apply[T] =
-    new HashSetCombiner[
-      T] {} // was: with EnvironmentPassingCombiner[T, ParHashSet[T]] {}
+  def apply[T] = new HashSetCombiner[
+    T] {} // was: with EnvironmentPassingCombiner[T, ParHashSet[T]] {}
 
   private[immutable] val rootbits = 5
   private[immutable] val rootsize = 1 << 5

@@ -39,10 +39,9 @@ object PersistentActorBoundedStashingSpec {
 
     def receiveRecover = updateState
 
-    override def receiveCommand: Receive =
-      commonBehavior orElse { case Cmd(x: Any) ⇒
-        persist(Evt(x))(updateState)
-      }
+    override def receiveCommand: Receive = commonBehavior orElse {
+      case Cmd(x: Any) ⇒ persist(Evt(x))(updateState)
+    }
   }
 
   val capacity = 10

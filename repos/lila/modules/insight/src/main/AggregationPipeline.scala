@@ -38,12 +38,11 @@ private final class AggregationPipeline {
             acc))
       }
     ))
-  private def dimensionGroupId(dim: Dimension[_]): BSONValue =
-    dim match {
-      case Dimension.MovetimeRange => movetimeIdDispatcher
-      case Dimension.MaterialRange => materialIdDispatcher
-      case d                       => BSONString("$" + d.dbKey)
-    }
+  private def dimensionGroupId(dim: Dimension[_]): BSONValue = dim match {
+    case Dimension.MovetimeRange => movetimeIdDispatcher
+    case Dimension.MaterialRange => materialIdDispatcher
+    case d                       => BSONString("$" + d.dbKey)
+  }
 
   private val sampleGames = Sample(10 * 1000)
   private val sortDate = Sort(Descending(F.date))
@@ -57,14 +56,13 @@ private final class AggregationPipeline {
       "nb" -> SumValue(1),
       "ids" -> AddToSet("_id")
     ).some
-  private def groupMulti(d: Dimension[_], metricDbKey: String) =
-    Group(
-      BSONDocument(
-        "dimension" -> dimensionGroupId(d),
-        "metric" -> ("$" + metricDbKey)))(
-      "v" -> SumValue(1),
-      "ids" -> AddToSet("_id")
-    ).some
+  private def groupMulti(d: Dimension[_], metricDbKey: String) = Group(
+    BSONDocument(
+      "dimension" -> dimensionGroupId(d),
+      "metric" -> ("$" + metricDbKey)))(
+    "v" -> SumValue(1),
+    "ids" -> AddToSet("_id")
+  ).some
   private val regroupStacked = GroupField("_id.dimension")(
     "nb" -> SumField("v"),
     "ids" -> First("ids"),
@@ -95,12 +93,11 @@ private final class AggregationPipeline {
       combineDocs(extraMatcher :: question.filters.collect {
         case f if f.dimension.isInMove => f.matcher
       }).some.filterNot(_.isEmpty) map Match
-    def projectForMove =
-      Project(BSONDocument({
-        metric.dbKey :: dimension.dbKey :: filters.collect {
-          case Filter(d, _) if d.isInMove => d.dbKey
-        }
-      }.distinct.map(_ -> BSONBoolean(true)))).some
+    def projectForMove = Project(BSONDocument({
+      metric.dbKey :: dimension.dbKey :: filters.collect {
+        case Filter(d, _) if d.isInMove => d.dbKey
+      }
+    }.distinct.map(_ -> BSONBoolean(true)))).some
 
     NonEmptyList.nel[PipelineOperator](
       Match(

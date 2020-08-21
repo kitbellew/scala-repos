@@ -19,8 +19,8 @@ package syntax
 package std
 
 trait LowPriorityTuple {
-  implicit def productTupleOps[P <: Product](p: P): TupleOps[P] =
-    new TupleOps(p)
+  implicit def productTupleOps[P <: Product](p: P): TupleOps[P] = new TupleOps(
+    p)
 }
 
 object tuple extends LowPriorityTuple {

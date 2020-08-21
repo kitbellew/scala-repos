@@ -68,14 +68,13 @@ final class BigIntRational private (val n: BigInt, val d: BigInt) {
     }
   }
 
-  def pow(exp: Int): BigIntRational =
-    if (exp == 0) {
-      BigIntRational.One
-    } else if (exp < 0) {
-      new BigIntRational(d pow exp.abs, n pow exp.abs)
-    } else {
-      new BigIntRational(n pow exp, d pow exp)
-    }
+  def pow(exp: Int): BigIntRational = if (exp == 0) {
+    BigIntRational.One
+  } else if (exp < 0) {
+    new BigIntRational(d pow exp.abs, n pow exp.abs)
+  } else {
+    new BigIntRational(n pow exp, d pow exp)
+  }
 
   def compare(r: BigIntRational): Int = {
     val dgcd = d.gcd(r.d)

@@ -21,54 +21,51 @@ import sbt.LocalProject
 
 object SphinxDoc {
 
-  def akkaSettings =
-    SphinxSupport.settings ++ Seq(
-      // generate online version of docs
-      sphinxInputs in Sphinx <<= sphinxInputs in Sphinx in LocalProject(
-        AkkaBuild.docs.id) map { inputs =>
-        inputs.copy(tags = inputs.tags :+ "online")
-      },
-      // don't regenerate the pdf, just reuse the akka-docs version
-      generatedPdf in Sphinx <<= generatedPdf in Sphinx in LocalProject(
-        AkkaBuild.docs.id) map identity,
-      generatedEpub in Sphinx <<= generatedEpub in Sphinx in LocalProject(
-        AkkaBuild.docs.id) map identity
-    )
+  def akkaSettings = SphinxSupport.settings ++ Seq(
+    // generate online version of docs
+    sphinxInputs in Sphinx <<= sphinxInputs in Sphinx in LocalProject(
+      AkkaBuild.docs.id) map { inputs =>
+      inputs.copy(tags = inputs.tags :+ "online")
+    },
+    // don't regenerate the pdf, just reuse the akka-docs version
+    generatedPdf in Sphinx <<= generatedPdf in Sphinx in LocalProject(
+      AkkaBuild.docs.id) map identity,
+    generatedEpub in Sphinx <<= generatedEpub in Sphinx in LocalProject(
+      AkkaBuild.docs.id) map identity
+  )
 
-  def docsSettings =
-    Seq(
-      sourceDirectory in Sphinx <<= baseDirectory / "rst",
-      watchSources <++= (
-        sourceDirectory in Sphinx,
-        excludeFilter in Global) map { (source, excl) =>
+  def docsSettings = Seq(
+    sourceDirectory in Sphinx <<= baseDirectory / "rst",
+    watchSources <++= (sourceDirectory in Sphinx, excludeFilter in Global) map {
+      (source, excl) =>
         source descendantsExcept ("*.rst", excl) get
-      },
-      sphinxPackages in Sphinx <+= baseDirectory { _ / "_sphinx" / "pygments" },
-      // copy akka-contrib/docs into our rst_preprocess/contrib (and apply substitutions)
-      preprocess in Sphinx <<= (
-        preprocess in Sphinx,
-        baseDirectory in AkkaBuild.contrib,
-        target in preprocess in Sphinx,
-        cacheDirectory,
-        preprocessExts in Sphinx,
-        preprocessVars in Sphinx,
-        streams) map { (orig, src, target, cacheDir, exts, vars, s) =>
-        val contribSrc = Map("contribSrc" -> "../../../akka-contrib")
-        simplePreprocess(
-          src / "docs",
-          target / "contrib",
-          cacheDir / "sphinx" / "preprocessed-contrib",
-          exts,
-          vars ++ contribSrc,
-          s.log)
-        orig
-      },
-      enableOutput in generatePdf in Sphinx := true,
-      enableOutput in generateEpub in Sphinx := true,
-      unmanagedSourceDirectories in Test <<= sourceDirectory in Sphinx apply {
-        _ ** "code" get
-      }
-    )
+    },
+    sphinxPackages in Sphinx <+= baseDirectory { _ / "_sphinx" / "pygments" },
+    // copy akka-contrib/docs into our rst_preprocess/contrib (and apply substitutions)
+    preprocess in Sphinx <<= (
+      preprocess in Sphinx,
+      baseDirectory in AkkaBuild.contrib,
+      target in preprocess in Sphinx,
+      cacheDirectory,
+      preprocessExts in Sphinx,
+      preprocessVars in Sphinx,
+      streams) map { (orig, src, target, cacheDir, exts, vars, s) =>
+      val contribSrc = Map("contribSrc" -> "../../../akka-contrib")
+      simplePreprocess(
+        src / "docs",
+        target / "contrib",
+        cacheDir / "sphinx" / "preprocessed-contrib",
+        exts,
+        vars ++ contribSrc,
+        s.log)
+      orig
+    },
+    enableOutput in generatePdf in Sphinx := true,
+    enableOutput in generateEpub in Sphinx := true,
+    unmanagedSourceDirectories in Test <<= sourceDirectory in Sphinx apply {
+      _ ** "code" get
+    }
+  )
 
   // pre-processing settings for sphinx
   lazy val sphinxPreprocessing = inConfig(Sphinx)(

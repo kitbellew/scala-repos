@@ -32,10 +32,9 @@ class BoundAddressesExtension(val system: ExtendedActorSystem)
   /**
     * Returns a mapping from a protocol to a set of bound addresses.
     */
-  def boundAddresses: Map[String, Set[Address]] =
-    system.provider
-      .asInstanceOf[RemoteActorRefProvider]
-      .transport
-      .asInstanceOf[Remoting]
-      .boundAddresses
+  def boundAddresses: Map[String, Set[Address]] = system.provider
+    .asInstanceOf[RemoteActorRefProvider]
+    .transport
+    .asInstanceOf[Remoting]
+    .boundAddresses
 }

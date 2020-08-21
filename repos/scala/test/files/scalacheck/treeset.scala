@@ -110,12 +110,11 @@ object Test extends Properties("TreeSet") {
     prefix == subject.take(n) && suffix == subject.drop(n)
   }
 
-  def genSliceParms =
-    for {
-      tree <- genTreeSet[Int]
-      from <- choose(0, tree.size)
-      until <- choose(from, tree.size)
-    } yield (tree, from, until)
+  def genSliceParms = for {
+    tree <- genTreeSet[Int]
+    from <- choose(0, tree.size)
+    until <- choose(from, tree.size)
+  } yield (tree, from, until)
 
   property("slice") = forAll(genSliceParms) { case (subject, from, until) =>
     val slice = subject.slice(from, until)

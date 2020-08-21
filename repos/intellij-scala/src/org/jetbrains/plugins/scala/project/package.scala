@@ -63,11 +63,10 @@ package object project {
       new ScalaSdk(library)
     }
 
-    def classes: Set[File] =
-      library
-        .getFiles(OrderRootType.CLASSES)
-        .toSet
-        .map(VfsUtilCore.virtualToIoFile)
+    def classes: Set[File] = library
+      .getFiles(OrderRootType.CLASSES)
+      .toSet
+      .map(VfsUtilCore.virtualToIoFile)
   }
 
   implicit class ModuleExt(module: Module) {
@@ -226,11 +225,10 @@ package object project {
   }
 
   class ScalaModule(val module: Module) {
-    def sdk: ScalaSdk =
-      module.scalaSdk.map(new ScalaSdk(_)).getOrElse {
-        throw new IllegalStateException(
-          "Module has no Scala SDK: " + module.getName)
-      }
+    def sdk: ScalaSdk = module.scalaSdk.map(new ScalaSdk(_)).getOrElse {
+      throw new IllegalStateException(
+        "Module has no Scala SDK: " + module.getName)
+    }
   }
 
   object ScalaModule {
@@ -264,8 +262,8 @@ package object project {
   }
 
   implicit class ProjectPsiElementExt(element: PsiElement) {
-    def module: Option[Module] =
-      Option(ModuleUtilCore.findModuleForPsiElement(element))
+    def module: Option[Module] = Option(
+      ModuleUtilCore.findModuleForPsiElement(element))
 
     def isInScalaModule: Boolean = module.exists(_.hasScala)
 

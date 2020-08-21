@@ -53,10 +53,9 @@ private[spark] abstract class RDDCheckpointData[T: ClassTag](
   /**
     * Return whether the checkpoint data for this RDD is already persisted.
     */
-  def isCheckpointed: Boolean =
-    RDDCheckpointData.synchronized {
-      cpState == Checkpointed
-    }
+  def isCheckpointed: Boolean = RDDCheckpointData.synchronized {
+    cpState == Checkpointed
+  }
 
   /**
     * Materialize this RDD and persist its content.
@@ -95,17 +94,17 @@ private[spark] abstract class RDDCheckpointData[T: ClassTag](
     * Return the RDD that contains our checkpointed data.
     * This is only defined if the checkpoint state is `Checkpointed`.
     */
-  def checkpointRDD: Option[CheckpointRDD[T]] =
-    RDDCheckpointData.synchronized { cpRDD }
+  def checkpointRDD: Option[CheckpointRDD[T]] = RDDCheckpointData.synchronized {
+    cpRDD
+  }
 
   /**
     * Return the partitions of the resulting checkpoint RDD.
     * For tests only.
     */
-  def getPartitions: Array[Partition] =
-    RDDCheckpointData.synchronized {
-      cpRDD.map(_.partitions).getOrElse { Array.empty }
-    }
+  def getPartitions: Array[Partition] = RDDCheckpointData.synchronized {
+    cpRDD.map(_.partitions).getOrElse { Array.empty }
+  }
 
 }
 

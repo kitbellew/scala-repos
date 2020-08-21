@@ -28,12 +28,11 @@ sealed abstract class HMap[K[_], V[_]] {
   override def toString: String =
     "H%s".format(map)
 
-  override def equals(that: Any): Boolean =
-    that match {
-      case null          => false
-      case h: HMap[_, _] => map.equals(h.map)
-      case _             => false
-    }
+  override def equals(that: Any): Boolean = that match {
+    case null          => false
+    case h: HMap[_, _] => map.equals(h.map)
+    case _             => false
+  }
   override def hashCode = map.hashCode
 
   def +[T](kv: (K[T], V[T])): HMap[K, V] =
@@ -55,11 +54,10 @@ sealed abstract class HMap[K[_], V[_]] {
   def get[T](id: K[T]): Option[V[T]] =
     map.get(id).asInstanceOf[Option[V[T]]]
 
-  def keysOf[T](v: V[T]): Set[K[T]] =
-    map.collect {
-      case (k, w) if v == w =>
-        k.asInstanceOf[K[T]]
-    }.toSet
+  def keysOf[T](v: V[T]): Set[K[T]] = map.collect {
+    case (k, w) if v == w =>
+      k.asInstanceOf[K[T]]
+  }.toSet
 
   // go through all the keys, and find the first key that matches this
   // function and apply

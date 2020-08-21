@@ -6,8 +6,8 @@
 object Test {
   val bippy = 13L
 
-  def show(c: Class[_]) =
-    println(java.io.ObjectStreamClass.lookup(c).getSerialVersionUID)
+  def show(c: Class[_]) = println(
+    java.io.ObjectStreamClass.lookup(c).getSerialVersionUID)
   def main(args: Array[String]): Unit = {
     show(classOf[C1])
     show(classOf[C2])

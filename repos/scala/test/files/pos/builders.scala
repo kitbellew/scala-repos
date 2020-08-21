@@ -13,13 +13,12 @@ object builders {
       def result: Iterable[B] = buf.toList
     }
 
-  implicit def listBuilder[A, B] =
-    new Builder[List[A], List[B], B] {
-      println("new list builder")
-      private val buf = new scala.collection.mutable.ListBuffer[B]
-      def +=(elem: B) { buf += elem }
-      def result: List[B] = buf.toList
-    }
+  implicit def listBuilder[A, B] = new Builder[List[A], List[B], B] {
+    println("new list builder")
+    private val buf = new scala.collection.mutable.ListBuffer[B]
+    def +=(elem: B) { buf += elem }
+    def result: List[B] = buf.toList
+  }
   /*
   def fill[A, Dim1, Dim2, Coll](n1: Int, n2: Int, elem: A)(implicit b1: Builder[Coll, Dim1, A], b2: Builder[Coll, Dim2, Dim1]) = {
     for (i <- 0 until n1) {

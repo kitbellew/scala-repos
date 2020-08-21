@@ -35,9 +35,8 @@ object ProductVersion {
   /** parses a string of multiple ProductVersions */
   def parseMultiple(string: String): immutable.Seq[ProductVersion] = {
     val parser = new HeaderParser(string)
-    def fail(msg: String) =
-      throw new IllegalArgumentException(
-        s"'$string' is not a legal sequence of ProductVersions: $msg")
+    def fail(msg: String) = throw new IllegalArgumentException(
+      s"'$string' is not a legal sequence of ProductVersions: $msg")
     parser.products.run() match {
       case Success(x) ⇒ immutable.Seq(x: _*)
       case Failure(e: ParseError) ⇒ fail(parser.formatError(e))

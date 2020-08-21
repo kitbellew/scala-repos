@@ -153,12 +153,11 @@ object CompilerBenchmark {
     } yield ((c.name, (s.city ++ ":")), c, s, c.totalComputed)
     val q1b_0 =
       coffees.sortBy(_.price).take(3) join suppliers on (_.supID === _.id)
-    def q1b =
-      for {
-        (c, s) <-
-          q1b_0.sortBy(_._1.price).take(2).filter(_._1.name =!= "Colombian")
-        (c2, s2) <- q1b_0
-      } yield (c.name, s.city, c2.name)
+    def q1b = for {
+      (c, s) <-
+        q1b_0.sortBy(_._1.price).take(2).filter(_._1.name =!= "Colombian")
+      (c2, s2) <- q1b_0
+    } yield (c.name, s.city, c2.name)
     val q2 = for {
       c <- coffees.filter(_.price < 900).map(_.*)
       s <- suppliers if s.id === c._2
@@ -179,21 +178,19 @@ object CompilerBenchmark {
         }
       }
     }
-    def q4 =
-      for {
-        c <-
-          coffees
-            .map(c => (c.name, c.price, 42))
-            .sortBy(_._1)
-            .take(2)
-            .filter(_._2 < 800)
-      } yield (c._1, c._3)
+    def q4 = for {
+      c <-
+        coffees
+          .map(c => (c.name, c.price, 42))
+          .sortBy(_._1)
+          .take(2)
+          .filter(_._2 < 800)
+    } yield (c._1, c._3)
     def q4b_0 = coffees.map(c => (c.name, c.price, 42)).filter(_._2 < 800)
-    def q4b =
-      for {
-        c <- q4b_0
-        d <- q4b_0
-      } yield (c, d)
+    def q4b = for {
+      c <- q4b_0
+      d <- q4b_0
+    } yield (c, d)
     val q5_0 = coffees.sortBy(_.price).take(2)
     val q5 = for {
       c1 <- q5_0

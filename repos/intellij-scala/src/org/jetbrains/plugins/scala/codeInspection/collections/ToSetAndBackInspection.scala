@@ -9,8 +9,8 @@ import org.jetbrains.plugins.scala.lang.psi.types.{ScParameterizedType, ScType}
   * @author Nikolay.Tropin
   */
 class ToSetAndBackInspection extends OperationOnCollectionInspection {
-  override def possibleSimplificationTypes: Array[SimplificationType] =
-    Array(ToSetAndBackToDistinct)
+  override def possibleSimplificationTypes: Array[SimplificationType] = Array(
+    ToSetAndBackToDistinct)
 }
 
 object ToSetAndBackToDistinct extends SimplificationType {

@@ -57,16 +57,13 @@ trait PerfTestSuite extends Logging {
   }
 
   final class GroupedDef(name: String) {
-    def `:=`(f: => Any) =
-      collect(f) {
-        case (t @ Tree.Node(RunConcurrent, _)) :: Nil =>
-          Tree.node(Group(name), Stream[Tree[PerfTest]](t))
+    def `:=`(f: => Any) = collect(f) {
+      case (t @ Tree.Node(RunConcurrent, _)) :: Nil =>
+        Tree.node(Group(name), Stream[Tree[PerfTest]](t))
 
-        case kids =>
-          Tree.node(
-            Group(name),
-            Stream(Tree.node(RunSequential, kids.toStream)))
-      }
+      case kids =>
+        Tree.node(Group(name), Stream(Tree.node(RunSequential, kids.toStream)))
+    }
   }
 
   implicit def GroupedDef(name: String) = new GroupedDef(name)

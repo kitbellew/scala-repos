@@ -57,17 +57,16 @@ private final class ChallengeRepo(coll: Coll, maxPerUser: Int) {
           )))
       .void
 
-  def like(c: Challenge) =
-    ~(for {
-      challengerId <- c.challengerUserId
-      destUserId <- c.destUserId
-      if c.active
-    } yield coll
-      .find(
-        selectCreated ++ BSONDocument(
-          "challenger.id" -> challengerId,
-          "destUser.id" -> destUserId))
-      .one[Challenge])
+  def like(c: Challenge) = ~(for {
+    challengerId <- c.challengerUserId
+    destUserId <- c.destUserId
+    if c.active
+  } yield coll
+    .find(
+      selectCreated ++ BSONDocument(
+        "challenger.id" -> challengerId,
+        "destUser.id" -> destUserId))
+    .one[Challenge])
 
   private[challenge] def countCreatedByDestId(userId: String): Fu[Int] =
     coll.count(Some(selectCreated ++ BSONDocument("destUser.id" -> userId)))
@@ -89,25 +88,23 @@ private final class ChallengeRepo(coll: Coll, maxPerUser: Int) {
       BSONDocument("expiresAt" -> BSONDocument("$lt" -> DateTime.now)).some
     ) map lila.db.BSON.asStrings
 
-  def setSeenAgain(id: Challenge.ID) =
-    coll
-      .update(
-        selectId(id),
-        BSONDocument(
-          "$set" -> BSONDocument(
-            "status" -> Status.Created.id,
-            "seenAt" -> DateTime.now,
-            "expiresAt" -> inTwoWeeks))
-      )
-      .void
+  def setSeenAgain(id: Challenge.ID) = coll
+    .update(
+      selectId(id),
+      BSONDocument(
+        "$set" -> BSONDocument(
+          "status" -> Status.Created.id,
+          "seenAt" -> DateTime.now,
+          "expiresAt" -> inTwoWeeks))
+    )
+    .void
 
-  def setSeen(id: Challenge.ID) =
-    coll
-      .update(
-        selectId(id),
-        BSONDocument("$set" -> BSONDocument("seenAt" -> DateTime.now))
-      )
-      .void
+  def setSeen(id: Challenge.ID) = coll
+    .update(
+      selectId(id),
+      BSONDocument("$set" -> BSONDocument("seenAt" -> DateTime.now))
+    )
+    .void
 
   def offline(challenge: Challenge) =
     setStatus(challenge, Status.Offline, Some(_ plusHours 3))
@@ -118,29 +115,27 @@ private final class ChallengeRepo(coll: Coll, maxPerUser: Int) {
   def accept(challenge: Challenge) =
     setStatus(challenge, Status.Accepted, Some(_ plusHours 3))
 
-  def statusById(id: Challenge.ID) =
-    coll
-      .find(
-        selectId(id),
-        BSONDocument("status" -> true, "_id" -> false)
-      )
-      .one[BSONDocument]
-      .map { _.flatMap(_.getAs[Status]("status")) }
+  def statusById(id: Challenge.ID) = coll
+    .find(
+      selectId(id),
+      BSONDocument("status" -> true, "_id" -> false)
+    )
+    .one[BSONDocument]
+    .map { _.flatMap(_.getAs[Status]("status")) }
 
   private def setStatus(
       challenge: Challenge,
       status: Status,
-      expiresAt: Option[DateTime => DateTime] = None) =
-    coll
-      .update(
-        selectCreated ++ selectId(challenge.id),
-        BSONDocument(
-          "$set" -> BSONDocument(
-            "status" -> status.id,
-            "expiresAt" -> expiresAt.fold(inTwoWeeks) { _(DateTime.now) }
-          ))
-      )
-      .void
+      expiresAt: Option[DateTime => DateTime] = None) = coll
+    .update(
+      selectCreated ++ selectId(challenge.id),
+      BSONDocument(
+        "$set" -> BSONDocument(
+          "status" -> status.id,
+          "expiresAt" -> expiresAt.fold(inTwoWeeks) { _(DateTime.now) }
+        ))
+    )
+    .void
 
   private[challenge] def remove(id: Challenge.ID) =
     coll.remove(selectId(id)).void

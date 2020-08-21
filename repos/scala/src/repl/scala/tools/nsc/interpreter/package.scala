@@ -57,16 +57,15 @@ package object interpreter extends ReplConfig with ReplStrings {
 
   private val ourClassloader = getClass.getClassLoader
 
-  def staticTypeTag[T: ClassTag]: ru.TypeTag[T] =
-    ru.TypeTag[T](
-      ru.runtimeMirror(ourClassloader),
-      new TypeCreator {
-        def apply[U <: ApiUniverse with Singleton](m: Mirror[U]): U#Type =
-          m.staticClass(classTag[T].runtimeClass.getName)
-            .toTypeConstructor
-            .asInstanceOf[U#Type]
-      }
-    )
+  def staticTypeTag[T: ClassTag]: ru.TypeTag[T] = ru.TypeTag[T](
+    ru.runtimeMirror(ourClassloader),
+    new TypeCreator {
+      def apply[U <: ApiUniverse with Singleton](m: Mirror[U]): U#Type =
+        m.staticClass(classTag[T].runtimeClass.getName)
+          .toTypeConstructor
+          .asInstanceOf[U#Type]
+    }
+  )
 
   /** This class serves to trick the compiler into treating a var
     *  (intp, in ILoop) as a stable identifier.
@@ -141,24 +140,21 @@ package object interpreter extends ReplConfig with ReplStrings {
       val catcher = catching(
         classOf[MissingRequirementError],
         classOf[ScalaReflectionException])
-      def typeFromTypeString: Option[ClassSymbol] =
-        catcher opt {
-          exprTyper.typeOfTypeString(expr).typeSymbol.asClass
-        }
-      def typeFromNameTreatedAsTerm: Option[ClassSymbol] =
-        catcher opt {
-          val moduleClass = exprTyper.typeOfExpression(expr).typeSymbol
-          moduleClass.linkedClassOfClass.asClass
-        }
-      def typeFromFullName: Option[ClassSymbol] =
-        catcher opt {
-          intp.global.rootMirror.staticClass(expr)
-        }
-      def typeOfTerm: Option[TypeSymbol] =
-        replInfo(symbolOfLine(expr)).typeSymbol match {
-          case sym: TypeSymbol => Some(sym)
-          case _               => None
-        }
+      def typeFromTypeString: Option[ClassSymbol] = catcher opt {
+        exprTyper.typeOfTypeString(expr).typeSymbol.asClass
+      }
+      def typeFromNameTreatedAsTerm: Option[ClassSymbol] = catcher opt {
+        val moduleClass = exprTyper.typeOfExpression(expr).typeSymbol
+        moduleClass.linkedClassOfClass.asClass
+      }
+      def typeFromFullName: Option[ClassSymbol] = catcher opt {
+        intp.global.rootMirror.staticClass(expr)
+      }
+      def typeOfTerm: Option[TypeSymbol] = replInfo(
+        symbolOfLine(expr)).typeSymbol match {
+        case sym: TypeSymbol => Some(sym)
+        case _               => None
+      }
       (typeFromTypeString orElse typeFromNameTreatedAsTerm orElse typeFromFullName orElse typeOfTerm) foreach {
         sym =>
           val (kind, tpe) = exitingTyper {

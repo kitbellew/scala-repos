@@ -27,8 +27,8 @@ trait FindersApiTest
     val location = createLocation(lineNumber, offset, fileName)
     var selection: Selection = null
     UsefulTestCase.edt(new Runnable() {
-      override def run(): Unit =
-        selection = new ScalaTestAstTransformer().testSelection(location)
+      override def run(): Unit = selection =
+        new ScalaTestAstTransformer().testSelection(location)
     })
     assert(selection != null)
     assert(selection.testNames().map(_.trim).toSet == testNames)

@@ -44,8 +44,8 @@ class BackgroundPositionSpec
       classOf[jfxsl.BackgroundPosition],
       classOf[BackgroundPosition]) {
 
-  override protected def getScalaClassInstance =
-    new BackgroundPosition(getJavaClassInstance) {}
+  override protected def getScalaClassInstance = new BackgroundPosition(
+    getJavaClassInstance) {}
 
   override protected def getJavaClassInstance = BackgroundPosition.Center
 }

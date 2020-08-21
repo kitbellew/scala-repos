@@ -71,8 +71,8 @@ object DateProperties extends Properties("Date Properties") {
     (dr.isAfter(dr.start - (dr.end - dr.start)))
   }
 
-  def divDur(ad: AbsoluteDuration, div: Int) =
-    fromMillisecs(ad.toMillisecs / div)
+  def divDur(ad: AbsoluteDuration, div: Int) = fromMillisecs(
+    ad.toMillisecs / div)
 
   property("each output is contained") = forAll { (dr: DateRange) =>
     val r = divDur(dr.end - dr.start, 10)
@@ -129,11 +129,10 @@ object DateProperties extends Properties("Date Properties") {
   def toRegex(glob: String) =
     (glob.flatMap { c => if (c == '*') ".*" else c.toString }).r
 
-  def matches(l: List[String], arg: String): Int =
-    l
-      .map { toRegex _ }
-      .map { _.findFirstMatchIn(arg).map { _ => 1 }.getOrElse(0) }
-      .sum
+  def matches(l: List[String], arg: String): Int = l
+    .map { toRegex _ }
+    .map { _.findFirstMatchIn(arg).map { _ => 1 }.getOrElse(0) }
+    .sum
 
   // Make sure globifier always contains:
   val pattern = "%1$tY/%1$tm/%1$td/%1$tH"

@@ -26,12 +26,11 @@ private object TrafficDistributorTest {
     def apply(port: Int, weight: Double): Address =
       Address.Inet(new InetSocketAddress(port), Addr.Metadata(key -> weight))
 
-    def unapply(addr: Address): Option[(Int, Double)] =
-      addr match {
-        case Address.Inet(ia, metadata) =>
-          Some((ia.getPort, metadata(key).asInstanceOf[Double]))
-        case _ => None
-      }
+    def unapply(addr: Address): Option[(Int, Double)] = addr match {
+      case Address.Inet(ia, metadata) =>
+        Some((ia.getPort, metadata(key).asInstanceOf[Double]))
+      case _ => None
+    }
   }
 
   val weightClass: (Double, Int) => Set[Address] =

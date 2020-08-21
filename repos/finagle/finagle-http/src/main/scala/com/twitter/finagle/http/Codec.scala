@@ -151,32 +151,30 @@ case class Http(
 
   def client = { config =>
     new Codec[Request, Response] {
-      def pipelineFactory =
-        new ChannelPipelineFactory {
-          def getPipeline() = {
-            val pipeline = Channels.pipeline()
-            val maxInitialLineLengthInBytes =
-              _maxInitialLineLength.inBytes.toInt
-            val maxHeaderSizeInBytes = _maxHeaderSize.inBytes.toInt
-            val maxChunkSize = 8192
+      def pipelineFactory = new ChannelPipelineFactory {
+        def getPipeline() = {
+          val pipeline = Channels.pipeline()
+          val maxInitialLineLengthInBytes = _maxInitialLineLength.inBytes.toInt
+          val maxHeaderSizeInBytes = _maxHeaderSize.inBytes.toInt
+          val maxChunkSize = 8192
+          pipeline.addLast(
+            "httpCodec",
+            new HttpClientCodec(
+              maxInitialLineLengthInBytes,
+              maxHeaderSizeInBytes,
+              maxChunkSize))
+
+          if (!_streaming)
             pipeline.addLast(
-              "httpCodec",
-              new HttpClientCodec(
-                maxInitialLineLengthInBytes,
-                maxHeaderSizeInBytes,
-                maxChunkSize))
+              "httpDechunker",
+              new HttpChunkAggregator(_maxResponseSize.inBytes.toInt))
 
-            if (!_streaming)
-              pipeline.addLast(
-                "httpDechunker",
-                new HttpChunkAggregator(_maxResponseSize.inBytes.toInt))
+          if (_decompressionEnabled)
+            pipeline.addLast("httpDecompressor", new HttpContentDecompressor)
 
-            if (_decompressionEnabled)
-              pipeline.addLast("httpDecompressor", new HttpContentDecompressor)
-
-            pipeline
-          }
+          pipeline
         }
+      }
 
       override def prepareServiceFactory(
           underlying: ServiceFactory[Request, Response]
@@ -225,57 +223,55 @@ case class Http(
 
   def server = { config =>
     new Codec[Request, Response] {
-      def pipelineFactory =
-        new ChannelPipelineFactory {
-          def getPipeline() = {
-            val pipeline = Channels.pipeline()
-            if (_channelBufferUsageTracker.isDefined) {
-              pipeline.addLast(
-                "channelBufferManager",
-                new ChannelBufferManager(_channelBufferUsageTracker.get))
-            }
-
-            val maxRequestSizeInBytes = _maxRequestSize.inBytes.toInt
-            val maxInitialLineLengthInBytes =
-              _maxInitialLineLength.inBytes.toInt
-            val maxHeaderSizeInBytes = _maxHeaderSize.inBytes.toInt
+      def pipelineFactory = new ChannelPipelineFactory {
+        def getPipeline() = {
+          val pipeline = Channels.pipeline()
+          if (_channelBufferUsageTracker.isDefined) {
             pipeline.addLast(
-              "httpCodec",
-              new SafeHttpServerCodec(
-                maxInitialLineLengthInBytes,
-                maxHeaderSizeInBytes,
-                maxRequestSizeInBytes))
-
-            if (_compressionLevel > 0) {
-              pipeline.addLast(
-                "httpCompressor",
-                new HttpContentCompressor(_compressionLevel))
-            } else if (_compressionLevel == -1) {
-              pipeline.addLast("httpCompressor", new TextualContentCompressor)
-            }
-
-            // The payload size handler should come before the RespondToExpectContinue handler so that we don't
-            // send a 100 CONTINUE for oversize requests we have no intention of handling.
-            pipeline.addLast(
-              "payloadSizeHandler",
-              new PayloadSizeHandler(maxRequestSizeInBytes))
-
-            // Response to ``Expect: Continue'' requests.
-            pipeline.addLast(
-              "respondToExpectContinue",
-              new RespondToExpectContinue)
-            if (!_streaming)
-              pipeline.addLast(
-                "httpDechunker",
-                new HttpChunkAggregator(maxRequestSizeInBytes))
-
-            _annotateCipherHeader foreach { headerName: String =>
-              pipeline.addLast("annotateCipher", new AnnotateCipher(headerName))
-            }
-
-            pipeline
+              "channelBufferManager",
+              new ChannelBufferManager(_channelBufferUsageTracker.get))
           }
+
+          val maxRequestSizeInBytes = _maxRequestSize.inBytes.toInt
+          val maxInitialLineLengthInBytes = _maxInitialLineLength.inBytes.toInt
+          val maxHeaderSizeInBytes = _maxHeaderSize.inBytes.toInt
+          pipeline.addLast(
+            "httpCodec",
+            new SafeHttpServerCodec(
+              maxInitialLineLengthInBytes,
+              maxHeaderSizeInBytes,
+              maxRequestSizeInBytes))
+
+          if (_compressionLevel > 0) {
+            pipeline.addLast(
+              "httpCompressor",
+              new HttpContentCompressor(_compressionLevel))
+          } else if (_compressionLevel == -1) {
+            pipeline.addLast("httpCompressor", new TextualContentCompressor)
+          }
+
+          // The payload size handler should come before the RespondToExpectContinue handler so that we don't
+          // send a 100 CONTINUE for oversize requests we have no intention of handling.
+          pipeline.addLast(
+            "payloadSizeHandler",
+            new PayloadSizeHandler(maxRequestSizeInBytes))
+
+          // Response to ``Expect: Continue'' requests.
+          pipeline.addLast(
+            "respondToExpectContinue",
+            new RespondToExpectContinue)
+          if (!_streaming)
+            pipeline.addLast(
+              "httpDechunker",
+              new HttpChunkAggregator(maxRequestSizeInBytes))
+
+          _annotateCipherHeader foreach { headerName: String =>
+            pipeline.addLast("annotateCipher", new AnnotateCipher(headerName))
+          }
+
+          pipeline
         }
+      }
 
       override def newServerDispatcher(
           transport: Transport[Any, Any],

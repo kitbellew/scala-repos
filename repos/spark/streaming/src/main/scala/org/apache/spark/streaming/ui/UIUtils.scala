@@ -30,16 +30,15 @@ private[streaming] object UIUtils {
   /**
     * Return the short string for a `TimeUnit`.
     */
-  def shortTimeUnitString(unit: TimeUnit): String =
-    unit match {
-      case TimeUnit.NANOSECONDS  => "ns"
-      case TimeUnit.MICROSECONDS => "us"
-      case TimeUnit.MILLISECONDS => "ms"
-      case TimeUnit.SECONDS      => "sec"
-      case TimeUnit.MINUTES      => "min"
-      case TimeUnit.HOURS        => "hrs"
-      case TimeUnit.DAYS         => "days"
-    }
+  def shortTimeUnitString(unit: TimeUnit): String = unit match {
+    case TimeUnit.NANOSECONDS  => "ns"
+    case TimeUnit.MICROSECONDS => "us"
+    case TimeUnit.MILLISECONDS => "ms"
+    case TimeUnit.SECONDS      => "sec"
+    case TimeUnit.MINUTES      => "min"
+    case TimeUnit.HOURS        => "hrs"
+    case TimeUnit.DAYS         => "days"
+  }
 
   /**
     * Find the best `TimeUnit` for converting milliseconds to a friendly string. Return the value
@@ -82,14 +81,14 @@ private[streaming] object UIUtils {
 
   // SimpleDateFormat is not thread-safe. Don't expose it to avoid improper use.
   private val batchTimeFormat = new ThreadLocal[SimpleDateFormat]() {
-    override def initialValue(): SimpleDateFormat =
-      new SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+    override def initialValue(): SimpleDateFormat = new SimpleDateFormat(
+      "yyyy/MM/dd HH:mm:ss")
   }
 
   private val batchTimeFormatWithMilliseconds =
     new ThreadLocal[SimpleDateFormat]() {
-      override def initialValue(): SimpleDateFormat =
-        new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS")
+      override def initialValue(): SimpleDateFormat = new SimpleDateFormat(
+        "yyyy/MM/dd HH:mm:ss.SSS")
     }
 
   /**

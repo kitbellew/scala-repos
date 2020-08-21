@@ -101,9 +101,9 @@ trait TransformIncludes {
     * @param v $JFX $TR
     * @return $SFX $TR
     */
-  implicit def jfxTransform2sfx(v: jfxst.Transform): Transform =
-    if (v != null) new Transform(v) {}
-    else null
+  implicit def jfxTransform2sfx(v: jfxst.Transform): Transform = if (v != null)
+    new Transform(v) {}
+  else null
 
   implicit def jfxTransformChangedEvent2sfx(
       v: jfxst.TransformChangedEvent): TransformChangedEvent =

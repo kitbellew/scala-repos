@@ -133,17 +133,16 @@ class SliceSpec extends Specification with ArbitrarySlice with ScalaCheck {
   //  } }
   //}
 
-  private def concatProjDesc =
-    Seq(
-      ColumnRef(CPath("0"), CLong),
-      ColumnRef(CPath("1"), CBoolean),
-      ColumnRef(CPath("2"), CString),
-      ColumnRef(CPath("3"), CDouble),
-      ColumnRef(CPath("4"), CNum),
-      ColumnRef(CPath("5"), CEmptyObject),
-      ColumnRef(CPath("6"), CEmptyArray),
-      ColumnRef(CPath("7"), CNum)
-    )
+  private def concatProjDesc = Seq(
+    ColumnRef(CPath("0"), CLong),
+    ColumnRef(CPath("1"), CBoolean),
+    ColumnRef(CPath("2"), CString),
+    ColumnRef(CPath("3"), CDouble),
+    ColumnRef(CPath("4"), CNum),
+    ColumnRef(CPath("5"), CEmptyObject),
+    ColumnRef(CPath("6"), CEmptyArray),
+    ColumnRef(CPath("7"), CNum)
+  )
 
   "concat" should {
     "concat arbitrary slices together" in {

@@ -14,15 +14,14 @@ trait MilestoneComponent extends TemplateComponent { self: Profile =>
     val description = column[String]("DESCRIPTION")
     val dueDate = column[java.util.Date]("DUE_DATE")
     val closedDate = column[java.util.Date]("CLOSED_DATE")
-    def * =
-      (
-        userName,
-        repositoryName,
-        milestoneId,
-        title,
-        description.?,
-        dueDate.?,
-        closedDate.?) <> (Milestone.tupled, Milestone.unapply)
+    def * = (
+      userName,
+      repositoryName,
+      milestoneId,
+      title,
+      description.?,
+      dueDate.?,
+      closedDate.?) <> (Milestone.tupled, Milestone.unapply)
 
     def byPrimaryKey(owner: String, repository: String, milestoneId: Int) =
       byMilestone(owner, repository, milestoneId)

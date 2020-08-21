@@ -315,11 +315,10 @@ class FutureTests extends MinimalScalaTest {
     "support pattern matching within a for-comprehension" in {
       case class Req[T](req: T)
       case class Res[T](res: T)
-      def async[T](req: Req[T]) =
-        (req: @unchecked) match {
-          case Req(s: String) => Future { Res(s.length) }
-          case Req(i: Int)    => Future { Res((i * 2).toString) }
-        }
+      def async[T](req: Req[T]) = (req: @unchecked) match {
+        case Req(s: String) => Future { Res(s.length) }
+        case Req(i: Int)    => Future { Res((i * 2).toString) }
+      }
 
       val future1 = for {
         Res(a: Int) <- async(Req("Hello"))
@@ -564,10 +563,9 @@ class FutureTests extends MinimalScalaTest {
     }
 
     "firstCompletedOf" in {
-      def futures =
-        Vector.fill[Future[Int]](10) {
-          Promise[Int]().future
-        } :+ Future.successful[Int](5)
+      def futures = Vector.fill[Future[Int]](10) {
+        Promise[Int]().future
+      } :+ Future.successful[Int](5)
 
       Await.result(Future.firstCompletedOf(futures), defaultTimeout) mustBe (5)
       Await.result(
@@ -644,11 +642,10 @@ class FutureTests extends MinimalScalaTest {
 
     "fold" in {
       val timeout = 10000 millis
-      def async(add: Int, wait: Int) =
-        Future {
-          Thread.sleep(wait)
-          add
-        }
+      def async(add: Int, wait: Int) = Future {
+        Thread.sleep(wait)
+        add
+      }
 
       val futures = (0 to 9) map { idx =>
         async(idx, idx * 20)
@@ -665,15 +662,13 @@ class FutureTests extends MinimalScalaTest {
 
     "fold by composing" in {
       val timeout = 10000 millis
-      def async(add: Int, wait: Int) =
-        Future {
-          Thread.sleep(wait)
-          add
-        }
-      def futures =
-        (0 to 9) map { idx =>
-          async(idx, idx * 20)
-        }
+      def async(add: Int, wait: Int) = Future {
+        Thread.sleep(wait)
+        add
+      }
+      def futures = (0 to 9) map { idx =>
+        async(idx, idx * 20)
+      }
       val folded = futures.foldLeft(Future(0)) { case (fr, fa) =>
         for (r <- fr; a <- fa) yield (r + a)
       }
@@ -682,18 +677,16 @@ class FutureTests extends MinimalScalaTest {
 
     "fold with an exception" in {
       val timeout = 10000 millis
-      def async(add: Int, wait: Int) =
-        Future {
-          Thread.sleep(wait)
-          if (add == 6)
-            throw new IllegalArgumentException(
-              "shouldFoldResultsWithException: expected")
-          add
-        }
-      def futures =
-        (0 to 9) map { idx =>
-          async(idx, idx * 10)
-        }
+      def async(add: Int, wait: Int) = Future {
+        Thread.sleep(wait)
+        if (add == 6)
+          throw new IllegalArgumentException(
+            "shouldFoldResultsWithException: expected")
+        add
+      }
+      def futures = (0 to 9) map { idx =>
+        async(idx, idx * 10)
+      }
       val folded = Future.fold(futures)(0)(_ + _)
       intercept[IllegalArgumentException] {
         Await.result(folded, timeout)
@@ -722,11 +715,10 @@ class FutureTests extends MinimalScalaTest {
     }
 
     "shouldReduceResults" in {
-      def async(idx: Int) =
-        Future {
-          Thread.sleep(idx * 20)
-          idx
-        }
+      def async(idx: Int) = Future {
+        Thread.sleep(idx * 20)
+        idx
+      }
       val timeout = 10000 millis
 
       val futures = (0 to 9) map { async }
@@ -739,19 +731,17 @@ class FutureTests extends MinimalScalaTest {
     }
 
     "shouldReduceResultsWithException" in {
-      def async(add: Int, wait: Int) =
-        Future {
-          Thread.sleep(wait)
-          if (add == 6)
-            throw new IllegalArgumentException(
-              "shouldFoldResultsWithException: expected")
-          else add
-        }
+      def async(add: Int, wait: Int) = Future {
+        Thread.sleep(wait)
+        if (add == 6)
+          throw new IllegalArgumentException(
+            "shouldFoldResultsWithException: expected")
+        else add
+      }
       val timeout = 10000 millis
-      def futures =
-        (1 to 10) map { idx =>
-          async(idx, idx * 10)
-        }
+      def futures = (1 to 10) map { idx =>
+        async(idx, idx * 10)
+      }
       val failed = Future.reduce(futures)(_ + _)
       intercept[IllegalArgumentException] {
         Await.result(failed, timeout)
@@ -768,11 +758,10 @@ class FutureTests extends MinimalScalaTest {
     "shouldTraverseFutures" in {
       object counter {
         var count = -1
-        def incAndGet() =
-          counter.synchronized {
-            count += 2
-            count
-          }
+        def incAndGet() = counter.synchronized {
+          count += 2
+          count
+        }
       }
 
       val oddFutures = List.fill(100)(Future { counter.incAndGet() }).iterator

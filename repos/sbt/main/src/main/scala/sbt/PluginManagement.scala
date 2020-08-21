@@ -27,18 +27,16 @@ final case class PluginManagement(
   def addOverrides(cp: Classpath): PluginManagement =
     addOverrides(extractOverrides(cp))
 
-  def inject: Seq[Setting[_]] =
-    Seq(
-      Keys.dependencyOverrides ++= overrides
-    )
+  def inject: Seq[Setting[_]] = Seq(
+    Keys.dependencyOverrides ++= overrides
+  )
 
   def resetDepth: PluginManagement =
     copy(context = Context(globalPluginProject = false, pluginProjectDepth = 0))
   def forGlobalPlugin: PluginManagement =
     copy(context = Context(globalPluginProject = true, pluginProjectDepth = 0))
-  def forPlugin: PluginManagement =
-    copy(context =
-      context.copy(pluginProjectDepth = context.pluginProjectDepth + 1))
+  def forPlugin: PluginManagement = copy(context =
+    context.copy(pluginProjectDepth = context.pluginProjectDepth + 1))
 }
 object PluginManagement {
   final case class Context private[sbt] (
@@ -68,11 +66,10 @@ object PluginManagement {
       new collection.mutable.HashSet[
         URI
       ] // remember: don't use hashCode/equals on URL
-    def add(urls: Seq[URL]): Unit =
-      synchronized {
-        for (url <- urls)
-          if (urlSet.add(url.toURI))
-            addURL(url)
-      }
+    def add(urls: Seq[URL]): Unit = synchronized {
+      for (url <- urls)
+        if (urlSet.add(url.toURI))
+          addURL(url)
+    }
   }
 }

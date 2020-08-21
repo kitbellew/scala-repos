@@ -158,12 +158,11 @@ object HelpersSpec extends Specification {
 
   "@repeat" should {
     val form = Form(single("foo" -> Forms.seq(Forms.text)))
-    def renderFoo(form: Form[_], min: Int = 1) =
-      repeat
-        .apply(form("foo"), min) { f =>
-          Html(f.name + ":" + f.value.getOrElse(""))
-        }
-        .map(_.toString)
+    def renderFoo(form: Form[_], min: Int = 1) = repeat
+      .apply(form("foo"), min) { f =>
+        Html(f.name + ":" + f.value.getOrElse(""))
+      }
+      .map(_.toString)
 
     val complexForm = Form(
       single(
@@ -173,15 +172,14 @@ object HelpersSpec extends Specification {
               "a" -> Forms.text,
               "b" -> Forms.text
             ))))
-    def renderComplex(form: Form[_], min: Int = 1) =
-      repeat
-        .apply(form("foo"), min) { f =>
-          val a = f("a")
-          val b = f("b")
-          Html(
-            s"${a.name}=${a.value.getOrElse("")},${b.name}=${b.value.getOrElse("")}")
-        }
-        .map(_.toString)
+    def renderComplex(form: Form[_], min: Int = 1) = repeat
+      .apply(form("foo"), min) { f =>
+        val a = f("a")
+        val b = f("b")
+        Html(
+          s"${a.name}=${a.value.getOrElse("")},${b.name}=${b.value.getOrElse("")}")
+      }
+      .map(_.toString)
 
     "render a sequence of fields" in {
       renderFoo(form.fill(Seq("a", "b", "c"))) must exactly(

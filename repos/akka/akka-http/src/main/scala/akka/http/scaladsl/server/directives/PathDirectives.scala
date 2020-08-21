@@ -29,8 +29,8 @@ trait PathDirectives
     * The matcher has to match a prefix of the remaining path.
     * If matched the value extracted by the PathMatcher is extracted on the directive level.
     */
-  def pathPrefix[L](pm: PathMatcher[L]): Directive[L] =
-    rawPathPrefix(Slash ~ pm)
+  def pathPrefix[L](pm: PathMatcher[L]): Directive[L] = rawPathPrefix(
+    Slash ~ pm)
 
   /**
     * Applies the given matcher directly to a prefix of the unmatched path of the
@@ -51,8 +51,8 @@ trait PathDirectives
     * Checks whether the unmatchedPath of the [[RequestContext]] has a prefix matched by the
     * given PathMatcher. In analogy to the `pathPrefix` directive a leading slash is implied.
     */
-  def pathPrefixTest[L](pm: PathMatcher[L]): Directive[L] =
-    rawPathPrefixTest(Slash ~ pm)
+  def pathPrefixTest[L](pm: PathMatcher[L]): Directive[L] = rawPathPrefixTest(
+    Slash ~ pm)
 
   /**
     * Checks whether the unmatchedPath of the [[RequestContext]] has a prefix matched by the

@@ -36,38 +36,36 @@ class Migration @Inject() (
     * All the migrations, that have to be applied.
     * They get applied after the master has been elected.
     */
-  def migrations: List[MigrationAction] =
-    List(
-      StorageVersions(0, 7, 0) -> { () =>
-        Future.failed(
-          new IllegalStateException(
-            "migration from 0.7.x not supported anymore"))
-      },
-      StorageVersions(0, 11, 0) -> { () =>
-        new MigrationTo0_11(groupRepo, appRepo).migrateApps().recover {
-          case NonFatal(e) =>
-            throw new MigrationFailedException(
-              "while migrating storage to 0.11",
-              e)
-        }
-      },
-      StorageVersions(0, 13, 0) -> { () =>
-        new MigrationTo0_13(taskRepo, store).migrate().recover {
-          case NonFatal(e) =>
-            throw new MigrationFailedException(
-              "while migrating storage to 0.13",
-              e)
-        }
-      },
-      StorageVersions(0, 16, 0) -> { () =>
-        new MigrationTo0_16(groupRepo, appRepo).migrate().recover {
-          case NonFatal(e) =>
-            throw new MigrationFailedException(
-              "while migrating storage to 0.16",
-              e)
-        }
+  def migrations: List[MigrationAction] = List(
+    StorageVersions(0, 7, 0) -> { () =>
+      Future.failed(
+        new IllegalStateException("migration from 0.7.x not supported anymore"))
+    },
+    StorageVersions(0, 11, 0) -> { () =>
+      new MigrationTo0_11(groupRepo, appRepo).migrateApps().recover {
+        case NonFatal(e) =>
+          throw new MigrationFailedException(
+            "while migrating storage to 0.11",
+            e)
       }
-    )
+    },
+    StorageVersions(0, 13, 0) -> { () =>
+      new MigrationTo0_13(taskRepo, store).migrate().recover {
+        case NonFatal(e) =>
+          throw new MigrationFailedException(
+            "while migrating storage to 0.13",
+            e)
+      }
+    },
+    StorageVersions(0, 16, 0) -> { () =>
+      new MigrationTo0_16(groupRepo, appRepo).migrate().recover {
+        case NonFatal(e) =>
+          throw new MigrationFailedException(
+            "while migrating storage to 0.16",
+            e)
+      }
+    }
+  )
 
   def applyMigrationSteps(
       from: StorageVersion): Future[List[StorageVersion]] = {
@@ -91,11 +89,10 @@ class Migration @Inject() (
       }
   }
 
-  def initializeStore(): Future[Unit] =
-    store match {
-      case manager: PersistentStoreManagement => manager.initialize()
-      case _: PersistentStore                 => Future.successful(())
-    }
+  def initializeStore(): Future[Unit] = store match {
+    case manager: PersistentStoreManagement => manager.initialize()
+    case _: PersistentStore                 => Future.successful(())
+  }
 
   def migrate(): StorageVersion = {
     val versionFuture = for {
@@ -360,11 +357,10 @@ class MigrationTo0_13(taskRepository: TaskRepository, store: PersistentStore) {
     }
   }
 
-  def migrate(): Future[Unit] =
-    for {
-      _ <- migrateTasks()
-      _ <- renameFrameworkId()
-    } yield ()
+  def migrate(): Future[Unit] = for {
+    _ <- migrateTasks()
+    _ <- renameFrameworkId()
+  } yield ()
 }
 
 /**

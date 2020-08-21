@@ -22,12 +22,11 @@ trait CoordinateSpace[V, @sp(Float, Double) F]
   def basis: Vector[V] = Vector.tabulate(dimensions)(axis)
 
   def dot(v: V, w: V): F = {
-    @tailrec def loop(sum: F, i: Int): F =
-      if (i < dimensions) {
-        loop(scalar.plus(sum, scalar.times(coord(v, i), coord(w, i))), i + 1)
-      } else {
-        sum
-      }
+    @tailrec def loop(sum: F, i: Int): F = if (i < dimensions) {
+      loop(scalar.plus(sum, scalar.times(coord(v, i), coord(w, i))), i + 1)
+    } else {
+      sum
+    }
 
     loop(scalar.zero, 0)
   }

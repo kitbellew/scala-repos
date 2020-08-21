@@ -41,8 +41,8 @@ class XmlRenameHandler extends RenameHandler {
     }
   }
 
-  def isRenaming(dataContext: DataContext): Boolean =
-    isAvailableOnDataContext(dataContext)
+  def isRenaming(dataContext: DataContext): Boolean = isAvailableOnDataContext(
+    dataContext)
 
   def invoke(
       project: Project,
@@ -157,9 +157,8 @@ class XmlRenameHandler extends RenameHandler {
         "first",
         new EmptyExpression {
           override def calculateQuickResult(
-              context: ExpressionContext): Result =
-            new TextResult(
-              Option(element.getTagName).getOrElse(elementStartName))
+              context: ExpressionContext): Result = new TextResult(
+            Option(element.getTagName).getOrElse(elementStartName))
           override def calculateResult(context: ExpressionContext): Result =
             calculateQuickResult(context)
         },

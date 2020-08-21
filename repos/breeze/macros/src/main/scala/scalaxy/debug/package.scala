@@ -150,11 +150,10 @@ package debug {
         }
       }
 
-      def isConstant(tree: Tree) =
-        tree match {
-          case Literal(Constant(_)) => true
-          case _                    => false
-        }
+      def isConstant(tree: Tree) = tree match {
+        case Literal(Constant(_)) => true
+        case _                    => false
+      }
 
       val typedCondition = c.typeCheck(condition.tree) //, typeOf[Boolean])
       c.Expr[Unit](

@@ -46,18 +46,17 @@ class InformationGainStats(
       s"right impurity = $rightImpurity"
   }
 
-  override def equals(o: Any): Boolean =
-    o match {
-      case other: InformationGainStats =>
-        gain == other.gain &&
-          impurity == other.impurity &&
-          leftImpurity == other.leftImpurity &&
-          rightImpurity == other.rightImpurity &&
-          leftPredict == other.leftPredict &&
-          rightPredict == other.rightPredict
+  override def equals(o: Any): Boolean = o match {
+    case other: InformationGainStats =>
+      gain == other.gain &&
+        impurity == other.impurity &&
+        leftImpurity == other.leftImpurity &&
+        rightImpurity == other.rightImpurity &&
+        leftPredict == other.leftPredict &&
+        rightPredict == other.rightPredict
 
-      case _ => false
-    }
+    case _ => false
+  }
 
   override def hashCode: Int = {
     com.google.common.base.Objects.hashCode(
@@ -112,19 +111,17 @@ private[spark] class ImpurityStats(
       s"right impurity = $rightImpurity"
   }
 
-  def leftImpurity: Double =
-    if (leftImpurityCalculator != null) {
-      leftImpurityCalculator.calculate()
-    } else {
-      -1.0
-    }
+  def leftImpurity: Double = if (leftImpurityCalculator != null) {
+    leftImpurityCalculator.calculate()
+  } else {
+    -1.0
+  }
 
-  def rightImpurity: Double =
-    if (rightImpurityCalculator != null) {
-      rightImpurityCalculator.calculate()
-    } else {
-      -1.0
-    }
+  def rightImpurity: Double = if (rightImpurityCalculator != null) {
+    rightImpurityCalculator.calculate()
+  } else {
+    -1.0
+  }
 }
 
 private[spark] object ImpurityStats {

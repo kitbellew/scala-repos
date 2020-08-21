@@ -126,24 +126,23 @@ case class HttpDigestAuthentication(realmName: String)(
 
   override def shutDown = NonceWatcher ! ShutDown
 
-  def getInfo(req: Req): Box[DigestAuthentication] =
-    header(req).map(auth => {
+  def getInfo(req: Req): Box[DigestAuthentication] = header(req).map(auth => {
 
-      val info = auth.substring(7, auth.length)
-      val pairs = splitNameValuePairs(info)
-      DigestAuthentication(
-        req.request.method.toUpperCase,
-        pairs("username"),
-        pairs("realm"),
-        pairs("nonce"),
-        pairs("uri"),
-        pairs("qop"),
-        pairs("nc"),
-        pairs("cnonce"),
-        pairs("response"),
-        pairs("opaque")
-      )
-    })
+    val info = auth.substring(7, auth.length)
+    val pairs = splitNameValuePairs(info)
+    DigestAuthentication(
+      req.request.method.toUpperCase,
+      pairs("username"),
+      pairs("realm"),
+      pairs("nonce"),
+      pairs("uri"),
+      pairs("qop"),
+      pairs("nc"),
+      pairs("cnonce"),
+      pairs("response"),
+      pairs("opaque")
+    )
+  })
 
   /**
     * The period in milli seconds during which the nonce sent by server is valid. After this period

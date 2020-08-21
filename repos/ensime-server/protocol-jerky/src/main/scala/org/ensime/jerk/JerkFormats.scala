@@ -24,21 +24,19 @@ private object JerkConversions extends DefaultJsonProtocol with FamilyFormats {
 
   // move to somewhere more general
   implicit object FileFormat extends JsonFormat[File] {
-    def read(j: JsValue): File =
-      j match {
-        case JsString(path) => File(path)
-        case other          => unexpectedJson[File](other)
-      }
+    def read(j: JsValue): File = j match {
+      case JsString(path) => File(path)
+      case other          => unexpectedJson[File](other)
+    }
     def write(f: File): JsValue = JsString(f.getPath)
   }
 
   // keeps the JSON a little bit cleaner
   implicit object DebugThreadIdFormat extends JsonFormat[DebugThreadId] {
-    def read(j: JsValue): DebugThreadId =
-      j match {
-        case JsNumber(id) => new DebugThreadId(id.longValue)
-        case other        => unexpectedJson[DebugThreadId](other)
-      }
+    def read(j: JsValue): DebugThreadId = j match {
+      case JsNumber(id) => new DebugThreadId(id.longValue)
+      case other        => unexpectedJson[DebugThreadId](other)
+    }
     def write(dtid: DebugThreadId): JsValue = JsNumber(dtid.id)
   }
 

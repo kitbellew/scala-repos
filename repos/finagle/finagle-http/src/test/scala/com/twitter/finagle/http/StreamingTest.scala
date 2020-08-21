@@ -128,16 +128,15 @@ class StreamingTest extends FunSuite with Eventually {
     val writer = Reader.writable()
 
     val service = new Service[Request, Response] {
-      def apply(req: Request) =
-        n.getAndIncrement() match {
-          case 0 =>
-            req.reader.read(1).unit proxyTo readp
-            Future.value(ok(writer))
-          case _ =>
-            val writer = Reader.writable()
-            fail ensure (writer.write(buf) ensure writer.close())
-            Future.value(ok(writer))
-        }
+      def apply(req: Request) = n.getAndIncrement() match {
+        case 0 =>
+          req.reader.read(1).unit proxyTo readp
+          Future.value(ok(writer))
+        case _ =>
+          val writer = Reader.writable()
+          fail ensure (writer.write(buf) ensure writer.close())
+          Future.value(ok(writer))
+      }
     }
 
     val server = startServer(
@@ -182,16 +181,15 @@ class StreamingTest extends FunSuite with Eventually {
     (fail before writeLots(writer, buf)) proxyTo writep
 
     val service = new Service[Request, Response] {
-      def apply(req: Request) =
-        n.getAndIncrement() match {
-          case 0 =>
-            writep ensure req.reader.read(1).unit proxyTo readp
-            Future.value(ok(writer))
-          case _ =>
-            val writer = Reader.writable()
-            fail ensure (writer.write(buf) ensure writer.close())
-            Future.value(ok(writer))
-        }
+      def apply(req: Request) = n.getAndIncrement() match {
+        case 0 =>
+          writep ensure req.reader.read(1).unit proxyTo readp
+          Future.value(ok(writer))
+        case _ =>
+          val writer = Reader.writable()
+          fail ensure (writer.write(buf) ensure writer.close())
+          Future.value(ok(writer))
+      }
     }
 
     val server = startServer(
@@ -232,17 +230,16 @@ class StreamingTest extends FunSuite with Eventually {
     val fail = new Promise[Unit]
 
     val service = new Service[Request, Response] {
-      def apply(req: Request) =
-        n.getAndIncrement() match {
-          case 0 =>
-            val writer = Reader.writable()
-            fail ensure writer.fail(new Exception)
-            Future.value(ok(writer))
-          case _ =>
-            val writer = Reader.writable()
-            fail ensure (writer.write(buf) ensure writer.close())
-            Future.value(ok(writer))
-        }
+      def apply(req: Request) = n.getAndIncrement() match {
+        case 0 =>
+          val writer = Reader.writable()
+          fail ensure writer.fail(new Exception)
+          Future.value(ok(writer))
+        case _ =>
+          val writer = Reader.writable()
+          fail ensure (writer.write(buf) ensure writer.close())
+          Future.value(ok(writer))
+      }
     }
 
     val server = startServer(service, identity)
@@ -271,18 +268,17 @@ class StreamingTest extends FunSuite with Eventually {
     val fail = new Promise[Unit]
 
     val service = new Service[Request, Response] {
-      def apply(req: Request) =
-        n.getAndIncrement() match {
-          case 0 =>
-            fail ensure req.reader.discard()
-            val writer = Reader.writable()
-            fail ensure (writer.write(buf) ensure writer.close())
-            Future.value(ok(writer))
-          case _ =>
-            val writer = Reader.writable()
-            fail ensure (writer.write(buf) ensure writer.close())
-            Future.value(ok(writer))
-        }
+      def apply(req: Request) = n.getAndIncrement() match {
+        case 0 =>
+          fail ensure req.reader.discard()
+          val writer = Reader.writable()
+          fail ensure (writer.write(buf) ensure writer.close())
+          Future.value(ok(writer))
+        case _ =>
+          val writer = Reader.writable()
+          fail ensure (writer.write(buf) ensure writer.close())
+          Future.value(ok(writer))
+      }
     }
 
     val server = startServer(service, identity)

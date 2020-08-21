@@ -42,8 +42,8 @@ class MenuButtonSpec
       classOf[MenuButton])
     with RunOnApplicationThread {
 
-  override protected def getScalaClassInstance =
-    new MenuButton(new jfxsc.MenuButton())
+  override protected def getScalaClassInstance = new MenuButton(
+    new jfxsc.MenuButton())
 
   override protected def getJavaClassInstance = new jfxsc.MenuButton()
 

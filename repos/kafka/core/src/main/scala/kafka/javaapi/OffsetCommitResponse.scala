@@ -38,6 +38,6 @@ class OffsetCommitResponse(
 }
 
 object OffsetCommitResponse {
-  def readFrom(buffer: ByteBuffer) =
-    new OffsetCommitResponse(kafka.api.OffsetCommitResponse.readFrom(buffer))
+  def readFrom(buffer: ByteBuffer) = new OffsetCommitResponse(
+    kafka.api.OffsetCommitResponse.readFrom(buffer))
 }

@@ -58,8 +58,8 @@ final case class OptionT[F[_], A](run: F[Option[A]]) {
 
   def isEmpty(implicit F: Functor[F]): F[Boolean] = mapO(_.isEmpty)
 
-  def filter(f: A => Boolean)(implicit F: Functor[F]): OptionT[F, A] =
-    OptionT(F.map(self.run) { _ filter f })
+  def filter(f: A => Boolean)(implicit F: Functor[F]): OptionT[F, A] = OptionT(
+    F.map(self.run) { _ filter f })
 
   def fold[X](some: A => X, none: => X)(implicit F: Functor[F]): F[X] =
     mapO {
@@ -67,8 +67,8 @@ final case class OptionT[F[_], A](run: F[Option[A]]) {
       case Some(a) => some(a)
     }
 
-  def getOrElse(default: => A)(implicit F: Functor[F]): F[A] =
-    mapO(_.getOrElse(default))
+  def getOrElse(default: => A)(implicit F: Functor[F]): F[A] = mapO(
+    _.getOrElse(default))
 
   /** Alias for `getOrElse`. */
   def |(default: => A)(implicit F: Functor[F]): F[A] = getOrElse(default)
@@ -83,11 +83,11 @@ final case class OptionT[F[_], A](run: F[Option[A]]) {
 
   def unary_~(implicit F0: Functor[F], M0: Monoid[A]): F[A] = orZero
 
-  def exists(f: A => Boolean)(implicit F: Functor[F]): F[Boolean] =
-    mapO(_.exists(f))
+  def exists(f: A => Boolean)(implicit F: Functor[F]): F[Boolean] = mapO(
+    _.exists(f))
 
-  def forall(f: A => Boolean)(implicit F: Functor[F]): F[Boolean] =
-    mapO(_.forall(f))
+  def forall(f: A => Boolean)(implicit F: Functor[F]): F[Boolean] = mapO(
+    _.forall(f))
 
   def orElse(a: => OptionT[F, A])(implicit F: Monad[F]): OptionT[F, A] =
     OptionT(F.bind(run) {
@@ -99,15 +99,15 @@ final case class OptionT[F[_], A](run: F[Option[A]]) {
     orElse(a)
 
   /** @since 7.0.3 */
-  def toRight[E](e: => E)(implicit F: Functor[F]): EitherT[F, E, A] =
-    EitherT(F.map(run)(std.option.toRight(_)(e)))
+  def toRight[E](e: => E)(implicit F: Functor[F]): EitherT[F, E, A] = EitherT(
+    F.map(run)(std.option.toRight(_)(e)))
 
   def toListT(implicit F: Functor[F]): ListT[F, A] =
     ListT[F, A](F.map(run)(_.toList))
 
   /** @since 7.0.3 */
-  def toLeft[B](b: => B)(implicit F: Functor[F]): EitherT[F, A, B] =
-    EitherT(F.map(run)(std.option.toLeft(_)(b)))
+  def toLeft[B](b: => B)(implicit F: Functor[F]): EitherT[F, A, B] = EitherT(
+    F.map(run)(std.option.toLeft(_)(b)))
 
   private def mapO[B](f: Option[A] => B)(implicit F: Functor[F]) = F.map(run)(f)
 }

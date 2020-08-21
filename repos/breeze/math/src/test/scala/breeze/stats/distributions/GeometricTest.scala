@@ -40,17 +40,14 @@ class GeometricTest
     (p - q).abs / (p.abs / 2 + q.abs / 2 + 1) < 1e-1
   }
 
-  def arbParameter =
-    Arbitrary {
-      for (p <- arbitrary[Double].map { m => (math.abs(m) % 1.0) + 1e-3 })
-        yield p
-    }
+  def arbParameter = Arbitrary {
+    for (p <- arbitrary[Double].map { m => (math.abs(m) % 1.0) + 1e-3 }) yield p
+  }
 
-  def arbDistr =
-    Arbitrary {
-      for (p <- arbitrary[Double].map { m => (math.abs(m) % 1.0) + 1e-3 })
-        yield new Geometric(p)(RandBasis.mt0)
-    }
+  def arbDistr = Arbitrary {
+    for (p <- arbitrary[Double].map { m => (math.abs(m) % 1.0) + 1e-3 })
+      yield new Geometric(p)(RandBasis.mt0)
+  }
 
   def asDouble(x: Int) = x.toDouble
   def fromDouble(x: Double) = x.toInt

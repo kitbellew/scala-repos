@@ -94,8 +94,8 @@ trait ConversionImplicits {
       context: Context): UnitConversion = new UnitConversion(ext)(context)
 
   @inline implicit def Int2resource(ext: Int)(implicit
-      context: Context): ResourceConversion =
-    new ResourceConversion(ext)(context)
+      context: Context): ResourceConversion = new ResourceConversion(ext)(
+    context)
 
   // r2String is not provided because it is ambiguous with r2Text
   @inline implicit def r2Text(id: Int)(implicit
@@ -200,9 +200,8 @@ class RichCursor(c: Cursor) extends Iterable[Cursor] {
     }
   }
 
-  def closeAfter[T](body: RichCursor => T) =
-    try body(this)
-    finally c.close()
+  def closeAfter[T](body: RichCursor => T) = try body(this)
+  finally c.close()
 
   def orm[T](body: Cursor => T) = closeAfter(_.map(body).toList)
 

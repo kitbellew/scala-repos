@@ -51,15 +51,14 @@ class StringConverterSpec extends FlatSpec {
   object TFBooleanConverter extends StringConverter[Boolean] {
     def toString(b: Boolean) = if (b) "t" else "f"
 
-    def fromString(s: String) =
-      s match {
-        case "t" => true
-        case "f" => false
-        case _ =>
-          throw new java.text.ParseException(
-            "'%s' can not be converted to a boolean".format(s),
-            0)
-      }
+    def fromString(s: String) = s match {
+      case "t" => true
+      case "f" => false
+      case _ =>
+        throw new java.text.ParseException(
+          "'%s' can not be converted to a boolean".format(s),
+          0)
+    }
   }
 
   // Getting decimal and group separator from current Locale

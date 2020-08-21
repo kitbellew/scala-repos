@@ -147,24 +147,23 @@ trait NormalizationSpecs extends EvalStackSpecs {
         ids must haveSize(0)
         models.keySet mustEqual Set("model1", "model2", "model3")
 
-        def testModels(sv: SValue) =
-          sv must beLike {
-            case SObject(model) if model.keySet == Set("height") => {
-              val SObject(summary) = model("height")
-              summary mustEqual heightResult
-            }
-
-            case SObject(summary) =>
-              summary mustEqual ageResult
-
-            case SArray(model) => {
-              model must haveSize(1)
-              val SObject(summary) = model(0)
-              summary mustEqual weightResult
-            }
-
-            case _ => ko
+        def testModels(sv: SValue) = sv must beLike {
+          case SObject(model) if model.keySet == Set("height") => {
+            val SObject(summary) = model("height")
+            summary mustEqual heightResult
           }
+
+          case SObject(summary) =>
+            summary mustEqual ageResult
+
+          case SArray(model) => {
+            model must haveSize(1)
+            val SObject(summary) = model(0)
+            summary mustEqual weightResult
+          }
+
+          case _ => ko
+        }
 
         testModels(models("model1"))
         testModels(models("model2"))
@@ -561,11 +560,10 @@ trait NormalizationSpecs extends EvalStackSpecs {
 
     def clusterSchema(
         obj: Map[String, SValue],
-        clusterId: String): Set[String] =
-      obj(clusterId) match {
-        case SObject(ctr) => ctr.keySet
-        case _            => sys.error("malformed SObject")
-      }
+        clusterId: String): Set[String] = obj(clusterId) match {
+      case SObject(ctr) => ctr.keySet
+      case _            => sys.error("malformed SObject")
+    }
 
     result must haveAllElementsLike {
       case (ids, SObject(elems)) =>

@@ -68,14 +68,13 @@ trait Paginator[T] extends Loggable {
     * Returns a list of page numbers to be displayed in 'zoomed' mode, i.e.,
     * as the page numbers get further from the current page, they are more sparse.
     */
-  def zoomedPages =
-    (
-      List(curPage - 1020, curPage - 120, curPage - 20) ++
-        (curPage - 10 to curPage + 10) ++
-        List(curPage + 20, curPage + 120, curPage + 1020)
-    ) filter { n =>
-      n >= 0 && n < numPages
-    }
+  def zoomedPages = (
+    List(curPage - 1020, curPage - 120, curPage - 20) ++
+      (curPage - 10 to curPage + 10) ++
+      List(curPage + 20, curPage + 120, curPage + 1020)
+  ) filter { n =>
+    n >= 0 && n < numPages
+  }
 }
 
 /**
@@ -120,16 +119,15 @@ trait SortedPaginator[T, C] extends Paginator[T] {
     * Example usage:
     * sortedPaginator.sort = sortedPaginator.sortedBy(columns.indexOf(clickedColumn))
     */
-  def sortedBy(column: Int): SortState =
-    sort match {
-      case (
-            `column`,
-            true
-          ) => // descending is only if it was already sorted ascending
-        (column, false)
-      case _ =>
-        (column, true)
-    }
+  def sortedBy(column: Int): SortState = sort match {
+    case (
+          `column`,
+          true
+        ) => // descending is only if it was already sorted ascending
+      (column, false)
+    case _ =>
+      (column, true)
+  }
 }
 
 /**
@@ -316,13 +314,12 @@ trait SortedPaginatorSnippet[T, C]
   /**
     * Calculates the page url taking sorting into account.
     */
-  def sortedPageUrl(offset: Long, sort: (Int, Boolean)) =
-    sort match {
-      case (col, ascending) =>
-        appendParams(
-          super.pageUrl(offset),
-          List(sortParam -> col.toString, ascendingParam -> ascending.toString))
-    }
+  def sortedPageUrl(offset: Long, sort: (Int, Boolean)) = sort match {
+    case (col, ascending) =>
+      appendParams(
+        super.pageUrl(offset),
+        List(sortParam -> col.toString, ascendingParam -> ascending.toString))
+  }
 
   /**
     * Overrides pageUrl and delegates to sortedPageUrl using the current sort
@@ -332,14 +329,13 @@ trait SortedPaginatorSnippet[T, C]
   /**
     * Overrides sort, giving the URL query parameters precedence
     */
-  override def sort =
-    super.sort match {
-      case (col, ascending) =>
-        (
-          S.param("sort").map(toInt) openOr col,
-          S.param("asc").map(toBoolean) openOr ascending
-        )
-    }
+  override def sort = super.sort match {
+    case (col, ascending) =>
+      (
+        S.param("sort").map(toInt) openOr col,
+        S.param("asc").map(toBoolean) openOr ascending
+      )
+  }
 
   /**
     * This method binds template HTML based according to the specified

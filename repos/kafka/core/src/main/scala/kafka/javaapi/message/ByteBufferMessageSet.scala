@@ -56,9 +56,8 @@ class ByteBufferMessageSet(val buffer: ByteBuffer) extends MessageSet {
         underlyingIterator.next
       }
 
-      override def remove =
-        throw new UnsupportedOperationException(
-          "remove API on MessageSet is not supported")
+      override def remove = throw new UnsupportedOperationException(
+        "remove API on MessageSet is not supported")
     }
 
   override def toString: String = underlying.toString

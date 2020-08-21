@@ -135,26 +135,25 @@ private[finagle] case class Netty4Listener[In, Out](
         *
         * @return a [[Future]] representing the shutdown of the boss threadpool.
         */
-      def closeServer(deadline: Time) =
-        closeAwaitably {
-          // note: this ultimately calls close(2) on
-          // a non-blocking socket so it should not block.
-          ch.close().awaitUninterruptibly()
+      def closeServer(deadline: Time) = closeAwaitably {
+        // note: this ultimately calls close(2) on
+        // a non-blocking socket so it should not block.
+        ch.close().awaitUninterruptibly()
 
-          val p = new Promise[Unit]
+        val p = new Promise[Unit]
 
-          // The boss loop immediately starts refusing new work.
-          // Existing tasks have ``deadline`` time to finish executing.
-          bossLoop
-            .shutdownGracefully(
-              0 /* quietPeriod */,
-              deadline.inMillis /* timeout */,
-              TimeUnit.MILLISECONDS)
-            .addListener(new GenericFutureListener[Nothing] {
-              def operationComplete(future: Nothing): Unit = p.setDone()
-            })
-          p
-        }
+        // The boss loop immediately starts refusing new work.
+        // Existing tasks have ``deadline`` time to finish executing.
+        bossLoop
+          .shutdownGracefully(
+            0 /* quietPeriod */,
+            deadline.inMillis /* timeout */,
+            TimeUnit.MILLISECONDS)
+          .addListener(new GenericFutureListener[Nothing] {
+            def operationComplete(future: Nothing): Unit = p.setDone()
+          })
+        p
+      }
 
       def boundAddress: SocketAddress = ch.localAddress()
     }

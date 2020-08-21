@@ -45,15 +45,14 @@ final class ChatApi(
 
     private[ChatApi] def makeLine(
         userId: String,
-        t1: String): Fu[Option[UserLine]] =
-      UserRepo byId userId map {
-        _ flatMap { user =>
-          Writer cut t1 ifFalse user.disabled flatMap { t2 =>
-            flood.allowMessage(user.id, t2) option
-              UserLine(user.username, Writer preprocessUserInput t2, user.troll)
-          }
+        t1: String): Fu[Option[UserLine]] = UserRepo byId userId map {
+      _ flatMap { user =>
+        Writer cut t1 ifFalse user.disabled flatMap { t2 =>
+          flood.allowMessage(user.id, t2) option
+            UserLine(user.username, Writer preprocessUserInput t2, user.troll)
         }
       }
+    }
   }
 
   object playerChat {
@@ -82,25 +81,24 @@ final class ChatApi(
       }
   }
 
-  private def pushLine(chatId: ChatId, line: Line) =
-    coll.update(
-      BSONDocument("_id" -> chatId),
-      BSONDocument(
-        "$push" -> BSONDocument(
-          Chat.BSONFields.lines -> BSONDocument(
-            "$each" -> List(line),
-            "$slice" -> -maxLinesPerChat)
-        )),
-      upsert = true
-    ) >>- lila.mon.chat.message()
+  private def pushLine(chatId: ChatId, line: Line) = coll.update(
+    BSONDocument("_id" -> chatId),
+    BSONDocument(
+      "$push" -> BSONDocument(
+        Chat.BSONFields.lines -> BSONDocument(
+          "$each" -> List(line),
+          "$slice" -> -maxLinesPerChat)
+      )),
+    upsert = true
+  ) >>- lila.mon.chat.message()
 
   private object Writer {
 
     import java.util.regex.Matcher.quoteReplacement
     import org.apache.commons.lang3.StringEscapeUtils.escapeHtml4
 
-    def preprocessUserInput(in: String) =
-      delocalize(noPrivateUrl(escapeHtml4(in)))
+    def preprocessUserInput(in: String) = delocalize(
+      noPrivateUrl(escapeHtml4(in)))
 
     def cut(text: String) = Some(text.trim take 140) filter (_.nonEmpty)
     val delocalize = new lila.common.String.Delocalizer(netDomain)

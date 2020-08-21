@@ -24,21 +24,20 @@ object Analyse extends LilaController {
   private def bookmarkApi = Env.bookmark.api
   private val divider = Env.game.cached.Divider
 
-  def requestAnalysis(id: String) =
-    Auth { implicit ctx => me =>
-      OptionFuResult(GameRepo game id) { game =>
-        Env.fishnet.analyser(
-          game,
-          lila.fishnet.Work.Sender(
-            userId = me.id.some,
-            ip = HTTPRequest.lastRemoteAddress(ctx.req).some,
-            mod = isGranted(_.Hunter),
-            system = false)) map {
-          case true  => Ok(html.analyse.computing(id))
-          case false => Unauthorized
-        }
+  def requestAnalysis(id: String) = Auth { implicit ctx => me =>
+    OptionFuResult(GameRepo game id) { game =>
+      Env.fishnet.analyser(
+        game,
+        lila.fishnet.Work.Sender(
+          userId = me.id.some,
+          ip = HTTPRequest.lastRemoteAddress(ctx.req).some,
+          mod = isGranted(_.Hunter),
+          system = false)) map {
+        case true  => Ok(html.analyse.computing(id))
+        case false => Unauthorized
       }
     }
+  }
 
   def replay(pov: Pov, userTv: Option[lila.user.User])(implicit ctx: Context) =
     if (HTTPRequest isBot ctx.req) replayBot(pov)

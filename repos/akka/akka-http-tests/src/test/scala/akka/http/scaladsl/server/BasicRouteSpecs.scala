@@ -138,8 +138,9 @@ class BasicRouteSpecs extends RoutingSpec {
     "re-execute inner routes every time" in {
       var a = ""
       val dynamicRoute = get { a += "x"; complete(a) }
-      def expect(route: Route, s: String) =
-        Get() ~> route ~> check { responseAs[String] shouldEqual s }
+      def expect(route: Route, s: String) = Get() ~> route ~> check {
+        responseAs[String] shouldEqual s
+      }
 
       expect(dynamicRoute, "x")
       expect(dynamicRoute, "xx")

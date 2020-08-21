@@ -11,24 +11,23 @@ private[parser] trait AcceptEncodingHeader {
   this: Parser with CommonRules with CommonActions ⇒
 
   // http://tools.ietf.org/html/rfc7231#section-5.3.4
-  def `accept-encoding` =
-    rule {
-      zeroOrMore(`encoding-range-decl`).separatedBy(
-        listSep) ~ EOI ~> (`Accept-Encoding`(_))
-    }
+  def `accept-encoding` = rule {
+    zeroOrMore(`encoding-range-decl`).separatedBy(
+      listSep) ~ EOI ~> (`Accept-Encoding`(_))
+  }
 
-  def `encoding-range-decl` =
-    rule {
-      codings ~ optional(weight) ~> { (range, optQ) ⇒
-        optQ match {
-          case None ⇒ range
-          case Some(q) ⇒ range withQValue q
-        }
+  def `encoding-range-decl` = rule {
+    codings ~ optional(weight) ~> { (range, optQ) ⇒
+      optQ match {
+        case None ⇒ range
+        case Some(q) ⇒ range withQValue q
       }
     }
+  }
 
-  def codings =
-    rule { ws('*') ~ push(HttpEncodingRange.`*`) | token ~> getEncoding }
+  def codings = rule {
+    ws('*') ~ push(HttpEncodingRange.`*`) | token ~> getEncoding
+  }
 
   private val getEncoding: String ⇒ HttpEncodingRange =
     name ⇒

@@ -49,12 +49,11 @@ class SortedBufferSpec[E]
       classOf[jfxct.SortedList[E]],
       classOf[SortedBuffer[E]]) {
 
-  override def getScalaClassInstance =
-    new SortedBuffer(ObservableBuffer.empty[E])
+  override def getScalaClassInstance = new SortedBuffer(
+    ObservableBuffer.empty[E])
 
-  override def getJavaClassInstance =
-    new jfxct.SortedList(
-      jfxc.FXCollections.observableList[E](new ju.ArrayList[E]))
+  override def getJavaClassInstance = new jfxct.SortedList(
+    jfxc.FXCollections.observableList[E](new ju.ArrayList[E]))
 
   it should "assing comparator correctly" in {
 

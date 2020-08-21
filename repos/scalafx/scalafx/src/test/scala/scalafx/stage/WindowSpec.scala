@@ -44,8 +44,8 @@ class WindowSpec
       classOf[jfxs.Window],
       classOf[Window]) {
 
-  override protected def getScalaClassInstance =
-    new Window(this.getJavaClassInstance) {}
+  override protected def getScalaClassInstance = new Window(
+    this.getJavaClassInstance) {}
 
   override protected def getJavaClassInstance = new jfxs.Window {}
 

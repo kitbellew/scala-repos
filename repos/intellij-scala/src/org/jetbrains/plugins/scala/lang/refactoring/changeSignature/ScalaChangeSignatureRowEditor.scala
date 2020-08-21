@@ -82,8 +82,8 @@ class ScalaChangeSignatureRowEditor(
     letters * Toolkit.getDefaultToolkit.getFontMetrics(font).stringWidth("W")
   }
 
-  def getTypesColumnWidth: Int =
-    getColumnWidth(dialog.getNamesMaxLength + 2 + dialog.getTypesMaxLength)
+  def getTypesColumnWidth: Int = getColumnWidth(
+    dialog.getNamesMaxLength + 2 + dialog.getTypesMaxLength)
 
   def getNamesColumnWidth: Int = getColumnWidth(dialog.getNamesMaxLength + 2)
 

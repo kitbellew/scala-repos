@@ -102,12 +102,11 @@ object HttpEntity {
       extends HttpEntity {
     def isKnownEmpty = false
     def dataStream = data
-    def asJava =
-      new JHttpEntity.Streamed(
-        data.asJava,
-        OptionConverters.toJava(
-          contentLength.asInstanceOf[Option[java.lang.Long]]),
-        OptionConverters.toJava(contentType))
+    def asJava = new JHttpEntity.Streamed(
+      data.asJava,
+      OptionConverters.toJava(
+        contentLength.asInstanceOf[Option[java.lang.Long]]),
+      OptionConverters.toJava(contentType))
     def as(contentType: String) = copy(contentType = Some(contentType))
   }
 
@@ -126,14 +125,12 @@ object HttpEntity {
       extends HttpEntity {
     def isKnownEmpty = false
     def contentLength = None
-    def dataStream =
-      chunks.collect { case HttpChunk.Chunk(data) =>
-        data
-      }
-    def asJava =
-      new JHttpEntity.Chunked(
-        chunks.asJava,
-        OptionConverters.toJava(contentType))
+    def dataStream = chunks.collect { case HttpChunk.Chunk(data) =>
+      data
+    }
+    def asJava = new JHttpEntity.Chunked(
+      chunks.asJava,
+      OptionConverters.toJava(contentType))
     def as(contentType: String) = copy(contentType = Some(contentType))
   }
 }

@@ -6,10 +6,9 @@ object Dual extends DualInstances {
 
 sealed abstract class DualInstances0 {
   implicit def dualSemigroup[F](implicit
-      F0: Semigroup[F]): Semigroup[F @@ Tags.Dual] =
-    new DualSemigroup[F] {
-      implicit def F = F0
-    }
+      F0: Semigroup[F]): Semigroup[F @@ Tags.Dual] = new DualSemigroup[F] {
+    implicit def F = F0
+  }
 }
 
 sealed abstract class DualInstances extends DualInstances0 {
@@ -24,8 +23,8 @@ sealed abstract class DualInstances extends DualInstances0 {
 
 private trait DualSemigroup[F] extends Semigroup[F @@ Tags.Dual] {
   implicit def F: Semigroup[F]
-  def append(f1: F @@ Tags.Dual, f2: => F @@ Tags.Dual) =
-    Tag(F.append(Tag.unwrap(f2), Tag.unwrap(f1)))
+  def append(f1: F @@ Tags.Dual, f2: => F @@ Tags.Dual) = Tag(
+    F.append(Tag.unwrap(f2), Tag.unwrap(f1)))
 }
 
 private trait DualMonoid[F]

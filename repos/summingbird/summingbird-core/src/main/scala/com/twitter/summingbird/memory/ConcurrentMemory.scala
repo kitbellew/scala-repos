@@ -141,11 +141,10 @@ object PhysicalNode {
     */
   case class Writer[T](queue: BlockingQueue[T], target: PhysicalNode[T])
       extends PhysicalNode[T] {
-    def push(item: T)(implicit ec: ExecutionContext) =
-      for {
-        _ <- Future(queue.put(item))
-        _ <- target.push(item)
-      } yield ()
+    def push(item: T)(implicit ec: ExecutionContext) = for {
+      _ <- Future(queue.put(item))
+      _ <- target.push(item)
+    } yield ()
   }
 }
 

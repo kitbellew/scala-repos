@@ -49,12 +49,11 @@ object CustomRoute {
       def receive = { case msg: CamelMessage =>
         throw new Exception("error: %s" format msg.body)
       }
-      override def onRouteDefinition =
-        (rd) =>
-          rd.onException(classOf[Exception])
-            .handled(true)
-            .transform(Builder.exceptionMessage)
-            .end
+      override def onRouteDefinition = (rd) =>
+        rd.onException(classOf[Exception])
+          .handled(true)
+          .transform(Builder.exceptionMessage)
+          .end
 
       final override def preRestart(reason: Throwable, message: Option[Any]) {
         sender() ! Failure(reason)

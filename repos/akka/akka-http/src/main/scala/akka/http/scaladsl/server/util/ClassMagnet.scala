@@ -18,8 +18,8 @@ trait ClassMagnet[T] {
   def extractPF: PartialFunction[Any, T]
 }
 object ClassMagnet {
-  implicit def fromClass[T](c: Class[T]): ClassMagnet[T] =
-    ClassMagnet(ClassTag(c))
+  implicit def fromClass[T](c: Class[T]): ClassMagnet[T] = ClassMagnet(
+    ClassTag(c))
   implicit def fromUnit[T](u: Unit)(implicit tag: ClassTag[T]): ClassMagnet[T] =
     ClassMagnet(tag)
 

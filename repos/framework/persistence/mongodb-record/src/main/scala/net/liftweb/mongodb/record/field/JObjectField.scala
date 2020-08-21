@@ -38,28 +38,26 @@ class JObjectField[OwnerType <: BsonRecord[OwnerType]](rec: OwnerType)
 
   def asJValue: JValue = valueBox openOr (JNothing: JValue)
 
-  def setFromJValue(jvalue: JValue): Box[JObject] =
-    jvalue match {
-      case JNothing | JNull if optional_? => setBox(Empty)
-      case jo: JObject                    => setBox(Full(jo))
-      case other                          => setBox(FieldHelpers.expectedA("JObject", other))
-    }
+  def setFromJValue(jvalue: JValue): Box[JObject] = jvalue match {
+    case JNothing | JNull if optional_? => setBox(Empty)
+    case jo: JObject                    => setBox(Full(jo))
+    case other                          => setBox(FieldHelpers.expectedA("JObject", other))
+  }
 
   def defaultValue = JObject(List())
 
-  def setFromAny(in: Any): Box[JObject] =
-    in match {
-      case dbo: DBObject                   => setBox(setFromDBObject(dbo))
-      case jv: JObject                     => setBox(Full(jv))
-      case Some(jv: JObject)               => setBox(Full(jv))
-      case Full(jv: JObject)               => setBox(Full(jv))
-      case seq: Seq[_] if !seq.isEmpty     => seq.map(setFromAny).apply(0)
-      case (s: String) :: _                => setFromString(s)
-      case null                            => setBox(Full(null))
-      case s: String                       => setFromString(s)
-      case None | Empty | Failure(_, _, _) => setBox(Full(null))
-      case o                               => setFromString(o.toString)
-    }
+  def setFromAny(in: Any): Box[JObject] = in match {
+    case dbo: DBObject                   => setBox(setFromDBObject(dbo))
+    case jv: JObject                     => setBox(Full(jv))
+    case Some(jv: JObject)               => setBox(Full(jv))
+    case Full(jv: JObject)               => setBox(Full(jv))
+    case seq: Seq[_] if !seq.isEmpty     => seq.map(setFromAny).apply(0)
+    case (s: String) :: _                => setFromString(s)
+    case null                            => setBox(Full(null))
+    case s: String                       => setFromString(s)
+    case None | Empty | Failure(_, _, _) => setBox(Full(null))
+    case o                               => setFromString(o.toString)
+  }
 
   // assume string is json
   def setFromString(in: String): Box[JObject] = {
@@ -69,10 +67,9 @@ class JObjectField[OwnerType <: BsonRecord[OwnerType]](rec: OwnerType)
 
   def toForm: Box[NodeSeq] = Empty
 
-  def asDBObject: DBObject =
-    valueBox
-      .map { v => JObjectParser.parse(v)(owner.meta.formats) }
-      .openOr(new BasicDBObject)
+  def asDBObject: DBObject = valueBox
+    .map { v => JObjectParser.parse(v)(owner.meta.formats) }
+    .openOr(new BasicDBObject)
 
   def setFromDBObject(obj: DBObject): Box[JObject] =
     Full(JObjectParser.serialize(obj)(owner.meta.formats).asInstanceOf[JObject])

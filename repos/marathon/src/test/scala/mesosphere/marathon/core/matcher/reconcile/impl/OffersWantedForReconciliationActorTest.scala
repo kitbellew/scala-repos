@@ -108,11 +108,10 @@ class OffersWantedForReconciliationActorTest
 
     private[this] var scheduleNextCheckCalls_ = 0
     def scheduleNextCheckCalls = synchronized(scheduleNextCheckCalls_)
-    def scheduleNextCheck: Cancellable =
-      synchronized {
-        scheduleNextCheckCalls_ += 1
-        cancellable
-      }
+    def scheduleNextCheck: Cancellable = synchronized {
+      scheduleNextCheckCalls_ += 1
+      cancellable
+    }
 
     lazy val actorInstance = new OffersWantedForReconciliationActor(
       reviveOffersConfig,

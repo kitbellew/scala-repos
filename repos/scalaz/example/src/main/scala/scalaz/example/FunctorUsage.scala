@@ -94,15 +94,14 @@ object FunctorUsage extends App {
   var database = Map("abc" → 1, "aaa" → 2, "qqq" → 3)
 
   // Return a Task which removes items from our database and returns the number of items deleted
-  def del(f: String => Boolean): Task[Int] =
-    Task.delay {
-      val (count, db) = database.foldRight(0 → List.empty[(String, Int)]) {
-        case ((k, _), (d, r)) if f(k) => (d + 1, r)
-        case (i, (d, r))              => (d, i :: r)
-      }
-      database = db.toMap
-      count
+  def del(f: String => Boolean): Task[Int] = Task.delay {
+    val (count, db) = database.foldRight(0 → List.empty[(String, Int)]) {
+      case ((k, _), (d, r)) if f(k) => (d + 1, r)
+      case (i, (d, r))              => (d, i :: r)
     }
+    database = db.toMap
+    count
+  }
 
   // This is a task which will delete two of the three items in our database,
   val delTask = del(_.startsWith("a"))

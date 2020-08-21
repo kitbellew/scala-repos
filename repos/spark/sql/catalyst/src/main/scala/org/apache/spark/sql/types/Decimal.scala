@@ -278,13 +278,12 @@ final class Decimal extends Ordered[Decimal] with Serializable {
     }
   }
 
-  override def equals(other: Any): Boolean =
-    other match {
-      case d: Decimal =>
-        compare(d) == 0
-      case _ =>
-        false
-    }
+  override def equals(other: Any): Boolean = other match {
+    case d: Decimal =>
+      compare(d) == 0
+    case _ =>
+      false
+  }
 
   override def hashCode(): Int = toBigDecimal.hashCode()
 
@@ -340,27 +339,25 @@ final class Decimal extends Ordered[Decimal] with Serializable {
 
   def abs: Decimal = if (this.compare(Decimal.ZERO) < 0) this.unary_- else this
 
-  def floor: Decimal =
-    if (scale == 0) this
-    else {
-      val value = this.clone()
-      value.changePrecision(
-        DecimalType.bounded(precision - scale + 1, 0).precision,
-        0,
-        ROUND_FLOOR)
-      value
-    }
+  def floor: Decimal = if (scale == 0) this
+  else {
+    val value = this.clone()
+    value.changePrecision(
+      DecimalType.bounded(precision - scale + 1, 0).precision,
+      0,
+      ROUND_FLOOR)
+    value
+  }
 
-  def ceil: Decimal =
-    if (scale == 0) this
-    else {
-      val value = this.clone()
-      value.changePrecision(
-        DecimalType.bounded(precision - scale + 1, 0).precision,
-        0,
-        ROUND_CEILING)
-      value
-    }
+  def ceil: Decimal = if (scale == 0) this
+  else {
+    val value = this.clone()
+    value.changePrecision(
+      DecimalType.bounded(precision - scale + 1, 0).precision,
+      0,
+      ROUND_CEILING)
+    value
+  }
 }
 
 object Decimal {

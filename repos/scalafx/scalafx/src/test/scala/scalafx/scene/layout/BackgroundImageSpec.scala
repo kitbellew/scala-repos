@@ -44,15 +44,14 @@ class BackgroundImageSpec
       classOf[jfxsl.BackgroundImage],
       classOf[BackgroundImage]) {
 
-  override protected def getScalaClassInstance =
-    new BackgroundImage(getJavaClassInstance) {}
+  override protected def getScalaClassInstance = new BackgroundImage(
+    getJavaClassInstance) {}
 
-  override protected def getJavaClassInstance =
-    new jfxsl.BackgroundImage(
-      new jfxsi.Image(this.getClass.getResourceAsStream("")),
-      BackgroundRepeat.NoRepeat,
-      BackgroundRepeat.NoRepeat,
-      BackgroundPosition.Center,
-      BackgroundSize.Default)
+  override protected def getJavaClassInstance = new jfxsl.BackgroundImage(
+    new jfxsi.Image(this.getClass.getResourceAsStream("")),
+    BackgroundRepeat.NoRepeat,
+    BackgroundRepeat.NoRepeat,
+    BackgroundPosition.Center,
+    BackgroundSize.Default)
 
 }

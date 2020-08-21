@@ -39,17 +39,16 @@ object ScalaRenameUtil {
     new util.ArrayList(filtered)
   }
 
-  def isAliased(ref: PsiReference): Boolean =
-    ref match {
-      case resolvableReferenceElement: ResolvableReferenceElement =>
-        resolvableReferenceElement.bind() match {
-          case Some(result) =>
-            val renamed = result.isRenamed
-            renamed.nonEmpty
-          case None => false
-        }
-      case _ => false
-    }
+  def isAliased(ref: PsiReference): Boolean = ref match {
+    case resolvableReferenceElement: ResolvableReferenceElement =>
+      resolvableReferenceElement.bind() match {
+        case Some(result) =>
+          val renamed = result.isRenamed
+          renamed.nonEmpty
+        case None => false
+      }
+    case _ => false
+  }
 
   def isIndirectReference(ref: PsiReference, element: PsiElement): Boolean =
     ref match {

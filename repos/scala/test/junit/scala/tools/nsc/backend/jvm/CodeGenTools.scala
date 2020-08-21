@@ -241,13 +241,12 @@ object CodeGenTools {
   def assertSameSummary(
       actual: List[Instruction],
       expected: List[Any]): Unit = {
-    def expectedString =
-      expected
-        .map({
-          case s: String => s""""$s""""
-          case i: Int    => opcodeToString(i, i)
-        })
-        .mkString("List(", ", ", ")")
+    def expectedString = expected
+      .map({
+        case s: String => s""""$s""""
+        case i: Int    => opcodeToString(i, i)
+      })
+      .mkString("List(", ", ", ")")
     assert(
       actual.summary == expected,
       s"\nFound   : ${actual.summaryText}\nExpected: $expectedString")

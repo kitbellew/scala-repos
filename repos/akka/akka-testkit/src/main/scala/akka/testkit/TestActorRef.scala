@@ -90,14 +90,13 @@ class TestActorRef[T <: Actor](
     * thrown will be available to you, while still being able to use
     * become/unbecome.
     */
-  def receive(o: Any, sender: ActorRef): Unit =
-    try {
-      underlying.currentMessage = Envelope(
-        o,
-        if (sender eq null) underlying.system.deadLetters else sender,
-        underlying.system)
-      underlying.receiveMessage(o)
-    } finally underlying.currentMessage = null
+  def receive(o: Any, sender: ActorRef): Unit = try {
+    underlying.currentMessage = Envelope(
+      o,
+      if (sender eq null) underlying.system.deadLetters else sender,
+      underlying.system)
+    underlying.receiveMessage(o)
+  } finally underlying.currentMessage = null
 
   /**
     * Retrieve reference to the underlying actor, where the static type matches the factory used inside the
@@ -202,47 +201,44 @@ object TestActorRef {
 
   def apply[T <: Actor](name: String)(implicit
       t: ClassTag[T],
-      system: ActorSystem): TestActorRef[T] =
-    apply[T](
-      Props({
-        system
-          .asInstanceOf[ExtendedActorSystem]
-          .dynamicAccess
-          .createInstanceFor[T](t.runtimeClass, Nil)
-          .recover(dynamicCreateRecover)
-          .get
-      }),
-      name)
+      system: ActorSystem): TestActorRef[T] = apply[T](
+    Props({
+      system
+        .asInstanceOf[ExtendedActorSystem]
+        .dynamicAccess
+        .createInstanceFor[T](t.runtimeClass, Nil)
+        .recover(dynamicCreateRecover)
+        .get
+    }),
+    name)
 
   def apply[T <: Actor](supervisor: ActorRef)(implicit
       t: ClassTag[T],
-      system: ActorSystem): TestActorRef[T] =
-    apply[T](
-      Props({
-        system
-          .asInstanceOf[ExtendedActorSystem]
-          .dynamicAccess
-          .createInstanceFor[T](t.runtimeClass, Nil)
-          .recover(dynamicCreateRecover)
-          .get
-      }),
-      supervisor)
+      system: ActorSystem): TestActorRef[T] = apply[T](
+    Props({
+      system
+        .asInstanceOf[ExtendedActorSystem]
+        .dynamicAccess
+        .createInstanceFor[T](t.runtimeClass, Nil)
+        .recover(dynamicCreateRecover)
+        .get
+    }),
+    supervisor)
 
   def apply[T <: Actor](supervisor: ActorRef, name: String)(implicit
       t: ClassTag[T],
-      system: ActorSystem): TestActorRef[T] =
-    apply[T](
-      Props({
-        system
-          .asInstanceOf[ExtendedActorSystem]
-          .dynamicAccess
-          .createInstanceFor[T](t.runtimeClass, Nil)
-          .recover(dynamicCreateRecover)
-          .get
-      }),
-      supervisor,
-      name
-    )
+      system: ActorSystem): TestActorRef[T] = apply[T](
+    Props({
+      system
+        .asInstanceOf[ExtendedActorSystem]
+        .dynamicAccess
+        .createInstanceFor[T](t.runtimeClass, Nil)
+        .recover(dynamicCreateRecover)
+        .get
+    }),
+    supervisor,
+    name
+  )
 
   /**
     * Java API: create a TestActorRef in the given system for the given props,

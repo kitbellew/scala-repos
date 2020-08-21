@@ -15,10 +15,9 @@ trait EmbeddedJettyContainer extends JettyContainer {
     *
     * @return Some port if Jetty is currently listening, or None if it is not.
     */
-  def localPort: Option[Int] =
-    server.getConnectors collectFirst { case x: ServerConnector =>
-      x.getLocalPort
-    }
+  def localPort: Option[Int] = server.getConnectors collectFirst {
+    case x: ServerConnector => x.getLocalPort
+  }
 
   def contextPath = "/"
 

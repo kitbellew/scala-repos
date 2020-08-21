@@ -20,11 +20,10 @@ final class Search(collection: Coll) {
       filter: Option[BSONDocument] = None)
       extends Command[Result] {
 
-    override def makeDocuments =
-      BSONDocument(
-        "text" -> collectionName,
-        "search" -> search,
-        "filter" -> filter)
+    override def makeDocuments = BSONDocument(
+      "text" -> collectionName,
+      "search" -> search,
+      "filter" -> filter)
 
     val ResultMaker = new BSONCommandResultMaker[Result] {
 

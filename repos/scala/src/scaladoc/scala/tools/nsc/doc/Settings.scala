@@ -222,38 +222,37 @@ class Settings(error: String => Unit, val printMsg: String => Unit = println(_))
   )
 
   // For improved help output.
-  def scaladocSpecific =
-    Set[Settings#Setting](
-      docformat,
-      doctitle,
-      docfooter,
-      docversion,
-      docUncompilable,
-      docsourceurl,
-      docgenerator,
-      docRootContent,
-      useStupidTypes,
-      docExternalDoc,
-      docAuthor,
-      docDiagrams,
-      docDiagramsDebug,
-      docDiagramsDotPath,
-      docDiagramsDotTimeout,
-      docDiagramsDotRestart,
-      docImplicits,
-      docImplicitsDebug,
-      docImplicitsShowAll,
-      docImplicitsHide,
-      docImplicitsSoundShadowing,
-      docDiagramsMaxNormalClasses,
-      docDiagramsMaxImplicitClasses,
-      docNoPrefixes,
-      docNoLinkWarnings,
-      docRawOutput,
-      docSkipPackages,
-      docExpandAllTypes,
-      docGroups
-    )
+  def scaladocSpecific = Set[Settings#Setting](
+    docformat,
+    doctitle,
+    docfooter,
+    docversion,
+    docUncompilable,
+    docsourceurl,
+    docgenerator,
+    docRootContent,
+    useStupidTypes,
+    docExternalDoc,
+    docAuthor,
+    docDiagrams,
+    docDiagramsDebug,
+    docDiagramsDotPath,
+    docDiagramsDotTimeout,
+    docDiagramsDotRestart,
+    docImplicits,
+    docImplicitsDebug,
+    docImplicitsShowAll,
+    docImplicitsHide,
+    docImplicitsSoundShadowing,
+    docDiagramsMaxNormalClasses,
+    docDiagramsMaxImplicitClasses,
+    docNoPrefixes,
+    docNoLinkWarnings,
+    docRawOutput,
+    docSkipPackages,
+    docExpandAllTypes,
+    docGroups
+  )
   val isScaladocSpecific: String => Boolean = scaladocSpecific map (_.name)
 
   override def isScaladoc = true
@@ -366,17 +365,16 @@ class Settings(error: String => Unit, val printMsg: String => Unit = println(_))
     )
 
     // included as names as here we don't have access to a Global with Definitions :(
-    def valueClassList =
-      List(
-        "unit",
-        "boolean",
-        "byte",
-        "short",
-        "char",
-        "int",
-        "long",
-        "float",
-        "double")
+    def valueClassList = List(
+      "unit",
+      "boolean",
+      "byte",
+      "short",
+      "char",
+      "int",
+      "long",
+      "float",
+      "double")
     def valueClassFilterPrefixes =
       List("scala.LowPriorityImplicits", "scala.Predef")
 

@@ -74,13 +74,12 @@ private trait ApertureTesting {
 
     def aperture = nonzero.size
 
-    def nonzero =
-      factories
-        .filter({ case (_, f) =>
-          f.n > 0
-        })
-        .keys
-        .toSet
+    def nonzero = factories
+      .filter({ case (_, f) =>
+        f.n > 0
+      })
+      .keys
+      .toSet
 
     def apply(i: Int) = factories.getOrElseUpdate(i, new Factory(i))
 

@@ -39,8 +39,7 @@ private[app] final class Renderer extends Actor {
   }
 
   private val spaceRegex = """\s{2,}""".r
-  private def spaceless(html: Html) =
-    Html {
-      spaceRegex.replaceAllIn(html.body.replace("\\n", " "), " ")
-    }
+  private def spaceless(html: Html) = Html {
+    spaceRegex.replaceAllIn(html.body.replace("\\n", " "), " ")
+  }
 }

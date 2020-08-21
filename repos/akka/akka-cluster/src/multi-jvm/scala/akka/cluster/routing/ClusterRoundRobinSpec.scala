@@ -338,10 +338,9 @@ abstract class ClusterRoundRobinSpec
       // myservice is already running
 
       def routees = currentRoutees(router4)
-      def routeeAddresses =
-        (routees map { case ActorSelectionRoutee(sel) ⇒
-          fullAddress(sel.anchor)
-        }).toSet
+      def routeeAddresses = (routees map { case ActorSelectionRoutee(sel) ⇒
+        fullAddress(sel.anchor)
+      }).toSet
 
       runOn(first) {
         // 4 nodes, 2 routees on each node

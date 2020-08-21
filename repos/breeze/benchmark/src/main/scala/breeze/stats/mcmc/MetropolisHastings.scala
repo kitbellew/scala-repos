@@ -17,10 +17,9 @@ class MetropolisHastingsBenchmark extends BreezeBenchmark {
   val bufferSize = 1024 * 32
 
   val epsilon = 1e-8
-  def likelihood(x: Double) =
-    2 * math.log1p(1 + epsilon - x) + 3 * math.log1p(
-      x * x * x + epsilon
-    ) //Epsilon is present to avoid throwing exceptions in the unlikely event either 0 or 1 is sampled
+  def likelihood(x: Double) = 2 * math.log1p(1 + epsilon - x) + 3 * math.log1p(
+    x * x * x + epsilon
+  ) //Epsilon is present to avoid throwing exceptions in the unlikely event either 0 or 1 is sampled
 
   def gaussianJump(x: Double) = Gaussian(x, 1)
   def gaussianJumpLogProb(start: Double, end: Double) =
@@ -45,60 +44,55 @@ class MetropolisHastingsBenchmark extends BreezeBenchmark {
     result
   }
 
-  def timeMarkovChain(reps: Int) =
-    run(reps) {
-      val m = MarkovChain.metropolisHastings(0.5, gaussianJump _)(likelihood _)
-      pullAllSamples(m)
-    }
+  def timeMarkovChain(reps: Int) = run(reps) {
+    val m = MarkovChain.metropolisHastings(0.5, gaussianJump _)(likelihood _)
+    pullAllSamples(m)
+  }
 
-  def timeMarkovChainEquiv(reps: Int) =
-    run(reps) {
-      val m = ArbitraryMetropolisHastings(
-        likelihood _,
-        gaussianJump _,
-        gaussianJumpLogProb _,
-        0.5,
-        burnIn = 0,
-        dropCount = 0)
-      pullAllSamples(m)
-    }
+  def timeMarkovChainEquiv(reps: Int) = run(reps) {
+    val m = ArbitraryMetropolisHastings(
+      likelihood _,
+      gaussianJump _,
+      gaussianJumpLogProb _,
+      0.5,
+      burnIn = 0,
+      dropCount = 0)
+    pullAllSamples(m)
+  }
 
-  def timeMetropolisHastings(reps: Int) =
-    run(reps) {
-      val m = ArbitraryMetropolisHastings(
-        likelihood _,
-        (_: Double) => Uniform(0, 1),
-        gaussianJumpLogProb _,
-        0.5,
-        burnIn = burnIn,
-        dropCount = dropCount)
-      pullAllSamples(m)
-    }
+  def timeMetropolisHastings(reps: Int) = run(reps) {
+    val m = ArbitraryMetropolisHastings(
+      likelihood _,
+      (_: Double) => Uniform(0, 1),
+      gaussianJumpLogProb _,
+      0.5,
+      burnIn = burnIn,
+      dropCount = dropCount)
+    pullAllSamples(m)
+  }
 
-  def timeMetropolisHastingsWithWork(reps: Int) =
-    run(reps) {
-      val m = ArbitraryMetropolisHastings(
-        likelihood _,
-        (_: Double) => Uniform(0, 1),
-        gaussianJumpLogProb _,
-        0.5,
-        burnIn = 0,
-        dropCount = dropCount)
-      pullAllSamplesWithWork(m)
-    }
+  def timeMetropolisHastingsWithWork(reps: Int) = run(reps) {
+    val m = ArbitraryMetropolisHastings(
+      likelihood _,
+      (_: Double) => Uniform(0, 1),
+      gaussianJumpLogProb _,
+      0.5,
+      burnIn = 0,
+      dropCount = dropCount)
+    pullAllSamplesWithWork(m)
+  }
 
-  def timeThreadedBufferedWithWork(reps: Int) =
-    run(reps) {
-      val wrapped = ArbitraryMetropolisHastings(
-        likelihood _,
-        (_: Double) => Uniform(0, 1),
-        gaussianJumpLogProb _,
-        0.5,
-        burnIn = 0,
-        dropCount = dropCount)
-      val m = ThreadedBufferedRand(wrapped, bufferSize = bufferSize)
-      val result = pullAllSamplesWithWork(m)
-      m.stop()
-      result
-    }
+  def timeThreadedBufferedWithWork(reps: Int) = run(reps) {
+    val wrapped = ArbitraryMetropolisHastings(
+      likelihood _,
+      (_: Double) => Uniform(0, 1),
+      gaussianJumpLogProb _,
+      0.5,
+      burnIn = 0,
+      dropCount = dropCount)
+    val m = ThreadedBufferedRand(wrapped, bufferSize = bufferSize)
+    val result = pullAllSamplesWithWork(m)
+    m.stop()
+    result
+  }
 }

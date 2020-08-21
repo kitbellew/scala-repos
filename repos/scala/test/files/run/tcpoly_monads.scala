@@ -33,11 +33,10 @@ trait OptionMonad extends Monads {
   implicit def OptionInstOfMonad[a](self: Option[a]): MonadTC[Option, a] =
     new MonadTC[Option, a] {
       def unit[a](orig: a) = Some(orig)
-      def >>=[b](fun: a => Option[b]): Option[b] =
-        self match {
-          case Some(x) => fun(x)
-          case None    => None
-        }
+      def >>=[b](fun: a => Option[b]): Option[b] = self match {
+        case Some(x) => fun(x)
+        case None    => None
+      }
     }
 }
 

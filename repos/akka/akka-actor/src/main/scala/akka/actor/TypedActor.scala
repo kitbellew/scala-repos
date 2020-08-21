@@ -47,21 +47,19 @@ trait TypedActorFactory {
     * Stops the underlying ActorRef for the supplied TypedActor proxy,
     * if any, returns whether it could find the find the ActorRef or not
     */
-  def stop(proxy: AnyRef): Boolean =
-    getActorRefFor(proxy) match {
-      case null ⇒ false
-      case ref ⇒ ref.asInstanceOf[InternalActorRef].stop; true
-    }
+  def stop(proxy: AnyRef): Boolean = getActorRefFor(proxy) match {
+    case null ⇒ false
+    case ref ⇒ ref.asInstanceOf[InternalActorRef].stop; true
+  }
 
   /**
     * Sends a PoisonPill the underlying ActorRef for the supplied TypedActor proxy,
     * if any, returns whether it could find the find the ActorRef or not
     */
-  def poisonPill(proxy: AnyRef): Boolean =
-    getActorRefFor(proxy) match {
-      case null ⇒ false
-      case ref ⇒ ref ! PoisonPill; true
-    }
+  def poisonPill(proxy: AnyRef): Boolean = getActorRefFor(proxy) match {
+    case null ⇒ false
+    case ref ⇒ ref ! PoisonPill; true
+  }
 
   /**
     * Returns whether the supplied AnyRef is a TypedActor proxy or not
@@ -160,14 +158,13 @@ object TypedActor
       *
       * Throws the underlying exception if there's an InvocationTargetException thrown on the invocation.
       */
-    def apply(instance: AnyRef): AnyRef =
-      try {
-        parameters match {
-          case null ⇒ method.invoke(instance)
-          case args if args.length == 0 ⇒ method.invoke(instance)
-          case args ⇒ method.invoke(instance, args: _*)
-        }
-      } catch { case i: InvocationTargetException ⇒ throw i.getTargetException }
+    def apply(instance: AnyRef): AnyRef = try {
+      parameters match {
+        case null ⇒ method.invoke(instance)
+        case args if args.length == 0 ⇒ method.invoke(instance)
+        case args ⇒ method.invoke(instance, args: _*)
+      }
+    } catch { case i: InvocationTargetException ⇒ throw i.getTargetException }
 
     @throws(classOf[ObjectStreamException]) private def writeReplace(): AnyRef =
       parameters match {
@@ -274,24 +271,22 @@ object TypedActor
     *
     * Throws ClassCastException if the supplied type T isn't the type of the proxy associated with this TypedActor.
     */
-  def self[T <: AnyRef] =
-    selfReference.get.asInstanceOf[T] match {
-      case null ⇒
-        throw new IllegalStateException(
-          "Calling TypedActor.self outside of a TypedActor implementation method!")
-      case some ⇒ some
-    }
+  def self[T <: AnyRef] = selfReference.get.asInstanceOf[T] match {
+    case null ⇒
+      throw new IllegalStateException(
+        "Calling TypedActor.self outside of a TypedActor implementation method!")
+    case some ⇒ some
+  }
 
   /**
     * Returns the ActorContext (for a TypedActor) when inside a method call in a TypedActor.
     */
-  def context: ActorContext =
-    currentContext.get match {
-      case null ⇒
-        throw new IllegalStateException(
-          "Calling TypedActor.context outside of a TypedActor implementation method!")
-      case some ⇒ some
-    }
+  def context: ActorContext = currentContext.get match {
+    case null ⇒
+      throw new IllegalStateException(
+        "Calling TypedActor.context outside of a TypedActor implementation method!")
+    case some ⇒ some
+  }
 
   /**
     * Returns the default dispatcher (for a TypedActor) when inside a method call in a TypedActor.
@@ -319,36 +314,33 @@ object TypedActor
 
     private val me = withContext[T](createInstance)
 
-    override def supervisorStrategy: SupervisorStrategy =
-      me match {
-        case l: Supervisor ⇒ l.supervisorStrategy
-        case _ ⇒ super.supervisorStrategy
-      }
+    override def supervisorStrategy: SupervisorStrategy = me match {
+      case l: Supervisor ⇒ l.supervisorStrategy
+      case _ ⇒ super.supervisorStrategy
+    }
 
-    override def preStart(): Unit =
+    override def preStart(): Unit = withContext {
+      me match {
+        case l: PreStart ⇒ l.preStart()
+        case _ ⇒ super.preStart()
+      }
+    }
+
+    override def postStop(): Unit = try {
       withContext {
         me match {
-          case l: PreStart ⇒ l.preStart()
-          case _ ⇒ super.preStart()
+          case l: PostStop ⇒ l.postStop()
+          case _ ⇒ super.postStop()
         }
       }
-
-    override def postStop(): Unit =
-      try {
-        withContext {
-          me match {
-            case l: PostStop ⇒ l.postStop()
-            case _ ⇒ super.postStop()
-          }
-        }
-      } finally {
-        TypedActor(context.system).invocationHandlerFor(proxyVar.get) match {
-          case null ⇒
-          case some ⇒
-            some.actorVar.set(context.system.deadLetters) //Point it to the DLQ
-            proxyVar.set(null.asInstanceOf[R])
-        }
+    } finally {
+      TypedActor(context.system).invocationHandlerFor(proxyVar.get) match {
+        case null ⇒
+        case some ⇒
+          some.actorVar.set(context.system.deadLetters) //Point it to the DLQ
+          proxyVar.set(null.asInstanceOf[R])
       }
+    }
 
     override def preRestart(reason: Throwable, message: Option[Any]): Unit =
       withContext {
@@ -359,13 +351,12 @@ object TypedActor
         }
       }
 
-    override def postRestart(reason: Throwable): Unit =
-      withContext {
-        me match {
-          case l: PostRestart ⇒ l.postRestart(reason)
-          case _ ⇒ super.postRestart(reason)
-        }
+    override def postRestart(reason: Throwable): Unit = withContext {
+      me match {
+        case l: PostRestart ⇒ l.postRestart(reason)
+        case _ ⇒ super.postRestart(reason)
       }
+    }
 
     protected def withContext[U](unitOfWork: ⇒ U): U = {
       TypedActor.selfReference set proxyVar.get
@@ -692,8 +683,8 @@ final case class TypedProps[T <: AnyRef] protected[TypedProps] (
     * Java API: return a new TypedProps that will use the specified ClassLoader to create its proxy class in
     * If loader is null, it will use the bootstrap classloader.
     */
-  def withLoader(loader: ClassLoader): TypedProps[T] =
-    withLoader(Option(loader))
+  def withLoader(loader: ClassLoader): TypedProps[T] = withLoader(
+    Option(loader))
 
   /**
     * Scala API: return a new TypedProps that will use the specified ClassLoader to create its proxy class in
@@ -777,11 +768,11 @@ class TypedActorExtension(val system: ExtendedActorSystem)
   /**
     * Retrieves the underlying ActorRef for the supplied TypedActor proxy, or null if none found
     */
-  def getActorRefFor(proxy: AnyRef): ActorRef =
-    invocationHandlerFor(proxy) match {
-      case null ⇒ null
-      case handler ⇒ handler.actor
-    }
+  def getActorRefFor(proxy: AnyRef): ActorRef = invocationHandlerFor(
+    proxy) match {
+    case null ⇒ null
+    case handler ⇒ handler.actor
+  }
 
   /**
     * Returns whether the supplied AnyRef is a TypedActor proxy or not

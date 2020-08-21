@@ -49,13 +49,11 @@ object SquerylRecord extends Loggable {
     SessionFactory.concreteFactory = Some(() => sessionFactory)
   }
 
-  def buildLoanWrapper() =
-    new LoanWrapper {
-      override def apply[T](f: => T): T =
-        inTransaction {
-          f
-        }
+  def buildLoanWrapper() = new LoanWrapper {
+    override def apply[T](f: => T): T = inTransaction {
+      f
     }
+  }
 
   /**
     * NOTE: Remove this along with the deprecated method below

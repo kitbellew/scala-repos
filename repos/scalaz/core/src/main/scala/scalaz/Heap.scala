@@ -45,18 +45,17 @@ sealed abstract class Heap[A] {
     F.foldLeft(as, this)((h, a) => h insert a)
 
   /** Meld the values from two heaps into one heap. O(1) */
-  def union(as: Heap[A]) =
-    (this, as) match {
-      case (Empty(), q) => q
-      case (q, Empty()) => q
-      case (
-            Heap(s1, leq, t1 @ Node(Ranked(r1, x1), f1)),
-            Heap(s2, _, t2 @ Node(Ranked(r2, x2), f2))) =>
-        if (leq(x1, x2))
-          Heap(s1 + s2, leq, Node(Ranked(0, x1), skewInsert(leq, t2, f1)))
-        else
-          Heap(s1 + s2, leq, Node(Ranked(0, x2), skewInsert(leq, t1, f2)))
-    }
+  def union(as: Heap[A]) = (this, as) match {
+    case (Empty(), q) => q
+    case (q, Empty()) => q
+    case (
+          Heap(s1, leq, t1 @ Node(Ranked(r1, x1), f1)),
+          Heap(s2, _, t2 @ Node(Ranked(r2, x2), f2))) =>
+      if (leq(x1, x2))
+        Heap(s1 + s2, leq, Node(Ranked(0, x1), skewInsert(leq, t2, f1)))
+      else
+        Heap(s1 + s2, leq, Node(Ranked(0, x2), skewInsert(leq, t1, f2)))
+  }
 
   /** Split the heap into the minimum element and the remainder. O(log n) */
   def uncons: Option[(A, Heap[A])] =
@@ -87,11 +86,10 @@ sealed abstract class Heap[A] {
     )
   }
 
-  def adjustMin(f: A => A): Heap[A] =
-    this match {
-      case Heap(s, leq, Node(Ranked(r, x), xs)) =>
-        Heap(s, leq, heapify(leq)(Node(Ranked(r, f(x)), xs)))
-    }
+  def adjustMin(f: A => A): Heap[A] = this match {
+    case Heap(s, leq, Node(Ranked(r, x), xs)) =>
+      Heap(s, leq, heapify(leq)(Node(Ranked(r, f(x)), xs)))
+  }
 
   def toUnsortedStream: Stream[A] =
     fold(Stream(), (_, _, t) => t.flatten.map(_.value))
@@ -138,13 +136,12 @@ sealed abstract class Heap[A] {
     fold(
       (Empty[A], Empty[A], Empty[A]),
       (s, leq, t) => {
-        def f(x: A) =
-          if (leq(x, a))
-            if (leq(a, x)) (Empty[A], singletonWith(leq, x), Empty[A])
-            else
-              (singletonWith(leq, x), Empty[A], Empty[A])
+        def f(x: A) = if (leq(x, a))
+          if (leq(a, x)) (Empty[A], singletonWith(leq, x), Empty[A])
           else
-            (Empty[A], Empty[A], singletonWith(leq, x))
+            (singletonWith(leq, x), Empty[A], Empty[A])
+        else
+          (Empty[A], Empty[A], singletonWith(leq, x))
         t foldMap (x => f(x.value))
       }
     )
@@ -188,15 +185,14 @@ sealed abstract class Heap[A] {
     withList(_.dropWhile(p))
 
   /** Remove duplicate entries from the heap. O(n log n) */
-  def nub: Heap[A] =
-    fold(
-      Empty[A],
-      (_, leq, t) => {
-        val x = t.rootLabel.value
-        val xs = deleteMin
-        val zs = xs.dropWhile(leq(_, x))
-        zs.nub.insertWith(leq, x)
-      })
+  def nub: Heap[A] = fold(
+    Empty[A],
+    (_, leq, t) => {
+      val x = t.rootLabel.value
+      val xs = deleteMin
+      val zs = xs.dropWhile(leq(_, x))
+      zs.nub.insertWith(leq, x)
+    })
 
   /** Construct heaps from each element in this heap and union them together into a new heap. O(n) */
   def flatMap[B: Order](f: A => Heap[B]): Heap[B] =
@@ -260,12 +256,11 @@ object Heap extends HeapInstances {
 
   /** The empty heap */
   object Empty {
-    def apply[A]: Heap[A] =
-      new Heap[A] {
-        def fold[B](
-            empty: => B,
-            nonempty: (Int, (A, A) => Boolean, Tree[Ranked[A]]) => B): B = empty
-      }
+    def apply[A]: Heap[A] = new Heap[A] {
+      def fold[B](
+          empty: => B,
+          nonempty: (Int, (A, A) => Boolean, Tree[Ranked[A]]) => B): B = empty
+    }
 
     def unapply[A](h: Heap[A]): Boolean = h.fold(true, (_, _, _) => false)
   }
@@ -386,19 +381,17 @@ object Heap extends HeapInstances {
         f: (A, A) => Boolean,
         t0: Tree[Ranked[A]],
         t1: Tree[Ranked[A]],
-        t2: Tree[Ranked[A]]): Tree[Ranked[A]] =
-      (t0, t1, t2) match {
-        case (
-              Node(Ranked(r0, x0), cf0),
-              Node(Ranked(r1, x1), cf1),
-              Node(Ranked(r2, x2), cf2)) =>
-          if (f(x1, x0) && f(x1, x2))
-            Node(Ranked(r1 + 1, x1), t0 #:: t2 #:: cf1)
-          else if (f(x2, x0) && f(x2, x1))
-            Node(Ranked(r2 + 1, x2), t0 #:: t1 #:: cf2)
-          else
-            Node(Ranked(r1 + 1, x0), t1 #:: t2 #:: cf0)
-      }
+        t2: Tree[Ranked[A]]): Tree[Ranked[A]] = (t0, t1, t2) match {
+      case (
+            Node(Ranked(r0, x0), cf0),
+            Node(Ranked(r1, x1), cf1),
+            Node(Ranked(r2, x2), cf2)) =>
+        if (f(x1, x0) && f(x1, x2)) Node(Ranked(r1 + 1, x1), t0 #:: t2 #:: cf1)
+        else if (f(x2, x0) && f(x2, x1))
+          Node(Ranked(r2 + 1, x2), t0 #:: t1 #:: cf2)
+        else
+          Node(Ranked(r1 + 1, x0), t1 #:: t2 #:: cf0)
+    }
 
     def link[A](f: (A, A) => Boolean)
         : (Tree[Ranked[A]], Tree[Ranked[A]]) => Tree[Ranked[A]] = {
@@ -489,11 +482,10 @@ sealed abstract class HeapInstances {
       fa.foldRight(z)(f)
   }
 
-  implicit def heapMonoid[A]: Monoid[Heap[A]] =
-    new Monoid[Heap[A]] {
-      def append(f1: Heap[A], f2: => Heap[A]) = f1 union f2
-      def zero = Heap.Empty.apply
-    }
+  implicit def heapMonoid[A]: Monoid[Heap[A]] = new Monoid[Heap[A]] {
+    def append(f1: Heap[A], f2: => Heap[A]) = f1 union f2
+    def zero = Heap.Empty.apply
+  }
 
   import std.stream._
 

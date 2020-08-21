@@ -22,12 +22,11 @@ object InlineInfoTest extends ClearAfterClass.Clearable {
   var compiler = newCompiler(extraArgs = "-Yopt:l:classpath")
   def clear(): Unit = { compiler = null }
 
-  def notPerRun: List[Clearable] =
-    List(
-      compiler.genBCode.bTypes.classBTypeFromInternalName,
-      compiler.genBCode.bTypes.byteCodeRepository.compilingClasses,
-      compiler.genBCode.bTypes.byteCodeRepository.parsedClasses
-    )
+  def notPerRun: List[Clearable] = List(
+    compiler.genBCode.bTypes.classBTypeFromInternalName,
+    compiler.genBCode.bTypes.byteCodeRepository.compilingClasses,
+    compiler.genBCode.bTypes.byteCodeRepository.parsedClasses
+  )
   notPerRun foreach compiler.perRunCaches.unrecordCache
 }
 

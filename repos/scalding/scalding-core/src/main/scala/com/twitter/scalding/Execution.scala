@@ -356,28 +356,27 @@ object Execution {
     protected lazy val thread = new Thread(new Runnable {
       def run() {
         @annotation.tailrec
-        def go(): Unit =
-          messageQueue.take match {
-            case Stop => ()
-            case RunFlowDef(conf, mode, fd, promise) =>
-              try {
-                promise.completeWith(
-                  ExecutionContext.newContext(conf)(fd, mode).run)
-              } catch {
-                case t: Throwable =>
-                  // something bad happened, but this thread is a daemon
-                  // that should only stop if all others have stopped or
-                  // we have received the stop message.
-                  // Stopping this thread prematurely can deadlock
-                  // futures from the promise we have.
-                  // In a sense, this thread does not exist logically and
-                  // must forward all exceptions to threads that requested
-                  // this work be started.
-                  promise.tryFailure(t)
-              }
-              // Loop
-              go()
-          }
+        def go(): Unit = messageQueue.take match {
+          case Stop => ()
+          case RunFlowDef(conf, mode, fd, promise) =>
+            try {
+              promise.completeWith(
+                ExecutionContext.newContext(conf)(fd, mode).run)
+            } catch {
+              case t: Throwable =>
+                // something bad happened, but this thread is a daemon
+                // that should only stop if all others have stopped or
+                // we have received the stop message.
+                // Stopping this thread prematurely can deadlock
+                // futures from the promise we have.
+                // In a sense, this thread does not exist logically and
+                // must forward all exceptions to threads that requested
+                // this work be started.
+                promise.tryFailure(t)
+            }
+            // Loop
+            go()
+        }
 
         // Now we actually run the recursive loop
         go()
@@ -751,16 +750,15 @@ object Execution {
     }
 
     def unwrapListEither[A, B, C](
-        it: List[(A, Either[B, C])]): (List[(A, B)], List[(A, C)]) =
-      it match {
-        case (a, Left(b)) :: tail =>
-          val (l, r) = unwrapListEither(tail)
-          ((a, b) :: l, r)
-        case (a, Right(c)) :: tail =>
-          val (l, r) = unwrapListEither(tail)
-          (l, (a, c) :: r)
-        case Nil => (Nil, Nil)
-      }
+        it: List[(A, Either[B, C])]): (List[(A, B)], List[(A, C)]) = it match {
+      case (a, Left(b)) :: tail =>
+        val (l, r) = unwrapListEither(tail)
+        ((a, b) :: l, r)
+      case (a, Right(c)) :: tail =>
+        val (l, r) = unwrapListEither(tail)
+        (l, (a, c) :: r)
+      case Nil => (Nil, Nil)
+    }
 
     // We look up to see if any of our ToWrite elements have already been ran
     // if so we remove them from the cache.
@@ -953,8 +951,8 @@ object Execution {
     *   .writeExecution(mySink)
     * }
     */
-  def withId[T](fn: UniqueID => Execution[T]): Execution[T] =
-    UniqueIdExecution(fn)
+  def withId[T](fn: UniqueID => Execution[T]): Execution[T] = UniqueIdExecution(
+    fn)
 
   /*
    * This runs a Flow using Cascading's built in threads. The resulting JobStats
@@ -1025,11 +1023,10 @@ object Execution {
     @annotation.tailrec
     def go(
         xs: List[Execution[T]],
-        acc: Execution[List[T]]): Execution[List[T]] =
-      xs match {
-        case Nil       => acc
-        case h :: tail => go(tail, h.zip(acc).map { case (y, ys) => y :: ys })
-      }
+        acc: Execution[List[T]]): Execution[List[T]] = xs match {
+      case Nil       => acc
+      case h :: tail => go(tail, h.zip(acc).map { case (y, ys) => y :: ys })
+    }
     // This pushes all of them onto a list, and then reverse to keep order
     go(exs.toList, from(Nil)).map(_.reverse)
   }
@@ -1088,8 +1085,9 @@ trait ExecutionCounters {
     * If the counter is present, return it.
     */
   def get(key: StatKey): Option[Long]
-  def toMap: Map[StatKey, Long] =
-    keys.map { k => (k, get(k).getOrElse(0L)) }.toMap
+  def toMap: Map[StatKey, Long] = keys.map { k =>
+    (k, get(k).getOrElse(0L))
+  }.toMap
 }
 
 /**
@@ -1101,12 +1099,11 @@ object ExecutionCounters {
   /**
     * This is the zero of the ExecutionCounter Monoid
     */
-  def empty: ExecutionCounters =
-    new ExecutionCounters {
-      def keys = Set.empty
-      def get(key: StatKey) = None
-      override def toMap = Map.empty
-    }
+  def empty: ExecutionCounters = new ExecutionCounters {
+    def keys = Set.empty
+    def get(key: StatKey) = None
+    override def toMap = Map.empty
+  }
 
   /**
     * Just gets the counters from the CascadingStats and ignores
@@ -1134,11 +1131,10 @@ object ExecutionCounters {
   def fromJobStats(js: JobStats): ExecutionCounters = {
     val counters = js.counters
     new ExecutionCounters {
-      def keys =
-        for {
-          group <- counters.keySet
-          counter <- counters(group).keys
-        } yield StatKey(counter, group)
+      def keys = for {
+        group <- counters.keySet
+        counter <- counters(group).keys
+      } yield StatKey(counter, group)
 
       def get(k: StatKey) = counters.get(k.group).flatMap(_.get(k.counter))
     }

@@ -140,16 +140,15 @@ abstract class PathDirectives extends MiscDirectives {
     *
     * For further information, refer to: http://googlewebmastercentral.blogspot.de/2010/04/to-slash-or-not-to-slash.html
     */
-  def pathEndOrSingleSlash: Directive =
-    RawPathPrefixForMatchers(
-      List(PathMatchers.SLASH.optional, PathMatchers.END))
+  def pathEndOrSingleSlash: Directive = RawPathPrefixForMatchers(
+    List(PathMatchers.SLASH.optional, PathMatchers.END))
 
   /**
     * Only passes on the request to its inner route if the request path
     * consists of exactly one remaining slash.
     */
-  def pathSingleSlash: Directive =
-    RawPathPrefixForMatchers(List(PathMatchers.SLASH, PathMatchers.END))
+  def pathSingleSlash: Directive = RawPathPrefixForMatchers(
+    List(PathMatchers.SLASH, PathMatchers.END))
 
   /**
     * If the request path doesn't end with a slash, redirect to the same uri with trailing slash in the path.
@@ -199,14 +198,13 @@ abstract class PathDirectives extends MiscDirectives {
 
   private def convertMatchers(
       matchers: Seq[AnyRef]): immutable.Seq[PathMatcher[_]] = {
-    def parse(matcher: AnyRef): PathMatcher[_] =
-      matcher match {
-        case p: PathMatcher[_] ⇒ p
-        case name: String ⇒ PathMatchers.segment(name)
-        case x ⇒
-          throw new IllegalArgumentException(
-            s"Matcher of class ${x.getClass} is unsupported for PathDirectives")
-      }
+    def parse(matcher: AnyRef): PathMatcher[_] = matcher match {
+      case p: PathMatcher[_] ⇒ p
+      case name: String ⇒ PathMatchers.segment(name)
+      case x ⇒
+        throw new IllegalArgumentException(
+          s"Matcher of class ${x.getClass} is unsupported for PathDirectives")
+    }
 
     matchers.map(parse).toVector
   }

@@ -217,11 +217,10 @@ class StubbedActorContext[T](val name: String, override val props: Props[T])(
   def schedule[U](
       delay: FiniteDuration,
       target: ActorRef[U],
-      msg: U): untyped.Cancellable =
-    new untyped.Cancellable {
-      def cancel() = false
-      def isCancelled = true
-    }
+      msg: U): untyped.Cancellable = new untyped.Cancellable {
+    def cancel() = false
+    def isCancelled = true
+  }
   implicit def executionContext: ExecutionContextExecutor =
     system.executionContext
   def spawnAdapter[U](f: U ⇒ T): ActorRef[U] = ???

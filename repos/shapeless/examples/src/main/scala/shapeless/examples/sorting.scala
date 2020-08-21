@@ -97,10 +97,9 @@ object Sorting {
   }
 
   trait LowPrioritySelectionSort {
-    implicit def hlistSelectionSort1[S <: HList] =
-      new SelectionSort[S, S] {
-        def apply(l: S): S = l
-      }
+    implicit def hlistSelectionSort1[S <: HList] = new SelectionSort[S, S] {
+      def apply(l: S): S = l
+    }
   }
 
   object SelectionSort extends LowPrioritySelectionSort {
@@ -110,13 +109,12 @@ object Sorting {
         Rem <: HList,
         ST <: HList](implicit
         sl: SelectLeast[L, M, Rem],
-        sr: SelectionSort[Rem, ST]) =
-      new SelectionSort[L, M :: ST] {
-        def apply(l: L) = {
-          val (m, rem) = sl(l)
-          m :: sr(rem)
-        }
+        sr: SelectionSort[Rem, ST]) = new SelectionSort[L, M :: ST] {
+      def apply(l: L) = {
+        val (m, rem) = sl(l)
+        m :: sr(rem)
       }
+    }
   }
 
   def selectionSort[L <: HList, S <: HList](l: L)(implicit

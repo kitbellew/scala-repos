@@ -398,48 +398,47 @@ trait LinearRegressionSpecs[M[+_]]
 
       result must haveSize(1)
 
-      def theta(model: String) =
-        result collect {
-          case (ids, SObject(elems)) if ids.length == 0 =>
-            elems.keys mustEqual Set("model1", "model2", "model3")
+      def theta(model: String) = result collect {
+        case (ids, SObject(elems)) if ids.length == 0 =>
+          elems.keys mustEqual Set("model1", "model2", "model3")
 
-            val SObject(fields) = elems(model)
+          val SObject(fields) = elems(model)
 
-            val SArray(arr) = fields("coefficients")
-            val SDecimal(rSquared) = fields("RSquared")
+          val SArray(arr) = fields("coefficients")
+          val SDecimal(rSquared) = fields("RSquared")
 
-            val (SDecimal(theta1), SDecimal(error1)) =
-              (arr(0): @unchecked) match {
-                case SObject(map) =>
-                  (map("bar"): @unchecked) match {
-                    case SObject(map) =>
-                      (map("baz"): @unchecked) match {
-                        case SArray(Vector(SObject(obj))) =>
-                          returnValues(obj)
-                      }
-                  }
-              }
+          val (SDecimal(theta1), SDecimal(error1)) =
+            (arr(0): @unchecked) match {
+              case SObject(map) =>
+                (map("bar"): @unchecked) match {
+                  case SObject(map) =>
+                    (map("baz"): @unchecked) match {
+                      case SArray(Vector(SObject(obj))) =>
+                        returnValues(obj)
+                    }
+                }
+            }
 
-            val (SDecimal(theta2), SDecimal(error2)) =
-              (arr(0): @unchecked) match {
-                case SObject(map) =>
-                  (map("foo"): @unchecked) match {
-                    case SObject(obj) =>
-                      returnValues(obj)
-                  }
-              }
+          val (SDecimal(theta2), SDecimal(error2)) =
+            (arr(0): @unchecked) match {
+              case SObject(map) =>
+                (map("foo"): @unchecked) match {
+                  case SObject(obj) =>
+                    returnValues(obj)
+                }
+            }
 
-            val (SDecimal(theta0), SDecimal(error0)) =
-              (arr(1): @unchecked) match {
-                case SObject(obj) =>
-                  returnValues(obj)
-              }
+          val (SDecimal(theta0), SDecimal(error0)) =
+            (arr(1): @unchecked) match {
+              case SObject(obj) =>
+                returnValues(obj)
+            }
 
-            (
-              List(theta0.toDouble, theta1.toDouble, theta2.toDouble),
-              List(error0.toDouble, error1.toDouble, error2.toDouble),
-              rSquared.toDouble)
-        }
+          (
+            List(theta0.toDouble, theta1.toDouble, theta2.toDouble),
+            List(error0.toDouble, error1.toDouble, error2.toDouble),
+            rSquared.toDouble)
+      }
 
       thetasSchema1 = thetasSchema1 ++ List(theta("model1").head._1)
       thetasSchema2 = thetasSchema2 ++ List(theta("model2").head._1)

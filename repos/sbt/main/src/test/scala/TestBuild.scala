@@ -106,27 +106,24 @@ object TestBuild {
     }
   }
   final class Env(val builds: Seq[Build], val tasks: Seq[Taskk]) {
-    override def toString =
-      "Env:\n  " + "  Tasks:\n    " + tasks.mkString("\n    ") + "\n" + builds
-        .mkString("\n  ")
+    override def toString = "Env:\n  " + "  Tasks:\n    " + tasks.mkString(
+      "\n    ") + "\n" + builds.mkString("\n  ")
     val root = builds.head
     val buildMap = mapBy(builds)(_.uri)
     val taskMap = mapBy(tasks)(getKey)
     def project(ref: ProjectRef) = buildMap(ref.build).projectMap(ref.project)
-    def projectFor(ref: ResolvedReference) =
-      ref match {
-        case pr: ProjectRef => project(pr);
-        case BuildRef(uri)  => buildMap(uri).root
-      }
+    def projectFor(ref: ResolvedReference) = ref match {
+      case pr: ProjectRef => project(pr);
+      case BuildRef(uri)  => buildMap(uri).root
+    }
 
     lazy val allProjects = builds.flatMap(_.allProjects)
     def rootProject(uri: URI): String = buildMap(uri).root.id
     def inheritConfig(ref: ResolvedReference, config: ConfigKey) =
       projectFor(ref).confMap(config.name).extended map toConfigKey
-    def inheritTask(task: AttributeKey[_]) =
-      taskMap.get(task) match {
-        case None => Nil; case Some(t) => t.delegates map getKey
-      }
+    def inheritTask(task: AttributeKey[_]) = taskMap.get(task) match {
+      case None => Nil; case Some(t) => t.delegates map getKey
+    }
     def inheritProject(ref: ProjectRef) = project(ref).delegates
     def resolve(ref: Reference) =
       Scope.resolveReference(builds.head.uri, rootProject, ref)
@@ -176,14 +173,14 @@ object TestBuild {
       name + " (extends: " + extended.map(_.name).mkString(", ") + ")"
   }
   final class Taskk(val key: AttributeKey[String], val delegates: Seq[Taskk]) {
-    override def toString =
-      key.label + " (delegates: " + delegates
-        .map(_.key.label)
-        .mkString(", ") + ")"
+    override def toString = key.label + " (delegates: " + delegates
+      .map(_.key.label)
+      .mkString(", ") + ")"
   }
 
-  def mapBy[K, T](s: Seq[T])(f: T => K): Map[K, T] =
-    s map { t => (f(t), t) } toMap;
+  def mapBy[K, T](s: Seq[T])(f: T => K): Map[K, T] = s map { t =>
+    (f(t), t)
+  } toMap;
 
   implicit lazy val arbKeys: Arbitrary[Keys] = Arbitrary(keysGen)
   lazy val keysGen: Gen[Keys] =
@@ -264,11 +261,12 @@ object TestBuild {
       yield new Env(bs, ts)
   implicit def buildGen(implicit
       uGen: Gen[URI],
-      pGen: URI => Gen[Seq[Proj]]): Gen[Build] =
-    for (u <- uGen; ps <- pGen(u)) yield new Build(u, ps)
+      pGen: URI => Gen[Seq[Proj]]): Gen[Build] = for (u <- uGen; ps <- pGen(u))
+    yield new Build(u, ps)
 
-  def nGen[T](igen: Gen[Int])(implicit g: Gen[T]): Gen[List[T]] =
-    igen flatMap { ig => listOfN(ig, g) }
+  def nGen[T](igen: Gen[Int])(implicit g: Gen[T]): Gen[List[T]] = igen flatMap {
+    ig => listOfN(ig, g)
+  }
 
   implicit def genProjects(build: URI)(implicit
       genID: Gen[String],
@@ -339,9 +337,8 @@ object TestBuild {
             yield (x, d.toList)
         genAcyclic(maxDeps, xs, next :: acc)
     }
-  def sequence[T](gs: Seq[Gen[T]]): Gen[Seq[T]] =
-    Gen.parameterized { prms =>
-      wrap(gs map { g => g(prms) getOrElse sys.error("failed generator") })
-    }
+  def sequence[T](gs: Seq[Gen[T]]): Gen[Seq[T]] = Gen.parameterized { prms =>
+    wrap(gs map { g => g(prms) getOrElse sys.error("failed generator") })
+  }
   type Inputs[A, T] = (T, Seq[T], Seq[A] => A)
 }

@@ -464,11 +464,10 @@ object Combinators {
   }
 
   object Either {
-    def flatten[T](p: Vector[Parser[T]]): Vector[Parser[T]] =
-      p.flatMap {
-        case Either(ps @ _*) => ps
-        case p               => Vector(p)
-      }
+    def flatten[T](p: Vector[Parser[T]]): Vector[Parser[T]] = p.flatMap {
+      case Either(ps @ _*) => ps
+      case p               => Vector(p)
+    }
   }
 
   /**

@@ -125,14 +125,13 @@ object EnsimeConfigFixture {
 
     // I tried using shapeless everywhere here, but it OOMd the compiler :-(
 
-    def cloneModule(m: EnsimeModule): EnsimeModule =
-      m.copy(
-        target = m.target.map(renameAndCopyTarget),
-        targets = m.targets.map(renameAndCopyTarget),
-        testTarget = m.testTarget.map(renameAndCopyTarget),
-        testTargets = m.testTargets.map(renameAndCopyTarget),
-        sourceRoots = m.sourceRoots.map(renameAndCopy)
-      )
+    def cloneModule(m: EnsimeModule): EnsimeModule = m.copy(
+      target = m.target.map(renameAndCopyTarget),
+      targets = m.targets.map(renameAndCopyTarget),
+      testTarget = m.testTarget.map(renameAndCopyTarget),
+      testTargets = m.testTargets.map(renameAndCopyTarget),
+      sourceRoots = m.sourceRoots.map(renameAndCopy)
+    )
 
     val cacheDir = rename(source.cacheDir)
     cacheDir.mkdirs()
@@ -197,7 +196,7 @@ trait SharedEnsimeConfigFixture
     tmpDir.tree.reverse.foreach(_.delete())
   }
 
-  override def withEnsimeConfig(testCode: EnsimeConfig => Any): Any =
-    testCode(_config)
+  override def withEnsimeConfig(testCode: EnsimeConfig => Any): Any = testCode(
+    _config)
 
 }

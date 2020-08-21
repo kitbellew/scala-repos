@@ -216,9 +216,8 @@ trait GenericTraversableTemplate[+A, +CC[X] <: GenTraversable[X]]
     if (isEmpty)
       return genericBuilder[CC[B]].result()
 
-    def fail =
-      throw new IllegalArgumentException(
-        "transpose requires all collections have the same size")
+    def fail = throw new IllegalArgumentException(
+      "transpose requires all collections have the same size")
 
     val headSize = asTraversable(head).size
     val bs: IndexedSeq[Builder[B, CC[B]]] =

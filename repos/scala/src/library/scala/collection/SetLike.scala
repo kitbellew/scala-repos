@@ -197,25 +197,24 @@ trait SetLike[A, +This <: SetLike[A, This] with Set[A]]
     *
     *  @return     the iterator.
     */
-  def subsets(): Iterator[This] =
-    new AbstractIterator[This] {
-      private val elms = self.toIndexedSeq
-      private var len = 0
-      private var itr: Iterator[This] = Iterator.empty
+  def subsets(): Iterator[This] = new AbstractIterator[This] {
+    private val elms = self.toIndexedSeq
+    private var len = 0
+    private var itr: Iterator[This] = Iterator.empty
 
-      def hasNext = len <= elms.size || itr.hasNext
-      def next = {
-        if (!itr.hasNext) {
-          if (len > elms.size) Iterator.empty.next()
-          else {
-            itr = new SubsetsItr(elms, len)
-            len += 1
-          }
+    def hasNext = len <= elms.size || itr.hasNext
+    def next = {
+      if (!itr.hasNext) {
+        if (len > elms.size) Iterator.empty.next()
+        else {
+          itr = new SubsetsItr(elms, len)
+          len += 1
         }
-
-        itr.next()
       }
+
+      itr.next()
     }
+  }
 
   /** An Iterator include all subsets containing exactly len elements.
     *  If the elements in 'This' type is ordered, then the subsets will also be in the same order.

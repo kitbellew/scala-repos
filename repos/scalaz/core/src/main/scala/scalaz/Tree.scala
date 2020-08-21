@@ -174,10 +174,9 @@ sealed abstract class TreeInstances {
     override def foldRight[A, B](fa: Tree[A], z: => B)(f: (A, => B) => B): B =
       fa.foldRight(z)(f)
     override def foldMapRight1[A, B](fa: Tree[A])(z: A => B)(
-        f: (A, => B) => B) =
-      (fa.flatten.reverse: @unchecked) match {
-        case h #:: t => t.foldLeft(z(h))((b, a) => f(a, b))
-      }
+        f: (A, => B) => B) = (fa.flatten.reverse: @unchecked) match {
+      case h #:: t => t.foldLeft(z(h))((b, a) => f(a, b))
+    }
     override def foldLeft[A, B](fa: Tree[A], z: B)(f: (B, A) => B): B =
       fa.flatten.foldLeft(z)(f)
     override def foldMapLeft1[A, B](fa: Tree[A])(z: A => B)(f: (B, A) => B): B =
@@ -245,8 +244,8 @@ object Tree extends TreeInstances {
       }
     }
 
-    def unapply[A](t: Tree[A]): Option[(A, Stream[Tree[A]])] =
-      Some((t.rootLabel, t.subForest))
+    def unapply[A](t: Tree[A]): Option[(A, Stream[Tree[A]])] = Some(
+      (t.rootLabel, t.subForest))
   }
 
   /**

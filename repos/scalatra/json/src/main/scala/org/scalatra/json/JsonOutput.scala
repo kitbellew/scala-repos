@@ -43,42 +43,40 @@ trait JsonOutput[T] extends ApiFormats with JsonMethods[T] {
 
   protected def transformResponseBody(body: JValue) = body
 
-  override protected def renderPipeline =
-    ({
+  override protected def renderPipeline = ({
 
-      case JsonResult(jv) => jv
+    case JsonResult(jv) => jv
 
-      case jv: JValue if format == "xml" =>
-        contentType = formats("xml")
-        writeJsonAsXml(transformResponseBody(jv), response.writer)
+    case jv: JValue if format == "xml" =>
+      contentType = formats("xml")
+      writeJsonAsXml(transformResponseBody(jv), response.writer)
 
-      case jv: JValue =>
-        // JSON is always UTF-8
-        response.characterEncoding = Some(Codec.UTF8.name)
-        val writer = response.writer
+    case jv: JValue =>
+      // JSON is always UTF-8
+      response.characterEncoding = Some(Codec.UTF8.name)
+      val writer = response.writer
 
-        val jsonpCallback = for {
-          paramName <- jsonpCallbackParameterNames
-          callback <- params.get(paramName)
-        } yield callback
+      val jsonpCallback = for {
+        paramName <- jsonpCallbackParameterNames
+        callback <- params.get(paramName)
+      } yield callback
 
-        jsonpCallback match {
-          case some :: _ =>
-            // JSONP is not JSON, but JavaScript.
-            contentType = formats("js")
-            // Status must always be 200 on JSONP, since it's loaded in a <script> tag.
-            status = 200
-            if (rosettaFlashGuard) writer.write("/**/")
-            writer.write(
-              "%s(%s);"
-                .format(some, compact(render(transformResponseBody(jv)))))
-          case _ =>
-            contentType = formats("json")
-            if (jsonVulnerabilityGuard) writer.write(VulnerabilityPrelude)
-            writeJson(transformResponseBody(jv), writer)
-            ()
-        }
-    }: RenderPipeline) orElse super.renderPipeline
+      jsonpCallback match {
+        case some :: _ =>
+          // JSONP is not JSON, but JavaScript.
+          contentType = formats("js")
+          // Status must always be 200 on JSONP, since it's loaded in a <script> tag.
+          status = 200
+          if (rosettaFlashGuard) writer.write("/**/")
+          writer.write(
+            "%s(%s);".format(some, compact(render(transformResponseBody(jv)))))
+        case _ =>
+          contentType = formats("json")
+          if (jsonVulnerabilityGuard) writer.write(VulnerabilityPrelude)
+          writeJson(transformResponseBody(jv), writer)
+          ()
+      }
+  }: RenderPipeline) orElse super.renderPipeline
 
   protected def writeJsonAsXml(json: JValue, writer: Writer) {
     if (json != JNothing)

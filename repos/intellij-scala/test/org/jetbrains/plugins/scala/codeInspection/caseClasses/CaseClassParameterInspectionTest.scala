@@ -18,8 +18,8 @@ class CaseClassParameterInspectionTest
 
   def testSimpleParam(): Unit = check(s"case class A(${START}val x: Int$END)")
 
-  def testSecondClause(): Unit =
-    checkTextHasNoErrors(s"case class A(x: Int)(val s: String)")
+  def testSecondClause(): Unit = checkTextHasNoErrors(
+    s"case class A(x: Int)(val s: String)")
 
   def testDefault(): Unit = {
     check(s"case class A(${START}val x: Int = 1$END)")
@@ -29,6 +29,6 @@ class CaseClassParameterInspectionTest
       ScalaBundle.message("remove.val"))
   }
 
-  def testWithModifier(): Unit =
-    checkTextHasNoErrors("case class A(protected val x: Int)")
+  def testWithModifier(): Unit = checkTextHasNoErrors(
+    "case class A(protected val x: Int)")
 }

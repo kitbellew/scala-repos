@@ -15,8 +15,8 @@ class CreateUnapplyQuickFix(clazz: ScTypeDefinition, pattern: ScPattern)
     extends { val getFamilyName = "Create 'unapply' method" }
 with CreateApplyOrUnapplyQuickFix(clazz) {
 
-  override protected def methodType: Some[String] =
-    Some(unapplyMethodTypeText(pattern))
+  override protected def methodType: Some[String] = Some(
+    unapplyMethodTypeText(pattern))
 
   override protected def methodText = unapplyMethodText(pattern)
 

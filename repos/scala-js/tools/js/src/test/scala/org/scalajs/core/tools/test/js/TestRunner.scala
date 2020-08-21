@@ -39,10 +39,9 @@ object TestRunner {
     taskLoop(tasks)
   }
 
-  private def taskDefs(fp: Fingerprint) =
-    for {
-      testName <- TestDetector.detectTestNames()
-    } yield new TaskDef(testName, fp, false, Array())
+  private def taskDefs(fp: Fingerprint) = for {
+    testName <- TestDetector.detectTestNames()
+  } yield new TaskDef(testName, fp, false, Array())
 
   private class SimpleEventHandler extends EventHandler {
     private[this] var failed = false

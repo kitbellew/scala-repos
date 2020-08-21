@@ -8,8 +8,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.ScExpression
   * @author Nikolay.Tropin
   */
 class LastIndexToLastInspection extends OperationOnCollectionInspection {
-  override def possibleSimplificationTypes: Array[SimplificationType] =
-    Array(LastIndexToLast)
+  override def possibleSimplificationTypes: Array[SimplificationType] = Array(
+    LastIndexToLast)
 }
 
 object LastIndexToLast extends SimplificationType {

@@ -209,8 +209,8 @@ trait TraversableOnce[+A] extends Any with GenTraversableOnce[A] {
 
   def reduce[A1 >: A](op: (A1, A1) => A1): A1 = reduceLeft(op)
 
-  def reduceOption[A1 >: A](op: (A1, A1) => A1): Option[A1] =
-    reduceLeftOption(op)
+  def reduceOption[A1 >: A](op: (A1, A1) => A1): Option[A1] = reduceLeftOption(
+    op)
 
   def fold[A1 >: A](z: A1)(op: (A1, A1) => A1): A1 = foldLeft(z)(op)
 
@@ -448,14 +448,13 @@ object TraversableOnce {
       *  @param from  the collection requesting the builder to be created.
       *  @return the result of invoking the `genericBuilder` method on `from`.
       */
-    def apply(from: CC[_]): Builder[A, CC[A]] =
-      from match {
-        case xs: generic.GenericTraversableTemplate[_, _] =>
-          xs.genericBuilder.asInstanceOf[Builder[A, Traversable[A]]] mapResult {
-            case res => traversableToColl(res.asInstanceOf[GenTraversable[A]])
-          }
-        case _ => newIterator
-      }
+    def apply(from: CC[_]): Builder[A, CC[A]] = from match {
+      case xs: generic.GenericTraversableTemplate[_, _] =>
+        xs.genericBuilder.asInstanceOf[Builder[A, Traversable[A]]] mapResult {
+          case res => traversableToColl(res.asInstanceOf[GenTraversable[A]])
+        }
+      case _ => newIterator
+    }
 
     /** Creates a new builder from scratch
       *  @return the result of invoking the `newBuilder` method of this factory.
@@ -476,14 +475,14 @@ object TraversableOnce {
   implicit def OnceCanBuildFrom[A] = new OnceCanBuildFrom[A]
 
   class FlattenOps[A](travs: TraversableOnce[TraversableOnce[A]]) {
-    def flatten: Iterator[A] =
-      new AbstractIterator[A] {
-        val its = travs.toIterator
-        private var it: Iterator[A] = Iterator.empty
-        def hasNext: Boolean =
-          it.hasNext || its.hasNext && { it = its.next().toIterator; hasNext }
-        def next(): A = if (hasNext) it.next() else Iterator.empty.next()
+    def flatten: Iterator[A] = new AbstractIterator[A] {
+      val its = travs.toIterator
+      private var it: Iterator[A] = Iterator.empty
+      def hasNext: Boolean = it.hasNext || its.hasNext && {
+        it = its.next().toIterator; hasNext
       }
+      def next(): A = if (hasNext) it.next() else Iterator.empty.next()
+    }
   }
 
   class ForceImplicitAmbiguity

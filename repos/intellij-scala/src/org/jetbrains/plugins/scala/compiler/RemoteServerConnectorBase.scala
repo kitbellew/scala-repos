@@ -112,29 +112,28 @@ abstract class RemoteServerConnectorBase(
     *      nameHashing.name
     *    )
     */
-  def arguments =
-    Seq[String](
-      sbtData.interfaceJar,
-      sbtData.sourceJar,
-      sbtData.interfacesHome,
-      sbtData.javaClassVersion,
-      compilerClasspath,
-      findJdk,
-      filesToCompile,
-      classpath,
-      outputDir,
-      scalaParameters,
-      javaParameters,
-      compilerSettings.compileOrder.toString,
-      "", //cache file
-      "",
-      "",
-      IncrementalityType.IDEA.name(),
-      sourceRoot,
-      outputDir,
-      worksheetArgs,
-      compilerSettings.sbtIncOptions.asString
-    )
+  def arguments = Seq[String](
+    sbtData.interfaceJar,
+    sbtData.sourceJar,
+    sbtData.interfacesHome,
+    sbtData.javaClassVersion,
+    compilerClasspath,
+    findJdk,
+    filesToCompile,
+    classpath,
+    outputDir,
+    scalaParameters,
+    javaParameters,
+    compilerSettings.compileOrder.toString,
+    "", //cache file
+    "",
+    "",
+    IncrementalityType.IDEA.name(),
+    sourceRoot,
+    outputDir,
+    worksheetArgs,
+    compilerSettings.sbtIncOptions.asString
+  )
 
   protected def configurationError(message: String) =
     throw new IllegalArgumentException(message)
@@ -147,10 +146,8 @@ abstract class RemoteServerConnectorBase(
   private def compilerSettings: ScalaCompilerSettings =
     module.scalaCompilerSettings
 
-  private def scalaSdk =
-    module.scalaSdk.getOrElse(
-      configurationError(
-        "No Scala SDK configured for module: " + module.getName))
+  private def scalaSdk = module.scalaSdk.getOrElse(
+    configurationError("No Scala SDK configured for module: " + module.getName))
 
   private def findJdk =
     scala.compiler.findJdkByName(settings.COMPILE_SERVER_SDK) match {

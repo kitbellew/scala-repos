@@ -32,38 +32,37 @@ class ConcurrentBijection[A, B] extends MMap[A, B] {
     this
   }
 
-  override def update(key: A, value: B) =
-    synchronized {
-      // We need to update:
-      //
-      //    a -> b
-      //    b -> a
-      //
-      // There may be existing mappings:
-      //
-      //   a  -> b'
-      //   b' -> a
-      //
-      // or
-      //
-      //   a' -> b
-      //   b  -> a'
-      //
-      // So we need to ensure these are killed.
-      val oldValue = forward.put(key, value)
-      if (oldValue != value) {
-        if (oldValue != null) {
-          // Remove the old reverse mapping.
-          val keyForOldValue = reverse.remove(oldValue)
-          if (key != keyForOldValue)
-            forward.remove(keyForOldValue)
-        }
-
-        val oldKeyForValue = reverse.put(value, key)
-        if (oldKeyForValue != null)
-          forward.remove(oldKeyForValue)
+  override def update(key: A, value: B) = synchronized {
+    // We need to update:
+    //
+    //    a -> b
+    //    b -> a
+    //
+    // There may be existing mappings:
+    //
+    //   a  -> b'
+    //   b' -> a
+    //
+    // or
+    //
+    //   a' -> b
+    //   b  -> a'
+    //
+    // So we need to ensure these are killed.
+    val oldValue = forward.put(key, value)
+    if (oldValue != value) {
+      if (oldValue != null) {
+        // Remove the old reverse mapping.
+        val keyForOldValue = reverse.remove(oldValue)
+        if (key != keyForOldValue)
+          forward.remove(keyForOldValue)
       }
+
+      val oldKeyForValue = reverse.put(value, key)
+      if (oldKeyForValue != null)
+        forward.remove(oldKeyForValue)
     }
+  }
 
   override def size = forward.size
 

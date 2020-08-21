@@ -189,9 +189,8 @@ final case class OptionRebuildingResultConverter[M <: ResultConverterDomain, T](
   def set(value: Option[T], pp: Writer) =
     throw new SlickException("Cannot insert/update non-primitive Option value")
   def width = discriminator.width + data.width
-  override def getDumpInfo =
-    super.getDumpInfo.copy(children =
-      Vector(("discriminator", discriminator), ("data", data)))
+  override def getDumpInfo = super.getDumpInfo.copy(children =
+    Vector(("discriminator", discriminator), ("data", data)))
 }
 
 /** A `ResultConverter` that simplifies the implementation of fast path
@@ -216,10 +215,9 @@ abstract class SimpleFastPathResultConverter[M <: ResultConverterDomain, T](
   def update(value: T, pr: Updater) = rc.update(value, pr)
   def set(value: T, pp: Writer) = rc.set(value, pp)
 
-  override def getDumpInfo =
-    super.getDumpInfo.copy(
-      name = "SimpleFastPathResultConverter",
-      mainInfo = "",
-      children = Vector(("rc", rc)))
+  override def getDumpInfo = super.getDumpInfo.copy(
+    name = "SimpleFastPathResultConverter",
+    mainInfo = "",
+    children = Vector(("rc", rc)))
   def width = rc.width
 }

@@ -2607,8 +2607,8 @@ trait Trees { self: Universe =>
     def traverseName(name: Name): Unit = ()
     def traverseConstant(c: Constant): Unit = ()
     def traverseImportSelector(sel: ImportSelector): Unit = ()
-    def traverseModifiers(mods: Modifiers): Unit =
-      traverseAnnotations(mods.annotations)
+    def traverseModifiers(mods: Modifiers): Unit = traverseAnnotations(
+      mods.annotations)
 
     /** Traverses a single tree. */
     def traverse(tree: Tree): Unit = itraverse(this, tree)

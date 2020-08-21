@@ -187,8 +187,8 @@ private[json] class JsonOutputWriter(
     }.getRecordWriter(context)
   }
 
-  override def write(row: Row): Unit =
-    throw new UnsupportedOperationException("call writeInternal")
+  override def write(row: Row): Unit = throw new UnsupportedOperationException(
+    "call writeInternal")
 
   override protected[sql] def writeInternal(row: InternalRow): Unit = {
     JacksonGenerator(dataSchema, gen)(row)

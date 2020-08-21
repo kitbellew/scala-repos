@@ -78,20 +78,18 @@ private class SelfPopulatingMap[K, V] {
  */
 private[controllers] object AssetInfo {
 
-  def config[T](lookup: Configuration => Option[T]): Option[T] =
-    for {
-      app <- Play.maybeApplication
-      value <- lookup(app.configuration)
-    } yield value
+  def config[T](lookup: Configuration => Option[T]): Option[T] = for {
+    app <- Play.maybeApplication
+    value <- lookup(app.configuration)
+  } yield value
 
   def isDev = Play.maybeApplication.fold(false)(_.mode == Mode.Dev)
   def isProd = Play.maybeApplication.fold(false)(_.mode == Mode.Prod)
 
-  def resource(name: String): Option[URL] =
-    for {
-      app <- Play.maybeApplication
-      resource <- app.resource(name)
-    } yield resource
+  def resource(name: String): Option[URL] = for {
+    app <- Play.maybeApplication
+    resource <- app.resource(name)
+  } yield resource
 
   lazy val defaultCharSet =
     config(_.getString("default.charset")).getOrElse("utf-8")
@@ -478,8 +476,8 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
   /**
     * Generates an `Action` that serves a versioned static resource.
     */
-  def versioned(path: String, file: Asset): Action[AnyContent] =
-    Action.async { implicit request =>
+  def versioned(path: String, file: Asset): Action[AnyContent] = Action.async {
+    implicit request =>
       val f = new File(file.name)
       // We want to detect if it's a fingerprinted asset, because if it's fingerprinted, we can aggressively cache it,
       // otherwise we can't.
@@ -497,7 +495,7 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
       } else {
         assetAt(path, file.name, false)
       }
-    }
+  }
 
   /**
     * Generates an `Action` that serves a static resource.
@@ -509,10 +507,10 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
   def at(
       path: String,
       file: String,
-      aggressiveCaching: Boolean = false): Action[AnyContent] =
-    Action.async { implicit request =>
+      aggressiveCaching: Boolean = false): Action[AnyContent] = Action.async {
+    implicit request =>
       assetAt(path, file, aggressiveCaching)
-    }
+  }
 
   private def assetAt(path: String, file: String, aggressiveCaching: Boolean)(
       implicit request: RequestHeader): Future[Result] = {
@@ -523,11 +521,10 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
         assetInfoForRequest(request, name)
     } getOrElse Future.successful(None)
 
-    def notFound =
-      errorHandler.onClientError(
-        request,
-        NOT_FOUND,
-        "Resource not found by Assets controller")
+    def notFound = errorHandler.onClientError(
+      request,
+      NOT_FOUND,
+      "Resource not found by Assets controller")
 
     val pendingResult: Future[Result] = assetInfoFuture.flatMap {
       case Some((assetInfo, gzipRequested)) =>

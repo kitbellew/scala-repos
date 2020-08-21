@@ -111,8 +111,8 @@ object UnsafeProjection {
   /**
     * Returns an UnsafeProjection for given StructType.
     */
-  def create(schema: StructType): UnsafeProjection =
-    create(schema.fields.map(_.dataType))
+  def create(schema: StructType): UnsafeProjection = create(
+    schema.fields.map(_.dataType))
 
   /**
     * Returns an UnsafeProjection for given Array of DataTypes.

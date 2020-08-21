@@ -90,9 +90,8 @@ class ScValueStubImpl[ParentPsi <: PsiElement](
 
   def isLocal: Boolean = local
 
-  def getNames: Array[String] =
-    for (name <- names)
-      yield StringRef.toString(name) //todo: remove it if unused
+  def getNames: Array[String] = for (name <- names)
+    yield StringRef.toString(name) //todo: remove it if unused
 
   def isDeclaration = declaration
 

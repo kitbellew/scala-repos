@@ -30,8 +30,8 @@ object SimpleFunction {
         val name = fname
         override val scalar = fn
         def children = ConstArray.from(params)
-        protected[this] def rebuild(ch: ConstArray[Node]): Self =
-          build(ch.toSeq)
+        protected[this] def rebuild(ch: ConstArray[Node]): Self = build(
+          ch.toSeq)
       }
     { paramsC: Seq[Rep[_]] =>
       Rep.forNode(build(paramsC.map(_.toNode)(collection.breakOut)))

@@ -44,11 +44,10 @@ sealed abstract class BlockId {
 
   override def toString: String = name
   override def hashCode: Int = name.hashCode
-  override def equals(other: Any): Boolean =
-    other match {
-      case o: BlockId => getClass == o.getClass && name.equals(o.name)
-      case _          => false
-    }
+  override def equals(other: Any): Boolean = other match {
+    case o: BlockId => getClass == o.getClass && name.equals(o.name)
+    case _          => false
+  }
 }
 
 @DeveloperApi
@@ -123,25 +122,24 @@ object BlockId {
   val TEST = "test_(.*)".r
 
   /** Converts a BlockId "name" String back into a BlockId. */
-  def apply(id: String): BlockId =
-    id match {
-      case RDD(rddId, splitIndex) =>
-        RDDBlockId(rddId.toInt, splitIndex.toInt)
-      case SHUFFLE(shuffleId, mapId, reduceId) =>
-        ShuffleBlockId(shuffleId.toInt, mapId.toInt, reduceId.toInt)
-      case SHUFFLE_DATA(shuffleId, mapId, reduceId) =>
-        ShuffleDataBlockId(shuffleId.toInt, mapId.toInt, reduceId.toInt)
-      case SHUFFLE_INDEX(shuffleId, mapId, reduceId) =>
-        ShuffleIndexBlockId(shuffleId.toInt, mapId.toInt, reduceId.toInt)
-      case BROADCAST(broadcastId, field) =>
-        BroadcastBlockId(broadcastId.toLong, field.stripPrefix("_"))
-      case TASKRESULT(taskId) =>
-        TaskResultBlockId(taskId.toLong)
-      case STREAM(streamId, uniqueId) =>
-        StreamBlockId(streamId.toInt, uniqueId.toLong)
-      case TEST(value) =>
-        TestBlockId(value)
-      case _ =>
-        throw new IllegalStateException("Unrecognized BlockId: " + id)
-    }
+  def apply(id: String): BlockId = id match {
+    case RDD(rddId, splitIndex) =>
+      RDDBlockId(rddId.toInt, splitIndex.toInt)
+    case SHUFFLE(shuffleId, mapId, reduceId) =>
+      ShuffleBlockId(shuffleId.toInt, mapId.toInt, reduceId.toInt)
+    case SHUFFLE_DATA(shuffleId, mapId, reduceId) =>
+      ShuffleDataBlockId(shuffleId.toInt, mapId.toInt, reduceId.toInt)
+    case SHUFFLE_INDEX(shuffleId, mapId, reduceId) =>
+      ShuffleIndexBlockId(shuffleId.toInt, mapId.toInt, reduceId.toInt)
+    case BROADCAST(broadcastId, field) =>
+      BroadcastBlockId(broadcastId.toLong, field.stripPrefix("_"))
+    case TASKRESULT(taskId) =>
+      TaskResultBlockId(taskId.toLong)
+    case STREAM(streamId, uniqueId) =>
+      StreamBlockId(streamId.toInt, uniqueId.toLong)
+    case TEST(value) =>
+      TestBlockId(value)
+    case _ =>
+      throw new IllegalStateException("Unrecognized BlockId: " + id)
+  }
 }

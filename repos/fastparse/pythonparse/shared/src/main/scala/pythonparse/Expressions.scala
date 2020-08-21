@@ -15,11 +15,10 @@ import Lexical.kw
   */
 object Expressions {
 
-  def tuplize(xs: Seq[Ast.expr]) =
-    xs match {
-      case Seq(x) => x
-      case xs     => Ast.expr.Tuple(xs, Ast.expr_context.Load)
-    }
+  def tuplize(xs: Seq[Ast.expr]) = xs match {
+    case Seq(x) => x
+    case xs     => Ast.expr.Tuple(xs, Ast.expr_context.Load)
+  }
 
   val NAME: P[Ast.identifier] = Lexical.identifier
   val NUMBER: P[Ast.expr.Num] = P(
@@ -78,12 +77,12 @@ object Expressions {
   val BitAnd = op("&", Ast.operator.BitAnd)
   val BitXor = op("^", Ast.operator.BitXor)
 
-  def Chain(p: P[Ast.expr], op: P[Ast.operator]) =
-    P(p ~ (op ~ p).rep).map { case (lhs, chunks) =>
+  def Chain(p: P[Ast.expr], op: P[Ast.operator]) = P(p ~ (op ~ p).rep).map {
+    case (lhs, chunks) =>
       chunks.foldLeft(lhs) { case (lhs, (op, rhs)) =>
         Ast.expr.BinOp(lhs, op, rhs)
       }
-    }
+  }
   val expr: P[Ast.expr] = P(Chain(xor_expr, BitOr))
   val xor_expr: P[Ast.expr] = P(Chain(and_expr, BitXor))
   val and_expr: P[Ast.expr] = P(Chain(shift_expr, BitAnd))

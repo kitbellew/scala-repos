@@ -85,11 +85,10 @@ private[columnar] case object RunLengthEncoding extends CompressionScheme {
     new this.Decoder(buffer, columnType)
   }
 
-  override def supports(columnType: ColumnType[_]): Boolean =
-    columnType match {
-      case INT | LONG | SHORT | BYTE | STRING | BOOLEAN => true
-      case _                                            => false
-    }
+  override def supports(columnType: ColumnType[_]): Boolean = columnType match {
+    case INT | LONG | SHORT | BYTE | STRING | BOOLEAN => true
+    case _                                            => false
+  }
 
   class Encoder[T <: AtomicType](columnType: NativeColumnType[T])
       extends compression.Encoder[T] {
@@ -206,11 +205,10 @@ private[columnar] case object DictionaryEncoding extends CompressionScheme {
     new this.Encoder[T](columnType)
   }
 
-  override def supports(columnType: ColumnType[_]): Boolean =
-    columnType match {
-      case INT | LONG | STRING => true
-      case _                   => false
-    }
+  override def supports(columnType: ColumnType[_]): Boolean = columnType match {
+    case INT | LONG | STRING => true
+    case _                   => false
+  }
 
   class Encoder[T <: AtomicType](columnType: NativeColumnType[T])
       extends compression.Encoder[T] {

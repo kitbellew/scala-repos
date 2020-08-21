@@ -55,8 +55,8 @@ object Reflect {
       javaDelegate: ClassTag[JavaDelegate],
       default: ClassTag[Default]): Seq[Binding[_]] = {
 
-    def bind[T: SubClassOf]: BindingKey[T] =
-      BindingKey(implicitly[SubClassOf[T]].runtimeClass)
+    def bind[T: SubClassOf]: BindingKey[T] = BindingKey(
+      implicitly[SubClassOf[T]].runtimeClass)
 
     configuredClass[ScalaTrait, JavaInterface, Default](
       environment,

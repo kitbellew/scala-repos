@@ -630,14 +630,13 @@ object Replicator {
 
       private def cleaned(
           c: ReplicatedData,
-          p: Map[UniqueAddress, PruningState]): ReplicatedData =
-        p.foldLeft(c) {
-          case (
-                c: RemovedNodePruning,
-                (removed, PruningState(_, PruningPerformed))) ⇒
-            if (c.needPruningFrom(removed)) c.pruningCleanup(removed) else c
-          case (c, _) ⇒ c
-        }
+          p: Map[UniqueAddress, PruningState]): ReplicatedData = p.foldLeft(c) {
+        case (
+              c: RemovedNodePruning,
+              (removed, PruningState(_, PruningPerformed))) ⇒
+          if (c.needPruningFrom(removed)) c.pruningCleanup(removed) else c
+        case (c, _) ⇒ c
+      }
 
       def addSeen(node: Address): DataEnvelope = {
         var changed = false

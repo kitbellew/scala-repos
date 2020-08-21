@@ -155,26 +155,25 @@ class ExecutorBasedEventDrivenDispatcher(
 
   override def mailboxSize(actorRef: ActorRef) = getMailbox(actorRef).size
 
-  def createMailbox(actorRef: ActorRef): AnyRef =
-    mailboxType match {
-      case b: UnboundedMailbox =>
-        new ConcurrentLinkedQueue[MessageInvocation]
-          with MessageQueue
-          with ExecutableMailbox {
-          @inline
-          final def dispatcher = ExecutorBasedEventDrivenDispatcher.this
-          @inline
-          final def enqueue(m: MessageInvocation) = this.add(m)
-          @inline
-          final def dequeue(): MessageInvocation = this.poll()
-        }
-      case b: BoundedMailbox =>
-        new DefaultBoundedMessageQueue(b.capacity, b.pushTimeOut)
-          with ExecutableMailbox {
-          @inline
-          final def dispatcher = ExecutorBasedEventDrivenDispatcher.this
-        }
-    }
+  def createMailbox(actorRef: ActorRef): AnyRef = mailboxType match {
+    case b: UnboundedMailbox =>
+      new ConcurrentLinkedQueue[MessageInvocation]
+        with MessageQueue
+        with ExecutableMailbox {
+        @inline
+        final def dispatcher = ExecutorBasedEventDrivenDispatcher.this
+        @inline
+        final def enqueue(m: MessageInvocation) = this.add(m)
+        @inline
+        final def dequeue(): MessageInvocation = this.poll()
+      }
+    case b: BoundedMailbox =>
+      new DefaultBoundedMessageQueue(b.capacity, b.pushTimeOut)
+        with ExecutableMailbox {
+        @inline
+        final def dispatcher = ExecutorBasedEventDrivenDispatcher.this
+      }
+  }
 
   private[akka] def start {}
 

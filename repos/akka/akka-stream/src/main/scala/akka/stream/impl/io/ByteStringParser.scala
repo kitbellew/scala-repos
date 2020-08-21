@@ -100,8 +100,8 @@ private[akka] object ByteStringParser {
       */
     def canWorkWithPartialData: Boolean = false
     def parse(reader: ByteReader): ParseResult[T]
-    def onTruncation(): Unit =
-      throw new IllegalStateException("truncated data in ByteStringParser")
+    def onTruncation(): Unit = throw new IllegalStateException(
+      "truncated data in ByteStringParser")
   }
 
   object FinishedParser extends ParseStep[Nothing] {

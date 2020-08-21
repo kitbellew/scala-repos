@@ -97,37 +97,31 @@ trait CValueGenerators extends ArbitraryBigDecimal {
 
   def leafSchema: Gen[JSchema] = ctype map { t => (JPath.Identity -> t) :: Nil }
 
-  def ctype: Gen[CType] =
-    oneOf(
-      CString,
-      CBoolean,
-      CLong,
-      CDouble,
-      CNum,
-      CNull,
-      CEmptyObject,
-      CEmptyArray
-    )
+  def ctype: Gen[CType] = oneOf(
+    CString,
+    CBoolean,
+    CLong,
+    CDouble,
+    CNum,
+    CNull,
+    CEmptyObject,
+    CEmptyArray
+  )
 
   // FIXME: TODO Should this provide some form for CDate?
-  def jvalue(ctype: CType): Gen[JValue] =
-    ctype match {
-      case CString  => alphaStr map (JString(_))
-      case CBoolean => arbitrary[Boolean] map (JBool(_))
-      case CLong =>
-        arbitrary[Long] map { ln =>
-          JNum(BigDecimal(ln, MathContext.UNLIMITED))
-        }
-      case CDouble =>
-        arbitrary[Double] map { d =>
-          JNum(BigDecimal(d, MathContext.UNLIMITED))
-        }
-      case CNum         => arbitrary[BigDecimal] map { bd => JNum(bd) }
-      case CNull        => JNull
-      case CEmptyObject => JObject.empty
-      case CEmptyArray  => JArray.empty
-      case CUndefined   => JUndefined
-    }
+  def jvalue(ctype: CType): Gen[JValue] = ctype match {
+    case CString  => alphaStr map (JString(_))
+    case CBoolean => arbitrary[Boolean] map (JBool(_))
+    case CLong =>
+      arbitrary[Long] map { ln => JNum(BigDecimal(ln, MathContext.UNLIMITED)) }
+    case CDouble =>
+      arbitrary[Double] map { d => JNum(BigDecimal(d, MathContext.UNLIMITED)) }
+    case CNum         => arbitrary[BigDecimal] map { bd => JNum(bd) }
+    case CNull        => JNull
+    case CEmptyObject => JObject.empty
+    case CEmptyArray  => JArray.empty
+    case CUndefined   => JUndefined
+  }
 
   def jvalue(schema: Seq[(JPath, CType)]): Gen[JValue] = {
     schema.foldLeft(Gen.value[JValue](JUndefined)) {
@@ -213,17 +207,16 @@ trait SValueGenerators extends ArbitraryBigDecimal {
     } yield SArray(Vector(l: _*))
   }
 
-  def sleaf: Gen[SValue] =
-    oneOf(
-      alphaStr map (SString(_: String)),
-      arbitrary[Boolean] map (SBoolean(_: Boolean)),
-      arbitrary[Long] map (l => SDecimal(BigDecimal(l))),
-      arbitrary[Double] map (d => SDecimal(BigDecimal(d))),
-      arbitrary[BigDecimal] map { bd =>
-        SDecimal(bd)
-      }, //scalacheck's BigDecimal gen will overflow at random
-      value(SNull)
-    )
+  def sleaf: Gen[SValue] = oneOf(
+    alphaStr map (SString(_: String)),
+    arbitrary[Boolean] map (SBoolean(_: Boolean)),
+    arbitrary[Long] map (l => SDecimal(BigDecimal(l))),
+    arbitrary[Double] map (d => SDecimal(BigDecimal(d))),
+    arbitrary[BigDecimal] map { bd =>
+      SDecimal(bd)
+    }, //scalacheck's BigDecimal gen will overflow at random
+    value(SNull)
+  )
 
   def sevent(idCount: Int, vdepth: Int): Gen[SEvent] = {
     for {
@@ -239,11 +232,10 @@ trait SValueGenerators extends ArbitraryBigDecimal {
 case class LimitList[A](values: List[A])
 
 object LimitList {
-  def genLimitList[A: Gen](size: Int): Gen[LimitList[A]] =
-    for {
-      i <- choose(0, size)
-      l <- listOfN(i, implicitly[Gen[A]])
-    } yield LimitList(l)
+  def genLimitList[A: Gen](size: Int): Gen[LimitList[A]] = for {
+    i <- choose(0, size)
+    l <- listOfN(i, implicitly[Gen[A]])
+  } yield LimitList(l)
 }
 
 trait ArbitrarySValue extends SValueGenerators {
@@ -263,19 +255,18 @@ trait ArbitrarySValue extends SValueGenerators {
 trait ArbitraryBigDecimal {
   val MAX_EXPONENT = 50000
   // BigDecimal *isn't* arbitrary precision!  AWESOME!!!
-  implicit def arbBigDecimal: Arbitrary[BigDecimal] =
-    Arbitrary(for {
-      mantissa <- arbitrary[Long]
-      exponent <- Gen.chooseNum(-MAX_EXPONENT, MAX_EXPONENT)
+  implicit def arbBigDecimal: Arbitrary[BigDecimal] = Arbitrary(for {
+    mantissa <- arbitrary[Long]
+    exponent <- Gen.chooseNum(-MAX_EXPONENT, MAX_EXPONENT)
 
-      adjusted =
-        if (exponent.toLong + mantissa.toString.length >= Int.MaxValue.toLong)
-          exponent - mantissa.toString.length
-        else if (exponent.toLong - mantissa.toString.length <= Int.MinValue.toLong)
-          exponent + mantissa.toString.length
-        else
-          exponent
-    } yield BigDecimal(mantissa, adjusted, java.math.MathContext.UNLIMITED))
+    adjusted =
+      if (exponent.toLong + mantissa.toString.length >= Int.MaxValue.toLong)
+        exponent - mantissa.toString.length
+      else if (exponent.toLong - mantissa.toString.length <= Int.MinValue.toLong)
+        exponent + mantissa.toString.length
+      else
+        exponent
+  } yield BigDecimal(mantissa, adjusted, java.math.MathContext.UNLIMITED))
 }
 
 // vim: set ts=4 sw=4 et:

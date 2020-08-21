@@ -35,9 +35,8 @@ object OptionMapper2 {
     override def toString = "OptionMapper2.plain"
   }
   val option = new OptionMapper2[Any, Any, Any, Any, Any, Option[Any]] {
-    def apply(n: Rep[Any]): Rep[Option[Any]] =
-      Rep.forNode(OptionApply(n.toNode))(
-        n.asInstanceOf[Rep.TypedRep[Any]].tpe.optionType)
+    def apply(n: Rep[Any]): Rep[Option[Any]] = Rep.forNode(
+      OptionApply(n.toNode))(n.asInstanceOf[Rep.TypedRep[Any]].tpe.optionType)
     def lift = true
     override def toString = "OptionMapper2.option"
   }
@@ -68,9 +67,8 @@ object OptionMapper3 {
   }
   val option =
     new OptionMapper3[Any, Any, Any, Any, Any, Any, Any, Option[Any]] {
-      def apply(n: Rep[Any]): Rep[Option[Any]] =
-        Rep.forNode(OptionApply(n.toNode))(
-          n.asInstanceOf[Rep.TypedRep[Any]].tpe.optionType)
+      def apply(n: Rep[Any]): Rep[Option[Any]] = Rep.forNode(
+        OptionApply(n.toNode))(n.asInstanceOf[Rep.TypedRep[Any]].tpe.optionType)
       def lift = true
       override def toString = "OptionMapper3.option"
     }
@@ -79,65 +77,57 @@ object OptionMapper3 {
       B1,
       B2: BaseTypedType,
       B3: BaseTypedType,
-      BR] =
-    OptionMapper3.plain
-      .asInstanceOf[OptionMapper3[B1, B2, B3, BR, B1, B2, B3, BR]]
+      BR] = OptionMapper3.plain
+    .asInstanceOf[OptionMapper3[B1, B2, B3, BR, B1, B2, B3, BR]]
   @inline implicit def getOptionMapper3TTO[
       B1,
       B2: BaseTypedType,
       B3: BaseTypedType,
-      BR] =
-    OptionMapper3.option.asInstanceOf[
-      OptionMapper3[B1, B2, B3, BR, B1, B2, Option[B3], Option[BR]]]
+      BR] = OptionMapper3.option
+    .asInstanceOf[OptionMapper3[B1, B2, B3, BR, B1, B2, Option[B3], Option[BR]]]
   @inline implicit def getOptionMapper3TOT[
       B1,
       B2: BaseTypedType,
       B3: BaseTypedType,
-      BR] =
-    OptionMapper3.option.asInstanceOf[
-      OptionMapper3[B1, B2, B3, BR, B1, Option[B2], B3, Option[BR]]]
+      BR] = OptionMapper3.option
+    .asInstanceOf[OptionMapper3[B1, B2, B3, BR, B1, Option[B2], B3, Option[BR]]]
   @inline implicit def getOptionMapper3TOO[
       B1,
       B2: BaseTypedType,
       B3: BaseTypedType,
-      BR] =
-    OptionMapper3.option.asInstanceOf[
-      OptionMapper3[B1, B2, B3, BR, B1, Option[B2], Option[B3], Option[BR]]]
+      BR] = OptionMapper3.option.asInstanceOf[
+    OptionMapper3[B1, B2, B3, BR, B1, Option[B2], Option[B3], Option[BR]]]
   @inline implicit def getOptionMapper3OTT[
       B1,
       B2: BaseTypedType,
       B3: BaseTypedType,
-      BR] =
-    OptionMapper3.option.asInstanceOf[
-      OptionMapper3[B1, B2, B3, BR, Option[B1], B2, B3, Option[BR]]]
+      BR] = OptionMapper3.option
+    .asInstanceOf[OptionMapper3[B1, B2, B3, BR, Option[B1], B2, B3, Option[BR]]]
   @inline implicit def getOptionMapper3OTO[
       B1,
       B2: BaseTypedType,
       B3: BaseTypedType,
-      BR] =
-    OptionMapper3.option.asInstanceOf[
-      OptionMapper3[B1, B2, B3, BR, Option[B1], B2, Option[B3], Option[BR]]]
+      BR] = OptionMapper3.option.asInstanceOf[
+    OptionMapper3[B1, B2, B3, BR, Option[B1], B2, Option[B3], Option[BR]]]
   @inline implicit def getOptionMapper3OOT[
       B1,
       B2: BaseTypedType,
       B3: BaseTypedType,
-      BR] =
-    OptionMapper3.option.asInstanceOf[
-      OptionMapper3[B1, B2, B3, BR, Option[B1], Option[B2], B3, Option[BR]]]
+      BR] = OptionMapper3.option.asInstanceOf[
+    OptionMapper3[B1, B2, B3, BR, Option[B1], Option[B2], B3, Option[BR]]]
   @inline implicit def getOptionMapper3OOO[
       B1,
       B2: BaseTypedType,
       B3: BaseTypedType,
-      BR] =
-    OptionMapper3.option.asInstanceOf[OptionMapper3[
-      B1,
-      B2,
-      B3,
-      BR,
-      Option[B1],
-      Option[B2],
-      Option[B3],
-      Option[BR]]]
+      BR] = OptionMapper3.option.asInstanceOf[OptionMapper3[
+    B1,
+    B2,
+    B3,
+    BR,
+    Option[B1],
+    Option[B2],
+    Option[B3],
+    Option[BR]]]
 }
 
 object OptionMapperDSL {
@@ -160,47 +150,43 @@ sealed trait OptionLift[M, O] {
 object OptionLift extends OptionLiftLowPriority {
   final implicit def repOptionLift[M <: Rep[_], P](implicit
       shape: Shape[_ <: FlatShapeLevel, M, _, Rep[P]])
-      : OptionLift[M, Rep[Option[P]]] =
-    new OptionLift[M, Rep[Option[P]]] {
-      def lift(v: M): Rep[Option[P]] = {
-        val n = OptionApply(v.toNode)
-        val packed = shape.pack(v)
-        packed match {
-          case r: Rep.TypedRep[_]
-              if !r.tpe.isInstanceOf[OptionType] /* An primitive column */ =>
-            Rep.forNode[Option[P]](n)(
-              r.tpe.asInstanceOf[TypedType[P]].optionType)
-          case _ =>
-            RepOption[P](ShapedValue(packed, shape.packedShape), n)
-        }
+      : OptionLift[M, Rep[Option[P]]] = new OptionLift[M, Rep[Option[P]]] {
+    def lift(v: M): Rep[Option[P]] = {
+      val n = OptionApply(v.toNode)
+      val packed = shape.pack(v)
+      packed match {
+        case r: Rep.TypedRep[_]
+            if !r.tpe.isInstanceOf[OptionType] /* An primitive column */ =>
+          Rep.forNode[Option[P]](n)(r.tpe.asInstanceOf[TypedType[P]].optionType)
+        case _ =>
+          RepOption[P](ShapedValue(packed, shape.packedShape), n)
       }
     }
+  }
 }
 
 sealed trait OptionLiftLowPriority {
   final implicit def anyOptionLift[M, P](implicit
       shape: Shape[_ <: FlatShapeLevel, M, _, P])
-      : OptionLift[M, Rep[Option[P]]] =
-    new OptionLift[M, Rep[Option[P]]] {
-      def lift(v: M): Rep[Option[P]] =
-        RepOption[P](
-          ShapedValue(shape.pack(v), shape.packedShape),
-          OptionApply(shape.toNode(v)))
-    }
+      : OptionLift[M, Rep[Option[P]]] = new OptionLift[M, Rep[Option[P]]] {
+    def lift(v: M): Rep[Option[P]] =
+      RepOption[P](
+        ShapedValue(shape.pack(v), shape.packedShape),
+        OptionApply(shape.toNode(v)))
+  }
 
   /** Get a suitably typed base value for a `Rep[Option[_]]` */
-  def baseValue[M, O](v: O, path: Node): M =
-    v match {
-      case RepOption(base, _) =>
-        base.asInstanceOf[ShapedValue[M, _]].encodeRef(path).value
-      case r: Rep.TypedRep[_] /* An Option column */ =>
-        Rep
-          .columnPlaceholder[Any](
-            r.tpe
-              .asInstanceOf[OptionType]
-              .elementType
-              .asInstanceOf[TypedType[Any]])
-          .encodeRef(path)
-          .asInstanceOf[M]
-    }
+  def baseValue[M, O](v: O, path: Node): M = v match {
+    case RepOption(base, _) =>
+      base.asInstanceOf[ShapedValue[M, _]].encodeRef(path).value
+    case r: Rep.TypedRep[_] /* An Option column */ =>
+      Rep
+        .columnPlaceholder[Any](
+          r.tpe
+            .asInstanceOf[OptionType]
+            .elementType
+            .asInstanceOf[TypedType[Any]])
+        .encodeRef(path)
+        .asInstanceOf[M]
+  }
 }

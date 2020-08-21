@@ -147,16 +147,14 @@ case class MarkdownLineReader private (
     this(ls, lu, 1)
   def this(ls: Seq[MarkdownLine]) = this(ls, Map())
   def first = if (lines.isEmpty) EofLine else lines.head
-  def rest =
-    if (lines.isEmpty) this
-    else new MarkdownLineReader(lines.tail, lookup, lineCount + 1)
+  def rest = if (lines.isEmpty) this
+  else new MarkdownLineReader(lines.tail, lookup, lineCount + 1)
   def atEnd = lines.isEmpty
-  def pos =
-    new Position {
-      def line = lineCount
-      def column = 1
-      protected def lineContents = first.fullLine
-    }
+  def pos = new Position {
+    def line = lineCount
+    def column = 1
+    protected def lineContents = first.fullLine
+  }
 }
 
 /**

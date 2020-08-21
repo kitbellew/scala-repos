@@ -101,8 +101,8 @@ trait Config[T] extends (() => T) {
   def required[A]: Required[A] = Unspecified
   def required[A](default: => A): Required[A] = new Specified(default)
   def optional[A]: Required[Option[A]] = new Specified(None)
-  def optional[A](default: => A): Required[Option[A]] =
-    new Specified(Some(default))
+  def optional[A](default: => A): Required[Option[A]] = new Specified(
+    Some(default))
 
   /**
     * The same as specifying required[A] with a default value, but the intent to the

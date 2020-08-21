@@ -50,12 +50,11 @@ final case class WriterT[F[_], W, A](run: F[(W, A)]) { self =>
 
   def ap[B](f: => WriterT[F, W, A => B])(implicit
       F: Apply[F],
-      W: Semigroup[W]): WriterT[F, W, B] =
-    writerT {
-      F.apply2(f.run, run) { case ((w1, fab), (w2, a)) =>
-        (W.append(w1, w2), fab(a))
-      }
+      W: Semigroup[W]): WriterT[F, W, B] = writerT {
+    F.apply2(f.run, run) { case ((w1, fab), (w2, a)) =>
+      (W.append(w1, w2), fab(a))
     }
+  }
 
   def flatMap[B](f: A => WriterT[F, W, B])(implicit
       F: Bind[F],
@@ -122,8 +121,8 @@ sealed abstract class WriterTInstances15 {
       M: Monoid[F[(W, A)]]): Monoid[WriterT[F, W, A]] =
     new Monoid[WriterT[F, W, A]] {
       def zero = WriterT(M.zero)
-      def append(a: WriterT[F, W, A], b: => WriterT[F, W, A]) =
-        WriterT(M.append(a.run, b.run))
+      def append(a: WriterT[F, W, A], b: => WriterT[F, W, A]) = WriterT(
+        M.append(a.run, b.run))
     }
 
   implicit def writerTPlus[F[_], W](implicit

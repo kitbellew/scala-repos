@@ -46,24 +46,23 @@ case class Statistics private[ragnarok] (
     * This can be safely used to convert between units, after the fact, for
     * example.
     */
-  def *(x: Double): Statistics =
-    if (x >= 0.0) {
-      Statistics(
-        tails,
-        allMin map (_ * x),
-        allMax map (_ * x),
-        m * x,
-        vn * x * x,
-        n)
-    } else {
-      Statistics(
-        tails,
-        allMax map (_ * x),
-        allMin map (_ * x),
-        m * x,
-        vn * math.abs(x) * math.abs(x),
-        n)
-    }
+  def *(x: Double): Statistics = if (x >= 0.0) {
+    Statistics(
+      tails,
+      allMin map (_ * x),
+      allMax map (_ * x),
+      m * x,
+      vn * x * x,
+      n)
+  } else {
+    Statistics(
+      tails,
+      allMax map (_ * x),
+      allMin map (_ * x),
+      m * x,
+      vn * math.abs(x) * math.abs(x),
+      n)
+  }
 
   def +(x: Double): Statistics = this + Statistics(x, tails = tails)
 
@@ -96,16 +95,15 @@ case class Statistics private[ragnarok] (
 
   def count: Int = meanVarCount._3
 
-  def toJson: JObject =
-    JObject(
-      List(
-        JField("mean", JNum(mean)),
-        JField("variance", JNum(variance)),
-        JField("stdDev", JNum(stdDev)),
-        JField("min", JNum(min)),
-        JField("max", JNum(max)),
-        JField("count", JNum(count))
-      ))
+  def toJson: JObject = JObject(
+    List(
+      JField("mean", JNum(mean)),
+      JField("variance", JNum(variance)),
+      JField("stdDev", JNum(stdDev)),
+      JField("min", JNum(min)),
+      JField("max", JNum(max)),
+      JField("count", JNum(count))
+    ))
 }
 
 object Statistics {

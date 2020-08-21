@@ -47,26 +47,26 @@ object Color {
   /**
     * Creates an RGB color specified with hexadecimal notation or color name.
     */
-  def web(color: String, opacity: Double) =
-    new Color(jfxsp.Color.web(color, opacity))
+  def web(color: String, opacity: Double) = new Color(
+    jfxsp.Color.web(color, opacity))
 
   /**
     * Creates an opaque sRGB color with the specified RGB values in the range 0-255.
     */
-  def rgb(red: Int, green: Int, blue: Int) =
-    new Color(jfxsp.Color.rgb(red, green, blue))
+  def rgb(red: Int, green: Int, blue: Int) = new Color(
+    jfxsp.Color.rgb(red, green, blue))
 
   /**
     * Creates an sRGB color with the specified RGB values in the range 0-255, and a given opacity in the range 0.0-1.0.
     */
-  def rgb(red: Int, green: Int, blue: Int, opacity: Double) =
-    new Color(jfxsp.Color.rgb(red, green, blue, opacity))
+  def rgb(red: Int, green: Int, blue: Int, opacity: Double) = new Color(
+    jfxsp.Color.rgb(red, green, blue, opacity))
 
   /**
     * Creates an opaque Color based on the specified values in the HSB color model.
     */
-  def hsb(hue: Double, saturation: Double, brightness: Double) =
-    new Color(jfxsp.Color.hsb(hue, saturation, brightness))
+  def hsb(hue: Double, saturation: Double, brightness: Double) = new Color(
+    jfxsp.Color.hsb(hue, saturation, brightness))
 
   /**
     * Creates a Color based on the specified values in the HSB color model, and a given opacity.
@@ -75,14 +75,14 @@ object Color {
       hue: Double,
       saturation: Double,
       brightness: Double,
-      opacity: Double) =
-    new Color(jfxsp.Color.hsb(hue, saturation, brightness, opacity))
+      opacity: Double) = new Color(
+    jfxsp.Color.hsb(hue, saturation, brightness, opacity))
 
   /**
     * Creates an opaque sRGB color with the specified red, green and blue values in the range 0.0-1.0.
     */
-  def color(red: Double, green: Double, blue: Double) =
-    new Color(jfxsp.Color.color(red, green, blue))
+  def color(red: Double, green: Double, blue: Double) = new Color(
+    jfxsp.Color.color(red, green, blue))
 
   /**
     * Creates an sRGB color with the specified red, green and blue values in the range 0.0-1.0, and a given opacity.
@@ -98,8 +98,8 @@ object Color {
   /**
     * Creates a grey color.
     */
-  def gray(gray: Double, opacity: Double) =
-    new Color(jfxsp.Color.gray(gray, opacity))
+  def gray(gray: Double, opacity: Double) = new Color(
+    jfxsp.Color.gray(gray, opacity))
 
   /**
     * This is a shortcut for rgb(gray, gray, gray).
@@ -109,8 +109,8 @@ object Color {
   /**
     * This is a shortcut for rgb(gray, gray, gray, opacity).
     */
-  def grayRgb(gray: Int, opacity: Double) =
-    new Color(jfxsp.Color.gray(gray, opacity))
+  def grayRgb(gray: Int, opacity: Double) = new Color(
+    jfxsp.Color.gray(gray, opacity))
 
   /**
     * Creates a color value from a string representation.  The format of the string representation is the same as in web(String).
@@ -890,12 +890,11 @@ class Color(override val delegate: jfxsp.Color)
       hueShift: Double,
       saturationFactor: Double,
       brightnessFactor: Double,
-      opacityFactor: Double): Color =
-    delegate.deriveColor(
-      hueShift,
-      saturationFactor,
-      brightnessFactor,
-      opacityFactor)
+      opacityFactor: Double): Color = delegate.deriveColor(
+    hueShift,
+    saturationFactor,
+    brightnessFactor,
+    opacityFactor)
 
   /**
     * Creates a new Color that is a less saturated version of this Color.

@@ -500,11 +500,10 @@ private[scalajs] final class ScalaJSClassEmitter(
     genAddToPrototype(className, genPropertyName(name), value)
   }
 
-  def genPropertyName(name: PropertyName): js.PropertyName =
-    name match {
-      case ident: Ident         => transformIdent(ident)
-      case StringLiteral(value) => js.StringLiteral(value)(name.pos)
-    }
+  def genPropertyName(name: PropertyName): js.PropertyName = name match {
+    case ident: Ident         => transformIdent(ident)
+    case StringLiteral(value) => js.StringLiteral(value)(name.pos)
+  }
 
   private[tools] def needInstanceTests(tree: LinkedClass): Boolean = {
     tree.hasInstanceTests || {

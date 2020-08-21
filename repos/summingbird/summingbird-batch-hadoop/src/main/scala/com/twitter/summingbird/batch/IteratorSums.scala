@@ -39,11 +39,10 @@ private[summingbird] object IteratorSums extends java.io.Serializable {
         if (items.isEmpty) None
         else {
           val op = new BufferOp[(T1, T2)](blockSize) {
-            def operate(items: Seq[(T1, T2)]): Option[(T1, T2)] =
-              for {
-                t1 <- Semigroup.sumOption(items.iterator.map(_._1))
-                t2 <- Semigroup.sumOption(items.iterator.map(_._2))
-              } yield (t1, t2)
+            def operate(items: Seq[(T1, T2)]): Option[(T1, T2)] = for {
+              t1 <- Semigroup.sumOption(items.iterator.map(_._1))
+              t2 <- Semigroup.sumOption(items.iterator.map(_._2))
+            } yield (t1, t2)
           }
           items.foreach(op.put(_))
           op.flush
@@ -79,44 +78,41 @@ private[summingbird] object IteratorSums extends java.io.Serializable {
     }
 
   def groupedStatefulSummer[K: Equiv, V: Semigroup](
-      sz: Int): StatefulSummer[(K, V)] =
-    new StatefulSummer[(K, V)] {
-      require(sz > 0, "buffer <= 0 not allowed")
+      sz: Int): StatefulSummer[(K, V)] = new StatefulSummer[(K, V)] {
+    require(sz > 0, "buffer <= 0 not allowed")
 
-      // The StatefulSummer (wrongly?) needs this, but it is never used
-      def semigroup =
-        Semigroup.from { case ((lk, lv), (rk, rv)) =>
-          // if the keys match, sum, else return the new pair
-          if (Equiv[K].equiv(lk, rk)) (rk, Semigroup.plus(lv, rv))
-          else (rk, rv)
-        }
-
-      var lastK: Option[K] = None
-      val buffer = new ArrayBuffer[V](sz)
-
-      def put(kv: (K, V)): Option[(K, V)] = {
-        val (k, v) = kv
-        val res = lastK.flatMap { lk =>
-          if (!Equiv[K].equiv(lk, k)) flush
-          else if (buffer.size > sz)
-            flush.flatMap(put(_)) // put it back in the front
-          else None
-        }
-        lastK = Some(k)
-        buffer += v
-        res
-      }
-
-      def isFlushed = buffer.isEmpty
-
-      def flush = {
-        // sumOption is highly optimized
-        val res =
-          Semigroup.sumOption(buffer).flatMap { sv => lastK.map((_, sv)) }
-        buffer.clear
-        res
-      }
+    // The StatefulSummer (wrongly?) needs this, but it is never used
+    def semigroup = Semigroup.from { case ((lk, lv), (rk, rv)) =>
+      // if the keys match, sum, else return the new pair
+      if (Equiv[K].equiv(lk, rk)) (rk, Semigroup.plus(lv, rv))
+      else (rk, rv)
     }
+
+    var lastK: Option[K] = None
+    val buffer = new ArrayBuffer[V](sz)
+
+    def put(kv: (K, V)): Option[(K, V)] = {
+      val (k, v) = kv
+      val res = lastK.flatMap { lk =>
+        if (!Equiv[K].equiv(lk, k)) flush
+        else if (buffer.size > sz)
+          flush.flatMap(put(_)) // put it back in the front
+        else None
+      }
+      lastK = Some(k)
+      buffer += v
+      res
+    }
+
+    def isFlushed = buffer.isEmpty
+
+    def flush = {
+      // sumOption is highly optimized
+      val res = Semigroup.sumOption(buffer).flatMap { sv => lastK.map((_, sv)) }
+      buffer.clear
+      res
+    }
+  }
 
   def groupedSum[K1: Equiv, V1: Semigroup](
       in: Iterator[(K1, V1)],

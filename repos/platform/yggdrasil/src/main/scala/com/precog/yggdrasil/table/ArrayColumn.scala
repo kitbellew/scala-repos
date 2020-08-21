@@ -240,8 +240,8 @@ class MutableEmptyObjectColumn(val defined: BitSet)
 }
 
 object MutableEmptyObjectColumn {
-  def empty(): MutableEmptyObjectColumn =
-    new MutableEmptyObjectColumn(new BitSet)
+  def empty(): MutableEmptyObjectColumn = new MutableEmptyObjectColumn(
+    new BitSet)
 }
 
 class MutableNullColumn(val defined: BitSet)

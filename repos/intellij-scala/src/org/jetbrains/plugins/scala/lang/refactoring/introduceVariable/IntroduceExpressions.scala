@@ -549,18 +549,17 @@ trait IntroduceExpressions {
       isVariable: Boolean): Computable[SmartPsiElementPointer[PsiElement]] = {
 
     new Computable[SmartPsiElementPointer[PsiElement]]() {
-      def compute() =
-        runRefactoringInside(
-          startOffset,
-          endOffset,
-          file,
-          editor,
-          expression,
-          occurrences_,
-          varName,
-          varType,
-          replaceAllOccurrences,
-          isVariable)
+      def compute() = runRefactoringInside(
+        startOffset,
+        endOffset,
+        file,
+        editor,
+        expression,
+        occurrences_,
+        varName,
+        varType,
+        replaceAllOccurrences,
+        isVariable)
     }
 
   }

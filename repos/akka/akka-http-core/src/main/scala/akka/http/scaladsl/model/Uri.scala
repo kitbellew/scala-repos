@@ -456,14 +456,13 @@ object Uri {
       if (!string.isEmpty) new UriParser(string, UTF8, mode).parseHost()
       else Empty
 
-    def apply(address: InetAddress): Host =
-      address match {
-        case ipv4: Inet4Address ⇒ apply(ipv4)
-        case ipv6: Inet6Address ⇒ apply(ipv6)
-        case _ ⇒
-          throw new IllegalArgumentException(
-            s"Unexpected address type(${address.getClass.getSimpleName}): $address")
-      }
+    def apply(address: InetAddress): Host = address match {
+      case ipv4: Inet4Address ⇒ apply(ipv4)
+      case ipv6: Inet6Address ⇒ apply(ipv6)
+      case _ ⇒
+        throw new IllegalArgumentException(
+          s"Unexpected address type(${address.getClass.getSimpleName}): $address")
+    }
     def apply(address: Inet4Address): IPv4Host =
       IPv4Host(address.getAddress, address.getHostAddress)
     def apply(address: Inet6Address): IPv6Host =
@@ -480,18 +479,17 @@ object Uri {
       extends NonEmptyHost {
     require(bytes.length == 4, "bytes array must have length 4")
     require(!address.isEmpty, "address must not be empty")
-    def equalsIgnoreCase(other: Host): Boolean =
-      other match {
-        case IPv4Host(`bytes`, _) ⇒ true
-        case _ ⇒ false
-      }
+    def equalsIgnoreCase(other: Host): Boolean = other match {
+      case IPv4Host(`bytes`, _) ⇒ true
+      case _ ⇒ false
+    }
 
     override def isIPv4: Boolean = true
     def inetAddresses = immutable.Seq(InetAddress.getByAddress(bytes.toArray))
   }
   object IPv4Host {
-    def apply(address: String): IPv4Host =
-      apply(address.split('.').map(_.toInt.toByte))
+    def apply(address: String): IPv4Host = apply(
+      address.split('.').map(_.toInt.toByte))
     def apply(byte1: Byte, byte2: Byte, byte3: Byte, byte4: Byte): IPv4Host =
       apply(Array(byte1, byte2, byte3, byte4))
     def apply(bytes: Array[Byte]): IPv4Host =
@@ -506,18 +504,17 @@ object Uri {
       extends NonEmptyHost {
     require(bytes.length == 16, "bytes array must have length 16")
     require(!address.isEmpty, "address must not be empty")
-    def equalsIgnoreCase(other: Host): Boolean =
-      other match {
-        case IPv6Host(`bytes`, _) ⇒ true
-        case _ ⇒ false
-      }
+    def equalsIgnoreCase(other: Host): Boolean = other match {
+      case IPv6Host(`bytes`, _) ⇒ true
+      case _ ⇒ false
+    }
 
     override def isIPv6: Boolean = true
     def inetAddresses = immutable.Seq(InetAddress.getByAddress(bytes.toArray))
   }
   object IPv6Host {
-    def apply(bytes: Array[Byte]): IPv6Host =
-      Host(InetAddress.getByAddress(bytes).asInstanceOf[Inet6Address])
+    def apply(bytes: Array[Byte]): IPv6Host = Host(
+      InetAddress.getByAddress(bytes).asInstanceOf[Inet6Address])
     def apply(bytes: immutable.Seq[Byte]): IPv6Host = apply(bytes.toArray)
 
     private[http] def apply(bytes: String, address: String): IPv6Host = {
@@ -534,11 +531,10 @@ object Uri {
       apply(immutable.Seq(bytes: _*), address)
   }
   final case class NamedHost(address: String) extends NonEmptyHost {
-    def equalsIgnoreCase(other: Host): Boolean =
-      other match {
-        case NamedHost(otherAddress) ⇒ address equalsIgnoreCase otherAddress
-        case _ ⇒ false
-      }
+    def equalsIgnoreCase(other: Host): Boolean = other match {
+      case NamedHost(otherAddress) ⇒ address equalsIgnoreCase otherAddress
+      case _ ⇒ false
+    }
 
     override def isNamedHost: Boolean = true
     def inetAddresses = InetAddress.getAllByName(address).toList
@@ -551,13 +547,12 @@ object Uri {
     def startsWithSegment: Boolean
     def endsWithSlash: Boolean = {
       import Path.{Empty ⇒ PEmpty, _}
-      @tailrec def check(path: Path): Boolean =
-        path match {
-          case PEmpty ⇒ false
-          case Slash(PEmpty) ⇒ true
-          case Slash(tail) ⇒ check(tail)
-          case Segment(head, tail) ⇒ check(tail)
-        }
+      @tailrec def check(path: Path): Boolean = path match {
+        case PEmpty ⇒ false
+        case Slash(PEmpty) ⇒ true
+        case Slash(tail) ⇒ check(tail)
+        case Segment(head, tail) ⇒ check(tail)
+      }
       check(this)
     }
     def head: Head
@@ -612,8 +607,8 @@ object Uri {
       def isEmpty = true
       def startsWithSlash = false
       def head: Head = throw new NoSuchElementException("head of empty path")
-      def tail: Path =
-        throw new UnsupportedOperationException("tail of empty path")
+      def tail: Path = throw new UnsupportedOperationException(
+        "tail of empty path")
       def length = 0
       def charCount = 0
       def ::(segment: String) =
@@ -654,20 +649,19 @@ object Uri {
       def ++(suffix: Path) = head :: (tail ++ suffix)
       def reverseAndPrependTo(prefix: Path): Path =
         tail.reverseAndPrependTo(head :: prefix)
-      def startsWith(that: Path): Boolean =
-        that match {
-          case Segment(`head`, t) ⇒ tail.startsWith(t)
-          case Segment(h, Empty) ⇒ head.startsWith(h)
-          case x ⇒ x.isEmpty
-        }
+      def startsWith(that: Path): Boolean = that match {
+        case Segment(`head`, t) ⇒ tail.startsWith(t)
+        case Segment(h, Empty) ⇒ head.startsWith(h)
+        case x ⇒ x.isEmpty
+      }
       def dropChars(count: Int): Path =
         if (count < 1) this
         else if (count >= head.length) tail.dropChars(count - head.length)
         else head.substring(count) :: tail
     }
     object ~ {
-      def unapply(cons: Segment): Option[(String, Path)] =
-        Some((cons.head, cons.tail))
+      def unapply(cons: Segment): Option[(String, Path)] = Some(
+        (cons.head, cons.tail))
       def unapply(cons: Slash): Option[(Char, Path)] = Some(('/', cons.tail))
     }
   }
@@ -740,11 +734,10 @@ object Uri {
     def apply(
         input: Option[String],
         charset: Charset,
-        mode: Uri.ParsingMode): Query =
-      input match {
-        case None ⇒ Query.Empty
-        case Some(string) ⇒ apply(string, charset, mode)
-      }
+        mode: Uri.ParsingMode): Query = input match {
+      case None ⇒ Query.Empty
+      case Some(string) ⇒ apply(string, charset, mode)
+    }
     def apply(params: (String, String)*): Query =
       params.foldRight(Query.Empty: Query) { case ((key, value), acc) ⇒
         Cons(key, value, acc)
@@ -764,8 +757,8 @@ object Uri {
       def value = throw new NoSuchElementException("value of empty path")
       override def isEmpty = true
       override def head = throw new NoSuchElementException("head of empty list")
-      override def tail =
-        throw new UnsupportedOperationException("tail of empty query")
+      override def tail = throw new UnsupportedOperationException(
+        "tail of empty query")
     }
     final case class Cons(key: String, value: String, override val tail: Query)
         extends Query {
@@ -959,12 +952,11 @@ object Uri {
   }
 
   private[http] def collapseDotSegments(path: Path): Path = {
-    @tailrec def hasDotOrDotDotSegment(p: Path): Boolean =
-      p match {
-        case Path.Empty ⇒ false
-        case Path.Segment(".", _) | Path.Segment("..", _) ⇒ true
-        case _ ⇒ hasDotOrDotDotSegment(p.tail)
-      }
+    @tailrec def hasDotOrDotDotSegment(p: Path): Boolean = p match {
+      case Path.Empty ⇒ false
+      case Path.Segment(".", _) | Path.Segment("..", _) ⇒ true
+      case _ ⇒ hasDotOrDotDotSegment(p.tail)
+    }
     // http://tools.ietf.org/html/rfc3986#section-5.2.4
     @tailrec def process(input: Path, output: Path = Path.Empty): Path = {
       import Path._
@@ -1022,13 +1014,12 @@ object Uri {
 
 object UriRendering {
   implicit object HostRenderer extends Renderer[Host] {
-    def render[R <: Rendering](r: R, value: Host): r.type =
-      value match {
-        case Host.Empty ⇒ r
-        case IPv4Host(_, address) ⇒ r ~~ address
-        case IPv6Host(_, address) ⇒ r ~~ '[' ~~ address ~~ ']'
-        case NamedHost(address) ⇒ encode(r, address, UTF8, `reg-name-char`)
-      }
+    def render[R <: Rendering](r: R, value: Host): r.type = value match {
+      case Host.Empty ⇒ r
+      case IPv4Host(_, address) ⇒ r ~~ address
+      case IPv6Host(_, address) ⇒ r ~~ '[' ~~ address ~~ ']'
+      case NamedHost(address) ⇒ encode(r, address, UTF8, `reg-name-char`)
+    }
   }
   implicit object AuthorityRenderer extends Renderer[Authority] {
     def render[R <: Rendering](r: R, value: Authority): r.type =
@@ -1147,9 +1138,8 @@ object UriRendering {
       replaceSpaces: Boolean = false): r.type = {
     val asciiCompatible = isAsciiCompatible(charset)
     @tailrec def rec(ix: Int): r.type = {
-      def appendEncoded(byte: Byte): Unit =
-        r ~~ '%' ~~ CharUtils.upperHexDigit(byte >>> 4) ~~ CharUtils
-          .upperHexDigit(byte)
+      def appendEncoded(byte: Byte): Unit = r ~~ '%' ~~ CharUtils.upperHexDigit(
+        byte >>> 4) ~~ CharUtils.upperHexDigit(byte)
       if (ix < string.length) {
         val charSize = string.charAt(ix) match {
           case c if keep(c) ⇒ { r ~~ c; 1 }

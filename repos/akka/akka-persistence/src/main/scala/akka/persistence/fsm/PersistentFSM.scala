@@ -312,11 +312,10 @@ object PersistentFSM {
       *
       * Use Duration.Inf to deactivate an existing timeout.
       */
-    def forMax(timeout: Duration): State[S, D, E] =
-      timeout match {
-        case f: FiniteDuration ⇒ copy(timeout = Some(f))
-        case _ ⇒ copy(timeout = None)
-      }
+    def forMax(timeout: Duration): State[S, D, E] = timeout match {
+      case f: FiniteDuration ⇒ copy(timeout = Some(f))
+      case _ ⇒ copy(timeout = None)
+    }
 
     /**
       * Send reply to sender of the current message, if available.

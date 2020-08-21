@@ -295,14 +295,12 @@ object AlgorithmConstraintsParser extends RegexParsers {
 
   def operator: Parser[String] = "<=" | "<" | "==" | "!=" | ">=" | ">"
 
-  def decimalInteger: Parser[Int] =
-    """\d+""".r ^^ { f =>
-      f.toInt
-    }
+  def decimalInteger: Parser[Int] = """\d+""".r ^^ { f =>
+    f.toInt
+  }
 
-  def algorithm: Parser[String] =
-    """\w+""".r ^^ { f =>
-      f.toString
-    }
+  def algorithm: Parser[String] = """\w+""".r ^^ { f =>
+    f.toString
+  }
 
 }

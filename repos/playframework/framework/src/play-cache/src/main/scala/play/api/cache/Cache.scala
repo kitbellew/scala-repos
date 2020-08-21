@@ -241,19 +241,18 @@ private[play] class NamedEhCacheProvider(name: String)
 }
 
 private[play] object NamedEhCacheProvider {
-  def getNamedCache(name: String, manager: CacheManager) =
-    try {
-      manager.addCache(name)
-      manager.getEhcache(name)
-    } catch {
-      case e: ObjectExistsException =>
-        throw new EhCacheExistsException(
-          s"""An EhCache instance with name '$name' already exists.
+  def getNamedCache(name: String, manager: CacheManager) = try {
+    manager.addCache(name)
+    manager.getEhcache(name)
+  } catch {
+    case e: ObjectExistsException =>
+      throw new EhCacheExistsException(
+        s"""An EhCache instance with name '$name' already exists.
            |
            |This usually indicates that multiple instances of a dependent component (e.g. a Play application) have been started at the same time.
          """.stripMargin,
-          e)
-    }
+        e)
+  }
 }
 
 private[play] class NamedCacheApiProvider(key: BindingKey[Ehcache])

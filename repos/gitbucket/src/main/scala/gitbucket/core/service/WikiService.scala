@@ -49,16 +49,14 @@ object WikiService {
       date: Date)
 
   def wikiHttpUrl(repositoryInfo: RepositoryInfo)(implicit
-      context: Context): String =
-    RepositoryService.httpUrl(
-      repositoryInfo.owner,
-      repositoryInfo.name + ".wiki")
+      context: Context): String = RepositoryService.httpUrl(
+    repositoryInfo.owner,
+    repositoryInfo.name + ".wiki")
 
   def wikiSshUrl(repositoryInfo: RepositoryInfo)(implicit
-      context: Context): Option[String] =
-    RepositoryService.sshUrl(
-      repositoryInfo.owner,
-      repositoryInfo.name + ".wiki")
+      context: Context): Option[String] = RepositoryService.sshUrl(
+    repositoryInfo.owner,
+    repositoryInfo.name + ".wiki")
 
 }
 

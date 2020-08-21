@@ -71,8 +71,8 @@ trait ScalatraParamsImplicits {
 
   }
 
-  implicit def toTypedParams(params: Params): TypedParams =
-    new TypedParams(params)
+  implicit def toTypedParams(params: Params): TypedParams = new TypedParams(
+    params)
 
   implicit def toTypedMultiParams(params: MultiParams): TypedMultiParams =
     new TypedMultiParams(params)

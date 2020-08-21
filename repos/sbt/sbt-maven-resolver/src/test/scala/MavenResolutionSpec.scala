@@ -45,18 +45,16 @@ class MavenResolutionSpec extends BaseIvySpecification {
   def jmxri = ModuleID("com.sun.jmx", "jmxri", "1.2.1", Some("compile"))
   def scalaLibraryAll =
     ModuleID("org.scala-lang", "scala-library-all", "2.11.4", Some("compile"))
-  def scalaCompiler =
-    ModuleID(
-      "org.scala-lang",
-      "scala-compiler",
-      "2.8.1",
-      Some("scala-tool->default(compile)"))
-  def scalaContinuationPlugin =
-    ModuleID(
-      "org.scala-lang.plugins",
-      "continuations",
-      "2.8.1",
-      Some("plugin->default(compile)"))
+  def scalaCompiler = ModuleID(
+    "org.scala-lang",
+    "scala-compiler",
+    "2.8.1",
+    Some("scala-tool->default(compile)"))
+  def scalaContinuationPlugin = ModuleID(
+    "org.scala-lang.plugins",
+    "continuations",
+    "2.8.1",
+    Some("plugin->default(compile)"))
   def sbtPlugin =
     ModuleID("com.github.mpeltonen", "sbt-idea", "1.6.0", Some("compile"))
       .extra(

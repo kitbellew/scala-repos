@@ -21,21 +21,18 @@ package auth
 import net.liftweb.common.{Box, Full, Empty}
 
 object AuthRole {
-  def apply(roleName: String): Role =
-    new Role {
-      def name = roleName
-    }
+  def apply(roleName: String): Role = new Role {
+    def name = roleName
+  }
 
-  def apply(roleNames: String*): List[Role] =
-    roleNames.toList.map(n =>
-      new Role {
-        def name = n
-      })
-
-  def apply(roleName: String, roles: Role*): Role =
+  def apply(roleNames: String*): List[Role] = roleNames.toList.map(n =>
     new Role {
-      def name = roleName
-    }.addRoles(roles: _*)
+      def name = n
+    })
+
+  def apply(roleName: String, roles: Role*): Role = new Role {
+    def name = roleName
+  }.addRoles(roles: _*)
 }
 
 /**
@@ -114,11 +111,10 @@ trait Role {
   /**
     * Verifies if this Role is a child of a role having the name <i>roleName</i>
     */
-  def isChildOf(roleName: String): Boolean =
-    (this.name == roleName) match {
-      case true => return true
-      case _    => this.parent.map(_ isChildOf (roleName)) openOr false
-    }
+  def isChildOf(roleName: String): Boolean = (this.name == roleName) match {
+    case true => return true
+    case _    => this.parent.map(_ isChildOf (roleName)) openOr false
+  }
 
   /**
     * Verifies if this Role is the parent of the given Role

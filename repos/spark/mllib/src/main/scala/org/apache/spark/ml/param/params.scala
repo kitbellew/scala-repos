@@ -162,18 +162,17 @@ object ParamValidators {
     * This is mainly for the sake of compilation; type checks are really handled
     * by [[Params]] setters and the [[ParamPair]] constructor.
     */
-  private def getDouble[T](value: T): Double =
-    value match {
-      case x: Int    => x.toDouble
-      case x: Long   => x.toDouble
-      case x: Float  => x.toDouble
-      case x: Double => x.toDouble
-      case _         =>
-        // The type should be checked before this is ever called.
-        throw new IllegalArgumentException(
-          "Numerical Param validation failed because" +
-            s" of unexpected input type: ${value.getClass}")
-    }
+  private def getDouble[T](value: T): Double = value match {
+    case x: Int    => x.toDouble
+    case x: Long   => x.toDouble
+    case x: Float  => x.toDouble
+    case x: Double => x.toDouble
+    case _         =>
+      // The type should be checked before this is ever called.
+      throw new IllegalArgumentException(
+        "Numerical Param validation failed because" +
+          s" of unexpected input type: ${value.getClass}")
+  }
 
   /** Check if value > lowerBound */
   def gt[T](lowerBound: Double): T => Boolean = { (value: T) =>
@@ -500,8 +499,8 @@ class StringArrayParam(
     this(parent, name, doc, ParamValidators.alwaysTrue)
 
   /** Creates a param pair with a [[java.util.List]] of values (for Java and Python). */
-  def w(value: java.util.List[String]): ParamPair[Array[String]] =
-    w(value.asScala.toArray)
+  def w(value: java.util.List[String]): ParamPair[Array[String]] = w(
+    value.asScala.toArray)
 
   override def jsonEncode(value: Array[String]): String = {
     import org.json4s.JsonDSL._

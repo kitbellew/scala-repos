@@ -87,10 +87,9 @@ object ActorSystemSpec {
   }
 
   class Strategy extends SupervisorStrategyConfigurator {
-    def create() =
-      OneForOneStrategy() { case _ ⇒
-        SupervisorStrategy.Escalate
-      }
+    def create() = OneForOneStrategy() { case _ ⇒
+      SupervisorStrategy.Escalate
+    }
   }
 
   final case class FastActor(latch: TestLatch, testActor: ActorRef)

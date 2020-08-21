@@ -13,6 +13,6 @@ object DottySdkSelection extends SdkSelection {
   override protected def filesChooserDescriptor =
     new DottyFilesChooserDescriptor
 
-  def chooseDottySdkFiles(parentComponent: JComponent) =
-    chooseSdkFiles(parentComponent)
+  def chooseDottySdkFiles(parentComponent: JComponent) = chooseSdkFiles(
+    parentComponent)
 }

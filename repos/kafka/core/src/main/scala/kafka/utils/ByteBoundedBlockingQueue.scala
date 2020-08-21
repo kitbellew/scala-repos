@@ -176,28 +176,27 @@ class ByteBoundedBlockingQueue[E](
     * Iterator for the queue
     * @return Iterator for the queue
     */
-  override def iterator =
-    new Iterator[E]() {
-      private val iter = queue.iterator()
-      private var curr: E = null.asInstanceOf[E]
+  override def iterator = new Iterator[E]() {
+    private val iter = queue.iterator()
+    private var curr: E = null.asInstanceOf[E]
 
-      def hasNext: Boolean = iter.hasNext
+    def hasNext: Boolean = iter.hasNext
 
-      def next(): E = {
-        curr = iter.next()
-        curr
-      }
-
-      def remove() {
-        if (curr == null)
-          throw new IllegalStateException(
-            "Iterator does not have a current element.")
-        iter.remove()
-        if (currentByteSize.addAndGet(
-            -sizeFunction.get(curr)) < queueByteCapacity)
-          putLock.synchronized(putLock.notify())
-      }
+    def next(): E = {
+      curr = iter.next()
+      curr
     }
+
+    def remove() {
+      if (curr == null)
+        throw new IllegalStateException(
+          "Iterator does not have a current element.")
+      iter.remove()
+      if (currentByteSize.addAndGet(
+          -sizeFunction.get(curr)) < queueByteCapacity)
+        putLock.synchronized(putLock.notify())
+    }
+  }
 
   /**
     * get the number of elements in the queue

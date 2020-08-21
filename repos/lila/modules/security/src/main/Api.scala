@@ -18,13 +18,12 @@ final class Api(
 
   val AccessUri = "access_uri"
 
-  def loginForm =
-    Form(
-      mapping(
-        "username" -> nonEmptyText,
-        "password" -> nonEmptyText
-      )(authenticateUser)(_.map(u => (u.username, "")))
-        .verifying("Invalid username or password", _.isDefined))
+  def loginForm = Form(
+    mapping(
+      "username" -> nonEmptyText,
+      "password" -> nonEmptyText
+    )(authenticateUser)(_.map(u => (u.username, "")))
+      .verifying("Invalid username or password", _.isDefined))
 
   def saveAuthentication(userId: String, apiVersion: Option[Int])(implicit
       req: RequestHeader): Fu[String] =

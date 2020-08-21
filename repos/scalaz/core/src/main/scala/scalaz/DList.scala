@@ -64,10 +64,9 @@ final class DList[A] private[scalaz] (f: IList[A] => Trampoline[IList[A]]) {
   def flatMap[B](f: A => DList[B]): DList[B] =
     foldr(DList[B]())((x, y) => f(x) ++ y)
 
-  def zip[B](bs: => DList[B]): DList[(A, B)] =
-    uncons(
-      DList(),
-      (h, t) => bs.uncons(DList(), (h2, t2) => (h → h2) +: (t zip t2)))
+  def zip[B](bs: => DList[B]): DList[(A, B)] = uncons(
+    DList(),
+    (h, t) => bs.uncons(DList(), (h2, t2) => (h → h2) +: (t zip t2)))
 }
 
 object DList extends DListInstances {
@@ -102,11 +101,10 @@ object DList extends DListInstances {
 }
 
 sealed abstract class DListInstances {
-  implicit def dlistMonoid[A]: Monoid[DList[A]] =
-    new Monoid[DList[A]] {
-      val zero = DList[A]()
-      def append(a: DList[A], b: => DList[A]) = a ++ b
-    }
+  implicit def dlistMonoid[A]: Monoid[DList[A]] = new Monoid[DList[A]] {
+    val zero = DList[A]()
+    def append(a: DList[A], b: => DList[A]) = a ++ b
+  }
   implicit val dlistMonadPlus: MonadPlus[DList]
     with Traverse[DList]
     with BindRec[DList]

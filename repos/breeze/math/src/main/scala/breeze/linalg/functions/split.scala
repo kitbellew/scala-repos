@@ -71,30 +71,33 @@ object split extends UFunc {
       def apply(
           v: DenseMatrix[T],
           n: Int,
-          axis: Int): IndexedSeq[DenseMatrix[T]] =
-        axis match {
-          case 0 => vsplit(v, n)
-          case 1 => hsplit(v, n)
-          case _ =>
-            throw new IllegalArgumentException("Matrices have only two axes.")
-        }
+          axis: Int): IndexedSeq[DenseMatrix[T]] = axis match {
+        case 0 => vsplit(v, n)
+        case 1 => hsplit(v, n)
+        case _ =>
+          throw new IllegalArgumentException("Matrices have only two axes.")
+      }
     }
 }
 
 object hsplit extends UFunc {
   implicit def implIntVec[T: ClassTag]
-      : Impl2[DenseVector[T], Int, IndexedSeq[DenseVector[T]]] =
-    new Impl2[DenseVector[T], Int, IndexedSeq[DenseVector[T]]] { //For vectors just an alias
-      def apply(v: DenseVector[T], n: Int): IndexedSeq[DenseVector[T]] =
-        hsplit(v, n)
-    }
+      : Impl2[DenseVector[T], Int, IndexedSeq[DenseVector[T]]] = new Impl2[
+    DenseVector[T],
+    Int,
+    IndexedSeq[DenseVector[T]]] { //For vectors just an alias
+    def apply(v: DenseVector[T], n: Int): IndexedSeq[DenseVector[T]] =
+      hsplit(v, n)
+  }
 
   implicit def implSeqVec[T: ClassTag]
-      : Impl2[DenseVector[T], Seq[Int], IndexedSeq[DenseVector[T]]] =
-    new Impl2[DenseVector[T], Seq[Int], IndexedSeq[DenseVector[T]]] { //For vectors just an alias
-      def apply(v: DenseVector[T], n: Seq[Int]): IndexedSeq[DenseVector[T]] =
-        hsplit(v, n)
-    }
+      : Impl2[DenseVector[T], Seq[Int], IndexedSeq[DenseVector[T]]] = new Impl2[
+    DenseVector[T],
+    Seq[Int],
+    IndexedSeq[DenseVector[T]]] { //For vectors just an alias
+    def apply(v: DenseVector[T], n: Seq[Int]): IndexedSeq[DenseVector[T]] =
+      hsplit(v, n)
+  }
 
   implicit def implIntMat[T: ClassTag](implicit
       zero: Zero[T]): Impl2[DenseMatrix[T], Int, IndexedSeq[DenseMatrix[T]]] =

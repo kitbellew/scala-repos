@@ -53,16 +53,14 @@ object Scalar {
   /**
     * Provides comparisons of Scalars, where NA always evaluates as less than non-NA
     */
-  implicit def ord[T: ORD] =
-    new ORD[Scalar[T]] {
-      def compare(x: Scalar[T], y: Scalar[T]): Int =
-        (x, y) match {
-          case (NA, NA) => 0
-          case (NA, _)  => -1
-          case (_, NA)  => 1
-          case (_, _)   => implicitly[ORD[T]].compare(x.get, y.get)
-        }
+  implicit def ord[T: ORD] = new ORD[Scalar[T]] {
+    def compare(x: Scalar[T], y: Scalar[T]): Int = (x, y) match {
+      case (NA, NA) => 0
+      case (NA, _)  => -1
+      case (_, NA)  => 1
+      case (_, _)   => implicitly[ORD[T]].compare(x.get, y.get)
     }
+  }
 
   /**
     * Provides implicit boxing of primitive to scalar
@@ -88,8 +86,9 @@ object Scalar {
     */
   implicit def scalarToOption[T](sc: Scalar[T]): Option[T] =
     if (sc.isNA) None else Some(sc.get)
-  implicit def optionToScalar[T: ST](op: Option[T]): Scalar[T] =
-    op.map { Scalar(_) } getOrElse NA
+  implicit def optionToScalar[T: ST](op: Option[T]): Scalar[T] = op.map {
+    Scalar(_)
+  } getOrElse NA
 }
 
 case class Value[+T: ST](el: T) extends Scalar[T] {

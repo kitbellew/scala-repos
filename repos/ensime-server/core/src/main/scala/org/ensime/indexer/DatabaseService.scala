@@ -35,14 +35,13 @@ class DatabaseService(dir: File) extends SLF4JLogging {
     (ds, Database.forDataSource(ds, executor = executor))
   }
 
-  def shutdown()(implicit ec: ExecutionContext): Future[Unit] =
-    for {
-      // call directly - using slick withSession barfs as it runs a how many rows were updated
-      // after shutdown is executed.
-      _ <- db.run(sqlu"shutdown")
-      _ <- db.shutdown
-      _ = datasource.close()
-    } yield ()
+  def shutdown()(implicit ec: ExecutionContext): Future[Unit] = for {
+    // call directly - using slick withSession barfs as it runs a how many rows were updated
+    // after shutdown is executed.
+    _ <- db.run(sqlu"shutdown")
+    _ <- db.shutdown
+    _ = datasource.close()
+  } yield ()
 
   if (!dir.exists) {
     log.info("creating the search database...")
@@ -97,10 +96,9 @@ class DatabaseService(dir: File) extends SLF4JLogging {
     fqnSymbols.filter(_.fqn === fqn).take(1)
   }
 
-  def find(fqn: String): Future[Option[FqnSymbol]] =
-    db.run(
-      findCompiled(fqn).result.headOption
-    )
+  def find(fqn: String): Future[Option[FqnSymbol]] = db.run(
+    findCompiled(fqn).result.headOption
+  )
 
   import org.ensime.indexer.IndexService._
   def find(fqns: List[FqnIndex])(implicit
@@ -176,24 +174,22 @@ object DatabaseService {
     def source = column[Option[String]]("source handle")
     def line = column[Option[Int]]("line in source")
     def offset = column[Option[Int]]("offset in source")
-    def * =
-      (
-        id.?,
-        file,
-        path,
-        fqn,
-        descriptor,
-        internal,
-        source,
-        line,
-        offset) <> (FqnSymbol.tupled, FqnSymbol.unapply)
+    def * = (
+      id.?,
+      file,
+      path,
+      fqn,
+      descriptor,
+      internal,
+      source,
+      line,
+      offset) <> (FqnSymbol.tupled, FqnSymbol.unapply)
     def fqnIdx =
       index("idx_fqn", fqn, unique = false) // fqns are unique by type and sig
     def uniq = index("idx_uniq", (fqn, descriptor, internal), unique = true)
-    def filename =
-      foreignKey("filename_fk", file, fileChecks)(
-        _.filename,
-        onDelete = ForeignKeyAction.Cascade)
+    def filename = foreignKey("filename_fk", file, fileChecks)(
+      _.filename,
+      onDelete = ForeignKeyAction.Cascade)
   }
   private val fqnSymbols = TableQuery[FqnSymbols]
   private val fqnSymbolsCompiled = Compiled { TableQuery[FqnSymbols] }

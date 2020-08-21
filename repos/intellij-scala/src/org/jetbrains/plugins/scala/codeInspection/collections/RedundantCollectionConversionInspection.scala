@@ -37,6 +37,6 @@ class RedundantCollectionConversionInspection
     extends OperationOnCollectionInspection {
   override def highlightType = ProblemHighlightType.LIKE_UNUSED_SYMBOL
 
-  override def possibleSimplificationTypes: Array[SimplificationType] =
-    Array(RedundantCollectionConversion)
+  override def possibleSimplificationTypes: Array[SimplificationType] = Array(
+    RedundantCollectionConversion)
 }

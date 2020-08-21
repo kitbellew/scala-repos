@@ -125,8 +125,8 @@ private[camel] class ActorProducer(val endpoint: ActorEndpoint, camel: Camel)
     * Calls the synchronous version of the method and waits for the result (blocking).
     * @param exchange the exchange to process
     */
-  def process(exchange: Exchange): Unit =
-    processExchangeAdapter(new CamelExchangeAdapter(exchange))
+  def process(exchange: Exchange): Unit = processExchangeAdapter(
+    new CamelExchangeAdapter(exchange))
 
   /**
     * Processes the message exchange. the caller supports having the exchange asynchronously processed.
@@ -288,11 +288,10 @@ object CamelPath {
   def toUri(
       actorRef: ActorRef,
       autoAck: Boolean,
-      replyTimeout: Duration): String =
-    "%s?autoAck=%s&replyTimeout=%s".format(
-      actorRef.path.toString,
-      autoAck,
-      replyTimeout.toString)
+      replyTimeout: Duration): String = "%s?autoAck=%s&replyTimeout=%s".format(
+    actorRef.path.toString,
+    autoAck,
+    replyTimeout.toString)
 }
 
 /**
@@ -301,20 +300,18 @@ object CamelPath {
   */
 private[camel] case object ActorEndpointPath {
 
-  def apply(actorRef: ActorRef): ActorEndpointPath =
-    new ActorEndpointPath(actorRef.path.toString)
+  def apply(actorRef: ActorRef): ActorEndpointPath = new ActorEndpointPath(
+    actorRef.path.toString)
 
   /**
     * Creates an [[akka.camel.internal.component.ActorEndpointPath]] from the uri
     * Expects the uri in the akka [[akka.actor.ActorPath]] format, i.e 'akka://system/user/someactor'.
     * parameters can be optionally added to the actor path to indicate auto-acknowledgement and replyTimeout for a [[akka.camel.Consumer]] actor.
     */
-  def fromCamelPath(camelPath: String): ActorEndpointPath =
-    camelPath match {
-      case id if id startsWith "akka://" ⇒
-        new ActorEndpointPath(id.split('?')(0))
-      case _ ⇒
-        throw new IllegalArgumentException(
-          "Invalid path: [%s] - should be an actorPath starting with 'akka://', optionally followed by options" format camelPath)
-    }
+  def fromCamelPath(camelPath: String): ActorEndpointPath = camelPath match {
+    case id if id startsWith "akka://" ⇒ new ActorEndpointPath(id.split('?')(0))
+    case _ ⇒
+      throw new IllegalArgumentException(
+        "Invalid path: [%s] - should be an actorPath starting with 'akka://', optionally followed by options" format camelPath)
+  }
 }

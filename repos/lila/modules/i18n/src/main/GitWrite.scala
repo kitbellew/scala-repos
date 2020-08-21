@@ -91,33 +91,28 @@ private[i18n] final class GitWrite(
 
     val api = new org.eclipse.jgit.api.Git(repo)
 
-    def currentBranch: Fu[String] =
-      Future {
-        cleanupBranch(repo.getFullBranch)
-      }
+    def currentBranch: Fu[String] = Future {
+      cleanupBranch(repo.getFullBranch)
+    }
 
-    def branchList =
-      Future {
-        api.branchList.call map (_.getName) map cleanupBranch
-      }
+    def branchList = Future {
+      api.branchList.call map (_.getName) map cleanupBranch
+    }
 
     def branchExists(branch: String) =
       branchList map (_ contains branch)
 
-    def checkout(branch: String, create: Boolean = false) =
-      Future {
-        api.checkout.setName(branch).setCreateBranch(create).call
-      }
+    def checkout(branch: String, create: Boolean = false) = Future {
+      api.checkout.setName(branch).setCreateBranch(create).call
+    }
 
-    def add(pattern: String) =
-      Future {
-        api.add.addFilepattern(pattern).call
-      }
+    def add(pattern: String) = Future {
+      api.add.addFilepattern(pattern).call
+    }
 
-    def commit(message: String) =
-      Future {
-        api.commit.setMessage(message).call
-      }
+    def commit(message: String) = Future {
+      api.commit.setMessage(message).call
+    }
 
     private def cleanupBranch(branch: String) =
       branch.replace("refs/heads/", "")

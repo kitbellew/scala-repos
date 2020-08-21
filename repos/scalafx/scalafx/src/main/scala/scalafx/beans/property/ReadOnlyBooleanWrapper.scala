@@ -41,8 +41,8 @@ object ReadOnlyBooleanWrapper {
   /** Creates a new ReadOnlyBooleanWrapper instance.
     * @param value the initial value of the wrapped value
     */
-  def apply(value: Boolean) =
-    new ReadOnlyBooleanWrapper(new jfxbp.ReadOnlyBooleanWrapper(value))
+  def apply(value: Boolean) = new ReadOnlyBooleanWrapper(
+    new jfxbp.ReadOnlyBooleanWrapper(value))
 }
 
 /** Wrapper for [[http://docs.oracle.com/javase/8/javafx/api/javafx/beans/property/ReadOnlyBooleanWrapper.html javafx.beans.property.ReadOnlyBooleanWrapper]] */

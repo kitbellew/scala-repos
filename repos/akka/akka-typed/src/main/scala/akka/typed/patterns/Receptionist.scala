@@ -81,19 +81,18 @@ object Receptionist {
   private type KV[K <: AbstractServiceKey] = ActorRef[K#Type]
 
   private def behavior(
-      map: TypedMultiMap[AbstractServiceKey, KV]): Behavior[Command] =
-    Full {
-      case Msg(ctx, r: Register[t]) ⇒
-        ctx.watch(r.address)
-        r.replyTo ! Registered(r.key, r.address)
-        behavior(map.inserted(r.key)(r.address))
-      case Msg(ctx, f: Find[t]) ⇒
-        val set = map get f.key
-        f.replyTo ! Listing(f.key, set)
-        Same
-      case Sig(ctx, Terminated(ref)) ⇒
-        behavior(map valueRemoved ref)
-    }
+      map: TypedMultiMap[AbstractServiceKey, KV]): Behavior[Command] = Full {
+    case Msg(ctx, r: Register[t]) ⇒
+      ctx.watch(r.address)
+      r.replyTo ! Registered(r.key, r.address)
+      behavior(map.inserted(r.key)(r.address))
+    case Msg(ctx, f: Find[t]) ⇒
+      val set = map get f.key
+      f.replyTo ! Listing(f.key, set)
+      Same
+    case Sig(ctx, Terminated(ref)) ⇒
+      behavior(map valueRemoved ref)
+  }
 }
 
 abstract class Receptionist

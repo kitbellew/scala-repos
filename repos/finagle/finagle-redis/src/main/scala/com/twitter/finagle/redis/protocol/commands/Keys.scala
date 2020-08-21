@@ -12,8 +12,8 @@ case class Del(keys: Seq[ChannelBuffer]) extends StrictKeysCommand {
   def toChannelBuffer = RedisCodec.toUnifiedFormat(CommandBytes.DEL +: keys)
 }
 object Del {
-  def apply(args: => Seq[Array[Byte]]) =
-    new Del(args.map(ChannelBuffers.wrappedBuffer(_)))
+  def apply(args: => Seq[Array[Byte]]) = new Del(
+    args.map(ChannelBuffers.wrappedBuffer(_)))
 }
 
 case class Dump(key: ChannelBuffer) extends StrictKeyCommand {
@@ -86,8 +86,8 @@ case class Keys(pattern: ChannelBuffer) extends Command {
     RedisCodec.toUnifiedFormat(Seq(CommandBytes.KEYS, pattern))
 }
 object Keys {
-  def apply(args: Seq[Array[Byte]]) =
-    new Keys(ChannelBuffers.wrappedBuffer(args.head))
+  def apply(args: Seq[Array[Byte]]) = new Keys(
+    ChannelBuffers.wrappedBuffer(args.head))
 }
 
 case class Move(key: ChannelBuffer, db: ChannelBuffer)
@@ -296,28 +296,27 @@ object ScanCompanion {
     }
   }
 
-  def findCount(args0: Seq[String], args1: Seq[String]) =
-    Count(args0) match {
-      case None if args1.length > 0 =>
-        Count(args1) match {
-          case None =>
-            throw ClientError("Have additional arguments but unable to process")
-          case c => c
-        }
-      case None => None
-      case c    => c
-    }
+  def findCount(args0: Seq[String], args1: Seq[String]) = Count(args0) match {
+    case None if args1.length > 0 =>
+      Count(args1) match {
+        case None =>
+          throw ClientError("Have additional arguments but unable to process")
+        case c => c
+      }
+    case None => None
+    case c    => c
+  }
 
-  def findPattern(args0: Seq[String], args1: Seq[String]) =
-    Pattern(args0) match {
-      case None if args1.length > 0 =>
-        Pattern(args1) match {
-          case None =>
-            throw ClientError("Have additional arguments but unable to process")
-          case pattern => pattern
-        }
-      case None    => None
-      case pattern => pattern
-    }
+  def findPattern(args0: Seq[String], args1: Seq[String]) = Pattern(
+    args0) match {
+    case None if args1.length > 0 =>
+      Pattern(args1) match {
+        case None =>
+          throw ClientError("Have additional arguments but unable to process")
+        case pattern => pattern
+      }
+    case None    => None
+    case pattern => pattern
+  }
 
 }

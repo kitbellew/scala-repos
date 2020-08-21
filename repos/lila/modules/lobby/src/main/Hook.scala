@@ -39,10 +39,9 @@ case class Hook(
       (memberOnly || h.memberOnly).fold(isAuth && h.isAuth, true) &&
       ratingRangeCompatibleWith(h) && h.ratingRangeCompatibleWith(this)
 
-  private def ratingRangeCompatibleWith(h: Hook) =
-    realRatingRange.fold(true) { range =>
-      h.rating ?? range.contains
-    }
+  private def ratingRangeCompatibleWith(h: Hook) = realRatingRange.fold(true) {
+    range => h.rating ?? range.contains
+  }
 
   private def compatibilityProperties =
     (variant, clock.limit, clock.increment, mode)
@@ -53,28 +52,28 @@ case class Hook(
   def userId = user map (_.id)
   def isAuth = user.nonEmpty
   def username = user.fold(User.anonymous)(_.username)
-  def rating =
-    user flatMap { u => perfType map (_.key) flatMap u.ratingMap.get }
+  def rating = user flatMap { u =>
+    perfType map (_.key) flatMap u.ratingMap.get
+  }
   def engine = user ?? (_.engine)
   def booster = user ?? (_.booster)
   def lame = user ?? (_.lame)
 
-  def render: JsObject =
-    Json
-      .obj(
-        "id" -> id,
-        "uid" -> uid,
-        "u" -> user.map(_.username),
-        "rating" -> rating,
-        "variant" -> realVariant.exotic.option(realVariant.key),
-        "ra" -> realMode.rated.option(1),
-        "clock" -> clock.show,
-        "t" -> clock.estimateTotalTime,
-        "s" -> speed.id,
-        "c" -> chess.Color(color).map(_.name),
-        "perf" -> perfType.map(_.name)
-      )
-      .noNull
+  def render: JsObject = Json
+    .obj(
+      "id" -> id,
+      "uid" -> uid,
+      "u" -> user.map(_.username),
+      "rating" -> rating,
+      "variant" -> realVariant.exotic.option(realVariant.key),
+      "ra" -> realMode.rated.option(1),
+      "clock" -> clock.show,
+      "t" -> clock.estimateTotalTime,
+      "s" -> speed.id,
+      "c" -> chess.Color(color).map(_.name),
+      "perf" -> perfType.map(_.name)
+    )
+    .noNull
 
   lazy val perfType = PerfPicker.perfType(speed, realVariant, none)
 
@@ -95,17 +94,16 @@ object Hook {
       user: Option[User],
       sid: Option[String],
       ratingRange: RatingRange,
-      blocking: Set[String]): Hook =
-    new Hook(
-      id = Random nextStringUppercase idSize,
-      uid = uid,
-      variant = variant.id,
-      clock = clock,
-      mode = mode.id,
-      allowAnon = allowAnon || user.isEmpty,
-      color = color,
-      user = user map { LobbyUser.make(_, blocking) },
-      sid = sid,
-      ratingRange = ratingRange.toString,
-      createdAt = DateTime.now)
+      blocking: Set[String]): Hook = new Hook(
+    id = Random nextStringUppercase idSize,
+    uid = uid,
+    variant = variant.id,
+    clock = clock,
+    mode = mode.id,
+    allowAnon = allowAnon || user.isEmpty,
+    color = color,
+    user = user map { LobbyUser.make(_, blocking) },
+    sid = sid,
+    ratingRange = ratingRange.toString,
+    createdAt = DateTime.now)
 }

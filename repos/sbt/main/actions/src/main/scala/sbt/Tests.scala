@@ -135,8 +135,8 @@ object Tests {
   final case class SubProcess(config: ForkOptions) extends TestRunPolicy
   object SubProcess {
     @deprecated("Construct SubProcess with a ForkOptions argument.", "0.13.0")
-    def apply(javaOptions: Seq[String]): SubProcess =
-      SubProcess(ForkOptions(runJVMOptions = javaOptions))
+    def apply(javaOptions: Seq[String]): SubProcess = SubProcess(
+      ForkOptions(runJVMOptions = javaOptions))
   }
 
   /** A named group of tests configured to run in the same JVM or be forked. */
@@ -184,9 +184,8 @@ object Tests {
         "Arguments defined for test frameworks that are not present:\n\t" + undefinedFrameworks
           .mkString("\n\t"))
 
-    def includeTest(test: TestDefinition) =
-      !excludeTestsSet.contains(test.name) && testFilters.forall(filter =>
-        filter(test.name))
+    def includeTest(test: TestDefinition) = !excludeTestsSet.contains(
+      test.name) && testFilters.forall(filter => filter(test.name))
     val filtered0 = discovered.filter(includeTest).toList.distinct
     val tests =
       if (orderedFilters.isEmpty) filtered0
@@ -240,8 +239,9 @@ object Tests {
       config: Execution): Task[Output] = {
     def fj(actions: Iterable[() => Unit]): Task[Unit] =
       nop.dependsOn(actions.toSeq.fork(_()): _*)
-    def partApp(actions: Iterable[ClassLoader => Unit]) =
-      actions.toSeq map { a => () => a(loader) }
+    def partApp(actions: Iterable[ClassLoader => Unit]) = actions.toSeq map {
+      a => () => a(loader)
+    }
 
     val (frameworkSetup, runnables, frameworkCleanup) =
       TestFramework.testTasks(
@@ -370,11 +370,10 @@ object Tests {
     else {
       def sequence(
           tasks: List[Task[Output]],
-          acc: List[Output]): Task[List[Output]] =
-        tasks match {
-          case Nil      => task(acc.reverse)
-          case hd :: tl => hd flatMap { out => sequence(tl, out :: acc) }
-        }
+          acc: List[Output]): Task[List[Output]] = tasks match {
+        case Nil      => task(acc.reverse)
+        case hd :: tl => hd flatMap { out => sequence(tl, out :: acc) }
+      }
       sequence(results.toList, List()) map { ress =>
         val (rs, ms) = ress.unzip { e => (e.overall, e.events) }
         Output(overall(rs), ms reduce (_ ++ _), Iterable.empty)
@@ -393,11 +392,10 @@ object Tests {
       allDefs(analysis),
       log)
 
-  def allDefs(analysis: CompileAnalysis) =
-    analysis match {
-      case analysis: Analysis =>
-        analysis.apis.internal.values.flatMap(_.api.definitions).toSeq
-    }
+  def allDefs(analysis: CompileAnalysis) = analysis match {
+    case analysis: Analysis =>
+      analysis.apis.internal.values.flatMap(_.api.definitions).toSeq
+  }
   def discover(
       fingerprints: Seq[Fingerprint],
       definitions: Seq[Definition],

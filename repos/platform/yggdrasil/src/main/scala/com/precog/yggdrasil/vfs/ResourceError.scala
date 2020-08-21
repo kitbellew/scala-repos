@@ -44,17 +44,16 @@ object ResourceError {
     IllegalWriteRequestError(message)
   def permissionsError(message: String): ResourceError with UserError =
     PermissionsError(message)
-  def notFound(message: String): ResourceError with UserError =
-    NotFound(message)
+  def notFound(message: String): ResourceError with UserError = NotFound(
+    message)
 
   def all(errors: NonEmptyList[ResourceError])
-      : ResourceError with FatalError with UserError =
-    new ResourceErrors(
-      errors flatMap {
-        case ResourceErrors(e0) => e0
-        case other              => NonEmptyList(other)
-      }
-    )
+      : ResourceError with FatalError with UserError = new ResourceErrors(
+    errors flatMap {
+      case ResourceErrors(e0) => e0
+      case other              => NonEmptyList(other)
+    }
+  )
 
   def fromExtractorError(msg: String): Extractor.Error => ResourceError = {
     error =>
@@ -79,8 +78,8 @@ object ResourceError {
   case class IOError(exception: Throwable)
       extends ResourceError
       with FatalError {
-    def messages =
-      nels(Option(exception.getMessage).getOrElse(exception.getClass.getName))
+    def messages = nels(
+      Option(exception.getMessage).getOrElse(exception.getClass.getName))
   }
 
   case class IllegalWriteRequestError(message: String)

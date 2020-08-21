@@ -84,22 +84,21 @@ object SwaggerSerializers {
         override val strict: Boolean = self.strict
       }
 
-    override def +(extraHints: TypeHints): SwaggerFormats =
-      new SwaggerFormats {
-        override val dateFormat: DateFormat = self.dateFormat
-        override val typeHintFieldName: String = self.typeHintFieldName
-        override val parameterNameReader
-            : org.json4s.reflect.ParameterNameReader = self.parameterNameReader
-        override val typeHints: TypeHints = self.typeHints + extraHints
-        override val customSerializers: List[Serializer[_]] =
-          self.customSerializers
-        override val fieldSerializers: List[(Class[_], FieldSerializer[_])] =
-          self.fieldSerializers
-        override val wantsBigDecimal: Boolean = self.wantsBigDecimal
-        override val primitives: Set[Type] = self.primitives
-        override val companions: List[(Class[_], AnyRef)] = self.companions
-        override val strict: Boolean = self.strict
-      }
+    override def +(extraHints: TypeHints): SwaggerFormats = new SwaggerFormats {
+      override val dateFormat: DateFormat = self.dateFormat
+      override val typeHintFieldName: String = self.typeHintFieldName
+      override val parameterNameReader: org.json4s.reflect.ParameterNameReader =
+        self.parameterNameReader
+      override val typeHints: TypeHints = self.typeHints + extraHints
+      override val customSerializers: List[Serializer[_]] =
+        self.customSerializers
+      override val fieldSerializers: List[(Class[_], FieldSerializer[_])] =
+        self.fieldSerializers
+      override val wantsBigDecimal: Boolean = self.wantsBigDecimal
+      override val primitives: Set[Type] = self.primitives
+      override val companions: List[(Class[_], AnyRef)] = self.companions
+      override val strict: Boolean = self.strict
+    }
 
     override def withCompanions(comps: (Class[_], AnyRef)*): SwaggerFormats =
       new SwaggerFormats {
@@ -119,39 +118,37 @@ object SwaggerSerializers {
         override val strict: Boolean = self.strict
       }
 
-    override def withDouble: SwaggerFormats =
-      new SwaggerFormats {
-        override val dateFormat: DateFormat = self.dateFormat
-        override val typeHintFieldName: String = self.typeHintFieldName
-        override val parameterNameReader
-            : org.json4s.reflect.ParameterNameReader = self.parameterNameReader
-        override val typeHints: TypeHints = self.typeHints
-        override val customSerializers: List[Serializer[_]] =
-          self.customSerializers
-        override val fieldSerializers: List[(Class[_], FieldSerializer[_])] =
-          self.fieldSerializers
-        override val wantsBigDecimal: Boolean = false
-        override val primitives: Set[Type] = self.primitives
-        override val companions: List[(Class[_], AnyRef)] = self.companions
-        override val strict: Boolean = self.strict
-      }
+    override def withDouble: SwaggerFormats = new SwaggerFormats {
+      override val dateFormat: DateFormat = self.dateFormat
+      override val typeHintFieldName: String = self.typeHintFieldName
+      override val parameterNameReader: org.json4s.reflect.ParameterNameReader =
+        self.parameterNameReader
+      override val typeHints: TypeHints = self.typeHints
+      override val customSerializers: List[Serializer[_]] =
+        self.customSerializers
+      override val fieldSerializers: List[(Class[_], FieldSerializer[_])] =
+        self.fieldSerializers
+      override val wantsBigDecimal: Boolean = false
+      override val primitives: Set[Type] = self.primitives
+      override val companions: List[(Class[_], AnyRef)] = self.companions
+      override val strict: Boolean = self.strict
+    }
 
-    override def withBigDecimal: SwaggerFormats =
-      new SwaggerFormats {
-        override val dateFormat: DateFormat = self.dateFormat
-        override val typeHintFieldName: String = self.typeHintFieldName
-        override val parameterNameReader
-            : org.json4s.reflect.ParameterNameReader = self.parameterNameReader
-        override val typeHints: TypeHints = self.typeHints
-        override val customSerializers: List[Serializer[_]] =
-          self.customSerializers
-        override val fieldSerializers: List[(Class[_], FieldSerializer[_])] =
-          self.fieldSerializers
-        override val wantsBigDecimal: Boolean = true
-        override val primitives: Set[Type] = self.primitives
-        override val companions: List[(Class[_], AnyRef)] = self.companions
-        override val strict: Boolean = self.strict
-      }
+    override def withBigDecimal: SwaggerFormats = new SwaggerFormats {
+      override val dateFormat: DateFormat = self.dateFormat
+      override val typeHintFieldName: String = self.typeHintFieldName
+      override val parameterNameReader: org.json4s.reflect.ParameterNameReader =
+        self.parameterNameReader
+      override val typeHints: TypeHints = self.typeHints
+      override val customSerializers: List[Serializer[_]] =
+        self.customSerializers
+      override val fieldSerializers: List[(Class[_], FieldSerializer[_])] =
+        self.fieldSerializers
+      override val wantsBigDecimal: Boolean = true
+      override val primitives: Set[Type] = self.primitives
+      override val companions: List[(Class[_], AnyRef)] = self.companions
+      override val strict: Boolean = self.strict
+    }
 
     override def withHints(hints: TypeHints): SwaggerFormats =
       new SwaggerFormats {
@@ -170,11 +167,10 @@ object SwaggerSerializers {
         override val strict: Boolean = self.strict
       }
 
-    override def lossless: SwaggerFormats =
-      new SwaggerFormats {
-        override protected def dateFormatter: SimpleDateFormat =
-          DefaultFormats.losslessDate()
-      }
+    override def lossless: SwaggerFormats = new SwaggerFormats {
+      override protected def dateFormatter: SimpleDateFormat =
+        DefaultFormats.losslessDate()
+    }
 
     override val customSerializers: List[Serializer[_]] =
       new AuthorizationTypeSerializer :: SwaggerFormats.serializers
@@ -189,12 +185,11 @@ object SwaggerSerializers {
 
     override val dateFormat = new DateFormat {
       def format(d: JDate) = new DateTime(d).toString(Iso8601Date)
-      def parse(s: String) =
-        try {
-          Option(Iso8601Date.parseDateTime(s).toDate)
-        } catch {
-          case _: Throwable ⇒ None
-        }
+      def parse(s: String) = try {
+        Option(Iso8601Date.parseDateTime(s).toDate)
+      } catch {
+        case _: Throwable ⇒ None
+      }
     }
   }
 
@@ -217,34 +212,32 @@ object SwaggerSerializers {
           }))
 
   def writeDataType(dataType: DataType, key: String = "type")(implicit
-      formats: Formats): JValue =
-    dataType match {
-      case DataType.ValueDataType(name, Some(format), _) =>
-        ("type" -> name) ~ ("format" -> format)
-      case DataType.ValueDataType("string", format, _) =>
-        ("type" -> "string") ~ ("format" -> format)
-      case DataType.ValueDataType("boolean", format, _) =>
-        ("type" -> "boolean") ~ ("format" -> format)
-      case DataType.ValueDataType("void", format, _) =>
-        ("type" -> "void") ~ ("format" -> format)
-      case DataType.ContainerDataType("List" | "Array", Some(dt), _) =>
-        ("type" -> "array") ~ ("items" -> writeDataType(dt, "$ref"))
-      case DataType.ContainerDataType("List" | "Array", _, _) =>
-        ("type" -> "array") ~ ("format" -> None)
-      case DataType.ContainerDataType("Set", Some(dt), _) =>
-        ("type" -> "array") ~ ("items" -> writeDataType(
-          dt,
-          "$ref")) ~ ("uniqueItems" -> true)
-      case DataType.ContainerDataType("Set", _, _) =>
-        ("type" -> "array") ~ ("uniqueItems" -> true)
-      case DataType.ValueDataType(name, _, qualifiedName) =>
-        (key -> name): JValue //~ ("qualifiedType" -> qualifiedName)
-    }
+      formats: Formats): JValue = dataType match {
+    case DataType.ValueDataType(name, Some(format), _) =>
+      ("type" -> name) ~ ("format" -> format)
+    case DataType.ValueDataType("string", format, _) =>
+      ("type" -> "string") ~ ("format" -> format)
+    case DataType.ValueDataType("boolean", format, _) =>
+      ("type" -> "boolean") ~ ("format" -> format)
+    case DataType.ValueDataType("void", format, _) =>
+      ("type" -> "void") ~ ("format" -> format)
+    case DataType.ContainerDataType("List" | "Array", Some(dt), _) =>
+      ("type" -> "array") ~ ("items" -> writeDataType(dt, "$ref"))
+    case DataType.ContainerDataType("List" | "Array", _, _) =>
+      ("type" -> "array") ~ ("format" -> None)
+    case DataType.ContainerDataType("Set", Some(dt), _) =>
+      ("type" -> "array") ~ ("items" -> writeDataType(
+        dt,
+        "$ref")) ~ ("uniqueItems" -> true)
+    case DataType.ContainerDataType("Set", _, _) =>
+      ("type" -> "array") ~ ("uniqueItems" -> true)
+    case DataType.ValueDataType(name, _, qualifiedName) =>
+      (key -> name): JValue //~ ("qualifiedType" -> qualifiedName)
+  }
 
   def readDataType(value: JValue)(implicit formats: Formats): DataType = {
-    def karmaIsABitch =
-      throw new MappingException(
-        "Couldn't determine the type for this data type from " + value)
+    def karmaIsABitch = throw new MappingException(
+      "Couldn't determine the type for this data type from " + value)
     val t = str(value \ "format") orElse str(value \ "type") orElse str(
       value \ "$ref") getOrElse karmaIsABitch
     if (isSimpleType(t)) {

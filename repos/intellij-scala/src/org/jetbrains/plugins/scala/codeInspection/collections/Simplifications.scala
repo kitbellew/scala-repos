@@ -41,8 +41,8 @@ class SimplificationBuilder private[collections] (
 
   def highlightAll: SimplificationBuilder = highlightElem(exprToReplace)
 
-  def highlightRef: SimplificationBuilder =
-    highlightElem(refNameId(exprToReplace).getOrElse(exprToReplace))
+  def highlightRef: SimplificationBuilder = highlightElem(
+    refNameId(exprToReplace).getOrElse(exprToReplace))
 
   def highlightElem(elem: PsiElement) = {
     this.rangeInParent =

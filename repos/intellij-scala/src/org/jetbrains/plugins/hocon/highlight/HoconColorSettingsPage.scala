@@ -34,33 +34,32 @@ class HoconColorSettingsPage extends ColorSettingsPage {
        |<braces>}</braces>
        |""".stripMargin.trim
 
-  def getAdditionalHighlightingTagToDescriptorMap =
-    Map(
-      "badchar" -> HHC.BadCharacter,
-      "hashcomment" -> HHC.HashComment,
-      "doubleslashcomment" -> HHC.DoubleSlashComment,
-      "null" -> HHC.Null,
-      "boolean" -> HHC.Boolean,
-      "number" -> HHC.Number,
-      "quotedstring" -> HHC.QuotedString,
-      "multilinestring" -> HHC.MultilineString,
-      "validstringescape" -> HHC.ValidStringEscape,
-      "invalidstringescape" -> HHC.InvalidStringEscape,
-      "brackets" -> HHC.Brackets,
-      "braces" -> HHC.Braces,
-      "imparens" -> HHC.IncludeModifierParens,
-      "substbraces" -> HHC.SubBraces,
-      "pathvalueseparator" -> HHC.KeyValueSeparator,
-      "comma" -> HHC.Comma,
-      "include" -> HHC.Include,
-      "inclmod" -> HHC.IncludeModifier,
-      "substsign" -> HHC.SubstitutionSign,
-      "optsubstsign" -> HHC.OptionalSubstitutionSign,
-      "unquotedstring" -> HHC.UnquotedString,
-      "dot" -> HHC.PathSeparator,
-      "key" -> HHC.EntryKey,
-      "substkey" -> HHC.SubstitutionKey
-    ).asJava
+  def getAdditionalHighlightingTagToDescriptorMap = Map(
+    "badchar" -> HHC.BadCharacter,
+    "hashcomment" -> HHC.HashComment,
+    "doubleslashcomment" -> HHC.DoubleSlashComment,
+    "null" -> HHC.Null,
+    "boolean" -> HHC.Boolean,
+    "number" -> HHC.Number,
+    "quotedstring" -> HHC.QuotedString,
+    "multilinestring" -> HHC.MultilineString,
+    "validstringescape" -> HHC.ValidStringEscape,
+    "invalidstringescape" -> HHC.InvalidStringEscape,
+    "brackets" -> HHC.Brackets,
+    "braces" -> HHC.Braces,
+    "imparens" -> HHC.IncludeModifierParens,
+    "substbraces" -> HHC.SubBraces,
+    "pathvalueseparator" -> HHC.KeyValueSeparator,
+    "comma" -> HHC.Comma,
+    "include" -> HHC.Include,
+    "inclmod" -> HHC.IncludeModifier,
+    "substsign" -> HHC.SubstitutionSign,
+    "optsubstsign" -> HHC.OptionalSubstitutionSign,
+    "unquotedstring" -> HHC.UnquotedString,
+    "dot" -> HHC.PathSeparator,
+    "key" -> HHC.EntryKey,
+    "substkey" -> HHC.SubstitutionKey
+  ).asJava
 
   def getHighlighter =
     SyntaxHighlighterFactory.getSyntaxHighlighter(HoconLanguage, null, null)

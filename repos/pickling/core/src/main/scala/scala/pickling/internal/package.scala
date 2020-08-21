@@ -48,8 +48,8 @@ package object internal {
       sym: scala.reflect.api.Universe#Symbol) {
     def isEffectivelyFinal =
       sym.asInstanceOf[scala.reflect.internal.Symbols#Symbol].isEffectivelyFinal
-    def isEffectivelyPrimitive =
-      throw new Exception("use Type.isEffectivelyPrimitive instead")
+    def isEffectivelyPrimitive = throw new Exception(
+      "use Type.isEffectivelyPrimitive instead")
     def isNotNullable =
       sym.isClass && (sym.asClass.isPrimitive || sym.asClass.isDerivedValueClass)
     def isNullable = sym.isClass && !isNotNullable
@@ -113,14 +113,13 @@ package object internal {
           tpe.toString
       }
     }
-    def isEffectivelyPrimitive: Boolean =
-      tpe match {
-        case TypeRef(_, sym: ClassSymbol, _) if sym.isPrimitive => true
-        case TypeRef(_, sym, eltpe :: Nil)
-            if sym == ArrayClass && eltpe.typeSymbol.isClass && eltpe.typeSymbol.asClass.isPrimitive =>
-          true
-        case _ => false
-      }
+    def isEffectivelyPrimitive: Boolean = tpe match {
+      case TypeRef(_, sym: ClassSymbol, _) if sym.isPrimitive => true
+      case TypeRef(_, sym, eltpe :: Nil)
+          if sym == ArrayClass && eltpe.typeSymbol.isClass && eltpe.typeSymbol.asClass.isPrimitive =>
+        true
+      case _ => false
+    }
   }
 
   // ----- utilities for managing object identity -----

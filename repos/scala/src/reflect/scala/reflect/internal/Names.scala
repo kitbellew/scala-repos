@@ -247,8 +247,8 @@ trait Names extends api.Names {
     def newName(str: String): Name with ThisNameType
 
     /** Return a new name based on string transformation. */
-    def mapName(f: String => String): Name with ThisNameType =
-      newName(f(toString))
+    def mapName(f: String => String): Name with ThisNameType = newName(
+      f(toString))
 
     /** Copy bytes of this name to buffer cs, starting at position `offset`. */
     final def copyChars(cs: Array[Char], offset: Int) =
@@ -400,8 +400,8 @@ trait Names extends api.Names {
       i > suffix.length
     }
 
-    final def containsName(subname: String): Boolean =
-      containsName(newTermName(subname))
+    final def containsName(subname: String): Boolean = containsName(
+      newTermName(subname))
     final def containsName(subname: Name): Boolean = {
       var start = 0
       val last = len - subname.length
@@ -488,8 +488,8 @@ trait Names extends api.Names {
     def append(ch: Char) = newName(toString + ch)
     def append(suffix: String) = newName(toString + suffix)
     def append(suffix: Name) = newName(toString + suffix)
-    def append(separator: Char, suffix: Name) =
-      newName(toString + separator + suffix)
+    def append(separator: Char, suffix: Name) = newName(
+      toString + separator + suffix)
     def prepend(prefix: String) = newName("" + prefix + this)
 
     def decodedName: ThisNameType = newName(decode)
@@ -499,19 +499,19 @@ trait Names extends api.Names {
   }
 
   implicit def AnyNameOps(name: Name): NameOps[Name] = new NameOps(name)
-  implicit def TermNameOps(name: TermName): NameOps[TermName] =
-    new NameOps(name)
-  implicit def TypeNameOps(name: TypeName): NameOps[TypeName] =
-    new NameOps(name)
+  implicit def TermNameOps(name: TermName): NameOps[TermName] = new NameOps(
+    name)
+  implicit def TypeNameOps(name: TypeName): NameOps[TypeName] = new NameOps(
+    name)
 
   /** FIXME: This is a good example of something which is pure "value class" but cannot
     *  reap the benefits because an (unused) $outer pointer so it is not single-field.
     */
   final class NameOps[T <: Name](name: T) {
     import NameTransformer._
-    def stripSuffix(suffix: String): T =
-      if (name endsWith suffix) dropRight(suffix.length)
-      else name // OPT avoid creating a Name with `suffix`
+    def stripSuffix(suffix: String): T = if (name endsWith suffix)
+      dropRight(suffix.length)
+    else name // OPT avoid creating a Name with `suffix`
     def stripSuffix(suffix: Name): T =
       if (name endsWith suffix) dropRight(suffix.length) else name
     def take(n: Int): T = name.subName(0, n).asInstanceOf[T]

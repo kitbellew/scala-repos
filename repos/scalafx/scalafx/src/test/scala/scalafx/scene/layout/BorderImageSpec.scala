@@ -45,18 +45,17 @@ class BorderImageSpec
       classOf[jfxsl.BorderImage],
       classOf[BorderImage]) {
 
-  override protected def getScalaClassInstance =
-    new BorderImage(getJavaClassInstance) {}
+  override protected def getScalaClassInstance = new BorderImage(
+    getJavaClassInstance) {}
 
-  override protected def getJavaClassInstance =
-    new jfxsl.BorderImage(
-      new jfxsi.Image(this.getClass.getResourceAsStream("")),
-      BorderWidths.Default,
-      Insets.Empty,
-      BorderWidths.Default,
-      true,
-      BorderRepeat.Repeat,
-      BorderRepeat.Repeat
-    )
+  override protected def getJavaClassInstance = new jfxsl.BorderImage(
+    new jfxsi.Image(this.getClass.getResourceAsStream("")),
+    BorderWidths.Default,
+    Insets.Empty,
+    BorderWidths.Default,
+    true,
+    BorderRepeat.Repeat,
+    BorderRepeat.Repeat
+  )
 
 }

@@ -44,15 +44,13 @@ case class EnsimeConfig(
   def runtimeClasspath: Set[File] =
     compileClasspath ++ modules.values.flatMap(_.runtimeDeps) ++ targetClasspath
 
-  def compileClasspath: Set[File] =
-    modules.values.toSet.flatMap { m: EnsimeModule =>
-      m.compileDeps ++ m.testDeps
-    } ++ (if (sourceMode) List.empty else targetClasspath)
+  def compileClasspath: Set[File] = modules.values.toSet.flatMap {
+    m: EnsimeModule => m.compileDeps ++ m.testDeps
+  } ++ (if (sourceMode) List.empty else targetClasspath)
 
-  def targetClasspath: Set[File] =
-    modules.values.toSet.flatMap { m: EnsimeModule =>
-      m.targetDirs ++ m.testTargetDirs
-    }
+  def targetClasspath: Set[File] = modules.values.toSet.flatMap {
+    m: EnsimeModule => m.targetDirs ++ m.testTargetDirs
+  }
 
   def allJars: Set[File] = {
     modules.values.flatMap { m =>

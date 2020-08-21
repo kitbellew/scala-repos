@@ -37,22 +37,20 @@ trait ParMapLike[
     with ParIterableLike[(K, V), Repr, Sequential] {
   self =>
 
-  def default(key: K): V =
-    throw new NoSuchElementException("key not found: " + key)
+  def default(key: K): V = throw new NoSuchElementException(
+    "key not found: " + key)
 
   def empty: Repr
 
-  def apply(key: K) =
-    get(key) match {
-      case Some(v) => v
-      case None    => default(key)
-    }
+  def apply(key: K) = get(key) match {
+    case Some(v) => v
+    case None    => default(key)
+  }
 
-  def getOrElse[U >: V](key: K, default: => U): U =
-    get(key) match {
-      case Some(v) => v
-      case None    => default
-    }
+  def getOrElse[U >: V](key: K, default: => U): U = get(key) match {
+    case Some(v) => v
+    case None    => default
+  }
 
   def contains(key: K): Boolean = get(key).isDefined
 
@@ -121,32 +119,30 @@ trait ParMapLike[
 
   def values: ParIterable[V] = new DefaultValuesIterable
 
-  def filterKeys(p: K => Boolean): ParMap[K, V] =
-    new ParMap[K, V] {
-      lazy val filtered = self.filter(kv => p(kv._1))
-      override def foreach[U](f: ((K, V)) => U): Unit =
-        for (kv <- self) if (p(kv._1)) f(kv)
-      def splitter = filtered.splitter
-      override def contains(key: K) = self.contains(key) && p(key)
-      def get(key: K) = if (!p(key)) None else self.get(key)
-      def seq = self.seq.filterKeys(p)
-      def size = filtered.size
-      def +[U >: V](kv: (K, U)): ParMap[K, U] = ParMap[K, U]() ++ this + kv
-      def -(key: K): ParMap[K, V] = ParMap[K, V]() ++ this - key
-    }
+  def filterKeys(p: K => Boolean): ParMap[K, V] = new ParMap[K, V] {
+    lazy val filtered = self.filter(kv => p(kv._1))
+    override def foreach[U](f: ((K, V)) => U): Unit = for (kv <- self)
+      if (p(kv._1)) f(kv)
+    def splitter = filtered.splitter
+    override def contains(key: K) = self.contains(key) && p(key)
+    def get(key: K) = if (!p(key)) None else self.get(key)
+    def seq = self.seq.filterKeys(p)
+    def size = filtered.size
+    def +[U >: V](kv: (K, U)): ParMap[K, U] = ParMap[K, U]() ++ this + kv
+    def -(key: K): ParMap[K, V] = ParMap[K, V]() ++ this - key
+  }
 
-  def mapValues[S](f: V => S): ParMap[K, S] =
-    new ParMap[K, S] {
-      override def foreach[U](g: ((K, S)) => U): Unit =
-        for ((k, v) <- self) g((k, f(v)))
-      def splitter = self.splitter.map(kv => (kv._1, f(kv._2)))
-      override def size = self.size
-      override def contains(key: K) = self.contains(key)
-      def get(key: K) = self.get(key).map(f)
-      def seq = self.seq.mapValues(f)
-      def +[U >: S](kv: (K, U)): ParMap[K, U] = ParMap[K, U]() ++ this + kv
-      def -(key: K): ParMap[K, S] = ParMap[K, S]() ++ this - key
-    }
+  def mapValues[S](f: V => S): ParMap[K, S] = new ParMap[K, S] {
+    override def foreach[U](g: ((K, S)) => U): Unit = for ((k, v) <- self)
+      g((k, f(v)))
+    def splitter = self.splitter.map(kv => (kv._1, f(kv._2)))
+    override def size = self.size
+    override def contains(key: K) = self.contains(key)
+    def get(key: K) = self.get(key).map(f)
+    def seq = self.seq.mapValues(f)
+    def +[U >: S](kv: (K, U)): ParMap[K, U] = ParMap[K, U]() ++ this + kv
+    def -(key: K): ParMap[K, S] = ParMap[K, S]() ++ this - key
+  }
 
   // note - should not override toMap (could be mutable)
 }

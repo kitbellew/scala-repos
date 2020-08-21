@@ -126,11 +126,10 @@ final class GCounter private[akka] (
 
   override def toString: String = s"GCounter($value)"
 
-  override def equals(o: Any): Boolean =
-    o match {
-      case other: GCounter ⇒ state == other.state
-      case _ ⇒ false
-    }
+  override def equals(o: Any): Boolean = o match {
+    case other: GCounter ⇒ state == other.state
+    case _ ⇒ false
+  }
 
   override def hashCode: Int = state.hashCode
 

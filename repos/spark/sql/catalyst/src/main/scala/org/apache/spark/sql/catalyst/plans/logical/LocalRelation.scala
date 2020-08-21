@@ -68,13 +68,11 @@ case class LocalRelation(output: Seq[Attribute], data: Seq[InternalRow] = Nil)
 
   override protected def stringArgs = Iterator(output)
 
-  override def sameResult(plan: LogicalPlan): Boolean =
-    plan match {
-      case LocalRelation(otherOutput, otherData) =>
-        otherOutput.map(_.dataType) == output.map(
-          _.dataType) && otherData == data
-      case _ => false
-    }
+  override def sameResult(plan: LogicalPlan): Boolean = plan match {
+    case LocalRelation(otherOutput, otherData) =>
+      otherOutput.map(_.dataType) == output.map(_.dataType) && otherData == data
+    case _ => false
+  }
 
   override lazy val statistics =
     Statistics(sizeInBytes =

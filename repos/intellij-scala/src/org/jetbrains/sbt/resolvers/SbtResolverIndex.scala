@@ -103,10 +103,9 @@ class SbtResolverIndex private (
     groupArtifactToVersionMap.close()
   }
 
-  def groups() =
-    Option(groupToArtifactMap.getAllKeysWithExistingMapping) map {
-      _.toSet
-    } getOrElse Set.empty
+  def groups() = Option(groupToArtifactMap.getAllKeysWithExistingMapping) map {
+    _.toSet
+  } getOrElse Set.empty
   def groups(artifact: String) = artifactToGroupMap.getOrEmpty(artifact)
 
   def artifacts() =

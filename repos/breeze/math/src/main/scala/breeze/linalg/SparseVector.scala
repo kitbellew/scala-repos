@@ -97,13 +97,12 @@ class SparseVector[@spec(Double, Int, Float, Long) V](
   /** This is always assumed to be equal to 0, for now. */
   def default: V = zero.zero
 
-  override def equals(p1: Any) =
-    p1 match {
-      case x: Vector[_] =>
-        this.length == x.length &&
-          (valuesIterator sameElements x.valuesIterator)
-      case _ => false
-    }
+  override def equals(p1: Any) = p1 match {
+    case x: Vector[_] =>
+      this.length == x.length &&
+        (valuesIterator sameElements x.valuesIterator)
+    case _ => false
+  }
 
   def isActive(rawIndex: Int) = array.isActive(rawIndex)
 
@@ -221,8 +220,8 @@ object SparseVector
       values.length,
       values.length)
 
-  def apply[V: ClassTag: Zero](values: V*): SparseVector[V] =
-    apply(values.toArray)
+  def apply[V: ClassTag: Zero](values: V*): SparseVector[V] = apply(
+    values.toArray)
   def fill[@spec(Double, Int, Float, Long) V: ClassTag: Zero](size: Int)(
       v: => V): SparseVector[V] = apply(Array.fill(size)(v))
   def tabulate[@spec(Double, Int, Float, Long) V: ClassTag: Zero](size: Int)(

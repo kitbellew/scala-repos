@@ -19,41 +19,39 @@ case class PerfStat(
 
   def id = _id
 
-  def agg(pov: Pov) =
-    if (!pov.game.finished) this
-    else {
-      val thisYear = pov.game.createdAt isAfter DateTime.now.minusYears(1)
-      copy(
-        highest = RatingAt.agg(highest, pov, 1),
-        lowest = thisYear.fold(RatingAt.agg(lowest, pov, -1), lowest),
-        bestWins = (~pov.win).fold(bestWins.agg(pov, -1), bestWins),
-        worstLosses =
-          (thisYear && ~pov.loss).fold(worstLosses.agg(pov, 1), worstLosses),
-        count = count(pov),
-        resultStreak = resultStreak agg pov,
-        playStreak = playStreak agg pov
-      )
-    }
+  def agg(pov: Pov) = if (!pov.game.finished) this
+  else {
+    val thisYear = pov.game.createdAt isAfter DateTime.now.minusYears(1)
+    copy(
+      highest = RatingAt.agg(highest, pov, 1),
+      lowest = thisYear.fold(RatingAt.agg(lowest, pov, -1), lowest),
+      bestWins = (~pov.win).fold(bestWins.agg(pov, -1), bestWins),
+      worstLosses =
+        (thisYear && ~pov.loss).fold(worstLosses.agg(pov, 1), worstLosses),
+      count = count(pov),
+      resultStreak = resultStreak agg pov,
+      playStreak = playStreak agg pov
+    )
+  }
 }
 
 object PerfStat {
 
   def makeId(userId: String, perfType: PerfType) = s"$userId/${perfType.id}"
 
-  def init(userId: String, perfType: PerfType) =
-    PerfStat(
-      _id = makeId(userId, perfType),
-      userId = UserId(userId),
-      perfType = perfType,
-      highest = none,
-      lowest = none,
-      bestWins = Results(Nil),
-      worstLosses = Results(Nil),
-      count = Count.init,
-      resultStreak = ResultStreak(win = Streaks.init, loss = Streaks.init),
-      playStreak =
-        PlayStreak(nb = Streaks.init, time = Streaks.init, lastDate = none)
-    )
+  def init(userId: String, perfType: PerfType) = PerfStat(
+    _id = makeId(userId, perfType),
+    userId = UserId(userId),
+    perfType = perfType,
+    highest = none,
+    lowest = none,
+    bestWins = Results(Nil),
+    worstLosses = Results(Nil),
+    count = Count.init,
+    resultStreak = ResultStreak(win = Streaks.init, loss = Streaks.init),
+    playStreak =
+      PlayStreak(nb = Streaks.init, time = Streaks.init, lastDate = none)
+  )
 }
 
 case class ResultStreak(win: Streaks, loss: Streaks) {
@@ -73,20 +71,18 @@ case class PlayStreak(nb: Streaks, time: Streaks, lastDate: Option[DateTime]) {
   def checkCurrent =
     if (isContinued(DateTime.now)) this
     else copy(nb = nb.reset, time = time.reset)
-  private def isContinued(at: DateTime) =
-    lastDate.fold(true) { ld =>
-      at.isBefore(ld plusMinutes PlayStreak.expirationMinutes)
-    }
+  private def isContinued(at: DateTime) = lastDate.fold(true) { ld =>
+    at.isBefore(ld plusMinutes PlayStreak.expirationMinutes)
+  }
 }
 object PlayStreak {
   val expirationMinutes = 60
 }
 
 case class Streaks(cur: Streak, max: Streak) {
-  def apply(cont: Boolean, pov: Pov)(v: Int) =
-    copy(
-      cur = cur(cont, pov)(v)
-    ).setMax
+  def apply(cont: Boolean, pov: Pov)(v: Int) = copy(
+    cur = cur(cont, pov)(v)
+  ).setMax
   def reset = copy(cur = Streak.init)
   private def setMax = copy(max = if (cur.v >= max.v) cur else max)
 }
@@ -96,16 +92,15 @@ object Streaks {
 case class Streak(v: Int, from: Option[RatingAt], to: Option[RatingAt]) {
   def apply(cont: Boolean, pov: Pov)(v: Int) =
     cont.fold(inc(pov, v), Streak.init)
-  private def inc(pov: Pov, by: Int) =
-    copy(
-      v = v + by,
-      from = from orElse pov.player.rating.map {
-        RatingAt(_, pov.game.createdAt, pov.gameId)
-      },
-      to = pov.player.ratingAfter.map {
-        RatingAt(_, pov.game.updatedAtOrCreatedAt, pov.gameId)
-      }
-    )
+  private def inc(pov: Pov, by: Int) = copy(
+    v = v + by,
+    from = from orElse pov.player.rating.map {
+      RatingAt(_, pov.game.createdAt, pov.gameId)
+    },
+    to = pov.player.ratingAfter.map {
+      RatingAt(_, pov.game.updatedAtOrCreatedAt, pov.gameId)
+    }
+  )
 }
 object Streak {
   val init = Streak(0, none, none)
@@ -124,24 +119,23 @@ case class Count(
     opAvg: Avg,
     seconds: Int,
     disconnects: Int) {
-  def apply(pov: Pov) =
-    copy(
-      all = all + 1,
-      rated = rated + pov.game.rated.fold(1, 0),
-      win = win + pov.win.contains(true).fold(1, 0),
-      loss = loss + pov.win.contains(false).fold(1, 0),
-      draw = draw + pov.win.isEmpty.fold(1, 0),
-      tour = tour + pov.game.isTournament.fold(1, 0),
-      berserk = berserk + pov.player.berserk.fold(1, 0),
-      opAvg = pov.opponent.stableRating.fold(opAvg)(opAvg.agg),
-      seconds = seconds + (pov.game.durationSeconds match {
-        case s if s > 3 * 60 * 60 => 0
-        case s                    => s
-      }),
-      disconnects = disconnects + {
-        ~pov.loss && pov.game.status == chess.Status.Timeout
-      }.fold(1, 0)
-    )
+  def apply(pov: Pov) = copy(
+    all = all + 1,
+    rated = rated + pov.game.rated.fold(1, 0),
+    win = win + pov.win.contains(true).fold(1, 0),
+    loss = loss + pov.win.contains(false).fold(1, 0),
+    draw = draw + pov.win.isEmpty.fold(1, 0),
+    tour = tour + pov.game.isTournament.fold(1, 0),
+    berserk = berserk + pov.player.berserk.fold(1, 0),
+    opAvg = pov.opponent.stableRating.fold(opAvg)(opAvg.agg),
+    seconds = seconds + (pov.game.durationSeconds match {
+      case s if s > 3 * 60 * 60 => 0
+      case s                    => s
+    }),
+    disconnects = disconnects + {
+      ~pov.loss && pov.game.status == chess.Status.Timeout
+    }.fold(1, 0)
+  )
 }
 object Count {
   val init = Count(

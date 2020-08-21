@@ -11,10 +11,9 @@ object Wiki extends LilaController {
     fuccess(Redirect(routes.Wiki.show("Lichess-Wiki")))
   }
 
-  def show(slug: String) =
-    Open { implicit ctx =>
-      OptionOk(Env.wiki.api.show(slug, lang(ctx.req).language)) {
-        case (page, pages) => html.wiki.show(page, pages)
-      }
+  def show(slug: String) = Open { implicit ctx =>
+    OptionOk(Env.wiki.api.show(slug, lang(ctx.req).language)) {
+      case (page, pages) => html.wiki.show(page, pages)
     }
+  }
 }

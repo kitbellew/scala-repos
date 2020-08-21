@@ -63,6 +63,6 @@ class ThriftClientBufferedCodec(
     protocolFactory: TProtocolFactory,
     config: ClientCodecConfig)
     extends ThriftClientFramedCodec(protocolFactory, config) {
-  override def pipelineFactory =
-    ThriftClientBufferedPipelineFactory(protocolFactory)
+  override def pipelineFactory = ThriftClientBufferedPipelineFactory(
+    protocolFactory)
 }

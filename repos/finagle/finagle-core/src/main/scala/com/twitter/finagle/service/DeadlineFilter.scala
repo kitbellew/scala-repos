@@ -134,9 +134,8 @@ private[finagle] class DeadlineFilter[Req, Rep](
       deadline: Deadline,
       elapsed: Duration,
       now: Time
-  ) =
-    s"exceeded request deadline of ${deadline.deadline - deadline.timestamp} " +
-      s"by $elapsed. Deadline expired at ${deadline.deadline} and now it is $now."
+  ) = s"exceeded request deadline of ${deadline.deadline - deadline.timestamp} " +
+    s"by $elapsed. Deadline expired at ${deadline.deadline} and now it is $now."
 
   // The request is rejected if the set deadline has expired, the elapsed time
   // since expiry is less than `tolerance`, and there are at least

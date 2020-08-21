@@ -91,15 +91,14 @@ object Name {
 
   // So that we can print NameTree[Name]
   implicit val showable: Showable[Name] = new Showable[Name] {
-    def show(name: Name) =
-      name match {
-        case Path(path) => path.show
-        case bound @ Bound(_) =>
-          bound.id match {
-            case id: com.twitter.finagle.Path => id.show
-            case id                           => id.toString
-          }
-      }
+    def show(name: Name) = name match {
+      case Path(path) => path.show
+      case bound @ Bound(_) =>
+        bound.id match {
+          case id: com.twitter.finagle.Path => id.show
+          case id                           => id.toString
+        }
+    }
   }
 
   /**
@@ -122,33 +121,32 @@ object Name {
     * negative resolutions. A failed address is only returned if the Group
     * contains a [[SocketAddress]] that is not an [[InetSocketAddress]].
     */
-  def fromGroup(g: Group[SocketAddress]): Name.Bound =
-    g match {
-      case NameGroup(name) => name
-      case group =>
-        Name.Bound(
-          {
-            // Group doesn't support the abstraction of "not yet bound" so
-            // this is a bit of a hack
-            @volatile var first = true
+  def fromGroup(g: Group[SocketAddress]): Name.Bound = g match {
+    case NameGroup(name) => name
+    case group =>
+      Name.Bound(
+        {
+          // Group doesn't support the abstraction of "not yet bound" so
+          // this is a bit of a hack
+          @volatile var first = true
 
-            group.set map {
-              case newSet if first && newSet.isEmpty => Addr.Pending
-              case newSet =>
-                first = false
-                newSet.foldLeft[Addr](Addr.Bound()) {
-                  case (Addr.Bound(set, metadata), ia: InetSocketAddress) =>
-                    Addr.Bound(set + Address(ia), metadata)
-                  case (Addr.Bound(_, _), sa) =>
-                    Addr.Failed(new IllegalArgumentException(
-                      s"Unsupported SocketAddress of type '${sa.getClass.getName}': $sa"))
-                  case (addr, _) => addr
-                }
-            }
-          },
-          group
-        )
-    }
+          group.set map {
+            case newSet if first && newSet.isEmpty => Addr.Pending
+            case newSet =>
+              first = false
+              newSet.foldLeft[Addr](Addr.Bound()) {
+                case (Addr.Bound(set, metadata), ia: InetSocketAddress) =>
+                  Addr.Bound(set + Address(ia), metadata)
+                case (Addr.Bound(_, _), sa) =>
+                  Addr.Failed(new IllegalArgumentException(
+                    s"Unsupported SocketAddress of type '${sa.getClass.getName}': $sa"))
+                case (addr, _) => addr
+              }
+          }
+        },
+        group
+      )
+  }
 
   /**
     * Create a path-based Name which is interpreted vis-à-vis

@@ -45,9 +45,8 @@ class TaskSpec[T]
 
   override protected def getScalaClassInstance = Task[T](null.asInstanceOf[T])
 
-  override protected def getJavaClassInstance =
-    new jfxc.Task[T] {
-      def call = null.asInstanceOf[T]
-    }
+  override protected def getJavaClassInstance = new jfxc.Task[T] {
+    def call = null.asInstanceOf[T]
+  }
 
 }

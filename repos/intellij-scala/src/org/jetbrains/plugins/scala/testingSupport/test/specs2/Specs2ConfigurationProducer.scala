@@ -29,10 +29,9 @@ class Specs2ConfigurationProducer extends {
 } with TestConfigurationProducer(confType)
 with AbstractTestConfigurationProducer {
 
-  override def suitePaths =
-    List(
-      "org.specs2.specification.SpecificationStructure",
-      "org.specs2.specification.core.SpecificationStructure")
+  override def suitePaths = List(
+    "org.specs2.specification.SpecificationStructure",
+    "org.specs2.specification.core.SpecificationStructure")
 
   override def findExistingByElement(
       location: Location[_ <: PsiElement],

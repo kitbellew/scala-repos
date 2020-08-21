@@ -45,10 +45,9 @@ object IoExceptionOr {
           ioException(e)
       }
 
-  def ioExceptionOr[A](a: A): IoExceptionOr[A] =
-    new IoExceptionOr[A] {
-      def fold[X](ioException: IoException => X, or: A => X) =
-        or(a)
-    }
+  def ioExceptionOr[A](a: A): IoExceptionOr[A] = new IoExceptionOr[A] {
+    def fold[X](ioException: IoException => X, or: A => X) =
+      or(a)
+  }
 
 }

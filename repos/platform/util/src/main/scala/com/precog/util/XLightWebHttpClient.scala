@@ -76,15 +76,14 @@ trait XLightWebHttpClientModule[M[+_]] extends HttpClientModule[M] {
           .sequence[M, IHttpResponse])
 
     def execute(request: Request[String])
-        : EitherT[M, HttpClientError, Response[String]] =
-      for {
-        httpRequest <- EitherT(M point buildRequest(request))
-        response <- execute0(httpRequest)
-        body <- EitherT(
-          M point fromTryCatch(Some(httpRequest))(
-            Option(response.getBody) map (_.readString("UTF-8"))))
-      } yield {
-        Response(response.getStatus, response.getReason, body)
-      }
+        : EitherT[M, HttpClientError, Response[String]] = for {
+      httpRequest <- EitherT(M point buildRequest(request))
+      response <- execute0(httpRequest)
+      body <- EitherT(
+        M point fromTryCatch(Some(httpRequest))(
+          Option(response.getBody) map (_.readString("UTF-8"))))
+    } yield {
+      Response(response.getStatus, response.getReason, body)
+    }
   }
 }

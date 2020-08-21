@@ -134,23 +134,20 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
     })
   }
 
-  private def underCaseClass(m: MethodSymbol) =
-    m.parent match {
-      case Some(c: ClassSymbol) => c.isCase
-      case _                    => false
-    }
+  private def underCaseClass(m: MethodSymbol) = m.parent match {
+    case Some(c: ClassSymbol) => c.isCase
+    case _                    => false
+  }
 
-  private def underObject(m: MethodSymbol) =
-    m.parent match {
-      case Some(c: ClassSymbol) => c.isModule
-      case _                    => false
-    }
+  private def underObject(m: MethodSymbol) = m.parent match {
+    case Some(c: ClassSymbol) => c.isModule
+    case _                    => false
+  }
 
-  private def underTrait(m: MethodSymbol) =
-    m.parent match {
-      case Some(c: ClassSymbol) => c.isTrait
-      case _                    => false
-    }
+  private def underTrait(m: MethodSymbol) = m.parent match {
+    case Some(c: ClassSymbol) => c.isTrait
+    case _                    => false
+  }
 
   private def printChildren(
       level: Int,
@@ -496,28 +493,27 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
   }
 
   // TODO char, float, etc.
-  def valueToString(value: Any): String =
-    value match {
-      case t: Type => "classOf[%s]" format toString(t)
-      case s: String =>
-        if (s.contains("\n") || s.contains("\r")) {
-          "\"\"\"" + s + "\"\"\""
-        } else "\"" + StringEscapeUtils.escapeJava(s) + "\""
-      case arr: Array[_] =>
-        arr.map(valueToString).mkString("Array(", ", ", ")")
-      case _ => value.toString
-    }
+  def valueToString(value: Any): String = value match {
+    case t: Type => "classOf[%s]" format toString(t)
+    case s: String =>
+      if (s.contains("\n") || s.contains("\r")) {
+        "\"\"\"" + s + "\"\"\""
+      } else "\"" + StringEscapeUtils.escapeJava(s) + "\""
+    case arr: Array[_] =>
+      arr.map(valueToString).mkString("Array(", ", ", ")")
+    case _ => value.toString
+  }
 
   implicit object _tf extends TypeFlags(false)
 
   def printType(sym: SymbolInfoSymbol)(implicit flags: TypeFlags): Unit =
     printType(sym.infoType)(flags)
 
-  def printType(t: Type)(implicit flags: TypeFlags): Unit =
-    print(toString(t)(flags))
+  def printType(t: Type)(implicit flags: TypeFlags): Unit = print(
+    toString(t)(flags))
 
-  def printType(t: Type, sep: String)(implicit flags: TypeFlags): Unit =
-    print(toString(t, sep)(flags))
+  def printType(t: Type, sep: String)(implicit flags: TypeFlags): Unit = print(
+    toString(t, sep)(flags))
 
   def toString(t: Type)(implicit flags: TypeFlags): String =
     toString(t, "")(flags)
@@ -728,21 +724,19 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
   def getVariance(t: TypeSymbol) =
     if (t.isCovariant) "+" else if (t.isContravariant) "-" else ""
 
-  def toString(symbol: Symbol): String =
-    symbol match {
-      case symbol: TypeSymbol =>
-        val attrs =
-          (for (a <- symbol.attributes) yield toString(a)).mkString(" ")
-        val atrs = if (attrs.length > 0) attrs.trim + " " else ""
-        val symbolType = symbol.infoType match {
-          case PolyType(typeRef, symbols) =>
-            PolyTypeWithCons(typeRef, symbols, "")
-          case tp => tp
-        }
-        val name: String = currentTypeParameters.getOrElse(symbol, symbol.name)
-        atrs + getVariance(symbol) + processName(name) + toString(symbolType)
-      case s => symbol.toString
-    }
+  def toString(symbol: Symbol): String = symbol match {
+    case symbol: TypeSymbol =>
+      val attrs = (for (a <- symbol.attributes) yield toString(a)).mkString(" ")
+      val atrs = if (attrs.length > 0) attrs.trim + " " else ""
+      val symbolType = symbol.infoType match {
+        case PolyType(typeRef, symbols) =>
+          PolyTypeWithCons(typeRef, symbols, "")
+        case tp => tp
+      }
+      val name: String = currentTypeParameters.getOrElse(symbol, symbol.name)
+      atrs + getVariance(symbol) + processName(name) + toString(symbolType)
+    case s => symbol.toString
+  }
 
   def typeArgString(typeArgs: Seq[Type]): String =
     if (typeArgs.isEmpty) ""
@@ -847,13 +841,12 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         }
 
         /** Can character form part of a Scala operator name? */
-        def isOperatorPart(c: Char): Boolean =
-          (c: @switch) match {
-            case '~' | '!' | '@' | '#' | '%' | '^' | '*' | '+' | '-' | '<' |
-                '>' | '?' | ':' | '=' | '&' | '|' | '/' | '\\' =>
-              true
-            case c => isSpecial(c)
-          }
+        def isOperatorPart(c: Char): Boolean = (c: @switch) match {
+          case '~' | '!' | '@' | '#' | '%' | '^' | '*' | '+' | '-' | '<' | '>' |
+              '?' | ':' | '=' | '&' | '|' | '/' | '\\' =>
+            true
+          case c => isSpecial(c)
+        }
 
         if (id.isEmpty) return false
         if (isIdentifierStart(id(0))) {

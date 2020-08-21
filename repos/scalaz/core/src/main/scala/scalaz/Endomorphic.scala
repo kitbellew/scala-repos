@@ -63,6 +63,6 @@ sealed abstract class EndomorphicInstances0 {
 private trait EndomorphicSemigroup[=>:[_, _], A]
     extends Semigroup[Endomorphic[=>:, A]] {
   implicit def F: Compose[=>:]
-  def append(f1: Endomorphic[=>:, A], f2: => Endomorphic[=>:, A]) =
-    Endomorphic(F.compose(f1.run, f2.run))
+  def append(f1: Endomorphic[=>:, A], f2: => Endomorphic[=>:, A]) = Endomorphic(
+    F.compose(f1.run, f2.run))
 }

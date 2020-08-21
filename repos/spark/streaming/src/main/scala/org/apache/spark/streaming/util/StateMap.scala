@@ -99,18 +99,16 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
 
   def this(initialCapacity: Int, deltaChainThreshold: Int)(implicit
       keyClassTag: ClassTag[K],
-      stateClassTag: ClassTag[S]) =
-    this(
-      new EmptyStateMap[K, S],
-      initialCapacity = initialCapacity,
-      deltaChainThreshold = deltaChainThreshold)
+      stateClassTag: ClassTag[S]) = this(
+    new EmptyStateMap[K, S],
+    initialCapacity = initialCapacity,
+    deltaChainThreshold = deltaChainThreshold)
 
   def this(deltaChainThreshold: Int)(implicit
       keyClassTag: ClassTag[K],
-      stateClassTag: ClassTag[S]) =
-    this(
-      initialCapacity = DEFAULT_INITIAL_CAPACITY,
-      deltaChainThreshold = deltaChainThreshold)
+      stateClassTag: ClassTag[S]) = this(
+    initialCapacity = DEFAULT_INITIAL_CAPACITY,
+    deltaChainThreshold = deltaChainThreshold)
 
   def this()(implicit keyClassTag: ClassTag[K], stateClassTag: ClassTag[S]) = {
     this(DELTA_CHAIN_LENGTH_THRESHOLD)
@@ -204,23 +202,21 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
   }
 
   /** Length of the delta chains of this map */
-  def deltaChainLength: Int =
-    parentStateMap match {
-      case map: OpenHashMapBasedStateMap[_, _] => map.deltaChainLength + 1
-      case _                                   => 0
-    }
+  def deltaChainLength: Int = parentStateMap match {
+    case map: OpenHashMapBasedStateMap[_, _] => map.deltaChainLength + 1
+    case _                                   => 0
+  }
 
   /**
     * Approximate number of keys in the map. This is an overestimation that is mainly used to
     * reserve capacity in a new map at delta compaction time.
     */
-  def approxSize: Int =
-    deltaMap.size + {
-      parentStateMap match {
-        case s: OpenHashMapBasedStateMap[_, _] => s.approxSize
-        case _                                 => 0
-      }
+  def approxSize: Int = deltaMap.size + {
+    parentStateMap match {
+      case s: OpenHashMapBasedStateMap[_, _] => s.approxSize
+      case _                                 => 0
     }
+  }
 
   /** Get all the data of this map as string formatted as a tree based on the delta depth */
   override def toDebugString(): String = {

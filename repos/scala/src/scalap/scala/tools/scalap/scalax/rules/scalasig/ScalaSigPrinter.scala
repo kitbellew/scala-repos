@@ -80,11 +80,10 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
     })
   }
 
-  private def underCaseClass(m: MethodSymbol) =
-    m.parent match {
-      case Some(c: ClassSymbol) => c.isCase
-      case _                    => false
-    }
+  private def underCaseClass(m: MethodSymbol) = m.parent match {
+    case Some(c: ClassSymbol) => c.isCase
+    case _                    => false
+  }
 
   private def printChildren(level: Int, symbol: Symbol) {
     for (child <- symbol.children) printSymbol(level + 1, child)
@@ -323,23 +322,22 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
     buffer.toString
   }
 
-  def valueToString(value: Any): String =
-    value match {
-      case t: Type => toString(t)
-      // TODO string, char, float, etc.
-      case _ => value.toString
-    }
+  def valueToString(value: Any): String = value match {
+    case t: Type => toString(t)
+    // TODO string, char, float, etc.
+    case _ => value.toString
+  }
 
   implicit object _tf extends TypeFlags(false)
 
   def printType(sym: SymbolInfoSymbol)(implicit flags: TypeFlags): Unit =
     printType(sym.infoType)(flags)
 
-  def printType(t: Type)(implicit flags: TypeFlags): Unit =
-    print(toString(t)(flags))
+  def printType(t: Type)(implicit flags: TypeFlags): Unit = print(
+    toString(t)(flags))
 
-  def printType(t: Type, sep: String)(implicit flags: TypeFlags): Unit =
-    print(toString(t, sep)(flags))
+  def printType(t: Type, sep: String)(implicit flags: TypeFlags): Unit = print(
+    toString(t, sep)(flags))
 
   def toString(t: Type)(implicit flags: TypeFlags): String =
     toString(t, "")(flags)
@@ -425,17 +423,15 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
   def getVariance(t: TypeSymbol) =
     if (t.isCovariant) "+" else if (t.isContravariant) "-" else ""
 
-  def toString(symbol: Symbol): String =
-    symbol match {
-      case symbol: TypeSymbol => {
-        val attrs =
-          (for (a <- symbol.attributes) yield toString(a)).mkString(" ")
-        val atrs = if (attrs.length > 0) attrs.trim + " " else ""
-        atrs + getVariance(symbol) + processName(symbol.name) + toString(
-          symbol.infoType)
-      }
-      case s => symbol.toString
+  def toString(symbol: Symbol): String = symbol match {
+    case symbol: TypeSymbol => {
+      val attrs = (for (a <- symbol.attributes) yield toString(a)).mkString(" ")
+      val atrs = if (attrs.length > 0) attrs.trim + " " else ""
+      atrs + getVariance(symbol) + processName(symbol.name) + toString(
+        symbol.infoType)
     }
+    case s => symbol.toString
+  }
 
   def typeArgString(typeArgs: Seq[Type]): String =
     if (typeArgs.isEmpty) ""

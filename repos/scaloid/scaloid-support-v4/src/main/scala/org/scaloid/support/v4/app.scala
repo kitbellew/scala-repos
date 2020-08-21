@@ -339,9 +339,8 @@ trait TraitFragmentTransaction[
   def basis: This
 
   @inline def breadCrumbShortTitle(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'breadCrumbShortTitle'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'breadCrumbShortTitle'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/FragmentTransaction.html#setBreadCrumbShortTitle(int) setBreadCrumbShortTitle(int)]]`
@@ -480,9 +479,8 @@ trait TraitListFragment[This <: android.support.v4.app.ListFragment]
   @inline def listShown_=(p: Boolean) = { basis.setListShown(p); basis }
 
   @inline def listShownNoAnimation(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'listShownNoAnimation'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'listShownNoAnimation'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/ListFragment.html#setListShownNoAnimation(boolean) setListShownNoAnimation(boolean)]]`

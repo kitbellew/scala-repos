@@ -19,11 +19,10 @@ import java.io.InputStream
 import JavaStreamEnrichments._
 
 object PositionInputStream {
-  def apply(in: InputStream): PositionInputStream =
-    in match {
-      case p: PositionInputStream => p
-      case nonPos                 => new PositionInputStream(nonPos)
-    }
+  def apply(in: InputStream): PositionInputStream = in match {
+    case p: PositionInputStream => p
+    case nonPos                 => new PositionInputStream(nonPos)
+  }
 }
 
 class PositionInputStream(val wraps: InputStream) extends InputStream {

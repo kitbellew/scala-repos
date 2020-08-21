@@ -38,10 +38,9 @@ private[http] class HeaderParser(
   import CharacterClasses._
 
   // http://www.rfc-editor.org/errata_search.php?rfc=7230 errata id 4189
-  def `header-field-value`: Rule1[String] =
-    rule {
-      FWS ~ clearSB() ~ `field-value` ~ FWS ~ EOI ~ push(sb.toString)
-    }
+  def `header-field-value`: Rule1[String] = rule {
+    FWS ~ clearSB() ~ `field-value` ~ FWS ~ EOI ~ push(sb.toString)
+  }
   def `field-value` = {
     var fwsStart = cursor
     rule {
@@ -70,11 +69,10 @@ private[http] class HeaderParser(
         formatter.format(error, input),
         formatter.formatErrorLine(error, input)))
   }
-  def failure(error: Throwable): Result =
-    error match {
-      case IllegalUriException(info) ⇒ Left(info)
-      case NonFatal(e) ⇒ Left(ErrorInfo.fromCompoundString(e.getMessage))
-    }
+  def failure(error: Throwable): Result = error match {
+    case IllegalUriException(info) ⇒ Left(info)
+    case NonFatal(e) ⇒ Left(ErrorInfo.fromCompoundString(e.getMessage))
+  }
   def ruleNotFound(ruleName: String): Result =
     throw HeaderParser.RuleNotFoundException
 

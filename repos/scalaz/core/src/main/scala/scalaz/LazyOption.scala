@@ -130,11 +130,10 @@ sealed abstract class LazyOptionInstances {
       with IsEmpty[LazyOption] {
       def cobind[A, B](fa: LazyOption[A])(
           f: LazyOption[A] => B): LazyOption[B] = map(cojoin(fa))(f)
-      override def cojoin[A](a: LazyOption[A]) =
-        a match {
-          case LazyNone        => LazyNone
-          case o @ LazySome(_) => LazySome(() => o)
-        }
+      override def cojoin[A](a: LazyOption[A]) = a match {
+        case LazyNone        => LazyNone
+        case o @ LazySome(_) => LazySome(() => o)
+      }
       def traverseImpl[G[_]: Applicative, A, B](fa: LazyOption[A])(
           f: A => G[B]): G[LazyOption[B]] = fa traverse (a => f(a))
       override def foldRight[A, B](fa: LazyOption[A], z: => B)(
@@ -157,11 +156,10 @@ sealed abstract class LazyOptionInstances {
       def zip[A, B](a: => LazyOption[A], b: => LazyOption[B]) = a zip b
       def unzip[A, B](a: LazyOption[(A, B)]) = a.unzip
 
-      def alignWith[A, B, C](f: A \&/ B => C) =
-        (a, b) =>
-          a.fold(
-            aa => lazySome(f(b.fold(bb => \&/.Both(aa, bb), \&/.This(aa)))),
-            b.fold(bb => lazySome(f(\&/.That(bb))), lazyNone))
+      def alignWith[A, B, C](f: A \&/ B => C) = (a, b) =>
+        a.fold(
+          aa => lazySome(f(b.fold(bb => \&/.Both(aa, bb), \&/.This(aa)))),
+          b.fold(bb => lazySome(f(\&/.That(bb))), lazyNone))
 
       def pextract[B, A](fa: LazyOption[A]): LazyOption[B] \/ A =
         fa.fold(a => \/-(a), -\/(lazyNone))
@@ -188,14 +186,13 @@ sealed abstract class LazyOptionInstances {
     new Monoid[LazyOption[A]] {
       def zero = LazyNone
 
-      def append(a: LazyOption[A], b: => LazyOption[A]) =
-        (a, b) match {
-          case (LazySome(a1), LazySome(b1)) =>
-            LazySome(() => Semigroup[A].append(a1(), b1()))
-          case (LazySome(_), LazyNone)      => a
-          case (LazyNone, b1 @ LazySome(_)) => b1
-          case (LazyNone, LazyNone)         => LazyNone
-        }
+      def append(a: LazyOption[A], b: => LazyOption[A]) = (a, b) match {
+        case (LazySome(a1), LazySome(b1)) =>
+          LazySome(() => Semigroup[A].append(a1(), b1()))
+        case (LazySome(_), LazyNone)      => a
+        case (LazyNone, b1 @ LazySome(_)) => b1
+        case (LazyNone, LazyNone)         => LazyNone
+      }
     }
 
   implicit def lazyOptionShow[A](implicit S: Show[A]): Show[LazyOption[A]] =
@@ -213,11 +210,10 @@ object LazyOption extends LazyOptionInstances {
   def lazyNone[A]: LazyOption[A] =
     LazyNone
 
-  def fromOption[A](oa: Option[A]): LazyOption[A] =
-    oa match {
-      case Some(x) => lazySome(x)
-      case None    => lazyNone[A]
-    }
+  def fromOption[A](oa: Option[A]): LazyOption[A] = oa match {
+    case Some(x) => lazySome(x)
+    case None    => lazyNone[A]
+  }
 
   /**
     * Returns the given argument in `lazySome` if this is `true`, `lazyNone` otherwise.

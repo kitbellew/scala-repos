@@ -56,15 +56,14 @@ final class Env(
 
   private val socketHub = system.actorOf(
     Props(new lila.socket.SocketHubActor.Default[Socket] {
-      def mkActor(simulId: String) =
-        new Socket(
-          simulId = simulId,
-          history = new History(ttl = HistoryMessageTtl),
-          getSimul = repo.find,
-          jsonView = jsonView,
-          uidTimeout = UidTimeout,
-          socketTimeout = SocketTimeout,
-          lightUser = lightUser)
+      def mkActor(simulId: String) = new Socket(
+        simulId = simulId,
+        history = new History(ttl = HistoryMessageTtl),
+        getSimul = repo.find,
+        jsonView = jsonView,
+        uidTimeout = UidTimeout,
+        socketTimeout = SocketTimeout,
+        lightUser = lightUser)
     }),
     name = SocketName
   )

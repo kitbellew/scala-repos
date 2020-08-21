@@ -205,8 +205,9 @@ trait FlexMenuBuilder {
   /**
     * Render the outer tag for a group of menu items
     */
-  protected def renderOuterTag(inner: NodeSeq, top: Boolean): NodeSeq =
-    <ul>{inner}</ul>
+  protected def renderOuterTag(inner: NodeSeq, top: Boolean): NodeSeq = <ul>{
+    inner
+  }</ul>
 
   /**
     * The default set of MenuItems to be rendered

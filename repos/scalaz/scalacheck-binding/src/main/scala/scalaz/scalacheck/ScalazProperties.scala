@@ -16,17 +16,17 @@ object ScalazProperties {
   }
 
   object equal {
-    def commutativity[A](implicit A: Equal[A], arb: Arbitrary[A]) =
-      forAll(A.equalLaw.commutative _)
+    def commutativity[A](implicit A: Equal[A], arb: Arbitrary[A]) = forAll(
+      A.equalLaw.commutative _)
 
-    def reflexive[A](implicit A: Equal[A], arb: Arbitrary[A]) =
-      forAll(A.equalLaw.reflexive _)
+    def reflexive[A](implicit A: Equal[A], arb: Arbitrary[A]) = forAll(
+      A.equalLaw.reflexive _)
 
-    def transitive[A](implicit A: Equal[A], arb: Arbitrary[A]) =
-      forAll(A.equalLaw.transitive _)
+    def transitive[A](implicit A: Equal[A], arb: Arbitrary[A]) = forAll(
+      A.equalLaw.transitive _)
 
-    def naturality[A](implicit A: Equal[A], arb: Arbitrary[A]) =
-      forAll(A.equalLaw.naturality _)
+    def naturality[A](implicit A: Equal[A], arb: Arbitrary[A]) = forAll(
+      A.equalLaw.naturality _)
 
     def laws[A](implicit A: Equal[A], arb: Arbitrary[A]): Properties =
       newProperties("equal") { p =>
@@ -41,18 +41,16 @@ object ScalazProperties {
     def antisymmetric[A](implicit A: Order[A], arb: Arbitrary[A]) =
       forAll(A.orderLaw.antisymmetric _)
 
-    def transitiveOrder[A](implicit A: Order[A], arb: Arbitrary[A]) =
-      forAll(A.orderLaw.transitiveOrder _)
+    def transitiveOrder[A](implicit A: Order[A], arb: Arbitrary[A]) = forAll(
+      A.orderLaw.transitiveOrder _)
 
     def orderAndEqualConsistent[A](implicit A: Order[A], arb: Arbitrary[A]) =
       forAll(A.orderLaw.orderAndEqualConsistent _)
 
     import scala.math.{Ordering => SOrdering}
 
-    def scalaOrdering[A: Order: SOrdering: Arbitrary] =
-      forAll((a1: A, a2: A) =>
-        Order[A].order(a1, a2) == Ordering.fromInt(
-          SOrdering[A].compare(a1, a2)))
+    def scalaOrdering[A: Order: SOrdering: Arbitrary] = forAll((a1: A, a2: A) =>
+      Order[A].order(a1, a2) == Ordering.fromInt(SOrdering[A].compare(a1, a2)))
 
     def laws[A](implicit A: Order[A], arb: Arbitrary[A]): Properties =
       newProperties("order") { p =>
@@ -64,11 +62,11 @@ object ScalazProperties {
   }
 
   object enum {
-    def succpred[A](implicit A: Enum[A], arb: Arbitrary[A]) =
-      forAll(A.enumLaw.succpred _)
+    def succpred[A](implicit A: Enum[A], arb: Arbitrary[A]) = forAll(
+      A.enumLaw.succpred _)
 
-    def predsucc[A](implicit A: Enum[A], arb: Arbitrary[A]) =
-      forAll(A.enumLaw.predsucc _)
+    def predsucc[A](implicit A: Enum[A], arb: Arbitrary[A]) = forAll(
+      A.enumLaw.predsucc _)
 
     def minmaxpred[A](implicit A: Enum[A]): Prop = A.enumLaw.minmaxpred
 
@@ -82,11 +80,11 @@ object ScalazProperties {
     def predn[A](implicit A: Enum[A], arb: Arbitrary[A]) =
       forAll((x: A) => forAll(smallInt)(A.enumLaw.predn(x, _)))
 
-    def succorder[A](implicit A: Enum[A], arb: Arbitrary[A]) =
-      forAll(A.enumLaw.succorder _)
+    def succorder[A](implicit A: Enum[A], arb: Arbitrary[A]) = forAll(
+      A.enumLaw.succorder _)
 
-    def predorder[A](implicit A: Enum[A], arb: Arbitrary[A]) =
-      forAll(A.enumLaw.predorder _)
+    def predorder[A](implicit A: Enum[A], arb: Arbitrary[A]) = forAll(
+      A.enumLaw.predorder _)
 
     def laws[A](implicit A: Enum[A], arb: Arbitrary[A]): Properties =
       newProperties("enum") { p =>

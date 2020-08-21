@@ -23,8 +23,8 @@ trait WrappedProperties extends PropertiesTrait {
     wrap(super.propIsSet(name)) exists (x => x)
   override def propOrElse(name: String, alt: String) =
     wrap(super.propOrElse(name, alt)) getOrElse alt
-  override def setProp(name: String, value: String) =
-    wrap(super.setProp(name, value)).orNull
+  override def setProp(name: String, value: String) = wrap(
+    super.setProp(name, value)).orNull
   override def clearProp(name: String) = wrap(super.clearProp(name)).orNull
   override def envOrElse(name: String, alt: String) =
     wrap(super.envOrElse(name, alt)) getOrElse alt
@@ -46,8 +46,7 @@ trait WrappedProperties extends PropertiesTrait {
 
 object WrappedProperties {
   object AccessControl extends WrappedProperties {
-    def wrap[T](body: => T) =
-      try Some(body)
-      catch { case _: AccessControlException => None }
+    def wrap[T](body: => T) = try Some(body)
+    catch { case _: AccessControlException => None }
   }
 }

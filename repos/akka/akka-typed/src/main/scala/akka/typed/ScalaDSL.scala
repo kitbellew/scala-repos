@@ -183,8 +183,8 @@ object ScalaDSL {
     */
   final case class FullTotal[T](behavior: MessageOrSignal[T] ⇒ Behavior[T])
       extends Behavior[T] {
-    override def management(ctx: ActorContext[T], msg: Signal) =
-      behavior(Sig(ctx, msg))
+    override def management(ctx: ActorContext[T], msg: Signal) = behavior(
+      Sig(ctx, msg))
     override def message(ctx: ActorContext[T], msg: T) = behavior(Msg(ctx, msg))
     override def toString = s"FullTotal(${LineNumbers(behavior)})"
   }
@@ -204,8 +204,8 @@ object ScalaDSL {
       msg match {
         case _ ⇒ Unhandled
       }
-    override def message(ctx: ActorContext[T], msg: T): Behavior[T] =
-      behavior(msg)
+    override def message(ctx: ActorContext[T], msg: T): Behavior[T] = behavior(
+      msg)
     override def toString = s"Total(${LineNumbers(behavior)})"
   }
 

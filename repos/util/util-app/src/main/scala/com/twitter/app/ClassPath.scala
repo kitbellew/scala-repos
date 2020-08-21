@@ -156,25 +156,23 @@ private object ClassPath {
 
   private def jarClasspath(
       jarFile: File,
-      manifest: java.util.jar.Manifest): Seq[URI] =
-    for {
-      m <- Option(manifest).toSeq
-      attr <- Option(m.getMainAttributes().getValue("Class-Path")).toSeq
-      el <- attr.split(" ")
-      uri <- uriFromJarClasspath(jarFile, el)
-    } yield uri
+      manifest: java.util.jar.Manifest): Seq[URI] = for {
+    m <- Option(manifest).toSeq
+    attr <- Option(m.getMainAttributes().getValue("Class-Path")).toSeq
+    el <- attr.split(" ")
+    uri <- uriFromJarClasspath(jarFile, el)
+  } yield uri
 
-  def uriFromJarClasspath(jarFile: File, path: String): Option[URI] =
-    try {
-      val uri = new URI(path)
-      if (uri.isAbsolute)
-        Some(uri)
-      else
-        Some(
-          new File(
-            jarFile.getParentFile,
-            path.replace('/', File.separatorChar)).toURI)
-    } catch {
-      case _: URISyntaxException => None
-    }
+  def uriFromJarClasspath(jarFile: File, path: String): Option[URI] = try {
+    val uri = new URI(path)
+    if (uri.isAbsolute)
+      Some(uri)
+    else
+      Some(
+        new File(
+          jarFile.getParentFile,
+          path.replace('/', File.separatorChar)).toURI)
+  } catch {
+    case _: URISyntaxException => None
+  }
 }

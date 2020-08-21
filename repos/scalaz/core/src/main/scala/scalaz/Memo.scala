@@ -18,10 +18,9 @@ sealed abstract class MemoInstances {}
   */
 object Memo extends MemoInstances {
   def memo[@specialized(Int) K, @specialized(Int, Long, Double) V](
-      f: (K => V) => K => V): Memo[K, V] =
-    new Memo[K, V] {
-      def apply(z: K => V) = f(z)
-    }
+      f: (K => V) => K => V): Memo[K, V] = new Memo[K, V] {
+    def apply(z: K => V) = f(z)
+  }
 
   def nilMemo[@specialized(Int) K, @specialized(Int, Long, Double) V]
       : Memo[K, V] = memo[K, V](z => z)
@@ -79,14 +78,14 @@ object Memo extends MemoInstances {
     * Nonsensical if `K` lacks a meaningful `hashCode` and
     * `java.lang.Object.equals`.
     */
-  def mutableHashMapMemo[K, V]: Memo[K, V] =
-    mutableMapMemo(new mutable.HashMap[K, V])
+  def mutableHashMapMemo[K, V]: Memo[K, V] = mutableMapMemo(
+    new mutable.HashMap[K, V])
 
   /** As with `mutableHashMapMemo`, but forget elements according to
     * GC pressure.
     */
-  def weakHashMapMemo[K, V]: Memo[K, V] =
-    mutableMapMemo(new mutable.WeakHashMap[K, V])
+  def weakHashMapMemo[K, V]: Memo[K, V] = mutableMapMemo(
+    new mutable.WeakHashMap[K, V])
 
   import collection.immutable
 
@@ -107,16 +106,16 @@ object Memo extends MemoInstances {
     * a meaningful `hashCode` and `java.lang.Object.equals`.
     * $immuMapNote
     */
-  def immutableHashMapMemo[K, V]: Memo[K, V] =
-    immutableMapMemo(new immutable.HashMap[K, V])
+  def immutableHashMapMemo[K, V]: Memo[K, V] = immutableMapMemo(
+    new immutable.HashMap[K, V])
 
   /** Cache results in a list map.  Nonsensical unless `K` has
     * a meaningful `java.lang.Object.equals`.  $immuMapNote
     */
-  def immutableListMapMemo[K, V]: Memo[K, V] =
-    immutableMapMemo(new immutable.ListMap[K, V])
+  def immutableListMapMemo[K, V]: Memo[K, V] = immutableMapMemo(
+    new immutable.ListMap[K, V])
 
   /** Cache results in a tree map. $immuMapNote */
-  def immutableTreeMapMemo[K: scala.Ordering, V]: Memo[K, V] =
-    immutableMapMemo(new immutable.TreeMap[K, V])
+  def immutableTreeMapMemo[K: scala.Ordering, V]: Memo[K, V] = immutableMapMemo(
+    new immutable.TreeMap[K, V])
 }

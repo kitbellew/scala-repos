@@ -7,8 +7,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.ScExpression
   * @author Nikolay.Tropin
   */
 class MapFlattenInspection extends OperationOnCollectionInspection {
-  override def possibleSimplificationTypes: Array[SimplificationType] =
-    Array(MapFlatten)
+  override def possibleSimplificationTypes: Array[SimplificationType] = Array(
+    MapFlatten)
 }
 
 object MapFlatten extends SimplificationType {

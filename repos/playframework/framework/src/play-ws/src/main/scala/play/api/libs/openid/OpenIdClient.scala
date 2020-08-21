@@ -58,20 +58,19 @@ object UserInfo {
       _.headOption map { _.split(",") }
     } getOrElse (Array())
 
-    def id =
-      params
-        .get("openid.claimed_id")
-        .flatMap(_.headOption)
-        .orElse(params.get("openid.identity").flatMap(_.headOption))
+    def id = params
+      .get("openid.claimed_id")
+      .flatMap(_.headOption)
+      .orElse(params.get("openid.identity").flatMap(_.headOption))
 
-    def axAttributes =
-      params.foldLeft(Map[String, String]()) { case (result, (key, values)) =>
+    def axAttributes = params.foldLeft(Map[String, String]()) {
+      case (result, (key, values)) =>
         extractAxAttribute.lift(key) flatMap {
           case (fullKey, shortKey) if signedFields.contains(fullKey) =>
             values.headOption map { value => Map(shortKey -> value) }
           case _ => None
         } map (result ++ _) getOrElse result
-      }
+    }
   }
 
 }
@@ -173,8 +172,8 @@ class WsOpenIdClient @Inject() (ws: WSClient, discovery: Discovery)
   /**
     * From a request corresponding to the callback from the OpenID server, check the identity of the current user
     */
-  def verifiedId(request: RequestHeader): Future[UserInfo] =
-    verifiedId(request.queryString)
+  def verifiedId(request: RequestHeader): Future[UserInfo] = verifiedId(
+    request.queryString)
 
   /**
     * For internal use
@@ -268,35 +267,32 @@ class WsDiscovery @Inject() (ws: WSClient) extends Discovery {
   import Discovery._
 
   case class UrlIdentifier(url: String) {
-    def normalize =
-      catching(
-        classOf[MalformedURLException],
-        classOf[URISyntaxException]) opt {
-        def port(p: Int) =
-          p match {
-            case 80 | 443 => -1
-            case port     => port
-          }
-        def schemeForPort(p: Int) =
-          p match {
-            case 443 => "https"
-            case _   => "http"
-          }
-        def scheme(uri: URI) =
-          Option(uri.getScheme) getOrElse schemeForPort(uri.getPort)
-        def path(path: String) = if (null == path || path.isEmpty) "/" else path
-
-        val uri = (if (url.matches("^(http|HTTP)(s|S)?:.*")) new URI(url)
-                   else new URI("http://" + url)).normalize()
-        new URI(
-          scheme(uri),
-          uri.getUserInfo,
-          uri.getHost.toLowerCase(java.util.Locale.ENGLISH),
-          port(uri.getPort),
-          path(uri.getPath),
-          uri.getQuery,
-          null).toURL.toExternalForm
+    def normalize = catching(
+      classOf[MalformedURLException],
+      classOf[URISyntaxException]) opt {
+      def port(p: Int) = p match {
+        case 80 | 443 => -1
+        case port     => port
       }
+      def schemeForPort(p: Int) = p match {
+        case 443 => "https"
+        case _   => "http"
+      }
+      def scheme(uri: URI) =
+        Option(uri.getScheme) getOrElse schemeForPort(uri.getPort)
+      def path(path: String) = if (null == path || path.isEmpty) "/" else path
+
+      val uri = (if (url.matches("^(http|HTTP)(s|S)?:.*")) new URI(url)
+                 else new URI("http://" + url)).normalize()
+      new URI(
+        scheme(uri),
+        uri.getUserInfo,
+        uri.getHost.toLowerCase(java.util.Locale.ENGLISH),
+        port(uri.getPort),
+        path(uri.getPath),
+        uri.getQuery,
+        null).toURL.toExternalForm
+    }
   }
 
   def normalizeIdentifier(openID: String) = {
@@ -335,15 +331,14 @@ private[openid] object Discovery {
       "http://openid.net/server/1.0",
       "http://openid.net/server/1.1")
 
-    def resolve(response: WSResponse) =
-      for {
-        _ <-
-          response
-            .header(HeaderNames.CONTENT_TYPE)
-            .filter(_.contains("application/xrds+xml"))
-        findInXml = findUriWithType(response.xml) _
-        (typeId, uri) <- serviceTypeId.flatMap(findInXml(_)).headOption
-      } yield OpenIDServer(typeId, uri, None)
+    def resolve(response: WSResponse) = for {
+      _ <-
+        response
+          .header(HeaderNames.CONTENT_TYPE)
+          .filter(_.contains("application/xrds+xml"))
+      findInXml = findUriWithType(response.xml) _
+      (typeId, uri) <- serviceTypeId.flatMap(findInXml(_)).headOption
+    } yield OpenIDServer(typeId, uri, None)
 
     private def findUriWithType(xml: Node)(typeId: String) =
       (xml \ "XRD" \ "Service" find (node =>

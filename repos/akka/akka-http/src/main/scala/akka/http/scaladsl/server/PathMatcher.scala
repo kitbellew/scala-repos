@@ -49,8 +49,8 @@ abstract class PathMatcher[L](implicit val ev: Tuple[L])
 
   def tmap[R: Tuple](f: L ⇒ R): PathMatcher[R] = transform(_.map(f))
 
-  def tflatMap[R: Tuple](f: L ⇒ Option[R]): PathMatcher[R] =
-    transform(_.flatMap(f))
+  def tflatMap[R: Tuple](f: L ⇒ Option[R]): PathMatcher[R] = transform(
+    _.flatMap(f))
 
   /**
     * Same as `repeat(min = count, max = count)`.
@@ -97,9 +97,9 @@ abstract class PathMatcher[L](implicit val ev: Tuple[L])
         if (count <= max) {
           self(path) match {
             case Matched(remaining, extractions) ⇒
-              def done1 =
-                if (count >= min) Matched(remaining, lift(extractions))
-                else Unmatched
+              def done1 = if (count >= min)
+                Matched(remaining, lift(extractions))
+              else Unmatched
               separator(remaining) match {
                 case Matched(remaining2, _) ⇒
                   rec(remaining2, count + 1) match {
@@ -128,11 +128,10 @@ object PathMatcher extends ImplicitPathMatcherConstruction {
   case class Matched[L: Tuple](pathRest: Path, extractions: L)
       extends Matching[L] {
     def map[R: Tuple](f: L ⇒ R) = Matched(pathRest, f(extractions))
-    def flatMap[R: Tuple](f: L ⇒ Option[R]) =
-      f(extractions) match {
-        case Some(valuesR) ⇒ Matched(pathRest, valuesR)
-        case None ⇒ Unmatched
-      }
+    def flatMap[R: Tuple](f: L ⇒ Option[R]) = f(extractions) match {
+      case Some(valuesR) ⇒ Matched(pathRest, valuesR)
+      case None ⇒ Unmatched
+    }
     def andThen[R: Tuple](f: (Path, L) ⇒ Matching[R]) = f(pathRest, extractions)
     def orElse[R >: L](other: ⇒ Matching[R]) = this
   }
@@ -170,8 +169,9 @@ object PathMatcher extends ImplicitPathMatcherConstruction {
   def apply[L](magnet: PathMatcher[L]): PathMatcher[L] = magnet
 
   implicit class PathMatcher1Ops[T](matcher: PathMatcher1[T]) {
-    def map[R](f: T ⇒ R): PathMatcher1[R] =
-      matcher.tmap { case Tuple1(e) ⇒ Tuple1(f(e)) }
+    def map[R](f: T ⇒ R): PathMatcher1[R] = matcher.tmap { case Tuple1(e) ⇒
+      Tuple1(f(e))
+    }
     def flatMap[R](f: T ⇒ Option[R]): PathMatcher1[R] =
       matcher.tflatMap { case Tuple1(e) ⇒ f(e).map(x ⇒ Tuple1(x)) }
   }
@@ -179,11 +179,10 @@ object PathMatcher extends ImplicitPathMatcherConstruction {
   implicit class EnhancedPathMatcher[L](underlying: PathMatcher[L]) {
     def ?(implicit lift: PathMatcher.Lift[L, Option]): PathMatcher[lift.Out] =
       new PathMatcher[lift.Out]()(lift.OutIsTuple) {
-        def apply(path: Path) =
-          underlying(path) match {
-            case Matched(rest, extractions) ⇒ Matched(rest, lift(extractions))
-            case Unmatched ⇒ Matched(path, lift())
-          }
+        def apply(path: Path) = underlying(path) match {
+          case Matched(rest, extractions) ⇒ Matched(rest, lift(extractions))
+          case Unmatched ⇒ Matched(path, lift())
+        }
       }
   }
 
@@ -280,31 +279,27 @@ trait ImplicitPathMatcherConstruction {
     regex.groupCount match {
       case 0 ⇒
         new PathMatcher1[String] {
-          def apply(path: Path) =
-            path match {
-              case Path.Segment(segment, tail) ⇒
-                regex findPrefixOf segment match {
-                  case Some(m) ⇒
-                    Matched(segment.substring(m.length) :: tail, Tuple1(m))
-                  case None ⇒ Unmatched
-                }
-              case _ ⇒ Unmatched
-            }
+          def apply(path: Path) = path match {
+            case Path.Segment(segment, tail) ⇒
+              regex findPrefixOf segment match {
+                case Some(m) ⇒
+                  Matched(segment.substring(m.length) :: tail, Tuple1(m))
+                case None ⇒ Unmatched
+              }
+            case _ ⇒ Unmatched
+          }
         }
       case 1 ⇒
         new PathMatcher1[String] {
-          def apply(path: Path) =
-            path match {
-              case Path.Segment(segment, tail) ⇒
-                regex findPrefixMatchOf segment match {
-                  case Some(m) ⇒
-                    Matched(
-                      segment.substring(m.end) :: tail,
-                      Tuple1(m.group(1)))
-                  case None ⇒ Unmatched
-                }
-              case _ ⇒ Unmatched
-            }
+          def apply(path: Path) = path match {
+            case Path.Segment(segment, tail) ⇒
+              regex findPrefixMatchOf segment match {
+                case Some(m) ⇒
+                  Matched(segment.substring(m.end) :: tail, Tuple1(m.group(1)))
+                case None ⇒ Unmatched
+              }
+            case _ ⇒ Unmatched
+          }
         }
       case _ ⇒
         throw new IllegalArgumentException(
@@ -351,22 +346,20 @@ trait PathMatchers {
     * A PathMatcher that matches a single slash character ('/').
     */
   object Slash extends PathMatcher0 {
-    def apply(path: Path) =
-      path match {
-        case Path.Slash(tail) ⇒ Matched(tail, ())
-        case _ ⇒ Unmatched
-      }
+    def apply(path: Path) = path match {
+      case Path.Slash(tail) ⇒ Matched(tail, ())
+      case _ ⇒ Unmatched
+    }
   }
 
   /**
     * A PathMatcher that matches the very end of the requests URI path.
     */
   object PathEnd extends PathMatcher0 {
-    def apply(path: Path) =
-      path match {
-        case Path.Empty ⇒ Matched.Empty
-        case _ ⇒ Unmatched
-      }
+    def apply(path: Path) = path match {
+      case Path.Empty ⇒ Matched.Empty
+      case _ ⇒ Unmatched
+    }
   }
 
   /**
@@ -432,32 +425,31 @@ trait PathMatchers {
     val minusOne = x.zero - x.one
     val maxDivBase = max / base
 
-    def apply(path: Path) =
-      path match {
-        case Path.Segment(segment, tail) ⇒
-          @tailrec def digits(
-              ix: Int = 0,
-              value: T = minusOne): Matching[Tuple1[T]] = {
-            val a =
-              if (ix < segment.length) fromChar(segment charAt ix) else minusOne
-            if (a == minusOne) {
-              if (value == minusOne) Unmatched
-              else
-                Matched(
-                  if (ix < segment.length) segment.substring(ix) :: tail
-                  else tail,
-                  Tuple1(value))
-            } else {
-              if (value == minusOne) digits(ix + 1, a)
-              else if (value <= maxDivBase && value * base <= max - a) // protect from overflow
-                digits(ix + 1, value * base + a)
-              else Unmatched
-            }
+    def apply(path: Path) = path match {
+      case Path.Segment(segment, tail) ⇒
+        @tailrec def digits(
+            ix: Int = 0,
+            value: T = minusOne): Matching[Tuple1[T]] = {
+          val a =
+            if (ix < segment.length) fromChar(segment charAt ix) else minusOne
+          if (a == minusOne) {
+            if (value == minusOne) Unmatched
+            else
+              Matched(
+                if (ix < segment.length) segment.substring(ix) :: tail
+                else tail,
+                Tuple1(value))
+          } else {
+            if (value == minusOne) digits(ix + 1, a)
+            else if (value <= maxDivBase && value * base <= max - a) // protect from overflow
+              digits(ix + 1, value * base + a)
+            else Unmatched
           }
-          digits()
+        }
+        digits()
 
-        case _ ⇒ Unmatched
-      }
+      case _ ⇒ Unmatched
+    }
 
     def fromChar(c: Char): T
 
@@ -504,11 +496,10 @@ trait PathMatchers {
     * If so the path segment is extracted as a String.
     */
   object Segment extends PathMatcher1[String] {
-    def apply(path: Path) =
-      path match {
-        case Path.Segment(segment, tail) ⇒ Matched(tail, Tuple1(segment))
-        case _ ⇒ Unmatched
-      }
+    def apply(path: Path) = path match {
+      case Path.Segment(segment, tail) ⇒ Matched(tail, Tuple1(segment))
+      case _ ⇒ Unmatched
+    }
   }
 
   /**

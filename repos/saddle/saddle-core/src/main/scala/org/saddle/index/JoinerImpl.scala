@@ -26,8 +26,8 @@ import locator.Locator
   */
 class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
     extends Joiner[T] {
-  private implicit def wrapArray(arr: Array[Int]): Option[Array[Int]] =
-    Some(arr)
+  private implicit def wrapArray(arr: Array[Int]): Option[Array[Int]] = Some(
+    arr)
 
   def join(left: Index[T], right: Index[T], how: JoinType): ReIndexer[T] = {
     if (left == right) {

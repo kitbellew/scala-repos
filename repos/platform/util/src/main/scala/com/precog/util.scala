@@ -36,12 +36,11 @@ package object util {
   type RawBitSet = Array[Int]
 
   class Order2JComparator[A](order: Order[A]) {
-    def toJavaComparator: Comparator[A] =
-      new Comparator[A] {
-        def compare(a1: A, a2: A) = {
-          order.order(a1, a2).toInt
-        }
+    def toJavaComparator: Comparator[A] = new Comparator[A] {
+      def compare(a1: A, a2: A) = {
+        order.order(a1, a2).toInt
       }
+    }
   }
 
   implicit def Order2JComparator[A](order: Order[A]): Order2JComparator[A] =
@@ -68,17 +67,15 @@ package object util {
     bytes
   }
 
-  implicit def vectorMonoid[A]: Monoid[Vector[A]] =
-    new Monoid[Vector[A]] {
-      def zero: Vector[A] = Vector.empty[A]
-      def append(v1: Vector[A], v2: => Vector[A]) = v1 ++ v2
-    }
+  implicit def vectorMonoid[A]: Monoid[Vector[A]] = new Monoid[Vector[A]] {
+    def zero: Vector[A] = Vector.empty[A]
+    def append(v1: Vector[A], v2: => Vector[A]) = v1 ++ v2
+  }
 
-  implicit def bigDecimalMonoid: Monoid[BigDecimal] =
-    new Monoid[BigDecimal] {
-      def zero: BigDecimal = BigDecimal(0)
-      def append(v1: BigDecimal, v2: => BigDecimal): BigDecimal = v1 + v2
-    }
+  implicit def bigDecimalMonoid: Monoid[BigDecimal] = new Monoid[BigDecimal] {
+    def zero: BigDecimal = BigDecimal(0)
+    def append(v1: BigDecimal, v2: => BigDecimal): BigDecimal = v1 + v2
+  }
 
   final class LazyMap[A, B, C](source: Map[A, B], f: B => C) extends Map[A, C] {
     import scala.collection.JavaConverters._
@@ -86,8 +83,9 @@ package object util {
     private val m: mutable.ConcurrentMap[A, C] =
       new java.util.concurrent.ConcurrentHashMap[A, C]().asScala
 
-    def iterator: Iterator[(A, C)] =
-      source.keysIterator map { a => (a, apply(a)) }
+    def iterator: Iterator[(A, C)] = source.keysIterator map { a =>
+      (a, apply(a))
+    }
 
     def get(a: A): Option[C] = {
       m get a orElse (source get a map { b =>
@@ -106,8 +104,9 @@ package object util {
     def lazyMapValues[C](f: B => C): Map[A, C] = new LazyMap[A, B, C](source, f)
   }
 
-  implicit def lazyValueMapper[A, B](m: Map[A, B]) =
-    new LazyMapValues[A, B] { val source = m }
+  implicit def lazyValueMapper[A, B](m: Map[A, B]) = new LazyMapValues[A, B] {
+    val source = m
+  }
 
   def arrayEq[@specialized A](a1: Array[A], a2: Array[A]): Boolean = {
     val len = a1.length

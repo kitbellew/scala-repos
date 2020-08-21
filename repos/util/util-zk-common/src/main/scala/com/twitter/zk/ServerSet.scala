@@ -44,14 +44,13 @@ class ServerSet(
     *
     * An Offer is returned asynchronously if the serverset can be monitored.
     */
-  def monitor(): Future[Offer[Set[ServiceInstance]]] =
-    pool {
-      val broker = new InstanceBroker
-      underlying.monitor(
-        broker
-      ) // blocks until monitor is initialized, or throws an exception
-      broker.recv
-    }
+  def monitor(): Future[Offer[Set[ServiceInstance]]] = pool {
+    val broker = new InstanceBroker
+    underlying.monitor(
+      broker
+    ) // blocks until monitor is initialized, or throws an exception
+    broker.recv
+  }
 }
 
 object ServerSet {
@@ -89,8 +88,9 @@ object ServerSet {
   class EndpointStatus(
       val underlying: CommonServerSet.EndpointStatus,
       pool: FuturePool) {
-    def update(status: Status): Future[Unit] =
-      pool { underlying.update(status()) }
+    def update(status: Status): Future[Unit] = pool {
+      underlying.update(status())
+    }
   }
 
   /** ServerSet monitor that publishes updates on a Broker. */

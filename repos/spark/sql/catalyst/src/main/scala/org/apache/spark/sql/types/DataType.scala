@@ -88,13 +88,13 @@ abstract class DataType extends AbstractDataType {
   /**
     * Returns true if any `DataType` of this DataType tree satisfies the given function `f`.
     */
-  private[spark] def existsRecursively(f: (DataType) => Boolean): Boolean =
-    f(this)
+  private[spark] def existsRecursively(f: (DataType) => Boolean): Boolean = f(
+    this)
 
   override private[sql] def defaultConcreteType: DataType = this
 
-  override private[sql] def acceptsType(other: DataType): Boolean =
-    sameType(other)
+  override private[sql] def acceptsType(other: DataType): Boolean = sameType(
+    other)
 }
 
 object DataType {
@@ -140,68 +140,66 @@ object DataType {
   }
 
   // NOTE: Map fields must be sorted in alphabetical order to keep consistent with the Python side.
-  private[sql] def parseDataType(json: JValue): DataType =
-    json match {
-      case JString(name) =>
-        nameToType(name)
+  private[sql] def parseDataType(json: JValue): DataType = json match {
+    case JString(name) =>
+      nameToType(name)
 
-      case JSortedObject(
-            ("containsNull", JBool(n)),
-            ("elementType", t: JValue),
-            ("type", JString("array"))) =>
-        ArrayType(parseDataType(t), n)
+    case JSortedObject(
+          ("containsNull", JBool(n)),
+          ("elementType", t: JValue),
+          ("type", JString("array"))) =>
+      ArrayType(parseDataType(t), n)
 
-      case JSortedObject(
-            ("keyType", k: JValue),
-            ("type", JString("map")),
-            ("valueContainsNull", JBool(n)),
-            ("valueType", v: JValue)) =>
-        MapType(parseDataType(k), parseDataType(v), n)
+    case JSortedObject(
+          ("keyType", k: JValue),
+          ("type", JString("map")),
+          ("valueContainsNull", JBool(n)),
+          ("valueType", v: JValue)) =>
+      MapType(parseDataType(k), parseDataType(v), n)
 
-      case JSortedObject(
-            ("fields", JArray(fields)),
-            ("type", JString("struct"))) =>
-        StructType(fields.map(parseStructField))
+    case JSortedObject(
+          ("fields", JArray(fields)),
+          ("type", JString("struct"))) =>
+      StructType(fields.map(parseStructField))
 
-      // Scala/Java UDT
-      case JSortedObject(
-            ("class", JString(udtClass)),
-            ("pyClass", _),
-            ("sqlType", _),
-            ("type", JString("udt"))) =>
-        Utils
-          .classForName(udtClass)
-          .newInstance()
-          .asInstanceOf[UserDefinedType[_]]
+    // Scala/Java UDT
+    case JSortedObject(
+          ("class", JString(udtClass)),
+          ("pyClass", _),
+          ("sqlType", _),
+          ("type", JString("udt"))) =>
+      Utils
+        .classForName(udtClass)
+        .newInstance()
+        .asInstanceOf[UserDefinedType[_]]
 
-      // Python UDT
-      case JSortedObject(
-            ("pyClass", JString(pyClass)),
-            ("serializedClass", JString(serialized)),
-            ("sqlType", v: JValue),
-            ("type", JString("udt"))) =>
-        new PythonUserDefinedType(parseDataType(v), pyClass, serialized)
-    }
+    // Python UDT
+    case JSortedObject(
+          ("pyClass", JString(pyClass)),
+          ("serializedClass", JString(serialized)),
+          ("sqlType", v: JValue),
+          ("type", JString("udt"))) =>
+      new PythonUserDefinedType(parseDataType(v), pyClass, serialized)
+  }
 
-  private def parseStructField(json: JValue): StructField =
-    json match {
-      case JSortedObject(
-            ("metadata", metadata: JObject),
-            ("name", JString(name)),
-            ("nullable", JBool(nullable)),
-            ("type", dataType: JValue)) =>
-        StructField(
-          name,
-          parseDataType(dataType),
-          nullable,
-          Metadata.fromJObject(metadata))
-      // Support reading schema when 'metadata' is missing.
-      case JSortedObject(
-            ("name", JString(name)),
-            ("nullable", JBool(nullable)),
-            ("type", dataType: JValue)) =>
-        StructField(name, parseDataType(dataType), nullable)
-    }
+  private def parseStructField(json: JValue): StructField = json match {
+    case JSortedObject(
+          ("metadata", metadata: JObject),
+          ("name", JString(name)),
+          ("nullable", JBool(nullable)),
+          ("type", dataType: JValue)) =>
+      StructField(
+        name,
+        parseDataType(dataType),
+        nullable,
+        Metadata.fromJObject(metadata))
+    // Support reading schema when 'metadata' is missing.
+    case JSortedObject(
+          ("name", JString(name)),
+          ("nullable", JBool(nullable)),
+          ("type", dataType: JValue)) =>
+      StructField(name, parseDataType(dataType), nullable)
+  }
 
   protected[types] def buildFormattedString(
       dataType: DataType,

@@ -122,20 +122,19 @@ final class PerfsUpdater(historyApi: HistoryApi, rankingApi: RankingApi) {
       classical: Rating,
       correspondence: Rating)
 
-  private def mkRatings(perfs: Perfs) =
-    new Ratings(
-      chess960 = perfs.chess960.toRating,
-      kingOfTheHill = perfs.kingOfTheHill.toRating,
-      threeCheck = perfs.threeCheck.toRating,
-      antichess = perfs.antichess.toRating,
-      atomic = perfs.atomic.toRating,
-      horde = perfs.horde.toRating,
-      racingKings = perfs.racingKings.toRating,
-      crazyhouse = perfs.crazyhouse.toRating,
-      bullet = perfs.bullet.toRating,
-      blitz = perfs.blitz.toRating,
-      classical = perfs.classical.toRating,
-      correspondence = perfs.correspondence.toRating)
+  private def mkRatings(perfs: Perfs) = new Ratings(
+    chess960 = perfs.chess960.toRating,
+    kingOfTheHill = perfs.kingOfTheHill.toRating,
+    threeCheck = perfs.threeCheck.toRating,
+    antichess = perfs.antichess.toRating,
+    atomic = perfs.atomic.toRating,
+    horde = perfs.horde.toRating,
+    racingKings = perfs.racingKings.toRating,
+    crazyhouse = perfs.crazyhouse.toRating,
+    bullet = perfs.bullet.toRating,
+    blitz = perfs.blitz.toRating,
+    classical = perfs.classical.toRating,
+    correspondence = perfs.correspondence.toRating)
 
   private def resultOf(game: Game): Glicko.Result =
     game.winnerColor match {

@@ -18,10 +18,9 @@ object ForwardActorSpec {
       def receive = { case x ⇒ sender() ! x }
     }))
 
-    def mkforwarder(forwardTo: ActorRef) =
-      system.actorOf(Props(new Actor {
-        def receive = { case x ⇒ forwardTo forward x }
-      }))
+    def mkforwarder(forwardTo: ActorRef) = system.actorOf(Props(new Actor {
+      def receive = { case x ⇒ forwardTo forward x }
+    }))
 
     mkforwarder(mkforwarder(mkforwarder(replier)))
   }

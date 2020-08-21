@@ -27,26 +27,22 @@ object Test {
     R(-10, 10, 2, inclusive = false)
   )
 
-  def ranges =
-    rangeData.map(r =>
-      if (r.inclusive) r.start to r.end by r.step
-      else r.start until r.end by r.step)
+  def ranges = rangeData.map(r =>
+    if (r.inclusive) r.start to r.end by r.step
+    else r.start until r.end by r.step)
 
-  def numericIntRanges =
-    rangeData.map(r =>
-      if (r.inclusive) NumericRange.inclusive(r.start, r.end, r.step)
-      else NumericRange(r.start, r.end, r.step))
+  def numericIntRanges = rangeData.map(r =>
+    if (r.inclusive) NumericRange.inclusive(r.start, r.end, r.step)
+    else NumericRange(r.start, r.end, r.step))
 
-  def numericLongRanges =
-    rangeData.map(r =>
-      if (r.inclusive) NumericRange.inclusive(r.start.toLong, r.end, r.step)
-      else NumericRange(r.start.toLong, r.end, r.step))
+  def numericLongRanges = rangeData.map(r =>
+    if (r.inclusive) NumericRange.inclusive(r.start.toLong, r.end, r.step)
+    else NumericRange(r.start.toLong, r.end, r.step))
 
-  def numericBigIntRanges =
-    rangeData.map(r =>
-      if (r.inclusive)
-        NumericRange.inclusive(BigInt(r.start), BigInt(r.end), BigInt(r.step))
-      else NumericRange(BigInt(r.start), BigInt(r.end), BigInt(r.step)))
+  def numericBigIntRanges = rangeData.map(r =>
+    if (r.inclusive)
+      NumericRange.inclusive(BigInt(r.start), BigInt(r.end), BigInt(r.step))
+    else NumericRange(BigInt(r.start), BigInt(r.end), BigInt(r.step)))
 
   def main(args: Array[String]) {
     println("Ranges:")

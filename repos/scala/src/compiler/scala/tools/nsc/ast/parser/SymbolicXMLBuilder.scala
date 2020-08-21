@@ -127,21 +127,19 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
       if (children.isEmpty) Nil
       else List(Typed(makeXMLseq(pos, children), wildStar))
 
-    def pat =
-      Apply(
-        _scala_xml__Elem,
-        List(pre, label, wild, wild) ::: convertToTextPat(children))
-    def nonpat =
-      New(
-        _scala_xml_Elem,
+    def pat = Apply(
+      _scala_xml__Elem,
+      List(pre, label, wild, wild) ::: convertToTextPat(children))
+    def nonpat = New(
+      _scala_xml_Elem,
+      List(
         List(
-          List(
-            pre,
-            label,
-            attrs,
-            scope,
-            if (empty) Literal(Constant(true))
-            else Literal(Constant(false))) ::: starArgs))
+          pre,
+          label,
+          attrs,
+          scope,
+          if (empty) Literal(Constant(true))
+          else Literal(Constant(false))) ::: starArgs))
 
     atPos(pos) { if (isPattern) pat else nonpat }
   }
@@ -152,22 +150,20 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
   private def coalescing = settings.XxmlSettings.isCoalescing
 
   // create scala.xml.Text here <: scala.xml.Node
-  final def text(pos: Position, txt: String): Tree =
-    atPos(pos) {
-      val t = if (isPattern) makeTextPat(const(txt)) else makeText1(const(txt))
-      if (coalescing) t updateAttachment TextAttache(pos, txt) else t
-    }
+  final def text(pos: Position, txt: String): Tree = atPos(pos) {
+    val t = if (isPattern) makeTextPat(const(txt)) else makeText1(const(txt))
+    if (coalescing) t updateAttachment TextAttache(pos, txt) else t
+  }
 
   def makeTextPat(txt: Tree) = Apply(_scala_xml__Text, List(txt))
   def makeText1(txt: Tree) = New(_scala_xml_Text, LL(txt))
   def comment(pos: Position, text: String) = atPos(pos)(Comment(const(text)))
-  def charData(pos: Position, txt: String) =
-    if (coalescing) text(pos, txt)
-    else
-      atPos(pos) {
-        if (isPattern) Apply(_scala_xml(xmlterms._PCData), List(const(txt)))
-        else New(_scala_xml(_PCData), LL(const(txt)))
-      }
+  def charData(pos: Position, txt: String) = if (coalescing) text(pos, txt)
+  else
+    atPos(pos) {
+      if (isPattern) Apply(_scala_xml(xmlterms._PCData), List(const(txt)))
+      else New(_scala_xml(_PCData), LL(const(txt)))
+    }
 
   def procInstr(pos: Position, target: String, txt: String) =
     atPos(pos)(ProcInstr(const(target), const(txt)))
@@ -193,11 +189,10 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
       args)
   }
 
-  protected def convertToTextPat(t: Tree): Tree =
-    t match {
-      case _: Literal => makeTextPat(t)
-      case _          => t
-    }
+  protected def convertToTextPat(t: Tree): Tree = t match {
+    case _: Literal => makeTextPat(t)
+    case _          => t
+  }
   protected def convertToTextPat(buf: Seq[Tree]): List[Tree] =
     (buf map convertToTextPat).toList
 
@@ -211,11 +206,10 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
     }
   }
 
-  def isEmptyText(t: Tree) =
-    t match {
-      case Literal(Constant("")) => true
-      case _                     => false
-    }
+  def isEmptyText(t: Tree) = t match {
+    case Literal(Constant("")) => true
+    case _                     => false
+  }
 
   /** could optimize if args.length == 0, args.length == 1 AND args(0) is <: Node. */
   def makeXMLseq(pos: Position, args: Seq[Tree]) = {
@@ -248,11 +242,10 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
       empty: Boolean,
       args: Seq[Tree]): Tree = {
     def handleNamespaceBinding(pre: String, z: String): Tree = {
-      def mkAssign(t: Tree): Tree =
-        Assign(
-          Ident(_tmpscope),
-          New(_scala_xml_NamespaceBinding, LL(const(pre), t, Ident(_tmpscope)))
-        )
+      def mkAssign(t: Tree): Tree = Assign(
+        Ident(_tmpscope),
+        New(_scala_xml_NamespaceBinding, LL(const(pre), t, Ident(_tmpscope)))
+      )
 
       val uri1 = attrMap(z) match {
         case Apply(

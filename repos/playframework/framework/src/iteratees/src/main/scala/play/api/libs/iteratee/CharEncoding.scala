@@ -112,8 +112,8 @@ object CharEncoding {
     * @throws scala.Exception [[$javadoc/java/nio/charset/UnsupportedCharsetException.html UnsupportedCharsetException]] if no
     *                  charset could be found with the provided name
     */
-  def decode(charset: String): Enumeratee[Array[Byte], String] =
-    decode(Charset.forName(charset))
+  def decode(charset: String): Enumeratee[Array[Byte], String] = decode(
+    Charset.forName(charset))
 
   def encode(charset: Charset): Enumeratee[String, Array[Byte]] =
     new Coder[String, Array[Byte]] {
@@ -169,7 +169,7 @@ object CharEncoding {
     * @throws scala.Exception [[$javadoc/java/nio/charset/UnsupportedCharsetException.html UnsupportedCharsetException]] if no
     *                  charset could be found with the provided name
     */
-  def encode(charset: String): Enumeratee[String, Array[Byte]] =
-    encode(Charset.forName(charset))
+  def encode(charset: String): Enumeratee[String, Array[Byte]] = encode(
+    Charset.forName(charset))
 
 }

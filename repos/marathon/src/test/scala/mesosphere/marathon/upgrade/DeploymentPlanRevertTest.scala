@@ -584,13 +584,12 @@ class DeploymentPlanRevertTest
       s"remove app '$appId'",
       _.update(parent, _.removeApplication(appId), Timestamp.now()))
   }
-  private[this] def addApp(appId: String) =
-    Deployment(
-      s"add app '$appId'",
-      _.updateApp(
-        appId.toRootPath,
-        _ => AppDefinition(appId.toRootPath),
-        Timestamp.now()))
+  private[this] def addApp(appId: String) = Deployment(
+    s"add app '$appId'",
+    _.updateApp(
+      appId.toRootPath,
+      _ => AppDefinition(appId.toRootPath),
+      Timestamp.now()))
   private[this] def addGroup(groupId: String) =
     Deployment(s"add group '$groupId'", _.makeGroup(groupId.toRootPath))
   private[this] def removeGroup(groupId: String) =

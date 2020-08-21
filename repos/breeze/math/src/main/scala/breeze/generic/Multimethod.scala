@@ -283,9 +283,9 @@ trait MMRegistry3[R] {
   def register(a: Class[_], b: Class[_], c: Class[_], op: R) {
     ops((a, b, c)) = op
 
-    def choicesFor(a: Class[_]) =
-      if (a.isPrimitive) Seq(a, ReflectionUtil.boxedFromPrimitive(a))
-      else Seq(a)
+    def choicesFor(a: Class[_]) = if (a.isPrimitive)
+      Seq(a, ReflectionUtil.boxedFromPrimitive(a))
+    else Seq(a)
 
     for (ac <- choicesFor(a); bc <- choicesFor(b); cc <- choicesFor(c)) {
       ops((ac, bc, cc)) = op

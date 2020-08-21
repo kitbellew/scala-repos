@@ -169,17 +169,16 @@ private[sql] class CsvOutputWriter(
 
   private val csvWriter = new LineCsvWriter(params, dataSchema.fieldNames.toSeq)
 
-  private def rowToString(row: Seq[Any]): Seq[String] =
-    row.map { field =>
-      if (field != null) {
-        field.toString
-      } else {
-        params.nullValue
-      }
+  private def rowToString(row: Seq[Any]): Seq[String] = row.map { field =>
+    if (field != null) {
+      field.toString
+    } else {
+      params.nullValue
     }
+  }
 
-  override def write(row: Row): Unit =
-    throw new UnsupportedOperationException("call writeInternal")
+  override def write(row: Row): Unit = throw new UnsupportedOperationException(
+    "call writeInternal")
 
   override protected[sql] def writeInternal(row: InternalRow): Unit = {
     // TODO: Instead of converting and writing every row, we should use the univocity buffer

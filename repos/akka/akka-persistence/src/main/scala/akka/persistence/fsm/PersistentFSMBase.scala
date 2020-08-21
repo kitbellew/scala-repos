@@ -180,10 +180,9 @@ trait PersistentFSMBase[S, D, E]
     *
     * @return descriptor for staying in current state
     */
-  final def stay(): State =
-    goto(currentState.stateName).withNotification(
-      false
-    ) // cannot directly use currentState because of the timeout field
+  final def stay(): State = goto(currentState.stateName).withNotification(
+    false
+  ) // cannot directly use currentState because of the timeout field
 
   /**
     * Produce change descriptor to stop this FSM actor with reason "Normal".
@@ -259,8 +258,8 @@ trait PersistentFSMBase[S, D, E]
     * Set state timeout explicitly. This method can safely be used from within a
     * state handler.
     */
-  final def setStateTimeout(state: S, timeout: Timeout): Unit =
-    stateTimeouts(state) = timeout
+  final def setStateTimeout(state: S, timeout: Timeout): Unit = stateTimeouts(
+    state) = timeout
 
   /**
     * INTERNAL API, used for testing.
@@ -352,13 +351,12 @@ trait PersistentFSMBase[S, D, E]
   /**
     * Return next state data (available in onTransition handlers)
     */
-  final def nextStateData =
-    nextState match {
-      case null ⇒
-        throw new IllegalStateException(
-          "nextStateData is only available during onTransition")
-      case x ⇒ x.stateData
-    }
+  final def nextStateData = nextState match {
+    case null ⇒
+      throw new IllegalStateException(
+        "nextStateData is only available during onTransition")
+    case x ⇒ x.stateData
+  }
 
   /*
    * ****************************************************************
@@ -572,12 +570,11 @@ trait PersistentFSMBase[S, D, E]
     * By default [[PersistentFSM.Failure]] is logged at error level and other reason
     * types are not logged. It is possible to override this behavior.
     */
-  protected def logTermination(reason: Reason): Unit =
-    reason match {
-      case Failure(ex: Throwable) ⇒ log.error(ex, "terminating due to Failure")
-      case Failure(msg: AnyRef) ⇒ log.error(msg.toString)
-      case _ ⇒
-    }
+  protected def logTermination(reason: Reason): Unit = reason match {
+    case Failure(ex: Throwable) ⇒ log.error(ex, "terminating due to Failure")
+    case Failure(msg: AnyRef) ⇒ log.error(msg.toString)
+    case _ ⇒
+  }
 }
 
 /**

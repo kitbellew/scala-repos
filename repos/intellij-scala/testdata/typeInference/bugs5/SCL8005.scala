@@ -4,11 +4,10 @@ object SCL8005 {
 
   def usePf[T](pf: PartialFunction[T, Unit]): Function[T, Unit] = null
 
-  def checkAge: Function[Person, Unit] =
-    usePf { case p =>
-      /*start*/
-      p.age /*end*/
-      1
-    }
+  def checkAge: Function[Person, Unit] = usePf { case p =>
+    /*start*/
+    p.age /*end*/
+    1
+  }
 }
 //Int

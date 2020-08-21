@@ -78,12 +78,11 @@ sealed trait Stack[T] {
     * the argument role. If no elements match the role, then an
     * unmodified stack is returned.
     */
-  def insertAfter(target: Role, insertion: Stackable[T]): Stack[T] =
-    transform {
-      case Node(head, mk, next) if head.role == target =>
-        Node(head, mk, insertion +: next)
-      case stk => stk
-    }
+  def insertAfter(target: Role, insertion: Stackable[T]): Stack[T] = transform {
+    case Node(head, mk, next) if head.role == target =>
+      Node(head, mk, insertion +: next)
+    case stk => stk
+  }
 
   /**
     * Insert the given [[Stackable]] after the stack elements matching
@@ -112,12 +111,11 @@ sealed trait Stack[T] {
     * given [[Stackable]]. If no elements match the role, then an
     * unmodified stack is returned.
     */
-  def replace(target: Role, replacement: Stackable[T]): Stack[T] =
-    transform {
-      case n @ Node(head, _, next) if head.role == target =>
-        replacement +: next
-      case stk => stk
-    }
+  def replace(target: Role, replacement: Stackable[T]): Stack[T] = transform {
+    case n @ Node(head, _, next) if head.role == target =>
+      replacement +: next
+    case stk => stk
+  }
 
   /**
     * Replace any stack elements matching the argument role with a
@@ -146,12 +144,11 @@ sealed trait Stack[T] {
     * If `pred` finds an element, return true, otherwise, false.
     */
   @tailrec
-  final def exists(pred: Stack[T] => Boolean): Boolean =
-    this match {
-      case _ if pred(this)  => true
-      case Node(_, _, next) => next.exists(pred)
-      case Leaf(_, _)       => false
-    }
+  final def exists(pred: Stack[T] => Boolean): Boolean = this match {
+    case _ if pred(this)  => true
+    case Node(_, _, next) => next.exists(pred)
+    case Leaf(_, _)       => false
+  }
 
   /**
     * Returns whether the stack contains a given role or not.
@@ -182,11 +179,10 @@ sealed trait Stack[T] {
     * with `right`. Note that this replaces the terminating element of
     * `this`.
     */
-  def ++(right: Stack[T]): Stack[T] =
-    this match {
-      case Node(head, mk, left) => Node(head, mk, left ++ right)
-      case Leaf(_, _)           => right
-    }
+  def ++(right: Stack[T]): Stack[T] = this match {
+    case Node(head, mk, left) => Node(head, mk, left ++ right)
+    case Leaf(_, _)           => right
+  }
 
   /**
     * A copy of this Stack with `stk` prepended.
@@ -322,12 +318,11 @@ object Stack {
     def default: P
   }
   object Param {
-    def apply[T](t: => T): Param[T] =
-      new Param[T] {
-        // Note, this is lazy to avoid potential failures during
-        // static initialization.
-        lazy val default = t
-      }
+    def apply[T](t: => T): Param[T] = new Param[T] {
+      // Note, this is lazy to avoid potential failures during
+      // static initialization.
+      lazy val default = t
+    }
   }
 
   /**

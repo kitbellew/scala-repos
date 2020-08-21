@@ -111,41 +111,40 @@ object SbtProjectDataService {
 
     private def updateJavaCompilerOptionsIn(
         project: Project,
-        options: Seq[String]): Unit =
-      executeProjectChangeAction {
-        val settings =
-          JavacConfiguration.getOptions(project, classOf[JavacConfiguration])
+        options: Seq[String]): Unit = executeProjectChangeAction {
+      val settings =
+        JavacConfiguration.getOptions(project, classOf[JavacConfiguration])
 
-        def contains(values: String*) = values.exists(options.contains)
+      def contains(values: String*) = values.exists(options.contains)
 
-        def valueOf(name: String): Option[String] =
-          Option(options.indexOf(name))
-            .filterNot(-1 == _)
-            .flatMap(i => options.lift(i + 1))
+      def valueOf(name: String): Option[String] =
+        Option(options.indexOf(name))
+          .filterNot(-1 == _)
+          .flatMap(i => options.lift(i + 1))
 
-        if (contains("-g:none")) {
-          settings.DEBUGGING_INFO = false
-        }
-
-        if (contains("-nowarn", "-Xlint:none")) {
-          settings.GENERATE_NO_WARNINGS = true
-        }
-
-        if (contains("-deprecation", "-Xlint:deprecation")) {
-          settings.DEPRECATION = true
-        }
-
-        valueOf("-target").foreach { target =>
-          val compilerSettings = CompilerConfiguration
-            .getInstance(project)
-            .asInstanceOf[CompilerConfigurationImpl]
-          compilerSettings.setProjectBytecodeTarget(target)
-        }
-
-        val customOptions = additionalOptionsFrom(options)
-
-        settings.ADDITIONAL_OPTIONS_STRING = customOptions.mkString(" ")
+      if (contains("-g:none")) {
+        settings.DEBUGGING_INFO = false
       }
+
+      if (contains("-nowarn", "-Xlint:none")) {
+        settings.GENERATE_NO_WARNINGS = true
+      }
+
+      if (contains("-deprecation", "-Xlint:deprecation")) {
+        settings.DEPRECATION = true
+      }
+
+      valueOf("-target").foreach { target =>
+        val compilerSettings = CompilerConfiguration
+          .getInstance(project)
+          .asInstanceOf[CompilerConfigurationImpl]
+        compilerSettings.setProjectBytecodeTarget(target)
+      }
+
+      val customOptions = additionalOptionsFrom(options)
+
+      settings.ADDITIONAL_OPTIONS_STRING = customOptions.mkString(" ")
+    }
 
     private def additionalOptionsFrom(options: Seq[String]): Seq[String] = {
       val handledOptions = Set(

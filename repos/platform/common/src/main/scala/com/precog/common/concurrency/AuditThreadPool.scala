@@ -113,35 +113,33 @@ class AuditExecutor(
   private class WorkerThread(id: Int) extends Thread(name + "-" + id) {
     private[this] var lastCpuTime = 0L
 
-    def cpuDelta =
-      synchronized {
-        val newTime = threadMXBean.getThreadCpuTime(this.getId)
-        val delta = newTime - lastCpuTime
-        lastCpuTime = newTime
-        delta
-      }
+    def cpuDelta = synchronized {
+      val newTime = threadMXBean.getThreadCpuTime(this.getId)
+      val delta = newTime - lastCpuTime
+      lastCpuTime = newTime
+      delta
+    }
 
-    override def run(): Unit =
-      try {
-        @tailrec
-        def processQueue: Unit = {
-          val nextJob = workQueue.poll(idleTimeout, TimeUnit.MILLISECONDS)
-          if (nextJob != null) {
-            activeThreadCount.incrementAndGet()
-            try {
-              nextJob.run()
-            } finally {
-              activeThreadCount.decrementAndGet()
-            }
-            processQueue
-          } else if (shouldContinue) {
-            processQueue
+    override def run(): Unit = try {
+      @tailrec
+      def processQueue: Unit = {
+        val nextJob = workQueue.poll(idleTimeout, TimeUnit.MILLISECONDS)
+        if (nextJob != null) {
+          activeThreadCount.incrementAndGet()
+          try {
+            nextJob.run()
+          } finally {
+            activeThreadCount.decrementAndGet()
           }
+          processQueue
+        } else if (shouldContinue) {
+          processQueue
         }
-
-        processQueue
-      } finally {
-        workerFinished(this)
       }
+
+      processQueue
+    } finally {
+      workerFinished(this)
+    }
   }
 }

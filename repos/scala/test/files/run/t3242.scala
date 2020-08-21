@@ -13,24 +13,22 @@ object Test {
     }
 
     //
-    def vectorAppend: Vector[A] =
-      updateM[Vector](
-        Vector(),
-        (as, a) => {
-          val v = (as :+ a)
-          //println("==>append:    i: "+i1+", v: "+v)
-          v
-        })
+    def vectorAppend: Vector[A] = updateM[Vector](
+      Vector(),
+      (as, a) => {
+        val v = (as :+ a)
+        //println("==>append:    i: "+i1+", v: "+v)
+        v
+      })
     // this will crash, Vector bug!
-    def vectorRemove(vec: Vector[A]): Vector[A] =
-      updateM[Vector](
-        vec,
-        (as, a) => {
-          val v = (as filterNot { _ == a })
-          //val v = (is filter{ _ != i})
-          //println("==>remove:    i: "+a)
-          v
-        })
+    def vectorRemove(vec: Vector[A]): Vector[A] = updateM[Vector](
+      vec,
+      (as, a) => {
+        val v = (as filterNot { _ == a })
+        //val v = (is filter{ _ != i})
+        //println("==>remove:    i: "+a)
+        v
+      })
 
     val ct = vectorAppend
     println(" append [num: " + num + "] vec")

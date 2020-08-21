@@ -292,12 +292,12 @@ private[streaming] case class StateSpecImpl[K, V, S, T](
   private[streaming] def getFunction()
       : (Time, K, Option[V], State[S]) => Option[T] = function
 
-  private[streaming] def getInitialStateRDD(): Option[RDD[(K, S)]] =
-    Option(initialStateRDD)
+  private[streaming] def getInitialStateRDD(): Option[RDD[(K, S)]] = Option(
+    initialStateRDD)
 
-  private[streaming] def getPartitioner(): Option[Partitioner] =
-    Option(partitioner)
+  private[streaming] def getPartitioner(): Option[Partitioner] = Option(
+    partitioner)
 
-  private[streaming] def getTimeoutInterval(): Option[Duration] =
-    Option(timeoutInterval)
+  private[streaming] def getTimeoutInterval(): Option[Duration] = Option(
+    timeoutInterval)
 }

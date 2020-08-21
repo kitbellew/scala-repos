@@ -22,10 +22,9 @@ class RecipeReduceByKey extends RecipeSpec {
 
     "work with simple word count" in {
 
-      def words =
-        Source(
-          List("hello", "world", "and", "hello", "universe", "akka") ++ List
-            .fill(1000)("rocks!"))
+      def words = Source(
+        List("hello", "world", "and", "hello", "universe", "akka") ++ List.fill(
+          1000)("rocks!"))
 
       //#word-count
       val counts: Source[(String, Int), NotUsed] = words
@@ -53,10 +52,9 @@ class RecipeReduceByKey extends RecipeSpec {
 
     "work generalized" in {
 
-      def words =
-        Source(
-          List("hello", "world", "and", "hello", "universe", "akka") ++ List
-            .fill(1000)("rocks!"))
+      def words = Source(
+        List("hello", "world", "and", "hello", "universe", "akka") ++ List.fill(
+          1000)("rocks!"))
 
       //#reduce-by-key-general
       def reduceByKey[In, K, Out](

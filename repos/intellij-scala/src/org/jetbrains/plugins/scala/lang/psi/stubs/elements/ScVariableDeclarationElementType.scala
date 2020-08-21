@@ -16,8 +16,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.ScVariable
 
 class ScVariableDeclarationElementType
     extends ScVariableElementType[ScVariable]("variable declaration") {
-  def createElement(node: ASTNode): PsiElement =
-    new ScVariableDeclarationImpl(node)
+  def createElement(node: ASTNode): PsiElement = new ScVariableDeclarationImpl(
+    node)
 
   def createPsi(stub: ScVariableStub) = new ScVariableDeclarationImpl(stub)
 }

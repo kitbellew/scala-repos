@@ -166,8 +166,8 @@ class ScalaChangeSignatureUsageProcessor
       if (newParams.size <= 1) return
 
       val cumulSize = newParams.scanLeft(0)(_ + _.size)
-      def numberOfParamsToAdd(idx: Int) =
-        cumulSize(cumulSize.indexWhere(_ > idx) - 1)
+      def numberOfParamsToAdd(idx: Int) = cumulSize(
+        cumulSize.indexWhere(_ > idx) - 1)
 
       for {
         jc @ (_u: JavaCallUsageInfo) <- usages

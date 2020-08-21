@@ -32,12 +32,11 @@ object Boilerplate {
     "// auto-generated boilerplate" // TODO: put something meaningful here?
 
   /** Returns a seq of the generated files.  As a side-effect, it actually generates them... */
-  def gen(dir: File) =
-    for (t <- templates) yield {
-      val tgtFile = t.filename(dir)
-      IO.write(tgtFile, t.body)
-      tgtFile
-    }
+  def gen(dir: File) = for (t <- templates) yield {
+    val tgtFile = t.filename(dir)
+    IO.write(tgtFile, t.body)
+    tgtFile
+  }
 
   val maxArity = 22
 
@@ -178,9 +177,8 @@ object Boilerplate {
       val fArgsB = (a until arity) map { "f" + _ } mkString ","
       val argsA = (0 until a) map { n => "a" + n + ":A" + n } mkString ","
       val argsB = (a until arity) map { n => "a" + n + ":A" + n } mkString ","
-      def apN(n: Int) =
-        if (n == 1) { "ap" }
-        else { s"ap$n" }
+      def apN(n: Int) = if (n == 1) { "ap" }
+      else { s"ap$n" }
       def allArgs = (0 until arity) map { "a" + _ } mkString ","
 
       val apply =

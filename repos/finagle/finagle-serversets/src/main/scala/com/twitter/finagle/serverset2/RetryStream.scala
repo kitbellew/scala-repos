@@ -19,19 +19,17 @@ object RetryStream {
 class RetryStream(underlying: Stream[Duration]) {
   @volatile private var currentStream = underlying
 
-  def next(): Duration =
-    synchronized {
-      currentStream match {
-        case nextValue #:: rest =>
-          currentStream = rest
-          nextValue
-        case _ => 10.seconds
-      }
+  def next(): Duration = synchronized {
+    currentStream match {
+      case nextValue #:: rest =>
+        currentStream = rest
+        nextValue
+      case _ => 10.seconds
     }
+  }
 
-  def reset() =
-    synchronized {
-      currentStream = underlying
-    }
+  def reset() = synchronized {
+    currentStream = underlying
+  }
 
 }

@@ -105,8 +105,8 @@ private[sql] object TypeCollection {
     */
   val NumericAndInterval = TypeCollection(NumericType, CalendarIntervalType)
 
-  def apply(types: AbstractDataType*): TypeCollection =
-    new TypeCollection(types)
+  def apply(types: AbstractDataType*): TypeCollection = new TypeCollection(
+    types)
 
   def unapply(typ: AbstractDataType): Option[Seq[AbstractDataType]] =
     typ match {

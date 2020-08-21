@@ -64,8 +64,8 @@ private[persistence] trait InmemMessages {
   // persistenceId -> persistent message
   var messages = Map.empty[String, Vector[PersistentRepr]]
 
-  def add(p: PersistentRepr): Unit =
-    messages = messages + (messages.get(p.persistenceId) match {
+  def add(p: PersistentRepr): Unit = messages =
+    messages + (messages.get(p.persistenceId) match {
       case Some(ms) ⇒ p.persistenceId -> (ms :+ p)
       case None ⇒ p.persistenceId -> Vector(p)
     })
@@ -77,8 +77,8 @@ private[persistence] trait InmemMessages {
       case None ⇒ messages
     }
 
-  def delete(pid: String, snr: Long): Unit =
-    messages = messages.get(pid) match {
+  def delete(pid: String, snr: Long): Unit = messages =
+    messages.get(pid) match {
       case Some(ms) ⇒ messages + (pid -> ms.filterNot(_.sequenceNr == snr))
       case None ⇒ messages
     }
@@ -87,13 +87,12 @@ private[persistence] trait InmemMessages {
       pid: String,
       fromSnr: Long,
       toSnr: Long,
-      max: Long): immutable.Seq[PersistentRepr] =
-    messages.get(pid) match {
-      case Some(ms) ⇒
-        ms.filter(m ⇒ m.sequenceNr >= fromSnr && m.sequenceNr <= toSnr)
-          .take(safeLongToInt(max))
-      case None ⇒ Nil
-    }
+      max: Long): immutable.Seq[PersistentRepr] = messages.get(pid) match {
+    case Some(ms) ⇒
+      ms.filter(m ⇒ m.sequenceNr >= fromSnr && m.sequenceNr <= toSnr)
+        .take(safeLongToInt(max))
+    case None ⇒ Nil
+  }
 
   def highestSequenceNr(pid: String): Long = {
     val snro = for {

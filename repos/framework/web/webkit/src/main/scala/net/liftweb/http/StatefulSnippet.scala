@@ -70,10 +70,9 @@ trait StatefulSnippet extends DispatchSnippet {
     }
   }
 
-  def names: Set[String] =
-    synchronized {
-      _names
-    }
+  def names: Set[String] = synchronized {
+    _names
+  }
 
   def registerThisSnippet() =
     names.foreach(n => S.overrideSnippetForClass(n, this))
@@ -141,8 +140,8 @@ trait RenderDispatch {
   /**
     * The predefined dispatch
     */
-  def dispatch: PartialFunction[String, NodeSeq => NodeSeq] =
-    Map("render" -> render _)
+  def dispatch: PartialFunction[String, NodeSeq => NodeSeq] = Map(
+    "render" -> render _)
 
   /**
     * You have to define this method
@@ -160,8 +159,8 @@ trait RenderFuncDispatch {
   /**
     * The predefined dispatch
     */
-  def dispatch: PartialFunction[String, NodeSeq => NodeSeq] =
-    Map("render" -> render)
+  def dispatch: PartialFunction[String, NodeSeq => NodeSeq] = Map(
+    "render" -> render)
 
   /**
     * You have to define this method
@@ -201,11 +200,10 @@ object TransientSnippet {
   /**
     * Compute if the instance should be treated as transient
     */
-  def notTransient(obj: Any): Boolean =
-    obj match {
-      case t: TransientSnippet => !t.transient_?
-      case _                   => true
-    }
+  def notTransient(obj: Any): Boolean = obj match {
+    case t: TransientSnippet => !t.transient_?
+    case _                   => true
+  }
 }
 
 /**

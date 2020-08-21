@@ -81,9 +81,8 @@ private[akka] final class SerializedSuspendableExecutionContext(
 
   final def attach(): Unit =
     if (!isEmpty() && state.compareAndSet(Off, On)) context execute this
-  override final def execute(task: Runnable): Unit =
-    try add(task)
-    finally attach()
+  override final def execute(task: Runnable): Unit = try add(task)
+  finally attach()
   override final def reportFailure(t: Throwable): Unit = context reportFailure t
 
   /**
@@ -92,11 +91,10 @@ private[akka] final class SerializedSuspendableExecutionContext(
     */
   final def size(): Int = count()
 
-  override final def toString: String =
-    (state.get: @switch) match {
-      case 0 ⇒ "Off"
-      case 1 ⇒ "On"
-      case 2 ⇒ "Off & Suspended"
-      case 3 ⇒ "On & Suspended"
-    }
+  override final def toString: String = (state.get: @switch) match {
+    case 0 ⇒ "Off"
+    case 1 ⇒ "On"
+    case 2 ⇒ "Off & Suspended"
+    case 3 ⇒ "On & Suspended"
+  }
 }

@@ -84,11 +84,10 @@ sealed trait HttpMessage extends jm.HttpMessage {
     * The content encoding as specified by the Content-Encoding header. If no Content-Encoding header is present the
     * default value 'identity' is returned.
     */
-  def encoding: HttpEncoding =
-    header[`Content-Encoding`] match {
-      case Some(x) ⇒ x.encodings.head
-      case None ⇒ HttpEncodings.identity
-    }
+  def encoding: HttpEncoding = header[`Content-Encoding`] match {
+    case Some(x) ⇒ x.encodings.head
+    case None ⇒ HttpEncodings.identity
+  }
 
   /** Returns the first header of the given type if there is one */
   def header[T <: jm.HttpHeader: ClassTag]: Option[T] = {
@@ -104,8 +103,8 @@ sealed trait HttpMessage extends jm.HttpMessage {
   def connectionCloseExpected: Boolean =
     HttpMessage.connectionCloseExpected(protocol, header[Connection])
 
-  def addHeader(header: jm.HttpHeader): Self =
-    mapHeaders(_ :+ header.asInstanceOf[HttpHeader])
+  def addHeader(header: jm.HttpHeader): Self = mapHeaders(
+    _ :+ header.asInstanceOf[HttpHeader])
 
   /** Removes the header with the given name (case-insensitive) */
   def removeHeader(headerName: String): Self = {
@@ -145,8 +144,8 @@ sealed trait HttpMessage extends jm.HttpMessage {
   }
 
   /** Java API */
-  def addHeaders(headers: JIterable[jm.HttpHeader]): Self =
-    mapHeaders(_ ++ headers.asScala.asInstanceOf[Iterable[HttpHeader]])
+  def addHeaders(headers: JIterable[jm.HttpHeader]): Self = mapHeaders(
+    _ ++ headers.asScala.asInstanceOf[Iterable[HttpHeader]])
 }
 
 object HttpMessage {
@@ -232,8 +231,8 @@ final class HttpRequest(
   override def withEntity(entity: MessageEntity): HttpRequest =
     copy(entity = entity)
 
-  def mapEntity(f: RequestEntity ⇒ RequestEntity): HttpRequest =
-    withEntity(f(entity))
+  def mapEntity(f: RequestEntity ⇒ RequestEntity): HttpRequest = withEntity(
+    f(entity))
 
   override def withMethod(
       method: akka.http.javadsl.model.HttpMethod): HttpRequest =
@@ -272,16 +271,15 @@ final class HttpRequest(
     result
   }
 
-  override def equals(obj: scala.Any): Boolean =
-    obj match {
-      case HttpRequest(_method, _uri, _headers, _entity, _protocol) =>
-        method == _method &&
-          uri == _uri &&
-          headers == _headers &&
-          entity == _entity &&
-          protocol == _protocol
-      case _ => false
-    }
+  override def equals(obj: scala.Any): Boolean = obj match {
+    case HttpRequest(_method, _uri, _headers, _entity, _protocol) =>
+      method == _method &&
+        uri == _uri &&
+        headers == _headers &&
+        entity == _entity &&
+        protocol == _protocol
+    case _ => false
+  }
 
   override def toString = s"""HttpRequest(${_1},${_2},${_3},${_4},${_5})"""
 
@@ -418,11 +416,11 @@ final class HttpResponse(
     copy(entity = entity.asInstanceOf[ResponseEntity])
   override def withEntity(entity: MessageEntity): HttpResponse =
     copy(entity = entity)
-  override def withEntity(entity: jm.RequestEntity): HttpResponse =
-    withEntity(entity: jm.ResponseEntity)
+  override def withEntity(entity: jm.RequestEntity): HttpResponse = withEntity(
+    entity: jm.ResponseEntity)
 
-  def mapEntity(f: ResponseEntity ⇒ ResponseEntity): HttpResponse =
-    withEntity(f(entity))
+  def mapEntity(f: ResponseEntity ⇒ ResponseEntity): HttpResponse = withEntity(
+    f(entity))
 
   /* Manual Case Class things, to easen bin-compat */
 
@@ -433,15 +431,14 @@ final class HttpResponse(
       protocol: HttpProtocol = protocol) =
     new HttpResponse(status, headers, entity, protocol)
 
-  override def equals(obj: scala.Any): Boolean =
-    obj match {
-      case HttpResponse(_status, _headers, _entity, _protocol) =>
-        status == _status &&
-          headers == _headers &&
-          entity == _entity &&
-          protocol == _protocol
-      case _ => false
-    }
+  override def equals(obj: scala.Any): Boolean = obj match {
+    case HttpResponse(_status, _headers, _entity, _protocol) =>
+      status == _status &&
+        headers == _headers &&
+        entity == _entity &&
+        protocol == _protocol
+    case _ => false
+  }
 
   override def hashCode: Int = {
     var result = HashCode.SEED

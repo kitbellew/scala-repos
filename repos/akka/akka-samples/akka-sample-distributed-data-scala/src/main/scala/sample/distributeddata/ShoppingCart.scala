@@ -38,11 +38,10 @@ class ShoppingCart(userId: String) extends Actor {
 
   val DataKey = LWWMapKey[LineItem]("cart-" + userId)
 
-  def receive =
-    receiveGetCart
-      .orElse[Any, Unit](receiveAddItem)
-      .orElse[Any, Unit](receiveRemoveItem)
-      .orElse[Any, Unit](receiveOther)
+  def receive = receiveGetCart
+    .orElse[Any, Unit](receiveAddItem)
+    .orElse[Any, Unit](receiveRemoveItem)
+    .orElse[Any, Unit](receiveOther)
 
   //#get-cart
   def receiveGetCart: Receive = {

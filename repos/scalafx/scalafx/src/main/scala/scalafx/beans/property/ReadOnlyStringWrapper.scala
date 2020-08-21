@@ -41,8 +41,8 @@ object ReadOnlyStringWrapper {
   /** Creates a new ReadOnlyStringWrapper instance.
     * @param value the initial value of the wrapped value
     */
-  def apply(value: String) =
-    new ReadOnlyStringWrapper(new jfxbp.ReadOnlyStringWrapper(value))
+  def apply(value: String) = new ReadOnlyStringWrapper(
+    new jfxbp.ReadOnlyStringWrapper(value))
 }
 
 /** Wrapper for [[http://docs.oracle.com/javase/8/javafx/api/javafx/beans/property/ReadOnlyStringWrapper.html javafx.beans.property.ReadOnlyStringWrapper]] */

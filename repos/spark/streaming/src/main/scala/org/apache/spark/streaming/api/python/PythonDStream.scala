@@ -109,13 +109,12 @@ private[python] class TransformFunction(
       out.write(bytes)
     }
 
-  private def readObject(in: ObjectInputStream): Unit =
-    Utils.tryOrIOException {
-      val length = in.readInt()
-      val bytes = new Array[Byte](length)
-      in.readFully(bytes)
-      pfunc = PythonTransformFunctionSerializer.deserialize(bytes)
-    }
+  private def readObject(in: ObjectInputStream): Unit = Utils.tryOrIOException {
+    val length = in.readInt()
+    val bytes = new Array[Byte](length)
+    in.readFully(bytes)
+    pfunc = PythonTransformFunctionSerializer.deserialize(bytes)
+  }
 }
 
 /**
@@ -134,39 +133,34 @@ private[python] object PythonTransformFunctionSerializer {
   /*
    * Register a serializer from Python, should be called during initialization
    */
-  def register(ser: PythonTransformFunctionSerializer): Unit =
-    synchronized {
-      serializer = ser
-    }
+  def register(ser: PythonTransformFunctionSerializer): Unit = synchronized {
+    serializer = ser
+  }
 
-  def serialize(func: PythonTransformFunction): Array[Byte] =
-    synchronized {
-      require(serializer != null, "Serializer has not been registered!")
-      // get the id of PythonTransformFunction in py4j
-      val h = Proxy.getInvocationHandler(func.asInstanceOf[Proxy])
-      val f = h.getClass().getDeclaredField("id")
-      f.setAccessible(true)
-      val id = f.get(h).asInstanceOf[String]
-      val results = serializer.dumps(id)
-      val failure = serializer.getLastFailure
-      if (failure != null) {
-        throw new SparkException(
-          "An exception was raised by Python:\n" + failure)
-      }
-      results
+  def serialize(func: PythonTransformFunction): Array[Byte] = synchronized {
+    require(serializer != null, "Serializer has not been registered!")
+    // get the id of PythonTransformFunction in py4j
+    val h = Proxy.getInvocationHandler(func.asInstanceOf[Proxy])
+    val f = h.getClass().getDeclaredField("id")
+    f.setAccessible(true)
+    val id = f.get(h).asInstanceOf[String]
+    val results = serializer.dumps(id)
+    val failure = serializer.getLastFailure
+    if (failure != null) {
+      throw new SparkException("An exception was raised by Python:\n" + failure)
     }
+    results
+  }
 
-  def deserialize(bytes: Array[Byte]): PythonTransformFunction =
-    synchronized {
-      require(serializer != null, "Serializer has not been registered!")
-      val pfunc = serializer.loads(bytes)
-      val failure = serializer.getLastFailure
-      if (failure != null) {
-        throw new SparkException(
-          "An exception was raised by Python:\n" + failure)
-      }
-      pfunc
+  def deserialize(bytes: Array[Byte]): PythonTransformFunction = synchronized {
+    require(serializer != null, "Serializer has not been registered!")
+    val pfunc = serializer.loads(bytes)
+    val failure = serializer.getLastFailure
+    if (failure != null) {
+      throw new SparkException("An exception was raised by Python:\n" + failure)
     }
+    pfunc
+  }
 }
 
 /**

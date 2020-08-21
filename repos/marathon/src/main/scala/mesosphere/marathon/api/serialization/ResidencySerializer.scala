@@ -4,13 +4,12 @@ import mesosphere.marathon.Protos.ResidencyDefinition
 import mesosphere.marathon.state.Residency
 
 object ResidencySerializer {
-  def toProto(residency: Residency): ResidencyDefinition =
-    ResidencyDefinition
-      .newBuilder()
-      .setRelaunchEscalationTimeoutSeconds(
-        residency.relaunchEscalationTimeoutSeconds)
-      .setTaskLostBehavior(residency.taskLostBehavior)
-      .build()
+  def toProto(residency: Residency): ResidencyDefinition = ResidencyDefinition
+    .newBuilder()
+    .setRelaunchEscalationTimeoutSeconds(
+      residency.relaunchEscalationTimeoutSeconds)
+    .setTaskLostBehavior(residency.taskLostBehavior)
+    .build()
 
   def fromProto(proto: ResidencyDefinition): Residency = {
     val relaunchEscalationTimeoutSeconds =

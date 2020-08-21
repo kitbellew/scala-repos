@@ -72,9 +72,8 @@ object EventValidation {
     * @param name Event name
     * @return true if event name starts with \$ or pio_, false otherwise
     */
-  def isReservedPrefix(name: String): Boolean =
-    name.startsWith("$") ||
-      name.startsWith("pio_")
+  def isReservedPrefix(name: String): Boolean = name.startsWith("$") ||
+    name.startsWith("pio_")
 
   /** PredictionIO reserves some single entity event names. They are currently
     * \$set, \$unset, and \$delete.

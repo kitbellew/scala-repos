@@ -147,9 +147,8 @@ class DefaultHttpRequestHandler(
 
   def handlerForRequest(request: RequestHeader) = {
 
-    def notFoundHandler =
-      Action.async(BodyParsers.parse.empty)(req =>
-        errorHandler.onClientError(req, NOT_FOUND))
+    def notFoundHandler = Action.async(BodyParsers.parse.empty)(req =>
+      errorHandler.onClientError(req, NOT_FOUND))
 
     val (routedRequest, handler) = routeRequest(request) map {
       case handler: RequestTaggingHandler =>

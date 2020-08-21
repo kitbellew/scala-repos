@@ -95,14 +95,13 @@ class LinkedHashMap[A, B]
     "2.11.0")
   def -=(key: A): this.type = { remove(key); this }
 
-  def iterator: Iterator[(A, B)] =
-    new AbstractIterator[(A, B)] {
-      private var cur = firstEntry
-      def hasNext = cur ne null
-      def next =
-        if (hasNext) { val res = (cur.key, cur.value); cur = cur.later; res }
-        else Iterator.empty.next()
-    }
+  def iterator: Iterator[(A, B)] = new AbstractIterator[(A, B)] {
+    private var cur = firstEntry
+    def hasNext = cur ne null
+    def next =
+      if (hasNext) { val res = (cur.key, cur.value); cur = cur.later; res }
+      else Iterator.empty.next()
+  }
 
   protected class FilteredKeys(p: A => Boolean) extends super.FilteredKeys(p) {
     override def empty = LinkedHashMap.empty
@@ -124,23 +123,21 @@ class LinkedHashMap[A, B]
 
   override def keySet: scala.collection.Set[A] = new DefaultKeySet
 
-  override def keysIterator: Iterator[A] =
-    new AbstractIterator[A] {
-      private var cur = firstEntry
-      def hasNext = cur ne null
-      def next =
-        if (hasNext) { val res = cur.key; cur = cur.later; res }
-        else Iterator.empty.next()
-    }
+  override def keysIterator: Iterator[A] = new AbstractIterator[A] {
+    private var cur = firstEntry
+    def hasNext = cur ne null
+    def next =
+      if (hasNext) { val res = cur.key; cur = cur.later; res }
+      else Iterator.empty.next()
+  }
 
-  override def valuesIterator: Iterator[B] =
-    new AbstractIterator[B] {
-      private var cur = firstEntry
-      def hasNext = cur ne null
-      def next =
-        if (hasNext) { val res = cur.value; cur = cur.later; res }
-        else Iterator.empty.next()
-    }
+  override def valuesIterator: Iterator[B] = new AbstractIterator[B] {
+    private var cur = firstEntry
+    def hasNext = cur ne null
+    def next =
+      if (hasNext) { val res = cur.value; cur = cur.later; res }
+      else Iterator.empty.next()
+  }
 
   override def foreach[U](f: ((A, B)) => U) {
     var cur = firstEntry

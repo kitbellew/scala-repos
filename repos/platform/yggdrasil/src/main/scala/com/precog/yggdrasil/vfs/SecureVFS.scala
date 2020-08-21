@@ -170,32 +170,31 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
 
     final def findDirectChildren(
         apiKey: APIKey,
-        path: Path): EitherT[M, ResourceError, Set[PathMetadata]] =
-      path match {
-        // If asked for the root path, we simply determine children
-        // based on the api key permissions to avoid a massive tree walk
-        case Path.Root =>
-          logger.debug("Defaulting on root-level child browse to account path")
-          for {
-            children <- EitherT.right(
-              permissionsFinder.findBrowsableChildren(apiKey, path))
-            nonRoot = children.filterNot(_ == Path.Root)
-            childMetadata <- nonRoot.toList.traverseU(vfs.findPathMetadata)
-          } yield {
-            childMetadata.toSet
-          }
+        path: Path): EitherT[M, ResourceError, Set[PathMetadata]] = path match {
+      // If asked for the root path, we simply determine children
+      // based on the api key permissions to avoid a massive tree walk
+      case Path.Root =>
+        logger.debug("Defaulting on root-level child browse to account path")
+        for {
+          children <-
+            EitherT.right(permissionsFinder.findBrowsableChildren(apiKey, path))
+          nonRoot = children.filterNot(_ == Path.Root)
+          childMetadata <- nonRoot.toList.traverseU(vfs.findPathMetadata)
+        } yield {
+          childMetadata.toSet
+        }
 
-        case other =>
-          for {
-            children <- vfs.findDirectChildren(path)
-            permitted <- EitherT.right(
-              permissionsFinder.findBrowsableChildren(apiKey, path))
-          } yield {
-            children filter { case PathMetadata(child, _) =>
-              permitted.exists(_.isEqualOrParentOf(path / child))
-            }
+      case other =>
+        for {
+          children <- vfs.findDirectChildren(path)
+          permitted <-
+            EitherT.right(permissionsFinder.findBrowsableChildren(apiKey, path))
+        } yield {
+          children filter { case PathMetadata(child, _) =>
+            permitted.exists(_.isEqualOrParentOf(path / child))
           }
-      }
+        }
+    }
 
     final def executeStoredQuery(
         platform: Platform[M, Block, StreamT[M, Block]],
@@ -212,23 +211,22 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
           "Path %s cannot be relativized.".format(path.path))).point[M])
 
       val cachePath = path / Path(".cached")
-      def fallBack =
-        if (onlyIfCached) {
-          // Return a 202 and schedule a caching run of the query
-          sys.error("todo")
-        } else {
-          // if current cached version is older than the max age or cached
-          // version does not exist, then run synchronously and cache (if cacheable)
-          for {
-            basePath <- pathPrefix
-            caching <- executeAndCache(
-              platform,
-              path,
-              ctx,
-              queryOptions,
-              cacheable.option(cachePath))
-          } yield caching
-        }
+      def fallBack = if (onlyIfCached) {
+        // Return a 202 and schedule a caching run of the query
+        sys.error("todo")
+      } else {
+        // if current cached version is older than the max age or cached
+        // version does not exist, then run synchronously and cache (if cacheable)
+        for {
+          basePath <- pathPrefix
+          caching <- executeAndCache(
+            platform,
+            path,
+            ctx,
+            queryOptions,
+            cacheable.option(cachePath))
+        } yield caching
+      }
 
       logger.debug(
         "Checking on cached result for %s with maxAge = %s and recacheAfter = %s and cacheable = %s"

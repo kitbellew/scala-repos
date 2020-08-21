@@ -49,8 +49,8 @@ class SeqIdFilter extends SimpleFilter[ThriftClientRequest, Array[Byte]] {
     buf(off + 3) = (x & 0xff).toByte
   }
 
-  private[this] def badMsg(why: String) =
-    Throw(new IllegalArgumentException(why))
+  private[this] def badMsg(why: String) = Throw(
+    new IllegalArgumentException(why))
 
   private[this] def getAndSetId(buf: Array[Byte], newId: Int): Try[Int] = {
     if (buf.length < 4) return badMsg("short header")

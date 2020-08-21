@@ -22,11 +22,10 @@ object WordCount {
 
     // To count words, we need to detect transitions from whitespace to non-whitespace.
     // atWordStart_{i} = heaviside( test(isSpace(c_{i}) - test(isSpace(c_{i-1})) )
-    def atWordStart(c: Char): State[Boolean, Int] =
-      State { (prev: Boolean) =>
-        val cur = c != ' '
-        (cur, test(cur && !prev))
-      }
+    def atWordStart(c: Char): State[Boolean, Int] = State { (prev: Boolean) =>
+      val cur = c != ' '
+      (cur, test(cur && !prev))
+    }
 
     // To count, we traverse with a function returning 0 or 1, and sum the results
     // with Monoid[Int], packaged in a constant monoidal applicative functor.

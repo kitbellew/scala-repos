@@ -44,8 +44,8 @@ import scala.util.Random.nextInt
 import scala.collection.JavaConverters._
 
 private object MissingSpireOps {
-  implicit def arrayOps[@specialized(Double) A](lhs: Array[A]) =
-    new ArrayOps(lhs)
+  implicit def arrayOps[@specialized(Double) A](lhs: Array[A]) = new ArrayOps(
+    lhs)
   implicit def seqOps[@specialized(Double) A](lhs: Seq[A]) = new SeqOps[A](lhs)
 
   // TODO: Use incremental mean, or switch back to Spire's when fixed.
@@ -71,13 +71,12 @@ import MissingSpireOps._
   */
 sealed trait DecisionTree[ /*@specialized(Double) */ A] {
   def apply(v: Array[Double]): A = {
-    @tailrec def loop(tree: DecisionTree[A]): A =
-      tree match {
-        case Split(i, boundary, left, right) =>
-          if (v(i) <= boundary) loop(left) else loop(right)
-        case Leaf(k) =>
-          k
-      }
+    @tailrec def loop(tree: DecisionTree[A]): A = tree match {
+      case Split(i, boundary, left, right) =>
+        if (v(i) <= boundary) loop(left) else loop(right)
+      case Leaf(k) =>
+        k
+    }
 
     loop(this)
   }
@@ -390,20 +389,19 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       chunks0: List[Array[A]]): Array[A] = {
     val len = chunks0.foldLeft(0)(_ + _.length)
     val array = new Array[A](len)
-    def mkArray(init: Int, chunks: List[Array[A]]): Unit =
-      chunks match {
-        case chunk :: tail =>
-          var i = 0
-          var j = init
-          while (j < array.length && i < chunk.length) {
-            array(j) = chunk(i)
-            i += 1
-            j += 1
-          }
-          mkArray(j, tail)
+    def mkArray(init: Int, chunks: List[Array[A]]): Unit = chunks match {
+      case chunk :: tail =>
+        var i = 0
+        var j = init
+        while (j < array.length && i < chunk.length) {
+          array(j) = chunk(i)
+          i += 1
+          j += 1
+        }
+        mkArray(j, tail)
 
-        case Nil =>
-      }
+      case Nil =>
+    }
     mkArray(0, chunks0)
     array
   }
@@ -449,10 +447,9 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
   trait RandomForestLib extends ColumnarTableLib {
 
-    override def _libMorphism2 =
-      super._libMorphism2 ++ Set(
-        RandomForestClassification,
-        RandomForestRegression)
+    override def _libMorphism2 = super._libMorphism2 ++ Set(
+      RandomForestClassification,
+      RandomForestRegression)
 
     object RandomForestClassification
         extends RandomForest[RValue, ClassificationForest[RValue]](
@@ -486,8 +483,8 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         treeMaker.makeTreeInitial(dependent, independent, opts)
       }
 
-      def forest(trees: Seq[DecisionTree[RValue]]) =
-        ClassificationForest(trees.toList)
+      def forest(trees: Seq[DecisionTree[RValue]]) = ClassificationForest(
+        trees.toList)
 
       def makeColumns(
           defined: BitSet,
@@ -542,8 +539,8 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         treeMaker.makeTreeInitial(dependent, independent, opts)
       }
 
-      def forest(trees: Seq[DecisionTree[Double]]) =
-        RegressionForest(trees.toList)
+      def forest(trees: Seq[DecisionTree[Double]]) = RegressionForest(
+        trees.toList)
 
       def makeColumns(
           defined: BitSet,
@@ -701,88 +698,86 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         }
       }
 
-      def morph1Apply(forests: Seq[(JType, F)]) =
-        new Morph1Apply {
-          import TransSpecModule._
+      def morph1Apply(forests: Seq[(JType, F)]) = new Morph1Apply {
+        import TransSpecModule._
 
-          def apply(table: Table, ctx: MorphContext): M[Table] = {
+        def apply(table: Table, ctx: MorphContext): M[Table] = {
 
-            lazy val models: Map[String, (JType, F)] =
-              forests.zipWithIndex.map({ case (elem, i) =>
-                ("model" + (i + 1)) -> elem
-              })(collection.breakOut)
+          lazy val models: Map[String, (JType, F)] = forests.zipWithIndex.map({
+            case (elem, i) =>
+              ("model" + (i + 1)) -> elem
+          })(collection.breakOut)
 
-            lazy val specs: Seq[TransSpec1] =
-              models.map({ case (modelId, (jtype, _)) =>
-                trans.WrapObject(
-                  trans.TypedSubsumes(TransSpec1.Id, jtype),
-                  modelId)
-              })(collection.breakOut)
+          lazy val specs: Seq[TransSpec1] =
+            models.map({ case (modelId, (jtype, _)) =>
+              trans.WrapObject(
+                trans.TypedSubsumes(TransSpec1.Id, jtype),
+                modelId)
+            })(collection.breakOut)
 
-            lazy val spec: TransSpec1 = liftToValues(
-              OuterObjectConcat(specs: _*))
+          lazy val spec: TransSpec1 = liftToValues(OuterObjectConcat(specs: _*))
 
-            lazy val objectTable: Table = table.transform(spec)
+          lazy val objectTable: Table = table.transform(spec)
 
-            def predict(stream: StreamT[M, Slice]): StreamT[M, Slice] = {
-              StreamT(stream.uncons map {
-                case Some((head, tail)) => {
-                  val valueColumns =
-                    models.foldLeft(Map.empty[ColumnRef, Column]) {
-                      case (acc, (modelId, (_, forest))) =>
-                        val modelSlice = head
-                          .deref(paths.Value)
-                          .deref(CPathField(modelId))
-                          .mapColumns(cf.util.CoerceToDouble)
-                          .toArray[Double]
-                        val vecsOpt =
-                          sliceToArray[Array[Double]](modelSlice, null) {
-                            case (c: HomogeneousArrayColumn[_]) => {
-                              (row: Int) => c(row).asInstanceOf[Array[Double]]
-                            }
-                          }
-
-                        val defined: BitSet = BitSetUtil.create()
-                        val values: Array[A] = new Array[A](head.size)
-
-                        vecsOpt map { vectors =>
-                          var i = 0
-                          while (i < vectors.length) {
-                            val v = vectors(i)
-                            if (v != null) {
-                              defined.set(i)
-                              values(i) = forest.predict(v)
-                            }
-                            i += 1
+          def predict(stream: StreamT[M, Slice]): StreamT[M, Slice] = {
+            StreamT(stream.uncons map {
+              case Some((head, tail)) => {
+                val valueColumns =
+                  models.foldLeft(Map.empty[ColumnRef, Column]) {
+                    case (acc, (modelId, (_, forest))) =>
+                      val modelSlice = head
+                        .deref(paths.Value)
+                        .deref(CPathField(modelId))
+                        .mapColumns(cf.util.CoerceToDouble)
+                        .toArray[Double]
+                      val vecsOpt =
+                        sliceToArray[Array[Double]](modelSlice, null) {
+                          case (c: HomogeneousArrayColumn[_]) => { (row: Int) =>
+                            c(row).asInstanceOf[Array[Double]]
                           }
                         }
 
-                        val cols = makeColumns(defined, values)
-                        acc ++ cols map { case (ColumnRef(cpath, ctype), col) =>
-                          ColumnRef(
-                            CPath(paths.Value, CPathField(modelId)) \ cpath,
-                            ctype) -> col
+                      val defined: BitSet = BitSetUtil.create()
+                      val values: Array[A] = new Array[A](head.size)
+
+                      vecsOpt map { vectors =>
+                        var i = 0
+                        while (i < vectors.length) {
+                          val v = vectors(i)
+                          if (v != null) {
+                            defined.set(i)
+                            values(i) = forest.predict(v)
+                          }
+                          i += 1
                         }
-                    }
-                  val keyColumns = head.deref(paths.Key).wrap(paths.Key).columns
-                  val columns = keyColumns ++ valueColumns
-                  StreamT.Yield(Slice(columns, head.size), predict(tail))
-                }
+                      }
 
-                case None =>
-                  StreamT.Done
-              })
-            }
+                      val cols = makeColumns(defined, values)
+                      acc ++ cols map { case (ColumnRef(cpath, ctype), col) =>
+                        ColumnRef(
+                          CPath(paths.Value, CPathField(modelId)) \ cpath,
+                          ctype) -> col
+                      }
+                  }
+                val keyColumns = head.deref(paths.Key).wrap(paths.Key).columns
+                val columns = keyColumns ++ valueColumns
+                StreamT.Yield(Slice(columns, head.size), predict(tail))
+              }
 
-            val predictions = if (forests.isEmpty) {
-              Table.empty
-            } else {
-              Table(predict(objectTable.slices), objectTable.size)
-            }
-
-            M.point(predictions)
+              case None =>
+                StreamT.Done
+            })
           }
+
+          val predictions = if (forests.isEmpty) {
+            Table.empty
+          } else {
+            Table(predict(objectTable.slices), objectTable.size)
+          }
+
+          M.point(predictions)
         }
+      }
 
       def alignCustom(t1: Table, t2: Table): M[(Table, Morph1Apply)] = {
         val trainingTable =

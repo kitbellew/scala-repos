@@ -41,19 +41,18 @@ object JsonFormat {
       FieldSerializer[ApiLabel]() +
       ApiBranchProtection.enforcementLevelSerializer
 
-  def apiPathSerializer(c: Context) =
-    new CustomSerializer[ApiPath](format =>
-      (
-        {
-          case JString(s) if s.startsWith(c.baseUrl) =>
-            ApiPath(s.substring(c.baseUrl.length))
-          case JString(s) =>
-            throw new MappingException("Can't convert " + s + " to ApiPath")
-        },
-        { case ApiPath(path) =>
-          JString(c.baseUrl + path)
-        }
-      ))
+  def apiPathSerializer(c: Context) = new CustomSerializer[ApiPath](format =>
+    (
+      {
+        case JString(s) if s.startsWith(c.baseUrl) =>
+          ApiPath(s.substring(c.baseUrl.length))
+        case JString(s) =>
+          throw new MappingException("Can't convert " + s + " to ApiPath")
+      },
+      { case ApiPath(path) =>
+        JString(c.baseUrl + path)
+      }
+    ))
 
   /**
     * convert object to json string

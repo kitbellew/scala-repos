@@ -183,13 +183,12 @@ case class Alias(child: Expression, name: String)(
     exprId :: qualifiers :: explicitMetadata :: isGenerated :: Nil
   }
 
-  override def equals(other: Any): Boolean =
-    other match {
-      case a: Alias =>
-        name == a.name && exprId == a.exprId && child == a.child && qualifiers == a.qualifiers &&
-          explicitMetadata == a.explicitMetadata
-      case _ => false
-    }
+  override def equals(other: Any): Boolean = other match {
+    case a: Alias =>
+      name == a.name && exprId == a.exprId && child == a.child && qualifiers == a.qualifiers &&
+        explicitMetadata == a.explicitMetadata
+    case _ => false
+  }
 
   override def sql: String = {
     val qualifiersString = if (qualifiers.isEmpty) "" else qualifiers.head + "."
@@ -227,19 +226,17 @@ case class AttributeReference(
     */
   def sameRef(other: AttributeReference): Boolean = this.exprId == other.exprId
 
-  override def equals(other: Any): Boolean =
-    other match {
-      case ar: AttributeReference =>
-        name == ar.name && dataType == ar.dataType && nullable == ar.nullable &&
-          metadata == ar.metadata && exprId == ar.exprId && qualifiers == ar.qualifiers
-      case _ => false
-    }
+  override def equals(other: Any): Boolean = other match {
+    case ar: AttributeReference =>
+      name == ar.name && dataType == ar.dataType && nullable == ar.nullable &&
+        metadata == ar.metadata && exprId == ar.exprId && qualifiers == ar.qualifiers
+    case _ => false
+  }
 
-  override def semanticEquals(other: Expression): Boolean =
-    other match {
-      case ar: AttributeReference => sameRef(ar)
-      case _                      => false
-    }
+  override def semanticEquals(other: Expression): Boolean = other match {
+    case ar: AttributeReference => sameRef(ar)
+    case _                      => false
+  }
 
   override def semanticHash(): Int = {
     this.exprId.hashCode()
@@ -338,14 +335,13 @@ case class PrettyAttribute(name: String, dataType: DataType = NullType)
     extends Attribute
     with Unevaluable {
 
-  def this(attribute: Attribute) =
-    this(
-      attribute.name,
-      attribute match {
-        case a: AttributeReference => a.dataType
-        case a: PrettyAttribute    => a.dataType
-        case _                     => NullType
-      })
+  def this(attribute: Attribute) = this(
+    attribute.name,
+    attribute match {
+      case a: AttributeReference => a.dataType
+      case a: PrettyAttribute    => a.dataType
+      case _                     => NullType
+    })
 
   override def toString: String = name
   override def sql: String = toString

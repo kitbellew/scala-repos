@@ -261,72 +261,71 @@ private class ScriptTransformationWriterThread(
   /** Contains the exception thrown while writing the parent iterator to the external process. */
   def exception: Option[Throwable] = Option(_exception)
 
-  override def run(): Unit =
-    Utils.logUncaughtExceptions {
-      TaskContext.setTaskContext(taskContext)
+  override def run(): Unit = Utils.logUncaughtExceptions {
+    TaskContext.setTaskContext(taskContext)
 
-      val dataOutputStream = new DataOutputStream(outputStream)
-      @Nullable val scriptInputWriter =
-        ioschema.recordWriter(dataOutputStream, conf).orNull
+    val dataOutputStream = new DataOutputStream(outputStream)
+    @Nullable val scriptInputWriter =
+      ioschema.recordWriter(dataOutputStream, conf).orNull
 
-      // We can't use Utils.tryWithSafeFinally here because we also need a `catch` block, so
-      // let's use a variable to record whether the `finally` block was hit due to an exception
-      var threwException: Boolean = true
-      val len = inputSchema.length
-      try {
-        iter.map(outputProjection).foreach { row =>
-          if (inputSerde == null) {
-            val data = if (len == 0) {
-              ioschema.inputRowFormatMap("TOK_TABLEROWFORMATLINES")
-            } else {
-              val sb = new StringBuilder
-              sb.append(row.get(0, inputSchema(0)))
-              var i = 1
-              while (i < len) {
-                sb.append(ioschema.inputRowFormatMap("TOK_TABLEROWFORMATFIELD"))
-                sb.append(row.get(i, inputSchema(i)))
-                i += 1
-              }
-              sb.append(ioschema.inputRowFormatMap("TOK_TABLEROWFORMATLINES"))
-              sb.toString()
-            }
-            outputStream.write(data.getBytes(StandardCharsets.UTF_8))
+    // We can't use Utils.tryWithSafeFinally here because we also need a `catch` block, so
+    // let's use a variable to record whether the `finally` block was hit due to an exception
+    var threwException: Boolean = true
+    val len = inputSchema.length
+    try {
+      iter.map(outputProjection).foreach { row =>
+        if (inputSerde == null) {
+          val data = if (len == 0) {
+            ioschema.inputRowFormatMap("TOK_TABLEROWFORMATLINES")
           } else {
-            val writable = inputSerde
-              .serialize(row.asInstanceOf[GenericInternalRow].values, inputSoi)
+            val sb = new StringBuilder
+            sb.append(row.get(0, inputSchema(0)))
+            var i = 1
+            while (i < len) {
+              sb.append(ioschema.inputRowFormatMap("TOK_TABLEROWFORMATFIELD"))
+              sb.append(row.get(i, inputSchema(i)))
+              i += 1
+            }
+            sb.append(ioschema.inputRowFormatMap("TOK_TABLEROWFORMATLINES"))
+            sb.toString()
+          }
+          outputStream.write(data.getBytes(StandardCharsets.UTF_8))
+        } else {
+          val writable = inputSerde
+            .serialize(row.asInstanceOf[GenericInternalRow].values, inputSoi)
 
-            if (scriptInputWriter != null) {
-              scriptInputWriter.write(writable)
-            } else {
-              prepareWritable(writable, ioschema.outputSerdeProps).write(
-                dataOutputStream)
-            }
+          if (scriptInputWriter != null) {
+            scriptInputWriter.write(writable)
+          } else {
+            prepareWritable(writable, ioschema.outputSerdeProps).write(
+              dataOutputStream)
           }
-        }
-        outputStream.close()
-        threwException = false
-      } catch {
-        case NonFatal(e) =>
-          // An error occurred while writing input, so kill the child process. According to the
-          // Javadoc this call will not throw an exception:
-          _exception = e
-          proc.destroy()
-          throw e
-      } finally {
-        try {
-          if (proc.waitFor() != 0) {
-            logError(stderrBuffer.toString) // log the stderr circular buffer
-          }
-        } catch {
-          case NonFatal(exceptionFromFinallyBlock) =>
-            if (!threwException) {
-              throw exceptionFromFinallyBlock
-            } else {
-              log.error("Exception in finally block", exceptionFromFinallyBlock)
-            }
         }
       }
+      outputStream.close()
+      threwException = false
+    } catch {
+      case NonFatal(e) =>
+        // An error occurred while writing input, so kill the child process. According to the
+        // Javadoc this call will not throw an exception:
+        _exception = e
+        proc.destroy()
+        throw e
+    } finally {
+      try {
+        if (proc.waitFor() != 0) {
+          logError(stderrBuffer.toString) // log the stderr circular buffer
+        }
+      } catch {
+        case NonFatal(exceptionFromFinallyBlock) =>
+          if (!threwException) {
+            throw exceptionFromFinallyBlock
+          } else {
+            log.error("Exception in finally block", exceptionFromFinallyBlock)
+          }
+      }
     }
+  }
 }
 
 /**

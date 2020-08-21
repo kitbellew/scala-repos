@@ -60,14 +60,13 @@ class RowFormatSpec
 
   def groupConsecutive[A, B](as: List[A])(f: A => B) = {
     @tailrec
-    def build(as: List[A], prev: List[List[A]]): List[List[A]] =
-      as match {
-        case Nil =>
-          prev.reverse
-        case a :: _ =>
-          val bs = as takeWhile { b => f(a) == f(b) }
-          build(as drop bs.size, bs :: prev)
-      }
+    def build(as: List[A], prev: List[List[A]]): List[List[A]] = as match {
+      case Nil =>
+        prev.reverse
+      case a :: _ =>
+        val bs = as takeWhile { b => f(a) == f(b) }
+        build(as drop bs.size, bs :: prev)
+    }
 
     build(as, Nil)
   }
@@ -119,10 +118,9 @@ class RowFormatSpec
     checkRoundTrips(RowFormat.forValues(_))
   }
 
-  private def identityCols(len: Int): List[ColumnRef] =
-    (0 until len).map({ i =>
-      ColumnRef(CPath(CPathIndex(i)), CLong)
-    })(scala.collection.breakOut)
+  private def identityCols(len: Int): List[ColumnRef] = (0 until len).map({ i =>
+    ColumnRef(CPath(CPathIndex(i)), CLong)
+  })(scala.collection.breakOut)
 
   "IdentitiesRowFormat" should {
     "round-trip CLongs" in {

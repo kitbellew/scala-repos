@@ -44,10 +44,9 @@ class Path private (val elements: String*) {
   }
 
   def /(that: Path) = new Path(elements ++ that.elements: _*)
-  def -(that: Path): Option[Path] =
-    elements
-      .startsWith(that.elements)
-      .option(new Path(elements.drop(that.elements.length): _*))
+  def -(that: Path): Option[Path] = elements
+    .startsWith(that.elements)
+    .option(new Path(elements.drop(that.elements.length): _*))
 
   def isEqualOrParentOf(that: Path) = that.elements.startsWith(this.elements)
 
@@ -59,16 +58,15 @@ class Path private (val elements: String*) {
 
   def rollups(depth: Int): List[Path] = this :: ancestors.take(depth)
 
-  def urlEncode: Path =
-    new Path(elements.map(java.net.URLEncoder.encode(_, "UTF-8")): _*)
+  def urlEncode: Path = new Path(
+    elements.map(java.net.URLEncoder.encode(_, "UTF-8")): _*)
 
   def prefix: Option[Path] = elements.nonEmpty.option(Path(components.init))
 
-  override def equals(that: Any) =
-    that match {
-      case Path(`path`) => true
-      case _            => false
-    }
+  override def equals(that: Any) = that match {
+    case Path(`path`) => true
+    case _            => false
+  }
 
   override def hashCode = path.hashCode
 
@@ -86,8 +84,8 @@ object Path {
   private def cleanPath(string: String): String =
     string.replaceAll("^/|/$", "").replaceAll("/+", "/")
 
-  def apply(path: String): Path =
-    new Path(cleanPath(path).split("/").filterNot(_.trim.isEmpty): _*)
+  def apply(path: String): Path = new Path(
+    cleanPath(path).split("/").filterNot(_.trim.isEmpty): _*)
 
   def apply(elements: List[String]): Path = apply(elements.mkString("/"))
 

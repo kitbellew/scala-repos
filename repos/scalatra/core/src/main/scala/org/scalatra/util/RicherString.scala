@@ -55,7 +55,7 @@ class RicherString(orig: String) {
 
 object RicherString {
 
-  implicit def stringToRicherString(s: String): RicherString =
-    new RicherString(s)
+  implicit def stringToRicherString(s: String): RicherString = new RicherString(
+    s)
 
 }

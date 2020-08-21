@@ -46,12 +46,11 @@ class SyntaxTest extends SpireTests with Checkers with BaseSyntaxTest {
         .map(Positive(_)))
   }
 
-  implicit def ArbVector[A: Arbitrary]: Arbitrary[Vector[A]] =
-    Arbitrary(for {
-      x <- arbitrary[A]
-      y <- arbitrary[A]
-      z <- arbitrary[A]
-    } yield Vector(x, y, z))
+  implicit def ArbVector[A: Arbitrary]: Arbitrary[Vector[A]] = Arbitrary(for {
+    x <- arbitrary[A]
+    y <- arbitrary[A]
+    z <- arbitrary[A]
+  } yield Vector(x, y, z))
 
   import spire.laws.arb.rational
 

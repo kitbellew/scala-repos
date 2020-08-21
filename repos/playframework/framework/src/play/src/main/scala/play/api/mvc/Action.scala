@@ -47,13 +47,12 @@ trait EssentialAction
     */
   def apply() = this
 
-  def asJava: play.mvc.EssentialAction =
-    new play.mvc.EssentialAction() {
-      import play.api.libs.concurrent.Execution.Implicits.defaultContext
-      def apply(rh: play.mvc.Http.RequestHeader) =
-        self(rh._underlyingHeader).map(_.asJava).asJava
-      override def apply(rh: RequestHeader) = self(rh)
-    }
+  def asJava: play.mvc.EssentialAction = new play.mvc.EssentialAction() {
+    import play.api.libs.concurrent.Execution.Implicits.defaultContext
+    def apply(rh: play.mvc.Http.RequestHeader) =
+      self(rh._underlyingHeader).map(_.asJava).asJava
+    override def apply(rh: RequestHeader) = self(rh)
+  }
 
 }
 
@@ -190,14 +189,13 @@ trait BodyParser[+A]
     // prepare execution context as body parser object may cross thread boundary
     implicit val pec = ec.prepare()
     new BodyParser[B] {
-      def apply(request: RequestHeader) =
-        self(request).mapFuture {
-          case Right(a) =>
-            // safe to execute `Right.apply` in same thread
-            f(a).map(Right.apply)(Execution.trampoline)
-          case left =>
-            Future.successful(left.asInstanceOf[Either[Result, B]])
-        }(pec)
+      def apply(request: RequestHeader) = self(request).mapFuture {
+        case Right(a) =>
+          // safe to execute `Right.apply` in same thread
+          f(a).map(Right.apply)(Execution.trampoline)
+        case left =>
+          Future.successful(left.asInstanceOf[Either[Result, B]])
+      }(pec)
       override def toString = self.toString
     }
   }
@@ -226,11 +224,10 @@ trait BodyParser[+A]
     // prepare execution context as body parser object may cross thread boundary
     implicit val pec = ec.prepare()
     new BodyParser[B] {
-      def apply(request: RequestHeader) =
-        self(request).map {
-          case Left(e)  => Left(e)
-          case Right(a) => f(a)
-        }(pec)
+      def apply(request: RequestHeader) = self(request).map {
+        case Left(e)  => Left(e)
+        case Right(a) => f(a)
+      }(pec)
       override def toString = self.toString
     }
   }
@@ -249,14 +246,13 @@ trait BodyParser[+A]
     // prepare execution context as body parser object may cross thread boundary
     implicit val pec = ec.prepare()
     new BodyParser[B] {
-      def apply(request: RequestHeader) =
-        self(request).mapFuture {
-          case Right(a) =>
-            // safe to execute `Done.apply` in same thread
-            f(a)
-          case Left(e) =>
-            Future.successful(Left(e))
-        }(pec)
+      def apply(request: RequestHeader) = self(request).mapFuture {
+        case Right(a) =>
+          // safe to execute `Done.apply` in same thread
+          f(a)
+        case Left(e) =>
+          Future.successful(Left(e))
+      }(pec)
       override def toString = self.toString
     }
   }
@@ -274,11 +270,10 @@ object BodyParser {
 
   def apply[T](debugName: String)(
       f: RequestHeader => Accumulator[ByteString, Either[Result, T]])
-      : BodyParser[T] =
-    new BodyParser[T] {
-      def apply(rh: RequestHeader) = f(rh)
-      override def toString = "BodyParser(" + debugName + ")"
-    }
+      : BodyParser[T] = new BodyParser[T] {
+    def apply(rh: RequestHeader) = f(rh)
+    override def toString = "BodyParser(" + debugName + ")"
+  }
 
   /**
     * Create an anonymous BodyParser
@@ -309,11 +304,10 @@ object BodyParser {
   @deprecated("Use apply instead", "2.5.0")
   def iteratee[T](debugName: String)(
       f: RequestHeader => Iteratee[ByteString, Either[Result, T]])
-      : BodyParser[T] =
-    new BodyParser[T] {
-      def apply(rh: RequestHeader) = Streams.iterateeToAccumulator(f(rh))
-      override def toString = "BodyParser(" + debugName + ")"
-    }
+      : BodyParser[T] = new BodyParser[T] {
+    def apply(rh: RequestHeader) = Streams.iterateeToAccumulator(f(rh))
+    override def toString = "BodyParser(" + debugName + ")"
+  }
 
 }
 
@@ -397,10 +391,9 @@ trait ActionBuilder[+R[_]] extends ActionFunction[Request, R] {
     * @return an action
     */
   final def apply[A](bodyParser: BodyParser[A])(
-      block: R[A] => Result): Action[A] =
-    async(bodyParser) { req: R[A] =>
-      Future.successful(block(req))
-    }
+      block: R[A] => Result): Action[A] = async(bodyParser) { req: R[A] =>
+    Future.successful(block(req))
+  }
 
   /**
     * Constructs an `Action` with default content.
@@ -486,20 +479,18 @@ trait ActionBuilder[+R[_]] extends ActionFunction[Request, R] {
     * @return an action
     */
   final def async[A](bodyParser: BodyParser[A])(
-      block: R[A] => Future[Result]): Action[A] =
-    composeAction(new Action[A] {
-      def parser = composeParser(bodyParser)
-      def apply(request: Request[A]) =
-        try {
-          invokeBlock(request, block)
-        } catch {
-          // NotImplementedError is not caught by NonFatal, wrap it
-          case e: NotImplementedError => throw new RuntimeException(e)
-          // LinkageError is similarly harmless in Play Framework, since automatic reloading could easily trigger it
-          case e: LinkageError => throw new RuntimeException(e)
-        }
-      override def executionContext = ActionBuilder.this.executionContext
-    })
+      block: R[A] => Future[Result]): Action[A] = composeAction(new Action[A] {
+    def parser = composeParser(bodyParser)
+    def apply(request: Request[A]) = try {
+      invokeBlock(request, block)
+    } catch {
+      // NotImplementedError is not caught by NonFatal, wrap it
+      case e: NotImplementedError => throw new RuntimeException(e)
+      // LinkageError is similarly harmless in Play Framework, since automatic reloading could easily trigger it
+      case e: LinkageError => throw new RuntimeException(e)
+    }
+    override def executionContext = ActionBuilder.this.executionContext
+  })
 
   /**
     * Compose the parser.  This allows the action builder to potentially intercept requests before they are parsed.

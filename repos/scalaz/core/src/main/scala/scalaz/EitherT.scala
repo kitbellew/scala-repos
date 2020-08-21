@@ -242,8 +242,8 @@ object EitherT extends EitherTInstances {
   def eitherTU[FAB, AB, A0, B0](fab: FAB)(implicit
       u1: Unapply[Functor, FAB] { type A = AB },
       u2: Unapply2[Bifunctor, AB] { type A = A0; type B = B0 },
-      l: Leibniz.===[AB, A0 \/ B0]): EitherT[u1.M, A0, B0] =
-    eitherT(l.subst[u1.M](u1(fab)))
+      l: Leibniz.===[AB, A0 \/ B0]): EitherT[u1.M, A0, B0] = eitherT(
+    l.subst[u1.M](u1(fab)))
 
   def monadTell[F[_], W, A](implicit
       MT0: MonadTell[F, W]): EitherTMonadTell[F, W, A] =
@@ -524,8 +524,8 @@ private trait EitherTBitraverse[F[_]]
 private trait EitherTHoist[A] extends Hoist[λ[(α[_], β) => EitherT[α, A, β]]] {
   def hoist[M[_], N[_]](f: M ~> N)(implicit M: Monad[M]) =
     new (EitherT[M, A, ?] ~> EitherT[N, A, ?]) {
-      def apply[B](mb: EitherT[M, A, B]): EitherT[N, A, B] =
-        EitherT(f.apply(mb.run))
+      def apply[B](mb: EitherT[M, A, B]): EitherT[N, A, B] = EitherT(
+        f.apply(mb.run))
     }
 
   def liftM[M[_], B](mb: M[B])(implicit M: Monad[M]): EitherT[M, A, B] =

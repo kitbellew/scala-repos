@@ -6,12 +6,11 @@ trait A
 trait B
 trait C { val y: P }
 class ABC extends A with B with C {
-  private def reflected =
-    (
-      Thread.currentThread.getStackTrace
-        takeWhile (_.getMethodName != "main")
-        exists (_.toString contains "sun.reflect.")
-    )
+  private def reflected = (
+    Thread.currentThread.getStackTrace
+      takeWhile (_.getMethodName != "main")
+      exists (_.toString contains "sun.reflect.")
+  )
   lazy val y: PQ = new PQ(reflected)
 }
 
@@ -48,14 +47,13 @@ object Gen {
   def mkMethodContent(pre: String)(f: Int => String) =
     indices map (i => s"def $pre$i${f(i)}") mkString "\n  "
 
-  def content =
-    List(
-      indices flatMap aliases mkString "\n  ",
-      mkMethodContent("f")(i =>
-        s" = { val x = ${pairs(i).expr} ; x.y.reflected -> whatis(x).toString }"),
-      mkMethodContent("g")(i => s"""(x: R1_$i) = x.y"""),
-      mkMethodContent("h")(i => s"""(x: R2_$i) = x.y""")
-    ) mkString "\n  "
+  def content = List(
+    indices flatMap aliases mkString "\n  ",
+    mkMethodContent("f")(i =>
+      s" = { val x = ${pairs(i).expr} ; x.y.reflected -> whatis(x).toString }"),
+    mkMethodContent("g")(i => s"""(x: R1_$i) = x.y"""),
+    mkMethodContent("h")(i => s"""(x: R2_$i) = x.y""")
+  ) mkString "\n  "
 
   def fCalls = indices map ("f" + _) mkString ("\n    ", ",\n    ", "\n  ")
 

@@ -50,8 +50,8 @@ class GangliaSink(
   val GANGLIA_KEY_HOST = "host"
   val GANGLIA_KEY_PORT = "port"
 
-  def propertyToOption(prop: String): Option[String] =
-    Option(property.getProperty(prop))
+  def propertyToOption(prop: String): Option[String] = Option(
+    property.getProperty(prop))
 
   if (!propertyToOption(GANGLIA_KEY_HOST).isDefined) {
     throw new Exception("Ganglia sink requires 'host' property.")

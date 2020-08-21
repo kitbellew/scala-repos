@@ -7,8 +7,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr._
   */
 class ComparingDiffCollectionKindsInspection
     extends OperationOnCollectionInspection {
-  override def possibleSimplificationTypes: Array[SimplificationType] =
-    Array(ComparingDiffCollectionKinds)
+  override def possibleSimplificationTypes: Array[SimplificationType] = Array(
+    ComparingDiffCollectionKinds)
 }
 
 object ComparingDiffCollectionKinds extends SimplificationType {

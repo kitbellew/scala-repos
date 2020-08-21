@@ -315,9 +315,9 @@ trait ControlIncludes extends CellIncludes {
     * @param c $JFX $CTRL
     * @return $SFX $CTRL
     */
-  implicit def jfxControl2sfx(c: jfxsc.Control): Control =
-    if (c != null) new Control(c) {}
-    else null
+  implicit def jfxControl2sfx(c: jfxsc.Control): Control = if (c != null)
+    new Control(c) {}
+  else null
 
   /**
     * $START$CLPK.html $CLPK$END
@@ -336,9 +336,9 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $CBBS
     */
   implicit def jfxComboBoxBase2sfx[T](
-      v: jfxsc.ComboBoxBase[T]): ComboBoxBase[T] =
-    if (v != null) new ComboBoxBase[T](v) {}
-    else null
+      v: jfxsc.ComboBoxBase[T]): ComboBoxBase[T] = if (v != null)
+    new ComboBoxBase[T](v) {}
+  else null
 
   /**
     * $START$CBBX.html $CBBX$END
@@ -430,9 +430,9 @@ trait ControlIncludes extends CellIncludes {
     * @param l $JFX $LBLD
     * @return $SFX $LBLD
     */
-  implicit def jfxLabeled2sfx(l: jfxsc.Labeled): Labeled =
-    if (l != null) new Labeled(l) {}
-    else null
+  implicit def jfxLabeled2sfx(l: jfxsc.Labeled): Labeled = if (l != null)
+    new Labeled(l) {}
+  else null
 
   /**
     * $START$LSCL.html $LSCL$END
@@ -761,9 +761,9 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxTableViewSelectionModel2sfx[S](
       tvsm: jfxsc.TableView.TableViewSelectionModel[S])
-      : TableViewSelectionModel[S] =
-    if (tvsm != null) new TableView.TableViewSelectionModel[S](tvsm) {}
-    else null
+      : TableViewSelectionModel[S] = if (tvsm != null)
+    new TableView.TableViewSelectionModel[S](tvsm) {}
+  else null
 
   /**
     * $START$TBSM.html $TBSM$END
@@ -844,15 +844,15 @@ trait ControlIncludes extends CellIncludes {
     * @param t $JFX $TGGL
     * @return $SFX $TGGL
     */
-  implicit def jfxToggle2sfx(t: jfxsc.Toggle): Toggle =
-    if (t != null) new Toggle {
+  implicit def jfxToggle2sfx(t: jfxsc.Toggle): Toggle = if (t != null)
+    new Toggle {
       override val delegate = t
       def userData: AnyRef = delegate.getUserData
       def userData_=(v: AnyRef) {
         delegate.setUserData(v)
       }
     }
-    else null
+  else null
 
   /**
     * $START$SPRT.html $SPRT$END
@@ -871,11 +871,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $SKIN
     */
   implicit def jfxSkin2sfxSkin[C <: jfxsc.Skinnable](
-      s: jfxsc.Skin[C]): Skin[C] =
-    if (s != null) new Skin[C] {
-      override val delegate = s
-    }
-    else null
+      s: jfxsc.Skin[C]): Skin[C] = if (s != null) new Skin[C] {
+    override val delegate = s
+  }
+  else null
 
   /**
     * $START$SNBE.html $SNBE$END
@@ -954,9 +953,9 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $SCMD
     */
   implicit def jfxSelectionModel2sfx[T](
-      v: jfxsc.SelectionModel[T]): SelectionModel[T] =
-    if (v != null) new SelectionModel[T](v) {}
-    else null
+      v: jfxsc.SelectionModel[T]): SelectionModel[T] = if (v != null)
+    new SelectionModel[T](v) {}
+  else null
 
   /**
     * $START$SSMD.html $SSMD$END
@@ -1052,9 +1051,9 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $TXIC
     */
   implicit def jfxTextInputControl2sfx(
-      t: jfxsc.TextInputControl): TextInputControl =
-    if (t != null) new TextInputControl(t) {}
-    else null
+      t: jfxsc.TextInputControl): TextInputControl = if (t != null)
+    new TextInputControl(t) {}
+  else null
 
   /**
     * $START$TOTP.html $TOTP$END
@@ -1062,9 +1061,9 @@ trait ControlIncludes extends CellIncludes {
     * @param t $JFX $TOTP
     * @return $SFX $TOTP
     */
-  implicit def jfxTooltip2sfx(t: jfxsc.Tooltip): Tooltip =
-    if (t != null) new Tooltip(t) {}
-    else null
+  implicit def jfxTooltip2sfx(t: jfxsc.Tooltip): Tooltip = if (t != null)
+    new Tooltip(t) {}
+  else null
 
   /**
     * $START$TOBR.html $TOBR$END
@@ -1072,9 +1071,9 @@ trait ControlIncludes extends CellIncludes {
     * @param t $JFX $TOBR
     * @return $SFX $TOBR
     */
-  implicit def jfxToolBar2sfx(t: jfxsc.ToolBar): ToolBar =
-    if (t != null) new ToolBar(t) {}
-    else null
+  implicit def jfxToolBar2sfx(t: jfxsc.ToolBar): ToolBar = if (t != null)
+    new ToolBar(t) {}
+  else null
 
   /**
     * $START$TRCL.html $TRCL$END

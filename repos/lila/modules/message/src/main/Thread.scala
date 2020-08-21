@@ -23,17 +23,15 @@ case class Thread(
 
   def isUnReadBy(user: User) = !isReadBy(user)
 
-  def nbUnreadBy(user: User): Int =
-    isCreator(user).fold(
-      posts count { post => post.isByInvited && post.isUnRead },
-      posts count { post => post.isByCreator && post.isUnRead })
+  def nbUnreadBy(user: User): Int = isCreator(user).fold(
+    posts count { post => post.isByInvited && post.isUnRead },
+    posts count { post => post.isByCreator && post.isUnRead })
 
   def nbUnread: Int = posts count (_.isUnRead)
 
-  def firstPostUnreadBy(user: User): Option[Post] =
-    posts find { post =>
-      post.isUnRead && post.isByCreator != isCreator(user)
-    }
+  def firstPostUnreadBy(user: User): Option[Post] = posts find { post =>
+    post.isUnRead && post.isByCreator != isCreator(user)
+  }
 
   def userIds = List(creatorId, invitedId)
 
@@ -49,10 +47,9 @@ case class Thread(
 
   def nonEmptyName = (name.trim.some filter (_.nonEmpty)) | "No subject"
 
-  def deleteFor(user: User) =
-    copy(
-      visibleByUserIds = visibleByUserIds filter (user.id !=)
-    )
+  def deleteFor(user: User) = copy(
+    visibleByUserIds = visibleByUserIds filter (user.id !=)
+  )
 
   def hasPostsWrittenBy(userId: String) =
     posts exists (_.isByCreator == (creatorId == userId))
@@ -68,21 +65,20 @@ object Thread {
       name: String,
       text: String,
       creatorId: String,
-      invitedId: String): Thread =
-    Thread(
-      id = Random nextStringUppercase idSize,
-      name = name,
-      createdAt = DateTime.now,
-      updatedAt = DateTime.now,
-      posts = List(
-        Post.make(
-          text = text,
-          isByCreator = true
-        )),
-      creatorId = creatorId,
-      invitedId = invitedId,
-      visibleByUserIds = List(creatorId, invitedId)
-    )
+      invitedId: String): Thread = Thread(
+    id = Random nextStringUppercase idSize,
+    name = name,
+    createdAt = DateTime.now,
+    updatedAt = DateTime.now,
+    posts = List(
+      Post.make(
+        text = text,
+        isByCreator = true
+      )),
+    creatorId = creatorId,
+    invitedId = invitedId,
+    visibleByUserIds = List(creatorId, invitedId)
+  )
 
   import lila.db.JsTube
   import JsTube.Helpers._

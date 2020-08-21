@@ -94,9 +94,8 @@ trait JdbcBackend extends RelationalBackend {
       * down. If this object represents a connection pool managed directly by Slick, it is also
       * closed.
       */
-    def close: Unit =
-      try executor.close()
-      finally source.close()
+    def close: Unit = try executor.close()
+    finally source.close()
   }
 
   trait DatabaseFactoryDef {
@@ -492,25 +491,24 @@ trait JdbcBackend extends RelationalBackend {
         rsConcurrency: ResultSetConcurrency,
         rsHoldability: ResultSetHoldability,
         statementInit: Statement => Unit,
-        _fetchSize: Int): Session =
-      new Session {
-        override def resultSetType = rsType
-        override def resultSetConcurrency = rsConcurrency
-        override def resultSetHoldability = rsHoldability
-        override def fetchSize = _fetchSize
-        override def decorateStatement[S <: Statement](statement: S): S = {
-          if (statementInit ne null) statementInit(statement)
-          statement
-        }
-        def database = self.database
-        def conn = self.conn
-        def metaData = self.metaData
-        def capabilities = self.capabilities
-        def close() = self.close()
-        private[slick] def startInTransaction: Unit = self.startInTransaction
-        private[slick] def endInTransaction(f: => Unit): Unit =
-          self.endInTransaction(f)
+        _fetchSize: Int): Session = new Session {
+      override def resultSetType = rsType
+      override def resultSetConcurrency = rsConcurrency
+      override def resultSetHoldability = rsHoldability
+      override def fetchSize = _fetchSize
+      override def decorateStatement[S <: Statement](statement: S): S = {
+        if (statementInit ne null) statementInit(statement)
+        statement
       }
+      def database = self.database
+      def conn = self.conn
+      def metaData = self.metaData
+      def capabilities = self.capabilities
+      def close() = self.close()
+      private[slick] def startInTransaction: Unit = self.startInTransaction
+      private[slick] def endInTransaction(f: => Unit): Unit =
+        self.endInTransaction(f)
+    }
 
     protected def loggingStatement(st: Statement): Statement =
       if (JdbcBackend.statementLogger.isDebugEnabled || JdbcBackend.benchmarkLogger.isDebugEnabled)

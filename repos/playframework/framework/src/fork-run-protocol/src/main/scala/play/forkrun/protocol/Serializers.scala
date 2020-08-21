@@ -189,16 +189,14 @@ object Serializers {
     override def unpickle(tpe: String, reader: PReader): Any = {
       def readIntField(key: String): Int =
         intPickler.unpickleEntry(reader.readField(key)).asInstanceOf[Int]
-      def readIntOptField(key: String): Option[Int] =
-        intOptUnpickler
-          .unpickleEntry(reader.readField(key))
-          .asInstanceOf[Option[Int]]
+      def readIntOptField(key: String): Option[Int] = intOptUnpickler
+        .unpickleEntry(reader.readField(key))
+        .asInstanceOf[Option[Int]]
       def readStringField(key: String): String =
         stringPickler.unpickleEntry(reader.readField(key)).asInstanceOf[String]
-      def readStringOptField(key: String): Option[String] =
-        stringOptUnpickler
-          .unpickleEntry(reader.readField(key))
-          .asInstanceOf[Option[String]]
+      def readStringOptField(key: String): Option[String] = stringOptUnpickler
+        .unpickleEntry(reader.readField(key))
+        .asInstanceOf[Option[String]]
       def readThrowableOptField(key: String): Option[Throwable] =
         throwableOptUnpickler
           .unpickleEntry(reader.readField(key))

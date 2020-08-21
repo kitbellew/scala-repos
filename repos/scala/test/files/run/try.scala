@@ -65,23 +65,22 @@ object Test extends AnyRef with App {
     }
   }
 
-  def try5 =
+  def try5 = try {
+    Console.print("1 + 1 = ");
     try {
-      Console.print("1 + 1 = ");
-      try {
-        if (true)
-          sys.error("exit");
-        1 + 1;
-        ()
-      } catch {
-        case _: Throwable =>
-          Console.println("2");
-          sys.error("for good");
-      }
-      Console.println("a");
+      if (true)
+        sys.error("exit");
+      1 + 1;
+      ()
     } catch {
-      case _: Throwable => ();
+      case _: Throwable =>
+        Console.println("2");
+        sys.error("for good");
     }
+    Console.println("a");
+  } catch {
+    case _: Throwable => ();
+  }
 
   class A {
     private val result = {

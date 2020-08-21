@@ -28,10 +28,9 @@ class MutatorLikeMethodIsParameterlessInspection
         new AddEmptyParentheses(f))
   }
 
-  private def isUndescoreFunction(f: ScFunction): Boolean =
-    f match {
-      case funDef: ScFunctionDefinition =>
-        funDef.body.exists(ScUnderScoreSectionUtil.isUnderscoreFunction)
-      case _ => false
-    }
+  private def isUndescoreFunction(f: ScFunction): Boolean = f match {
+    case funDef: ScFunctionDefinition =>
+      funDef.body.exists(ScUnderScoreSectionUtil.isUnderscoreFunction)
+    case _ => false
+  }
 }

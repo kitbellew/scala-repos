@@ -60,15 +60,14 @@ class ScVariableDefinitionImpl private (
     else Seq.empty
   }
 
-  def getType(ctx: TypingContext) =
-    typeElement match {
-      case Some(te) => te.getType(ctx)
-      case None =>
-        expr
-          .map(_.getType(TypingContext.empty))
-          .getOrElse(
-            Failure("Cannot infer type without an expression", Some(this)))
-    }
+  def getType(ctx: TypingContext) = typeElement match {
+    case Some(te) => te.getType(ctx)
+    case None =>
+      expr
+        .map(_.getType(TypingContext.empty))
+        .getOrElse(
+          Failure("Cannot infer type without an expression", Some(this)))
+  }
 
   def typeElement: Option[ScTypeElement] = {
     val stub = getStub

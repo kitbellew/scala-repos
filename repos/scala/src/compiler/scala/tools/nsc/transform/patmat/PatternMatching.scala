@@ -53,42 +53,41 @@ trait PatternMatching
 
   val phaseName: String = "patmat"
 
-  def newTransformer(unit: CompilationUnit): Transformer =
-    new MatchTransformer(unit)
+  def newTransformer(unit: CompilationUnit): Transformer = new MatchTransformer(
+    unit)
 
   class MatchTransformer(unit: CompilationUnit)
       extends TypingTransformer(unit) {
-    override def transform(tree: Tree): Tree =
-      tree match {
-        case Match(sel, cases) =>
-          val origTp = tree.tpe
-          // setType origTp intended for CPS -- TODO: is it necessary?
-          val translated = translator.translateMatch(
-            treeCopy.Match(
-              tree,
-              transform(sel),
-              transformTrees(cases).asInstanceOf[List[CaseDef]]))
-          try {
-            localTyper.typed(translated) setType origTp
-          } catch {
-            case x: (Types#TypeError) =>
-              // TODO: this should never happen; error should've been reported during type checking
-              reporter.error(
-                tree.pos,
-                "error during expansion of this match (this is a scalac bug).\nThe underlying error was: " + x.msg)
-              translated
-          }
-        case Try(block, catches, finalizer) =>
-          treeCopy.Try(
+    override def transform(tree: Tree): Tree = tree match {
+      case Match(sel, cases) =>
+        val origTp = tree.tpe
+        // setType origTp intended for CPS -- TODO: is it necessary?
+        val translated = translator.translateMatch(
+          treeCopy.Match(
             tree,
-            transform(block),
-            translator.translateTry(
-              transformTrees(catches).asInstanceOf[List[CaseDef]],
-              tree.tpe,
-              tree.pos),
-            transform(finalizer))
-        case _ => super.transform(tree)
-      }
+            transform(sel),
+            transformTrees(cases).asInstanceOf[List[CaseDef]]))
+        try {
+          localTyper.typed(translated) setType origTp
+        } catch {
+          case x: (Types#TypeError) =>
+            // TODO: this should never happen; error should've been reported during type checking
+            reporter.error(
+              tree.pos,
+              "error during expansion of this match (this is a scalac bug).\nThe underlying error was: " + x.msg)
+            translated
+        }
+      case Try(block, catches, finalizer) =>
+        treeCopy.Try(
+          tree,
+          transform(block),
+          translator.translateTry(
+            transformTrees(catches).asInstanceOf[List[CaseDef]],
+            tree.tpe,
+            tree.pos),
+          transform(finalizer))
+      case _ => super.transform(tree)
+    }
 
     // TODO: only instantiate new match translator when localTyper has changed
     // override def atOwner[A](tree: Tree, owner: Symbol)(trans: => A): A
@@ -261,10 +260,9 @@ trait Interface extends ast.TreeDSL {
             // (don't need to use origTp as the expected type, though, and can't always do this anyway due to unknown type params stemming from polymorphic extractors)
             else typer.typed(to)
 
-          def typedStable(t: Tree) =
-            typer.typed(
-              t.shallowDuplicate,
-              Mode.MonoQualifierModes | Mode.TYPEPATmode)
+          def typedStable(t: Tree) = typer.typed(
+            t.shallowDuplicate,
+            Mode.MonoQualifierModes | Mode.TYPEPATmode)
           lazy val toTypes: List[Type] = to map (tree => typedStable(tree).tpe)
 
           override def transform(tree: Tree): Tree = {

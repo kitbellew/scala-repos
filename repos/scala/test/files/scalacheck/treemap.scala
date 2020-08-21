@@ -12,8 +12,8 @@ object Test extends Properties("TreeMap") {
       keys <- listOf(arbitrary[A])
       values <- listOfN(keys.size, arbitrary[B])
     } yield TreeMap(keys zip values: _*)
-  implicit def arbTreeMap[A: Arbitrary: Ordering, B: Arbitrary] =
-    Arbitrary(genTreeMap[A, B])
+  implicit def arbTreeMap[A: Arbitrary: Ordering, B: Arbitrary] = Arbitrary(
+    genTreeMap[A, B])
 
   property("foreach/iterator consistency") = forAll {
     (subject: TreeMap[Int, String]) =>
@@ -115,12 +115,11 @@ object Test extends Properties("TreeMap") {
     prefix == subject.take(n) && suffix == subject.drop(n)
   }
 
-  def genSliceParms =
-    for {
-      tree <- genTreeMap[Int, String]
-      from <- choose(0, tree.size)
-      until <- choose(from, tree.size)
-    } yield (tree, from, until)
+  def genSliceParms = for {
+    tree <- genTreeMap[Int, String]
+    from <- choose(0, tree.size)
+    until <- choose(from, tree.size)
+  } yield (tree, from, until)
 
   property("slice") = forAll(genSliceParms) { case (subject, from, until) =>
     val slice = subject.slice(from, until)

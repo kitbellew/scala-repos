@@ -28,31 +28,29 @@ trait ScalariformFormat {
         }
       }
 
-    def read(s: Sexp): FormattingPreferences =
-      s match {
-        case SexpNil =>
-          FormattingPreferences()
+    def read(s: Sexp): FormattingPreferences = s match {
+      case SexpNil =>
+        FormattingPreferences()
 
-        case SexpData(data) =>
-          val custom = for {
-            descriptor <- AllPreferences.preferences
-            value <- deser(descriptor, data)
-          } yield (descriptor, value)
-          new FormattingPreferences(custom.toMap)
+      case SexpData(data) =>
+        val custom = for {
+          descriptor <- AllPreferences.preferences
+          value <- deser(descriptor, data)
+        } yield (descriptor, value)
+        new FormattingPreferences(custom.toMap)
 
-        case x => deserializationError(x)
-      }
+      case x => deserializationError(x)
+    }
 
     private def ser(
         descriptor: PreferenceDescriptor[_],
         value: Any
-    ): Sexp =
-      descriptor.preferenceType match {
-        case BooleanPreference       => value.asInstanceOf[Boolean].toSexp
-        case IntegerPreference(_, _) => value.asInstanceOf[Int].toSexp
-        case IntentPreference =>
-          value.asInstanceOf[Intent].getClass.getSimpleName.toSexp
-      }
+    ): Sexp = descriptor.preferenceType match {
+      case BooleanPreference       => value.asInstanceOf[Boolean].toSexp
+      case IntegerPreference(_, _) => value.asInstanceOf[Int].toSexp
+      case IntentPreference =>
+        value.asInstanceOf[Intent].getClass.getSimpleName.toSexp
+    }
 
     def write(f: FormattingPreferences) = {
       val data = f.preferencesMap.map { case (d, v) =>

@@ -108,8 +108,8 @@ package collection {
   private[collection] object DebugUtils {
     def unsupported(msg: String) = throw new UnsupportedOperationException(msg)
     def noSuchElement(msg: String) = throw new NoSuchElementException(msg)
-    def indexOutOfBounds(index: Int) =
-      throw new IndexOutOfBoundsException(index.toString)
+    def indexOutOfBounds(index: Int) = throw new IndexOutOfBoundsException(
+      index.toString)
     def illegalArgument(msg: String) = throw new IllegalArgumentException(msg)
 
     def buildString(closure: (Any => Unit) => Unit): String = {

@@ -31,15 +31,14 @@ object GenerationUtil {
   def classAtCaret(editor: Editor, file: PsiFile): Option[ScClass] =
     elementOfTypeAtCaret(editor, file, classOf[ScClass])
 
-  def findAnchor(aClass: PsiClass): Option[PsiElement] =
-    aClass match {
-      case cl: ScTemplateDefinition =>
-        cl.extendsBlock match {
-          case ScExtendsBlock.TemplateBody(body) => body.lastChild
-          case _                                 => None
-        }
-      case _ => None
-    }
+  def findAnchor(aClass: PsiClass): Option[PsiElement] = aClass match {
+    case cl: ScTemplateDefinition =>
+      cl.extendsBlock match {
+        case ScExtendsBlock.TemplateBody(body) => body.lastChild
+        case _                                 => None
+      }
+    case _ => None
+  }
 
   def addMembers(
       aClass: ScTemplateDefinition,
@@ -77,12 +76,11 @@ object GenerationUtil {
     }
   }
 
-  def isVar(elem: ScNamedElement) =
-    ScalaPsiUtil.nameContext(elem) match {
-      case _: ScVariable                          => true
-      case param: ScClassParameter if param.isVar => true
-      case _                                      => false
-    }
+  def isVar(elem: ScNamedElement) = ScalaPsiUtil.nameContext(elem) match {
+    case _: ScVariable                          => true
+    case param: ScClassParameter if param.isVar => true
+    case _                                      => false
+  }
 
   def getAllFields(aClass: PsiClass): Seq[ScNamedElement] = {
     val memberProcessor: (ScMember) => Seq[ScNamedElement] = {

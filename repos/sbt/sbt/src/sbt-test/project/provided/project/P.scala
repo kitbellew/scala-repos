@@ -13,19 +13,18 @@ object P extends Build {
 
   def rootSettings =
     Defaults.defaultSettings :+ (TaskKey[Unit]("check") <<= checkTask)
-  def checkTask =
-    (
-      fullClasspath in (root, Compile),
-      fullClasspath in (root, Runtime),
-      fullClasspath in (root, Test),
-      fullClasspath in (sub, Test),
-      fullClasspath in (superRoot, Compile)) map { (rc, rr, rt, st, pr) =>
-      check0(st, "sub test", true)
-      check0(pr, "super main", false)
-      check0(rc, "root main", true)
-      check0(rr, "root runtime", false)
-      check0(rt, "root test", true)
-    }
+  def checkTask = (
+    fullClasspath in (root, Compile),
+    fullClasspath in (root, Runtime),
+    fullClasspath in (root, Test),
+    fullClasspath in (sub, Test),
+    fullClasspath in (superRoot, Compile)) map { (rc, rr, rt, st, pr) =>
+    check0(st, "sub test", true)
+    check0(pr, "super main", false)
+    check0(rc, "root main", true)
+    check0(rr, "root runtime", false)
+    check0(rt, "root test", true)
+  }
   def check0(
       cp: Seq[Attributed[File]],
       label: String,

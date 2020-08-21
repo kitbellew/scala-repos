@@ -67,10 +67,9 @@ private[spark] abstract class MemoryManager(
     * Set the [[MemoryStore]] used by this manager to evict cached blocks.
     * This must be set after construction due to initialization ordering constraints.
     */
-  final def setMemoryStore(store: MemoryStore): Unit =
-    synchronized {
-      storageMemoryPool.setMemoryStore(store)
-    }
+  final def setMemoryStore(store: MemoryStore): Unit = synchronized {
+    storageMemoryPool.setMemoryStore(store)
+  }
 
   /**
     * Acquire N bytes of memory to cache the given block, evicting existing ones if necessary.
@@ -109,15 +108,14 @@ private[spark] abstract class MemoryManager(
   private[memory] def releaseExecutionMemory(
       numBytes: Long,
       taskAttemptId: Long,
-      memoryMode: MemoryMode): Unit =
-    synchronized {
-      memoryMode match {
-        case MemoryMode.ON_HEAP =>
-          onHeapExecutionMemoryPool.releaseMemory(numBytes, taskAttemptId)
-        case MemoryMode.OFF_HEAP =>
-          offHeapExecutionMemoryPool.releaseMemory(numBytes, taskAttemptId)
-      }
+      memoryMode: MemoryMode): Unit = synchronized {
+    memoryMode match {
+      case MemoryMode.ON_HEAP =>
+        onHeapExecutionMemoryPool.releaseMemory(numBytes, taskAttemptId)
+      case MemoryMode.OFF_HEAP =>
+        offHeapExecutionMemoryPool.releaseMemory(numBytes, taskAttemptId)
     }
+  }
 
   /**
     * Release all memory for the given task and mark it as inactive (e.g. when a task ends).
@@ -125,61 +123,54 @@ private[spark] abstract class MemoryManager(
     * @return the number of bytes freed.
     */
   private[memory] def releaseAllExecutionMemoryForTask(
-      taskAttemptId: Long): Long =
-    synchronized {
-      onHeapExecutionMemoryPool.releaseAllMemoryForTask(taskAttemptId) +
-        offHeapExecutionMemoryPool.releaseAllMemoryForTask(taskAttemptId)
-    }
+      taskAttemptId: Long): Long = synchronized {
+    onHeapExecutionMemoryPool.releaseAllMemoryForTask(taskAttemptId) +
+      offHeapExecutionMemoryPool.releaseAllMemoryForTask(taskAttemptId)
+  }
 
   /**
     * Release N bytes of storage memory.
     */
-  def releaseStorageMemory(numBytes: Long): Unit =
-    synchronized {
-      storageMemoryPool.releaseMemory(numBytes)
-    }
+  def releaseStorageMemory(numBytes: Long): Unit = synchronized {
+    storageMemoryPool.releaseMemory(numBytes)
+  }
 
   /**
     * Release all storage memory acquired.
     */
-  final def releaseAllStorageMemory(): Unit =
-    synchronized {
-      storageMemoryPool.releaseAllMemory()
-    }
+  final def releaseAllStorageMemory(): Unit = synchronized {
+    storageMemoryPool.releaseAllMemory()
+  }
 
   /**
     * Release N bytes of unroll memory.
     */
-  final def releaseUnrollMemory(numBytes: Long): Unit =
-    synchronized {
-      releaseStorageMemory(numBytes)
-    }
+  final def releaseUnrollMemory(numBytes: Long): Unit = synchronized {
+    releaseStorageMemory(numBytes)
+  }
 
   /**
     * Execution memory currently in use, in bytes.
     */
-  final def executionMemoryUsed: Long =
-    synchronized {
-      onHeapExecutionMemoryPool.memoryUsed + offHeapExecutionMemoryPool.memoryUsed
-    }
+  final def executionMemoryUsed: Long = synchronized {
+    onHeapExecutionMemoryPool.memoryUsed + offHeapExecutionMemoryPool.memoryUsed
+  }
 
   /**
     * Storage memory currently in use, in bytes.
     */
-  final def storageMemoryUsed: Long =
-    synchronized {
-      storageMemoryPool.memoryUsed
-    }
+  final def storageMemoryUsed: Long = synchronized {
+    storageMemoryPool.memoryUsed
+  }
 
   /**
     * Returns the execution memory consumption, in bytes, for the given task.
     */
   private[memory] def getExecutionMemoryUsageForTask(
-      taskAttemptId: Long): Long =
-    synchronized {
-      onHeapExecutionMemoryPool.getMemoryUsageForTask(taskAttemptId) +
-        offHeapExecutionMemoryPool.getMemoryUsageForTask(taskAttemptId)
-    }
+      taskAttemptId: Long): Long = synchronized {
+    onHeapExecutionMemoryPool.getMemoryUsageForTask(taskAttemptId) +
+      offHeapExecutionMemoryPool.getMemoryUsageForTask(taskAttemptId)
+  }
 
   // -- Fields related to Tungsten managed memory -------------------------------------------------
 

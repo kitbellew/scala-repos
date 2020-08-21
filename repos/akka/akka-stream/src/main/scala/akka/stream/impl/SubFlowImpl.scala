@@ -51,15 +51,14 @@ class SubFlowImpl[In, Out, Mat, F[+_], C](
       mergeBackFunction,
       finishFunction)
 
-  override def async: Repr[Out] =
-    new SubFlowImpl[In, Out, Mat, F, C](
-      subFlow.async,
-      mergeBackFunction,
-      finishFunction)
+  override def async: Repr[Out] = new SubFlowImpl[In, Out, Mat, F, C](
+    subFlow.async,
+    mergeBackFunction,
+    finishFunction)
 
   override def mergeSubstreamsWithParallelism(breadth: Int): F[Out] =
     mergeBackFunction(subFlow, breadth)
 
-  def to[M](sink: Graph[SinkShape[Out], M]): C =
-    finishFunction(subFlow.to(sink))
+  def to[M](sink: Graph[SinkShape[Out], M]): C = finishFunction(
+    subFlow.to(sink))
 }

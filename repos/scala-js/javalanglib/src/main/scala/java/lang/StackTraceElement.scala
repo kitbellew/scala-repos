@@ -26,16 +26,15 @@ final class StackTraceElement(
   def setColumnNumber(columnNumber: Int): Unit =
     this.columnNumber = columnNumber
 
-  override def equals(that: Any): scala.Boolean =
-    that match {
-      case that: StackTraceElement =>
-        (getFileName == that.getFileName) &&
-          (getLineNumber == that.getLineNumber) &&
-          (getClassName == that.getClassName) &&
-          (getMethodName == that.getMethodName)
-      case _ =>
-        false
-    }
+  override def equals(that: Any): scala.Boolean = that match {
+    case that: StackTraceElement =>
+      (getFileName == that.getFileName) &&
+        (getLineNumber == that.getLineNumber) &&
+        (getClassName == that.getClassName) &&
+        (getMethodName == that.getMethodName)
+    case _ =>
+      false
+  }
 
   override def toString(): String = {
     var result = ""

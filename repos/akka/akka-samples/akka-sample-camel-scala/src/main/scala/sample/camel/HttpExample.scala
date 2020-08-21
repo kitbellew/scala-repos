@@ -37,11 +37,10 @@ object HttpExample {
 
     // before producing messages to endpoints, producer actors can pre-process
     // them by overriding the transformOutgoingMessage method
-    override def transformOutgoingMessage(msg: Any) =
-      msg match {
-        case camelMsg: CamelMessage =>
-          camelMsg.copy(headers = camelMsg.headers(Set(Exchange.HTTP_PATH)))
-      }
+    override def transformOutgoingMessage(msg: Any) = msg match {
+      case camelMsg: CamelMessage =>
+        camelMsg.copy(headers = camelMsg.headers(Set(Exchange.HTTP_PATH)))
+    }
 
     // instead of replying to the initial sender(), producer actors can implement custom
     // response processing by overriding the routeResponse method

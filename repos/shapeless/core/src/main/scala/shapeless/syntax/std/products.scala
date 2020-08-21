@@ -49,8 +49,8 @@ final class ProductOps[P](val p: P) extends AnyVal {
   /**
     * Returns a record containing the elements of this labelled product.
     */
-  def toRecord[R <: HList](implicit toRecord: ToRecord.Aux[P, R]): R =
-    toRecord(p)
+  def toRecord[R <: HList](implicit toRecord: ToRecord.Aux[P, R]): R = toRecord(
+    p)
 
   /**
     * Returns a collection `M` whose elements are typed as the Lub of the elements of this product.

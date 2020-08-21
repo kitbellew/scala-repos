@@ -89,11 +89,10 @@ case class Parameter(
       Some(param))
   }
 
-  def paramInCode: Option[ScParameter] =
-    psiParam match {
-      case Some(scParam: ScParameter) => Some(scParam)
-      case _                          => None
-    }
+  def paramInCode: Option[ScParameter] = psiParam match {
+    case Some(scParam: ScParameter) => Some(scParam)
+    case _                          => None
+  }
 
   def nameInCode = psiParam.map(_.getName)
 
@@ -147,17 +146,16 @@ class TypeParameter(
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[TypeParameter]
 
-  override def equals(other: Any): Boolean =
-    other match {
-      case that: TypeParameter =>
-        (that canEqual this) &&
-          name == that.name &&
-          typeParams == that.typeParams &&
-          lowerType() == that.lowerType() &&
-          upperType() == that.upperType() &&
-          ptp == that.ptp
-      case _ => false
-    }
+  override def equals(other: Any): Boolean = other match {
+    case that: TypeParameter =>
+      (that canEqual this) &&
+        name == that.name &&
+        typeParams == that.typeParams &&
+        lowerType() == that.lowerType() &&
+        upperType() == that.upperType() &&
+        ptp == that.ptp
+    case _ => false
+  }
 
   override def hashCode(): Int = {
     val state = Seq(name, typeParams, ptp)
@@ -224,11 +222,10 @@ case class ScMethodType(
     )(project, scope)
   }
 
-  override def removeAbstracts =
-    new ScMethodType(
-      returnType.removeAbstracts,
-      params.map(p => p.copy(paramType = p.paramType.removeAbstracts)),
-      isImplicit)(project, scope)
+  override def removeAbstracts = new ScMethodType(
+    returnType.removeAbstracts,
+    params.map(p => p.copy(paramType = p.paramType.removeAbstracts)),
+    isImplicit)(project, scope)
 
   override def recursiveUpdate(
       update: ScType => (Boolean, ScType),
@@ -449,18 +446,17 @@ case class ScTypePolymorphicType(
       .asInstanceOf[ValueType]
   }
 
-  override def removeAbstracts =
-    ScTypePolymorphicType(
-      internalType.removeAbstracts,
-      typeParameters.map(tp => {
-        TypeParameter(
-          tp.name,
-          tp.typeParams /* todo: ? */,
-          () => tp.lowerType().removeAbstracts,
-          () => tp.upperType().removeAbstracts,
-          tp.ptp)
-      })
-    )
+  override def removeAbstracts = ScTypePolymorphicType(
+    internalType.removeAbstracts,
+    typeParameters.map(tp => {
+      TypeParameter(
+        tp.name,
+        tp.typeParams /* todo: ? */,
+        () => tp.lowerType().removeAbstracts,
+        () => tp.upperType().removeAbstracts,
+        tp.ptp)
+    })
+  )
 
   override def recursiveUpdate(
       update: ScType => (Boolean, ScType),

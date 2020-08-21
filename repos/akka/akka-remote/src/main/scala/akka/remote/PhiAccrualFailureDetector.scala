@@ -206,12 +206,11 @@ private[akka] object HeartbeatHistory {
     * The stats (mean, variance, stdDeviation) are not defined for
     * for empty HeartbeatHistory, i.e. throws ArithmeticException.
     */
-  def apply(maxSampleSize: Int): HeartbeatHistory =
-    HeartbeatHistory(
-      maxSampleSize = maxSampleSize,
-      intervals = immutable.IndexedSeq.empty,
-      intervalSum = 0L,
-      squaredIntervalSum = 0L)
+  def apply(maxSampleSize: Int): HeartbeatHistory = HeartbeatHistory(
+    maxSampleSize = maxSampleSize,
+    intervals = immutable.IndexedSeq.empty,
+    intervalSum = 0L,
+    squaredIntervalSum = 0L)
 
 }
 
@@ -259,12 +258,11 @@ private[akka] final case class HeartbeatHistory private (
       dropOldest :+ interval // recur
   }
 
-  private def dropOldest: HeartbeatHistory =
-    HeartbeatHistory(
-      maxSampleSize,
-      intervals = intervals drop 1,
-      intervalSum = intervalSum - intervals.head,
-      squaredIntervalSum = squaredIntervalSum - pow2(intervals.head))
+  private def dropOldest: HeartbeatHistory = HeartbeatHistory(
+    maxSampleSize,
+    intervals = intervals drop 1,
+    intervalSum = intervalSum - intervals.head,
+    squaredIntervalSum = squaredIntervalSum - pow2(intervals.head))
 
   private def pow2(x: Long) = x * x
 }

@@ -53,11 +53,10 @@ object StreamTest extends SpecLite {
 
   "intersperse vs benchmark" ! forAll {
     def intersperse[A](as: Stream[A], a: A): Stream[A] = {
-      def loop(rest: Stream[A]): Stream[A] =
-        rest match {
-          case Stream.Empty => Stream.empty
-          case h #:: t      => a #:: h #:: loop(t)
-        }
+      def loop(rest: Stream[A]): Stream[A] = rest match {
+        case Stream.Empty => Stream.empty
+        case h #:: t      => a #:: h #:: loop(t)
+      }
       as match {
         case Stream.Empty => Stream.empty
         case h #:: t      => h #:: loop(t)

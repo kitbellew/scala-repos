@@ -28,9 +28,8 @@ object StandardTestDBs {
     val url = "jdbc:h2:mem:test_rownum"
     override def isPersistent = false
     override val profile = new H2Profile {
-      override protected def computeQueryCompiler =
-        super.computeQueryCompiler
-          .addAfter(Phase.removeTakeDrop, Phase.expandSums)
+      override protected def computeQueryCompiler = super.computeQueryCompiler
+        .addAfter(Phase.removeTakeDrop, Phase.expandSums)
     }
   }
 
@@ -154,20 +153,18 @@ object StandardTestDBs {
       val db = session.database
       db.getTables.foreach(t => db.dropTable(t.name))
     }
-    def assertTablesExist(tables: String*) =
-      profile.api.SimpleDBIO { ctx =>
-        val all = ctx.session.database.getTables.map(_.name).toSet
-        for (t <- tables) {
-          if (!all.contains(t)) Assert.fail("Table " + t + " should exist")
-        }
+    def assertTablesExist(tables: String*) = profile.api.SimpleDBIO { ctx =>
+      val all = ctx.session.database.getTables.map(_.name).toSet
+      for (t <- tables) {
+        if (!all.contains(t)) Assert.fail("Table " + t + " should exist")
       }
-    def assertNotTablesExist(tables: String*) =
-      profile.api.SimpleDBIO { ctx =>
-        val all = ctx.session.database.getTables.map(_.name).toSet
-        for (t <- tables) {
-          if (all.contains(t)) Assert.fail("Table " + t + " should not exist")
-        }
+    }
+    def assertNotTablesExist(tables: String*) = profile.api.SimpleDBIO { ctx =>
+      val all = ctx.session.database.getTables.map(_.name).toSet
+      for (t <- tables) {
+        if (all.contains(t)) Assert.fail("Table " + t + " should not exist")
       }
+    }
   }
 
   lazy val DB2 = new ExternalJdbcTestDB("db2") {

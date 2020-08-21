@@ -697,23 +697,21 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     * Create a new Frame whose rows are sorted according to the row
     * index keys
     */
-  def sortedRIx: Frame[RX, CX, T] =
-    if (rowIx.isMonotonic) this
-    else {
-      val taker = rowIx.argSort
-      Frame(values.map(_.take(taker)), rowIx.take(taker), colIx)
-    }
+  def sortedRIx: Frame[RX, CX, T] = if (rowIx.isMonotonic) this
+  else {
+    val taker = rowIx.argSort
+    Frame(values.map(_.take(taker)), rowIx.take(taker), colIx)
+  }
 
   /**
     * Create a new Frame whose cols are sorted according to the col
     * index keys
     */
-  def sortedCIx: Frame[RX, CX, T] =
-    if (colIx.isMonotonic) this
-    else {
-      val taker = colIx.argSort
-      Frame(values.take(taker), rowIx, colIx.take(taker))
-    }
+  def sortedCIx: Frame[RX, CX, T] = if (colIx.isMonotonic) this
+  else {
+    val taker = colIx.argSort
+    Frame(values.take(taker), rowIx, colIx.take(taker))
+  }
 
   /**
     * Create a new Frame whose rows are sorted primarily on the values
@@ -1613,11 +1611,10 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
       val clens = MatCols.colLens(values, numCols, ncols)
 
       val csca = colIx.scalarTag
-      def clen(c: Int) =
-        clens(c) max {
-          val lst = csca.strList(colIx.raw(c)).map(_.length)
-          if (lst.length > 0) lst.max else 0
-        }
+      def clen(c: Int) = clens(c) max {
+        val lst = csca.strList(colIx.raw(c)).map(_.length)
+        if (lst.length > 0) lst.max else 0
+      }
 
       var prevColMask =
         clens.map(x =>
@@ -1628,25 +1625,24 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
       var prevColLabel = "" // recalls previous column's label at level L
 
       // build columns header
-      def createColHeader(l: Int) =
-        (c: Int) => {
-          val labs = csca.strList(colIx.raw(c))
-          val currLab = labs(l)
+      def createColHeader(l: Int) = (c: Int) => {
+        val labs = csca.strList(colIx.raw(c))
+        val currLab = labs(l)
 
-          val fmt = "%" + clen(c) + "s "
-          val res =
-            if (l == labs.length - 1 || currLab != prevColLabel || prevColMask
-                .get(c)
-                .getOrElse(false)) {
-              prevColMask = prevColMask.updated(c, true)
-              currLab.formatted(fmt)
-            } else {
-              prevColMask = prevColMask.updated(c, false)
-              "".formatted(fmt)
-            }
-          prevColLabel = currLab
-          res
-        }
+        val fmt = "%" + clen(c) + "s "
+        val res =
+          if (l == labs.length - 1 || currLab != prevColLabel || prevColMask
+              .get(c)
+              .getOrElse(false)) {
+            prevColMask = prevColMask.updated(c, true)
+            currLab.formatted(fmt)
+          } else {
+            prevColMask = prevColMask.updated(c, false)
+            "".formatted(fmt)
+          }
+        prevColLabel = currLab
+        res
+      }
 
       def colBreakStr = {
         prevColLabel = ""
@@ -1732,12 +1728,11 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
   override def hashCode(): Int =
     values.hashCode() * 31 * 31 + rowIx.hashCode() * 31 + colIx.hashCode()
 
-  override def equals(other: Any): Boolean =
-    other match {
-      case f: Frame[_, _, _] =>
-        (this eq f) || rowIx == f.rowIx && colIx == f.colIx && values == f.values
-      case _ => false
-    }
+  override def equals(other: Any): Boolean = other match {
+    case f: Frame[_, _, _] =>
+      (this eq f) || rowIx == f.rowIx && colIx == f.colIx && values == f.values
+    case _ => false
+  }
 }
 
 object Frame extends BinOpFrame {

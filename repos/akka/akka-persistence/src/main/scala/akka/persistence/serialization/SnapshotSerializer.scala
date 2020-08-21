@@ -47,13 +47,12 @@ class SnapshotSerializer(val system: ExtendedActorSystem)
     * Serializes a [[Snapshot]]. Delegates serialization of snapshot `data` to a matching
     * `akka.serialization.Serializer`.
     */
-  def toBinary(o: AnyRef): Array[Byte] =
-    o match {
-      case Snapshot(data) ⇒ snapshotToBinary(data.asInstanceOf[AnyRef])
-      case _ ⇒
-        throw new IllegalArgumentException(
-          s"Can't serialize object of type ${o.getClass}")
-    }
+  def toBinary(o: AnyRef): Array[Byte] = o match {
+    case Snapshot(data) ⇒ snapshotToBinary(data.asInstanceOf[AnyRef])
+    case _ ⇒
+      throw new IllegalArgumentException(
+        s"Can't serialize object of type ${o.getClass}")
+  }
 
   /**
     * Deserializes a [[Snapshot]]. Delegates deserialization of snapshot `data` to a matching

@@ -46,19 +46,18 @@ trait PredicatePullupsModule[M[+_]] extends TransSpecableModule[M] {
         graph.foldDown(true) {
           case s @ Split(g @ Group(id, target, gchild), schild, _) =>
             def extractFilter(spec: dag.BucketSpec)
-                : Option[(List[DepGraph], List[dag.BucketSpec])] =
-              spec match {
-                case dag.IntersectBucketSpec(left, right) =>
-                  for {
-                    fl <- extractFilter(left)
-                    fr <- extractFilter(right)
-                  } yield fl |+| fr
-                case dag.Extra(target) => Some((List(target), Nil))
-                case u @ dag.UnfixedSolution(id, expr)
-                    if isTransSpecable(expr, target) =>
-                  Some((Nil, List(u)))
-                case other => None
-              }
+                : Option[(List[DepGraph], List[dag.BucketSpec])] = spec match {
+              case dag.IntersectBucketSpec(left, right) =>
+                for {
+                  fl <- extractFilter(left)
+                  fr <- extractFilter(right)
+                } yield fl |+| fr
+              case dag.Extra(target) => Some((List(target), Nil))
+              case u @ dag.UnfixedSolution(id, expr)
+                  if isTransSpecable(expr, target) =>
+                Some((Nil, List(u)))
+              case other => None
+            }
 
             extractFilter(gchild) match {
               case Some((booleans @ (_ :: _), newChildren @ (_ :: _))) => {

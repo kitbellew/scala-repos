@@ -10,10 +10,10 @@ import breeze.util.JavaArrayOps._
   */
 object JavaCompatible {
 
-  def convolve(data: Array[Double], kernel: Array[Double]) =
-    dvDToArray(breeze.signal.convolve(arrayDToDv(data), arrayDToDv(kernel)))
-  def correlate(data: Array[Double], kernel: Array[Double]) =
-    dvDToArray(breeze.signal.correlate(arrayDToDv(data), arrayDToDv(kernel)))
+  def convolve(data: Array[Double], kernel: Array[Double]) = dvDToArray(
+    breeze.signal.convolve(arrayDToDv(data), arrayDToDv(kernel)))
+  def correlate(data: Array[Double], kernel: Array[Double]) = dvDToArray(
+    breeze.signal.correlate(arrayDToDv(data), arrayDToDv(kernel)))
 
   // <editor-fold defaultstate="collapsed" desc=" discrete Fourier transforms ">
 
@@ -24,16 +24,16 @@ object JavaCompatible {
     * @return
     * @author ktakagaki, dlwh
     */
-  def fourierTrD(data: Array[Double]): Array[Complex] =
-    dvCToArray(breeze.signal.fourierTr(arrayDToDv(data)))
+  def fourierTrD(data: Array[Double]): Array[Complex] = dvCToArray(
+    breeze.signal.fourierTr(arrayDToDv(data)))
 
   /** See [[fourierTrD]] */
-  def fourierTrC(data: Array[Complex]): Array[Complex] =
-    dvCToArray(breeze.signal.fourierTr(arrayCToDv(data)))
+  def fourierTrC(data: Array[Complex]): Array[Complex] = dvCToArray(
+    breeze.signal.fourierTr(arrayCToDv(data)))
 
   /** See [[fourierTrD]] */
-  def iFourierTrC(data: Array[Complex]): Array[Complex] =
-    dvCToArray(breeze.signal.iFourierTr(arrayCToDv(data)))
+  def iFourierTrC(data: Array[Complex]): Array[Complex] = dvCToArray(
+    breeze.signal.iFourierTr(arrayCToDv(data)))
 
   /** See [[fourierTrD]] */
   def fourierTr2C(data: Array[Array[Complex]]): Array[Array[Complex]] =
@@ -49,12 +49,12 @@ object JavaCompatible {
     * @param data input array
     * @return
     */
-  def fourierShiftD(data: Array[Double]): Array[Double] =
-    dvDToArray(breeze.signal.fourierShift(arrayDToDv(data)))
+  def fourierShiftD(data: Array[Double]): Array[Double] = dvDToArray(
+    breeze.signal.fourierShift(arrayDToDv(data)))
 
   /** See [[fourierShiftD]] */
-  def fourierShiftC(data: Array[Complex]): Array[Complex] =
-    dvCToArray(breeze.signal.fourierShift(arrayCToDv(data)))
+  def fourierShiftC(data: Array[Complex]): Array[Complex] = dvCToArray(
+    breeze.signal.fourierShift(arrayCToDv(data)))
 
   /** Shift the zero-frequency component to the center of the spectrum.
     * Use fourierShiftC instead for complex array input.
@@ -63,12 +63,12 @@ object JavaCompatible {
     * @param data input array
     * @return
     */
-  def iFourierShiftD(data: Array[Double]): Array[Double] =
-    dvDToArray(breeze.signal.iFourierShift(arrayDToDv(data)))
+  def iFourierShiftD(data: Array[Double]): Array[Double] = dvDToArray(
+    breeze.signal.iFourierShift(arrayDToDv(data)))
 
   /** See [[iFourierShiftD]] */
-  def iFourierShiftC(data: Array[Complex]): Array[Complex] =
-    dvCToArray(breeze.signal.iFourierShift(arrayCToDv(data)))
+  def iFourierShiftC(data: Array[Complex]): Array[Complex] = dvCToArray(
+    breeze.signal.iFourierShift(arrayCToDv(data)))
 
   /** Returns the frequencies for each tap in a discrete Fourier transform, useful for plotting.
     * You must specify either an fs or a dt argument. If you specify both, which is redundant,
@@ -243,13 +243,13 @@ object JavaCompatible {
     * @see https://en.wikipedia.org/wiki/Haar_wavelet
     * @param data data to be transformed.
     */
-  def haarTrD(data: Array[Double]) =
-    dvDToArray(breeze.signal.haarTr(arrayDToDv(data)))
+  def haarTrD(data: Array[Double]) = dvDToArray(
+    breeze.signal.haarTr(arrayDToDv(data)))
 
   /** See [[haarTrD]]
     */
-  def haarTr2D(data: Array[Array[Double]]) =
-    dmDToArray2(breeze.signal.haarTr(array2DToDm(data)))
+  def haarTr2D(data: Array[Array[Double]]) = dmDToArray2(
+    breeze.signal.haarTr(array2DToDm(data)))
 
   // </editor-fold>
 
@@ -262,7 +262,7 @@ object JavaCompatible {
     * @param windowLength only supports odd windowLength values, since even values would cause half-frame time shifts in one or the other direction,
     *                     and would also lead to floating point values even for integer input
     */
-  def filterMedianD(data: Array[Double], windowLength: Int) =
-    dvDToArray(breeze.signal.filterMedian(arrayDToDv(data), windowLength))
+  def filterMedianD(data: Array[Double], windowLength: Int) = dvDToArray(
+    breeze.signal.filterMedian(arrayDToDv(data), windowLength))
 
 }

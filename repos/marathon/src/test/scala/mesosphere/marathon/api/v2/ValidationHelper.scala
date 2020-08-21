@@ -4,10 +4,9 @@ import com.wix.accord._
 
 object ValidationHelper {
   case class ViolationMessageAndPath(message: String, path: Option[String]) {
-    override def toString: String =
-      path
-        .map(p => s"Path: $p. Error message: $message")
-        .getOrElse(s"Error message: $message")
+    override def toString: String = path
+      .map(p => s"Path: $p. Error message: $message")
+      .getOrElse(s"Error message: $message")
   }
 
   def getAllRuleConstrains(r: Result): Set[ViolationMessageAndPath] = {

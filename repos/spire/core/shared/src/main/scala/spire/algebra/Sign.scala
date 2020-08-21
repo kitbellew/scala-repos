@@ -7,12 +7,11 @@ package algebra
 sealed abstract class Sign(val toInt: Int) {
   import Sign._
 
-  def unary_-(): Sign =
-    this match {
-      case Positive => Negative
-      case Negative => Positive
-      case Zero     => Zero
-    }
+  def unary_-(): Sign = this match {
+    case Positive => Negative
+    case Negative => Positive
+    case Zero     => Zero
+  }
 
   def *(that: Sign): Sign = Sign(this.toInt * that.toInt)
 
@@ -48,12 +47,11 @@ object Sign {
   implicit def SignAction[A](implicit
       A: AdditiveGroup[A]): MultiplicativeAction[A, Sign] =
     new MultiplicativeAction[A, Sign] {
-      def gtimesl(s: Sign, a: A): A =
-        s match {
-          case Positive => a
-          case Negative => A.negate(a)
-          case Zero     => A.zero
-        }
+      def gtimesl(s: Sign, a: A): A = s match {
+        case Positive => a
+        case Negative => A.negate(a)
+        case Zero     => A.zero
+      }
       def gtimesr(a: A, s: Sign): A = gtimesl(s, a)
     }
 }

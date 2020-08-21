@@ -114,18 +114,17 @@ private[spark] class CompactBuffer[T: ClassTag]
 
   override def size: Int = curSize
 
-  override def iterator: Iterator[T] =
-    new Iterator[T] {
-      private var pos = 0
-      override def hasNext: Boolean = pos < curSize
-      override def next(): T = {
-        if (!hasNext) {
-          throw new NoSuchElementException
-        }
-        pos += 1
-        apply(pos - 1)
+  override def iterator: Iterator[T] = new Iterator[T] {
+    private var pos = 0
+    override def hasNext: Boolean = pos < curSize
+    override def next(): T = {
+      if (!hasNext) {
+        throw new NoSuchElementException
       }
+      pos += 1
+      apply(pos - 1)
     }
+  }
 
   /** Increase our size to newSize and grow the backing array if needed. */
   private def growToSize(newSize: Int): Unit = {

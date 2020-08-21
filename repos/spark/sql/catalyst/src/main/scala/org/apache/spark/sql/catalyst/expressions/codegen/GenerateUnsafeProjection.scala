@@ -33,17 +33,16 @@ object GenerateUnsafeProjection
     extends CodeGenerator[Seq[Expression], UnsafeProjection] {
 
   /** Returns true iff we support this data type. */
-  def canSupport(dataType: DataType): Boolean =
-    dataType match {
-      case NullType                                               => true
-      case t: AtomicType                                          => true
-      case _: CalendarIntervalType                                => true
-      case t: StructType                                          => t.toSeq.forall(field => canSupport(field.dataType))
-      case t: ArrayType if canSupport(t.elementType)              => true
-      case MapType(kt, vt, _) if canSupport(kt) && canSupport(vt) => true
-      case udt: UserDefinedType[_]                                => canSupport(udt.sqlType)
-      case _                                                      => false
-    }
+  def canSupport(dataType: DataType): Boolean = dataType match {
+    case NullType                                               => true
+    case t: AtomicType                                          => true
+    case _: CalendarIntervalType                                => true
+    case t: StructType                                          => t.toSeq.forall(field => canSupport(field.dataType))
+    case t: ArrayType if canSupport(t.elementType)              => true
+    case MapType(kt, vt, _) if canSupport(kt) && canSupport(vt) => true
+    case udt: UserDefinedType[_]                                => canSupport(udt.sqlType)
+    case _                                                      => false
+  }
 
   // TODO: if the nullability of field is correct, we can use it to save null check.
   private def writeStructToBuffer(

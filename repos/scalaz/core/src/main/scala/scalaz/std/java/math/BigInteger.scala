@@ -21,12 +21,11 @@ trait BigIntegerInstances {
       override def min = None
       override def max = None
 
-      def order(x: BigInteger, y: BigInteger) =
-        x.compareTo(y) match {
-          case x if x < 0  => Ordering.LT
-          case x if x == 0 => Ordering.EQ
-          case x if x > 0  => Ordering.GT
-        }
+      def order(x: BigInteger, y: BigInteger) = x.compareTo(y) match {
+        case x if x < 0  => Ordering.LT
+        case x if x == 0 => Ordering.EQ
+        case x if x > 0  => Ordering.GT
+      }
     }
 
   import Tags.Multiplication
@@ -41,8 +40,8 @@ trait BigIntegerInstances {
 
       def append(
           f1: BigInteger @@ Multiplication,
-          f2: => BigInteger @@ Multiplication) =
-        Multiplication(Tag.unwrap(f1) multiply Tag.unwrap(f2))
+          f2: => BigInteger @@ Multiplication) = Multiplication(
+        Tag.unwrap(f1) multiply Tag.unwrap(f2))
 
       def zero: BigInteger @@ Multiplication = Multiplication(BigInteger.ONE)
 

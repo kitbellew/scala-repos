@@ -16,15 +16,15 @@ private class TaskOpSourceDelegate(actorRef: ActorRef) extends TaskOpSource {
 }
 
 object TaskOpSourceDelegate {
-  def apply(actorRef: ActorRef): TaskOpSource =
-    new TaskOpSourceDelegate(actorRef)
+  def apply(actorRef: ActorRef): TaskOpSource = new TaskOpSourceDelegate(
+    actorRef)
 
   sealed trait TaskOpNotification {
     def taskOp: TaskOp
   }
   object TaskOpNotification {
-    def unapply(notification: TaskOpNotification): Option[TaskOp] =
-      Some(notification.taskOp)
+    def unapply(notification: TaskOpNotification): Option[TaskOp] = Some(
+      notification.taskOp)
   }
   case class TaskOpAccepted(taskOp: TaskOp) extends TaskOpNotification
   case class TaskOpRejected(taskOp: TaskOp, reason: String)

@@ -24,14 +24,13 @@ private[lease] class MemorySpace(
       maxDiscount: StorageUnit,
       rSnooper: RequestSnooper,
       lr: LogsReceiver
-  ) =
-    this(
-      info,
-      minDiscount,
-      maxDiscount,
-      rSnooper,
-      lr,
-      new GenerationalRandom(info))
+  ) = this(
+    info,
+    minDiscount,
+    maxDiscount,
+    rSnooper,
+    lr,
+    new GenerationalRandom(info))
 
   def this(
       info: JvmInfo,

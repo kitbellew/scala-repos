@@ -21,11 +21,10 @@ import scala.collection.JavaConverters._
 private[serverset2] class ApacheZooKeeper private[apache] (
     zk: zookeeper.ZooKeeper)
     extends ZooKeeperRW {
-  private def fromZKData(data: Array[Byte]): Option[Buf] =
-    data match {
-      case null => None
-      case x    => Some(Buf.ByteArray.Owned(x))
-    }
+  private def fromZKData(data: Array[Byte]): Option[Buf] = data match {
+    case null => None
+    case x    => Some(Buf.ByteArray.Owned(x))
+  }
 
   /**
     * ZooKeeper differentiates between an empty byte array and a null reference.
@@ -33,11 +32,10 @@ private[serverset2] class ApacheZooKeeper private[apache] (
     * @param data Option[Buf]
     * @return Array[Byte] or null
     */
-  private def zkData(data: Option[Buf]): Array[Byte] =
-    data match {
-      case Some(b) => toByteArray(b)
-      case None    => null
-    }
+  private def zkData(data: Option[Buf]): Array[Byte] = data match {
+    case Some(b) => toByteArray(b)
+    case None    => null
+  }
 
   def sessionId: Long = zk.getSessionId
 

@@ -114,19 +114,17 @@ abstract class MappedBinary[T <: Mapper[T]](val fieldOwner: T)
 
   def asJsExp: JsExp = throw new NullPointerException("No way")
 
-  def asJsonValue: Box[JsonAST.JValue] =
-    Full(get match {
-      case null  => JsonAST.JNull
-      case value => JsonAST.JString(base64Encode(value))
-    })
+  def asJsonValue: Box[JsonAST.JValue] = Full(get match {
+    case null  => JsonAST.JNull
+    case value => JsonAST.JString(base64Encode(value))
+  })
 
-  override def setFromAny(f: Any): Array[Byte] =
-    f match {
-      case null | JsonAST.JNull    => this.set(null)
-      case JsonAST.JString(base64) => this.set(base64Decode(base64))
-      case array: Array[Byte]      => this.set(array)
-      case s                       => this.set(s.toString.getBytes("UTF-8"))
-    }
+  override def setFromAny(f: Any): Array[Byte] = f match {
+    case null | JsonAST.JNull    => this.set(null)
+    case JsonAST.JString(base64) => this.set(base64Decode(base64))
+    case array: Array[Byte]      => this.set(array)
+    case s                       => this.set(s.toString.getBytes("UTF-8"))
+  }
 
   def jdbcFriendly(field: String): Object = get
 
@@ -250,11 +248,10 @@ abstract class MappedText[T <: Mapper[T]](val fieldOwner: T)
 
   def asJsExp: JsExp = JE.Str(get)
 
-  def asJsonValue: Box[JsonAST.JValue] =
-    Full(get match {
-      case null => JsonAST.JNull
-      case str  => JsonAST.JString(str)
-    })
+  def asJsonValue: Box[JsonAST.JValue] = Full(get match {
+    case null => JsonAST.JNull
+    case str  => JsonAST.JString(str)
+  })
 
   protected def i_obscure_!(in: String): String = ""
 
@@ -276,11 +273,10 @@ abstract class MappedText[T <: Mapper[T]](val fieldOwner: T)
 
   def jdbcFriendly(field: String): Object = real_convertToJDBCFriendly(data.get)
 
-  def real_convertToJDBCFriendly(value: String): Object =
-    value match {
-      case null => null
-      case s    => s
-    }
+  def real_convertToJDBCFriendly(value: String): Object = value match {
+    case null => null
+    case s    => s
+  }
 
   def buildSetActualValue(
       accessor: Method,
@@ -308,19 +304,18 @@ abstract class MappedText[T <: Mapper[T]](val fieldOwner: T)
       columnName: String): (T, Long, Boolean) => Unit = null
   def buildSetStringValue(
       accessor: Method,
-      columnName: String): (T, String) => Unit =
-    (inst, v) =>
-      doField(
-        inst,
-        accessor,
-        { case f: MappedText[T] =>
-          val toSet = v match {
-            case null  => null
-            case other => other
-          }
-          f.data() = toSet
-          f.orgData() = toSet
-        })
+      columnName: String): (T, String) => Unit = (inst, v) =>
+    doField(
+      inst,
+      accessor,
+      { case f: MappedText[T] =>
+        val toSet = v match {
+          case null  => null
+          case other => other
+        }
+        f.data() = toSet
+        f.orgData() = toSet
+      })
   def buildSetDateValue(
       accessor: Method,
       columnName: String): (T, Date) => Unit = null
@@ -416,11 +411,10 @@ abstract class MappedFakeClob[T <: Mapper[T]](val fieldOwner: T)
 
   def asJsExp: JsExp = JE.Str(get)
 
-  def asJsonValue: Box[JsonAST.JValue] =
-    Full(get match {
-      case null => JsonAST.JNull
-      case str  => JsonAST.JString(str)
-    })
+  def asJsonValue: Box[JsonAST.JValue] = Full(get match {
+    case null => JsonAST.JNull
+    case str  => JsonAST.JString(str)
+  })
 
   override def setFromAny(in: Any): String = {
     in match {
@@ -440,11 +434,10 @@ abstract class MappedFakeClob[T <: Mapper[T]](val fieldOwner: T)
 
   def jdbcFriendly(field: String): Object = real_convertToJDBCFriendly(data.get)
 
-  def real_convertToJDBCFriendly(value: String): Object =
-    value match {
-      case null => null
-      case s    => s.getBytes("UTF-8")
-    }
+  def real_convertToJDBCFriendly(value: String): Object = value match {
+    case null => null
+    case s    => s.getBytes("UTF-8")
+  }
 
   def buildSetActualValue(
       accessor: Method,
@@ -471,19 +464,18 @@ abstract class MappedFakeClob[T <: Mapper[T]](val fieldOwner: T)
       columnName: String): (T, Long, Boolean) => Unit = null
   def buildSetStringValue(
       accessor: Method,
-      columnName: String): (T, String) => Unit =
-    (inst, v) =>
-      doField(
-        inst,
-        accessor,
-        { case f: MappedFakeClob[T] =>
-          val toSet = v match {
-            case null  => null
-            case other => other
-          }
-          f.data() = toSet
-          f.orgData() = toSet
-        })
+      columnName: String): (T, String) => Unit = (inst, v) =>
+    doField(
+      inst,
+      accessor,
+      { case f: MappedFakeClob[T] =>
+        val toSet = v match {
+          case null  => null
+          case other => other
+        }
+        f.data() = toSet
+        f.orgData() = toSet
+      })
   def buildSetDateValue(
       accessor: Method,
       columnName: String): (T, Date) => Unit = null

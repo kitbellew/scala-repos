@@ -141,12 +141,11 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
       .map(toMethod)
       .filterNot(ignore)
       .toList
-  private def getSMethods(sClass: Class[_]): List[Method] =
-    sClass.getMethods
-      .filterNot(scalaIgnore contains _.getName)
-      .map(toMethod)
-      .filterNot(ignore)
-      .toList
+  private def getSMethods(sClass: Class[_]): List[Method] = sClass.getMethods
+    .filterNot(scalaIgnore contains _.getName)
+    .map(toMethod)
+    .filterNot(ignore)
+    .toList
 
   private def toMethod(m: java.lang.reflect.Method): Method =
     Method(

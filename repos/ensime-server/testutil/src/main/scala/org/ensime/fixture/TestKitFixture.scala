@@ -68,7 +68,7 @@ trait SharedTestKitFixture extends TestKitFixture with BeforeAndAfterAll {
     _testkit.system.awaitTermination()
   }
 
-  override def withTestKit(testCode: TestKitFix => Any): Any =
-    testCode(_testkit)
+  override def withTestKit(testCode: TestKitFix => Any): Any = testCode(
+    _testkit)
 
 }

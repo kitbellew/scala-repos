@@ -40,8 +40,8 @@ object ObservableFloatArray
   /**
     * @inheritdoc
     */
-  override def apply(v: Float*) =
-    new ObservableFloatArray(jfxc.FXCollections.observableFloatArray(v: _*))
+  override def apply(v: Float*) = new ObservableFloatArray(
+    jfxc.FXCollections.observableFloatArray(v: _*))
 }
 
 // TODO: Enter link when JavaFX 8 API Docs are available on-line.

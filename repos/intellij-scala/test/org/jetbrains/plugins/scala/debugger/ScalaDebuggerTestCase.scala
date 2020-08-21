@@ -235,11 +235,10 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
 
   protected def suspendContext = suspendManager.getPausedContext
 
-  protected def evaluationContext() =
-    new EvaluationContextImpl(
-      suspendContext,
-      suspendContext.getFrameProxy,
-      suspendContext.getFrameProxy.thisObject())
+  protected def evaluationContext() = new EvaluationContextImpl(
+    suspendContext,
+    suspendContext.getFrameProxy,
+    suspendContext.getFrameProxy.thisObject())
 
   protected def currentSourcePosition =
     ContextUtil.getSourcePosition(suspendContext)

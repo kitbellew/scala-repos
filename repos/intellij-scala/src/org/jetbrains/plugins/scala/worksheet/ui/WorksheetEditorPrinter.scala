@@ -394,17 +394,16 @@ object WorksheetEditorPrinter {
         None,
       foldGroup: Option[WorksheetFoldGroup] = None) {
     class MyCaretAdapterBase extends CaretAdapter {
-      override def equals(obj: Any): Boolean =
-        obj match {
-          case _: MyCaretAdapterBase => true
-          case _                     => false
-        }
+      override def equals(obj: Any): Boolean = obj match {
+        case _: MyCaretAdapterBase => true
+        case _                     => false
+      }
 
       override def hashCode(): Int = 12345
     }
 
-    def createListener(recipient: Editor, don: Editor) =
-      foldGroup map { case group =>
+    def createListener(recipient: Editor, don: Editor) = foldGroup map {
+      case group =>
         new CaretAdapter {
           override def caretPositionChanged(e: CaretEvent) {
             if (!e.getEditor
@@ -419,16 +418,14 @@ object WorksheetEditorPrinter {
                 0))
           }
         }
-      } getOrElse new CaretAdapter {
-        override def caretPositionChanged(e: CaretEvent) {
-          if (!e.getEditor
-              .asInstanceOf[EditorImpl]
-              .getContentComponent
-              .hasFocus) return
-          recipient.getCaretModel.moveToVisualPosition(
-            don.getCaretModel.getVisualPosition)
-        }
+    } getOrElse new CaretAdapter {
+      override def caretPositionChanged(e: CaretEvent) {
+        if (!e.getEditor.asInstanceOf[EditorImpl].getContentComponent.hasFocus)
+          return
+        recipient.getCaretModel.moveToVisualPosition(
+          don.getCaretModel.getVisualPosition)
       }
+    }
 
     def checkAndAdd(don: Editor, recipient: Editor) {
       patched get don match {
@@ -598,18 +595,17 @@ object WorksheetEditorPrinter {
         if (hadFocus) editorContentComponent.requestFocusInWindow()
       }
 
-      @inline def patchEditor(): Unit =
-        preserveFocus {
-          (parent, child) match {
-            case (parentPane: JLayeredPane, _) =>
-              parentPane remove child
-              parentPane.add(diffPane, BorderLayout.CENTER)
-            case (_, childPane: JLayeredPane) =>
-              childPane remove editorComponent
-              childPane.add(diffPane, BorderLayout.CENTER)
-            case _ =>
-          }
+      @inline def patchEditor(): Unit = preserveFocus {
+        (parent, child) match {
+          case (parentPane: JLayeredPane, _) =>
+            parentPane remove child
+            parentPane.add(diffPane, BorderLayout.CENTER)
+          case (_, childPane: JLayeredPane) =>
+            childPane remove editorComponent
+            childPane.add(diffPane, BorderLayout.CENTER)
+          case _ =>
         }
+      }
 
       if (parent.getComponentCount > 1) parent.getComponent(1) match {
         case splitter: Splitter =>

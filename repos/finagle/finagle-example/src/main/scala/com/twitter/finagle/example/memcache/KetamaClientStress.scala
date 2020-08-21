@@ -98,8 +98,8 @@ object KetamaClientStress extends App {
         Buf.Utf8(randomString(config.valuesize())))
     }
 
-    def nextKeyValue: (String, Buf) =
-      keyValueSet((load_count.getAndIncrement() % config.numkeys()).toInt)
+    def nextKeyValue: (String, Buf) = keyValueSet(
+      (load_count.getAndIncrement() % config.numkeys()).toInt)
 
     // local admin service
     val runtime = RuntimeEnvironment(this, Array() /*no args for you*/ )

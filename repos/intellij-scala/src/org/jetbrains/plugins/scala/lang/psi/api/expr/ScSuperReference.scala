@@ -29,6 +29,6 @@ trait ScSuperReference extends ScExpression with ScPathElement {
   //for A.super or simply super
   def drvTemplate: Option[ScTemplateDefinition]
 
-  def reference: Option[ScStableCodeReferenceElement] =
-    findChild(classOf[ScStableCodeReferenceElement])
+  def reference: Option[ScStableCodeReferenceElement] = findChild(
+    classOf[ScStableCodeReferenceElement])
 }

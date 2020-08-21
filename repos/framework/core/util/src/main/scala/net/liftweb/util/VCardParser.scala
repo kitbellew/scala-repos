@@ -65,9 +65,8 @@ object VCardParser extends Parsers {
     case a ~ _ ~ b => VCardEntry(a, b)
   }) +
 
-  def parse(in: String): Either[List[VCardEntry], String] =
-    expr(in) match {
-      case Success(v, r) => Left(v)
-      case err @ _       => Right(err toString)
-    }
+  def parse(in: String): Either[List[VCardEntry], String] = expr(in) match {
+    case Success(v, r) => Left(v)
+    case err @ _       => Right(err toString)
+  }
 }

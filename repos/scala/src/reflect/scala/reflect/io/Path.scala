@@ -31,8 +31,8 @@ import scala.reflect.internal.util.Statistics
   *  ''Note:  This library is considered experimental and should not be used unless you know what you are doing.''
   */
 object Path {
-  def isExtensionJarOrZip(jfile: JFile): Boolean =
-    isExtensionJarOrZip(jfile.getName)
+  def isExtensionJarOrZip(jfile: JFile): Boolean = isExtensionJarOrZip(
+    jfile.getName)
   def isExtensionJarOrZip(name: String): Boolean = {
     val ext = extension(name)
     ext == "jar" || ext == "zip"
@@ -60,23 +60,22 @@ object Path {
   def roots: List[Path] = java.io.File.listRoots().toList map Path.apply
 
   def apply(path: String): Path = apply(new JFile(path))
-  def apply(jfile: JFile): Path =
-    try {
-      def isFile = {
-        if (Statistics.canEnable) Statistics.incCounter(IOStats.fileIsFileCount)
-        jfile.isFile
-      }
+  def apply(jfile: JFile): Path = try {
+    def isFile = {
+      if (Statistics.canEnable) Statistics.incCounter(IOStats.fileIsFileCount)
+      jfile.isFile
+    }
 
-      def isDirectory = {
-        if (Statistics.canEnable)
-          Statistics.incCounter(IOStats.fileIsDirectoryCount)
-        jfile.isDirectory
-      }
+    def isDirectory = {
+      if (Statistics.canEnable)
+        Statistics.incCounter(IOStats.fileIsDirectoryCount)
+      jfile.isDirectory
+    }
 
-      if (isFile) new File(jfile)
-      else if (isDirectory) new Directory(jfile)
-      else new Path(jfile)
-    } catch { case ex: SecurityException => new Path(jfile) }
+    if (isFile) new File(jfile)
+    else if (isDirectory) new Directory(jfile)
+    else new Path(jfile)
+  } catch { case ex: SecurityException => new Path(jfile) }
 
   /** Avoiding any shell/path issues by only using alphanumerics. */
   private[io] def randomPrefix = alphanumeric take 6 mkString ""
@@ -162,23 +161,22 @@ class Path private[io] (val jfile: JFile) {
   /**
     * @return The path of the parent directory, or root if path is already root
     */
-  def parent: Directory =
-    path match {
-      case "" | "." => Directory("..")
-      case _        =>
-        // the only solution <-- a comment which could have used elaboration
-        if (segments.nonEmpty && segments.last == "..")
-          (path / "..").toDirectory
-        else
-          jfile.getParent match {
-            case null =>
-              if (isAbsolute)
-                toDirectory // it should be a root. BTW, don't need to worry about relative pathed root
-              else Directory(".") // a dir under pwd
-            case x =>
-              Directory(x)
-          }
-    }
+  def parent: Directory = path match {
+    case "" | "." => Directory("..")
+    case _        =>
+      // the only solution <-- a comment which could have used elaboration
+      if (segments.nonEmpty && segments.last == "..")
+        (path / "..").toDirectory
+      else
+        jfile.getParent match {
+          case null =>
+            if (isAbsolute)
+              toDirectory // it should be a root. BTW, don't need to worry about relative pathed root
+            else Directory(".") // a dir under pwd
+          case x =>
+            Directory(x)
+        }
+  }
   def parents: List[Directory] = {
     val p = parent
     if (p isSame this) Nil else p :: p.parents
@@ -203,11 +201,10 @@ class Path private[io] (val jfile: JFile) {
   def addExtension(ext: String): Path = Path(path + "." + ext)
   // changes the existing extension out for a new one, or adds it
   // if the current path has none.
-  def changeExtension(ext: String): Path =
-    (
-      if (extension == "") addExtension(ext)
-      else Path(path.stripSuffix(extension) + ext)
-    )
+  def changeExtension(ext: String): Path = (
+    if (extension == "") addExtension(ext)
+    else Path(path.stripSuffix(extension) + ext)
+  )
 
   // conditionally execute
   def ifFile[T](f: File => T): Option[T] = if (isFile) Some(f(toFile)) else None
@@ -288,10 +285,9 @@ class Path private[io] (val jfile: JFile) {
     }
 
   override def toString() = path
-  override def equals(other: Any) =
-    other match {
-      case x: Path => path == x.path
-      case _       => false
-    }
+  override def equals(other: Any) = other match {
+    case x: Path => path == x.path
+    case _       => false
+  }
   override def hashCode() = path.hashCode()
 }

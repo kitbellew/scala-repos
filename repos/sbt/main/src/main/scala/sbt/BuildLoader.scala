@@ -38,8 +38,9 @@ final class MultiHandler[S, T](
         Some(b)
     }
 
-  def baseLoader: S => Option[T] =
-    root match { case Some(rl) => rl | builtIn; case None => builtIn }
+  def baseLoader: S => Option[T] = root match {
+    case Some(rl) => rl | builtIn; case None => builtIn
+  }
 
   def addNonRoot(uri: URI, loader: S => Option[T]) =
     new MultiHandler(builtIn, root, (uri, loader) :: nonRoots, getURI, log)
@@ -99,8 +100,8 @@ object BuildLoader {
       transformAll: TransformAll = idFun) =
     new Components(resolver, builder, transformer, full, transformAll)
 
-  def seq(a: Transformer, b: Transformer): Transformer =
-    info => b(info.setUnit(a(info)))
+  def seq(a: Transformer, b: Transformer): Transformer = info =>
+    b(info.setUnit(a(info)))
 
   sealed trait Info {
     def uri: URI
@@ -156,19 +157,18 @@ object BuildLoader {
       base.transformAll)
   }
 
-  def componentLoader: Loader =
-    (info: LoadInfo) => {
-      import info.{components, config, staging, state, uri}
-      val cs = info.components
-      for {
-        resolve <- cs.resolver(new ResolveInfo(uri, staging, config, state))
-        base = resolve()
-        build <- cs.builder(new BuildInfo(uri, base, config, state))
-      } yield () => {
-        val unit = build()
-        cs.transformer(new TransformInfo(uri, base, unit, config, state))
-      }
+  def componentLoader: Loader = (info: LoadInfo) => {
+    import info.{components, config, staging, state, uri}
+    val cs = info.components
+    for {
+      resolve <- cs.resolver(new ResolveInfo(uri, staging, config, state))
+      base = resolve()
+      build <- cs.builder(new BuildInfo(uri, base, config, state))
+    } yield () => {
+      val unit = build()
+      cs.transformer(new TransformInfo(uri, base, unit, config, state))
     }
+  }
 }
 
 final class BuildLoader(
@@ -200,8 +200,8 @@ final class BuildLoader(
       seq(loaders.transformer, transformer),
       full.setRoot(loaders.full),
       loaders.transformAll andThen transformAll)
-  def resetPluginDepth: BuildLoader =
-    copyWithNewPM(config.pluginManagement.resetDepth)
+  def resetPluginDepth: BuildLoader = copyWithNewPM(
+    config.pluginManagement.resetDepth)
 
   def updatePluginManagement(overrides: Set[ModuleID]): BuildLoader = {
     val mgmt = config.pluginManagement
@@ -220,13 +220,12 @@ final class BuildLoader(
       transformAll)
   }
 
-  def components =
-    new Components(
-      resolvers.applyFun,
-      builders.applyFun,
-      transformer,
-      full.applyFun,
-      transformAll)
+  def components = new Components(
+    resolvers.applyFun,
+    builders.applyFun,
+    transformer,
+    full.applyFun,
+    transformAll)
   def apply(uri: URI): BuildUnit = {
     val info =
       new LoadInfo(uri, config.stagingDirectory, config, state, components)

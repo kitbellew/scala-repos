@@ -29,8 +29,8 @@ object LineNumber {
       stack: Seq[StackTraceElement]): StackTraceElement =
     stack(depth + 2)
 
-  def ignorePath(classPrefix: String): Option[StackTraceElement] =
-    ignorePath(Set(classPrefix))
+  def ignorePath(classPrefix: String): Option[StackTraceElement] = ignorePath(
+    Set(classPrefix))
   def ignorePath(classPrefixes: Set[String]): Option[StackTraceElement] =
     ignorePaths(classPrefixes, Thread.currentThread().getStackTrace)
 

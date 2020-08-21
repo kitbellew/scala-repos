@@ -230,18 +230,16 @@ class MockHttpSession extends HttpSession {
   protected var creationTime: Long = System.currentTimeMillis
   def isNew = false
   def invalidate {}
-  def getValue(key: String): Object =
-    values.get(key) match {
-      case Some(v) => v
-      case None    => null
-    }
+  def getValue(key: String): Object = values.get(key) match {
+    case Some(v) => v
+    case None    => null
+  }
   def removeValue(key: String): Unit = values -= key
   def putValue(key: String, value: Object): Unit = values += (key -> value)
-  def getAttribute(key: String): Object =
-    attr.get(key) match {
-      case Some(v) => v
-      case None    => null
-    }
+  def getAttribute(key: String): Object = attr.get(key) match {
+    case Some(v) => v
+    case None    => null
+  }
   def removeAttribute(key: String): Unit = attr -= key
   def setAttribute(key: String, value: Object): Unit = attr += (key -> value)
   def getValueNames(): Array[String] = values.keys.toList.toArray

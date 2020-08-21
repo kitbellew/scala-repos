@@ -47,70 +47,68 @@ class BlockingChannel(
   private val connectTimeoutMs = readTimeoutMs
   private var connectionId: String = ""
 
-  def connect() =
-    lock synchronized {
-      if (!connected) {
-        try {
-          channel = SocketChannel.open()
-          if (readBufferSize > 0)
-            channel.socket.setReceiveBufferSize(readBufferSize)
-          if (writeBufferSize > 0)
-            channel.socket.setSendBufferSize(writeBufferSize)
-          channel.configureBlocking(true)
-          channel.socket.setSoTimeout(readTimeoutMs)
-          channel.socket.setKeepAlive(true)
-          channel.socket.setTcpNoDelay(true)
-          channel.socket.connect(
-            new InetSocketAddress(host, port),
-            connectTimeoutMs)
+  def connect() = lock synchronized {
+    if (!connected) {
+      try {
+        channel = SocketChannel.open()
+        if (readBufferSize > 0)
+          channel.socket.setReceiveBufferSize(readBufferSize)
+        if (writeBufferSize > 0)
+          channel.socket.setSendBufferSize(writeBufferSize)
+        channel.configureBlocking(true)
+        channel.socket.setSoTimeout(readTimeoutMs)
+        channel.socket.setKeepAlive(true)
+        channel.socket.setTcpNoDelay(true)
+        channel.socket.connect(
+          new InetSocketAddress(host, port),
+          connectTimeoutMs)
 
-          writeChannel = channel
-          // Need to create a new ReadableByteChannel from input stream because SocketChannel doesn't implement read with timeout
-          // See: http://stackoverflow.com/questions/2866557/timeout-for-socketchannel-doesnt-work
-          readChannel = Channels.newChannel(channel.socket().getInputStream)
-          connected = true
-          val localHost = channel.socket.getLocalAddress.getHostAddress
-          val localPort = channel.socket.getLocalPort
-          val remoteHost = channel.socket.getInetAddress.getHostAddress
-          val remotePort = channel.socket.getPort
-          connectionId =
-            localHost + ":" + localPort + "-" + remoteHost + ":" + remotePort
-          // settings may not match what we requested above
-          val msg =
-            "Created socket with SO_TIMEOUT = %d (requested %d), SO_RCVBUF = %d (requested %d), SO_SNDBUF = %d (requested %d), connectTimeoutMs = %d."
-          debug(
-            msg.format(
-              channel.socket.getSoTimeout,
-              readTimeoutMs,
-              channel.socket.getReceiveBufferSize,
-              readBufferSize,
-              channel.socket.getSendBufferSize,
-              writeBufferSize,
-              connectTimeoutMs
-            ))
+        writeChannel = channel
+        // Need to create a new ReadableByteChannel from input stream because SocketChannel doesn't implement read with timeout
+        // See: http://stackoverflow.com/questions/2866557/timeout-for-socketchannel-doesnt-work
+        readChannel = Channels.newChannel(channel.socket().getInputStream)
+        connected = true
+        val localHost = channel.socket.getLocalAddress.getHostAddress
+        val localPort = channel.socket.getLocalPort
+        val remoteHost = channel.socket.getInetAddress.getHostAddress
+        val remotePort = channel.socket.getPort
+        connectionId =
+          localHost + ":" + localPort + "-" + remoteHost + ":" + remotePort
+        // settings may not match what we requested above
+        val msg =
+          "Created socket with SO_TIMEOUT = %d (requested %d), SO_RCVBUF = %d (requested %d), SO_SNDBUF = %d (requested %d), connectTimeoutMs = %d."
+        debug(
+          msg.format(
+            channel.socket.getSoTimeout,
+            readTimeoutMs,
+            channel.socket.getReceiveBufferSize,
+            readBufferSize,
+            channel.socket.getSendBufferSize,
+            writeBufferSize,
+            connectTimeoutMs
+          ))
 
-        } catch {
-          case e: Throwable => disconnect()
-        }
+      } catch {
+        case e: Throwable => disconnect()
       }
     }
+  }
 
-  def disconnect() =
-    lock synchronized {
-      if (channel != null) {
-        swallow(channel.close())
-        swallow(channel.socket.close())
-        channel = null
-        writeChannel = null
-      }
-      // closing the main socket channel *should* close the read channel
-      // but let's do it to be sure.
-      if (readChannel != null) {
-        swallow(readChannel.close())
-        readChannel = null
-      }
-      connected = false
+  def disconnect() = lock synchronized {
+    if (channel != null) {
+      swallow(channel.close())
+      swallow(channel.socket.close())
+      channel = null
+      writeChannel = null
     }
+    // closing the main socket channel *should* close the read channel
+    // but let's do it to be sure.
+    if (readChannel != null) {
+      swallow(readChannel.close())
+      readChannel = null
+    }
+    connected = false
+  }
 
   def isConnected = connected
 

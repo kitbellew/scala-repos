@@ -21,14 +21,13 @@ object Test extends ScaladocModelTest {
     val test = rootPackage._class("Test")
 
     // find Link
-    def find(body: Any): Option[Link] =
-      body match {
-        case l: Link   => Some(l)
-        case s: Seq[_] => s.toList.map(find(_)).flatten.headOption
-        case p: Product =>
-          p.productIterator.toList.map(find(_)).flatten.headOption
-        case _ => None
-      }
+    def find(body: Any): Option[Link] = body match {
+      case l: Link   => Some(l)
+      case s: Seq[_] => s.toList.map(find(_)).flatten.headOption
+      case p: Product =>
+        p.productIterator.toList.map(find(_)).flatten.headOption
+      case _ => None
+    }
 
     val link = find(test.comment.get.body).collect { case Link(ta, Text(ti)) =>
       (ta, ti)

@@ -145,38 +145,36 @@ import scala.language.implicitConversions"""
         )
       else Nil
 
-    def comparisonOps =
-      List(
-        Op(
-          "==",
-          "/** Returns `true` if this value is equal to x, `false` otherwise. */"),
-        Op(
-          "!=",
-          "/** Returns `true` if this value is not equal to x, `false` otherwise. */"),
-        Op(
-          "<",
-          "/** Returns `true` if this value is less than x, `false` otherwise. */"),
-        Op(
-          "<=",
-          "/** Returns `true` if this value is less than or equal to x, `false` otherwise. */"),
-        Op(
-          ">",
-          "/** Returns `true` if this value is greater than x, `false` otherwise. */"),
-        Op(
-          ">=",
-          "/** Returns `true` if this value is greater than or equal to x, `false` otherwise. */")
-      )
+    def comparisonOps = List(
+      Op(
+        "==",
+        "/** Returns `true` if this value is equal to x, `false` otherwise. */"),
+      Op(
+        "!=",
+        "/** Returns `true` if this value is not equal to x, `false` otherwise. */"),
+      Op(
+        "<",
+        "/** Returns `true` if this value is less than x, `false` otherwise. */"),
+      Op(
+        "<=",
+        "/** Returns `true` if this value is less than or equal to x, `false` otherwise. */"),
+      Op(
+        ">",
+        "/** Returns `true` if this value is greater than x, `false` otherwise. */"),
+      Op(
+        ">=",
+        "/** Returns `true` if this value is greater than or equal to x, `false` otherwise. */")
+    )
 
-    def otherOps =
-      List(
-        Op("+", "/** Returns the sum of this value and `x`. */"),
-        Op("-", "/** Returns the difference of this value and `x`. */"),
-        Op("*", "/** Returns the product of this value and `x`. */"),
-        Op("/", "/** Returns the quotient of this value and `x`. */"),
-        Op(
-          "%",
-          "/** Returns the remainder of the division of this value by `x`. */")
-      )
+    def otherOps = List(
+      Op("+", "/** Returns the sum of this value and `x`. */"),
+      Op("-", "/** Returns the difference of this value and `x`. */"),
+      Op("*", "/** Returns the product of this value and `x`. */"),
+      Op("/", "/** Returns the quotient of this value and `x`. */"),
+      Op(
+        "%",
+        "/** Returns the remainder of the division of this value by `x`. */")
+    )
 
     // Given two numeric value types S and T , the operation type of S and T is defined as follows:
     // If both S and T are subrange types then the operation type of S and T is Int.
@@ -192,19 +190,17 @@ import scala.language.implicitConversions"""
     }
 
     def mkCoercions = numeric map (x => "def to%s: %s".format(x, x))
-    def mkUnaryOps =
-      unaryOps map (x =>
-        "%s\n  def unary_%s : %s".format(x.doc, x.op, this opType I))
+    def mkUnaryOps = unaryOps map (x =>
+      "%s\n  def unary_%s : %s".format(x.doc, x.op, this opType I))
     def mkStringOps = List("def +(x: String): String")
-    def mkShiftOps =
-      (
-        for (op <- shiftOps; arg <- List(I, L))
-          yield "%s\n  def %s(x: %s): %s".format(
-            op.doc,
-            op.op,
-            arg,
-            this opType I)
-      )
+    def mkShiftOps = (
+      for (op <- shiftOps; arg <- List(I, L))
+        yield "%s\n  def %s(x: %s): %s".format(
+          op.doc,
+          op.op,
+          arg,
+          this opType I)
+    )
 
     def clumps: List[List[String]] = {
       val xs1 =
@@ -217,16 +213,15 @@ import scala.language.implicitConversions"""
       )
       xs1 ++ xs2
     }
-    def classLines =
-      (clumps :+ commonClassLines).foldLeft(List[String]()) {
-        case (res, Nil) => res
-        case (res, lines) =>
-          val xs = lines map {
-            case "" => ""
-            case s  => interpolate(s)
-          }
-          res ++ xs
-      }
+    def classLines = (clumps :+ commonClassLines).foldLeft(List[String]()) {
+      case (res, Nil) => res
+      case (res, lines) =>
+        val xs = lines map {
+          case "" => ""
+          case s  => interpolate(s)
+        }
+        res ++ xs
+    }
     def objectLines = {
       val comp = if (isCardinal) cardinalCompanion else floatingCompanion
       interpolate(
@@ -243,16 +238,15 @@ import scala.language.implicitConversions"""
     def mkBinOpsGroup(
         ops: List[Op],
         args: List[AnyValNum],
-        resultFn: AnyValNum => AnyValRep): List[String] =
-      (
-        ops flatMap (op =>
-          args.map(arg =>
-            "%s\n  def %s(x: %s): %s".format(
-              op.doc,
-              op.op,
-              arg,
-              resultFn(arg))) :+ "")
-      ).toList
+        resultFn: AnyValNum => AnyValRep): List[String] = (
+      ops flatMap (op =>
+        args.map(arg =>
+          "%s\n  def %s(x: %s): %s".format(
+            op.doc,
+            op.op,
+            arg,
+            resultFn(arg))) :+ "")
+    ).toList
   }
 
   sealed abstract class AnyValRep(
@@ -261,85 +255,74 @@ import scala.language.implicitConversions"""
       val javaEquiv: String) {
     def classLines: List[String]
     def objectLines: List[String]
-    def commonClassLines =
-      List(
-        "override def getClass(): Class[@name@] = null"
-      )
+    def commonClassLines = List(
+      "override def getClass(): Class[@name@] = null"
+    )
 
     def lcname = name.toLowerCase
-    def boxedSimpleName =
-      this match {
-        case C => "Character"
-        case I => "Integer"
-        case _ => name
-      }
-    def boxedName =
-      this match {
-        case U => "scala.runtime.BoxedUnit"
-        case _ => "java.lang." + boxedSimpleName
-      }
-    def zeroRep =
-      this match {
-        case L => "0L"
-        case F => "0.0f"
-        case D => "0.0d"
-        case _ => "0"
-      }
+    def boxedSimpleName = this match {
+      case C => "Character"
+      case I => "Integer"
+      case _ => name
+    }
+    def boxedName = this match {
+      case U => "scala.runtime.BoxedUnit"
+      case _ => "java.lang." + boxedSimpleName
+    }
+    def zeroRep = this match {
+      case L => "0L"
+      case F => "0.0f"
+      case D => "0.0d"
+      case _ => "0"
+    }
 
     def representation = repr.map(", a " + _).getOrElse("")
 
     def indent(s: String) = if (s == "") "" else "  " + s
     def indentN(s: String) = s.lines map indent mkString "\n"
 
-    def boxUnboxImpls =
-      Map(
-        "@boxRunTimeDoc@" -> """
+    def boxUnboxImpls = Map(
+      "@boxRunTimeDoc@" -> """
  *  Runtime implementation determined by `scala.runtime.BoxesRunTime.boxTo%s`. See [[https://github.com/scala/scala src/library/scala/runtime/BoxesRunTime.java]].
  *""".format(boxedSimpleName),
-        "@boxImpl@" -> "%s.valueOf(x)".format(boxedName),
-        "@unboxRunTimeDoc@" -> """
+      "@boxImpl@" -> "%s.valueOf(x)".format(boxedName),
+      "@unboxRunTimeDoc@" -> """
  *  Runtime implementation determined by `scala.runtime.BoxesRunTime.unboxTo%s`. See [[https://github.com/scala/scala src/library/scala/runtime/BoxesRunTime.java]].
  *""".format(name),
-        "@unboxImpl@" -> "x.asInstanceOf[%s].%sValue()".format(
-          boxedName,
-          lcname),
-        "@unboxDoc@" -> "the %s resulting from calling %sValue() on `x`".format(
-          name,
-          lcname)
-      )
-    def interpolations =
-      Map(
-        "@name@" -> name,
-        "@representation@" -> representation,
-        "@javaequiv@" -> javaEquiv,
-        "@boxed@" -> boxedName,
-        "@lcname@" -> lcname,
-        "@zero@" -> zeroRep
-      ) ++ boxUnboxImpls
+      "@unboxImpl@" -> "x.asInstanceOf[%s].%sValue()".format(boxedName, lcname),
+      "@unboxDoc@" -> "the %s resulting from calling %sValue() on `x`".format(
+        name,
+        lcname)
+    )
+    def interpolations = Map(
+      "@name@" -> name,
+      "@representation@" -> representation,
+      "@javaequiv@" -> javaEquiv,
+      "@boxed@" -> boxedName,
+      "@lcname@" -> lcname,
+      "@zero@" -> zeroRep
+    ) ++ boxUnboxImpls
 
-    def interpolate(s: String): String =
-      interpolations.foldLeft(s) { case (str, (key, value)) =>
-        str.replaceAll(key, value)
-      }
+    def interpolate(s: String): String = interpolations.foldLeft(s) {
+      case (str, (key, value)) => str.replaceAll(key, value)
+    }
     def classDoc = interpolate(classDocTemplate)
     def objectDoc = ""
     def mkImports = ""
 
-    def mkClass =
-      assemble(
-        "final abstract class " + name + " private extends AnyVal",
-        classLines)
+    def mkClass = assemble(
+      "final abstract class " + name + " private extends AnyVal",
+      classLines)
     def mkObject =
       assemble("object " + name + " extends AnyValCompanion", objectLines)
-    def make() =
-      List[String](
-        headerTemplate,
-        mkImports,
-        classDoc,
-        mkClass,
-        objectDoc,
-        mkObject
-      ) mkString ""
+    def make() = List[String](
+      headerTemplate,
+      mkImports,
+      classDoc,
+      mkClass,
+      objectDoc,
+      mkObject
+    ) mkString ""
 
     def assemble(decl: String, lines: List[String]): String = {
       val body =
@@ -536,8 +519,8 @@ def ^(x: Boolean): Boolean
 override def getClass(): Class[Boolean] = null
     """.trim.lines.toList
 
-    def objectLines =
-      interpolate(allCompanions + "\n" + nonUnitCompanions).lines.toList
+    def objectLines = interpolate(
+      allCompanions + "\n" + nonUnitCompanions).lines.toList
   }
   object U extends AnyValRep("Unit", None, "void") {
     override def classDoc = """
@@ -547,20 +530,18 @@ override def getClass(): Class[Boolean] = null
  *  method which is declared `void`.
  */
 """
-    def classLines =
-      List(
-        """override def getClass(): Class[Unit] = null"""
-      )
+    def classLines = List(
+      """override def getClass(): Class[Unit] = null"""
+    )
     def objectLines = interpolate(allCompanions).lines.toList
 
-    override def boxUnboxImpls =
-      Map(
-        "@boxRunTimeDoc@" -> "",
-        "@boxImpl@" -> "scala.runtime.BoxedUnit.UNIT",
-        "@unboxRunTimeDoc@" -> "",
-        "@unboxImpl@" -> "()",
-        "@unboxDoc@" -> "the Unit value ()"
-      )
+    override def boxUnboxImpls = Map(
+      "@boxRunTimeDoc@" -> "",
+      "@boxImpl@" -> "scala.runtime.BoxedUnit.UNIT",
+      "@unboxRunTimeDoc@" -> "",
+      "@unboxImpl@" -> "()",
+      "@unboxDoc@" -> "the Unit value ()"
+    )
   }
 
   def isSubrangeType = Set(B, S, C)

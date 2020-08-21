@@ -11,17 +11,15 @@ package object runtime {
   def assumingES6: Boolean =
     scala.scalajs.LinkingInfo.assumingES6
 
-  def wrapJavaScriptException(e: Any): Throwable =
-    e match {
-      case e: Throwable => e
-      case _            => js.JavaScriptException(e)
-    }
+  def wrapJavaScriptException(e: Any): Throwable = e match {
+    case e: Throwable => e
+    case _            => js.JavaScriptException(e)
+  }
 
-  def unwrapJavaScriptException(th: Throwable): Any =
-    th match {
-      case js.JavaScriptException(e) => e
-      case _                         => th
-    }
+  def unwrapJavaScriptException(th: Throwable): Any = th match {
+    case js.JavaScriptException(e) => e
+    case _                         => th
+  }
 
   def cloneObject(from: js.Object): js.Object = {
     val fromDyn = from.asInstanceOf[js.Dynamic]

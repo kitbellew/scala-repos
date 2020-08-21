@@ -44,10 +44,9 @@ private object Json {
   def deserialize[T: Manifest](node: JsonNode): T =
     mapper.readValue(node.traverse, typeReference[T])
 
-  private def typeReference[T: Manifest] =
-    new TypeReference[T] {
-      override def getType = typeFromManifest(manifest[T])
-    }
+  private def typeReference[T: Manifest] = new TypeReference[T] {
+    override def getType = typeFromManifest(manifest[T])
+  }
 
   private def typeFromManifest(m: Manifest[_]): Type =
     if (m.typeArguments.isEmpty) m.runtimeClass
@@ -104,44 +103,42 @@ object MetricsStatsReceiver {
     new Event.Type {
       val id = "CounterIncr"
 
-      def serialize(event: Event) =
-        event match {
-          case Event(etype, when, value, name: String, _, tid, sid)
-              if etype eq this =>
-            val (t, s) = serializeTrace(tid, sid)
-            val env = Json.Envelope(
-              id,
-              when.inMilliseconds,
-              t,
-              s,
-              CounterIncrData(name, value))
-            Try(Buf.Utf8(Json.serialize(env)))
+      def serialize(event: Event) = event match {
+        case Event(etype, when, value, name: String, _, tid, sid)
+            if etype eq this =>
+          val (t, s) = serializeTrace(tid, sid)
+          val env = Json.Envelope(
+            id,
+            when.inMilliseconds,
+            t,
+            s,
+            CounterIncrData(name, value))
+          Try(Buf.Utf8(Json.serialize(env)))
 
-          case _ =>
-            Throw(new IllegalArgumentException("unknown format: " + event))
-        }
+        case _ =>
+          Throw(new IllegalArgumentException("unknown format: " + event))
+      }
 
-      def deserialize(buf: Buf) =
-        for {
-          env <- Buf.Utf8.unapply(buf) match {
-            case None => Throw(new IllegalArgumentException("unknown format"))
-            case Some(str) =>
-              Try(Json.deserialize[Json.Envelope[CounterIncrData]](str))
-          }
-          if env.id == id
-        } yield {
-          val when = Time.fromMilliseconds(env.when)
-          // This line fails without the JsonDeserialize annotation in Envelope.
-          val tid = env.traceId.getOrElse(Event.NoTraceId)
-          val sid = env.spanId.getOrElse(Event.NoSpanId)
-          Event(
-            this,
-            when,
-            longVal = env.data.value,
-            objectVal = env.data.name,
-            traceIdVal = tid,
-            spanIdVal = sid)
+      def deserialize(buf: Buf) = for {
+        env <- Buf.Utf8.unapply(buf) match {
+          case None => Throw(new IllegalArgumentException("unknown format"))
+          case Some(str) =>
+            Try(Json.deserialize[Json.Envelope[CounterIncrData]](str))
         }
+        if env.id == id
+      } yield {
+        val when = Time.fromMilliseconds(env.when)
+        // This line fails without the JsonDeserialize annotation in Envelope.
+        val tid = env.traceId.getOrElse(Event.NoTraceId)
+        val sid = env.spanId.getOrElse(Event.NoSpanId)
+        Event(
+          this,
+          when,
+          longVal = env.data.value,
+          objectVal = env.data.name,
+          traceIdVal = tid,
+          spanIdVal = sid)
+      }
     }
   }
 
@@ -152,44 +149,42 @@ object MetricsStatsReceiver {
     new Event.Type {
       val id = "StatAdd"
 
-      def serialize(event: Event) =
-        event match {
-          case Event(etype, when, delta, name: String, _, tid, sid)
-              if etype eq this =>
-            val (t, s) = serializeTrace(tid, sid)
-            val env = Json.Envelope(
-              id,
-              when.inMilliseconds,
-              t,
-              s,
-              StatAddData(name, delta))
-            Try(Buf.Utf8(Json.serialize(env)))
+      def serialize(event: Event) = event match {
+        case Event(etype, when, delta, name: String, _, tid, sid)
+            if etype eq this =>
+          val (t, s) = serializeTrace(tid, sid)
+          val env = Json.Envelope(
+            id,
+            when.inMilliseconds,
+            t,
+            s,
+            StatAddData(name, delta))
+          Try(Buf.Utf8(Json.serialize(env)))
 
-          case _ =>
-            Throw(new IllegalArgumentException("unknown format: " + event))
-        }
+        case _ =>
+          Throw(new IllegalArgumentException("unknown format: " + event))
+      }
 
-      def deserialize(buf: Buf) =
-        for {
-          env <- Buf.Utf8.unapply(buf) match {
-            case None => Throw(new IllegalArgumentException("unknown format"))
-            case Some(str) =>
-              Try(Json.deserialize[Json.Envelope[StatAddData]](str))
-          }
-          if env.id == id
-        } yield {
-          val when = Time.fromMilliseconds(env.when)
-          // This line fails without the JsonDeserialize annotation in Envelope.
-          val tid = env.traceId.getOrElse(Event.NoTraceId)
-          val sid = env.spanId.getOrElse(Event.NoSpanId)
-          Event(
-            this,
-            when,
-            longVal = env.data.delta,
-            objectVal = env.data.name,
-            traceIdVal = tid,
-            spanIdVal = sid)
+      def deserialize(buf: Buf) = for {
+        env <- Buf.Utf8.unapply(buf) match {
+          case None => Throw(new IllegalArgumentException("unknown format"))
+          case Some(str) =>
+            Try(Json.deserialize[Json.Envelope[StatAddData]](str))
         }
+        if env.id == id
+      } yield {
+        val when = Time.fromMilliseconds(env.when)
+        // This line fails without the JsonDeserialize annotation in Envelope.
+        val tid = env.traceId.getOrElse(Event.NoTraceId)
+        val sid = env.spanId.getOrElse(Event.NoSpanId)
+        Event(
+          this,
+          when,
+          longVal = env.data.delta,
+          objectVal = env.data.name,
+          traceIdVal = tid,
+          spanIdVal = sid)
+      }
     }
   }
 }

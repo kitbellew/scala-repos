@@ -16,8 +16,8 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.Success
   * 2014-05-05
   */
 class MapGetOrElseInspection extends OperationOnCollectionInspection {
-  override def possibleSimplificationTypes: Array[SimplificationType] =
-    Array(MapGetOrElse)
+  override def possibleSimplificationTypes: Array[SimplificationType] = Array(
+    MapGetOrElse)
 }
 
 object MapGetOrElse extends SimplificationType() {

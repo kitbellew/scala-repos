@@ -212,11 +212,10 @@ private[akka] trait Children { this: ActorCell ⇒
     }
   }
 
-  final protected def setTerminated(): Unit =
-    Unsafe.instance.putObjectVolatile(
-      this,
-      AbstractActorCell.childrenOffset,
-      TerminatedChildrenContainer)
+  final protected def setTerminated(): Unit = Unsafe.instance.putObjectVolatile(
+    this,
+    AbstractActorCell.childrenOffset,
+    TerminatedChildrenContainer)
 
   /*
    * ActorCell-internal API
@@ -226,11 +225,10 @@ private[akka] trait Children { this: ActorCell ⇒
 
   protected def isTerminating = childrenRefs.isTerminating
 
-  protected def waitingForChildrenOrNull =
-    childrenRefs match {
-      case TerminatingChildrenContainer(_, _, w: WaitingForChildren) ⇒ w
-      case _ ⇒ null
-    }
+  protected def waitingForChildrenOrNull = childrenRefs match {
+    case TerminatingChildrenContainer(_, _, w: WaitingForChildren) ⇒ w
+    case _ ⇒ null
+  }
 
   protected def suspendChildren(exceptFor: Set[ActorRef] = Set.empty): Unit =
     childrenRefs.stats foreach {

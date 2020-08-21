@@ -35,12 +35,11 @@ final case class TaskInvocation(
     runnable: Runnable,
     cleanup: () ⇒ Unit)
     extends Batchable {
-  final override def isBatchable: Boolean =
-    runnable match {
-      case b: Batchable ⇒ b.isBatchable
-      case _: scala.concurrent.OnCompleteRunnable ⇒ true
-      case _ ⇒ false
-    }
+  final override def isBatchable: Boolean = runnable match {
+    case b: Batchable ⇒ b.isBatchable
+    case _: scala.concurrent.OnCompleteRunnable ⇒ true
+    case _ ⇒ false
+  }
 
   def run(): Unit =
     try runnable.run()
@@ -165,9 +164,8 @@ abstract class MessageDispatcher(
   /**
     * Detaches the specified actor instance from this dispatcher
     */
-  final def detach(actor: ActorCell): Unit =
-    try unregister(actor)
-    finally ifSensibleToDoSoThenScheduleShutdown()
+  final def detach(actor: ActorCell): Unit = try unregister(actor)
+  finally ifSensibleToDoSoThenScheduleShutdown()
   final protected def resubmitOnBlock: Boolean =
     true // We want to avoid starvation
   final override protected def unbatchedExecute(r: Runnable): Unit = {
@@ -182,12 +180,11 @@ abstract class MessageDispatcher(
     }
   }
 
-  override def reportFailure(t: Throwable): Unit =
-    t match {
-      case e: LogEventException ⇒ eventStream.publish(e.event)
-      case _ ⇒
-        eventStream.publish(Error(t, getClass.getName, getClass, t.getMessage))
-    }
+  override def reportFailure(t: Throwable): Unit = t match {
+    case e: LogEventException ⇒ eventStream.publish(e.event)
+    case _ ⇒
+      eventStream.publish(Error(t, getClass.getName, getClass, t.getMessage))
+  }
 
   @tailrec
   private final def ifSensibleToDoSoThenScheduleShutdown(): Unit = {
@@ -480,12 +477,11 @@ object ForkJoinExecutorConfigurator {
     def this(
         parallelism: Int,
         threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory,
-        unhandledExceptionHandler: Thread.UncaughtExceptionHandler) =
-      this(
-        parallelism,
-        threadFactory,
-        unhandledExceptionHandler,
-        asyncMode = true)
+        unhandledExceptionHandler: Thread.UncaughtExceptionHandler) = this(
+      parallelism,
+      threadFactory,
+      unhandledExceptionHandler,
+      asyncMode = true)
 
     override def execute(r: Runnable): Unit =
       if (r ne null)
@@ -506,20 +502,19 @@ object ForkJoinExecutorConfigurator {
   final class AkkaForkJoinTask(runnable: Runnable) extends ForkJoinTask[Unit] {
     override def getRawResult(): Unit = ()
     override def setRawResult(unit: Unit): Unit = ()
-    final override def exec(): Boolean =
-      try { runnable.run(); true }
-      catch {
-        case ie: InterruptedException ⇒
-          Thread.currentThread.interrupt()
-          false
-        case anything: Throwable ⇒
-          val t = Thread.currentThread
-          t.getUncaughtExceptionHandler match {
-            case null ⇒
-            case some ⇒ some.uncaughtException(t, anything)
-          }
-          throw anything
-      }
+    final override def exec(): Boolean = try { runnable.run(); true }
+    catch {
+      case ie: InterruptedException ⇒
+        Thread.currentThread.interrupt()
+        false
+      case anything: Throwable ⇒
+        val t = Thread.currentThread
+        t.getUncaughtExceptionHandler match {
+          case null ⇒
+          case some ⇒ some.uncaughtException(t, anything)
+        }
+        throw anything
+    }
   }
 }
 
@@ -545,12 +540,11 @@ class ForkJoinExecutorConfigurator(
     def this(
         threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory,
         parallelism: Int) = this(threadFactory, parallelism, asyncMode = true)
-    def createExecutorService: ExecutorService =
-      new AkkaForkJoinPool(
-        parallelism,
-        threadFactory,
-        MonitorableThreadFactory.doNothing,
-        asyncMode)
+    def createExecutorService: ExecutorService = new AkkaForkJoinPool(
+      parallelism,
+      threadFactory,
+      MonitorableThreadFactory.doNothing,
+      asyncMode)
   }
 
   final def createExecutorServiceFactory(

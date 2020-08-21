@@ -17,15 +17,14 @@ import scala.collection.mutable
 import scala.io.Source
 
 class SwaggerSpec extends ScalatraSpec with JsonMatchers {
-  def is =
-    sequential ^
-      "Swagger integration should" ^
-      "list resources" ! listResources ^
-      "list pet operations" ! listPetOperations ^
-      "list store operations" ! listStoreOperations ^
-      "list user operations" ! listUserOperations ^
-      "list model elements in order" ! checkModelOrder ^
-      end
+  def is = sequential ^
+    "Swagger integration should" ^
+    "list resources" ! listResources ^
+    "list pet operations" ! listPetOperations ^
+    "list store operations" ! listStoreOperations ^
+    "list user operations" ! listUserOperations ^
+    "list model elements in order" ! checkModelOrder ^
+    end
   val apiInfo = ApiInfo(
     title = "Swagger Sample App",
     description =
@@ -89,19 +88,18 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
     JsonParser.parse(rdr)
   }
 
-  def listResources =
-    get("/api-docs") {
-      val bd = JsonParser.parseOpt(body)
-      bd must beSome[JValue] and {
-        val j = bd.get
-        (j \ "apiVersion" must_== listResourceJValue \ "apiVersion") and
-          (j \ "swaggerVersion" must_== listResourceJValue \ "swaggerVersion") and
-          verifyInfo(j \ "info") and
-          verifyApis(j \ "apis") and
-          verifyAuthorizations(j \ "authorizations")
+  def listResources = get("/api-docs") {
+    val bd = JsonParser.parseOpt(body)
+    bd must beSome[JValue] and {
+      val j = bd.get
+      (j \ "apiVersion" must_== listResourceJValue \ "apiVersion") and
+        (j \ "swaggerVersion" must_== listResourceJValue \ "swaggerVersion") and
+        verifyInfo(j \ "info") and
+        verifyApis(j \ "apis") and
+        verifyAuthorizations(j \ "authorizations")
 
-      }
     }
+  }
 
   def parseInt(i: String): Option[Int] =
     try {
@@ -318,9 +316,8 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
               "message")
             mm setMessage (mm.message + " in response messages collection")
           }
-          def countsmatch =
-            (af.size must_== ef.size).setMessage(
-              "The count for the responseMessages is different")
+          def countsmatch = (af.size must_== ef.size).setMessage(
+            "The count for the responseMessages is different")
           if (r.nonEmpty) { countsmatch and (r reduce (_ and _)) }
           else countsmatch
         case "parameters" =>

@@ -83,10 +83,10 @@ class ActorSelectionSpec
     result
   }
 
-  def identify(path: String): Option[ActorRef] =
-    identify(system.actorSelection(path))
-  def identify(path: ActorPath): Option[ActorRef] =
-    identify(system.actorSelection(path))
+  def identify(path: String): Option[ActorRef] = identify(
+    system.actorSelection(path))
+  def identify(path: ActorPath): Option[ActorRef] = identify(
+    system.actorSelection(path))
 
   def askNode(node: ActorRef, query: Query): Option[ActorRef] = {
     Await.result(node ? query, timeout.duration) match {

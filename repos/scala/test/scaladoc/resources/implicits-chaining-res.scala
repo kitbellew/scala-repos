@@ -15,8 +15,8 @@ package scala.test.scaladoc.implicits {
   object chaining {
 
     // the base conversion
-    implicit def convertToZ[T](a: A[T])(implicit b: Implicit1[T]): Z[A[T]] =
-      Z(a)
+    implicit def convertToZ[T](a: A[T])(implicit b: Implicit1[T]): Z[A[T]] = Z(
+      a)
 
     // and the implicit chaining, don't you just love it? :D
     // implicit1, with one alternative

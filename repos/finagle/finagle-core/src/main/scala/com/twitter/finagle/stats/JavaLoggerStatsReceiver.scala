@@ -15,19 +15,17 @@ class JavaLoggerStatsReceiver(logger: Logger, timer: Timer)
   // is used for debugging only.
   def this(logger: Logger) = this(logger, DefaultTimer.twitter)
 
-  def stat(name: String*): Stat =
-    new Stat {
-      def add(value: Float) {
-        logger.info("%s add %f".format(formatName(name), value))
-      }
+  def stat(name: String*): Stat = new Stat {
+    def add(value: Float) {
+      logger.info("%s add %f".format(formatName(name), value))
     }
+  }
 
-  def counter(name: String*): Counter =
-    new Counter {
-      def incr(delta: Int) {
-        logger.info("%s incr %d".format(formatName(name), delta))
-      }
+  def counter(name: String*): Counter = new Counter {
+    def incr(delta: Int) {
+      logger.info("%s incr %d".format(formatName(name), delta))
     }
+  }
 
   protected[this] def registerGauge(name: Seq[String], f: => Float): Unit =
     synchronized {
@@ -38,10 +36,9 @@ class JavaLoggerStatsReceiver(logger: Logger, timer: Timer)
       }
     }
 
-  protected[this] def deregisterGauge(name: Seq[String]): Unit =
-    synchronized {
-      timerTasks.remove(name) foreach { _.cancel() }
-    }
+  protected[this] def deregisterGauge(name: Seq[String]): Unit = synchronized {
+    timerTasks.remove(name) foreach { _.cancel() }
+  }
 
   private[this] def formatName(description: Seq[String]) = {
     description mkString "/"

@@ -34,21 +34,19 @@ class ExactGenerationalQueue[A] extends GenerationalQueue[A] {
 
   def remove(a: A) = synchronized { container.remove(a) }
 
-  def collect(age: Duration): Option[A] =
-    synchronized {
-      if (container.isEmpty)
-        None
-      else
-        container.min match {
-          case (a, t) if (t.untilNow > age) => Some(a)
-          case _                            => None
-        }
-    }
+  def collect(age: Duration): Option[A] = synchronized {
+    if (container.isEmpty)
+      None
+    else
+      container.min match {
+        case (a, t) if (t.untilNow > age) => Some(a)
+        case _                            => None
+      }
+  }
 
-  def collectAll(age: Duration): Iterable[A] =
-    synchronized {
-      (container filter { case (_, t) => t.untilNow > age }).keys
-    }
+  def collectAll(age: Duration): Iterable[A] = synchronized {
+    (container filter { case (_, t) => t.untilNow > age }).keys
+  }
 }
 
 /**
@@ -129,44 +127,39 @@ class BucketGenerationalQueue[A](timeout: Duration)
       buckets = compactChain()
   }
 
-  def touch(a: A) =
-    synchronized {
-      buckets drop 1 foreach { _.remove(a) }
-      add(a)
-    }
+  def touch(a: A) = synchronized {
+    buckets drop 1 foreach { _.remove(a) }
+    add(a)
+  }
 
-  def add(a: A) =
-    synchronized {
-      updateBuckets()
-      buckets.head.add(a)
-    }
+  def add(a: A) = synchronized {
+    updateBuckets()
+    buckets.head.add(a)
+  }
 
-  def remove(a: A) =
-    synchronized {
-      buckets foreach { _.remove(a) }
+  def remove(a: A) = synchronized {
+    buckets foreach { _.remove(a) }
+    buckets = compactChain()
+  }
+
+  def collect(d: Duration): Option[A] = synchronized {
+    if (buckets.isEmpty)
+      return None
+
+    if (buckets.last.isEmpty)
       buckets = compactChain()
-    }
 
-  def collect(d: Duration): Option[A] =
-    synchronized {
-      if (buckets.isEmpty)
-        return None
+    if (buckets.isEmpty)
+      return None
 
-      if (buckets.last.isEmpty)
-        buckets = compactChain()
+    val oldestBucket = buckets.last
+    if (d < oldestBucket.age())
+      oldestBucket.headOption
+    else
+      None
+  }
 
-      if (buckets.isEmpty)
-        return None
-
-      val oldestBucket = buckets.last
-      if (d < oldestBucket.age())
-        oldestBucket.headOption
-      else
-        None
-    }
-
-  def collectAll(d: Duration): Iterable[A] =
-    synchronized {
-      (buckets dropWhile (_.age() < d)).flatten
-    }
+  def collectAll(d: Duration): Iterable[A] = synchronized {
+    (buckets dropWhile (_.age() < d)).flatten
+  }
 }

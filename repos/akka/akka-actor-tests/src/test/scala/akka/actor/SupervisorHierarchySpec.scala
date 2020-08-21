@@ -53,8 +53,9 @@ object SupervisorHierarchySpec {
   }
 
   class Resumer extends Actor {
-    override def supervisorStrategy =
-      OneForOneStrategy() { case _ ⇒ SupervisorStrategy.Resume }
+    override def supervisorStrategy = OneForOneStrategy() { case _ ⇒
+      SupervisorStrategy.Resume
+    }
     def receive = {
       case "spawn" ⇒ sender() ! context.actorOf(Props[Resumer])
       case "fail" ⇒ throw new Exception("expected")
@@ -181,12 +182,11 @@ object SupervisorHierarchySpec {
       context stop self
     }
 
-    def setFlags(directive: Directive): Unit =
-      directive match {
-        case Restart ⇒ failed = true
-        case Resume ⇒ suspended = true
-        case _ ⇒
-      }
+    def setFlags(directive: Directive): Unit = directive match {
+      case Restart ⇒ failed = true
+      case Resume ⇒ suspended = true
+      case _ ⇒
+    }
 
     def suspendCount = context.asInstanceOf[ActorCell].mailbox.suspendCount
 
@@ -334,65 +334,64 @@ object SupervisorHierarchySpec {
 
     var pongsToGo = 0
 
-    def receive =
-      new Receive {
-        val handler: Receive = {
-          case f: Failure ⇒
-            setFlags(f.directive)
-            stateCache.put(
-              self.path,
-              stateCache.get(self.path).copy(failConstr = f.copy()))
-            throw f
-          case "ping" ⇒ {
-            Thread.sleep((random.nextFloat * 1.03).toLong); sender() ! "pong"
-          }
-          case Dump(0) ⇒ abort("dump")
-          case Dump(level) ⇒ context.children foreach (_ ! Dump(level - 1))
-          case Terminated(ref) ⇒
-            /*
-             * It might be that we acted upon this death already in postRestart
-             * (if the unwatch() came too late), so just ignore in this case.
-             */
-            val name = ref.path.name
-            if (pongsToGo == 0) {
-              if (!context.child(name).exists(_ != ref)) {
-                listener ! Died(ref.path)
-                val kids = stateCache.get(self.path).kids(ref.path)
-                val props = Props(
-                  new Hierarchy(kids, breadth, listener, myLevel + 1, random))
-                  .withDispatcher("hierarchy")
-                context.watch(context.actorOf(props, name))
-              }
-              // Otherwise it is a Terminated from an old child. Ignore.
-            } else {
-              // WARNING: The Terminated that is logged by this is logged by check() above, too. It is not
-              // an indication of duplicate Terminate messages
-              log :+= Event(
-                sender() + " terminated while pongOfDeath",
-                identityHashCode(Hierarchy.this))
-            }
-          case Abort ⇒ abort("terminating")
-          case PingOfDeath ⇒
-            if (size > 1) {
-              pongsToGo = context.children.size
-              log :+= Event(
-                "sending " + pongsToGo + " pingOfDeath",
-                identityHashCode(Hierarchy.this))
-              context.children foreach (_ ! PingOfDeath)
-            } else {
-              context stop self
-              context.parent ! PongOfDeath
-            }
-          case PongOfDeath ⇒
-            pongsToGo -= 1
-            if (pongsToGo == 0) {
-              context stop self
-              context.parent ! PongOfDeath
-            }
+    def receive = new Receive {
+      val handler: Receive = {
+        case f: Failure ⇒
+          setFlags(f.directive)
+          stateCache.put(
+            self.path,
+            stateCache.get(self.path).copy(failConstr = f.copy()))
+          throw f
+        case "ping" ⇒ {
+          Thread.sleep((random.nextFloat * 1.03).toLong); sender() ! "pong"
         }
-        override def isDefinedAt(msg: Any) = handler.isDefinedAt(msg)
-        override def apply(msg: Any) = { if (check(msg)) handler(msg) }
+        case Dump(0) ⇒ abort("dump")
+        case Dump(level) ⇒ context.children foreach (_ ! Dump(level - 1))
+        case Terminated(ref) ⇒
+          /*
+           * It might be that we acted upon this death already in postRestart
+           * (if the unwatch() came too late), so just ignore in this case.
+           */
+          val name = ref.path.name
+          if (pongsToGo == 0) {
+            if (!context.child(name).exists(_ != ref)) {
+              listener ! Died(ref.path)
+              val kids = stateCache.get(self.path).kids(ref.path)
+              val props = Props(
+                new Hierarchy(kids, breadth, listener, myLevel + 1, random))
+                .withDispatcher("hierarchy")
+              context.watch(context.actorOf(props, name))
+            }
+            // Otherwise it is a Terminated from an old child. Ignore.
+          } else {
+            // WARNING: The Terminated that is logged by this is logged by check() above, too. It is not
+            // an indication of duplicate Terminate messages
+            log :+= Event(
+              sender() + " terminated while pongOfDeath",
+              identityHashCode(Hierarchy.this))
+          }
+        case Abort ⇒ abort("terminating")
+        case PingOfDeath ⇒
+          if (size > 1) {
+            pongsToGo = context.children.size
+            log :+= Event(
+              "sending " + pongsToGo + " pingOfDeath",
+              identityHashCode(Hierarchy.this))
+            context.children foreach (_ ! PingOfDeath)
+          } else {
+            context stop self
+            context.parent ! PongOfDeath
+          }
+        case PongOfDeath ⇒
+          pongsToGo -= 1
+          if (pongsToGo == 0) {
+            context stop self
+            context.parent ! PongOfDeath
+          }
       }
+      override def isDefinedAt(msg: Any) = handler.isDefinedAt(msg)
+      override def apply(msg: Any) = { if (check(msg)) handler(msg) }
+    }
   }
 
   case object Work
@@ -558,12 +557,11 @@ object SupervisorHierarchySpec {
 
     val workSchedule = 50.millis
 
-    private def random012: Int =
-      random.nextFloat match {
-        case x if x > 0.1 ⇒ 0
-        case x if x > 0.03 ⇒ 1
-        case _ ⇒ 2
-      }
+    private def random012: Int = random.nextFloat match {
+      case x if x > 0.1 ⇒ 0
+      case x if x > 0.03 ⇒ 1
+      case _ ⇒ 2
+    }
     private def bury(path: ActorPath): Unit = {
       val deadGuy = path.elements
       val deadGuySize = deadGuy.size
@@ -916,10 +914,9 @@ class SupervisorHierarchySpec
       val latch = TestLatch()
       val slowResumer = system.actorOf(
         Props(new Actor {
-          override def supervisorStrategy =
-            OneForOneStrategy() { case _ ⇒
-              Await.ready(latch, 4.seconds.dilated); SupervisorStrategy.Resume
-            }
+          override def supervisorStrategy = OneForOneStrategy() { case _ ⇒
+            Await.ready(latch, 4.seconds.dilated); SupervisorStrategy.Resume
+          }
           def receive = { case "spawn" ⇒
             sender() ! context.actorOf(Props[Resumer])
           }
@@ -959,11 +956,11 @@ class SupervisorHierarchySpec
       ) {
         val failResumer = system.actorOf(
           Props(new Actor {
-            override def supervisorStrategy =
-              OneForOneStrategy() { case e: ActorInitializationException ⇒
+            override def supervisorStrategy = OneForOneStrategy() {
+              case e: ActorInitializationException ⇒
                 if (createAttempt.get % 2 == 0) SupervisorStrategy.Resume
                 else SupervisorStrategy.Restart
-              }
+            }
 
             val child = context.actorOf(
               Props(new Actor {

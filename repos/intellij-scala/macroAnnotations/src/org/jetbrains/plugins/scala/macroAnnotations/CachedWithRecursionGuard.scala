@@ -30,17 +30,16 @@ object CachedWithRecursionGuard {
     import c.universe._
     implicit val x: c.type = c
 
-    def parameters: (Tree, Tree, Tree, Tree) =
-      c.prefix.tree match {
-        case q"new CachedWithRecursionGuard[$t](..$params)"
-            if params.length == 3 =>
-          (
-            params.head,
-            params(1),
-            modCountParamToModTracker(c)(params(2), params.head),
-            t)
-        case _ => abort("Wrong annotation parameters!")
-      }
+    def parameters: (Tree, Tree, Tree, Tree) = c.prefix.tree match {
+      case q"new CachedWithRecursionGuard[$t](..$params)"
+          if params.length == 3 =>
+        (
+          params.head,
+          params(1),
+          modCountParamToModTracker(c)(params(2), params.head),
+          t)
+      case _ => abort("Wrong annotation parameters!")
+    }
 
     val (element, defaultValue, dependencyItem, providerType) = parameters
 

@@ -49,8 +49,8 @@ trait BaseGenericInternalRow extends InternalRow {
   override def getArray(ordinal: Int): ArrayData = getAs(ordinal)
   override def getInterval(ordinal: Int): CalendarInterval = getAs(ordinal)
   override def getMap(ordinal: Int): MapData = getAs(ordinal)
-  override def getStruct(ordinal: Int, numFields: Int): InternalRow =
-    getAs(ordinal)
+  override def getStruct(ordinal: Int, numFields: Int): InternalRow = getAs(
+    ordinal)
 
   override def anyNull: Boolean = {
     val len = numFields

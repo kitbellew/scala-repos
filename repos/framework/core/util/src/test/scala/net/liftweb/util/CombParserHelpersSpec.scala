@@ -114,11 +114,10 @@ object CombParserHelpersSpec extends Specification with ScalaCheck {
     val parserB = elem("b", (c: Char) => c == 'b')
     val parserC = elem("c", (c: Char) => c == 'c')
     val parserD = elem("d", (c: Char) => c == 'd')
-    def shouldSucceed[T](r: ParseResult[T]) =
-      r match {
-        case Success(x, y) => true
-        case _             => false
-      }
+    def shouldSucceed[T](r: ParseResult[T]) = r match {
+      case Success(x, y) => true
+      case _             => false
+    }
     "provide a permute parser succeeding if any permutation of given parsers succeeds" in {
       def permuteParsers(s: String) =
         shouldSucceed(permute(parserA, parserB, parserC, parserD)(s))

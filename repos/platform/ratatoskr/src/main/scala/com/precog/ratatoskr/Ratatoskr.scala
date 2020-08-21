@@ -816,11 +816,10 @@ object ZookeeperTools extends Command {
       var updateCheckpoint: Option[String] = None,
       var updateAgent: Option[String] = None) {
 
-    def splitPathJson(s: String): (String, String) =
-      s.split(":", 2) match {
-        case Array(path, json) => (path, json)
-        case _                 => sys.error("Invalid format for path+json: \"%s\"".format(s))
-      }
+    def splitPathJson(s: String): (String, String) = s.split(":", 2) match {
+      case Array(path, json) => (path, json)
+      case _                 => sys.error("Invalid format for path+json: \"%s\"".format(s))
+    }
 
     def checkpointUpdate() = updateCheckpoint.map(splitPathJson)
 
@@ -1122,8 +1121,8 @@ object ImportTools extends Command with Logging {
         case Right(success) => logger.info("Grants for " + key + ": " + success)
       }
 
-    def runIngest(apiKey: APIKey) =
-      config.input.toStream traverse { case (db, input) =>
+    def runIngest(apiKey: APIKey) = config.input.toStream traverse {
+      case (db, input) =>
         val path = Path(db)
         logger.info("Inserting batch: %s:%s".format(db, input))
 
@@ -1174,7 +1173,7 @@ object ImportTools extends Command with Logging {
         loop(0L, AsyncParser.stream()) onComplete { case _ =>
           ch.close()
         }
-      }
+    }
 
     val complete =
       grantWrite(config.apiKey) >>
@@ -1433,11 +1432,10 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
       deleted.getOrElse(collection + "_deleted")
     }
 
-    def mongoSettings: MongoAPIKeyManagerSettings =
-      MongoAPIKeyManagerSettings(
-        apiKeys = collection,
-        deletedAPIKeys = deletedCollection
-      )
+    def mongoSettings: MongoAPIKeyManagerSettings = MongoAPIKeyManagerSettings(
+      apiKeys = collection,
+      deletedAPIKeys = deletedCollection
+    )
 
     def mongoConfig: Configuration = {
       Configuration.parse("servers = %s".format(mongoServers))
@@ -1455,27 +1453,26 @@ object CSVToJSONConverter {
       file: String,
       delimeter: Char = ',',
       timestampConversion: Boolean = false,
-      verbose: Boolean = false): Iterator[JValue] =
-    new Iterator[JValue] {
+      verbose: Boolean = false): Iterator[JValue] = new Iterator[JValue] {
 
-      private val reader = new CSVReader(new FileReader(file), delimeter)
-      private val header = reader.readNext
-      private var line = reader.readNext
+    private val reader = new CSVReader(new FileReader(file), delimeter)
+    private val header = reader.readNext
+    private var line = reader.readNext
 
-      def hasNext(): Boolean = line != null
+    def hasNext(): Boolean = line != null
 
-      def next(): JValue = {
-        val result = JObject(
-          header
-            .zip(line)
-            .map { case (k, v) =>
-              JField(k, parse(v, timestampConversion, verbose))
-            }
-            .toList)
-        line = reader.readNext
-        result
-      }
+    def next(): JValue = {
+      val result = JObject(
+        header
+          .zip(line)
+          .map { case (k, v) =>
+            JField(k, parse(v, timestampConversion, verbose))
+          }
+          .toList)
+      line = reader.readNext
+      result
     }
+  }
 
   private val Timestamp =
     """^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2}\.\d{3})\d{0,3}$""".r

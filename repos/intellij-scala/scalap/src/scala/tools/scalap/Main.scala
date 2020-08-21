@@ -334,10 +334,9 @@ object Main {
       verbose = arguments contains "-verbose"
       printPrivates = arguments contains "-private"
       // construct a custom class path
-      def cparg =
-        List(
-          "-classpath",
-          "-cp") map (arguments getArgument _) reduceLeft (_ orElse _)
+      def cparg = List(
+        "-classpath",
+        "-cp") map (arguments getArgument _) reduceLeft (_ orElse _)
       val path = cparg map (fromPathString(_)) getOrElse EmptyClasspath
       // print the classpath if output is verbose
       if (verbose) {

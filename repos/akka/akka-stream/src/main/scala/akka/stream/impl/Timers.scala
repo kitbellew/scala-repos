@@ -127,10 +127,9 @@ private[stream] object Timers {
             failStage(
               new TimeoutException(s"No elements passed in the last $timeout."))
 
-        override def preStart(): Unit =
-          schedulePeriodically(
-            "IdleTimeoutCheckTimer",
-            interval = idleTimeoutCheckInterval(timeout))
+        override def preStart(): Unit = schedulePeriodically(
+          "IdleTimeoutCheckTimer",
+          interval = idleTimeoutCheckInterval(timeout))
       }
 
     override def toString = "IdleTimeout"
@@ -193,10 +192,9 @@ private[stream] object Timers {
             failStage(
               new TimeoutException(s"No elements passed in the last $timeout."))
 
-        override def preStart(): Unit =
-          schedulePeriodically(
-            "IdleTimeoutCheckTimer",
-            idleTimeoutCheckInterval(timeout))
+        override def preStart(): Unit = schedulePeriodically(
+          "IdleTimeoutCheckTimer",
+          idleTimeoutCheckInterval(timeout))
       }
   }
 

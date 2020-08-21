@@ -58,11 +58,10 @@ object ScalaNamesUtil {
   def isOperatorName(text: String): Boolean =
     isIdentifier(text) && isOpCharacter(text(0))
 
-  def scalaName(element: PsiElement) =
-    element match {
-      case scNamed: ScNamedElement   => scNamed.name
-      case psiNamed: PsiNamedElement => psiNamed.getName
-    }
+  def scalaName(element: PsiElement) = element match {
+    case scNamed: ScNamedElement   => scNamed.name
+    case psiNamed: PsiNamedElement => psiNamed.getName
+  }
 
   def qualifiedName(named: PsiNamedElement): Option[String] = {
     ScalaPsiUtil.nameContext(named) match {

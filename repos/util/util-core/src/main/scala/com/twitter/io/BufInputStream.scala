@@ -29,34 +29,32 @@ class BufInputStream(val buf: Buf) extends InputStream {
   override def markSupported(): Boolean = true
 
   // Reads the next byte of data from the input stream.
-  def read(): Int =
-    synchronized {
-      if (rest.length <= 0)
-        return -1
+  def read(): Int = synchronized {
+    if (rest.length <= 0)
+      return -1
 
-      val b = new Array[Byte](1)
-      rest.slice(0, 1).write(b, 0)
-      rest = rest.slice(1, rest.length)
-      b(0) & 0xff
-    }
+    val b = new Array[Byte](1)
+    rest.slice(0, 1).write(b, 0)
+    rest = rest.slice(1, rest.length)
+    b(0) & 0xff
+  }
 
   /**
     *  Reads up to len bytes of data from the input stream into an
     *  array of bytes.
     */
-  override def read(b: Array[Byte], off: Int, len: Int): Int =
-    synchronized {
-      if (rest.length <= 0)
-        return -1
+  override def read(b: Array[Byte], off: Int, len: Int): Int = synchronized {
+    if (rest.length <= 0)
+      return -1
 
-      if (len == 0)
-        return 0
+    if (len == 0)
+      return 0
 
-      val n = len min rest.length
-      rest.slice(0, n).write(b, off)
-      rest = rest.slice(n, rest.length)
-      n
-    }
+    val n = len min rest.length
+    rest.slice(0, n).write(b, off)
+    rest = rest.slice(n, rest.length)
+    n
+  }
 
   /**
     * Repositions this stream to the position at the time the mark
@@ -67,13 +65,12 @@ class BufInputStream(val buf: Buf) extends InputStream {
   /**
     * Skips over and discards n bytes of data from this input stream.
     */
-  override def skip(n: Long): Long =
-    synchronized {
-      if (n <= 0)
-        return 0
+  override def skip(n: Long): Long = synchronized {
+    if (n <= 0)
+      return 0
 
-      val skipped = n min rest.length
-      rest = rest.slice(skipped.toInt, rest.length)
-      skipped
-    }
+    val skipped = n min rest.length
+    rest = rest.slice(skipped.toInt, rest.length)
+    skipped
+  }
 }

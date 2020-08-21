@@ -15,40 +15,40 @@ final case class ListT[M[_], A](run: M[List[A]]) {
     }
   }
 
-  def ::(a: A)(implicit M: Functor[M]): ListT[M, A] =
-    new ListT(M.map(run)(list => a :: list))
+  def ::(a: A)(implicit M: Functor[M]): ListT[M, A] = new ListT(
+    M.map(run)(list => a :: list))
 
   def isEmpty(implicit M: Functor[M]): M[Boolean] = M.map(run)(_.isEmpty)
 
-  def headOption(implicit M: Functor[M]): OptionT[M, A] =
-    new OptionT(M.map(run)(_.headOption))
+  def headOption(implicit M: Functor[M]): OptionT[M, A] = new OptionT(
+    M.map(run)(_.headOption))
 
   def find(predicate: A => Boolean)(implicit M: Functor[M]): OptionT[M, A] =
     new OptionT(M.map(run)(_.find(predicate)))
 
-  def headMaybe(implicit M: Functor[M]): MaybeT[M, A] =
-    new MaybeT(M.map(run)(l => Maybe.fromOption(l.headOption)))
+  def headMaybe(implicit M: Functor[M]): MaybeT[M, A] = new MaybeT(
+    M.map(run)(l => Maybe.fromOption(l.headOption)))
 
   def tailM(implicit M: Applicative[M]): M[ListT[M, A]] =
     M.map(uncons)(_.get._2)
 
-  def filter(p: A => Boolean)(implicit M: Functor[M]): ListT[M, A] =
-    new ListT(M.map(run)(_.filter(p)))
+  def filter(p: A => Boolean)(implicit M: Functor[M]): ListT[M, A] = new ListT(
+    M.map(run)(_.filter(p)))
 
-  def drop(n: Int)(implicit M: Functor[M]): ListT[M, A] =
-    new ListT(M.map(run)(_.drop(n)))
+  def drop(n: Int)(implicit M: Functor[M]): ListT[M, A] = new ListT(
+    M.map(run)(_.drop(n)))
 
   def dropWhile(p: A => Boolean)(implicit M: Functor[M]): ListT[M, A] =
     new ListT(M.map(run)(_.dropWhile(p)))
 
-  def take(n: Int)(implicit M: Functor[M]): ListT[M, A] =
-    new ListT(M.map(run)(_.take(n)))
+  def take(n: Int)(implicit M: Functor[M]): ListT[M, A] = new ListT(
+    M.map(run)(_.take(n)))
 
   def takeWhile(p: A => Boolean)(implicit M: Functor[M]): ListT[M, A] =
     new ListT(M.map(run)(_.takeWhile(p)))
 
-  def ++(bs: => ListT[M, A])(implicit M: Bind[M]): ListT[M, A] =
-    new ListT(M.bind(run) { list1 =>
+  def ++(bs: => ListT[M, A])(implicit M: Bind[M]): ListT[M, A] = new ListT(
+    M.bind(run) { list1 =>
       M.map(bs.run) { list2 =>
         list1 ++ list2
       }
@@ -65,8 +65,8 @@ final case class ListT[M[_], A](run: M[List[A]]) {
   def flatMapF[B](f: A => M[List[B]])(implicit M: Monad[M]): ListT[M, B] =
     flatMap(f andThen ListT.apply)
 
-  def map[B](f: A => B)(implicit M: Functor[M]): ListT[M, B] =
-    new ListT(M.map(run)(_.map(f)))
+  def map[B](f: A => B)(implicit M: Functor[M]): ListT[M, B] = new ListT(
+    M.map(run)(_.map(f)))
 
   /** Don't use iteratively! */
   def tail(implicit M: Functor[M]): ListT[M, A] = new ListT(M.map(run)(_.tail))
@@ -77,8 +77,9 @@ final case class ListT[M[_], A](run: M[List[A]]) {
   def toList: M[List[A]] = run
 
   def foldRight[B](z: => B)(f: (=> A, => B) => B)(implicit
-      M: Functor[M]): M[B] =
-    M.map(run)(_.foldRight(z) { (right, left) => f(right, left) })
+      M: Functor[M]): M[B] = M.map(run)(_.foldRight(z) { (right, left) =>
+    f(right, left)
+  })
 
   def length(implicit M: Functor[M]): M[Int] = M.map(run)(_.length)
 }

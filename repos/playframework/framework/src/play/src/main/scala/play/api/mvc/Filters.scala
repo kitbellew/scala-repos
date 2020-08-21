@@ -12,11 +12,10 @@ import scala.concurrent.{Promise, Future}
 trait EssentialFilter {
   def apply(next: EssentialAction): EssentialAction
 
-  def asJava: play.mvc.EssentialFilter =
-    new play.mvc.EssentialFilter {
-      override def apply(next: play.mvc.EssentialAction) =
-        EssentialFilter.this(next).asJava
-    }
+  def asJava: play.mvc.EssentialFilter = new play.mvc.EssentialFilter {
+    override def apply(next: play.mvc.EssentialAction) =
+      EssentialFilter.this(next).asJava
+  }
 }
 
 /**
@@ -109,11 +108,10 @@ object Filter {
   * Compose the action and the Filters to create a new Action
   */
 object Filters {
-  def apply(h: EssentialAction, filters: EssentialFilter*) =
-    h match {
-      case a: EssentialAction => FilterChain(a, filters.toList)
-      case h                  => h
-    }
+  def apply(h: EssentialAction, filters: EssentialFilter*) = h match {
+    case a: EssentialAction => FilterChain(a, filters.toList)
+    case h                  => h
+  }
 }
 
 @deprecated("Use dependency injection", "2.5.0")
@@ -130,11 +128,10 @@ class WithFilters(filters: EssentialFilter*) extends GlobalSettings {
 object FilterChain {
   def apply[A](
       action: EssentialAction,
-      filters: List[EssentialFilter]): EssentialAction =
-    new EssentialAction {
-      def apply(rh: RequestHeader): Accumulator[ByteString, Result] = {
-        val chain = filters.reverse.foldLeft(action) { (a, i) => i(a) }
-        chain(rh)
-      }
+      filters: List[EssentialFilter]): EssentialAction = new EssentialAction {
+    def apply(rh: RequestHeader): Accumulator[ByteString, Result] = {
+      val chain = filters.reverse.foldLeft(action) { (a, i) => i(a) }
+      chain(rh)
     }
+  }
 }

@@ -386,13 +386,12 @@ trait CaseClassMacros extends ReprTypes {
   def ctorsOf1(tpe: Type): List[Type] = distinctCtorsOfAux(tpe, true)
 
   def distinctCtorsOfAux(tpe: Type, hk: Boolean): List[Type] = {
-    def distinct[A](list: List[A])(eq: (A, A) => Boolean): List[A] =
-      list
-        .foldLeft(List.empty[A]) { (acc, x) =>
-          if (!acc.exists(eq(x, _))) x :: acc
-          else acc
-        }
-        .reverse
+    def distinct[A](list: List[A])(eq: (A, A) => Boolean): List[A] = list
+      .foldLeft(List.empty[A]) { (acc, x) =>
+        if (!acc.exists(eq(x, _))) x :: acc
+        else acc
+      }
+      .reverse
     distinct(ctorsOfAux(tpe, hk))(_ =:= _)
   }
 
@@ -988,14 +987,12 @@ trait CaseClassMacros extends ReprTypes {
         new CtorDtor {
           def construct(args: List[Tree]): Tree =
             q"${companionRef(tpe)}(..$args)"
-          def binding: (Tree, List[Tree]) =
-            (
-              pattern,
-              elems.map { case (binder, tpe) => narrow(q"$binder", tpe) })
-          def reprBinding: (Tree, List[Tree]) =
-            (
-              reprPattern,
-              elems.map { case (binder, tpe) => narrow1(q"$binder", tpe) })
+          def binding: (Tree, List[Tree]) = (
+            pattern,
+            elems.map { case (binder, tpe) => narrow(q"$binder", tpe) })
+          def reprBinding: (Tree, List[Tree]) = (
+            reprPattern,
+            elems.map { case (binder, tpe) => narrow1(q"$binder", tpe) })
         }
       }
 
@@ -1010,10 +1007,9 @@ trait CaseClassMacros extends ReprTypes {
         new CtorDtor {
           def construct(args: List[Tree]): Tree = q"new $tpe(..$args)"
           def binding: (Tree, List[Tree]) = (pattern, rhs)
-          def reprBinding: (Tree, List[Tree]) =
-            (
-              reprPattern,
-              elems.map { case (binder, _, tpe) => narrow1(q"$binder", tpe) })
+          def reprBinding: (Tree, List[Tree]) = (
+            reprPattern,
+            elems.map { case (binder, _, tpe) => narrow1(q"$binder", tpe) })
         }
       }
 

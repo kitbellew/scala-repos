@@ -149,8 +149,8 @@ class StatCounter(values: TraversableOnce[Double]) extends Serializable {
 object StatCounter {
 
   /** Build a StatCounter from a list of values. */
-  def apply(values: TraversableOnce[Double]): StatCounter =
-    new StatCounter(values)
+  def apply(values: TraversableOnce[Double]): StatCounter = new StatCounter(
+    values)
 
   /** Build a StatCounter from a list of values passed as variable-length arguments. */
   def apply(values: Double*): StatCounter = new StatCounter(values)

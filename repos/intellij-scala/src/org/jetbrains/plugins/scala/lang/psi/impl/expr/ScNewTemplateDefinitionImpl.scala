@@ -152,8 +152,9 @@ class ScNewTemplateDefinitionImpl private (
 
   def getTypeWithProjections(
       ctx: TypingContext,
-      thisProjections: Boolean = false) =
-    getType(ctx) //no projections for new template definition
+      thisProjections: Boolean = false) = getType(
+    ctx
+  ) //no projections for new template definition
 
   override def isInheritor(baseClass: PsiClass, deep: Boolean): Boolean =
     super[ScNewTemplateDefinition].isInheritor(baseClass, deep)

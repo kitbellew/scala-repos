@@ -135,17 +135,15 @@ object GuiceInjectorBuilderSpec extends Specification {
   }
 
   class EnvironmentModule extends Module {
-    def bindings(env: Environment, conf: Configuration) =
-      Seq(
-        bind[Environment] to env
-      )
+    def bindings(env: Environment, conf: Configuration) = Seq(
+      bind[Environment] to env
+    )
   }
 
   class ConfigurationModule extends Module {
-    def bindings(env: Environment, conf: Configuration) =
-      Seq(
-        bind[Configuration] to conf
-      )
+    def bindings(env: Environment, conf: Configuration) = Seq(
+      bind[Configuration] to conf
+    )
   }
 
   class SetConfigurationModule(conf: Configuration) extends AbstractModule {

@@ -41,8 +41,8 @@ object ReadOnlyDoubleWrapper {
   /** Creates a new ReadOnlyDoubleWrapper instance.
     * @param value the initial value of the wrapped value
     */
-  def apply(value: Double) =
-    new ReadOnlyDoubleWrapper(new jfxbp.ReadOnlyDoubleWrapper(value))
+  def apply(value: Double) = new ReadOnlyDoubleWrapper(
+    new jfxbp.ReadOnlyDoubleWrapper(value))
 }
 
 /** Wrapper for [[http://docs.oracle.com/javase/8/javafx/api/javafx/beans/property/ReadOnlyDoubleWrapper.html javafx.beans.property.ReadOnlyDoubleWrapper]] */

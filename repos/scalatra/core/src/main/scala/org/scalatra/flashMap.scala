@@ -45,18 +45,17 @@ class FlashMap extends MutableMapWithIndifferentAccess[Any] with Serializable {
     * Creates a new iterator over the values of the flash map.  These are the
     * values that were added during the last request.
     */
-  def iterator =
-    new Iterator[(String, Any)] {
-      private[this] val it = m.iterator
+  def iterator = new Iterator[(String, Any)] {
+    private[this] val it = m.iterator
 
-      def hasNext = it.hasNext
+    def hasNext = it.hasNext
 
-      def next = {
-        val kv = it.next
-        flagged += kv._1
-        kv
-      }
+    def next = {
+      val kv = it.next
+      flagged += kv._1
+      kv
     }
+  }
 
   /**
     * Returns the value associated with a key and flags it to be swept.

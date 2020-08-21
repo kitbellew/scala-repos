@@ -44,12 +44,11 @@ package scalaguide.akka {
         import akka.pattern.ask
         implicit val timeout = 5.seconds
 
-        def sayHello(name: String) =
-          Action.async {
-            (helloActor ? SayHello(name)).mapTo[String].map { message =>
-              Ok(message)
-            }
+        def sayHello(name: String) = Action.async {
+          (helloActor ? SayHello(name)).mapTo[String].map { message =>
+            Ok(message)
           }
+        }
         //#ask
 
         contentAsString(sayHello("world")(FakeRequest())) must_== "Hello, world"
@@ -155,12 +154,11 @@ package scalaguide.akka {
 
       implicit val timeout: Timeout = 5.seconds
 
-      def getConfig =
-        Action.async {
-          (configuredActor ? GetConfig).mapTo[String].map { message =>
-            Ok(message)
-          }
+      def getConfig = Action.async {
+        (configuredActor ? GetConfig).mapTo[String].map { message =>
+          Ok(message)
         }
+      }
     }
 //#inject
   }

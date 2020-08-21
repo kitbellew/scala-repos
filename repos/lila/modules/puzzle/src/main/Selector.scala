@@ -15,19 +15,17 @@ private[puzzle] final class Selector(
     anonMinRating: Int,
     maxAttempts: Int) {
 
-  private def popularSelector(mate: Boolean) =
-    BSONDocument(
-      Puzzle.BSONFields.voteSum -> BSONDocument(
-        "$gt" -> BSONInteger(mate.fold(anonMinRating, 0))))
+  private def popularSelector(mate: Boolean) = BSONDocument(
+    Puzzle.BSONFields.voteSum -> BSONDocument(
+      "$gt" -> BSONInteger(mate.fold(anonMinRating, 0))))
 
   private def mateSelector(mate: Boolean) = BSONDocument("mate" -> mate)
 
-  private def difficultyDecay(difficulty: Int) =
-    difficulty match {
-      case 1 => -200
-      case 3 => +200
-      case _ => 0
-    }
+  private def difficultyDecay(difficulty: Int) = difficulty match {
+    case 1 => -200
+    case 3 => +200
+    case _ => 0
+  }
 
   private val toleranceMax = 1000
 

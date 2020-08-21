@@ -17,8 +17,9 @@ private final class FishnetRepo(analysisColl: Coll, clientColl: Coll) {
     timeToLive = 10 seconds)
 
   def getClient(key: Client.Key) = clientCache(key)
-  def getEnabledClient(key: Client.Key) =
-    getClient(key).map { _.filter(_.enabled) }
+  def getEnabledClient(key: Client.Key) = getClient(key).map {
+    _.filter(_.enabled)
+  }
   def getOfflineClient: Fu[Client] =
     getEnabledClient(Client.offline.key) getOrElse fuccess(Client.offline)
   def updateClient(client: Client): Funit =
@@ -40,22 +41,21 @@ private final class FishnetRepo(analysisColl: Coll, clientColl: Coll) {
         selectClient(key),
         BSONDocument("$set" -> BSONDocument("enabled" -> v)))
       .void >> clientCache.remove(key)
-  def allRecentClients =
-    clientColl
-      .find(BSONDocument(
+  def allRecentClients = clientColl
+    .find(
+      BSONDocument(
         "instance.seenAt" -> BSONDocument("$gt" -> Client.Instance.recentSince)
       ))
-      .cursor[Client]()
-      .collect[List]()
-  def lichessClients =
-    clientColl
-      .find(
-        BSONDocument(
-          "enabled" -> true,
-          "userId" -> BSONDocument("$regex" -> "^lichess-")
-        ))
-      .cursor[Client]()
-      .collect[List]()
+    .cursor[Client]()
+    .collect[List]()
+  def lichessClients = clientColl
+    .find(
+      BSONDocument(
+        "enabled" -> true,
+        "userId" -> BSONDocument("$regex" -> "^lichess-")
+      ))
+    .cursor[Client]()
+    .collect[List]()
 
   def addAnalysis(ana: Work.Analysis) = analysisColl.insert(ana).void
   def getAnalysis(id: Work.Id) =
@@ -68,11 +68,10 @@ private final class FishnetRepo(analysisColl: Coll, clientColl: Coll) {
     deleteAnalysis(ana) >>- logger.warn(s"Give up on analysis $ana")
   def updateOrGiveUpAnalysis(ana: Work.Analysis) =
     if (ana.isOutOfTries) giveUpAnalysis(ana) else updateAnalysis(ana)
-  def countAnalysis(acquired: Boolean) =
-    analysisColl.count(
-      BSONDocument(
-        "acquired" -> BSONDocument("$exists" -> acquired)
-      ).some)
+  def countAnalysis(acquired: Boolean) = analysisColl.count(
+    BSONDocument(
+      "acquired" -> BSONDocument("$exists" -> acquired)
+    ).some)
 
   def getSimilarAnalysis(work: Work.Analysis): Fu[Option[Work.Analysis]] =
     analysisColl

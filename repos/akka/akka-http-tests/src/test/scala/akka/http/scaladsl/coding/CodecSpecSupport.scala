@@ -18,11 +18,10 @@ trait CodecSpecSupport extends Matchers with BeforeAndAfterAll { self: Suite ⇒
       (_: ByteString).decodeString(charset)
     }
   def hexDump(bytes: ByteString) = bytes.map("%02x".format(_)).mkString
-  def fromHexDump(dump: String) =
-    dump
-      .grouped(2)
-      .toArray
-      .map(chars ⇒ Integer.parseInt(new String(chars), 16).toByte)
+  def fromHexDump(dump: String) = dump
+    .grouped(2)
+    .toArray
+    .map(chars ⇒ Integer.parseInt(new String(chars), 16).toByte)
 
   def printBytes(i: Int, id: String) = {
     def byte(i: Int) = (i & 0xff).toHexString

@@ -84,12 +84,11 @@ val p = {
     testImport(
       "import annotation._" :: "import math._" :: "import meta._" :: Nil))
 
-  private[this] def testImport(imports: Seq[String]): Int => Prop =
-    i =>
-      value(
-        eval.eval(
-          "abs(" + i + ")",
-          new EvalImports(imports.zipWithIndex, "imp"))) == math.abs(i)
+  private[this] def testImport(imports: Seq[String]): Int => Prop = i =>
+    value(
+      eval.eval(
+        "abs(" + i + ")",
+        new EvalImports(imports.zipWithIndex, "imp"))) == math.abs(i)
 
   private[this] def local(i: Int) =
     "{ class ETest(val i: Int); new ETest(" + i + ") }"

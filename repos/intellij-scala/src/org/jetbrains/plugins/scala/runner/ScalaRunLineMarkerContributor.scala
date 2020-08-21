@@ -33,9 +33,8 @@ class ScalaRunLineMarkerContributor extends RunLineMarkerContributor {
       }
     else null
 
-  private def createInfo(order: Int) =
-    new Info(
-      ApplicationConfigurationType.getInstance.getIcon,
-      null,
-      ExecutorAction.getActions(order): _*)
+  private def createInfo(order: Int) = new Info(
+    ApplicationConfigurationType.getInstance.getIcon,
+    null,
+    ExecutorAction.getActions(order): _*)
 }

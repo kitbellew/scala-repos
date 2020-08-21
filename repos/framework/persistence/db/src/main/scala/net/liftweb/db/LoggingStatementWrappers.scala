@@ -28,11 +28,10 @@ trait DBLogEntry {
   def duration: Long
 }
 object DBLogEntry {
-  def unapply(obj: Any) =
-    obj match {
-      case entry: DBLogEntry => Some(entry.statement, entry.duration)
-      case _                 => None
-    }
+  def unapply(obj: Any) = obj match {
+    case entry: DBLogEntry => Some(entry.statement, entry.duration)
+    case _                 => None
+  }
 }
 case class DBStatementEntry(statement: String, duration: Long)
     extends DBLogEntry
@@ -60,8 +59,9 @@ trait DBLog {
         result
     }
 
-  protected def logMeta[T](description: String)(f: => T): T =
-    logMeta({ ignore: T => description })(f)
+  protected def logMeta[T](description: String)(f: => T): T = logMeta({
+    ignore: T => description
+  })(f)
 
   protected def logMeta[T](description: T => String)(f: => T): T =
     Helpers.calcTime(f) match {
@@ -71,18 +71,16 @@ trait DBLog {
     }
 
   /** Return a list of all of the DBStatementEntry instances in the log buffer */
-  def statementEntries: List[DBStatementEntry] =
-    executedStatements
-      .filter(_.isInstanceOf[DBStatementEntry])
-      .reverse
-      .asInstanceOf[List[DBStatementEntry]]
+  def statementEntries: List[DBStatementEntry] = executedStatements
+    .filter(_.isInstanceOf[DBStatementEntry])
+    .reverse
+    .asInstanceOf[List[DBStatementEntry]]
 
   /** Return a list of all of the DBMetaEntry instances in the log buffer */
-  def metaEntries: List[DBMetaEntry] =
-    executedStatements
-      .filter(_.isInstanceOf[DBMetaEntry])
-      .reverse
-      .asInstanceOf[List[DBMetaEntry]]
+  def metaEntries: List[DBMetaEntry] = executedStatements
+    .filter(_.isInstanceOf[DBMetaEntry])
+    .reverse
+    .asInstanceOf[List[DBMetaEntry]]
 
   /** Return all log buffer entries */
   def allEntries: List[DBLogEntry] = executedStatements.reverse
@@ -441,10 +439,9 @@ object DBLog {
     /* This toString only gets invoked if we target this instance as a
      * LoggedStatementHandler directly, or via the proxied "toString" above.
      */
-    override def toString =
-      "Logged Statements =\n" + executedStatements.reverse
-        .map("  " + _)
-        .mkString("\n")
+    override def toString = "Logged Statements =\n" + executedStatements.reverse
+      .map("  " + _)
+      .mkString("\n")
   }
 
   /**
@@ -464,16 +461,15 @@ object DBLog {
     // utility method to fill in params
     private def paramified: String = {
       val sb = new StringBuilder(500)
-      def substitute(in: String, index: Int): Unit =
-        in.indexOf('?') match {
-          case -1 =>
-            sb.append(in)
+      def substitute(in: String, index: Int): Unit = in.indexOf('?') match {
+        case -1 =>
+          sb.append(in)
 
-          case j =>
-            sb.append(in.substring(0, j))
-            sb.append(paramMap(index))
-            substitute(in.substring(j + 1), index + 1)
-        }
+        case j =>
+          sb.append(in.substring(0, j))
+          sb.append(paramMap(index))
+          substitute(in.substring(j + 1), index + 1)
+      }
 
       substitute(stmt, 1)
       sb.toString
@@ -709,48 +705,42 @@ object DBLog {
   * descriptive strings
   */
 object StatementConstantDescriptions {
-  def genKeyDescriptions(in: Int) =
-    in match {
-      case Statement.NO_GENERATED_KEYS     => "NO_GENERATED_KEYS"
-      case Statement.RETURN_GENERATED_KEYS => "RETURN_GENERATED_KEYS"
-      case x                               => "Invalid Generated Keys Constant: " + x
-    }
+  def genKeyDescriptions(in: Int) = in match {
+    case Statement.NO_GENERATED_KEYS     => "NO_GENERATED_KEYS"
+    case Statement.RETURN_GENERATED_KEYS => "RETURN_GENERATED_KEYS"
+    case x                               => "Invalid Generated Keys Constant: " + x
+  }
 
-  def fetchDirDescriptions(in: Int) =
-    in match {
-      case ResultSet.FETCH_FORWARD => "FETCH_FORWARD"
-      case ResultSet.FETCH_REVERSE => "FETCH_REVERSE"
-      case ResultSet.FETCH_UNKNOWN => "FETCH_UNKNOWN"
-      case x                       => "Invalid Fetch Direction Constant: " + x
-    }
+  def fetchDirDescriptions(in: Int) = in match {
+    case ResultSet.FETCH_FORWARD => "FETCH_FORWARD"
+    case ResultSet.FETCH_REVERSE => "FETCH_REVERSE"
+    case ResultSet.FETCH_UNKNOWN => "FETCH_UNKNOWN"
+    case x                       => "Invalid Fetch Direction Constant: " + x
+  }
 
-  def getMoreResultsDescriptions(in: Int) =
-    in match {
-      case Statement.CLOSE_CURRENT_RESULT => "CLOSE_CURRENT_RESULT"
-      case Statement.KEEP_CURRENT_RESULT  => "KEEP_CURRENT_RESULT"
-      case Statement.CLOSE_ALL_RESULTS    => "CLOSE_ALL_RESULTS"
-      case x                              => "Invalid getMoreResults constant: " + x
-    }
+  def getMoreResultsDescriptions(in: Int) = in match {
+    case Statement.CLOSE_CURRENT_RESULT => "CLOSE_CURRENT_RESULT"
+    case Statement.KEEP_CURRENT_RESULT  => "KEEP_CURRENT_RESULT"
+    case Statement.CLOSE_ALL_RESULTS    => "CLOSE_ALL_RESULTS"
+    case x                              => "Invalid getMoreResults constant: " + x
+  }
 
-  def resultSetConcurrencyDescs(in: Int) =
-    in match {
-      case ResultSet.CONCUR_READ_ONLY => "CONCUR_READ_ONLY"
-      case ResultSet.CONCUR_UPDATABLE => "CONCUR_UPDATABLE"
-      case x                          => "Invalid ResultSet concurrency constant: " + x
-    }
+  def resultSetConcurrencyDescs(in: Int) = in match {
+    case ResultSet.CONCUR_READ_ONLY => "CONCUR_READ_ONLY"
+    case ResultSet.CONCUR_UPDATABLE => "CONCUR_UPDATABLE"
+    case x                          => "Invalid ResultSet concurrency constant: " + x
+  }
 
-  def resultSetHoldabilityDescs(in: Int) =
-    in match {
-      case ResultSet.HOLD_CURSORS_OVER_COMMIT => "HOLD_CURSORS_OVER_COMMIT"
-      case ResultSet.CLOSE_CURSORS_AT_COMMIT  => "CLOSE_CURSORS_AT_COMMIT"
-      case x                                  => "Invalid ResultSet holdability constant: " + x
-    }
+  def resultSetHoldabilityDescs(in: Int) = in match {
+    case ResultSet.HOLD_CURSORS_OVER_COMMIT => "HOLD_CURSORS_OVER_COMMIT"
+    case ResultSet.CLOSE_CURSORS_AT_COMMIT  => "CLOSE_CURSORS_AT_COMMIT"
+    case x                                  => "Invalid ResultSet holdability constant: " + x
+  }
 
-  def resultSetTypeDescs(in: Int) =
-    in match {
-      case ResultSet.TYPE_FORWARD_ONLY       => "TYPE_FORWARD_ONLY"
-      case ResultSet.TYPE_SCROLL_INSENSITIVE => "TYPE_SCROLL_INSENSITIVE"
-      case ResultSet.TYPE_SCROLL_SENSITIVE   => "TYPE_SCROLL_SENSITIVE"
-      case x                                 => "Invalid ResultSet type constant: " + x
-    }
+  def resultSetTypeDescs(in: Int) = in match {
+    case ResultSet.TYPE_FORWARD_ONLY       => "TYPE_FORWARD_ONLY"
+    case ResultSet.TYPE_SCROLL_INSENSITIVE => "TYPE_SCROLL_INSENSITIVE"
+    case ResultSet.TYPE_SCROLL_SENSITIVE   => "TYPE_SCROLL_SENSITIVE"
+    case x                                 => "Invalid ResultSet type constant: " + x
+  }
 }

@@ -40,11 +40,10 @@ abstract class ScalaElseUnwrapperBase extends ScalaUnwrapper {
   }
 
   @tailrec
-  final def maxIfStmt(ifStmt: ScIfStmt): ScIfStmt =
-    ifStmt.getParent match {
-      case ifSt: ScIfStmt => maxIfStmt(ifSt)
-      case _              => ifStmt
-    }
+  final def maxIfStmt(ifStmt: ScIfStmt): ScIfStmt = ifStmt.getParent match {
+    case ifSt: ScIfStmt => maxIfStmt(ifSt)
+    case _              => ifStmt
+  }
 
   protected def unwrapElseBranch(
       expr: ScExpression,

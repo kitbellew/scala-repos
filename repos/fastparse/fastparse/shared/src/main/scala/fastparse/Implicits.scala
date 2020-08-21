@@ -14,10 +14,9 @@ object Implicits {
     def apply(t: T, v: V): R
   }
   object Sequencer extends LowPriSequencer {
-    def apply[T, V, R](f: (T, V) => R) =
-      new Sequencer[T, V, R] {
-        def apply(t: T, v: V): R = f(t, v)
-      }
+    def apply[T, V, R](f: (T, V) => R) = new Sequencer[T, V, R] {
+      def apply(t: T, v: V): R = f(t, v)
+    }
     implicit def SingleSequencer[T]: Sequencer[Unit, T, T] =
       Sequencer((_, t) => t)
   }

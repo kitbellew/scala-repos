@@ -63,32 +63,32 @@ object PathMatchers {
     * The matcher will not match 0 digits or a sequence of digits that would represent an Int value larger
     * than [[java.lang.Integer.MAX_VALUE]].
     */
-  def intValue: PathMatcher[jl.Integer] =
-    matcher(_.IntNumber.asInstanceOf[PathMatcher1[jl.Integer]])
+  def intValue: PathMatcher[jl.Integer] = matcher(
+    _.IntNumber.asInstanceOf[PathMatcher1[jl.Integer]])
 
   /**
     * A PathMatcher that efficiently matches a number of hex-digits and extracts their (non-negative) Int value.
     * The matcher will not match 0 digits or a sequence of digits that would represent an Int value larger
     * than [[java.lang.Integer.MAX_VALUE]].
     */
-  def hexIntValue: PathMatcher[jl.Integer] =
-    matcher(_.HexIntNumber.asInstanceOf[PathMatcher1[jl.Integer]])
+  def hexIntValue: PathMatcher[jl.Integer] = matcher(
+    _.HexIntNumber.asInstanceOf[PathMatcher1[jl.Integer]])
 
   /**
     * A PathMatcher that efficiently matches a number of digits and extracts their (non-negative) Long value.
     * The matcher will not match 0 digits or a sequence of digits that would represent an Long value larger
     * than [[java.lang.Long.MAX_VALUE]].
     */
-  def longValue: PathMatcher[jl.Long] =
-    matcher(_.LongNumber.asInstanceOf[PathMatcher1[jl.Long]])
+  def longValue: PathMatcher[jl.Long] = matcher(
+    _.LongNumber.asInstanceOf[PathMatcher1[jl.Long]])
 
   /**
     * A PathMatcher that efficiently matches a number of hex-digits and extracts their (non-negative) Long value.
     * The matcher will not match 0 digits or a sequence of digits that would represent an Long value larger
     * than [[java.lang.Long.MAX_VALUE]].
     */
-  def hexLongValue: PathMatcher[jl.Long] =
-    matcher(_.HexLongNumber.asInstanceOf[PathMatcher1[jl.Long]])
+  def hexLongValue: PathMatcher[jl.Long] = matcher(
+    _.HexLongNumber.asInstanceOf[PathMatcher1[jl.Long]])
 
   /**
     * Creates a PathMatcher that consumes (a prefix of) the first path segment
@@ -122,8 +122,8 @@ object PathMatchers {
     * If there are more than `count` segments present the remaining ones will be left unmatched.
     * If the path has a trailing slash this slash will *not* be matched.
     */
-  def segments(maxNumber: Int): PathMatcher[ju.List[String]] =
-    matcher(_.Segments(maxNumber).map(_.asJava))
+  def segments(maxNumber: Int): PathMatcher[ju.List[String]] = matcher(
+    _.Segments(maxNumber).map(_.asJava))
 
   /**
     * A PathMatcher that matches and extracts the complete remaining,

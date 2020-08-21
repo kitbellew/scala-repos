@@ -70,12 +70,12 @@ trait SecurityHelpers {
     in.filter(a => a >= 32 && a <= 127)
 
   /** encode a Byte array in Base 64 */
-  def base64Encode(in: Array[Byte]): String =
-    new String(cleanArray((new Base64).encode(in)))
+  def base64Encode(in: Array[Byte]): String = new String(
+    cleanArray((new Base64).encode(in)))
 
   /** encode a Byte array in Base 64 in a way that's safe for use in URLs */
-  def base64EncodeURLSafe(in: Array[Byte]): String =
-    new String(Base64.encodeBase64URLSafe(in))
+  def base64EncodeURLSafe(in: Array[Byte]): String = new String(
+    Base64.encodeBase64URLSafe(in))
 
   /** decode a String in Base 64 */
   def base64Decode(in: String): Array[Byte] =
@@ -108,35 +108,33 @@ trait SecurityHelpers {
     * are determined to be not equal early (test every byte... avoids
     * timing attacks
     */
-  def secureEquals(s1: String, s2: String): Boolean =
-    (s1, s2) match {
-      case (null, null) => true
-      case (null, _)    => false
-      case (_, null)    => false
-      case (a, b)       => secureEquals(a.getBytes("UTF-8"), b.getBytes("UTF-8"))
-    }
+  def secureEquals(s1: String, s2: String): Boolean = (s1, s2) match {
+    case (null, null) => true
+    case (null, _)    => false
+    case (_, null)    => false
+    case (a, b)       => secureEquals(a.getBytes("UTF-8"), b.getBytes("UTF-8"))
+  }
 
   /** Compare two byte arrays in a way that does not vary if the arrays
     * are determined to be not equal early (test every byte... avoids
     * timing attacks
     */
-  def secureEquals(s1: Array[Byte], s2: Array[Byte]): Boolean =
-    (s1, s2) match {
-      case (null, null) => true
-      case (null, _)    => false
-      case (_, null)    => false
-      case (a, b) => {
-        val la = a.length
-        val lb = b.length
-        var ret = true
-        var pos = 0
-        while (pos < la && pos < lb) {
-          ret &= (a(pos) == b(pos))
-          pos += 1
-        }
-        ret && la == lb
+  def secureEquals(s1: Array[Byte], s2: Array[Byte]): Boolean = (s1, s2) match {
+    case (null, null) => true
+    case (null, _)    => false
+    case (_, null)    => false
+    case (a, b) => {
+      val la = a.length
+      val lb = b.length
+      var ret = true
+      var pos = 0
+      while (pos < la && pos < lb) {
+        ret &= (a(pos) == b(pos))
+        pos += 1
       }
+      ret && la == lb
     }
+  }
 
   /** create a SHA-256 hash from a Byte array */
   def hash256(in: Array[Byte]): Array[Byte] = {
@@ -166,26 +164,25 @@ trait SecurityHelpers {
     val ret = new Array[Byte](max)
     var pos = 0
 
-    def byteOf(in: Char): Int =
-      in match {
-        case '0'       => 0
-        case '1'       => 1
-        case '2'       => 2
-        case '3'       => 3
-        case '4'       => 4
-        case '5'       => 5
-        case '6'       => 6
-        case '7'       => 7
-        case '8'       => 8
-        case '9'       => 9
-        case 'a' | 'A' => 10
-        case 'b' | 'B' => 11
-        case 'c' | 'C' => 12
-        case 'd' | 'D' => 13
-        case 'e' | 'E' => 14
-        case 'f' | 'F' => 15
-        case _         => 0
-      }
+    def byteOf(in: Char): Int = in match {
+      case '0'       => 0
+      case '1'       => 1
+      case '2'       => 2
+      case '3'       => 3
+      case '4'       => 4
+      case '5'       => 5
+      case '6'       => 6
+      case '7'       => 7
+      case '8'       => 8
+      case '9'       => 9
+      case 'a' | 'A' => 10
+      case 'b' | 'B' => 11
+      case 'c' | 'C' => 12
+      case 'd' | 'D' => 13
+      case 'e' | 'E' => 14
+      case 'f' | 'F' => 15
+      case _         => 0
+    }
 
     while (pos < max) {
       val two = pos * 2

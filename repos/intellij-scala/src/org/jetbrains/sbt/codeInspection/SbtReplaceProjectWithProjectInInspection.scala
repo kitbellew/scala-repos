@@ -44,14 +44,13 @@ class SbtReplaceProjectWithProjectInInspection extends AbstractInspection {
       projectName: String): Option[ScMethodCall] = {
     var placeToFix: Option[ScMethodCall] = None
     val visitor = new ScalaRecursiveElementVisitor {
-      override def visitMethodCallExpression(call: ScMethodCall) =
-        call match {
-          case ScMethodCall(expr, Seq(ScLiteralImpl.string(name), _))
-              if expr.getText == "Project" && name == projectName =>
-            placeToFix = Some(call)
-          case _ =>
-            super.visitMethodCallExpression(call)
-        }
+      override def visitMethodCallExpression(call: ScMethodCall) = call match {
+        case ScMethodCall(expr, Seq(ScLiteralImpl.string(name), _))
+            if expr.getText == "Project" && name == projectName =>
+          placeToFix = Some(call)
+        case _ =>
+          super.visitMethodCallExpression(call)
+      }
     }
     call.accept(visitor)
     placeToFix

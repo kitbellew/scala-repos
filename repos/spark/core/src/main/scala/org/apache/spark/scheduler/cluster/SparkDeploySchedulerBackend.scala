@@ -39,8 +39,8 @@ private[spark] class SparkDeploySchedulerBackend(
   private var client: AppClient = null
   private var stopping = false
   private val launcherBackend = new LauncherBackend() {
-    override protected def onStopRequest(): Unit =
-      stop(SparkAppHandle.State.KILLED)
+    override protected def onStopRequest(): Unit = stop(
+      SparkAppHandle.State.KILLED)
   }
 
   @volatile var shutdownCallback: SparkDeploySchedulerBackend => Unit = _
@@ -135,10 +135,9 @@ private[spark] class SparkDeploySchedulerBackend(
     launcherBackend.setState(SparkAppHandle.State.RUNNING)
   }
 
-  override def stop(): Unit =
-    synchronized {
-      stop(SparkAppHandle.State.FINISHED)
-    }
+  override def stop(): Unit = synchronized {
+    stop(SparkAppHandle.State.FINISHED)
+  }
 
   override def connected(appId: String) {
     logInfo("Connected to Spark cluster with app ID " + appId)
@@ -240,22 +239,21 @@ private[spark] class SparkDeploySchedulerBackend(
     registrationBarrier.release()
   }
 
-  private def stop(finalState: SparkAppHandle.State): Unit =
-    synchronized {
-      try {
-        stopping = true
+  private def stop(finalState: SparkAppHandle.State): Unit = synchronized {
+    try {
+      stopping = true
 
-        super.stop()
-        client.stop()
+      super.stop()
+      client.stop()
 
-        val callback = shutdownCallback
-        if (callback != null) {
-          callback(this)
-        }
-      } finally {
-        launcherBackend.setState(finalState)
-        launcherBackend.close()
+      val callback = shutdownCallback
+      if (callback != null) {
+        callback(this)
       }
+    } finally {
+      launcherBackend.setState(finalState)
+      launcherBackend.close()
     }
+  }
 
 }

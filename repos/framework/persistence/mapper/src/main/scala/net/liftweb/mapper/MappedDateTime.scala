@@ -109,17 +109,15 @@ abstract class MappedDateTime[T <: Mapper[T]](val fieldOwner: T)
 
   def dbFieldClass = classOf[Date]
 
-  def asJsonValue: Box[JsonAST.JValue] =
-    Full(get match {
-      case null => JsonAST.JNull
-      case v    => JsonAST.JInt(v.getTime)
-    })
+  def asJsonValue: Box[JsonAST.JValue] = Full(get match {
+    case null => JsonAST.JNull
+    case v    => JsonAST.JInt(v.getTime)
+  })
 
-  def toLong: Long =
-    get match {
-      case null    => 0L
-      case d: Date => d.getTime / 1000L
-    }
+  def toLong: Long = get match {
+    case null    => 0L
+    case d: Date => d.getTime / 1000L
+  }
 
   def asJsExp: JsExp = JE.Num(toLong)
 
@@ -157,26 +155,24 @@ abstract class MappedDateTime[T <: Mapper[T]](val fieldOwner: T)
       }/>))
     }
 
-  override def setFromAny(f: Any): Date =
-    f match {
-      case JsonAST.JNull                   => this.set(null)
-      case JsonAST.JInt(v)                 => this.set(new Date(v.longValue))
-      case n: Number                       => this.set(new Date(n.longValue))
-      case "" | null                       => this.set(null)
-      case s: String                       => parse(s).map(d => this.set(d)).openOr(this.get)
-      case (s: String) :: _                => parse(s).map(d => this.set(d)).openOr(this.get)
-      case d: Date                         => this.set(d)
-      case Some(d: Date)                   => this.set(d)
-      case Full(d: Date)                   => this.set(d)
-      case None | Empty | Failure(_, _, _) => this.set(null)
-      case _                               => this.get
-    }
+  override def setFromAny(f: Any): Date = f match {
+    case JsonAST.JNull                   => this.set(null)
+    case JsonAST.JInt(v)                 => this.set(new Date(v.longValue))
+    case n: Number                       => this.set(new Date(n.longValue))
+    case "" | null                       => this.set(null)
+    case s: String                       => parse(s).map(d => this.set(d)).openOr(this.get)
+    case (s: String) :: _                => parse(s).map(d => this.set(d)).openOr(this.get)
+    case d: Date                         => this.set(d)
+    case Some(d: Date)                   => this.set(d)
+    case Full(d: Date)                   => this.set(d)
+    case None | Empty | Failure(_, _, _) => this.set(null)
+    case _                               => this.get
+  }
 
-  def jdbcFriendly(field: String): Object =
-    get match {
-      case null => null
-      case d    => new java.sql.Timestamp(d.getTime)
-    }
+  def jdbcFriendly(field: String): Object = get match {
+    case null => null
+    case d    => new java.sql.Timestamp(d.getTime)
+  }
 
   def real_convertToJDBCFriendly(value: Date): Object =
     if (value == null) null else new java.sql.Timestamp(value.getTime)
@@ -229,16 +225,14 @@ abstract class MappedDateTime[T <: Mapper[T]](val fieldOwner: T)
   def fieldCreatorString(dbType: DriverType, colName: String): String =
     colName + " " + dbType.dateTimeColumnType + notNullAppender()
 
-  def inFuture_? =
-    data.get match {
-      case null => false
-      case d    => d.getTime > millis
-    }
-  def inPast_? =
-    data.get match {
-      case null => false
-      case d    => d.getTime < millis
-    }
+  def inFuture_? = data.get match {
+    case null => false
+    case d    => d.getTime > millis
+  }
+  def inPast_? = data.get match {
+    case null => false
+    case d    => d.getTime < millis
+  }
 
   override def toString: String = if (get == null) "NULL" else format(get)
 }

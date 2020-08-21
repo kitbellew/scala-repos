@@ -37,10 +37,9 @@ trait Data0 {
   /**
     * Default Data type class instance.
     */
-  implicit def dfltData[F, T, R]: Data[F, T, R] =
-    new Data[F, T, R] {
-      def gmapQ(t: T): List[R] = Nil
-    }
+  implicit def dfltData[F, T, R]: Data[F, T, R] = new Data[F, T, R] {
+    def gmapQ(t: T): List[R] = Nil
+  }
 }
 
 trait Data1 extends Data0 {
@@ -110,11 +109,10 @@ trait DataT0 {
   /**
     * Default DataT type class instance.
     */
-  implicit def dfltDataT[F, T]: Aux[F, T, T] =
-    new DataT[F, T] {
-      type Out = T
-      def gmapT(t: T) = t
-    }
+  implicit def dfltDataT[F, T]: Aux[F, T, T] = new DataT[F, T] {
+    type Out = T
+    def gmapT(t: T) = t
+  }
 }
 
 trait DataT1 extends DataT0 {
@@ -161,9 +159,8 @@ object DataT extends DataT1 {
   implicit def deriveCNil[P]: Aux[P, CNil, CNil] =
     new DataT[P, CNil] {
       type Out = CNil
-      def gmapT(t: CNil) =
-        sys.error(
-          "CNil is equivelant to Nothing: there should be no values of this type")
+      def gmapT(t: CNil) = sys.error(
+        "CNil is equivelant to Nothing: there should be no values of this type")
     }
 
   implicit def deriveCCons[P, H, T <: Coproduct, OutH, OutT <: Coproduct](
@@ -172,11 +169,10 @@ object DataT extends DataT1 {
       dtt: Lazy[DataT.Aux[P, T, OutT]]): Aux[P, H :+: T, OutH :+: OutT] =
     new DataT[P, H :+: T] {
       type Out = OutH :+: OutT
-      def gmapT(c: H :+: T) =
-        c match {
-          case Inl(h) => Inl(ch.value(h :: HNil))
-          case Inr(t) => Inr(dtt.value.gmapT(t))
-        }
+      def gmapT(c: H :+: T) = c match {
+        case Inl(h) => Inl(ch.value(h :: HNil))
+        case Inr(t) => Inr(dtt.value.gmapT(t))
+      }
     }
 }
 

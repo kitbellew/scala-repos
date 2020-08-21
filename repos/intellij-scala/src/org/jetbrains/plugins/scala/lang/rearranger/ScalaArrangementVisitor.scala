@@ -130,11 +130,10 @@ class ScalaArrangementVisitor(
     }
   }
 
-  override def visitFile(file: PsiFile) =
-    file match {
-      case scFile: ScalaFile => scFile.acceptChildren(this)
-      case _                 =>
-    }
+  override def visitFile(file: PsiFile) = file match {
+    case scFile: ScalaFile => scFile.acceptChildren(this)
+    case _                 =>
+  }
 
   override def visitPatternDefinition(pat: ScPatternDefinition) {
     //TODO: insert inter-field dependency here
@@ -150,11 +149,10 @@ class ScalaArrangementVisitor(
     )
   }
 
-  override def visitElement(v: ScalaPsiElement) =
-    v match {
-      case packaging: ScPackaging => packaging.acceptChildren(this)
-      case _                      => super.visitElement(v)
-    }
+  override def visitElement(v: ScalaPsiElement) = v match {
+    case packaging: ScPackaging => packaging.acceptChildren(this)
+    case _                      => super.visitElement(v)
+  }
 
   override def visitClass(scClass: ScClass) =
     processEntry(

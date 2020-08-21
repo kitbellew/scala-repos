@@ -76,10 +76,12 @@ trait DievImplementation {
         before: Option[Int],
         after: Option[Int])
         extends SearchResult {
-      def adjacentBefore(interval: (A, A)): Option[Int] =
-        before.filter { pos => intervals(pos)._2.succ === interval._1 }
-      def adjacentAfter(interval: (A, A)): Option[Int] =
-        after.filter { pos => intervals(pos)._1.pred === interval._2 }
+      def adjacentBefore(interval: (A, A)): Option[Int] = before.filter { pos =>
+        intervals(pos)._2.succ === interval._1
+      }
+      def adjacentAfter(interval: (A, A)): Option[Int] = after.filter { pos =>
+        intervals(pos)._1.pred === interval._2
+      }
     }
 
     private def construct(
@@ -251,18 +253,16 @@ trait DievImplementation {
     def --(other: Diev[A]): Diev[A] =
       other.intervals.foldLeft(this: Diev[A])(_ - _)
 
-    def contains(value: A): Boolean =
-      binarySearch(value) match {
-        case Coincidence(_) => true
-        case _              => false
-      }
+    def contains(value: A): Boolean = binarySearch(value) match {
+      case Coincidence(_) => true
+      case _              => false
+    }
 
-    def contains(interval: (A, A)): Boolean =
-      binarySearch(interval._1) match {
-        case Coincidence(position) if (intervals(position)._2 >= interval._2) =>
-          true
-        case _ => false
-      }
+    def contains(interval: (A, A)): Boolean = binarySearch(interval._1) match {
+      case Coincidence(position) if (intervals(position)._2 >= interval._2) =>
+        true
+      case _ => false
+    }
 
     def map[B](f: A => B)(implicit EB: Enum[B]): Diev[B] =
       foldLeft[Diev[B]](DieVector[B]())(_ + f(_))
@@ -288,11 +288,10 @@ trait DievImplementation {
     def toList(): List[A] =
       foldLeft[ListBuffer[A]](new ListBuffer())(_ += _).toList
 
-    override def toString(): String =
-      intervals
-        .foldLeft(new StringBuilder().append("("))(_.append(_))
-        .append(")")
-        .toString
+    override def toString(): String = intervals
+      .foldLeft(new StringBuilder().append("("))(_.append(_))
+      .append(")")
+      .toString
   }
 }
 
@@ -313,16 +312,13 @@ sealed abstract class DievInstances extends DievImplementation {
     Equal.equalBy[Diev[A], Vector[(A, A)]](_.intervals)(
       std.vector.vectorEqual[(A, A)])
 
-  implicit def dievMonoid[A: Enum]: Monoid[Diev[A]] =
-    new Monoid[Diev[A]] {
-      def append(f1: Diev[A], f2: => Diev[A]) = f1 ++ f2
+  implicit def dievMonoid[A: Enum]: Monoid[Diev[A]] = new Monoid[Diev[A]] {
+    def append(f1: Diev[A], f2: => Diev[A]) = f1 ++ f2
 
-      def zero: Diev[A] = new DieVector[A]()
-    }
+    def zero: Diev[A] = new DieVector[A]()
+  }
 
-  implicit def dievShow[A: Show]: Show[Diev[A]] =
-    new Show[Diev[A]] {
-      override def show(diev: Diev[A]) =
-        Show[Vector[(A, A)]].show(diev.intervals)
-    }
+  implicit def dievShow[A: Show]: Show[Diev[A]] = new Show[Diev[A]] {
+    override def show(diev: Diev[A]) = Show[Vector[(A, A)]].show(diev.intervals)
+  }
 }

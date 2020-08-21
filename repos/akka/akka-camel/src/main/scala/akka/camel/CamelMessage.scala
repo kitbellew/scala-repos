@@ -140,11 +140,10 @@ class CamelMessage(
     * Reset StreamCache body. Nothing is done if the body is not a StreamCache.
     * See http://camel.apache.org/stream-caching.html
     */
-  def resetStreamCache(): Unit =
-    body match {
-      case stream: StreamCache ⇒ stream.reset
-      case _ ⇒
-    }
+  def resetStreamCache(): Unit = body match {
+    case stream: StreamCache ⇒ stream.reset
+    case _ ⇒
+  }
 
   /**
     * Java API: Returns a new CamelMessage with a new body, while keeping the same headers.
@@ -158,8 +157,8 @@ class CamelMessage(
     */
   def withBodyAs[T](implicit
       t: ClassTag[T],
-      camelContext: CamelContext): CamelMessage =
-    withBodyAs(t.runtimeClass.asInstanceOf[Class[T]])
+      camelContext: CamelContext): CamelMessage = withBodyAs(
+    t.runtimeClass.asInstanceOf[Class[T]])
 
   /**
     * Java API: Creates a CamelMessage with current <code>body</code> converted to type <code>clazz</code>.
@@ -224,12 +223,11 @@ class CamelMessage(
   /**
     * Returns the n-th element of this product, 0-based.
     */
-  override def productElement(n: Int): Any =
-    n match {
-      case 0 ⇒ body
-      case 1 ⇒ headers
-      case 2 ⇒ attachments
-    }
+  override def productElement(n: Int): Any = n match {
+    case 0 ⇒ body
+    case 1 ⇒ headers
+    case 2 ⇒ attachments
+  }
 
   /**
     * Returns the size of this product.
@@ -240,11 +238,10 @@ class CamelMessage(
     * Indicates if some other object can be compared (based on type).
     * This method should be called from every well-designed equals method that is open to be overridden in a subclass.
     */
-  override def canEqual(that: Any): Boolean =
-    that match {
-      case _: CamelMessage ⇒ true
-      case _ ⇒ false
-    }
+  override def canEqual(that: Any): Boolean = that match {
+    case _: CamelMessage ⇒ true
+    case _ ⇒ false
+  }
 }
 
 /**
@@ -287,11 +284,10 @@ object CamelMessage extends ((Any, Map[String, Any]) ⇒ CamelMessage) {
     * CamelMessage then <code>msg</code> is returned, otherwise <code>msg</code> is set as body of a
     * newly created CamelMessage object.
     */
-  private[camel] def canonicalize(msg: Any) =
-    msg match {
-      case mobj: CamelMessage ⇒ mobj
-      case body ⇒ CamelMessage(body, Map.empty[String, Any])
-    }
+  private[camel] def canonicalize(msg: Any) = msg match {
+    case mobj: CamelMessage ⇒ mobj
+    case body ⇒ CamelMessage(body, Map.empty[String, Any])
+  }
 
   /**
     * Creates a new CamelMessage object from the Camel message.

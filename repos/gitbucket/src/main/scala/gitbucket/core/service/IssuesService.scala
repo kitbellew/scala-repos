@@ -662,34 +662,33 @@ object IssuesService {
 
     def nonEmpty: Boolean = !isEmpty
 
-    def toFilterString: String =
-      (
+    def toFilterString: String = (
+      List(
+        Some(s"is:${state}"),
+        author.map(author => s"author:${author}"),
+        assigned.map(assignee => s"assignee:${assignee}"),
+        mentioned.map(mentioned => s"mentions:${mentioned}")
+      ).flatten ++
+        labels.map(label => s"label:${label}") ++
         List(
-          Some(s"is:${state}"),
-          author.map(author => s"author:${author}"),
-          assigned.map(assignee => s"assignee:${assignee}"),
-          mentioned.map(mentioned => s"mentions:${mentioned}")
+          milestone.map {
+            _ match {
+              case Some(x) => s"milestone:${x}"
+              case None    => "no:milestone"
+            }
+          },
+          (sort, direction) match {
+            case ("created", "desc")  => None
+            case ("created", "asc")   => Some("sort:created-asc")
+            case ("comments", "desc") => Some("sort:comments-desc")
+            case ("comments", "asc")  => Some("sort:comments-asc")
+            case ("updated", "desc")  => Some("sort:updated-desc")
+            case ("updated", "asc")   => Some("sort:updated-asc")
+          },
+          visibility.map(visibility => s"visibility:${visibility}")
         ).flatten ++
-          labels.map(label => s"label:${label}") ++
-          List(
-            milestone.map {
-              _ match {
-                case Some(x) => s"milestone:${x}"
-                case None    => "no:milestone"
-              }
-            },
-            (sort, direction) match {
-              case ("created", "desc")  => None
-              case ("created", "asc")   => Some("sort:created-asc")
-              case ("comments", "desc") => Some("sort:comments-desc")
-              case ("comments", "asc")  => Some("sort:comments-asc")
-              case ("updated", "desc")  => Some("sort:updated-desc")
-              case ("updated", "asc")   => Some("sort:updated-asc")
-            },
-            visibility.map(visibility => s"visibility:${visibility}")
-          ).flatten ++
-          groups.map(group => s"group:${group}")
-      ).mkString(" ")
+        groups.map(group => s"group:${group}")
+    ).mkString(" ")
 
     def toURL: String =
       "?" + List(
@@ -800,13 +799,12 @@ object IssuesService {
         param(request, "groups").map(_.split(",").toSet).getOrElse(Set.empty)
       )
 
-    def page(request: HttpServletRequest) =
-      try {
-        val i = param(request, "page").getOrElse("1").toInt
-        if (i <= 0) 1 else i
-      } catch {
-        case e: NumberFormatException => 1
-      }
+    def page(request: HttpServletRequest) = try {
+      val i = param(request, "page").getOrElse("1").toInt
+      if (i <= 0) 1 else i
+    } catch {
+      case e: NumberFormatException => 1
+    }
   }
 
   case class CommitStatusInfo(

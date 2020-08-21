@@ -217,8 +217,8 @@ trait Mirrors extends api.Mirrors {
         fullname: String): ModuleSymbol =
       getPackage(newTermNameCached(fullname))
 
-    def getPackageObject(fullname: String): ModuleSymbol =
-      getPackageObject(newTermName(fullname))
+    def getPackageObject(fullname: String): ModuleSymbol = getPackageObject(
+      newTermName(fullname))
     def getPackageObject(fullname: TermName): ModuleSymbol =
       (getPackage(fullname).packageObject) match {
         case x: ModuleSymbol => x

@@ -136,8 +136,8 @@ trait TcpHelper { this: TestKitBase ⇒
     val serverRef = system.actorOf(testServerProps(address, serverProbe.ref))
     serverProbe.expectMsgType[Tcp.Bound]
 
-    def waitAccept(): ServerConnection =
-      new ServerConnection(serverProbe.expectMsgType[ActorRef])
+    def waitAccept(): ServerConnection = new ServerConnection(
+      serverProbe.expectMsgType[ActorRef])
     def close(): Unit = serverRef ! ServerClose
   }
 
@@ -155,8 +155,8 @@ trait TcpHelper { this: TestKitBase ⇒
     def close(): Unit = connectionActor ! ClientClose(Tcp.Close)
     def abort(): Unit = connectionActor ! ClientClose(Tcp.Abort)
 
-    def expectClosed(expected: ConnectionClosed): Unit =
-      expectClosed(_ == expected)
+    def expectClosed(expected: ConnectionClosed): Unit = expectClosed(
+      _ == expected)
 
     def expectClosed(
         p: (ConnectionClosed) ⇒ Boolean,

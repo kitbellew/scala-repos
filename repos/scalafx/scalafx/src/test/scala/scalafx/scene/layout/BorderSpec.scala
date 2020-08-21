@@ -41,8 +41,8 @@ class BorderSpec
       classOf[jfxsl.Border],
       classOf[Border]) {
 
-  override protected def getScalaClassInstance =
-    new Border(getJavaClassInstance) {}
+  override protected def getScalaClassInstance = new Border(
+    getJavaClassInstance) {}
 
   override protected def getJavaClassInstance = Border.EMPTY
 }

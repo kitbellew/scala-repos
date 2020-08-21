@@ -21,8 +21,8 @@ class TemplateTest extends AsyncTest[RelationalTestDB] {
     }
     lazy val orders = TableQuery[Orders]
 
-    def userNameByID1(id: Int) =
-      for (u <- users if u.id === id.bind) yield u.first
+    def userNameByID1(id: Int) = for (u <- users if u.id === id.bind)
+      yield u.first
     def q1 = userNameByID1(3)
 
     val userNameByID2 = for {

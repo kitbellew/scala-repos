@@ -311,16 +311,15 @@ trait FindMembers {
       if (sym eq member0) member0Tpe else super.memberTypeLow(sym)
 
     // Assemble the result from the hand-rolled ListBuffer
-    protected def result: Symbol =
-      if (members eq null) {
-        if (member0 == NoSymbol) {
-          if (Statistics.canEnable) Statistics.incCounter(noMemberCount)
-          NoSymbol
-        } else member0
-      } else {
-        if (Statistics.canEnable) Statistics.incCounter(multMemberCount)
-        lastM.tl = Nil
-        initBaseClasses.head.newOverloaded(tpe, members)
-      }
+    protected def result: Symbol = if (members eq null) {
+      if (member0 == NoSymbol) {
+        if (Statistics.canEnable) Statistics.incCounter(noMemberCount)
+        NoSymbol
+      } else member0
+    } else {
+      if (Statistics.canEnable) Statistics.incCounter(multMemberCount)
+      lastM.tl = Nil
+      initBaseClasses.head.newOverloaded(tpe, members)
+    }
   }
 }

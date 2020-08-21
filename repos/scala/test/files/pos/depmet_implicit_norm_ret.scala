@@ -3,10 +3,9 @@ object Test {
 
   // fallback, lower priority (overloading rules apply: pick alternative in subclass lowest in subtyping lattice)
   class ZipWithDefault {
-    implicit def ZeroZipWith[S] =
-      new ZipWith[S] {
-        type T = Stream[S]
-      }
+    implicit def ZeroZipWith[S] = new ZipWith[S] {
+      type T = Stream[S]
+    }
   }
 
   object ZipWith extends ZipWithDefault {

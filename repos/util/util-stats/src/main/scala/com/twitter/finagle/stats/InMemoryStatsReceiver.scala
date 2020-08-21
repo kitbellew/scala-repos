@@ -43,11 +43,10 @@ class InMemoryStatsReceiver extends StatsReceiver {
   def counter(name: String*): ReadableCounter =
     new ReadableCounter {
 
-      def incr(delta: Int): Unit =
-        counters.synchronized {
-          val oldValue = apply()
-          counters(name) = oldValue + delta
-        }
+      def incr(delta: Int): Unit = counters.synchronized {
+        val oldValue = apply()
+        counters(name) = oldValue + delta
+      }
       def apply(): Int = counters.getOrElse(name, 0)
 
       override def toString: String =
@@ -59,11 +58,10 @@ class InMemoryStatsReceiver extends StatsReceiver {
     */
   def stat(name: String*): ReadableStat =
     new ReadableStat {
-      def add(value: Float): Unit =
-        stats.synchronized {
-          val oldValue = apply()
-          stats(name) = oldValue :+ value
-        }
+      def add(value: Float): Unit = stats.synchronized {
+        val oldValue = apply()
+        stats(name) = oldValue :+ value
+      }
       def apply(): Seq[Float] = stats.getOrElse(name, Seq.empty)
 
       override def toString: String = {

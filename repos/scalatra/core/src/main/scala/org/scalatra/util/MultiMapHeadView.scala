@@ -23,15 +23,15 @@ trait MultiMapHeadView[A, B] extends Map[A, B] {
 
   protected def multiMap: Map[A, Seq[B]]
 
-  override def get(key: A): Option[B] =
-    multiMap.get(key) flatMap { _.headOption }
+  override def get(key: A): Option[B] = multiMap.get(key) flatMap {
+    _.headOption
+  }
 
   override def size: Int = multiMap.size
 
-  override def iterator: Iterator[(A, B)] =
-    multiMap.flatMap { case (k, v) =>
-      v.headOption.map { _v => (k, _v) }
-    }.iterator
+  override def iterator: Iterator[(A, B)] = multiMap.flatMap { case (k, v) =>
+    v.headOption.map { _v => (k, _v) }
+  }.iterator
 
   override def -(key: A): Map[A, B] = Map() ++ this - key
 

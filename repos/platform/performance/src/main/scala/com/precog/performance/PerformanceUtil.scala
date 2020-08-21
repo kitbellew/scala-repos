@@ -49,17 +49,16 @@ class PerformanceUtil(apiEndpoint: String, apiKey: String, path: String) {
   val format = ISODateTimeFormat.dateTime
 
   class BenchmarkDecomposer[T] extends Decomposer[BenchmarkResults[T]] {
-    override def decompose(results: BenchmarkResults[T]): JValue =
-      JObject(
-        List(
-          JField("timestamp", format.print(new DateTime(DateTimeZone.UTC))),
-          JField("runs", results.testRuns),
-          JField("reps", results.repCount),
-          JField("mean", results.meanRepTime),
-          JField("ptile90", results.ptile(0.9)),
-          JField("baseline", results.baseline),
-          JField("times", results.timings.serialize)
-        ))
+    override def decompose(results: BenchmarkResults[T]): JValue = JObject(
+      List(
+        JField("timestamp", format.print(new DateTime(DateTimeZone.UTC))),
+        JField("runs", results.testRuns),
+        JField("reps", results.repCount),
+        JField("mean", results.meanRepTime),
+        JField("ptile90", results.ptile(0.9)),
+        JField("baseline", results.baseline),
+        JField("times", results.timings.serialize)
+      ))
   }
 
 //  class BenchmarkExtractor[T] extends ValidatedExtraction[BenchmarkResults[T]] {

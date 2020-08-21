@@ -62,8 +62,8 @@ class DefaultSource extends FileFormat with DataSourceRegister {
   override def inferSchema(
       sqlContext: SQLContext,
       options: Map[String, String],
-      files: Seq[FileStatus]): Option[StructType] =
-    Some(new StructType().add("value", StringType))
+      files: Seq[FileStatus]): Option[StructType] = Some(
+    new StructType().add("value", StringType))
 
   override def prepareWrite(
       sqlContext: SQLContext,
@@ -160,8 +160,8 @@ class TextOutputWriter(
     }.getRecordWriter(context)
   }
 
-  override def write(row: Row): Unit =
-    throw new UnsupportedOperationException("call writeInternal")
+  override def write(row: Row): Unit = throw new UnsupportedOperationException(
+    "call writeInternal")
 
   override protected[sql] def writeInternal(row: InternalRow): Unit = {
     val utf8string = row.getUTF8String(0)

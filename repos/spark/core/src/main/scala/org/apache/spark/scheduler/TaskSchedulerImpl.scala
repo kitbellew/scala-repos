@@ -155,10 +155,9 @@ private[spark] class TaskSchedulerImpl(
       logInfo("Starting speculative execution thread")
       speculationScheduler.scheduleAtFixedRate(
         new Runnable {
-          override def run(): Unit =
-            Utils.tryOrStopSparkContext(sc) {
-              checkSpeculatableTasks()
-            }
+          override def run(): Unit = Utils.tryOrStopSparkContext(sc) {
+            checkSpeculatableTasks()
+          }
         },
         SPECULATION_INTERVAL_MS,
         SPECULATION_INTERVAL_MS,
@@ -248,20 +247,19 @@ private[spark] class TaskSchedulerImpl(
     * given TaskSetManager have completed, so state associated with the TaskSetManager should be
     * cleaned up.
     */
-  def taskSetFinished(manager: TaskSetManager): Unit =
-    synchronized {
-      taskSetsByStageIdAndAttempt.get(manager.taskSet.stageId).foreach {
-        taskSetsForStage =>
-          taskSetsForStage -= manager.taskSet.stageAttemptId
-          if (taskSetsForStage.isEmpty) {
-            taskSetsByStageIdAndAttempt -= manager.taskSet.stageId
-          }
-      }
-      manager.parent.removeSchedulable(manager)
-      logInfo(
-        "Removed TaskSet %s, whose tasks have all completed, from pool %s"
-          .format(manager.taskSet.id, manager.parent.name))
+  def taskSetFinished(manager: TaskSetManager): Unit = synchronized {
+    taskSetsByStageIdAndAttempt.get(manager.taskSet.stageId).foreach {
+      taskSetsForStage =>
+        taskSetsForStage -= manager.taskSet.stageAttemptId
+        if (taskSetsForStage.isEmpty) {
+          taskSetsByStageIdAndAttempt -= manager.taskSet.stageId
+        }
     }
+    manager.parent.removeSchedulable(manager)
+    logInfo(
+      "Removed TaskSet %s, whose tasks have all completed, from pool %s"
+        .format(manager.taskSet.id, manager.parent.name))
+  }
 
   private def resourceOfferSingleTaskSet(
       taskSet: TaskSetManager,
@@ -449,24 +447,22 @@ private[spark] class TaskSchedulerImpl(
   def handleSuccessfulTask(
       taskSetManager: TaskSetManager,
       tid: Long,
-      taskResult: DirectTaskResult[_]): Unit =
-    synchronized {
-      taskSetManager.handleSuccessfulTask(tid, taskResult)
-    }
+      taskResult: DirectTaskResult[_]): Unit = synchronized {
+    taskSetManager.handleSuccessfulTask(tid, taskResult)
+  }
 
   def handleFailedTask(
       taskSetManager: TaskSetManager,
       tid: Long,
       taskState: TaskState,
-      reason: TaskEndReason): Unit =
-    synchronized {
-      taskSetManager.handleFailedTask(tid, taskState, reason)
-      if (!taskSetManager.isZombie && taskState != TaskState.KILLED) {
-        // Need to revive offers again now that the task set manager state has been updated to
-        // reflect failed tasks that need to be re-run.
-        backend.reviveOffers()
-      }
+      reason: TaskEndReason): Unit = synchronized {
+    taskSetManager.handleFailedTask(tid, taskState, reason)
+    if (!taskSetManager.isZombie && taskState != TaskState.KILLED) {
+      // Need to revive offers again now that the task set manager state has been updated to
+      // reflect failed tasks that need to be re-run.
+      backend.reviveOffers()
     }
+  }
 
   def error(message: String) {
     synchronized {
@@ -555,16 +551,15 @@ private[spark] class TaskSchedulerImpl(
   private def logExecutorLoss(
       executorId: String,
       hostPort: String,
-      reason: ExecutorLossReason): Unit =
-    reason match {
-      case LossReasonPending =>
-        logDebug(
-          s"Executor $executorId on $hostPort lost, but reason not yet known.")
-      case ExecutorKilled =>
-        logInfo(s"Executor $executorId on $hostPort killed by driver.")
-      case _ =>
-        logError(s"Lost executor $executorId on $hostPort: $reason")
-    }
+      reason: ExecutorLossReason): Unit = reason match {
+    case LossReasonPending =>
+      logDebug(
+        s"Executor $executorId on $hostPort lost, but reason not yet known.")
+    case ExecutorKilled =>
+      logInfo(s"Executor $executorId on $hostPort killed by driver.")
+    case _ =>
+      logError(s"Lost executor $executorId on $hostPort: $reason")
+  }
 
   /**
     * Remove an executor from all our data structures and mark it as lost. If the executor's loss
@@ -602,25 +597,21 @@ private[spark] class TaskSchedulerImpl(
       executorsByHost.get(host).map(_.toSet)
     }
 
-  def hasExecutorsAliveOnHost(host: String): Boolean =
-    synchronized {
-      executorsByHost.contains(host)
-    }
+  def hasExecutorsAliveOnHost(host: String): Boolean = synchronized {
+    executorsByHost.contains(host)
+  }
 
-  def hasHostAliveOnRack(rack: String): Boolean =
-    synchronized {
-      hostsByRack.contains(rack)
-    }
+  def hasHostAliveOnRack(rack: String): Boolean = synchronized {
+    hostsByRack.contains(rack)
+  }
 
-  def isExecutorAlive(execId: String): Boolean =
-    synchronized {
-      executorIdToTaskCount.contains(execId)
-    }
+  def isExecutorAlive(execId: String): Boolean = synchronized {
+    executorIdToTaskCount.contains(execId)
+  }
 
-  def isExecutorBusy(execId: String): Boolean =
-    synchronized {
-      executorIdToTaskCount.getOrElse(execId, -1) > 0
-    }
+  def isExecutorBusy(execId: String): Boolean = synchronized {
+    executorIdToTaskCount.getOrElse(execId, -1) > 0
+  }
 
   // By default, rack is unknown
   def getRackForHost(value: String): Option[String] = None

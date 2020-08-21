@@ -39,23 +39,22 @@ import org.apache.spark.sql.sources.{
   */
 private[sql] class ResolveDataSource(sqlContext: SQLContext)
     extends Rule[LogicalPlan] {
-  def apply(plan: LogicalPlan): LogicalPlan =
-    plan resolveOperators {
-      case u: UnresolvedRelation if u.tableIdentifier.database.isDefined =>
-        try {
-          val dataSource = DataSource(
-            sqlContext,
-            paths = u.tableIdentifier.table :: Nil,
-            className = u.tableIdentifier.database.get)
-          val plan = LogicalRelation(dataSource.resolveRelation())
-          u.alias.map(a => SubqueryAlias(u.alias.get, plan)).getOrElse(plan)
-        } catch {
-          case e: ClassNotFoundException => u
-          case e: Exception              =>
-            // the provider is valid, but failed to create a logical plan
-            u.failAnalysis(e.getMessage)
-        }
-    }
+  def apply(plan: LogicalPlan): LogicalPlan = plan resolveOperators {
+    case u: UnresolvedRelation if u.tableIdentifier.database.isDefined =>
+      try {
+        val dataSource = DataSource(
+          sqlContext,
+          paths = u.tableIdentifier.table :: Nil,
+          className = u.tableIdentifier.database.get)
+        val plan = LogicalRelation(dataSource.resolveRelation())
+        u.alias.map(a => SubqueryAlias(u.alias.get, plan)).getOrElse(plan)
+      } catch {
+        case e: ClassNotFoundException => u
+        case e: Exception              =>
+          // the provider is valid, but failed to create a logical plan
+          u.failAnalysis(e.getMessage)
+      }
+  }
 }
 
 /**
@@ -64,30 +63,29 @@ private[sql] class ResolveDataSource(sqlContext: SQLContext)
   * the columns to be inserted have the correct data type and fields have the correct names.
   */
 private[sql] object PreInsertCastAndRename extends Rule[LogicalPlan] {
-  def apply(plan: LogicalPlan): LogicalPlan =
-    plan transform {
-      // Wait until children are resolved.
-      case p: LogicalPlan if !p.childrenResolved => p
+  def apply(plan: LogicalPlan): LogicalPlan = plan transform {
+    // Wait until children are resolved.
+    case p: LogicalPlan if !p.childrenResolved => p
 
-      // We are inserting into an InsertableRelation or HadoopFsRelation.
-      case i @ InsertIntoTable(
-            l @ LogicalRelation(
-              _: InsertableRelation | _: HadoopFsRelation,
-              _,
-              _),
+    // We are inserting into an InsertableRelation or HadoopFsRelation.
+    case i @ InsertIntoTable(
+          l @ LogicalRelation(
+            _: InsertableRelation | _: HadoopFsRelation,
             _,
-            child,
-            _,
-            _) =>
-        // First, make sure the data to be inserted have the same number of fields with the
-        // schema of the relation.
-        if (l.output.size != child.output.size) {
-          sys.error(
-            s"$l requires that the query in the SELECT clause of the INSERT INTO/OVERWRITE " +
-              s"statement generates the same number of columns as its schema.")
-        }
-        castAndRenameChildOutput(i, l.output, child)
-    }
+            _),
+          _,
+          child,
+          _,
+          _) =>
+      // First, make sure the data to be inserted have the same number of fields with the
+      // schema of the relation.
+      if (l.output.size != child.output.size) {
+        sys.error(
+          s"$l requires that the query in the SELECT clause of the INSERT INTO/OVERWRITE " +
+            s"statement generates the same number of columns as its schema.")
+      }
+      castAndRenameChildOutput(i, l.output, child)
+  }
 
   /** If necessary, cast data types and rename fields to the expected types and names. */
   def castAndRenameChildOutput(

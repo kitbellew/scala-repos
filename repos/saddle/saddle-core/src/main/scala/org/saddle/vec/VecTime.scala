@@ -59,8 +59,8 @@ class VecTime(
   def without(locs: Array[Int]) = vl2vt(times.without(locs))
 
   // specialized concatenation
-  def concat(x: VecTime) =
-    vl2vt(Vec(util.Concat.append(times.toArray, x.times.toArray)))
+  def concat(x: VecTime) = vl2vt(
+    Vec(util.Concat.append(times.toArray, x.times.toArray)))
 
   // general concatenation
   def concat[B, C](
@@ -115,13 +115,13 @@ class VecTime(
 
   def shift(n: Int) = vl2vt(times.shift(n))
 
-  override def sorted(implicit ev: ORD[DateTime], st: ST[DateTime]) =
-    take(array.argsort(times.toArray))
+  override def sorted(implicit ev: ORD[DateTime], st: ST[DateTime]) = take(
+    array.argsort(times.toArray))
 
   override def pad: VecTime = vl2vt(times.pad)
 
-  override def fillNA(f: Int => DateTime): VecTime =
-    vl2vt(times.fillNA(f andThen t2l))
+  override def fillNA(f: Int => DateTime): VecTime = vl2vt(
+    times.fillNA(f andThen t2l))
 
   override def reversed: VecTime = vl2vt(times.reversed)
 

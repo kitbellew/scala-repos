@@ -152,8 +152,8 @@ object ContentNegotiator {
     }
   }
 
-  def apply(requestHeaders: Seq[HttpHeader]) =
-    new ContentNegotiator(requestHeaders)
+  def apply(requestHeaders: Seq[HttpHeader]) = new ContentNegotiator(
+    requestHeaders)
 }
 
 final class EncodingNegotiator(requestHeaders: Seq[HttpHeader]) {
@@ -213,8 +213,8 @@ final class EncodingNegotiator(requestHeaders: Seq[HttpHeader]) {
 }
 
 object EncodingNegotiator {
-  def apply(requestHeaders: Seq[HttpHeader]) =
-    new EncodingNegotiator(requestHeaders)
+  def apply(requestHeaders: Seq[HttpHeader]) = new EncodingNegotiator(
+    requestHeaders)
 }
 
 final class LanguageNegotiator(requestHeaders: Seq[HttpHeader]) {
@@ -269,6 +269,6 @@ final class LanguageNegotiator(requestHeaders: Seq[HttpHeader]) {
 }
 
 object LanguageNegotiator {
-  def apply(requestHeaders: Seq[HttpHeader]) =
-    new LanguageNegotiator(requestHeaders)
+  def apply(requestHeaders: Seq[HttpHeader]) = new LanguageNegotiator(
+    requestHeaders)
 }

@@ -102,18 +102,17 @@ trait BitSetLike[+This <: BitSetLike[This] with SortedSet[Int]]
 
   def iterator: Iterator[Int] = iteratorFrom(0)
 
-  override def keysIteratorFrom(start: Int) =
-    new AbstractIterator[Int] {
-      private var current = start
-      private val end = nwords * WordLength
-      def hasNext: Boolean = {
-        while (current != end && !self.contains(current)) current += 1
-        current != end
-      }
-      def next(): Int =
-        if (hasNext) { val r = current; current += 1; r }
-        else Iterator.empty.next()
+  override def keysIteratorFrom(start: Int) = new AbstractIterator[Int] {
+    private var current = start
+    private val end = nwords * WordLength
+    def hasNext: Boolean = {
+      while (current != end && !self.contains(current)) current += 1
+      current != end
     }
+    def next(): Int =
+      if (hasNext) { val r = current; current += 1; r }
+      else Iterator.empty.next()
+  }
 
   override def foreach[U](f: Int => U) {
     /* NOTE: while loops are significantly faster as of 2.11 and

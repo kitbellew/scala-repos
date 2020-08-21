@@ -126,9 +126,8 @@ object RelativeActorPath extends PathUtils {
   * This object serves as extractor for Scala and as address parser for Java.
   */
 object AddressFromURIString {
-  def unapply(addr: String): Option[Address] =
-    try unapply(new URI(addr))
-    catch { case _: URISyntaxException ⇒ None }
+  def unapply(addr: String): Option[Address] = try unapply(new URI(addr))
+  catch { case _: URISyntaxException ⇒ None }
 
   def unapply(uri: URI): Option[Address] =
     if (uri eq null) None
@@ -149,11 +148,10 @@ object AddressFromURIString {
   /**
     * Try to construct an Address from the given String or throw a java.net.MalformedURLException.
     */
-  def apply(addr: String): Address =
-    addr match {
-      case AddressFromURIString(address) ⇒ address
-      case _ ⇒ throw new MalformedURLException(addr)
-    }
+  def apply(addr: String): Address = addr match {
+    case AddressFromURIString(address) ⇒ address
+    case _ ⇒ throw new MalformedURLException(addr)
+  }
 
   /**
     * Java API: Try to construct an Address from the given String or throw a java.net.MalformedURLException.

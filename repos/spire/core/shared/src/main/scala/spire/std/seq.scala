@@ -20,13 +20,12 @@ class SeqModule[A, SA <: SeqLike[A, SA]](implicit
 
   def plus(x: SA, y: SA): SA = {
     @tailrec
-    def add1(it: Iterator[A], b: Builder[A, SA]): SA =
-      if (it.hasNext) {
-        b += it.next()
-        add1(it, b)
-      } else {
-        b.result
-      }
+    def add1(it: Iterator[A], b: Builder[A, SA]): SA = if (it.hasNext) {
+      b += it.next()
+      add1(it, b)
+    } else {
+      b.result
+    }
 
     @tailrec
     def add2(xi: Iterator[A], yi: Iterator[A], b: Builder[A, SA]): SA = {
@@ -45,22 +44,20 @@ class SeqModule[A, SA <: SeqLike[A, SA]](implicit
 
   override def minus(x: SA, y: SA): SA = {
     @tailrec
-    def subl(it: Iterator[A], b: Builder[A, SA]): SA =
-      if (it.hasNext) {
-        b += it.next()
-        subl(it, b)
-      } else {
-        b.result
-      }
+    def subl(it: Iterator[A], b: Builder[A, SA]): SA = if (it.hasNext) {
+      b += it.next()
+      subl(it, b)
+    } else {
+      b.result
+    }
 
     @tailrec
-    def subr(it: Iterator[A], b: Builder[A, SA]): SA =
-      if (it.hasNext) {
-        b += scalar.negate(it.next())
-        subr(it, b)
-      } else {
-        b.result
-      }
+    def subr(it: Iterator[A], b: Builder[A, SA]): SA = if (it.hasNext) {
+      b += scalar.negate(it.next())
+      subr(it, b)
+    } else {
+      b.result
+    }
 
     @tailrec
     def sub2(xi: Iterator[A], yi: Iterator[A], b: Builder[A, SA]): SA = {
@@ -121,11 +118,10 @@ class SeqCoordinateSpace[A: Field, SA <: SeqLike[A, SA]](val dimensions: Int)(
   def axis(i: Int): SA = {
     val b = cbf()
 
-    @tailrec def loop(j: Int): SA =
-      if (i < dimensions) {
-        b += (if (i == j) scalar.one else scalar.zero)
-        loop(j + 1)
-      } else b.result
+    @tailrec def loop(j: Int): SA = if (i < dimensions) {
+      b += (if (i == j) scalar.one else scalar.zero)
+      loop(j + 1)
+    } else b.result
 
     loop(0)
   }

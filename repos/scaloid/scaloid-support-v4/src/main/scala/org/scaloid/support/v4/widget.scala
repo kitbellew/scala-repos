@@ -52,9 +52,8 @@ trait TraitResourceCursorAdapter[
     extends TraitCursorAdapter[This] {
 
   @inline def dropDownViewResource(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'dropDownViewResource'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'dropDownViewResource'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/widget/ResourceCursorAdapter.html#setDropDownViewResource(int) setDropDownViewResource(int)]]`

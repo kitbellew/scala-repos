@@ -20,13 +20,12 @@ abstract class ParallelIterableCheck[T](collName: String)
   def isCheckingViews: Boolean
   def hasStrictOrder: Boolean
 
-  def instances(vals: Seq[Gen[T]]): Gen[Iterable[T]] =
-    oneOf(
-      sized(sz => ofSize(vals, sz)),
-      for (sz <- choose(1000, 2000)) yield ofSize(vals, sz),
-      for (sz <- choose(4000, 4001)) yield ofSize(vals, sz),
-      for (sz <- choose(10000, 10001)) yield ofSize(vals, sz)
-    )
+  def instances(vals: Seq[Gen[T]]): Gen[Iterable[T]] = oneOf(
+    sized(sz => ofSize(vals, sz)),
+    for (sz <- choose(1000, 2000)) yield ofSize(vals, sz),
+    for (sz <- choose(4000, 4001)) yield ofSize(vals, sz),
+    for (sz <- choose(10000, 10001)) yield ofSize(vals, sz)
+  )
 
   // used to check if constructed collection is valid
   def checkDataStructureInvariants(orig: Traversable[T], cf: AnyRef) = {
@@ -48,25 +47,23 @@ abstract class ParallelIterableCheck[T](collName: String)
 
   def sampleValue: T = sample(values(rnd.nextInt(values.length)))
 
-  def collectionPairs =
-    for (inst <- instances(values)) yield (inst, fromTraversable(inst))
+  def collectionPairs = for (inst <- instances(values))
+    yield (inst, fromTraversable(inst))
 
   def collectionPairsWithLengths =
     for (inst <- instances(values); s <- choose(0, inst.size))
       yield (inst, fromTraversable(inst), s)
 
-  def collectionPairsWith2Indices =
-    for (inst <- instances(values);
-      f <- choose(0, inst.size);
-      s <- choose(0, inst.size))
-      yield (inst, fromTraversable(inst), f, s)
+  def collectionPairsWith2Indices = for (inst <- instances(values);
+    f <- choose(0, inst.size);
+    s <- choose(0, inst.size))
+    yield (inst, fromTraversable(inst), f, s)
 
-  def collectionTriplets =
-    for (inst <- instances(values);
-      updStart <- choose(0, inst.size); howMany <- choose(0, inst.size)) yield {
-      val modif = inst.toSeq.patch(updStart, inst.toSeq, howMany)
-      (inst, fromTraversable(inst), modif)
-    }
+  def collectionTriplets = for (inst <- instances(values);
+    updStart <- choose(0, inst.size); howMany <- choose(0, inst.size)) yield {
+    val modif = inst.toSeq.patch(updStart, inst.toSeq, howMany)
+    (inst, fromTraversable(inst), modif)
+  }
 
   def areEqual(t1: GenTraversable[T], t2: GenTraversable[T]) =
     if (hasStrictOrder) {

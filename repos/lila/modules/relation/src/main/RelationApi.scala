@@ -29,16 +29,15 @@ final class RelationApi(
 
   import RelationRepo.makeId
 
-  def fetchRelation(u1: ID, u2: ID): Fu[Option[Relation]] =
-    coll
-      .find(
-        BSONDocument("u1" -> u1, "u2" -> u2),
-        BSONDocument("r" -> true, "_id" -> false)
-      )
-      .one[BSONDocument]
-      .map {
-        _.flatMap(_.getAs[Boolean]("r"))
-      }
+  def fetchRelation(u1: ID, u2: ID): Fu[Option[Relation]] = coll
+    .find(
+      BSONDocument("u1" -> u1, "u2" -> u2),
+      BSONDocument("r" -> true, "_id" -> false)
+    )
+    .one[BSONDocument]
+    .map {
+      _.flatMap(_.getAs[Boolean]("r"))
+    }
 
   def fetchFollowing = RelationRepo following _
 
@@ -46,26 +45,26 @@ final class RelationApi(
 
   def fetchBlocking = RelationRepo blocking _
 
-  def fetchFriends(userId: ID) =
-    coll
-      .aggregate(
-        Match(
+  def fetchFriends(userId: ID) = coll
+    .aggregate(
+      Match(
+        BSONDocument(
+          "$or" -> BSONArray(
+            BSONDocument("u1" -> userId),
+            BSONDocument("u2" -> userId)),
+          "r" -> Follow
+        )),
+      List(
+        Group(BSONNull)("u1" -> AddToSet("u1"), "u2" -> AddToSet("u2")),
+        Project(
           BSONDocument(
-            "$or" -> BSONArray(
-              BSONDocument("u1" -> userId),
-              BSONDocument("u2" -> userId)),
-            "r" -> Follow
-          )),
-        List(
-          Group(BSONNull)("u1" -> AddToSet("u1"), "u2" -> AddToSet("u2")),
-          Project(BSONDocument(
             "_id" -> BSONDocument("$setIntersection" -> BSONArray("$u1", "$u2"))
           ))
-        )
       )
-      .map {
-        ~_.documents.headOption.flatMap(_.getAs[Set[String]]("_id")) - userId
-      }
+    )
+    .map {
+      ~_.documents.headOption.flatMap(_.getAs[Set[String]]("_id")) - userId
+    }
 
   def fetchFollows(u1: ID, u2: ID) =
     coll
@@ -98,26 +97,23 @@ final class RelationApi(
   def countBlockers(userId: ID) =
     coll.count(BSONDocument("u2" -> userId, "r" -> Block).some)
 
-  def followingPaginatorAdapter(userId: ID) =
-    new BSONAdapter[Followed](
-      collection = coll,
-      selector = BSONDocument("u1" -> userId, "r" -> Follow),
-      projection = BSONDocument("u2" -> true, "_id" -> false),
-      sort = BSONDocument()).map(_.userId)
+  def followingPaginatorAdapter(userId: ID) = new BSONAdapter[Followed](
+    collection = coll,
+    selector = BSONDocument("u1" -> userId, "r" -> Follow),
+    projection = BSONDocument("u2" -> true, "_id" -> false),
+    sort = BSONDocument()).map(_.userId)
 
-  def followersPaginatorAdapter(userId: ID) =
-    new BSONAdapter[Follower](
-      collection = coll,
-      selector = BSONDocument("u2" -> userId, "r" -> Follow),
-      projection = BSONDocument("u1" -> true, "_id" -> false),
-      sort = BSONDocument()).map(_.userId)
+  def followersPaginatorAdapter(userId: ID) = new BSONAdapter[Follower](
+    collection = coll,
+    selector = BSONDocument("u2" -> userId, "r" -> Follow),
+    projection = BSONDocument("u1" -> true, "_id" -> false),
+    sort = BSONDocument()).map(_.userId)
 
-  def blockingPaginatorAdapter(userId: ID) =
-    new BSONAdapter[Blocked](
-      collection = coll,
-      selector = BSONDocument("u1" -> userId, "r" -> Block),
-      projection = BSONDocument("u2" -> true, "_id" -> false),
-      sort = BSONDocument()).map(_.userId)
+  def blockingPaginatorAdapter(userId: ID) = new BSONAdapter[Blocked](
+    collection = coll,
+    selector = BSONDocument("u1" -> userId, "r" -> Block),
+    projection = BSONDocument("u2" -> true, "_id" -> false),
+    sort = BSONDocument()).map(_.userId)
 
   def follow(u1: ID, u2: ID): Funit =
     if (u1 == u2) funit
@@ -141,15 +137,13 @@ final class RelationApi(
           }
       }
 
-  private def limitFollow(u: ID) =
-    countFollowing(u) flatMap { nb =>
-      (nb >= maxFollow) ?? RelationRepo.drop(u, true, nb - maxFollow + 1)
-    }
+  private def limitFollow(u: ID) = countFollowing(u) flatMap { nb =>
+    (nb >= maxFollow) ?? RelationRepo.drop(u, true, nb - maxFollow + 1)
+  }
 
-  private def limitBlock(u: ID) =
-    countBlocking(u) flatMap { nb =>
-      (nb >= maxBlock) ?? RelationRepo.drop(u, false, nb - maxBlock + 1)
-    }
+  private def limitBlock(u: ID) = countBlocking(u) flatMap { nb =>
+    (nb >= maxBlock) ?? RelationRepo.drop(u, false, nb - maxBlock + 1)
+  }
 
   def block(u1: ID, u2: ID): Funit =
     if (u1 == u2) funit

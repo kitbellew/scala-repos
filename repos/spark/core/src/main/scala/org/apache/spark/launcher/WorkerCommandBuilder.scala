@@ -49,7 +49,7 @@ private[spark] class WorkerCommandBuilder(
     cmd
   }
 
-  def buildCommand(): JList[String] =
-    buildCommand(new JHashMap[String, String]())
+  def buildCommand(): JList[String] = buildCommand(
+    new JHashMap[String, String]())
 
 }

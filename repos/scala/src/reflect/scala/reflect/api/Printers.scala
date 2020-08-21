@@ -172,8 +172,8 @@ trait Printers { self: Universe =>
       BooleanFlag(value)
     import scala.reflect.internal.settings.MutableSettings
     implicit def settingToBooleanFlag(
-        setting: MutableSettings#BooleanSetting): BooleanFlag =
-      BooleanFlag(Some(setting.value))
+        setting: MutableSettings#BooleanSetting): BooleanFlag = BooleanFlag(
+      Some(setting.value))
   }
 
   /** @group Printers */

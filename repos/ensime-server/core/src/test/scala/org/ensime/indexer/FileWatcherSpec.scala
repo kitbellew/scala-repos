@@ -352,20 +352,19 @@ abstract class FileWatcherSpec
     finally w.shutdown()
   }
 
-  def listeners(implicit vfs: EnsimeVFS, tk: TestKit) =
-    List(
-      new FileChangeListener {
-        def fileAdded(f: FileObject): Unit = { tk.testActor ! Added(f) }
-        def fileRemoved(f: FileObject): Unit = { tk.testActor ! Removed(f) }
-        def fileChanged(f: FileObject): Unit = { tk.testActor ! Changed(f) }
-        override def baseReCreated(f: FileObject): Unit = {
-          tk.testActor ! BaseAdded(f)
-        }
-        override def baseRemoved(f: FileObject): Unit = {
-          tk.testActor ! BaseRemoved(f)
-        }
+  def listeners(implicit vfs: EnsimeVFS, tk: TestKit) = List(
+    new FileChangeListener {
+      def fileAdded(f: FileObject): Unit = { tk.testActor ! Added(f) }
+      def fileRemoved(f: FileObject): Unit = { tk.testActor ! Removed(f) }
+      def fileChanged(f: FileObject): Unit = { tk.testActor ! Changed(f) }
+      override def baseReCreated(f: FileObject): Unit = {
+        tk.testActor ! BaseAdded(f)
       }
-    )
+      override def baseRemoved(f: FileObject): Unit = {
+        tk.testActor ! BaseRemoved(f)
+      }
+    }
+  )
 
 }
 

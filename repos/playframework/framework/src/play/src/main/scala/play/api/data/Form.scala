@@ -68,13 +68,12 @@ case class Form[T](
     * @param data the data to submit
     * @return a copy of this form, filled with the new data
     */
-  def bind(data: Map[String, String]): Form[T] =
-    mapping
-      .bind(data)
-      .fold(
-        newErrors =>
-          this.copy(data = data, errors = errors ++ newErrors, value = None),
-        value => this.copy(data = data, errors = errors, value = Some(value)))
+  def bind(data: Map[String, String]): Form[T] = mapping
+    .bind(data)
+    .fold(
+      newErrors =>
+        this.copy(data = data, errors = errors ++ newErrors, value = None),
+      value => this.copy(data = data, errors = errors, value = Some(value)))
 
   /**
     * Binds data to this form, i.e. handles form submission.
@@ -82,8 +81,8 @@ case class Form[T](
     * @param data Json data to submit
     * @return a copy of this form, filled with the new data
     */
-  def bind(data: play.api.libs.json.JsValue): Form[T] =
-    bind(FormUtils.fromJson(js = data))
+  def bind(data: play.api.libs.json.JsValue): Form[T] = bind(
+    FormUtils.fromJson(js = data))
 
   /**
     * Binds request data to this form, i.e. handles form submission.
@@ -160,11 +159,10 @@ case class Form[T](
     * @param success a function to handle form submission success
     * @return a result `R`.
     */
-  def fold[R](hasErrors: Form[T] => R, success: T => R): R =
-    value match {
-      case Some(v) if errors.isEmpty => success(v)
-      case _                         => hasErrors(this)
-    }
+  def fold[R](hasErrors: Form[T] => R, success: T => R): R = value match {
+    case Some(v) if errors.isEmpty => success(v)
+    case _                         => hasErrors(this)
+  }
 
   /**
     * Retrieves a field.
@@ -177,14 +175,13 @@ case class Form[T](
     * @param key the field name
     * @return the field, returned even if the field does not exist
     */
-  def apply(key: String): Field =
-    Field(
-      this,
-      key,
-      constraints.get(key).getOrElse(Nil),
-      formats.get(key),
-      errors.collect { case e if e.key == key => e },
-      data.get(key))
+  def apply(key: String): Field = Field(
+    this,
+    key,
+    constraints.get(key).getOrElse(Nil),
+    formats.get(key),
+    errors.collect { case e if e.key == key => e },
+    data.get(key))
 
   /**
     * Retrieves the first global error, if it exists, i.e. an error without any key.
@@ -265,12 +262,11 @@ case class Form[T](
   }
 
   private def translateMsgArg(msgArg: Any)(implicit
-      messages: play.api.i18n.Messages) =
-    msgArg match {
-      case key: String       => messages(key)
-      case keys: Seq[String] => keys.map(key => messages(key))
-      case _                 => msgArg
-    }
+      messages: play.api.i18n.Messages) = msgArg match {
+    case key: String       => messages(key)
+    case keys: Seq[String] => keys.map(key => messages(key))
+    case _                 => msgArg
+  }
 
   /**
     * Adds an error to this form
@@ -287,8 +283,8 @@ case class Form[T](
     * @param args Error message arguments
     * @return a copy of this form with the added error
     */
-  def withError(key: String, message: String, args: Any*): Form[T] =
-    withError(FormError(key, message, args))
+  def withError(key: String, message: String, args: Any*): Form[T] = withError(
+    FormError(key, message, args))
 
   /**
     * Adds a global error to this form
@@ -296,8 +292,8 @@ case class Form[T](
     * @param args Error message arguments
     * @return a copy of this form with the added global error
     */
-  def withGlobalError(message: String, args: Any*): Form[T] =
-    withError(FormError("", message, args))
+  def withGlobalError(message: String, args: Any*): Form[T] = withError(
+    FormError("", message, args))
 
   /**
     * Discards this form’s errors

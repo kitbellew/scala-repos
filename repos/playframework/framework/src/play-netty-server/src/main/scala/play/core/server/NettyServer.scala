@@ -100,11 +100,10 @@ class NettyServer(
   private def setOptions(
       setOption: (ChannelOption[AnyRef], AnyRef) => Any,
       config: Config) = {
-    def unwrap(value: ConfigValue) =
-      value.unwrapped() match {
-        case number: Number => number.intValue().asInstanceOf[Integer]
-        case other          => other
-      }
+    def unwrap(value: ConfigValue) = value.unwrapped() match {
+      case number: Number => number.intValue().asInstanceOf[Integer]
+      case other          => other
+    }
     config.entrySet().asScala.filterNot(_.getKey.startsWith("child.")).foreach {
       option =>
         if (ChannelOption.exists(option.getKey)) {
@@ -301,15 +300,14 @@ class NettyServer(
   * The Netty server provider
   */
 class NettyServerProvider extends ServerProvider {
-  def createServer(context: ServerProvider.Context) =
-    new NettyServer(
-      context.config,
-      context.appProvider,
-      context.stopHook,
-      context.actorSystem
-    )(
-      context.materializer
-    )
+  def createServer(context: ServerProvider.Context) = new NettyServer(
+    context.config,
+    context.appProvider,
+    context.stopHook,
+    context.actorSystem
+  )(
+    context.materializer
+  )
 }
 
 /**

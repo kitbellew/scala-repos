@@ -50,8 +50,8 @@ class SimulatedDriver(driverProps: Props) extends SchedulerDriver {
       filters: Filters): Status =
     driverCmd(DriverActor.AcceptOffers(offerIds.toSeq, ops.toSeq, filters))
 
-  override def killTask(taskId: TaskID): Status =
-    driverCmd(DriverActor.KillTask(taskId))
+  override def killTask(taskId: TaskID): Status = driverCmd(
+    DriverActor.KillTask(taskId))
   override def reconcileTasks(statuses: util.Collection[TaskStatus]): Status = {
     driverCmd(DriverActor.ReconcileTask(statuses.toSeq))
   }
@@ -89,11 +89,10 @@ class SimulatedDriver(driverProps: Props) extends SchedulerDriver {
   @volatile
   var driverActorRefOpt: Option[ActorRef] = None
 
-  private def status: Status =
-    system match {
-      case None    => Status.DRIVER_STOPPED
-      case Some(_) => Status.DRIVER_RUNNING
-    }
+  private def status: Status = system match {
+    case None    => Status.DRIVER_STOPPED
+    case Some(_) => Status.DRIVER_RUNNING
+  }
 
   override def start(): Status = {
     log.info("Starting simulated Mesos")

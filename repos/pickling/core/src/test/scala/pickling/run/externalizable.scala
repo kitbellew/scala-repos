@@ -29,23 +29,21 @@ class StorageLevel private (
   def deserialized = deserialized_
   def replication = replication_
 
-  override def clone(): StorageLevel =
-    new StorageLevel(
-      this.useDisk,
-      this.useMemory,
-      this.deserialized,
-      this.replication)
+  override def clone(): StorageLevel = new StorageLevel(
+    this.useDisk,
+    this.useMemory,
+    this.deserialized,
+    this.replication)
 
-  override def equals(other: Any): Boolean =
-    other match {
-      case s: StorageLevel =>
-        s.useDisk == useDisk &&
-          s.useMemory == useMemory &&
-          s.deserialized == deserialized &&
-          s.replication == replication
-      case _ =>
-        false
-    }
+  override def equals(other: Any): Boolean = other match {
+    case s: StorageLevel =>
+      s.useDisk == useDisk &&
+        s.useMemory == useMemory &&
+        s.deserialized == deserialized &&
+        s.replication == replication
+    case _ =>
+      false
+  }
 
   override def toString: String =
     "StorageLevel(%b, %b, %b, %d)".format(

@@ -223,18 +223,17 @@ object UriEncoding {
     val result = scala.collection.mutable.ListBuffer.empty[String]
     import scala.annotation.tailrec
     @tailrec
-    def splitLoop(start: Int): Unit =
-      if (start < s.length) {
-        var end = s.indexOf(c, start)
-        if (end == -1) {
-          result += s.substring(start)
-        } else {
-          result += s.substring(start, end)
-          splitLoop(end + 1)
-        }
-      } else if (start == s.length) {
-        result += ""
+    def splitLoop(start: Int): Unit = if (start < s.length) {
+      var end = s.indexOf(c, start)
+      if (end == -1) {
+        result += s.substring(start)
+      } else {
+        result += s.substring(start, end)
+        splitLoop(end + 1)
       }
+    } else if (start == s.length) {
+      result += ""
+    }
     splitLoop(0)
     result
   }

@@ -20,8 +20,9 @@ trait FutureInstances extends FutureInstances1 {
         fa.flatMap(f)
 
       def handleErrorWith[A](fea: Future[A])(
-          f: Throwable => Future[A]): Future[A] =
-        fea.recoverWith { case t => f(t) }
+          f: Throwable => Future[A]): Future[A] = fea.recoverWith { case t =>
+        f(t)
+      }
 
       def raiseError[A](e: Throwable): Future[A] = Future.failed(e)
       override def handleError[A](fea: Future[A])(
@@ -60,8 +61,8 @@ private[std] sealed trait FutureInstances2 {
 private[cats] abstract class FutureCoflatMap(implicit ec: ExecutionContext)
     extends CoflatMap[Future] {
   def map[A, B](fa: Future[A])(f: A => B): Future[B] = fa.map(f)
-  def coflatMap[A, B](fa: Future[A])(f: Future[A] => B): Future[B] =
-    Future(f(fa))
+  def coflatMap[A, B](fa: Future[A])(f: Future[A] => B): Future[B] = Future(
+    f(fa))
 }
 
 private[cats] class FutureSemigroup[A: Semigroup](implicit ec: ExecutionContext)

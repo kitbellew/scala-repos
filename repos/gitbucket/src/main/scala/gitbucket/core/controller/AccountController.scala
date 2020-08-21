@@ -543,68 +543,63 @@ trait AccountControllerBase extends AccountManagementControllerBase {
       }
   })
 
-  private def existsAccount: Constraint =
-    new Constraint() {
-      override def validate(
-          name: String,
-          value: String,
-          messages: Messages): Option[String] =
-        if (getAccountByUserName(value).isEmpty)
-          Some("User or group does not exist.")
-        else None
-    }
+  private def existsAccount: Constraint = new Constraint() {
+    override def validate(
+        name: String,
+        value: String,
+        messages: Messages): Option[String] =
+      if (getAccountByUserName(value).isEmpty)
+        Some("User or group does not exist.")
+      else None
+  }
 
-  private def uniqueRepository: Constraint =
-    new Constraint() {
-      override def validate(
-          name: String,
-          value: String,
-          params: Map[String, String],
-          messages: Messages): Option[String] =
-        params.get("owner").flatMap { userName =>
-          getRepositoryNamesOfUser(userName)
-            .find(_ == value)
-            .map(_ => "Repository already exists.")
-        }
-    }
+  private def uniqueRepository: Constraint = new Constraint() {
+    override def validate(
+        name: String,
+        value: String,
+        params: Map[String, String],
+        messages: Messages): Option[String] =
+      params.get("owner").flatMap { userName =>
+        getRepositoryNamesOfUser(userName)
+          .find(_ == value)
+          .map(_ => "Repository already exists.")
+      }
+  }
 
-  private def members: Constraint =
-    new Constraint() {
-      override def validate(
-          name: String,
-          value: String,
-          messages: Messages): Option[String] = {
-        if (value.split(",").exists {
-            _.split(":") match {
-              case Array(userName, isManager) => isManager.toBoolean
-            }
-          }) None
-        else Some("Must select one manager at least.")
+  private def members: Constraint = new Constraint() {
+    override def validate(
+        name: String,
+        value: String,
+        messages: Messages): Option[String] = {
+      if (value.split(",").exists {
+          _.split(":") match {
+            case Array(userName, isManager) => isManager.toBoolean
+          }
+        }) None
+      else Some("Must select one manager at least.")
+    }
+  }
+
+  private def validPublicKey: Constraint = new Constraint() {
+    override def validate(
+        name: String,
+        value: String,
+        messages: Messages): Option[String] =
+      SshUtil.str2PublicKey(value) match {
+        case Some(_) => None
+        case None    => Some("Key is invalid.")
+      }
+  }
+
+  private def validAccountName: Constraint = new Constraint() {
+    override def validate(
+        name: String,
+        value: String,
+        messages: Messages): Option[String] = {
+      getAccountByUserName(value) match {
+        case Some(_) => None
+        case None    => Some("Invalid Group/User Account.")
       }
     }
-
-  private def validPublicKey: Constraint =
-    new Constraint() {
-      override def validate(
-          name: String,
-          value: String,
-          messages: Messages): Option[String] =
-        SshUtil.str2PublicKey(value) match {
-          case Some(_) => None
-          case None    => Some("Key is invalid.")
-        }
-    }
-
-  private def validAccountName: Constraint =
-    new Constraint() {
-      override def validate(
-          name: String,
-          value: String,
-          messages: Messages): Option[String] = {
-        getAccountByUserName(value) match {
-          case Some(_) => None
-          case None    => Some("Invalid Group/User Account.")
-        }
-      }
-    }
+  }
 }

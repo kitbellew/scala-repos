@@ -37,6 +37,6 @@ class RingBuffer[A](m: Int)
 object RingBuffer extends SeqFactory[RingBuffer] {
   implicit def canBuildFrom[A]: CanBuildFrom[Coll, A, RingBuffer[A]] =
     new GenericCanBuildFrom[A]
-  def newBuilder[A]: Builder[A, RingBuffer[A]] =
-    new GrowingBuilder(new RingBuffer[A](Int.MaxValue))
+  def newBuilder[A]: Builder[A, RingBuffer[A]] = new GrowingBuilder(
+    new RingBuffer[A](Int.MaxValue))
 }

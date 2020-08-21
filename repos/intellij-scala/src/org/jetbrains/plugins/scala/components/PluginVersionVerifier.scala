@@ -30,9 +30,8 @@ object ScalaPluginVersionVerifier {
       private val build: Int)
       extends Ordered[Version]
       with Serializable {
-    def compare(that: Version) =
-      implicitly[Ordering[(Int, Int, Int)]]
-        .compare((major, minor, build), (that.major, that.minor, that.build))
+    def compare(that: Version) = implicitly[Ordering[(Int, Int, Int)]]
+      .compare((major, minor, build), (that.major, that.minor, that.build))
 
     val presentation: String =
       if (major == Int.MaxValue) "SNAPSHOT" else s"$major.$minor.$build"

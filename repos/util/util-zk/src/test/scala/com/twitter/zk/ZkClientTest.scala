@@ -35,13 +35,12 @@ class ZkClientTest extends WordSpec with MockitoSugar {
     }
     def zkClient = new TestZkClient
 
-    def answer[A](idx: Int)(res: A => Unit) =
-      new Answer[Unit] {
-        override def answer(invocation: InvocationOnMock): Unit = {
-          val value = invocation.getArguments()(idx).asInstanceOf[A]
-          res(value)
-        }
+    def answer[A](idx: Int)(res: A => Unit) = new Answer[Unit] {
+      override def answer(invocation: InvocationOnMock): Unit = {
+        val value = invocation.getArguments()(idx).asInstanceOf[A]
+        res(value)
       }
+    }
 
     def answer[A, B](idx1: Int, idx2: Int)(res: (A, B) => Unit) =
       new Answer[Unit] {

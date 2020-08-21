@@ -83,11 +83,10 @@ abstract class UserDefinedType[UserType >: Null]
 
   override def sql: String = sqlType.sql
 
-  override def equals(other: Any): Boolean =
-    other match {
-      case that: UserDefinedType[_] => this.acceptsType(that)
-      case _                        => false
-    }
+  override def equals(other: Any): Boolean = other match {
+    case that: UserDefinedType[_] => this.acceptsType(that)
+    case _                        => false
+  }
 }
 
 /**
@@ -116,9 +115,8 @@ private[sql] class PythonUserDefinedType(
       ("sqlType" -> sqlType.jsonValue)
   }
 
-  override def equals(other: Any): Boolean =
-    other match {
-      case that: PythonUserDefinedType => this.pyUDT.equals(that.pyUDT)
-      case _                           => false
-    }
+  override def equals(other: Any): Boolean = other match {
+    case that: PythonUserDefinedType => this.pyUDT.equals(that.pyUDT)
+    case _                           => false
+  }
 }

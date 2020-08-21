@@ -34,18 +34,18 @@ final class BuildStructure(
     units.values.flatMap(_.defined.values).toSeq
   def allProjects(build: URI): Seq[ResolvedProject] =
     units.get(build).toList.flatMap(_.defined.values)
-  def allProjectRefs: Seq[ProjectRef] =
-    units.toSeq flatMap { case (build, unit) =>
-      refs(build, unit.defined.values.toSeq)
-    }
+  def allProjectRefs: Seq[ProjectRef] = units.toSeq flatMap {
+    case (build, unit) => refs(build, unit.defined.values.toSeq)
+  }
   def allProjectRefs(build: URI): Seq[ProjectRef] =
     refs(build, allProjects(build))
   val extra: BuildUtil[ResolvedProject] =
     BuildUtil(root, units, index.keyIndex, data)
   private[this] def refs(
       build: URI,
-      projects: Seq[ResolvedProject]): Seq[ProjectRef] =
-    projects.map { p => ProjectRef(build, p.id) }
+      projects: Seq[ResolvedProject]): Seq[ProjectRef] = projects.map { p =>
+    ProjectRef(build, p.id)
+  }
 }
 // information that is not original, but can be reconstructed from the rest of BuildStructure
 final class StructureIndex(
@@ -130,15 +130,14 @@ final class LoadedDefinitions(
       loader: ClassLoader,
       builds: Seq[Build],
       projects: Seq[Project],
-      buildNames: Seq[String]) =
-    this(
-      base,
-      target,
-      loader,
-      builds,
-      projects,
-      buildNames,
-      DefinedSbtValues.empty)
+      buildNames: Seq[String]) = this(
+    base,
+    target,
+    loader,
+    builds,
+    projects,
+    buildNames,
+    DefinedSbtValues.empty)
 }
 
 /** Auto-detected top-level modules (as in `object X`) of type `T` paired with their source names. */
@@ -266,9 +265,8 @@ final class BuildUnit(
     val localBase: File,
     val definitions: LoadedDefinitions,
     val plugins: LoadedPlugins) {
-  override def toString =
-    if (uri.getScheme == "file") localBase.toString
-    else (uri + " (locally: " + localBase + ")")
+  override def toString = if (uri.getScheme == "file") localBase.toString
+  else (uri + " (locally: " + localBase + ")")
 }
 
 final class LoadedBuild(val root: URI, val units: Map[URI, LoadedBuildUnit]) {
@@ -298,8 +296,8 @@ final class PartBuildUnit(
       defined mapValues f toMap,
       rootProjects,
       buildSettings)
-  def resolveRefs(f: ProjectReference => ProjectRef): LoadedBuildUnit =
-    resolve(_ resolve f)
+  def resolveRefs(f: ProjectReference => ProjectRef): LoadedBuildUnit = resolve(
+    _ resolve f)
 }
 
 object BuildStreams {
@@ -312,12 +310,11 @@ object BuildStreams {
   def mkStreams(
       units: Map[URI, LoadedBuildUnit],
       root: URI,
-      data: Settings[Scope]): State => Streams =
-    s =>
-      s get Keys.stateStreams getOrElse std.Streams(
-        path(units, root, data),
-        displayFull,
-        LogManager.construct(data, s))
+      data: Settings[Scope]): State => Streams = s =>
+    s get Keys.stateStreams getOrElse std.Streams(
+      path(units, root, data),
+      displayFull,
+      LogManager.construct(data, s))
 
   def path(units: Map[URI, LoadedBuildUnit], root: URI, data: Settings[Scope])(
       scoped: ScopedKey[_]): File =

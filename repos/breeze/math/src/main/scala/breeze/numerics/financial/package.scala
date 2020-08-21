@@ -54,28 +54,27 @@ package object financial {
     implicit def reduce[@expand.args(Double, Float, Int) Scalar, T](implicit
         iter: CanTraverseValues[T, Scalar],
         @expand.sequence[Scalar](0.0, 0.0f, 0) zero: Scalar)
-        : Impl2[Double, T, Double] =
-      new Impl2[Double, T, Double] {
-        def apply(rate: Double, revenueStream: T): Double = {
+        : Impl2[Double, T, Double] = new Impl2[Double, T, Double] {
+      def apply(rate: Double, revenueStream: T): Double = {
 
-          val visit = new ValuesVisitor[Scalar] {
-            final val decayConst: Double = 1.0 / (1.0 + rate)
-            var decayUntilNow: Double = 1.0
-            var sum: Double = 0.0
+        val visit = new ValuesVisitor[Scalar] {
+          final val decayConst: Double = 1.0 / (1.0 + rate)
+          var decayUntilNow: Double = 1.0
+          var sum: Double = 0.0
 
-            def visit(a: Scalar): Unit = {
-              sum += decayUntilNow * a
-              decayUntilNow *= decayConst
-            }
-
-            def zeros(numZero: Int, zeroValue: Scalar): Unit = ()
+          def visit(a: Scalar): Unit = {
+            sum += decayUntilNow * a
+            decayUntilNow *= decayConst
           }
 
-          iter.traverse(revenueStream, visit)
-
-          visit.sum
+          def zeros(numZero: Int, zeroValue: Scalar): Unit = ()
         }
+
+        iter.traverse(revenueStream, visit)
+
+        visit.sum
       }
+    }
   }
 
   def payment(

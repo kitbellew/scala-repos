@@ -49,9 +49,8 @@ case class ProduceMetadata(
     produceRequiredAcks: Short,
     produceStatus: Map[TopicPartition, ProducePartitionStatus]) {
 
-  override def toString =
-    "[requiredAcks: %d, partitionStatus: %s]"
-      .format(produceRequiredAcks, produceStatus)
+  override def toString = "[requiredAcks: %d, partitionStatus: %s]"
+    .format(produceRequiredAcks, produceStatus)
 }
 
 /**

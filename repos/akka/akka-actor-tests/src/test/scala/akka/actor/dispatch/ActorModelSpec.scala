@@ -131,10 +131,9 @@ object ActorModelSpec {
     val msgsReceived = new AtomicLong(0)
     val msgsProcessed = new AtomicLong(0)
     val restarts = new AtomicLong(0)
-    override def toString =
-      "InterceptorStats(susp=" + suspensions +
-        ",res=" + resumes + ",reg=" + registers + ",unreg=" + unregisters +
-        ",recv=" + msgsReceived + ",proc=" + msgsProcessed + ",restart=" + restarts
+    override def toString = "InterceptorStats(susp=" + suspensions +
+      ",res=" + resumes + ",reg=" + registers + ",unreg=" + unregisters +
+      ",recv=" + msgsReceived + ",proc=" + msgsProcessed + ",restart=" + restarts
   }
 
   trait MessageDispatcherInterceptor extends MessageDispatcher {
@@ -473,10 +472,9 @@ abstract class ActorModelSpec(config: String)
           // the boss doesn't create children fast enough to keep the dispatcher from becoming empty
           // and it needs to be on a separate thread to not deadlock the calling thread dispatcher
           new Thread(new Runnable {
-            def run() =
-              Future {
-                keepAliveLatch.await(waitTime, TimeUnit.MILLISECONDS)
-              }(dispatcher)
+            def run() = Future {
+              keepAliveLatch.await(waitTime, TimeUnit.MILLISECONDS)
+            }(dispatcher)
           }).start()
           boss ! "run"
           try {
@@ -494,11 +492,10 @@ abstract class ActorModelSpec(config: String)
                   System.err.println(
                     "Teammates left: " + team.size + " stopLatch: " + stopLatch.getCount + " inhab:" + dispatcher.inhabitants)
                   team.toArray sorted new Ordering[AnyRef] {
-                    def compare(l: AnyRef, r: AnyRef) =
-                      (l, r) match {
-                        case (ll: ActorCell, rr: ActorCell) ⇒
-                          ll.self.path compareTo rr.self.path
-                      }
+                    def compare(l: AnyRef, r: AnyRef) = (l, r) match {
+                      case (ll: ActorCell, rr: ActorCell) ⇒
+                        ll.self.path compareTo rr.self.path
+                    }
                   } foreach { case cell: ActorCell ⇒
                     System.err.println(
                       " - " + cell.self.path + " " + cell.isTerminated + " " + cell.mailbox.currentStatus + " "

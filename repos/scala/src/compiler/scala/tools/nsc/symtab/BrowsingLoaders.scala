@@ -64,21 +64,20 @@ abstract class BrowsingLoaders extends GlobalSymbolLoaders {
     class BrowserTraverser extends Traverser {
       var packagePrefix = ""
       var entered = 0
-      def addPackagePrefix(pkg: Tree): Unit =
-        pkg match {
-          case Select(pre, name) =>
-            addPackagePrefix(pre)
-            packagePrefix += ("." + name)
-          case Ident(name) =>
-            if (name != nme.EMPTY_PACKAGE_NAME) { // mirrors logic in Namers, see createPackageSymbol
-              if (packagePrefix.length != 0) packagePrefix += "."
-              packagePrefix += name
-            }
-          case _ =>
-            throw new MalformedInput(
-              pkg.pos.point,
-              "illegal tree node in package prefix: " + pkg)
-        }
+      def addPackagePrefix(pkg: Tree): Unit = pkg match {
+        case Select(pre, name) =>
+          addPackagePrefix(pre)
+          packagePrefix += ("." + name)
+        case Ident(name) =>
+          if (name != nme.EMPTY_PACKAGE_NAME) { // mirrors logic in Namers, see createPackageSymbol
+            if (packagePrefix.length != 0) packagePrefix += "."
+            packagePrefix += name
+          }
+        case _ =>
+          throw new MalformedInput(
+            pkg.pos.point,
+            "illegal tree node in package prefix: " + pkg)
+      }
 
       private def inPackagePrefix(pkg: Tree)(op: => Unit): Unit = {
         val oldPrefix = packagePrefix
@@ -87,30 +86,29 @@ abstract class BrowsingLoaders extends GlobalSymbolLoaders {
         packagePrefix = oldPrefix
       }
 
-      override def traverse(tree: Tree): Unit =
-        tree match {
-          case PackageDef(pkg, body) =>
-            inPackagePrefix(pkg) { body foreach traverse }
+      override def traverse(tree: Tree): Unit = tree match {
+        case PackageDef(pkg, body) =>
+          inPackagePrefix(pkg) { body foreach traverse }
 
-          case ClassDef(_, name, _, _) =>
-            if (packagePrefix == root.fullName) {
-              enterClass(root, name.toString, new SourcefileLoader(src))
-              entered += 1
-            } else
-              println("prefixes differ: " + packagePrefix + "," + root.fullName)
-          case ModuleDef(_, name, _) =>
-            if (packagePrefix == root.fullName) {
-              val module =
-                enterModule(root, name.toString, new SourcefileLoader(src))
-              entered += 1
-              if (name == nme.PACKAGEkw) {
-                println("open package module: " + module)
-                openPackageModule(module, root)
-              }
-            } else
-              println("prefixes differ: " + packagePrefix + "," + root.fullName)
-          case _ =>
-        }
+        case ClassDef(_, name, _, _) =>
+          if (packagePrefix == root.fullName) {
+            enterClass(root, name.toString, new SourcefileLoader(src))
+            entered += 1
+          } else
+            println("prefixes differ: " + packagePrefix + "," + root.fullName)
+        case ModuleDef(_, name, _) =>
+          if (packagePrefix == root.fullName) {
+            val module =
+              enterModule(root, name.toString, new SourcefileLoader(src))
+            entered += 1
+            if (name == nme.PACKAGEkw) {
+              println("open package module: " + module)
+              openPackageModule(module, root)
+            }
+          } else
+            println("prefixes differ: " + packagePrefix + "," + root.fullName)
+        case _ =>
+      }
     }
 
 //    System.out.println("Browsing "+src)

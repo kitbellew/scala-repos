@@ -254,11 +254,10 @@ final case class PostRestartException private[akka] (
 @SerialVersionUID(1L)
 object OriginalRestartException {
   def unapply(ex: PostRestartException): Option[Throwable] = {
-    @tailrec def rec(ex: PostRestartException): Option[Throwable] =
-      ex match {
-        case PostRestartException(_, _, e: PostRestartException) ⇒ rec(e)
-        case PostRestartException(_, _, e) ⇒ Some(e)
-      }
+    @tailrec def rec(ex: PostRestartException): Option[Throwable] = ex match {
+      case PostRestartException(_, _, e: PostRestartException) ⇒ rec(e)
+      case PostRestartException(_, _, e) ⇒ Some(e)
+    }
     rec(ex)
   }
 }
@@ -367,13 +366,12 @@ trait DiagnosticActorLogging extends Actor {
 
   override protected[akka] def aroundReceive(
       receive: Actor.Receive,
-      msg: Any): Unit =
-    try {
-      log.mdc(mdc(msg))
-      super.aroundReceive(receive, msg)
-    } finally {
-      log.clearMDC()
-    }
+      msg: Any): Unit = try {
+    log.mdc(mdc(msg))
+    super.aroundReceive(receive, msg)
+  } finally {
+    log.clearMDC()
+  }
 }
 
 object Actor {
@@ -392,8 +390,8 @@ object Actor {
   @SerialVersionUID(1L)
   object emptyBehavior extends Receive {
     def isDefinedAt(x: Any) = false
-    def apply(x: Any) =
-      throw new UnsupportedOperationException("Empty behavior apply()")
+    def apply(x: Any) = throw new UnsupportedOperationException(
+      "Empty behavior apply()")
   }
 
   /**
@@ -550,8 +548,8 @@ trait Actor {
   /**
     * Can be overridden to intercept calls to `postRestart`. Calls `postRestart` by default.
     */
-  protected[akka] def aroundPostRestart(reason: Throwable): Unit =
-    postRestart(reason)
+  protected[akka] def aroundPostRestart(reason: Throwable): Unit = postRestart(
+    reason)
 
   /**
     * User overridable definition the strategy to use for supervising

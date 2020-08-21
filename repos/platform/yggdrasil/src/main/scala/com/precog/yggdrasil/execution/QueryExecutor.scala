@@ -46,8 +46,8 @@ case class AccumulatedErrors(errors: NonEmptyList[EvaluationError])
     extends EvaluationError
 
 object EvaluationError {
-  def invalidState(message: String): EvaluationError =
-    InvalidStateError(message)
+  def invalidState(message: String): EvaluationError = InvalidStateError(
+    message)
   def storageError(error: ResourceError): EvaluationError = StorageError(error)
   def systemError(error: Throwable): EvaluationError = SystemError(error)
   def acc(errors: NonEmptyList[EvaluationError]): EvaluationError =
@@ -55,14 +55,13 @@ object EvaluationError {
 
   implicit val semigroup: Semigroup[EvaluationError] =
     new Semigroup[EvaluationError] {
-      def append(a: EvaluationError, b: => EvaluationError) =
-        (a, b) match {
-          case (AccumulatedErrors(a0), AccumulatedErrors(b0)) =>
-            AccumulatedErrors(a0 append b0)
-          case (a0, AccumulatedErrors(b0)) => AccumulatedErrors(a0 <:: b0)
-          case (AccumulatedErrors(a0), b0) => AccumulatedErrors(b0 <:: a0)
-          case (a0, b0)                    => AccumulatedErrors(nels(a0, b0))
-        }
+      def append(a: EvaluationError, b: => EvaluationError) = (a, b) match {
+        case (AccumulatedErrors(a0), AccumulatedErrors(b0)) =>
+          AccumulatedErrors(a0 append b0)
+        case (a0, AccumulatedErrors(b0)) => AccumulatedErrors(a0 <:: b0)
+        case (AccumulatedErrors(a0), b0) => AccumulatedErrors(b0 <:: a0)
+        case (a0, b0)                    => AccumulatedErrors(nels(a0, b0))
+      }
     }
 }
 

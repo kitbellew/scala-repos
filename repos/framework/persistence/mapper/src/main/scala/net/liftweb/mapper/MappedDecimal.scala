@@ -189,8 +189,8 @@ abstract class MappedDecimal[T <: Mapper[T]](
   protected def setAll(in: BigDecimal) = this.set(coerce(in))
 
   // Set the scale on the given input
-  protected def coerce(in: BigDecimal) =
-    new BigDecimal(in.bigDecimal.setScale(scale, context.getRoundingMode))
+  protected def coerce(in: BigDecimal) = new BigDecimal(
+    in.bigDecimal.setScale(scale, context.getRoundingMode))
 
   def targetSQLType = Types.DECIMAL
 
@@ -216,38 +216,35 @@ abstract class MappedDecimal[T <: Mapper[T]](
 
   def buildSetStringValue(
       accessor: Method,
-      columnName: String): (T, String) => Unit =
-    (inst, v) =>
-      doField(
-        inst,
-        accessor,
-        { case f: MappedDecimal[T] =>
-          f.wholeSet(if (v == null) defaultValue else coerce(BigDecimal(v)))
-        })
+      columnName: String): (T, String) => Unit = (inst, v) =>
+    doField(
+      inst,
+      accessor,
+      { case f: MappedDecimal[T] =>
+        f.wholeSet(if (v == null) defaultValue else coerce(BigDecimal(v)))
+      })
 
   def buildSetLongValue(
       accessor: Method,
-      columnName: String): (T, Long, Boolean) => Unit =
-    (inst, v, isNull) =>
-      doField(
-        inst,
-        accessor,
-        { case f: MappedDecimal[T] =>
-          f.wholeSet(if (isNull) defaultValue else coerce(BigDecimal(v)))
-        })
+      columnName: String): (T, Long, Boolean) => Unit = (inst, v, isNull) =>
+    doField(
+      inst,
+      accessor,
+      { case f: MappedDecimal[T] =>
+        f.wholeSet(if (isNull) defaultValue else coerce(BigDecimal(v)))
+      })
 
   def buildSetActualValue(
       accessor: Method,
       data: AnyRef,
-      columnName: String): (T, AnyRef) => Unit =
-    (inst, v) =>
-      doField(
-        inst,
-        accessor,
-        { case f: MappedDecimal[T] =>
-          f.wholeSet(
-            if (v == null) defaultValue else coerce(BigDecimal(v.toString)))
-        })
+      columnName: String): (T, AnyRef) => Unit = (inst, v) =>
+    doField(
+      inst,
+      accessor,
+      { case f: MappedDecimal[T] =>
+        f.wholeSet(
+          if (v == null) defaultValue else coerce(BigDecimal(v.toString)))
+      })
 
   /**
     * Returns the SQL creation string for this field. See the note at the

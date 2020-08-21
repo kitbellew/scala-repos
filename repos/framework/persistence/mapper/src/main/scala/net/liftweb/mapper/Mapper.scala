@@ -70,10 +70,9 @@ trait Mapper[A <: Mapper[A]]
   def dbCalculateConnectionIdentifier
       : PartialFunction[A, ConnectionIdentifier] = Map.empty
 
-  private def calcDbId =
-    if (dbCalculateConnectionIdentifier.isDefinedAt(this))
-      dbCalculateConnectionIdentifier(this)
-    else getSingleton.dbDefaultConnectionIdentifier
+  private def calcDbId = if (dbCalculateConnectionIdentifier.isDefinedAt(this))
+    dbCalculateConnectionIdentifier(this)
+  else getSingleton.dbDefaultConnectionIdentifier
 
   /**
     * Append a function to perform after the commit happens
@@ -123,12 +122,10 @@ trait Mapper[A <: Mapper[A]]
     * Returns the instance in a Full Box if the instance is valid, otherwise
     * returns a Failure with the validation errors
     */
-  def asValid: Box[A] =
-    validate match {
-      case Nil => Full(this)
-      case xs =>
-        ParamFailure(xs.map(_.msg.text).mkString(", "), Empty, Empty, xs)
-    }
+  def asValid: Box[A] = validate match {
+    case Nil => Full(this)
+    case xs  => ParamFailure(xs.map(_.msg.text).mkString(", "), Empty, Empty, xs)
+  }
 
   /**
     * Convert the model to a JavaScript object

@@ -39,11 +39,10 @@ object Logger {
     * @param logSource - the textual representation of the source of this log stream
     * @return a Logger for the specified parameters
     */
-  def apply(logClass: Class[_], logSource: String): SLFLogger =
-    logClass match {
-      case c if c == classOf[DummyClassForStringSources] ⇒ apply(logSource)
-      case _ ⇒ SLFLoggerFactory getLogger logClass
-    }
+  def apply(logClass: Class[_], logSource: String): SLFLogger = logClass match {
+    case c if c == classOf[DummyClassForStringSources] ⇒ apply(logSource)
+    case _ ⇒ SLFLoggerFactory getLogger logClass
+  }
 
   /**
     * Returns the SLF4J Root Logger

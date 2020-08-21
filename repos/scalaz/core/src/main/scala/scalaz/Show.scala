@@ -21,30 +21,26 @@ object Show {
 
   ////
 
-  def showFromToString[A]: Show[A] =
-    new Show[A] {
-      override def shows(f: A): String = f.toString
-    }
+  def showFromToString[A]: Show[A] = new Show[A] {
+    override def shows(f: A): String = f.toString
+  }
 
   /** For compatibility with Scalaz 6 */
   def showA[A]: Show[A] = showFromToString[A]
 
-  def show[A](f: A => Cord): Show[A] =
-    new Show[A] {
-      override def show(a: A): Cord = f(a)
-    }
+  def show[A](f: A => Cord): Show[A] = new Show[A] {
+    override def show(a: A): Cord = f(a)
+  }
 
-  def shows[A](f: A => String): Show[A] =
-    new Show[A] {
-      override def shows(a: A): String = f(a)
-    }
+  def shows[A](f: A => String): Show[A] = new Show[A] {
+    override def shows(a: A): String = f(a)
+  }
 
   implicit val showContravariant: Contravariant[Show] =
     new Contravariant[Show] {
-      def contramap[A, B](r: Show[A])(f: B => A): Show[B] =
-        new Show[B] {
-          override def show(b: B): Cord = r.show(f(b))
-        }
+      def contramap[A, B](r: Show[A])(f: B => A): Show[B] = new Show[B] {
+        override def show(b: B): Cord = r.show(f(b))
+      }
     }
 
   ////

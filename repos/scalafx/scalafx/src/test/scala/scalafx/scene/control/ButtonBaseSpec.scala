@@ -44,8 +44,8 @@ class ButtonBaseSpec
       classOf[ButtonBase])
     with RunOnApplicationThread {
 
-  override protected def getScalaClassInstance =
-    new ButtonBase(new jfxsc.Button) {}
+  override protected def getScalaClassInstance = new ButtonBase(
+    new jfxsc.Button) {}
 
   override protected def getJavaClassInstance = new jfxsc.Button {}
 

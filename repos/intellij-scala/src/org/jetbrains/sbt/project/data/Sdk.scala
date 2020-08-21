@@ -22,12 +22,11 @@ final case class JdkByHome(home: File) extends Sdk
 final case class Android(version: String) extends Sdk
 
 object SdkUtils {
-  def findProjectSdk(sdk: Sdk): Option[projectRoots.Sdk] =
-    sdk match {
-      case Android(version)    => findAndroidJdkByVersion(version)
-      case JdkByName(version)  => allJdks.find(_.getName.contains(version))
-      case JdkByHome(homeFile) => findJdkByHome(homeFile)
-    }
+  def findProjectSdk(sdk: Sdk): Option[projectRoots.Sdk] = sdk match {
+    case Android(version)    => findAndroidJdkByVersion(version)
+    case JdkByName(version)  => allJdks.find(_.getName.contains(version))
+    case JdkByHome(homeFile) => findJdkByHome(homeFile)
+  }
 
   def allAndroidSdks: Seq[projectRoots.Sdk] =
     inReadAction(

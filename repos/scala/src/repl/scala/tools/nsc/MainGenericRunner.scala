@@ -56,8 +56,9 @@ class MainGenericRunner {
       shortUsageMsg,
       shouldStopWithInfo
     }
-    def sampleCompiler =
-      new Global(settings) // def so it's not created unless needed
+    def sampleCompiler = new Global(
+      settings
+    ) // def so it's not created unless needed
 
     def run(): Boolean = {
       def isE = !settings.execute.isDefault
@@ -77,26 +78,25 @@ class MainGenericRunner {
         files ++ str mkString "\n\n"
       }
 
-      def runTarget(): Either[Throwable, Boolean] =
-        howToRun match {
-          case AsObject =>
-            ObjectRunner.runAndCatch(
-              settings.classpathURLs,
-              thingToRun,
-              command.arguments)
-          case AsScript =>
-            ScriptRunner.runScriptAndCatch(
-              settings,
-              thingToRun,
-              command.arguments)
-          case AsJar =>
-            JarRunner.runJar(settings, thingToRun, command.arguments)
-          case Error =>
-            Right(false)
-          case _ =>
-            // We start the repl when no arguments are given.
-            Right(new interpreter.ILoop process settings)
-        }
+      def runTarget(): Either[Throwable, Boolean] = howToRun match {
+        case AsObject =>
+          ObjectRunner.runAndCatch(
+            settings.classpathURLs,
+            thingToRun,
+            command.arguments)
+        case AsScript =>
+          ScriptRunner.runScriptAndCatch(
+            settings,
+            thingToRun,
+            command.arguments)
+        case AsJar =>
+          JarRunner.runJar(settings, thingToRun, command.arguments)
+        case Error =>
+          Right(false)
+        case _ =>
+          // We start the repl when no arguments are given.
+          Right(new interpreter.ILoop process settings)
+      }
 
       /** If -e and -i were both given, we want to execute the -e code after the
         *  -i files have been included, so they are read into strings and prepended to

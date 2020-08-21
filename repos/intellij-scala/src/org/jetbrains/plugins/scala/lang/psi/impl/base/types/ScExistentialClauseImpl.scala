@@ -40,16 +40,15 @@ class ScExistentialClauseImpl(node: ASTNode)
   private def processElement(
       e: PsiElement,
       processor: PsiScopeProcessor,
-      state: ResolveState): Boolean =
-    e match {
-      case named: ScNamedElement => processor.execute(named, state)
-      case holder: ScDeclaredElementsHolder => {
-        for (declared <- holder.declaredElements) {
-          if (!processor.execute(declared, state)) return false
-        }
-        true
+      state: ResolveState): Boolean = e match {
+    case named: ScNamedElement => processor.execute(named, state)
+    case holder: ScDeclaredElementsHolder => {
+      for (declared <- holder.declaredElements) {
+        if (!processor.execute(declared, state)) return false
       }
-      case _ => true
+      true
     }
+    case _ => true
+  }
 
 }

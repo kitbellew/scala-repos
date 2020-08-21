@@ -126,18 +126,16 @@ case class PathPattern(parts: Seq[PathPart]) {
   /**
     * Whether this path pattern has a parameter by the given name.
     */
-  def has(key: String): Boolean =
-    parts.exists {
-      case DynamicPart(name, _, _) if name == key => true
-      case _                                      => false
-    }
+  def has(key: String): Boolean = parts.exists {
+    case DynamicPart(name, _, _) if name == key => true
+    case _                                      => false
+  }
 
-  override def toString =
-    parts.map {
-      case DynamicPart(name, constraint, encode) =>
-        "$" + name + "<" + constraint + ">"
-      case StaticPart(path) => path
-    }.mkString
+  override def toString = parts.map {
+    case DynamicPart(name, constraint, encode) =>
+      "$" + name + "<" + constraint + ">"
+    case StaticPart(path) => path
+  }.mkString
 
 }
 

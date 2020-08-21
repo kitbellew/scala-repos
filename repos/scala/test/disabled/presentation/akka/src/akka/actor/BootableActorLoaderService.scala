@@ -19,37 +19,36 @@ trait BootableActorLoaderService extends Bootable {
   val BOOT_CLASSES = config.getList("akka.boot")
   lazy val applicationLoader: Option[ClassLoader] = createApplicationClassLoader
 
-  protected def createApplicationClassLoader: Option[ClassLoader] =
-    Some({
-      if (HOME.isDefined) {
-        val DEPLOY = HOME.get + "/deploy"
-        val DEPLOY_DIR = new File(DEPLOY)
-        if (!DEPLOY_DIR.exists) {
-          System.exit(-1)
+  protected def createApplicationClassLoader: Option[ClassLoader] = Some({
+    if (HOME.isDefined) {
+      val DEPLOY = HOME.get + "/deploy"
+      val DEPLOY_DIR = new File(DEPLOY)
+      if (!DEPLOY_DIR.exists) {
+        System.exit(-1)
+      }
+      val filesToDeploy = DEPLOY_DIR.listFiles.toArray.toList
+        .asInstanceOf[List[File]]
+        .filter(_.getName.endsWith(".jar"))
+      var dependencyJars: List[URL] = Nil
+      filesToDeploy.map { file =>
+        val jarFile = new JarFile(file)
+        val en = jarFile.entries
+        while (en.hasMoreElements) {
+          val name = en.nextElement.getName
+          if (name.endsWith(".jar"))
+            dependencyJars ::= new File(
+              String
+                .format("jar:file:%s!/%s", jarFile.getName, name)).toURI.toURL
         }
-        val filesToDeploy = DEPLOY_DIR.listFiles.toArray.toList
-          .asInstanceOf[List[File]]
-          .filter(_.getName.endsWith(".jar"))
-        var dependencyJars: List[URL] = Nil
-        filesToDeploy.map { file =>
-          val jarFile = new JarFile(file)
-          val en = jarFile.entries
-          while (en.hasMoreElements) {
-            val name = en.nextElement.getName
-            if (name.endsWith(".jar"))
-              dependencyJars ::= new File(
-                String
-                  .format("jar:file:%s!/%s", jarFile.getName, name)).toURI.toURL
-          }
-        }
-        val toDeploy = filesToDeploy.map(_.toURI.toURL)
-        val allJars = toDeploy ::: dependencyJars
+      }
+      val toDeploy = filesToDeploy.map(_.toURI.toURL)
+      val allJars = toDeploy ::: dependencyJars
 
-        new URLClassLoader(
-          allJars.toArray,
-          Thread.currentThread.getContextClassLoader)
-      } else Thread.currentThread.getContextClassLoader
-    })
+      new URLClassLoader(
+        allJars.toArray,
+        Thread.currentThread.getContextClassLoader)
+    } else Thread.currentThread.getContextClassLoader
+  })
 
   abstract override def onLoad = {
     super.onLoad

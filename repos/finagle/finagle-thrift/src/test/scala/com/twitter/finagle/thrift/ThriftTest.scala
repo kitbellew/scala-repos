@@ -157,29 +157,28 @@ trait ThriftTest { self: FunSuite =>
   )
 
   /** Invoke this in your test to run all defined thrift tests */
-  def runThriftTests() =
-    for {
-      (protoName, proto) <- protocols
-      (clientName, newClient) <- clients
-      (serverName, newServer) <- servers
-      testDef <- thriftTests
-    } test(
-      "server:%s client:%s proto:%s %s"
-        .format(serverName, clientName, protoName, testDef.label)) {
-      val tracer = new BufferingTracer
-      val previous = DefaultTracer.self
-      DefaultTracer.self = tracer
-      val server = newServer(proto)
-      val client = newClient(proto, server.boundAddr, testDef.clientIdOpt)
-      Trace.letClear {
-        try testDef.testFunction(client.client, tracer)
-        finally {
-          DefaultTracer.self = previous
-          server.close()
-          client.close()
-        }
+  def runThriftTests() = for {
+    (protoName, proto) <- protocols
+    (clientName, newClient) <- clients
+    (serverName, newServer) <- servers
+    testDef <- thriftTests
+  } test(
+    "server:%s client:%s proto:%s %s"
+      .format(serverName, clientName, protoName, testDef.label)) {
+    val tracer = new BufferingTracer
+    val previous = DefaultTracer.self
+    DefaultTracer.self = tracer
+    val server = newServer(proto)
+    val client = newClient(proto, server.boundAddr, testDef.clientIdOpt)
+    Trace.letClear {
+      try testDef.testFunction(client.client, tracer)
+      finally {
+        DefaultTracer.self = previous
+        server.close()
+        client.close()
       }
     }
+  }
 }
 
 /*

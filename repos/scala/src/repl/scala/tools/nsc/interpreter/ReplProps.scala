@@ -73,11 +73,10 @@ class ReplProps {
 
   // Next time.
   //def welcome = enversion(Prop[String]("scala.repl.welcome") or shellWelcomeString)
-  def welcome =
-    enversion {
-      val p = Prop[String]("scala.repl.welcome")
-      if (p.isSet) p.get else shellWelcomeString
-    }
+  def welcome = enversion {
+    val p = Prop[String]("scala.repl.welcome")
+    if (p.isSet) p.get else shellWelcomeString
+  }
 
   val pasteDelimiter = Prop[String]("scala.repl.here")
 

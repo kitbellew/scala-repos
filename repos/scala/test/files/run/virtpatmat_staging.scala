@@ -26,11 +26,10 @@ trait Intf {
   implicit def repBoolean(x: Boolean): Rep[Boolean]
   implicit def repString(x: String): Rep[String]
 
-  def test =
-    7 match {
-      case 5 => "foo"
-      case _ => "bar"
-    }
+  def test = 7 match {
+    case 5 => "foo"
+    case _ => "bar"
+  }
 }
 
 trait Impl extends Intf {
@@ -47,13 +46,11 @@ trait Impl extends Intf {
       ("isSuccess(" + x + ", ?" + f("?") + ")")
   }
 
-  implicit def proxyMaybe[A](m: M[A]): Maybe[A] =
-    new Maybe[A] {
-      def flatMap[B](f: Rep[A] => M[B]): M[B] =
-        m + ".flatMap(? =>" + f("?") + ")"
-      def orElse[B >: A](alternative: => M[B]): M[B] =
-        m + ".orElse(" + alternative + ")"
-    }
+  implicit def proxyMaybe[A](m: M[A]): Maybe[A] = new Maybe[A] {
+    def flatMap[B](f: Rep[A] => M[B]): M[B] = m + ".flatMap(? =>" + f("?") + ")"
+    def orElse[B >: A](alternative: => M[B]): M[B] =
+      m + ".orElse(" + alternative + ")"
+  }
 
   def repInt(x: Int): Rep[Int] = x.toString
   def repBoolean(x: Boolean): Rep[Boolean] = x.toString

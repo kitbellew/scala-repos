@@ -30,12 +30,11 @@ class ThriftCodecTest extends FunSuite {
     buffer
   }
 
-  def makeChannel(codec: ChannelHandler) =
-    SunkChannel {
-      val pipeline = Channels.pipeline()
-      pipeline.addLast("codec", codec)
-      pipeline
-    }
+  def makeChannel(codec: ChannelHandler) = SunkChannel {
+    val pipeline = Channels.pipeline()
+    pipeline.addLast("codec", codec)
+    pipeline
+  }
 
   ThriftTypes.add(
     new ThriftCallFactory[Silly.bleep_args, Silly.bleep_result](

@@ -50,13 +50,12 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
   }
 
   // wrap the given expression in a SoftReference so it can be gc-ed
-  def mkSoftRef(expr: Tree): Tree =
-    atPos(expr.pos) {
-      val constructor = SoftReferenceClass.info
-        .nonPrivateMember(nme.CONSTRUCTOR)
-        .suchThat(_.paramss.flatten.size == 1)
-      NewFromConstructor(constructor, expr)
-    }
+  def mkSoftRef(expr: Tree): Tree = atPos(expr.pos) {
+    val constructor = SoftReferenceClass.info
+      .nonPrivateMember(nme.CONSTRUCTOR)
+      .suchThat(_.paramss.flatten.size == 1)
+    NewFromConstructor(constructor, expr)
+  }
 
   // Builds a tree of the form "{ lhs = rhs ; lhs  }"
   def mkAssignAndReturn(lhs: Symbol, rhs: Tree): Tree = {
@@ -191,21 +190,20 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
 
   /** Translate names in Select/Ident nodes to type names.
     */
-  def convertToTypeName(tree: Tree): Option[RefTree] =
-    tree match {
-      case Select(qual, name) => Some(Select(qual, name.toTypeName))
-      case Ident(name)        => Some(Ident(name.toTypeName))
-      case _                  => None
-    }
+  def convertToTypeName(tree: Tree): Option[RefTree] = tree match {
+    case Select(qual, name) => Some(Select(qual, name.toTypeName))
+    case Ident(name)        => Some(Ident(name.toTypeName))
+    case _                  => None
+  }
 
   /** Try to convert Select(qual, name) to a SelectFromTypeTree.
     */
-  def convertToSelectFromType(qual: Tree, origName: Name) =
-    convertToTypeName(qual) match {
-      case Some(qual1) =>
-        SelectFromTypeTree(qual1 setPos qual.pos, origName.toTypeName)
-      case _ => EmptyTree
-    }
+  def convertToSelectFromType(qual: Tree, origName: Name) = convertToTypeName(
+    qual) match {
+    case Some(qual1) =>
+      SelectFromTypeTree(qual1 setPos qual.pos, origName.toTypeName)
+    case _ => EmptyTree
+  }
 
   /** Create a ValDef initialized to the given expression, setting the
     *  symbol to its packed type, and an function for creating Idents
@@ -286,11 +284,10 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
       cond: Tree,
       syncBody: List[Tree],
       stats: List[Tree]): Tree = {
-    def blockOrStat(stats: List[Tree]): Tree =
-      stats match {
-        case head :: Nil => head
-        case _           => Block(stats: _*)
-      }
+    def blockOrStat(stats: List[Tree]): Tree = stats match {
+      case head :: Nil => head
+      case _           => Block(stats: _*)
+    }
     val sync =
       mkSynchronized(attrThis, If(cond, blockOrStat(syncBody), EmptyTree))
     blockOrStat(sync :: stats)

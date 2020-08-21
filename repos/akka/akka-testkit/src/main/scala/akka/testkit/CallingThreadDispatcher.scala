@@ -82,20 +82,19 @@ private[testkit] class CallingThreadDispatcherQueues extends Extension {
 
   protected[akka] def registerQueue(
       mbox: CallingThreadMailbox,
-      q: MessageQueue): Unit =
-    synchronized {
-      if (queues contains mbox) {
-        val newSet = queues(mbox) + new WeakReference(q)
-        queues += mbox -> newSet
-      } else {
-        queues += mbox -> Set(new WeakReference(q))
-      }
-      val now = System.nanoTime
-      if (now - lastGC > 1000000000L) {
-        lastGC = now
-        gc()
-      }
+      q: MessageQueue): Unit = synchronized {
+    if (queues contains mbox) {
+      val newSet = queues(mbox) + new WeakReference(q)
+      queues += mbox -> newSet
+    } else {
+      queues += mbox -> Set(new WeakReference(q))
     }
+    val now = System.nanoTime
+    if (now - lastGC > 1000000000L) {
+      lastGC = now
+      gc()
+    }
+  }
 
   protected[akka] def unregisterQueues(mbox: CallingThreadMailbox): Unit =
     synchronized {
@@ -109,24 +108,23 @@ private[testkit] class CallingThreadDispatcherQueues extends Extension {
    */
   protected[akka] def gatherFromAllOtherQueues(
       mbox: CallingThreadMailbox,
-      own: MessageQueue): Unit =
-    synchronized {
-      if (queues contains mbox) {
-        for {
-          ref ← queues(mbox)
-          q = ref.get
-          if (q ne null) && (q ne own)
-        } {
-          val owner = mbox.actor.self
-          var msg = q.dequeue()
-          while (msg ne null) {
-            // this is safe because this method is only ever called while holding the suspendSwitch monitor
-            own.enqueue(owner, msg)
-            msg = q.dequeue()
-          }
+      own: MessageQueue): Unit = synchronized {
+    if (queues contains mbox) {
+      for {
+        ref ← queues(mbox)
+        q = ref.get
+        if (q ne null) && (q ne own)
+      } {
+        val owner = mbox.actor.self
+        var msg = q.dequeue()
+        while (msg ne null) {
+          // this is safe because this method is only ever called while holding the suspendSwitch monitor
+          own.enqueue(owner, msg)
+          msg = q.dequeue()
         }
       }
     }
+  }
 }
 
 object CallingThreadDispatcher {
@@ -389,9 +387,8 @@ class CallingThreadMailbox(
 
   override def enqueue(receiver: ActorRef, msg: Envelope): Unit =
     q.get.enqueue(receiver, msg)
-  override def dequeue(): Envelope =
-    throw new UnsupportedOperationException(
-      "CallingThreadMailbox cannot dequeue normally")
+  override def dequeue(): Envelope = throw new UnsupportedOperationException(
+    "CallingThreadMailbox cannot dequeue normally")
   override def hasMessages: Boolean = q.get.hasMessages
   override def numberOfMessages: Int = 0
 

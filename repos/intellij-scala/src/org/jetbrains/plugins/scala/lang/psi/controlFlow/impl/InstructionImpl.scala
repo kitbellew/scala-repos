@@ -44,11 +44,10 @@ sealed class InstructionImpl(
     builder.toString()
   }
 
-  protected def getPresentation =
-    "element: " + (element match {
-      case Some(x) => x
-      case z       => z
-    })
+  protected def getPresentation = "element: " + (element match {
+    case Some(x) => x
+    case z       => z
+  })
 }
 
 case class DefinitionInstruction(

@@ -91,10 +91,9 @@ private[play] object WebSocketActor {
       channel.end()
     }
 
-    override def supervisorStrategy =
-      OneForOneStrategy() { case _ =>
-        SupervisorStrategy.Stop
-      }
+    override def supervisorStrategy = OneForOneStrategy() { case _ =>
+      SupervisorStrategy.Stop
+    }
   }
 
   object WebSocketsActor {

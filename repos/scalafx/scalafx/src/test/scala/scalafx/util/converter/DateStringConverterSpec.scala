@@ -52,7 +52,7 @@ class DateStringConverterSpec
     (dateFormat.parse("2012-04-01 00:00:00"), "01/04/2012"),
     (dateFormat.parse("2000-02-29 00:00:00"), "29/02/2000"))
 
-  override protected def getConverterForExample =
-    new DateStringConverter("dd/MM/yyyy")
+  override protected def getConverterForExample = new DateStringConverter(
+    "dd/MM/yyyy")
 
 }

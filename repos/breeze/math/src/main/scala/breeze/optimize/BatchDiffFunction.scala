@@ -55,13 +55,12 @@ trait BatchDiffFunction[T]
   def withScanningBatches(size: Int): StochasticDiffFunction[T] =
     new StochasticDiffFunction[T] {
       var lastStop = 0
-      def nextBatch =
-        synchronized {
-          val start = lastStop
-          lastStop += size
-          lastStop %= fullRange.size
-          Array.tabulate(size)(i => fullRange((i + start) % fullRange.size))
-        }
+      def nextBatch = synchronized {
+        val start = lastStop
+        lastStop += size
+        lastStop %= fullRange.size
+        Array.tabulate(size)(i => fullRange((i + start) % fullRange.size))
+      }
 
       def calculate(x: T) = outer.calculate(x, nextBatch)
     }
@@ -92,29 +91,28 @@ trait BatchDiffFunction[T]
     }
 
   override def throughLens[U](implicit
-      l: Isomorphism[T, U]): BatchDiffFunction[U] =
-    new BatchDiffFunction[U] {
+      l: Isomorphism[T, U]): BatchDiffFunction[U] = new BatchDiffFunction[U] {
 
-      /**
-        * Calculates the value and gradient of the function on a subset of the data
-        */
-      override def calculate(u: U, batch: IndexedSeq[Int]): (Double, U) = {
-        val t = l.backward(u)
-        val (obj, gu) = outer.calculate(t, batch)
-        (obj, l.forward(gu))
-      }
-
-      /**
-        * The full size of the data
-        */
-      override def fullRange: IndexedSeq[Int] = outer.fullRange
-
-      override def calculate(u: U) = {
-        val t = l.backward(u)
-        val (obj, gu) = outer.calculate(t)
-        (obj, l.forward(gu))
-      }
+    /**
+      * Calculates the value and gradient of the function on a subset of the data
+      */
+    override def calculate(u: U, batch: IndexedSeq[Int]): (Double, U) = {
+      val t = l.backward(u)
+      val (obj, gu) = outer.calculate(t, batch)
+      (obj, l.forward(gu))
     }
+
+    /**
+      * The full size of the data
+      */
+    override def fullRange: IndexedSeq[Int] = outer.fullRange
+
+    override def calculate(u: U) = {
+      val t = l.backward(u)
+      val (obj, gu) = outer.calculate(t)
+      (obj, l.forward(gu))
+    }
+  }
 
 }
 

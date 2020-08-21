@@ -52,8 +52,8 @@ object Bernoulli
   type ConjugatePrior = Beta
   val conjugateFamily = Beta
 
-  def predictive(parameter: Beta.Parameter) =
-    new Polya(Counter(true -> parameter._1, false -> parameter._2))
+  def predictive(parameter: Beta.Parameter) = new Polya(
+    Counter(true -> parameter._1, false -> parameter._2))
 
   def posterior(prior: Beta.Parameter, evidence: TraversableOnce[Boolean]) = {
     evidence.foldLeft(prior) { (acc, ev) =>

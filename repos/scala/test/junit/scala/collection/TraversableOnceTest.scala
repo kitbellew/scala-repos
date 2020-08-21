@@ -14,14 +14,13 @@ class TraversableOnceTest {
   // Basic emptiness check
   @Test
   def checkEmpty {
-    def hasException(code: => Any): Boolean =
-      try {
-        code
-        false
-      } catch {
-        case u: UnsupportedOperationException => true
-        case t: Throwable                     => false
-      }
+    def hasException(code: => Any): Boolean = try {
+      code
+      false
+    } catch {
+      case u: UnsupportedOperationException => true
+      case t: Throwable                     => false
+    }
     assert(
       hasException({ List[Int]().maxBy(_ * 3) }),
       "maxBy: on empty list should throw UnsupportedOperationException.")

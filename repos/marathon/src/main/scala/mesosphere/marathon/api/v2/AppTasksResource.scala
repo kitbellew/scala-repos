@@ -45,17 +45,16 @@ class AppTasksResource @Inject() (
   @Timed
   def indexJson(
       @PathParam("appId") id: String,
-      @Context req: HttpServletRequest): Response =
-    authenticated(req) { implicit identity =>
+      @Context req: HttpServletRequest): Response = authenticated(req) {
+    implicit identity =>
       val taskMap = taskTracker.tasksByAppSync
 
-      def runningTasks(appIds: Set[PathId]): Set[EnrichedTask] =
-        for {
-          runningApps <- appIds.filter(taskMap.hasAppTasks)
-          id <- appIds
-          health = result(healthCheckManager.statuses(id))
-          task <- taskMap.appTasks(id)
-        } yield EnrichedTask(id, task, health.getOrElse(task.taskId, Nil))
+      def runningTasks(appIds: Set[PathId]): Set[EnrichedTask] = for {
+        runningApps <- appIds.filter(taskMap.hasAppTasks)
+        id <- appIds
+        health = result(healthCheckManager.statuses(id))
+        task <- taskMap.appTasks(id)
+      } yield EnrichedTask(id, task, health.getOrElse(task.taskId, Nil))
 
       id match {
         case GroupTasks(gid) =>
@@ -74,21 +73,21 @@ class AppTasksResource @Inject() (
             ok(jsonObjString("tasks" -> runningTasks(Set(appId))))
           }
       }
-    }
+  }
 
   @GET
   @Produces(Array(MediaType.TEXT_PLAIN))
   @Timed
   def indexTxt(
       @PathParam("appId") appId: String,
-      @Context req: HttpServletRequest): Response =
-    authenticated(req) { implicit identity =>
+      @Context req: HttpServletRequest): Response = authenticated(req) {
+    implicit identity =>
       val id = appId.toRootPath
       withAuthorization(ViewApp, result(groupManager.app(id)), unknownApp(id)) {
         app =>
           ok(EndpointsHelper.appsToEndpointString(taskTracker, Seq(app), "\t"))
       }
-    }
+  }
 
   @DELETE
   @Timed
@@ -97,8 +96,8 @@ class AppTasksResource @Inject() (
       @QueryParam("host") host: String,
       @QueryParam("scale") @DefaultValue("false") scale: Boolean = false,
       @QueryParam("force") @DefaultValue("false") force: Boolean = false,
-      @Context req: HttpServletRequest): Response =
-    authenticated(req) { implicit identity =>
+      @Context req: HttpServletRequest): Response = authenticated(req) {
+    implicit identity =>
       val pathId = appId.toRootPath
 
       def findToKill(appTasks: Iterable[Task]): Iterable[Task] = {
@@ -115,7 +114,7 @@ class AppTasksResource @Inject() (
           ok(jsonObjString("tasks" -> tasks))
         }
       }
-    }
+  }
 
   @DELETE
   @Path("{taskId}")
@@ -125,8 +124,8 @@ class AppTasksResource @Inject() (
       @PathParam("taskId") id: String,
       @QueryParam("scale") @DefaultValue("false") scale: Boolean = false,
       @QueryParam("force") @DefaultValue("false") force: Boolean = false,
-      @Context req: HttpServletRequest): Response =
-    authenticated(req) { implicit identity =>
+      @Context req: HttpServletRequest): Response = authenticated(req) {
+    implicit identity =>
       val pathId = appId.toRootPath
       def findToKill(appTasks: Iterable[Task]): Iterable[Task] =
         appTasks.find(_.taskId == Task.Id(id))
@@ -140,7 +139,7 @@ class AppTasksResource @Inject() (
             ok(jsonObjString("task" -> task)))
         }
       }
-    }
+  }
 
   private def reqToResponse(future: Future[Iterable[Task]])(
       toResponse: Iterable[Task] => Response): Response = {

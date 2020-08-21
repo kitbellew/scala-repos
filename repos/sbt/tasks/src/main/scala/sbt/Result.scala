@@ -35,9 +35,8 @@ object Result {
     r foreach tryValue[Unit]
     tryValue[S](v)
   }
-  implicit def fromEither[T](e: Either[Incomplete, T]): Result[T] =
-    e match {
-      case Left(i)  => Inc(i)
-      case Right(v) => Value(v)
-    }
+  implicit def fromEither[T](e: Either[Incomplete, T]): Result[T] = e match {
+    case Left(i)  => Inc(i)
+    case Right(v) => Value(v)
+  }
 }

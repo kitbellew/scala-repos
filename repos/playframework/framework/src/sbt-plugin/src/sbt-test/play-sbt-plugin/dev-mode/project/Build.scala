@@ -11,20 +11,18 @@ import scala.util.Properties
 
 object DevModeBuild {
 
-  def jdk7WatchService =
-    Def.setting {
-      if (Properties.isJavaAtLeast("1.7")) {
-        FileWatchService.jdk7(Keys.sLog.value)
-      } else {
-        println("Not testing JDK7 watch service because we're not on JDK7")
-        FileWatchService.sbt(Keys.pollInterval.value)
-      }
+  def jdk7WatchService = Def.setting {
+    if (Properties.isJavaAtLeast("1.7")) {
+      FileWatchService.jdk7(Keys.sLog.value)
+    } else {
+      println("Not testing JDK7 watch service because we're not on JDK7")
+      FileWatchService.sbt(Keys.pollInterval.value)
     }
+  }
 
-  def jnotifyWatchService =
-    Def.setting {
-      FileWatchService.jnotify(Keys.target.value)
-    }
+  def jnotifyWatchService = Def.setting {
+    FileWatchService.jnotify(Keys.target.value)
+  }
 
   val MaxAttempts = 10
   val WaitTime = 500L

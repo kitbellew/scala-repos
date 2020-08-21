@@ -138,10 +138,9 @@ case class CreateNamedStruct(children: Seq[Expression]) extends Expression {
     * Returns Aliased [[Expression]]s that could be used to construct a flattened version of this
     * StructType.
     */
-  def flatten: Seq[NamedExpression] =
-    valExprs.zip(names).map { case (v, n) =>
-      Alias(v, n.toString)()
-    }
+  def flatten: Seq[NamedExpression] = valExprs.zip(names).map { case (v, n) =>
+    Alias(v, n.toString)()
+  }
 
   private lazy val (nameExprs, valExprs) =
     children

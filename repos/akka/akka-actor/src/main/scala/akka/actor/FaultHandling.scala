@@ -193,8 +193,8 @@ object SupervisorStrategy extends SupervisorStrategyLowPriorityImplicits {
     * This maps the given Throwables to restarts, otherwise escalates.
     */
   implicit def seqThrowable2Decider(
-      trapExit: immutable.Seq[Class[_ <: Throwable]]): Decider =
-    makeDecider(trapExit)
+      trapExit: immutable.Seq[Class[_ <: Throwable]]): Decider = makeDecider(
+    trapExit)
 
   type Decider = PartialFunction[Throwable, Directive]
   type JDecider = akka.japi.Function[Throwable, Directive]

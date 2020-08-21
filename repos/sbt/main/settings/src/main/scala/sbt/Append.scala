@@ -42,22 +42,18 @@ object Append {
         a ::: (b map { x => (x: T) })
       def appendValue(a: List[T], b: V): List[T] = a :+ (b: T)
     }
-  implicit def appendString: Value[String, String] =
-    new Value[String, String] {
-      def appendValue(a: String, b: String) = a + b
-    }
-  implicit def appendInt =
-    new Value[Int, Int] {
-      def appendValue(a: Int, b: Int) = a + b
-    }
-  implicit def appendLong =
-    new Value[Long, Long] {
-      def appendValue(a: Long, b: Long) = a + b
-    }
-  implicit def appendDouble =
-    new Value[Double, Double] {
-      def appendValue(a: Double, b: Double) = a + b
-    }
+  implicit def appendString: Value[String, String] = new Value[String, String] {
+    def appendValue(a: String, b: String) = a + b
+  }
+  implicit def appendInt = new Value[Int, Int] {
+    def appendValue(a: Int, b: Int) = a + b
+  }
+  implicit def appendLong = new Value[Long, Long] {
+    def appendValue(a: Long, b: Long) = a + b
+  }
+  implicit def appendDouble = new Value[Double, Double] {
+    def appendValue(a: Double, b: Double) = a + b
+  }
   implicit def appendClasspath: Sequence[Classpath, Seq[File], File] =
     new Sequence[Classpath, Seq[File], File] {
       def appendValues(a: Classpath, b: Seq[File]): Classpath =

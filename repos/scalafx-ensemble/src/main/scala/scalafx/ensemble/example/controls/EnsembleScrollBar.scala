@@ -106,10 +106,9 @@ class EnsembleScrollBar extends EnsembleExample {
     orientation = Orientation.VERTICAL
   }
 
-  def getContent =
-    new Pane {
-      prefWidth = xBarWidth + yBarWidth
-      prefHeight = xBarHeight + yBarHeight
-      children ++= Seq(bg, box, circle, xScrollBar, yScrollBar)
-    }
+  def getContent = new Pane {
+    prefWidth = xBarWidth + yBarWidth
+    prefHeight = xBarHeight + yBarHeight
+    children ++= Seq(bg, box, circle, xScrollBar, yScrollBar)
+  }
 }

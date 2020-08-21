@@ -27,11 +27,10 @@ trait Reify
       finally currents = currents.tail
     }
   }
-  def boundSymbolsInCallstack =
-    flatCollect(reifyStack.currents) {
-      case ExistentialType(quantified, _) => quantified
-      case PolyType(typeParams, _)        => typeParams
-    }
+  def boundSymbolsInCallstack = flatCollect(reifyStack.currents) {
+    case ExistentialType(quantified, _) => quantified
+    case PolyType(typeParams, _)        => typeParams
+  }
   def current = reifyStack.currents.head
   def currents = reifyStack.currents
 
@@ -39,27 +38,25 @@ trait Reify
     *  Reifies any supported value.
     *  For internal use only, use `reified` instead.
     */
-  def reify(reifee: Any): Tree =
-    reifyStack.push(reifee)(reifee match {
-      // before adding some case here, in global scope, please, consider
-      // whether it can be localized like reifyAnnotationInfo or reifyScope
-      // this will help reification stay as sane as possible
-      case sym: Symbol => reifySymRef(sym)
-      case tpe: Type   => reifyType(tpe)
-      case name: Name  => reifyName(name)
-      case tree: Tree  => reifyTree(tree)
-      // disabled because this is a very special case that I plan to remove later
-      // why do I dislike annotations? see comments to `reifyAnnotationInfo`
-      // case ann: AnnotationInfo      => reifyAnnotationInfo(ann)
-      case pos: Position          => reifyPosition(pos)
-      case mods: global.Modifiers => reifyModifiers(mods)
-      case xs: List[_]            => reifyList(xs)
-      case s: String              => Literal(Constant(s))
-      case v if isAnyVal(v)       => Literal(Constant(v))
-      case null                   => Literal(Constant(null))
-      case _ =>
-        throw new Error(
-          "reifee %s of type %s is not supported"
-            .format(reifee, reifee.getClass))
-    })
+  def reify(reifee: Any): Tree = reifyStack.push(reifee)(reifee match {
+    // before adding some case here, in global scope, please, consider
+    // whether it can be localized like reifyAnnotationInfo or reifyScope
+    // this will help reification stay as sane as possible
+    case sym: Symbol => reifySymRef(sym)
+    case tpe: Type   => reifyType(tpe)
+    case name: Name  => reifyName(name)
+    case tree: Tree  => reifyTree(tree)
+    // disabled because this is a very special case that I plan to remove later
+    // why do I dislike annotations? see comments to `reifyAnnotationInfo`
+    // case ann: AnnotationInfo      => reifyAnnotationInfo(ann)
+    case pos: Position          => reifyPosition(pos)
+    case mods: global.Modifiers => reifyModifiers(mods)
+    case xs: List[_]            => reifyList(xs)
+    case s: String              => Literal(Constant(s))
+    case v if isAnyVal(v)       => Literal(Constant(v))
+    case null                   => Literal(Constant(null))
+    case _ =>
+      throw new Error(
+        "reifee %s of type %s is not supported".format(reifee, reifee.getClass))
+  })
 }

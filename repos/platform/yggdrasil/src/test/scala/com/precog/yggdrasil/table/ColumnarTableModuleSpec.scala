@@ -734,18 +734,17 @@ trait ColumnarTableModuleSpec[M[+_]]
 
 object ColumnarTableModuleSpec
     extends ColumnarTableModuleSpec[Free.Trampoline] {
-  implicit def M =
-    new Monad[Free.Trampoline]
-      with Comonad[Free.Trampoline]
-      with Cobind.FromCojoin[Free.Trampoline] {
-      import scalaz.Free._
-      import scalaz.std.function._
-      override def point[A](a: => A) = freeMonad[Function0].point(a)
-      override def bind[A, B](m: Free.Trampoline[A])(
-          f: A => Free.Trampoline[B]) = freeMonad[Function0].bind(m)(f)
-      override def copoint[A](m: Free.Trampoline[A]) = m go { f => f() }
-      override def cojoin[A](m: Free.Trampoline[A]) = point(m)
-    }
+  implicit def M = new Monad[Free.Trampoline]
+    with Comonad[Free.Trampoline]
+    with Cobind.FromCojoin[Free.Trampoline] {
+    import scalaz.Free._
+    import scalaz.std.function._
+    override def point[A](a: => A) = freeMonad[Function0].point(a)
+    override def bind[A, B](m: Free.Trampoline[A])(f: A => Free.Trampoline[B]) =
+      freeMonad[Function0].bind(m)(f)
+    override def copoint[A](m: Free.Trampoline[A]) = m go { f => f() }
+    override def cojoin[A](m: Free.Trampoline[A]) = point(m)
+  }
 
   type YggConfig = IdSourceConfig with ColumnarTableModuleConfig
   val yggConfig = new IdSourceConfig with ColumnarTableModuleConfig {

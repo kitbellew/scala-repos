@@ -235,8 +235,8 @@ object ResultSet {
       header: Packet,
       fieldPackets: Seq[Packet],
       rowPackets: Seq[Packet]
-  ): Try[ResultSet] =
-    Try(decode(isBinaryEncoded)(header, fieldPackets, rowPackets))
+  ): Try[ResultSet] = Try(
+    decode(isBinaryEncoded)(header, fieldPackets, rowPackets))
 
   def decode(isBinaryEncoded: Boolean)(
       header: Packet,

@@ -72,11 +72,10 @@ class MapperPaginator[T <: Mapper[T]](val meta: MetaMapper[T])
   var constantParams: Seq[QueryParam[T]] = Nil
 
   def count = meta.count(constantParams: _*)
-  def page =
-    meta.findAll(
-      constantParams ++ Seq[QueryParam[T]](
-        MaxRows(itemsPerPage),
-        StartAt(first)): _*)
+  def page = meta.findAll(
+    constantParams ++ Seq[QueryParam[T]](
+      MaxRows(itemsPerPage),
+      StartAt(first)): _*)
 }
 
 /**
@@ -105,20 +104,18 @@ class SortedMapperPaginator[T <: Mapper[T]](
     headers.indexWhere { case (_, `initialSort`) => true; case _ => false },
     true)
 
-  override def page =
-    meta.findAll(
-      constantParams ++ Seq[QueryParam[T]](
-        mapperSort,
-        MaxRows(itemsPerPage),
-        StartAt(first)): _*)
-  private def mapperSort =
-    sort match {
-      case (fieldIndex, ascending) =>
-        OrderBy(
-          headers(fieldIndex) match { case (_, f) => f },
-          if (ascending) Ascending else Descending
-        )
-    }
+  override def page = meta.findAll(
+    constantParams ++ Seq[QueryParam[T]](
+      mapperSort,
+      MaxRows(itemsPerPage),
+      StartAt(first)): _*)
+  private def mapperSort = sort match {
+    case (fieldIndex, ascending) =>
+      OrderBy(
+        headers(fieldIndex) match { case (_, f) => f },
+        if (ascending) Ascending else Descending
+      )
+  }
 }
 
 /**

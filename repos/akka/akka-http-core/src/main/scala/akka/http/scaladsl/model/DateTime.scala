@@ -92,8 +92,8 @@ final case class DateTime private (
   /**
     * `yyyy-mm-dd hh:mm:ss`
     */
-  def toIsoLikeDateTimeString =
-    renderIsoLikeDateTimeString(new StringRendering).get
+  def toIsoLikeDateTimeString = renderIsoLikeDateTimeString(
+    new StringRendering).get
 
   /**
     * RFC1123 date string, e.g. `Sun, 06 Nov 1994 08:49:37 GMT`
@@ -112,8 +112,8 @@ final case class DateTime private (
   /**
     * RFC1123 date string, e.g. `Sun, 06 Nov 1994 08:49:37 GMT`
     */
-  def toRfc1123DateTimeString =
-    renderRfc1123DateTimeString(new StringRendering).get
+  def toRfc1123DateTimeString = renderRfc1123DateTimeString(
+    new StringRendering).get
 
   private def put_##[R <: Rendering](r: R, i: Int): r.type =
     r ~~ (i / 10 + '0').toChar ~~ (i % 10 + '0').toChar
@@ -122,11 +122,10 @@ final case class DateTime private (
 
   override def hashCode() = clicks.##
 
-  override def equals(obj: Any) =
-    obj match {
-      case x: DateTime ⇒ x.clicks == clicks
-      case _ ⇒ false
-    }
+  override def equals(obj: Any) = obj match {
+    case x: DateTime ⇒ x.clicks == clicks
+    case _ ⇒ false
+  }
 }
 
 object DateTime {

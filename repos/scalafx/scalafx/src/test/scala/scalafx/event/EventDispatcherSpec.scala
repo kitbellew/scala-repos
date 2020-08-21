@@ -47,10 +47,9 @@ class EventDispatcherSpec
   override protected def getScalaClassInstance: EventDispatcher =
     getJavaClassInstance
 
-  override protected def getJavaClassInstance =
-    new jfxe.EventDispatcher() {
-      override def dispatchEvent(
-          event: jfxe.Event,
-          tail: jfxe.EventDispatchChain) = ???
-    }
+  override protected def getJavaClassInstance = new jfxe.EventDispatcher() {
+    override def dispatchEvent(
+        event: jfxe.Event,
+        tail: jfxe.EventDispatchChain) = ???
+  }
 }

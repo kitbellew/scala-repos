@@ -72,12 +72,11 @@ object Test extends ScaladocModelTest {
       )
       .map(scalaURL + "/index.html#" + _)
 
-    def isExpectedExternalLink(l: EntityLink) =
-      l.link match {
-        case LinkToExternal(name, url) =>
-          assert(expectedUrls contains url, url); true
-        case _ => false
-      }
+    def isExpectedExternalLink(l: EntityLink) = l.link match {
+      case LinkToExternal(name, url) =>
+        assert(expectedUrls contains url, url); true
+      case _ => false
+    }
 
     assert(
       countLinks(test.comment.get, isExpectedExternalLink) == 8,

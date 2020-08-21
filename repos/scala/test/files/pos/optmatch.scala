@@ -21,11 +21,10 @@ object Foo {
 }
 
 object Test {
-  def f(x: Int): Int =
-    x match {
-      case Foo(1024L) => 1
-      case _          => 2
-    }
+  def f(x: Int): Int = x match {
+    case Foo(1024L) => 1
+    case _          => 2
+  }
   def main(args: Array[String]): Unit = {
     println(f(10))
     println(f(11))

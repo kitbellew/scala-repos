@@ -20,26 +20,24 @@ abstract class ConstantFolder {
   import global._
 
   /** If tree is a constant operation, replace with result. */
-  def apply(tree: Tree): Tree =
-    fold(
-      tree,
-      tree match {
-        case Apply(Select(Literal(x), op), List(Literal(y))) =>
-          foldBinop(op, x, y)
-        case Select(Literal(x), op) => foldUnop(op, x)
-        case _                      => null
-      })
+  def apply(tree: Tree): Tree = fold(
+    tree,
+    tree match {
+      case Apply(Select(Literal(x), op), List(Literal(y))) =>
+        foldBinop(op, x, y)
+      case Select(Literal(x), op) => foldUnop(op, x)
+      case _                      => null
+    })
 
   /** If tree is a constant value that can be converted to type `pt`, perform
     *  the conversion.
     */
-  def apply(tree: Tree, pt: Type): Tree =
-    fold(
-      apply(tree),
-      tree.tpe match {
-        case ConstantType(x) => x convertTo pt
-        case _               => null
-      })
+  def apply(tree: Tree, pt: Type): Tree = fold(
+    apply(tree),
+    tree.tpe match {
+      case ConstantType(x) => x convertTo pt
+      case _               => null
+    })
 
   private def fold(tree: Tree, compX: => Constant): Tree =
     try {
@@ -52,25 +50,24 @@ abstract class ConstantFolder {
       // compiler itself crashing
     }
 
-  private def foldUnop(op: Name, x: Constant): Constant =
-    (op, x.tag) match {
-      case (nme.UNARY_!, BooleanTag) => Constant(!x.booleanValue)
+  private def foldUnop(op: Name, x: Constant): Constant = (op, x.tag) match {
+    case (nme.UNARY_!, BooleanTag) => Constant(!x.booleanValue)
 
-      case (nme.UNARY_~, IntTag)  => Constant(~x.intValue)
-      case (nme.UNARY_~, LongTag) => Constant(~x.longValue)
+    case (nme.UNARY_~, IntTag)  => Constant(~x.intValue)
+    case (nme.UNARY_~, LongTag) => Constant(~x.longValue)
 
-      case (nme.UNARY_+, IntTag)    => Constant(+x.intValue)
-      case (nme.UNARY_+, LongTag)   => Constant(+x.longValue)
-      case (nme.UNARY_+, FloatTag)  => Constant(+x.floatValue)
-      case (nme.UNARY_+, DoubleTag) => Constant(+x.doubleValue)
+    case (nme.UNARY_+, IntTag)    => Constant(+x.intValue)
+    case (nme.UNARY_+, LongTag)   => Constant(+x.longValue)
+    case (nme.UNARY_+, FloatTag)  => Constant(+x.floatValue)
+    case (nme.UNARY_+, DoubleTag) => Constant(+x.doubleValue)
 
-      case (nme.UNARY_-, IntTag)    => Constant(-x.intValue)
-      case (nme.UNARY_-, LongTag)   => Constant(-x.longValue)
-      case (nme.UNARY_-, FloatTag)  => Constant(-x.floatValue)
-      case (nme.UNARY_-, DoubleTag) => Constant(-x.doubleValue)
+    case (nme.UNARY_-, IntTag)    => Constant(-x.intValue)
+    case (nme.UNARY_-, LongTag)   => Constant(-x.longValue)
+    case (nme.UNARY_-, FloatTag)  => Constant(-x.floatValue)
+    case (nme.UNARY_-, DoubleTag) => Constant(-x.doubleValue)
 
-      case _ => null
-    }
+    case _ => null
+  }
 
   /** These are local helpers to keep foldBinop from overly taxing the
     *  optimizer.

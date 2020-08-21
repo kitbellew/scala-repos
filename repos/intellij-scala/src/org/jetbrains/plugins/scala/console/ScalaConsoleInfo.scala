@@ -21,8 +21,8 @@ object ScalaConsoleInfo {
 
   def getConsole(file: PsiFile): ScalaLanguageConsole = get(file)._1
   def getConsole(project: Project): ScalaLanguageConsole = get(project)._1
-  def getController(project: Project): ConsoleHistoryController =
-    get(project)._2
+  def getController(project: Project): ConsoleHistoryController = get(
+    project)._2
   def getProcessHandler(project: Project): ProcessHandler = get(project)._3
   def getConsole(editor: Editor): ScalaLanguageConsole = get(editor)._1
   def getController(editor: Editor): ConsoleHistoryController = get(editor)._2

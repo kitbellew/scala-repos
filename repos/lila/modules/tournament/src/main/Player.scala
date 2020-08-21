@@ -39,12 +39,11 @@ private[tournament] object Player {
   private[tournament] def make(
       tourId: String,
       user: User,
-      perfLens: Perfs => Perf): Player =
-    new Player(
-      _id = lila.game.IdGenerator.game,
-      tourId = tourId,
-      userId = user.id,
-      rating = perfLens(user.perfs).intRating,
-      provisional = perfLens(user.perfs).provisional
-    ).recomputeMagicScore
+      perfLens: Perfs => Perf): Player = new Player(
+    _id = lila.game.IdGenerator.game,
+    tourId = tourId,
+    userId = user.id,
+    rating = perfLens(user.perfs).intRating,
+    provisional = perfLens(user.perfs).provisional
+  ).recomputeMagicScore
 }

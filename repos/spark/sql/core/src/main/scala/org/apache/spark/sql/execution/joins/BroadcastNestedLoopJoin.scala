@@ -45,15 +45,14 @@ case class BroadcastNestedLoopJoin(
     case BuildLeft  => (right, left)
   }
 
-  override def requiredChildDistribution: Seq[Distribution] =
-    buildSide match {
-      case BuildLeft =>
-        BroadcastDistribution(
-          IdentityBroadcastMode) :: UnspecifiedDistribution :: Nil
-      case BuildRight =>
-        UnspecifiedDistribution :: BroadcastDistribution(
-          IdentityBroadcastMode) :: Nil
-    }
+  override def requiredChildDistribution: Seq[Distribution] = buildSide match {
+    case BuildLeft =>
+      BroadcastDistribution(
+        IdentityBroadcastMode) :: UnspecifiedDistribution :: Nil
+    case BuildRight =>
+      UnspecifiedDistribution :: BroadcastDistribution(
+        IdentityBroadcastMode) :: Nil
+  }
 
   private[this] def genResultProjection: InternalRow => InternalRow = {
     if (joinType == LeftSemi) {

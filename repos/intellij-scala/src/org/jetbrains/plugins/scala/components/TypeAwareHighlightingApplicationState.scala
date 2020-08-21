@@ -48,7 +48,6 @@ object TypeAwareHighlightingApplicationState {
     var SUGGEST_TYPE_AWARE_HIGHLIGHTING_ENABLED: Boolean = false
   }
 
-  def getInstance =
-    ApplicationManager.getApplication getComponent classOf[
-      TypeAwareHighlightingApplicationState]
+  def getInstance = ApplicationManager.getApplication getComponent classOf[
+    TypeAwareHighlightingApplicationState]
 }

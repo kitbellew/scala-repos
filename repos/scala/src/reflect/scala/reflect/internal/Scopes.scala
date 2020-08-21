@@ -271,22 +271,19 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
 
     /** Returns an iterator yielding every symbol with given name in this scope.
       */
-    def lookupAll(name: Name): Iterator[Symbol] =
-      new Iterator[Symbol] {
-        var e = lookupEntry(name)
-        def hasNext: Boolean = e ne null
-        def next(): Symbol =
-          try e.sym
-          finally e = lookupNextEntry(e)
-      }
+    def lookupAll(name: Name): Iterator[Symbol] = new Iterator[Symbol] {
+      var e = lookupEntry(name)
+      def hasNext: Boolean = e ne null
+      def next(): Symbol = try e.sym
+      finally e = lookupNextEntry(e)
+    }
 
     def lookupAllEntries(name: Name): Iterator[ScopeEntry] =
       new Iterator[ScopeEntry] {
         var e = lookupEntry(name)
         def hasNext: Boolean = e ne null
-        def next(): ScopeEntry =
-          try e
-          finally e = lookupNextEntry(e)
+        def next(): ScopeEntry = try e
+        finally e = lookupNextEntry(e)
       }
 
     def lookupUnshadowedEntries(name: Name): Iterator[ScopeEntry] = {
@@ -337,23 +334,21 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
       *  in both directions. However the size test might be enough to quickly
       *  rule out most failures.
       */
-    def isSameScope(other: Scope) =
-      (
-        (size == other.size) // optimization - size is cached
-          && (this isSubScope other)
-          && (other isSubScope this)
-      )
+    def isSameScope(other: Scope) = (
+      (size == other.size) // optimization - size is cached
+        && (this isSubScope other)
+        && (other isSubScope this)
+    )
 
     def isSubScope(other: Scope) = {
       def scopeContainsSym(sym: Symbol): Boolean = {
-        @tailrec def entryContainsSym(e: ScopeEntry): Boolean =
-          e match {
-            case null => false
-            case _ =>
-              val comparableInfo = sym.info.substThis(sym.owner, e.sym.owner)
-              (e.sym.info =:= comparableInfo) || entryContainsSym(
-                lookupNextEntry(e))
-          }
+        @tailrec def entryContainsSym(e: ScopeEntry): Boolean = e match {
+          case null => false
+          case _ =>
+            val comparableInfo = sym.info.substThis(sym.owner, e.sym.owner)
+            (e.sym.info =:= comparableInfo) || entryContainsSym(
+              lookupNextEntry(e))
+        }
         entryContainsSym(this lookupEntry sym.name)
       }
       other.toList forall scopeContainsSym
@@ -392,16 +387,14 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
 
     override def foreach[U](p: Symbol => U): Unit = toList foreach p
 
-    override def filterNot(p: Symbol => Boolean): Scope =
-      (
-        if (toList exists p) newScopeWith(toList filterNot p: _*)
-        else this
-      )
-    override def filter(p: Symbol => Boolean): Scope =
-      (
-        if (toList forall p) this
-        else newScopeWith(toList filter p: _*)
-      )
+    override def filterNot(p: Symbol => Boolean): Scope = (
+      if (toList exists p) newScopeWith(toList filterNot p: _*)
+      else this
+    )
+    override def filter(p: Symbol => Boolean): Scope = (
+      if (toList forall p) this
+      else newScopeWith(toList filter p: _*)
+    )
     @deprecated("Use `toList.reverse` instead", "2.10.0") // Used in SBT 0.12.4
     def reverse: List[Symbol] = toList.reverse
 
@@ -440,15 +433,14 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
     *  Once `members` became a public API, this has been confusing countless numbers of users.
     *  Therefore we introduce a special flavor of scopes to accommodate this quirk of `findMembers`
     */
-  private[scala] def newFindMemberScope: Scope =
-    new Scope() {
-      override def sorted = {
-        val members = toList
-        val owners = members.map(_.owner).distinct
-        val grouped = members groupBy (_.owner)
-        owners.flatMap(owner => grouped(owner).reverse)
-      }
+  private[scala] def newFindMemberScope: Scope = new Scope() {
+    override def sorted = {
+      val members = toList
+      val owners = members.map(_.owner).distinct
+      val grouped = members groupBy (_.owner)
+      owners.flatMap(owner => grouped(owner).reverse)
     }
+  }
 
   /** Create a new scope nested in another one with which it shares its elements */
   final def newNestedScope(outer: Scope): Scope = {

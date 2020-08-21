@@ -44,21 +44,20 @@ trait ScalatraFilter extends Filter with ServletBase {
   // What goes in servletPath and what goes in pathInfo depends on how the underlying servlet is mapped.
   // Unlike the Scalatra servlet, we'll use both here by default.  Don't like it?  Override it.
   def requestPath(implicit request: HttpServletRequest): String = {
-    def getRequestPath: String =
-      request.getRequestURI match {
-        case requestURI: String =>
-          var uri = requestURI
-          if (request.getContextPath.length > 0)
-            uri = uri.substring(request.getContextPath.length)
-          if (uri.length == 0) {
-            uri = "/"
-          } else {
-            val pos = uri.indexOf(';')
-            if (pos >= 0) uri = uri.substring(0, pos)
-          }
-          UriDecoder.firstStep(uri)
-        case null => "/"
-      }
+    def getRequestPath: String = request.getRequestURI match {
+      case requestURI: String =>
+        var uri = requestURI
+        if (request.getContextPath.length > 0)
+          uri = uri.substring(request.getContextPath.length)
+        if (uri.length == 0) {
+          uri = "/"
+        } else {
+          val pos = uri.indexOf(';')
+          if (pos >= 0) uri = uri.substring(0, pos)
+        }
+        UriDecoder.firstStep(uri)
+      case null => "/"
+    }
 
     request.get("org.scalatra.ScalatraFilter.requestPath") match {
       case Some(uri) => uri.toString

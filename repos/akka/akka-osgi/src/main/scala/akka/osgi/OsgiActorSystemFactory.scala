@@ -25,8 +25,8 @@ class OsgiActorSystemFactory(
   /**
     * Creates the [[akka.actor.ActorSystem]], using the name specified
     */
-  def createActorSystem(name: String): ActorSystem =
-    createActorSystem(Option(name))
+  def createActorSystem(name: String): ActorSystem = createActorSystem(
+    Option(name))
 
   /**
     * Creates the [[akka.actor.ActorSystem]], using the name specified.

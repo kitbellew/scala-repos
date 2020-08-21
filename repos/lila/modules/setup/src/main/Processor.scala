@@ -32,14 +32,13 @@ private[setup] final class Processor(
     } inject pov
   }
 
-  private def blamePov(pov: Pov, user: Option[User]): Pov =
-    pov withGame {
-      user.fold(pov.game) { u =>
-        pov.game.updatePlayer(
-          pov.color,
-          _.withUser(u.id, PerfPicker.mainOrDefault(pov.game)(u.perfs)))
-      }
+  private def blamePov(pov: Pov, user: Option[User]): Pov = pov withGame {
+    user.fold(pov.game) { u =>
+      pov.game.updatePlayer(
+        pov.color,
+        _.withUser(u.id, PerfPicker.mainOrDefault(pov.game)(u.perfs)))
     }
+  }
 
   def hook(
       configBase: HookConfig,

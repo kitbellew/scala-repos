@@ -52,15 +52,14 @@ package enumnamefieldspecs {
       def defaultValue = JsonObj(WeekDay.Mon)
     }
 
-    override def equals(other: Any): Boolean =
-      other match {
-        case that: EnumNameRec =>
-          this.id.get == that.id.get &&
-            this.dow.value == that.dow.value &&
-            this.dowOptional.valueBox == that.dowOptional.valueBox &&
-            this.jsonobj.value == that.jsonobj.value
-        case _ => false
-      }
+    override def equals(other: Any): Boolean = other match {
+      case that: EnumNameRec =>
+        this.id.get == that.id.get &&
+          this.dow.value == that.dow.value &&
+          this.dowOptional.valueBox == that.dowOptional.valueBox &&
+          this.jsonobj.value == that.jsonobj.value
+      case _ => false
+    }
   }
   object EnumNameRec extends EnumNameRec with MongoMetaRecord[EnumNameRec] {
     override def collectionName = "enumnamerecs"

@@ -106,6 +106,6 @@ class VectorBuilderOpsTest
     }
   }
 
-  def genScalar: Arbitrary[Double] =
-    Arbitrary(Arbitrary.arbitrary[Double].map { _ % 1e3 })
+  def genScalar: Arbitrary[Double] = Arbitrary(
+    Arbitrary.arbitrary[Double].map { _ % 1e3 })
 }

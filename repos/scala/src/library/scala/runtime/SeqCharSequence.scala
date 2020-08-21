@@ -14,8 +14,8 @@ final class SeqCharSequence(val xs: scala.collection.IndexedSeq[Char])
     extends CharSequence {
   def length: Int = xs.length
   def charAt(index: Int): Char = xs(index)
-  def subSequence(start: Int, end: Int): CharSequence =
-    new SeqCharSequence(xs.slice(start, end))
+  def subSequence(start: Int, end: Int): CharSequence = new SeqCharSequence(
+    xs.slice(start, end))
   override def toString = xs.mkString("")
 }
 

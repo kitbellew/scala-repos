@@ -169,8 +169,8 @@ trait RichCompilerControl
 
   def askRemoveAllDeleted(): Option[Unit] = askOption(removeAllDeleted())
 
-  def askRemoveDeleted(f: File) =
-    askOption(removeDeleted(AbstractFile.getFile(f)))
+  def askRemoveDeleted(f: File) = askOption(
+    removeDeleted(AbstractFile.getFile(f)))
 
   def askReloadAllFiles() = {
     val all = {
@@ -241,26 +241,25 @@ trait RichCompilerControl
     createSourceFile(new File(path))
   def createSourceFile(file: AbstractFile): BatchSourceFile =
     createSourceFile(file.file)
-  def createSourceFile(file: SourceFileInfo): BatchSourceFile =
-    file match {
-      case SourceFileInfo(f, None, None) =>
-        new BatchSourceFile(
-          new PlainFile(f.getPath),
-          f.readString()(charset).toCharArray
-        )
+  def createSourceFile(file: SourceFileInfo): BatchSourceFile = file match {
+    case SourceFileInfo(f, None, None) =>
+      new BatchSourceFile(
+        new PlainFile(f.getPath),
+        f.readString()(charset).toCharArray
+      )
 
-      case SourceFileInfo(f, Some(contents), None) =>
-        new BatchSourceFile(
-          new PlainFile(f.getPath),
-          contents.toCharArray
-        )
+    case SourceFileInfo(f, Some(contents), None) =>
+      new BatchSourceFile(
+        new PlainFile(f.getPath),
+        contents.toCharArray
+      )
 
-      case SourceFileInfo(f, None, Some(contentsIn)) =>
-        new BatchSourceFile(
-          new PlainFile(f.getPath),
-          contentsIn.readString()(charset).toCharArray
-        )
-    }
+    case SourceFileInfo(f, None, Some(contentsIn)) =>
+      new BatchSourceFile(
+        new PlainFile(f.getPath),
+        contentsIn.readString()(charset).toCharArray
+      )
+  }
 
   def askLinkPos(sym: Symbol, path: AbstractFile): Option[Position] =
     askOption(linkPos(sym, createSourceFile(path)))
@@ -483,16 +482,15 @@ class RichPresentationCompiler(
       members: List[Member],
       prefix: String,
       matchEntire: Boolean,
-      caseSens: Boolean): List[Member] =
-    members.filter { m =>
-      val prefixUpper = prefix.toUpperCase
-      val sym = m.sym
-      val ns = sym.nameString
-      (((matchEntire && ns == prefix) ||
-      (!matchEntire && caseSens && ns.startsWith(prefix)) ||
-      (!matchEntire && !caseSens && ns.toUpperCase.startsWith(prefixUpper)))
-      && !sym.nameString.contains("$"))
-    }
+      caseSens: Boolean): List[Member] = members.filter { m =>
+    val prefixUpper = prefix.toUpperCase
+    val sym = m.sym
+    val ns = sym.nameString
+    (((matchEntire && ns == prefix) ||
+    (!matchEntire && caseSens && ns.startsWith(prefix)) ||
+    (!matchEntire && !caseSens && ns.toUpperCase.startsWith(prefixUpper)))
+    && !sym.nameString.contains("$"))
+  }
 
   private def noDefinitionFound(tree: Tree) = {
     logger.warn(
@@ -509,13 +507,12 @@ class RichPresentationCompiler(
         case Import(expr, selectors) =>
           if (expr.pos.includes(pos)) {
             @annotation.tailrec
-            def locate(p: Position, inExpr: Tree): Symbol =
-              inExpr match {
-                case Select(qualifier, name) =>
-                  if (qualifier.pos.includes(p)) locate(p, qualifier)
-                  else inExpr.symbol
-                case tree => tree.symbol
-              }
+            def locate(p: Position, inExpr: Tree): Symbol = inExpr match {
+              case Select(qualifier, name) =>
+                if (qualifier.pos.includes(p)) locate(p, qualifier)
+                else inExpr.symbol
+              case tree => tree.symbol
+            }
             List(locate(pos, expr))
           } else {
             selectors

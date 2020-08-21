@@ -25,8 +25,9 @@ class WindowOperationsSuite extends TestSuiteBase {
   override def maxWaitTimeMillis: Int =
     20000 // large window tests can sometimes take longer
 
-  override def batchDuration: Duration =
-    Seconds(1) // making sure its visible in this class
+  override def batchDuration: Duration = Seconds(
+    1
+  ) // making sure its visible in this class
 
   val largerSlideInput = Seq(
     Seq(("a", 1)),

@@ -4,10 +4,10 @@ trait Foo[Tag, In, Out] {
 
 trait UFunc {
   //  type Impl[In, Out] = Foo[this.type, In, Out]
-  def apply[In, Out](x: In)(implicit impl: Foo[this.type, In, Out]): Out =
-    impl(x)
-  def works[In, Out](x: In)(implicit impl: Foo[this.type, In, Out]): Out =
-    impl(x)
+  def apply[In, Out](x: In)(implicit impl: Foo[this.type, In, Out]): Out = impl(
+    x)
+  def works[In, Out](x: In)(implicit impl: Foo[this.type, In, Out]): Out = impl(
+    x)
 }
 
 object implicitInstance extends UFunc {

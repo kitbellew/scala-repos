@@ -75,10 +75,9 @@ trait QueryTInstances0[Q[+_]] {
 
 trait QueryTInstances[Q[+_]] extends QueryTInstances0[Q] {
   implicit def queryTMonadTrans(implicit Q0: SwappableMonad[Q])
-      : Hoist[({ type λ[μ[+_], α] = QueryT[Q, μ, α] })#λ] =
-    new QueryTHoist[Q] {
-      def Q = Q0
-    }
+      : Hoist[({ type λ[μ[+_], α] = QueryT[Q, μ, α] })#λ] = new QueryTHoist[Q] {
+    def Q = Q0
+  }
 
   implicit def queryTMonad[M[+_]](implicit
       M0: Monad[M],
@@ -124,12 +123,11 @@ trait QueryTHoist[Q[+_]]
   def liftM[M[+_], A](ma: M[A])(implicit M: Monad[M]): QueryT[Q, M, A] =
     QueryT[Q, M, A](M.map(ma)(Q.point(_)))
 
-  def hoist[M[+_]: Monad, N[+_]](f: M ~> N) =
-    new (({ type λ[α] = QueryT[Q, M, α] })#λ ~> ({
-      type λ[α] = QueryT[Q, N, α]
-    })#λ) {
-      def apply[A](ma: QueryT[Q, M, A]): QueryT[Q, N, A] = QueryT(f(ma.run))
-    }
+  def hoist[M[+_]: Monad, N[+_]](f: M ~> N) = new (({
+    type λ[α] = QueryT[Q, M, α]
+  })#λ ~> ({ type λ[α] = QueryT[Q, N, α] })#λ) {
+    def apply[A](ma: QueryT[Q, M, A]): QueryT[Q, N, A] = QueryT(f(ma.run))
+  }
 
   implicit def apply[M[+_]](implicit
       M0: Monad[M]): Monad[({ type λ[+α] = QueryT[Q, M, α] })#λ] =

@@ -171,16 +171,15 @@ class Range(val start: Int, val end: Int, val step: Int)
     *  @param n  the number of elements to take.
     *  @return   a new range consisting of `n` first elements.
     */
-  final override def take(n: Int): Range =
-    (
-      if (n <= 0 || isEmpty) newEmptyRange(start)
-      else if (n >= numRangeElements && numRangeElements >= 0) this
-      else {
-        // May have more than Int.MaxValue elements in range (numRangeElements < 0)
-        // but the logic is the same either way: take the first n
-        new Range.Inclusive(start, locationAfterN(n - 1), step)
-      }
-    )
+  final override def take(n: Int): Range = (
+    if (n <= 0 || isEmpty) newEmptyRange(start)
+    else if (n >= numRangeElements && numRangeElements >= 0) this
+    else {
+      // May have more than Int.MaxValue elements in range (numRangeElements < 0)
+      // but the logic is the same either way: take the first n
+      new Range.Inclusive(start, locationAfterN(n - 1), step)
+    }
+  )
 
   /** Creates a new range containing all the elements of this range except the first `n` elements.
     *
@@ -189,17 +188,15 @@ class Range(val start: Int, val end: Int, val step: Int)
     *  @param n  the number of elements to drop.
     *  @return   a new range consisting of all the elements of this range except `n` first elements.
     */
-  final override def drop(n: Int): Range =
-    (
-      if (n <= 0 || isEmpty) this
-      else if (n >= numRangeElements && numRangeElements >= 0)
-        newEmptyRange(end)
-      else {
-        // May have more than Int.MaxValue elements (numRangeElements < 0)
-        // but the logic is the same either way: go forwards n steps, keep the rest
-        copy(locationAfterN(n), end, step)
-      }
-    )
+  final override def drop(n: Int): Range = (
+    if (n <= 0 || isEmpty) this
+    else if (n >= numRangeElements && numRangeElements >= 0) newEmptyRange(end)
+    else {
+      // May have more than Int.MaxValue elements (numRangeElements < 0)
+      // but the logic is the same either way: go forwards n steps, keep the rest
+      copy(locationAfterN(n), end, step)
+    }
+  )
 
   /** Creates a new range containing all the elements of this range except the last one.
     *
@@ -368,23 +365,22 @@ class Range(val start: Int, val end: Int, val step: Int)
 
   override def toSeq = this
 
-  override def equals(other: Any) =
-    other match {
-      case x: Range =>
-        // Note: this must succeed for overfull ranges (length > Int.MaxValue)
-        (x canEqual this) && {
-          if (isEmpty) x.isEmpty // empty sequences are equal
-          else // this is non-empty...
-            x.nonEmpty && start == x.start && { // ...so other must contain something and have same start
-              val l0 = last
-              (l0 == x.last && ( // And same end
-                start == l0 || step == x.step // And either the same step, or not take any steps
-              ))
-            }
-        }
-      case _ =>
-        super.equals(other)
-    }
+  override def equals(other: Any) = other match {
+    case x: Range =>
+      // Note: this must succeed for overfull ranges (length > Int.MaxValue)
+      (x canEqual this) && {
+        if (isEmpty) x.isEmpty // empty sequences are equal
+        else // this is non-empty...
+          x.nonEmpty && start == x.start && { // ...so other must contain something and have same start
+            val l0 = last
+            (l0 == x.last && ( // And same end
+              start == l0 || step == x.step // And either the same step, or not take any steps
+            ))
+          }
+      }
+    case _ =>
+      super.equals(other)
+  }
 
   /** Note: hashCode can't be overridden without breaking Seq's
     *  equals contract.

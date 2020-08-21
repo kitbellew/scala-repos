@@ -98,15 +98,8 @@ object FileHandler {
       rotateCount: Int = -1,
       formatter: Formatter = new Formatter(),
       level: Option[Level] = None
-  ) =
-    () =>
-      new FileHandler(
-        filename,
-        rollPolicy,
-        append,
-        rotateCount,
-        formatter,
-        level)
+  ) = () =>
+    new FileHandler(filename, rollPolicy, append, rotateCount, formatter, level)
 }
 
 /**
@@ -279,15 +272,14 @@ class FileHandler(
     }
   }
 
-  def roll() =
-    synchronized {
-      stream.close()
-      val newFilename =
-        filenamePrefix + "-" + timeSuffix(new Date(openTime)) + filenameSuffix
-      new File(filename).renameTo(new File(newFilename))
-      openLog()
-      removeOldFiles()
-    }
+  def roll() = synchronized {
+    stream.close()
+    val newFilename =
+      filenamePrefix + "-" + timeSuffix(new Date(openTime)) + filenameSuffix
+    new File(filename).renameTo(new File(newFilename))
+    openLog()
+    removeOldFiles()
+  }
 
   def publish(record: javalog.LogRecord) {
     try {

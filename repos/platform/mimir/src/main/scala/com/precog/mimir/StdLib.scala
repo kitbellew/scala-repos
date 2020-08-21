@@ -225,21 +225,20 @@ trait ColumnarTableLibModule[M[+_]]
       val tpe = r.tpe
 
       def monoid = r.monoid
-      def reducer(ctx: MorphContext) =
-        new CReducer[Result] {
-          def reduce(schema: CSchema, range: Range): Result = {
-            jtypef match {
-              case Some(f) =>
-                val cols0 = new CSchema {
-                  def columnRefs = schema.columnRefs
-                  def columns(tpe: JType) = schema.columns(f(tpe))
-                }
-                r.reducer(ctx).reduce(cols0, range)
-              case None =>
-                r.reducer(ctx).reduce(schema, range)
-            }
+      def reducer(ctx: MorphContext) = new CReducer[Result] {
+        def reduce(schema: CSchema, range: Range): Result = {
+          jtypef match {
+            case Some(f) =>
+              val cols0 = new CSchema {
+                def columnRefs = schema.columnRefs
+                def columns(tpe: JType) = schema.columns(f(tpe))
+              }
+              r.reducer(ctx).reduce(cols0, range)
+            case None =>
+              r.reducer(ctx).reduce(schema, range)
           }
         }
+      }
 
       def extract(res: Result): Table =
         r.extract(res).transform(trans.WrapArray(trans.Leaf(trans.Source)))
@@ -257,25 +256,24 @@ trait ColumnarTableLibModule[M[+_]]
             val impl = new Reduction(Vector(), "") {
               type Result = (x.Result, acc.Result)
 
-              def reducer(ctx: MorphContext) =
-                new CReducer[Result] {
-                  def reduce(schema: CSchema, range: Range): Result = {
-                    jtypef match {
-                      case Some(f) =>
-                        val cols0 = new CSchema {
-                          def columnRefs = schema.columnRefs
-                          def columns(tpe: JType) = schema.columns(f(tpe))
-                        }
-                        (
-                          x.reducer(ctx).reduce(cols0, range),
-                          acc.reducer(ctx).reduce(schema, range))
-                      case None =>
-                        (
-                          x.reducer(ctx).reduce(schema, range),
-                          acc.reducer(ctx).reduce(schema, range))
-                    }
+              def reducer(ctx: MorphContext) = new CReducer[Result] {
+                def reduce(schema: CSchema, range: Range): Result = {
+                  jtypef match {
+                    case Some(f) =>
+                      val cols0 = new CSchema {
+                        def columnRefs = schema.columnRefs
+                        def columns(tpe: JType) = schema.columns(f(tpe))
+                      }
+                      (
+                        x.reducer(ctx).reduce(cols0, range),
+                        acc.reducer(ctx).reduce(schema, range))
+                    case None =>
+                      (
+                        x.reducer(ctx).reduce(schema, range),
+                        acc.reducer(ctx).reduce(schema, range))
                   }
                 }
+              }
 
               implicit val monoid: Monoid[Result] = new Monoid[Result] {
                 def zero = (x.monoid.zero, acc.monoid.zero)
@@ -441,11 +439,8 @@ object StdLib {
         extends Map2Column(c1, c2)
         with StrColumn {
 
-      override def isDefinedAt(row: Int) =
-        super.isDefinedAt(row) &&
-          c1(row) != null && doubleIsDefined(c2(row)) && defined(
-          c1(row),
-          c2(row))
+      override def isDefinedAt(row: Int) = super.isDefinedAt(row) &&
+        c1(row) != null && doubleIsDefined(c2(row)) && defined(c1(row), c2(row))
 
       def apply(row: Int) = f(c1(row), c2(row))
     }
@@ -685,10 +680,9 @@ object StdLib {
         extends Map2Column(c1, c2)
         with DoubleColumn {
 
-      override def isDefinedAt(row: Int) =
-        super.isDefinedAt(row) &&
-          defined(c1(row).toDouble, c2(row).toDouble) && doubleIsDefined(
-          apply(row))
+      override def isDefinedAt(row: Int) = super.isDefinedAt(row) &&
+        defined(c1(row).toDouble, c2(row).toDouble) && doubleIsDefined(
+        apply(row))
 
       def apply(row: Int) = f(c1(row).toDouble, c2(row).toDouble)
     }
@@ -701,10 +695,9 @@ object StdLib {
         extends Map2Column(c1, c2)
         with DoubleColumn {
 
-      override def isDefinedAt(row: Int) =
-        super.isDefinedAt(row) &&
-          defined(c1(row).toDouble, c2(row).toDouble) && doubleIsDefined(
-          apply(row))
+      override def isDefinedAt(row: Int) = super.isDefinedAt(row) &&
+        defined(c1(row).toDouble, c2(row).toDouble) && doubleIsDefined(
+        apply(row))
 
       def apply(row: Int) = f(c1(row).toDouble, c2(row).toDouble)
     }
@@ -733,10 +726,9 @@ object StdLib {
         extends Map2Column(c1, c2)
         with DoubleColumn {
 
-      override def isDefinedAt(row: Int) =
-        super.isDefinedAt(row) &&
-          defined(c1(row).toDouble, c2(row).toDouble) && doubleIsDefined(
-          apply(row))
+      override def isDefinedAt(row: Int) = super.isDefinedAt(row) &&
+        defined(c1(row).toDouble, c2(row).toDouble) && doubleIsDefined(
+        apply(row))
 
       def apply(row: Int) = f(c1(row).toDouble, c2(row).toDouble)
     }
@@ -749,10 +741,9 @@ object StdLib {
         extends Map2Column(c1, c2)
         with DoubleColumn {
 
-      override def isDefinedAt(row: Int) =
-        super.isDefinedAt(row) &&
-          defined(c1(row).toDouble, c2(row).toDouble) && doubleIsDefined(
-          apply(row))
+      override def isDefinedAt(row: Int) = super.isDefinedAt(row) &&
+        defined(c1(row).toDouble, c2(row).toDouble) && doubleIsDefined(
+        apply(row))
 
       def apply(row: Int) = f(c1(row).toDouble, c2(row).toDouble)
     }
@@ -1102,9 +1093,8 @@ object StdLib {
 
   val StrAndDateT = JUnionT(JTextT, JDateT)
 
-  def dateToStrCol(c: DateColumn): StrColumn =
-    new StrColumn {
-      def isDefinedAt(row: Int): Boolean = c.isDefinedAt(row)
-      def apply(row: Int): String = c(row).toString
-    }
+  def dateToStrCol(c: DateColumn): StrColumn = new StrColumn {
+    def isDefinedAt(row: Int): Boolean = c.isDefinedAt(row)
+    def apply(row: Int): String = c(row).toString
+  }
 }

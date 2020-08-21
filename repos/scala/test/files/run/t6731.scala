@@ -3,19 +3,18 @@ import scala.reflect.{ClassTag, classTag}
 
 object Util {
   def show[T](x: T): T = { println(x); x }
-  def mkArgs(xs: Any*) =
-    xs map {
-      case ((k, v)) => k + "=" + v; case x => "" + x
-    } mkString ("(", ", ", ")")
+  def mkArgs(xs: Any*) = xs map {
+    case ((k, v)) => k + "=" + v; case x => "" + x
+  } mkString ("(", ", ", ")")
 }
 import Util._
 
 abstract class MonoDynamic extends Dynamic {
   def selectDynamic(name: String): String = show(this + "." + name)
-  def applyDynamic(name: String)(args: Any*): String =
-    show(this + "." + name + mkArgs(args: _*))
-  def applyDynamicNamed(name: String)(args: (String, Any)*): String =
-    show(this + "." + name + mkArgs(args: _*))
+  def applyDynamic(name: String)(args: Any*): String = show(
+    this + "." + name + mkArgs(args: _*))
+  def applyDynamicNamed(name: String)(args: (String, Any)*): String = show(
+    this + "." + name + mkArgs(args: _*))
 
   override def toString = (this.getClass.getName split '.').last
 }
@@ -28,16 +27,15 @@ object Mono extends MonoDynamic {
   def f3 = f(this.bar())
   def f4 = f(this.bar)
   def f5 = f(f(f(f(f(f(this.bar)))))) + f(f(f(f(f(f(this.baz))))))
-  def f6 =
-    f(f(f(f(f(f(this.bar(bippy = 1, boppy = 2))))))) + f(
-      f(f(f(f(f(this.baz))))))
+  def f6 = f(f(f(f(f(f(this.bar(bippy = 1, boppy = 2))))))) + f(
+    f(f(f(f(f(this.baz))))))
 }
 
 object Poly extends Dynamic {
-  def selectDynamic[T: ClassTag](name: String): String =
-    show(s"$this.$name[${classTag[T]}]")
-  def applyDynamic[T: ClassTag](name: String)(args: Any*): String =
-    show(args.mkString(s"$this.$name[${classTag[T]}](", ", ", ")"))
+  def selectDynamic[T: ClassTag](name: String): String = show(
+    s"$this.$name[${classTag[T]}]")
+  def applyDynamic[T: ClassTag](name: String)(args: Any*): String = show(
+    args.mkString(s"$this.$name[${classTag[T]}](", ", ", ")"))
 
   def f(s: String): String = s
 
@@ -58,8 +56,8 @@ object Poly extends Dynamic {
 
 object Updating extends Dynamic {
   def selectDynamic(name: String): String = show(s"$this.$name")
-  def updateDynamic(name: String)(value: Any): String =
-    show(s"$this.$name = $value")
+  def updateDynamic(name: String)(value: Any): String = show(
+    s"$this.$name = $value")
 
   def f1 = this.bar
   def f2 = this.bar = "b"

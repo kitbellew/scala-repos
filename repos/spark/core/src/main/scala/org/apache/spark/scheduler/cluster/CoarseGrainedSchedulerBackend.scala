@@ -113,10 +113,9 @@ private[spark] class CoarseGrainedSchedulerBackend(
 
       reviveThread.scheduleAtFixedRate(
         new Runnable {
-          override def run(): Unit =
-            Utils.tryLogNonFatalError {
-              Option(self).foreach(_.send(ReviveOffers))
-            }
+          override def run(): Unit = Utils.tryLogNonFatalError {
+            Option(self).foreach(_.send(ReviveOffers))
+          }
         },
         0,
         reviveIntervalMs,
@@ -262,11 +261,10 @@ private[spark] class CoarseGrainedSchedulerBackend(
       }
     }
 
-    private def executorIsAlive(executorId: String): Boolean =
-      synchronized {
-        !executorsPendingToRemove.contains(executorId) &&
-        !executorsPendingLossReason.contains(executorId)
-      }
+    private def executorIsAlive(executorId: String): Boolean = synchronized {
+      !executorsPendingToRemove.contains(executorId) &&
+      !executorsPendingLossReason.contains(executorId)
+    }
 
     // Launch tasks returned by a set of resource offers
     private def launchTasks(tasks: Seq[Seq[TaskDescription]]) {
@@ -419,22 +417,21 @@ private[spark] class CoarseGrainedSchedulerBackend(
     * be called in the yarn-client mode when AM re-registers after a failure, also dynamic
     * allocation is enabled.
     */
-  protected def reset(): Unit =
-    synchronized {
-      if (Utils.isDynamicAllocationEnabled(conf)) {
-        numPendingExecutors = 0
-        executorsPendingToRemove.clear()
+  protected def reset(): Unit = synchronized {
+    if (Utils.isDynamicAllocationEnabled(conf)) {
+      numPendingExecutors = 0
+      executorsPendingToRemove.clear()
 
-        // Remove all the lingering executors that should be removed but not yet. The reason might be
-        // because (1) disconnected event is not yet received; (2) executors die silently.
-        executorDataMap.toMap.foreach { case (eid, _) =>
-          driverEndpoint.askWithRetry[Boolean](
-            RemoveExecutor(
-              eid,
-              SlaveLost("Stale executor after cluster manager re-registered.")))
-        }
+      // Remove all the lingering executors that should be removed but not yet. The reason might be
+      // because (1) disconnected event is not yet received; (2) executors die silently.
+      executorDataMap.toMap.foreach { case (eid, _) =>
+        driverEndpoint.askWithRetry[Boolean](
+          RemoveExecutor(
+            eid,
+            SlaveLost("Stale executor after cluster manager re-registered.")))
       }
     }
+  }
 
   override def reviveOffers() {
     driverEndpoint.send(ReviveOffers)
@@ -527,22 +524,21 @@ private[spark] class CoarseGrainedSchedulerBackend(
       numExecutors: Int,
       localityAwareTasks: Int,
       hostToLocalTaskCount: Map[String, Int]
-  ): Boolean =
-    synchronized {
-      if (numExecutors < 0) {
-        throw new IllegalArgumentException(
-          "Attempted to request a negative number of executor(s) " +
-            s"$numExecutors from the cluster manager. Please specify a positive number!")
-      }
-
-      this.localityAwareTasks = localityAwareTasks
-      this.hostToLocalTaskCount = hostToLocalTaskCount
-
-      numPendingExecutors = math.max(
-        numExecutors - numExistingExecutors + executorsPendingToRemove.size,
-        0)
-      doRequestTotalExecutors(numExecutors)
+  ): Boolean = synchronized {
+    if (numExecutors < 0) {
+      throw new IllegalArgumentException(
+        "Attempted to request a negative number of executor(s) " +
+          s"$numExecutors from the cluster manager. Please specify a positive number!")
     }
+
+    this.localityAwareTasks = localityAwareTasks
+    this.hostToLocalTaskCount = hostToLocalTaskCount
+
+    numPendingExecutors = math.max(
+      numExecutors - numExistingExecutors + executorsPendingToRemove.size,
+      0)
+    doRequestTotalExecutors(numExecutors)
+  }
 
   /**
     * Request executors from the cluster manager by specifying the total number desired,
@@ -584,34 +580,33 @@ private[spark] class CoarseGrainedSchedulerBackend(
   final def killExecutors(
       executorIds: Seq[String],
       replace: Boolean,
-      force: Boolean): Boolean =
-    synchronized {
-      logInfo(s"Requesting to kill executor(s) ${executorIds.mkString(", ")}")
-      val (knownExecutors, unknownExecutors) =
-        executorIds.partition(executorDataMap.contains)
-      unknownExecutors.foreach { id =>
-        logWarning(s"Executor to kill $id does not exist!")
-      }
-
-      // If an executor is already pending to be removed, do not kill it again (SPARK-9795)
-      // If this executor is busy, do not kill it unless we are told to force kill it (SPARK-9552)
-      val executorsToKill = knownExecutors
-        .filter { id => !executorsPendingToRemove.contains(id) }
-        .filter { id => force || !scheduler.isExecutorBusy(id) }
-      executorsToKill.foreach { id => executorsPendingToRemove(id) = !replace }
-
-      // If we do not wish to replace the executors we kill, sync the target number of executors
-      // with the cluster manager to avoid allocating new ones. When computing the new target,
-      // take into account executors that are pending to be added or removed.
-      if (!replace) {
-        doRequestTotalExecutors(
-          numExistingExecutors + numPendingExecutors - executorsPendingToRemove.size)
-      } else {
-        numPendingExecutors += knownExecutors.size
-      }
-
-      !executorsToKill.isEmpty && doKillExecutors(executorsToKill)
+      force: Boolean): Boolean = synchronized {
+    logInfo(s"Requesting to kill executor(s) ${executorIds.mkString(", ")}")
+    val (knownExecutors, unknownExecutors) =
+      executorIds.partition(executorDataMap.contains)
+    unknownExecutors.foreach { id =>
+      logWarning(s"Executor to kill $id does not exist!")
     }
+
+    // If an executor is already pending to be removed, do not kill it again (SPARK-9795)
+    // If this executor is busy, do not kill it unless we are told to force kill it (SPARK-9552)
+    val executorsToKill = knownExecutors
+      .filter { id => !executorsPendingToRemove.contains(id) }
+      .filter { id => force || !scheduler.isExecutorBusy(id) }
+    executorsToKill.foreach { id => executorsPendingToRemove(id) = !replace }
+
+    // If we do not wish to replace the executors we kill, sync the target number of executors
+    // with the cluster manager to avoid allocating new ones. When computing the new target,
+    // take into account executors that are pending to be added or removed.
+    if (!replace) {
+      doRequestTotalExecutors(
+        numExistingExecutors + numPendingExecutors - executorsPendingToRemove.size)
+    } else {
+      numPendingExecutors += knownExecutors.size
+    }
+
+    !executorsToKill.isEmpty && doKillExecutors(executorsToKill)
+  }
 
   /**
     * Kill the given list of executors through the cluster manager.

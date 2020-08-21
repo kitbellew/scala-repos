@@ -61,20 +61,19 @@ object CachesUtil {
     *
     * Do not use this method directly. You should use annotations instead
     */
-  def getOrCreateKey[T](id: String): T =
-    Option(keys.get(id)) match {
-      case Some(key) => key.asInstanceOf[T]
-      case None =>
-        synchronized {
-          Option(keys.get(id)) match {
-            case Some(key) => key.asInstanceOf[T]
-            case None =>
-              val res: T = Key.create[T](id).asInstanceOf[T]
-              keys.put(id, res)
-              res
-          }
+  def getOrCreateKey[T](id: String): T = Option(keys.get(id)) match {
+    case Some(key) => key.asInstanceOf[T]
+    case None =>
+      synchronized {
+        Option(keys.get(id)) match {
+          case Some(key) => key.asInstanceOf[T]
+          case None =>
+            val res: T = Key.create[T](id).asInstanceOf[T]
+            keys.put(id, res)
+            res
         }
-    }
+      }
+  }
 
   //keys for getUserData
   val IMPLICIT_TYPE: Key[ScType] = Key.create("implicit.type")

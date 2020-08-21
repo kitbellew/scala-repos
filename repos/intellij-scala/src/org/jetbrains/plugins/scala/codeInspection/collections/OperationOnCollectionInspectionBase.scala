@@ -86,11 +86,10 @@ abstract class OperationOnCollectionInspectionBase
     ProblemHighlightType.GENERIC_ERROR_OR_WARNING
 
   private def simplifications(expr: ScExpression): Array[Simplification] = {
-    def simplificationTypes =
-      for {
-        (st, idx) <- possibleSimplificationTypes.zipWithIndex
-        if getSimplificationTypesEnabled(idx)
-      } yield st
+    def simplificationTypes = for {
+      (st, idx) <- possibleSimplificationTypes.zipWithIndex
+      if getSimplificationTypesEnabled(idx)
+    } yield st
 
     simplificationTypes.flatMap(st =>
       st.getSimplifications(expr) ++ st.getSimplification(expr))

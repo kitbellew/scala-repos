@@ -295,8 +295,8 @@ object Predef extends LowPriorityImplicits with DeprecatedPredef {
       extends CharSequence {
     def length: Int = __sequenceOfChars.length
     def charAt(index: Int): Char = __sequenceOfChars(index)
-    def subSequence(start: Int, end: Int): CharSequence =
-      new SeqCharSequence(__sequenceOfChars.slice(start, end))
+    def subSequence(start: Int, end: Int): CharSequence = new SeqCharSequence(
+      __sequenceOfChars.slice(start, end))
     override def toString = __sequenceOfChars mkString ""
   }
 
@@ -360,20 +360,19 @@ object Predef extends LowPriorityImplicits with DeprecatedPredef {
   implicit def tuple3ToZippedOps[T1, T2, T3](x: (T1, T2, T3)) =
     new runtime.Tuple3Zipped.Ops(x)
 
-  implicit def genericArrayOps[T](xs: Array[T]): ArrayOps[T] =
-    (xs match {
-      case x: Array[AnyRef]  => refArrayOps[AnyRef](x)
-      case x: Array[Boolean] => booleanArrayOps(x)
-      case x: Array[Byte]    => byteArrayOps(x)
-      case x: Array[Char]    => charArrayOps(x)
-      case x: Array[Double]  => doubleArrayOps(x)
-      case x: Array[Float]   => floatArrayOps(x)
-      case x: Array[Int]     => intArrayOps(x)
-      case x: Array[Long]    => longArrayOps(x)
-      case x: Array[Short]   => shortArrayOps(x)
-      case x: Array[Unit]    => unitArrayOps(x)
-      case null              => null
-    }).asInstanceOf[ArrayOps[T]]
+  implicit def genericArrayOps[T](xs: Array[T]): ArrayOps[T] = (xs match {
+    case x: Array[AnyRef]  => refArrayOps[AnyRef](x)
+    case x: Array[Boolean] => booleanArrayOps(x)
+    case x: Array[Byte]    => byteArrayOps(x)
+    case x: Array[Char]    => charArrayOps(x)
+    case x: Array[Double]  => doubleArrayOps(x)
+    case x: Array[Float]   => floatArrayOps(x)
+    case x: Array[Int]     => intArrayOps(x)
+    case x: Array[Long]    => longArrayOps(x)
+    case x: Array[Short]   => shortArrayOps(x)
+    case x: Array[Unit]    => unitArrayOps(x)
+    case null              => null
+  }).asInstanceOf[ArrayOps[T]]
 
   // TODO: when we remove, these should we drop the underscores from the new generation below? (For source compatibility in case someone was shadowing these.)
   @deprecated(

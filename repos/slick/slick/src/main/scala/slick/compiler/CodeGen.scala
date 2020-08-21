@@ -39,18 +39,16 @@ abstract class CodeGen extends Phase {
       state: CompilerState): (Node, Option[Node])
 
   /** Extract the source tree and type, after possible CollectionCast operations, from a tree */
-  def treeAndType(n: Node): (Node, Type) =
-    n match {
-      case CollectionCast(ch, _) :@ tpe => (treeAndType(ch)._1, tpe)
-      case n                            => (n, n.nodeType)
-    }
+  def treeAndType(n: Node): (Node, Type) = n match {
+    case CollectionCast(ch, _) :@ tpe => (treeAndType(ch)._1, tpe)
+    case n                            => (n, n.nodeType)
+  }
 }
 
 object CodeGen {
-  def findResult(n: Node): (String, Any) =
-    n match {
-      case r @ ResultSetMapping(_, from, _) => findResult(from)
-      case f @ First(from)                  => findResult(from)
-      case CompiledStatement(st, ex, _)     => (st, ex)
-    }
+  def findResult(n: Node): (String, Any) = n match {
+    case r @ ResultSetMapping(_, from, _) => findResult(from)
+    case f @ First(from)                  => findResult(from)
+    case CompiledStatement(st, ex, _)     => (st, ex)
+  }
 }

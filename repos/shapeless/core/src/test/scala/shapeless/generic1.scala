@@ -158,8 +158,8 @@ package Generic1TestsAux {
         pf: Lazy[Pointed[Const[C]#λ]]
     ): Pointed[({ type λ[A] = Const[C]#λ[A] :+: Const[CNil]#λ[A] })#λ] =
       new Pointed[({ type λ[A] = Const[C]#λ[A] :+: Const[CNil]#λ[A] })#λ] {
-        def point[A](a: A): Const[C]#λ[A] :+: Const[CNil]#λ[A] =
-          Inl(pf.value.point(a))
+        def point[A](a: A): Const[C]#λ[A] :+: Const[CNil]#λ[A] = Inl(
+          pf.value.point(a))
       }
 
     implicit def isCPointedSingle[F[_]](implicit

@@ -70,11 +70,10 @@ object fin {
 
     implicit def finSuccToNat[N <: Succ[_], F <: Fin[N], M <: Nat](implicit
         nat: Aux[F, M]
-    ): Aux[FinSucc[N, F], Succ[M]] =
-      new ToNat[FinSucc[N, F]] {
-        type Out = Succ[M]
+    ): Aux[FinSucc[N, F], Succ[M]] = new ToNat[FinSucc[N, F]] {
+      type Out = Succ[M]
 
-        def apply() = Succ()
-      }
+      def apply() = Succ()
+    }
   }
 }

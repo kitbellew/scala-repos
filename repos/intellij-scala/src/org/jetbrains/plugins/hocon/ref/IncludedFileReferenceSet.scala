@@ -63,10 +63,9 @@ class IncludedFileReferenceSet(
 
   override def getReferenceCompletionFilter: Condition[PsiFileSystemItem] =
     new Condition[PsiFileSystemItem] {
-      def value(item: PsiFileSystemItem): Boolean =
-        item.isDirectory ||
-          item.getName.endsWith(ConfExt) || item.getName.endsWith(
-          JsonExt) || item.getName.endsWith(PropsExt)
+      def value(item: PsiFileSystemItem): Boolean = item.isDirectory ||
+        item.getName.endsWith(ConfExt) || item.getName.endsWith(
+        JsonExt) || item.getName.endsWith(PropsExt)
     }
 
   // code mostly based on similar bits in `FileReferenceSet` and `PsiFileReferenceHelper`
@@ -110,11 +109,10 @@ class IncludedFileReferenceSet(
         }
 
       def orderEntryScope = allScopes.reduceOption(_ union _)
-      def moduleScope =
-        pfi
-          .getModuleForFile(parent)
-          .toOption
-          .map(_.getModuleRuntimeScope(false))
+      def moduleScope = pfi
+        .getModuleForFile(parent)
+        .toOption
+        .map(_.getModuleRuntimeScope(false))
 
       (orderEntryScope orElse moduleScope).map { scope =>
         // If there are any source roots with package prefix and that package is a subpackage of

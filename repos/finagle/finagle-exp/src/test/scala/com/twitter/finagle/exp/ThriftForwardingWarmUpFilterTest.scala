@@ -14,26 +14,26 @@ import org.scalatest.mock.MockitoSugar
 @RunWith(classOf[JUnitRunner])
 class ThriftForwardingWarmUpFilterTest extends FunSuite with MockitoSugar {
 
-  def newCtx() =
-    new {
-      val service = mock[Service[Array[Byte], Array[Byte]]]
-      val forwardService = mock[Service[ThriftClientRequest, Array[Byte]]]
-      val numRequests = 9
-      val duration = 4.seconds
-      val bypassedClientPrefix = "bypassMe"
-      val filter = new ThriftForwardingWarmUpFilter(
-        duration,
-        forwardService,
-        isBypassClient = { _.name.startsWith(bypassedClientPrefix) }
-      )
-      val req = new Array[Byte](1)
-      val rep = new Array[Byte](2)
+  def newCtx() = new {
+    val service = mock[Service[Array[Byte], Array[Byte]]]
+    val forwardService = mock[Service[ThriftClientRequest, Array[Byte]]]
+    val numRequests = 9
+    val duration = 4.seconds
+    val bypassedClientPrefix = "bypassMe"
+    val filter = new ThriftForwardingWarmUpFilter(
+      duration,
+      forwardService,
+      isBypassClient = { _.name.startsWith(bypassedClientPrefix) }
+    )
+    val req = new Array[Byte](1)
+    val rep = new Array[Byte](2)
 
-      def mockService[A](service: Service[A, Array[Byte]]) =
-        when(service(any[A])) thenReturn Future.value(rep)
-      def sendRequests() =
-        0 until numRequests foreach { _ => filter(req, service) }
+    def mockService[A](service: Service[A, Array[Byte]]) =
+      when(service(any[A])) thenReturn Future.value(rep)
+    def sendRequests() = 0 until numRequests foreach { _ =>
+      filter(req, service)
     }
+  }
 
   test("forward all at time zero") {
     ClientId("someClient.prod").asCurrent {

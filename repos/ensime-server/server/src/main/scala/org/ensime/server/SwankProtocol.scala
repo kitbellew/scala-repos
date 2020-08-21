@@ -21,7 +21,7 @@ class SwankProtocol extends FramedStringProtocol {
     }
   }
 
-  override def encode(resp: RpcResponseEnvelope): ByteString =
-    writeString(resp.toSexp.prettyPrint)
+  override def encode(resp: RpcResponseEnvelope): ByteString = writeString(
+    resp.toSexp.prettyPrint)
 
 }

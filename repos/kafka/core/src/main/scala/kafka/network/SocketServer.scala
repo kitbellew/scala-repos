@@ -141,10 +141,9 @@ class SocketServer(
     newGauge(
       "NetworkProcessorAvgIdlePercent",
       new Gauge[Double] {
-        def value =
-          allMetricNames
-            .map(metricName => metrics.metrics().get(metricName).value())
-            .sum / totalProcessorThreads
+        def value = allMetricNames
+          .map(metricName => metrics.metrics().get(metricName).value())
+          .sum / totalProcessorThreads
       }
     )
 
@@ -423,18 +422,17 @@ private[kafka] class Processor(
     with KafkaMetricsGroup {
 
   private object ConnectionId {
-    def fromString(s: String): Option[ConnectionId] =
-      s.split("-") match {
-        case Array(local, remote) =>
-          BrokerEndPoint.parseHostPort(local).flatMap {
-            case (localHost, localPort) =>
-              BrokerEndPoint.parseHostPort(remote).map {
-                case (remoteHost, remotePort) =>
-                  ConnectionId(localHost, localPort, remoteHost, remotePort)
-              }
-          }
-        case _ => None
-      }
+    def fromString(s: String): Option[ConnectionId] = s.split("-") match {
+      case Array(local, remote) =>
+        BrokerEndPoint.parseHostPort(local).flatMap {
+          case (localHost, localPort) =>
+            BrokerEndPoint.parseHostPort(remote).map {
+              case (remoteHost, remotePort) =>
+                ConnectionId(localHost, localPort, remoteHost, remotePort)
+            }
+        }
+      case _ => None
+    }
   }
 
   private case class ConnectionId(
@@ -678,10 +676,9 @@ class ConnectionQuotas(val defaultMax: Int, overrideQuotas: Map[String, Int]) {
     }
   }
 
-  def get(address: InetAddress): Int =
-    counts.synchronized {
-      counts.getOrElse(address, 0)
-    }
+  def get(address: InetAddress): Int = counts.synchronized {
+    counts.getOrElse(address, 0)
+  }
 
 }
 

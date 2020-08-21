@@ -1,10 +1,9 @@
 case object A { override def toString = ??? }
 
 object Test {
-  def foo: Int =
-    (A: Any) match {
-      case 0 => 0
-    }
+  def foo: Int = (A: Any) match {
+    case 0 => 0
+  }
   def main(args: Array[String]): Unit = {
     try {
       foo

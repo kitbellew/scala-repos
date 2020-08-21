@@ -11,12 +11,11 @@ trait PairValues[K, V] {
   def kvalues: Seq[Gen[K]]
   def vvalues: Seq[Gen[V]]
 
-  def values =
-    for {
-      kg <- kvalues
-      vg <- vvalues
-    } yield for {
-      k <- kg
-      v <- vg
-    } yield (k, v)
+  def values = for {
+    kg <- kvalues
+    vg <- vvalues
+  } yield for {
+    k <- kg
+    v <- vg
+  } yield (k, v)
 }

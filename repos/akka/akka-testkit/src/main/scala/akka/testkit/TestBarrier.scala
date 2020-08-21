@@ -27,8 +27,8 @@ object TestBarrier {
 class TestBarrier(count: Int) {
   private val barrier = new CyclicBarrier(count)
 
-  def await()(implicit system: ActorSystem): Unit =
-    await(TestBarrier.DefaultTimeout)
+  def await()(implicit system: ActorSystem): Unit = await(
+    TestBarrier.DefaultTimeout)
 
   def await(timeout: FiniteDuration)(implicit system: ActorSystem) {
     try {

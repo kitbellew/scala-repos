@@ -48,8 +48,8 @@ case class Rollup(groupByExprs: Seq[Expression]) extends GroupingSet {}
   * GROUPING returns 1 for aggregated or 0 for not aggregated in the result set.
   */
 case class Grouping(child: Expression) extends Expression with Unevaluable {
-  override def references: AttributeSet =
-    AttributeSet(VirtualColumn.groupingIdAttribute :: Nil)
+  override def references: AttributeSet = AttributeSet(
+    VirtualColumn.groupingIdAttribute :: Nil)
   override def children: Seq[Expression] = child :: Nil
   override def dataType: DataType = ByteType
   override def nullable: Boolean = false
@@ -63,8 +63,8 @@ case class Grouping(child: Expression) extends Expression with Unevaluable {
 case class GroupingID(groupByExprs: Seq[Expression])
     extends Expression
     with Unevaluable {
-  override def references: AttributeSet =
-    AttributeSet(VirtualColumn.groupingIdAttribute :: Nil)
+  override def references: AttributeSet = AttributeSet(
+    VirtualColumn.groupingIdAttribute :: Nil)
   override def children: Seq[Expression] = groupByExprs
   override def dataType: DataType = IntegerType
   override def nullable: Boolean = false

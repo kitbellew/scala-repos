@@ -81,8 +81,8 @@ trait Record[MyType <: Record[MyType]] extends FieldContainer {
   /**
     * Save the instance and return the instance
     */
-  def saveTheRecord(): Box[MyType] =
-    throw new BackingStoreException("Raw Records don't save themselves")
+  def saveTheRecord(): Box[MyType] = throw new BackingStoreException(
+    "Raw Records don't save themselves")
 
   /**
     * Returns the JSON representation of this record, converts asJValue to JsObj

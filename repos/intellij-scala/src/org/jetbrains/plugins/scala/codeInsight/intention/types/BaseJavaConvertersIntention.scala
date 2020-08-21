@@ -32,13 +32,12 @@ abstract class BaseJavaConvertersIntention(methodName: String)
     Option(getTargetExpression(element)) exists { scExpr =>
       def properTargetCollection =
         isProperTargetCollection(scExpr.getTypeAfterImplicitConversion().tr)
-      def parentNonConvertedCollection =
-        scExpr match {
-          case Parent(parent: ScExpression) =>
-            !isAlreadyConvertedCollection(
-              parent.getTypeAfterImplicitConversion().tr)
-          case _ => true
-        }
+      def parentNonConvertedCollection = scExpr match {
+        case Parent(parent: ScExpression) =>
+          !isAlreadyConvertedCollection(
+            parent.getTypeAfterImplicitConversion().tr)
+        case _ => true
+      }
       properTargetCollection && parentNonConvertedCollection
     }
   }

@@ -21,17 +21,16 @@ private[typed] class ActorAdapter[T](_initialBehavior: () ⇒ Behavior[T])
   var behavior = _initialBehavior()
   val ctx = new ActorContextAdapter[T](context)
 
-  def receive =
-    LoggingReceive {
-      case akka.actor.Terminated(ref) ⇒
-        val msg = Terminated(ActorRef(ref))
-        next(behavior.management(ctx, msg), msg)
-      case akka.actor.ReceiveTimeout ⇒
-        next(behavior.management(ctx, ReceiveTimeout), ReceiveTimeout)
-      case msg ⇒
-        val m = msg.asInstanceOf[T]
-        next(behavior.message(ctx, m), m)
-    }
+  def receive = LoggingReceive {
+    case akka.actor.Terminated(ref) ⇒
+      val msg = Terminated(ActorRef(ref))
+      next(behavior.management(ctx, msg), msg)
+    case akka.actor.ReceiveTimeout ⇒
+      next(behavior.management(ctx, ReceiveTimeout), ReceiveTimeout)
+    case msg ⇒
+      val m = msg.asInstanceOf[T]
+      next(behavior.message(ctx, m), m)
+  }
 
   private def next(b: Behavior[T], msg: Any): Unit = {
     if (isUnhandled(b)) unhandled(msg)
@@ -41,11 +40,10 @@ private[typed] class ActorAdapter[T](_initialBehavior: () ⇒ Behavior[T])
     }
   }
 
-  override def unhandled(msg: Any): Unit =
-    msg match {
-      case Terminated(ref) ⇒ throw new DeathPactException(ref.untypedRef)
-      case other ⇒ super.unhandled(other)
-    }
+  override def unhandled(msg: Any): Unit = msg match {
+    case Terminated(ref) ⇒ throw new DeathPactException(ref.untypedRef)
+    case other ⇒ super.unhandled(other)
+  }
 
   override val supervisorStrategy = a.OneForOneStrategy() { case ex ⇒
     import Failed._

@@ -159,11 +159,10 @@ class Configuration(val map: Map[String, Any]) {
   def getBool(key: String, defaultValue: Boolean): Boolean =
     getBoolean(key, defaultValue)
 
-  def apply(key: String): String =
-    getString(key) match {
-      case None    => throw new ConfigurationException("undefined config: " + key)
-      case Some(v) => v
-    }
+  def apply(key: String): String = getString(key) match {
+    case None    => throw new ConfigurationException("undefined config: " + key)
+    case Some(v) => v
+  }
 
   def apply(key: String, defaultValue: String) = getString(key, defaultValue)
   def apply(key: String, defaultValue: Int) = getInt(key, defaultValue)

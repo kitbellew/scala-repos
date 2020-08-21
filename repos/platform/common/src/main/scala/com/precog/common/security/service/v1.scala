@@ -94,12 +94,11 @@ object v1 {
       parentIds: Set[GrantId],
       permissions: Set[Permission],
       expirationDate: Option[DateTime]) {
-    def isExpired(at: Option[DateTime]) =
-      (expirationDate, at) match {
-        case (None, _)                 => false
-        case (_, None)                 => true
-        case (Some(expiry), Some(ref)) => expiry.isBefore(ref)
-      }
+    def isExpired(at: Option[DateTime]) = (expirationDate, at) match {
+      case (None, _)                 => false
+      case (_, None)                 => true
+      case (Some(expiry), Some(ref)) => expiry.isBefore(ref)
+    }
   }
 
   object NewGrantRequest {

@@ -20,20 +20,19 @@ object Page {
   val NameRegex = """^(\w{2,3})_(\d+)_(.+)$""".r
 
   // name = en_1_Some Title
-  def make(name: String, body: String): Option[Page] =
-    name match {
-      case NameRegex(lang, numberStr, title) =>
-        parseIntOption(numberStr) map { number =>
-          Page(
-            id = name,
-            number = number,
-            slug = slugify(title),
-            lang = lang,
-            title = title.replace("-", " "),
-            body = body)
-        }
-      case _ => none
-    }
+  def make(name: String, body: String): Option[Page] = name match {
+    case NameRegex(lang, numberStr, title) =>
+      parseIntOption(numberStr) map { number =>
+        Page(
+          id = name,
+          number = number,
+          slug = slugify(title),
+          lang = lang,
+          title = title.replace("-", " "),
+          body = body)
+      }
+    case _ => none
+  }
 
   import lila.db.JsTube
   import play.api.libs.json._

@@ -150,8 +150,8 @@ private[sbt] object PluginsDebug {
     import extracted._
     def definesPlugin(p: ResolvedProject): Boolean =
       p.autoPlugins.contains(plugin)
-    def projectForRef(ref: ProjectRef): ResolvedProject =
-      get(Keys.thisProject in ref)
+    def projectForRef(ref: ProjectRef): ResolvedProject = get(
+      Keys.thisProject in ref)
     val perBuild: Map[URI, Set[AutoPlugin]] =
       structure.units.mapValues(unit => availableAutoPlugins(unit).toSet)
     val pluginsThisBuild =
@@ -364,15 +364,17 @@ private[sbt] object PluginsDebug {
     }
   }
 
-  private[this] def includeAll[T <: Basic](basic: Set[T]): Plugins =
-    And(basic.toList)
-  private[this] def excludeAll(plugins: Set[AutoPlugin]): Plugins =
-    And(plugins map (p => Exclude(p)) toList)
+  private[this] def includeAll[T <: Basic](basic: Set[T]): Plugins = And(
+    basic.toList)
+  private[this] def excludeAll(plugins: Set[AutoPlugin]): Plugins = And(
+    plugins map (p => Exclude(p)) toList)
 
-  private[this] def excludes(bs: Seq[Basic]): Set[AutoPlugin] =
-    bs.collect { case Exclude(b) => b }.toSet
-  private[this] def plugins(bs: Seq[Basic]): Set[AutoPlugin] =
-    bs.collect { case n: AutoPlugin => n }.toSet
+  private[this] def excludes(bs: Seq[Basic]): Set[AutoPlugin] = bs.collect {
+    case Exclude(b) => b
+  }.toSet
+  private[this] def plugins(bs: Seq[Basic]): Set[AutoPlugin] = bs.collect {
+    case n: AutoPlugin => n
+  }.toSet
 
   // If there is a model that includes `plugin`, it includes at least what is returned by this method.
   // This is the list of plugins that must be included as well as list of plugins that must not be present.

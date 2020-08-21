@@ -4,14 +4,13 @@ sealed abstract class CaseInsensitive[A] {
   val original: A
   def foldedCase: A
 
-  final def map[B: FoldCase](f: A => B): CaseInsensitive[B] =
-    CaseInsensitive(f(original))
+  final def map[B: FoldCase](f: A => B): CaseInsensitive[B] = CaseInsensitive(
+    f(original))
 
-  final override def equals(other: Any): Boolean =
-    other match {
-      case that: CaseInsensitive[_] => foldedCase == that.foldedCase
-      case _                        => false
-    }
+  final override def equals(other: Any): Boolean = other match {
+    case that: CaseInsensitive[_] => foldedCase == that.foldedCase
+    case _                        => false
+  }
 
   final override lazy val hashCode: Int = foldedCase.hashCode
 }

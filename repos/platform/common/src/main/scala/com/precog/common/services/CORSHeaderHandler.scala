@@ -57,10 +57,9 @@ object CORSHeaders {
 
   val defaultHeaders = genHeaders()
 
-  def apply[T, M[+_]](M: Monad[M]) =
-    M.point(
-      HttpResponse[T](headers = defaultHeaders)
-    )
+  def apply[T, M[+_]](M: Monad[M]) = M.point(
+    HttpResponse[T](headers = defaultHeaders)
+  )
 }
 
 object CORSHeaderHandler {

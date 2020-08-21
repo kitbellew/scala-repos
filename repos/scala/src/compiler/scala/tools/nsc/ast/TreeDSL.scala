@@ -154,8 +154,8 @@ trait TreeDSL {
     def REF(pre: Type, sym: Symbol) = gen.mkAttributedRef(pre, sym)
 
     /** Implicits - some of these should probably disappear * */
-    implicit def mkTreeMethods(target: Tree): TreeMethods =
-      new TreeMethods(target)
+    implicit def mkTreeMethods(target: Tree): TreeMethods = new TreeMethods(
+      target)
     implicit def mkTreeMethodsFromSymbol(target: Symbol): TreeMethods =
       new TreeMethods(Ident(target))
 

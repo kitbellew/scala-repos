@@ -89,22 +89,21 @@ trait SamplableColumnarTableModule[M[+_]] extends SamplableTableModule[M] {
                     val defined = slice.definedAt
 
                     @tailrec
-                    def loop(i: Int, len: Int): Int =
-                      if (i < slice.size) {
-                        // `k` is a number between 0 and number of rows we've seen
-                        if (!defined(i)) {
-                          loop(i + 1, len)
-                        } else if (len < sampleSize) {
-                          inserter.insert(src = i, dest = len)
-                          loop(i + 1, len + 1)
-                        } else {
-                          val k = rng.nextInt(len + 1)
-                          if (k < sampleSize) {
-                            inserter.insert(src = i, dest = k)
-                          }
-                          loop(i + 1, len + 1)
+                    def loop(i: Int, len: Int): Int = if (i < slice.size) {
+                      // `k` is a number between 0 and number of rows we've seen
+                      if (!defined(i)) {
+                        loop(i + 1, len)
+                      } else if (len < sampleSize) {
+                        inserter.insert(src = i, dest = len)
+                        loop(i + 1, len + 1)
+                      } else {
+                        val k = rng.nextInt(len + 1)
+                        if (k < sampleSize) {
+                          inserter.insert(src = i, dest = k)
                         }
-                      } else len
+                        loop(i + 1, len + 1)
+                      }
+                    } else len
 
                     val newLength = loop(0, len0)
 

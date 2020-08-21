@@ -96,43 +96,42 @@ private[impl] class TaskUpdateActor(
     metrics.numberOfQueuedOps.setValue(0)
   }
 
-  def receive: Receive =
-    LoggingReceive {
-      case ProcessTaskOp(
-            op @ TaskOpProcessor.Operation(deadline, _, taskId, _)) =>
-        val oldQueue: Queue[TaskOpProcessor.Operation] =
-          operationsByTaskId(taskId)
-        val newQueue = oldQueue :+ op
-        operationsByTaskId += taskId -> newQueue
-        metrics.numberOfQueuedOps.increment()
+  def receive: Receive = LoggingReceive {
+    case ProcessTaskOp(
+          op @ TaskOpProcessor.Operation(deadline, _, taskId, _)) =>
+      val oldQueue: Queue[TaskOpProcessor.Operation] =
+        operationsByTaskId(taskId)
+      val newQueue = oldQueue :+ op
+      operationsByTaskId += taskId -> newQueue
+      metrics.numberOfQueuedOps.increment()
 
-        if (oldQueue.isEmpty) {
-          // start processing the just received operation
-          processNextOpIfExists(taskId)
-        }
+      if (oldQueue.isEmpty) {
+        // start processing the just received operation
+        processNextOpIfExists(taskId)
+      }
 
-      case FinishedTaskOp(op) =>
-        val (dequeued, newQueue) = operationsByTaskId(op.taskId).dequeue
-        require(dequeued == op)
-        if (newQueue.isEmpty)
-          operationsByTaskId -= op.taskId
-        else
-          operationsByTaskId += op.taskId -> newQueue
+    case FinishedTaskOp(op) =>
+      val (dequeued, newQueue) = operationsByTaskId(op.taskId).dequeue
+      require(dequeued == op)
+      if (newQueue.isEmpty)
+        operationsByTaskId -= op.taskId
+      else
+        operationsByTaskId += op.taskId -> newQueue
 
-        val activeCount = metrics.numberOfActiveOps.decrement()
-        if (log.isDebugEnabled) {
-          val queuedCount = metrics.numberOfQueuedOps.getValue
-          log.debug(
-            s"Finished processing ${op.action} for app [${op.appId}] and ${op.taskId} "
-              + s"$activeCount active, $queuedCount queued.");
-        }
+      val activeCount = metrics.numberOfActiveOps.decrement()
+      if (log.isDebugEnabled) {
+        val queuedCount = metrics.numberOfQueuedOps.getValue
+        log.debug(
+          s"Finished processing ${op.action} for app [${op.appId}] and ${op.taskId} "
+            + s"$activeCount active, $queuedCount queued.");
+      }
 
-        processNextOpIfExists(op.taskId)
+      processNextOpIfExists(op.taskId)
 
-      case Status.Failure(cause) =>
-        // escalate this failure to our parent: TaskTrackerActor
-        throw new IllegalStateException("received failure", cause)
-    }
+    case Status.Failure(cause) =>
+      // escalate this failure to our parent: TaskTrackerActor
+      throw new IllegalStateException("received failure", cause)
+  }
 
   private[this] def processNextOpIfExists(taskId: Task.Id): Unit = {
     operationsByTaskId(taskId).headOption foreach { op =>

@@ -87,8 +87,8 @@ object ServerSettings extends SettingsCompanion[ServerSettings] {
     protected def self = this.asInstanceOf[ServerSettingsImpl.Timeouts]
   }
 
-  override def create(config: Config): ServerSettings =
-    ServerSettingsImpl(config)
+  override def create(config: Config): ServerSettings = ServerSettingsImpl(
+    config)
   override def create(configOverrides: String): ServerSettings =
     ServerSettingsImpl(configOverrides)
 }

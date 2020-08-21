@@ -132,28 +132,25 @@ final case class TraceId(
     spanId: SpanId,
     _sampled: Option[Boolean],
     flags: Flags) {
-  def traceId: SpanId =
-    _traceId match {
-      case None     => parentId
-      case Some(id) => id
-    }
+  def traceId: SpanId = _traceId match {
+    case None     => parentId
+    case Some(id) => id
+  }
 
-  def parentId: SpanId =
-    _parentId match {
-      case None     => spanId
-      case Some(id) => id
-    }
+  def parentId: SpanId = _parentId match {
+    case None     => spanId
+    case Some(id) => id
+  }
 
   // debug flag overrides sampled to be true
   lazy val sampled = if (flags.isDebug) Some(true) else _sampled
 
   private[TraceId] def ids = (traceId, parentId, spanId)
 
-  override def equals(other: Any) =
-    other match {
-      case other: TraceId => this.ids equals other.ids
-      case _              => false
-    }
+  override def equals(other: Any) = other match {
+    case other: TraceId => this.ids equals other.ids
+    case _              => false
+  }
 
   override def hashCode(): Int =
     ids.hashCode()

@@ -8,9 +8,8 @@ object Test extends App {
 
   println(implicitly[Int])
 
-  implicit def conversion[A](x: Int)(implicit foo: Foo[A]) =
-    new {
-      def aMethod = 5
-    }
+  implicit def conversion[A](x: Int)(implicit foo: Foo[A]) = new {
+    def aMethod = 5
+  }
   println(1.aMethod)
 }

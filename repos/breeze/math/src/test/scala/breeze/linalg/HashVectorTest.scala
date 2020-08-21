@@ -257,8 +257,8 @@ class HashVectorOps_DoubleTest
     }
   }
 
-  def genScalar: Arbitrary[Double] =
-    Arbitrary(Arbitrary.arbitrary[Double].map { _ % 1e10 })
+  def genScalar: Arbitrary[Double] = Arbitrary(
+    Arbitrary.arbitrary[Double].map { _ % 1e10 })
 }
 
 /**
@@ -293,8 +293,8 @@ class HashVectorOps_FloatTest
     }
   }
 
-  def genScalar: Arbitrary[Float] =
-    Arbitrary(Arbitrary.arbitrary[Float].map { _ % 1000 })
+  def genScalar: Arbitrary[Float] = Arbitrary(
+    Arbitrary.arbitrary[Float].map { _ % 1000 })
 }
 
 /**
@@ -328,8 +328,8 @@ class HashVectorOps_IntTest
     }
   }
 
-  def genScalar: Arbitrary[Int] =
-    Arbitrary(Arbitrary.arbitrary[Int].map { _ % 1000 })
+  def genScalar: Arbitrary[Int] = Arbitrary(
+    Arbitrary.arbitrary[Int].map { _ % 1000 })
 }
 
 @RunWith(classOf[JUnitRunner])
@@ -357,9 +357,8 @@ class HashVectorOps_ComplexTest
     }
   }
 
-  implicit def genScalar: Arbitrary[Complex] =
-    Arbitrary {
-      for (r <- Arbitrary.arbitrary[Double]; i <- Arbitrary.arbitrary[Double])
-        yield Complex(r % 100, i % 100)
-    }
+  implicit def genScalar: Arbitrary[Complex] = Arbitrary {
+    for (r <- Arbitrary.arbitrary[Double]; i <- Arbitrary.arbitrary[Double])
+      yield Complex(r % 100, i % 100)
+  }
 }

@@ -183,8 +183,8 @@ object GzipFilterSpec extends PlaySpecification with DataTables {
 
   def makeGzipRequest = route(gzipRequest).get
 
-  def requestAccepting(codings: String) =
-    route(FakeRequest().withHeaders(ACCEPT_ENCODING -> codings)).get
+  def requestAccepting(codings: String) = route(
+    FakeRequest().withHeaders(ACCEPT_ENCODING -> codings)).get
 
   def gunzip(bytes: ByteString): String = {
     val is = new GZIPInputStream(new ByteArrayInputStream(bytes.toArray))

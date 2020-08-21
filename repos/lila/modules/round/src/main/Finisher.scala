@@ -21,11 +21,10 @@ private[round] final class Finisher(
     timeline: akka.actor.ActorSelection,
     casualOnly: Boolean) {
 
-  def abort(pov: Pov): Fu[Events] =
-    apply(pov.game, _.Aborted) >>- {
-      playban.abort(pov)
-      bus.publish(AbortedBy(pov), 'abortGame)
-    }
+  def abort(pov: Pov): Fu[Events] = apply(pov.game, _.Aborted) >>- {
+    playban.abort(pov)
+    bus.publish(AbortedBy(pov), 'abortGame)
+  }
 
   def rageQuit(game: Game, winner: Option[Color]): Fu[Events] =
     apply(game, _.Timeout, winner) >>- winner.?? { color =>
@@ -101,20 +100,19 @@ private[round] final class Finisher(
         (finish.black ?? incNbGames(finish.game)) void
     }
 
-  private def incNbGames(game: Game)(user: User): Funit =
-    game.finished ?? {
-      val totalTime = user.playTime.isDefined option game.moveTimes.sum / 10
-      val tvTime = totalTime ifTrue game.metadata.tvAt.isDefined
-      UserRepo.incNbGames(
-        user.id,
-        game.rated,
-        game.hasAi,
-        result =
-          if (game.winnerUserId exists (user.id ==)) 1
-          else if (game.loserUserId exists (user.id ==)) -1
-          else 0,
-        totalTime = totalTime,
-        tvTime = tvTime
-      )
-    }
+  private def incNbGames(game: Game)(user: User): Funit = game.finished ?? {
+    val totalTime = user.playTime.isDefined option game.moveTimes.sum / 10
+    val tvTime = totalTime ifTrue game.metadata.tvAt.isDefined
+    UserRepo.incNbGames(
+      user.id,
+      game.rated,
+      game.hasAi,
+      result =
+        if (game.winnerUserId exists (user.id ==)) 1
+        else if (game.loserUserId exists (user.id ==)) -1
+        else 0,
+      totalTime = totalTime,
+      tvTime = tvTime
+    )
+  }
 }

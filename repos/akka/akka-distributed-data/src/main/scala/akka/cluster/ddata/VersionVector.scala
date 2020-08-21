@@ -121,8 +121,8 @@ sealed abstract class VersionVector
   /**
     * Increment the version for the node passed as argument. Returns a new VersionVector.
     */
-  def increment(node: Cluster): VersionVector =
-    increment(node.selfUniqueAddress)
+  def increment(node: Cluster): VersionVector = increment(
+    node.selfUniqueAddress)
 
   def isEmpty: Boolean
 

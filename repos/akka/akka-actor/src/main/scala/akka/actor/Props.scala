@@ -154,21 +154,19 @@ final case class Props(
     * Convenience method for extracting the dispatcher information from the
     * contained [[Deploy]] instance.
     */
-  def dispatcher: String =
-    deploy.dispatcher match {
-      case NoDispatcherGiven ⇒ Dispatchers.DefaultDispatcherId
-      case x ⇒ x
-    }
+  def dispatcher: String = deploy.dispatcher match {
+    case NoDispatcherGiven ⇒ Dispatchers.DefaultDispatcherId
+    case x ⇒ x
+  }
 
   /**
     * Convenience method for extracting the mailbox information from the
     * contained [[Deploy]] instance.
     */
-  def mailbox: String =
-    deploy.mailbox match {
-      case NoMailboxGiven ⇒ Mailboxes.DefaultMailboxId
-      case x ⇒ x
-    }
+  def mailbox: String = deploy.mailbox match {
+    case NoMailboxGiven ⇒ Mailboxes.DefaultMailboxId
+    case x ⇒ x
+  }
 
   /**
     * Convenience method for extracting the router configuration from the
@@ -179,20 +177,18 @@ final case class Props(
   /**
     * Returns a new Props with the specified dispatcher set.
     */
-  def withDispatcher(d: String): Props =
-    deploy.dispatcher match {
-      case NoDispatcherGiven ⇒ copy(deploy = deploy.copy(dispatcher = d))
-      case x ⇒ if (x == d) this else copy(deploy = deploy.copy(dispatcher = d))
-    }
+  def withDispatcher(d: String): Props = deploy.dispatcher match {
+    case NoDispatcherGiven ⇒ copy(deploy = deploy.copy(dispatcher = d))
+    case x ⇒ if (x == d) this else copy(deploy = deploy.copy(dispatcher = d))
+  }
 
   /**
     * Returns a new Props with the specified mailbox set.
     */
-  def withMailbox(m: String): Props =
-    deploy.mailbox match {
-      case NoMailboxGiven ⇒ copy(deploy = deploy.copy(mailbox = m))
-      case x ⇒ if (x == m) this else copy(deploy = deploy.copy(mailbox = m))
-    }
+  def withMailbox(m: String): Props = deploy.mailbox match {
+    case NoMailboxGiven ⇒ copy(deploy = deploy.copy(mailbox = m))
+    case x ⇒ if (x == m) this else copy(deploy = deploy.copy(mailbox = m))
+  }
 
   /**
     * Returns a new Props with the specified router config set.

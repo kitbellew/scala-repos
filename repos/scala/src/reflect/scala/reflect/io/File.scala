@@ -74,8 +74,8 @@ class File(jfile: JFile)(implicit constructorCodec: Codec)
   /** Obtains a OutputStream. */
   def outputStream(append: Boolean = false) =
     new FileOutputStream(jfile, append)
-  def bufferedOutput(append: Boolean = false) =
-    new BufferedOutputStream(outputStream(append))
+  def bufferedOutput(append: Boolean = false) = new BufferedOutputStream(
+    outputStream(append))
 
   /** Obtains an OutputStreamWriter wrapped around a FileOutputStream.
     *  This should behave like a less broken version of java.io.FileWriter,

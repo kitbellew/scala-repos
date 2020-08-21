@@ -244,33 +244,31 @@ case class ExpressionEncoder[T](
     * toRow are allowed to return the same actual [[InternalRow]] object.  Thus, the caller should
     * copy the result before making another call if required.
     */
-  def toRow(t: T): InternalRow =
-    try {
-      inputRow(0) = t
-      extractProjection(inputRow)
-    } catch {
-      case e: Exception =>
-        throw new RuntimeException(
-          s"Error while encoding: $e\n${toRowExpressions.map(_.treeString).mkString("\n")}",
-          e)
-    }
+  def toRow(t: T): InternalRow = try {
+    inputRow(0) = t
+    extractProjection(inputRow)
+  } catch {
+    case e: Exception =>
+      throw new RuntimeException(
+        s"Error while encoding: $e\n${toRowExpressions.map(_.treeString).mkString("\n")}",
+        e)
+  }
 
   /**
     * Returns an object of type `T`, extracting the required values from the provided row.  Note that
     * you must `resolve` and `bind` an encoder to a specific schema before you can call this
     * function.
     */
-  def fromRow(row: InternalRow): T =
-    try {
-      constructProjection(row)
-        .get(0, ObjectType(clsTag.runtimeClass))
-        .asInstanceOf[T]
-    } catch {
-      case e: Exception =>
-        throw new RuntimeException(
-          s"Error while decoding: $e\n${fromRowExpression.treeString}",
-          e)
-    }
+  def fromRow(row: InternalRow): T = try {
+    constructProjection(row)
+      .get(0, ObjectType(clsTag.runtimeClass))
+      .asInstanceOf[T]
+  } catch {
+    case e: Exception =>
+      throw new RuntimeException(
+        s"Error while decoding: $e\n${fromRowExpression.treeString}",
+        e)
+  }
 
   /**
     * The process of resolution to a given schema throws away information about where a given field

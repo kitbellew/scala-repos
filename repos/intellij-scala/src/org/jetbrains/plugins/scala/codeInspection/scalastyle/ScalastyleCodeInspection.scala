@@ -20,10 +20,9 @@ object ScalastyleCodeInspection {
       Seq("scalastyle_config.xml", "scalastyle-config.xml")
     val possibleLocations = Seq(".idea", "project")
 
-    def findConfigFile(dir: VirtualFile) =
-      possibleConfigFileNames
-        .flatMap(name => Option(dir.findChild(name)))
-        .headOption
+    def findConfigFile(dir: VirtualFile) = possibleConfigFileNames
+      .flatMap(name => Option(dir.findChild(name)))
+      .headOption
 
     def findIn(project: Project): Option[VirtualFile] = {
       val root = project.getBaseDir

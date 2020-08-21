@@ -110,19 +110,17 @@ object LazyEither extends LazyEitherInstances {
     def apply[A](a: => A): LazyEither[A, B]
   }
 
-  def lazyLeft[B]: LazyLeftConstruct[B] =
-    new LazyLeftConstruct[B] {
-      def apply[A](a: => A) = LazyLeft(() => a)
-    }
+  def lazyLeft[B]: LazyLeftConstruct[B] = new LazyLeftConstruct[B] {
+    def apply[A](a: => A) = LazyLeft(() => a)
+  }
 
   sealed abstract class LazyRightConstruct[A] {
     def apply[B](b: => B): LazyEither[A, B]
   }
 
-  def lazyRight[A]: LazyRightConstruct[A] =
-    new LazyRightConstruct[A] {
-      def apply[B](b: => B) = LazyRight(() => b)
-    }
+  def lazyRight[A]: LazyRightConstruct[A] = new LazyRightConstruct[A] {
+    def apply[B](b: => B) = LazyRight(() => b)
+  }
 
   final case class LeftProjection[+A, +B](e: LazyEither[A, B]) {
     import LazyOption._

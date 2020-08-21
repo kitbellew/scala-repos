@@ -301,8 +301,8 @@ trait RefactoringImpl { self: RichPresentationCompiler =>
         modifications.map(FileEditHelper.fromChange)))
   }
 
-  protected def reloadAndType(f: File) =
-    reloadAndTypeFiles(List(this.createSourceFile(f.getPath)))
+  protected def reloadAndType(f: File) = reloadAndTypeFiles(
+    List(this.createSourceFile(f.getPath)))
 
   protected def prepareRefactor(
       procId: Int,

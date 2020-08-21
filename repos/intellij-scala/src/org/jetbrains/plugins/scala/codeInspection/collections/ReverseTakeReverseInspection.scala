@@ -7,8 +7,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.ScExpression
   * @author Nikolay.Tropin
   */
 class ReverseTakeReverseInspection extends OperationOnCollectionInspection {
-  override def possibleSimplificationTypes: Array[SimplificationType] =
-    Array(ReverseTakeReverse)
+  override def possibleSimplificationTypes: Array[SimplificationType] = Array(
+    ReverseTakeReverse)
 }
 
 object ReverseTakeReverse extends SimplificationType {

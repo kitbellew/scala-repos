@@ -19,8 +19,8 @@ trait TxnLocal[@specialized T] {
 
 object TxnLocal {
   def apply[@specialized T]: TxnLocal[T] = new Impl(new CTxnLocal[T])
-  def apply[@specialized T](initValue: => T): TxnLocal[T] =
-    new Impl(new CTxnLocal[T] {
+  def apply[@specialized T](initValue: => T): TxnLocal[T] = new Impl(
+    new CTxnLocal[T] {
       override def initialValue(tx: Txn): T = initValue
     })
 

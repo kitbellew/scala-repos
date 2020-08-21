@@ -92,23 +92,22 @@ object Event {
       crazyData: Option[Crazyhouse.Data])
       extends Event {
     def typ = "move"
-    def data =
-      MoveOrDrop.data(
-        fen,
-        check,
-        threefold,
-        state,
-        clock,
-        possibleMoves,
-        possibleDrops,
-        crazyData) {
-        Json.obj(
-          "uci" -> s"${orig.key}${dest.key}",
-          "san" -> san,
-          "promotion" -> promotion.map(_.data),
-          "enpassant" -> enpassant.map(_.data),
-          "castle" -> castle.map(_.data))
-      }
+    def data = MoveOrDrop.data(
+      fen,
+      check,
+      threefold,
+      state,
+      clock,
+      possibleMoves,
+      possibleDrops,
+      crazyData) {
+      Json.obj(
+        "uci" -> s"${orig.key}${dest.key}",
+        "san" -> san,
+        "promotion" -> promotion.map(_.data),
+        "enpassant" -> enpassant.map(_.data),
+        "castle" -> castle.map(_.data))
+    }
   }
   object Move {
     def apply(
@@ -116,27 +115,26 @@ object Event {
         situation: Situation,
         state: State,
         clock: Option[Event],
-        crazyData: Option[Crazyhouse.Data]): Move =
-      Move(
-        orig = move.orig,
-        dest = move.dest,
-        san = chess.format.pgn.Dumper(move),
-        fen = chess.format.Forsyth.exportBoard(situation.board),
-        check = situation.check,
-        threefold = situation.threefoldRepetition,
-        promotion = move.promotion.map { Promotion(_, move.dest) },
-        enpassant = (move.capture ifTrue move.enpassant).map {
-          Event.Enpassant(_, !move.color)
-        },
-        castle = move.castle.map { case (king, rook) =>
-          Castling(king, rook, move.color)
-        },
-        state = state,
-        clock = clock,
-        possibleMoves = situation.destinations,
-        possibleDrops = situation.drops,
-        crazyData = crazyData
-      )
+        crazyData: Option[Crazyhouse.Data]): Move = Move(
+      orig = move.orig,
+      dest = move.dest,
+      san = chess.format.pgn.Dumper(move),
+      fen = chess.format.Forsyth.exportBoard(situation.board),
+      check = situation.check,
+      threefold = situation.threefoldRepetition,
+      promotion = move.promotion.map { Promotion(_, move.dest) },
+      enpassant = (move.capture ifTrue move.enpassant).map {
+        Event.Enpassant(_, !move.color)
+      },
+      castle = move.castle.map { case (king, rook) =>
+        Castling(king, rook, move.color)
+      },
+      state = state,
+      clock = clock,
+      possibleMoves = situation.destinations,
+      possibleDrops = situation.drops,
+      crazyData = crazyData
+    )
   }
 
   case class Drop(
@@ -153,21 +151,20 @@ object Event {
       possibleDrops: Option[List[Pos]])
       extends Event {
     def typ = "drop"
-    def data =
-      MoveOrDrop.data(
-        fen,
-        check,
-        threefold,
-        state,
-        clock,
-        possibleMoves,
-        possibleDrops,
-        crazyData) {
-        Json.obj(
-          "role" -> role.name,
-          "uci" -> s"${role.pgn}@${pos.key}",
-          "san" -> san)
-      }
+    def data = MoveOrDrop.data(
+      fen,
+      check,
+      threefold,
+      state,
+      clock,
+      possibleMoves,
+      possibleDrops,
+      crazyData) {
+      Json.obj(
+        "role" -> role.name,
+        "uci" -> s"${role.pgn}@${pos.key}",
+        "san" -> san)
+    }
   }
   object Drop {
     def apply(
@@ -175,20 +172,19 @@ object Event {
         situation: Situation,
         state: State,
         clock: Option[Event],
-        crazyData: Option[Crazyhouse.Data]): Drop =
-      Drop(
-        role = drop.piece.role,
-        pos = drop.pos,
-        san = chess.format.pgn.Dumper(drop),
-        fen = chess.format.Forsyth.exportBoard(situation.board),
-        check = situation.check,
-        threefold = situation.threefoldRepetition,
-        state = state,
-        clock = clock,
-        possibleMoves = situation.destinations,
-        possibleDrops = situation.drops,
-        crazyData = crazyData
-      )
+        crazyData: Option[Crazyhouse.Data]): Drop = Drop(
+      role = drop.piece.role,
+      pos = drop.pos,
+      san = chess.format.pgn.Dumper(drop),
+      fen = chess.format.Forsyth.exportBoard(situation.board),
+      check = situation.check,
+      threefold = situation.threefoldRepetition,
+      state = state,
+      clock = clock,
+      possibleMoves = situation.destinations,
+      possibleDrops = situation.drops,
+      crazyData = crazyData
+    )
   }
 
   object PossibleMoves {
@@ -208,36 +204,33 @@ object Event {
   case class Castling(king: (Pos, Pos), rook: (Pos, Pos), color: Color)
       extends Event {
     def typ = "castling"
-    def data =
-      Json.obj(
-        "king" -> Json.arr(king._1.key, king._2.key),
-        "rook" -> Json.arr(rook._1.key, rook._2.key),
-        "color" -> color
-      )
+    def data = Json.obj(
+      "king" -> Json.arr(king._1.key, king._2.key),
+      "rook" -> Json.arr(rook._1.key, rook._2.key),
+      "color" -> color
+    )
   }
 
   case class RedirectOwner(color: Color, id: String, cookie: Option[JsObject])
       extends Event {
     def typ = "redirect"
-    def data =
-      Json
-        .obj(
-          "id" -> id,
-          "url" -> s"/$id",
-          "cookie" -> cookie
-        )
-        .noNull
+    def data = Json
+      .obj(
+        "id" -> id,
+        "url" -> s"/$id",
+        "cookie" -> cookie
+      )
+      .noNull
     override def only = Some(color)
     override def owner = true
   }
 
   case class Promotion(role: PromotableRole, pos: Pos) extends Event {
     def typ = "promotion"
-    def data =
-      Json.obj(
-        "key" -> pos.key,
-        "pieceClass" -> role.toString.toLowerCase
-      )
+    def data = Json.obj(
+      "key" -> pos.key,
+      "pieceClass" -> role.toString.toLowerCase
+    )
   }
 
   case class PlayerMessage(line: PlayerLine) extends Event {
@@ -302,11 +295,10 @@ object Event {
 
   case class CheckCount(white: Int, black: Int) extends Event {
     def typ = "checkCount"
-    def data =
-      Json.obj(
-        "white" -> white,
-        "black" -> black
-      )
+    def data = Json.obj(
+      "white" -> white,
+      "black" -> black
+    )
   }
 
   case class State(
@@ -318,28 +310,26 @@ object Event {
       blackOffersDraw: Boolean)
       extends Event {
     def typ = "state"
-    def data =
-      Json
-        .obj(
-          "color" -> color,
-          "turns" -> turns,
-          "status" -> status,
-          "winner" -> winner,
-          "wDraw" -> whiteOffersDraw.option(true),
-          "bDraw" -> blackOffersDraw.option(true)
-        )
-        .noNull
+    def data = Json
+      .obj(
+        "color" -> color,
+        "turns" -> turns,
+        "status" -> status,
+        "winner" -> winner,
+        "wDraw" -> whiteOffersDraw.option(true),
+        "bDraw" -> blackOffersDraw.option(true)
+      )
+      .noNull
   }
 
   case class TakebackOffers(white: Boolean, black: Boolean) extends Event {
     def typ = "takebackOffers"
-    def data =
-      Json
-        .obj(
-          "white" -> white.option(true),
-          "black" -> black.option(true)
-        )
-        .noNull
+    def data = Json
+      .obj(
+        "white" -> white.option(true),
+        "black" -> black.option(true)
+      )
+      .noNull
     override def owner = true
   }
 

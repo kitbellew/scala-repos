@@ -137,8 +137,8 @@ class SbtEvents(logger: Logger) extends Actor {
 }
 
 object SbtTask {
-  def props(name: String, client: ActorRef): Props =
-    Props(new SbtTask(name, client))
+  def props(name: String, client: ActorRef): Props = Props(
+    new SbtTask(name, client))
 }
 
 class SbtTask(name: String, client: ActorRef) extends Actor {

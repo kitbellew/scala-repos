@@ -42,12 +42,11 @@ class DictionaryEncodingSuite extends SparkFunSuite {
         .toMap
     }
 
-    def stableDistinct(seq: Seq[Int]): Seq[Int] =
-      if (seq.isEmpty) {
-        Seq.empty
-      } else {
-        seq.head +: seq.tail.filterNot(_ == seq.head)
-      }
+    def stableDistinct(seq: Seq[Int]): Seq[Int] = if (seq.isEmpty) {
+      Seq.empty
+    } else {
+      seq.head +: seq.tail.filterNot(_ == seq.head)
+    }
 
     def skeleton(uniqueValueCount: Int, inputSeq: Seq[Int]) {
       // -------------

@@ -18,15 +18,14 @@ object Test extends App {
   type T = Int
   //type T = Any
 
-  def newPF(test: T): MyPF[T] =
-    new MySmartPF[T] {
-      def isDefinedAt(x: T): Boolean = x != test
-      override def applyOrElse[A1 <: T](x: A1, default: A1 => Unit): Unit = {
-        println("newPF.applyOrElse entered...")
-        if (x != test) { println("ok"); () }
-        else { println("default"); default(x) }
-      }
+  def newPF(test: T): MyPF[T] = new MySmartPF[T] {
+    def isDefinedAt(x: T): Boolean = x != test
+    override def applyOrElse[A1 <: T](x: A1, default: A1 => Unit): Unit = {
+      println("newPF.applyOrElse entered...")
+      if (x != test) { println("ok"); () }
+      else { println("default"); default(x) }
     }
+  }
 
   val pf = newPF(1)
   println("=== pf(1):")

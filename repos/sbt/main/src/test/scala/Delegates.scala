@@ -60,8 +60,8 @@ object Delegates extends Properties("delegates") {
           f(s, ds, _.extra))
       }
     }
-  def allDelegates(keys: Keys)(f: (Scope, Seq[Scope]) => Prop): Prop =
-    all(keys.scopes map { scope =>
+  def allDelegates(keys: Keys)(f: (Scope, Seq[Scope]) => Prop): Prop = all(
+    keys.scopes map { scope =>
       val delegates = keys.env.delegates(scope)
       ("Scope: " + Scope.display(scope, "_")) |:
         ("Delegates:\n\t" + delegates

@@ -49,8 +49,8 @@ trait PrimitiveFieldConverter[T]
 class StringConverter extends PrimitiveFieldConverter[String] {
   override val defaultValue: String = null
 
-  override def addBinary(binary: Binary): Unit =
-    value = binary.toStringUsingUTF8
+  override def addBinary(binary: Binary): Unit = value =
+    binary.toStringUsingUTF8
 }
 
 class DoubleConverter extends PrimitiveFieldConverter[Double] {
@@ -208,19 +208,18 @@ abstract class OptionConverter[T]
   * Helper class to wrap a converter for a list group converter
   */
 object ListElement {
-  def wrapper(child: Converter): GroupConverter =
-    new GroupConverter() {
-      override def getConverter(i: Int): Converter = {
-        if (i != 0)
-          throw new IllegalArgumentException(
-            "list have only one element field. can't reach " + i)
-        child
-      }
-
-      override def end(): Unit = ()
-
-      override def start(): Unit = ()
+  def wrapper(child: Converter): GroupConverter = new GroupConverter() {
+    override def getConverter(i: Int): Converter = {
+      if (i != 0)
+        throw new IllegalArgumentException(
+          "list have only one element field. can't reach " + i)
+      child
     }
+
+    override def end(): Unit = ()
+
+    override def start(): Unit = ()
+  }
 }
 
 /**

@@ -169,29 +169,28 @@ object ByteIterator {
       copyLength
     }
 
-    def asInputStream: java.io.InputStream =
-      new java.io.InputStream {
-        override def available: Int = iterator.len
+    def asInputStream: java.io.InputStream = new java.io.InputStream {
+      override def available: Int = iterator.len
 
-        def read: Int = if (hasNext) (next().toInt & 0xff) else -1
+      def read: Int = if (hasNext) (next().toInt & 0xff) else -1
 
-        override def read(b: Array[Byte], off: Int, len: Int): Int = {
-          if ((off < 0) || (len < 0) || (off + len > b.length))
-            throw new IndexOutOfBoundsException
-          if (len == 0) 0
-          else if (!isEmpty) {
-            val nRead = math.min(available, len)
-            copyToArray(b, off, nRead)
-            nRead
-          } else -1
-        }
-
-        override def skip(n: Long): Long = {
-          val nSkip = math.min(iterator.len, n.toInt)
-          iterator.drop(nSkip)
-          nSkip
-        }
+      override def read(b: Array[Byte], off: Int, len: Int): Int = {
+        if ((off < 0) || (len < 0) || (off + len > b.length))
+          throw new IndexOutOfBoundsException
+        if (len == 0) 0
+        else if (!isEmpty) {
+          val nRead = math.min(available, len)
+          copyToArray(b, off, nRead)
+          nRead
+        } else -1
       }
+
+      override def skip(n: Long): Long = {
+        val nSkip = math.min(iterator.len, n.toInt)
+        iterator.drop(nSkip)
+        nSkip
+      }
+    }
   }
 
   object MultiByteArrayIterator {
@@ -417,34 +416,33 @@ object ByteIterator {
       n
     }
 
-    def asInputStream: java.io.InputStream =
-      new java.io.InputStream {
-        override def available: Int = current.len
+    def asInputStream: java.io.InputStream = new java.io.InputStream {
+      override def available: Int = current.len
 
-        def read: Int = if (hasNext) (next().toInt & 0xff) else -1
+      def read: Int = if (hasNext) (next().toInt & 0xff) else -1
 
-        override def read(b: Array[Byte], off: Int, len: Int): Int = {
-          val nRead = current.asInputStream.read(b, off, len)
-          normalize()
-          nRead
-        }
-
-        override def skip(n: Long): Long = {
-          @tailrec def skipImpl(n: Long, skipped: Long): Long =
-            if (n > 0) {
-              if (!isEmpty) {
-                val m = current.asInputStream.skip(n)
-                normalize()
-                val newN = n - m
-                val newSkipped = skipped + m
-                if (newN > 0) skipImpl(newN, newSkipped)
-                else newSkipped
-              } else 0
-            } else 0
-
-          skipImpl(n, 0)
-        }
+      override def read(b: Array[Byte], off: Int, len: Int): Int = {
+        val nRead = current.asInputStream.read(b, off, len)
+        normalize()
+        nRead
       }
+
+      override def skip(n: Long): Long = {
+        @tailrec def skipImpl(n: Long, skipped: Long): Long =
+          if (n > 0) {
+            if (!isEmpty) {
+              val m = current.asInputStream.skip(n)
+              normalize()
+              val newN = n - m
+              val newSkipped = skipped + m
+              if (newN > 0) skipImpl(newN, newSkipped)
+              else newSkipped
+            } else 0
+          } else 0
+
+        skipImpl(n, 0)
+      }
+    }
   }
 }
 
@@ -467,9 +465,8 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
   // *must* be overridden by derived classes. This construction is necessary
   // to specialize the return type, as the method is already implemented in
   // the parent class.
-  override def clone: ByteIterator =
-    throw new UnsupportedOperationException(
-      "Method clone is not implemented in ByteIterator")
+  override def clone: ByteIterator = throw new UnsupportedOperationException(
+    "Method clone is not implemented in ByteIterator")
 
   override def duplicate: (ByteIterator, ByteIterator) = (this, clone)
 

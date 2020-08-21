@@ -47,10 +47,9 @@ trait Proc[-T] extends Chan[T] {
 }
 
 object Proc {
-  def apply[T](iteratee: T => Unit): Proc[T] =
-    new Proc[T] {
-      def receive = iteratee
-    }
+  def apply[T](iteratee: T => Unit): Proc[T] = new Proc[T] {
+    def receive = iteratee
+  }
 
   val nil: Proc[Any] = new Proc[Any] { def receive = Function.const(()) }
 }

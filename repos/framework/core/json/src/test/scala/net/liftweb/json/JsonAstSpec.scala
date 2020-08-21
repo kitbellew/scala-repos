@@ -113,15 +113,14 @@ object JsonAstSpec extends Specification with JValueGen with ScalaCheck {
 
   "Replace one" in {
     val anyReplacement = (x: JValue, replacement: JObject) => {
-      def findOnePath(jv: JValue, l: List[String]): List[String] =
-        jv match {
-          case JObject(fl) =>
-            fl match {
-              case field :: xs => findOnePath(field.value, l)
-              case Nil         => l
-            }
-          case _ => l
-        }
+      def findOnePath(jv: JValue, l: List[String]): List[String] = jv match {
+        case JObject(fl) =>
+          fl match {
+            case field :: xs => findOnePath(field.value, l)
+            case Nil         => l
+          }
+        case _ => l
+      }
 
       val path = findOnePath(x, Nil).reverse
       val result = x.replace(path, replacement)
@@ -222,17 +221,15 @@ object JsonAstSpec extends Specification with JValueGen with ScalaCheck {
       List(JField("charlie", JString("i'm a masseuse"))))
   }
 
-  private def reorderFields(json: JValue) =
-    json map {
-      case JObject(xs) => JObject(xs.reverse)
-      case x           => x
-    }
+  private def reorderFields(json: JValue) = json map {
+    case JObject(xs) => JObject(xs.reverse)
+    case x           => x
+  }
 
-  private def typePredicate(clazz: Class[_])(json: JValue) =
-    json match {
-      case x if x.getClass == clazz => true
-      case _                        => false
-    }
+  private def typePredicate(clazz: Class[_])(json: JValue) = json match {
+    case x if x.getClass == clazz => true
+    case _                        => false
+  }
 
   implicit def arbJValue: Arbitrary[JValue] = Arbitrary(genJValue)
   implicit def arbJObject: Arbitrary[JObject] = Arbitrary(genObject)

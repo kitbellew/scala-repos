@@ -47,12 +47,11 @@ final class HttpsConnectionContext(
     extends akka.http.javadsl.HttpsConnectionContext
     with ConnectionContext {
 
-  def firstSession =
-    NegotiateNewSession(
-      enabledCipherSuites,
-      enabledProtocols,
-      clientAuth,
-      sslParameters)
+  def firstSession = NegotiateNewSession(
+    enabledCipherSuites,
+    enabledProtocols,
+    clientAuth,
+    sslParameters)
 
   override def getSslContext = sslContext
   override def getEnabledCipherSuites: Optional[JCollection[String]] =

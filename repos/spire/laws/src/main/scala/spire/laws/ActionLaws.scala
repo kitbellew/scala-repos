@@ -10,12 +10,11 @@ import org.scalacheck.{Arbitrary, Prop}
 import org.scalacheck.Prop._
 
 object ActionLaws {
-  def apply[G: Eq: Arbitrary, A: Eq: Arbitrary] =
-    new ActionLaws[G, A] {
-      val scalarLaws = GroupLaws[G]
-      def EquA = Eq[A]
-      def ArbA = implicitly[Arbitrary[A]]
-    }
+  def apply[G: Eq: Arbitrary, A: Eq: Arbitrary] = new ActionLaws[G, A] {
+    val scalarLaws = GroupLaws[G]
+    def EquA = Eq[A]
+    def ArbA = implicitly[Arbitrary[A]]
+  }
 }
 
 trait ActionLaws[G, A] extends Laws {
@@ -93,19 +92,17 @@ trait ActionLaws[G, A] extends Laws {
 
   def additiveMonoidAction(implicit
       G: AdditiveAction[A, G],
-      G0: AdditiveMonoid[G]) =
-    new AdditiveProperties(
-      base = monoidAction(G.additive, G0.additive),
-      parent = None
-    )
+      G0: AdditiveMonoid[G]) = new AdditiveProperties(
+    base = monoidAction(G.additive, G0.additive),
+    parent = None
+  )
 
   def multiplicativeMonoidAction(implicit
       G: MultiplicativeAction[A, G],
-      G0: MultiplicativeMonoid[G]) =
-    new MultiplicativeProperties(
-      base = monoidAction(G.multiplicative, G0.multiplicative),
-      parent = None
-    )
+      G0: MultiplicativeMonoid[G]) = new MultiplicativeProperties(
+    base = monoidAction(G.multiplicative, G0.multiplicative),
+    parent = None
+  )
 
   class ActionProperties(
       val name: String,

@@ -4,8 +4,8 @@ trait A[@specialized(Int) K, @specialized(Double) V] {
 }
 
 trait B[@specialized(Double) V] extends A[Int, V] {
-  override def doStuff(k: Int, v: V): Unit =
-    println("Hi - I'm calling doStuff in B")
+  override def doStuff(k: Int, v: V): Unit = println(
+    "Hi - I'm calling doStuff in B")
 }
 
 object Test {

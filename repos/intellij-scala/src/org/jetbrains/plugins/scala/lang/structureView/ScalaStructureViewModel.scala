@@ -65,22 +65,21 @@ class ScalaStructureViewModel(
     res(0) = new Sorter() {
       override def isVisible: Boolean = true
 
-      override def getComparator: Comparator[_] =
-        new Comparator[AnyRef] {
-          override def compare(o1: AnyRef, o2: AnyRef): Int =
-            (o1, o2) match {
-              case (
-                    test1: TestStructureViewElement,
-                    test2: TestStructureViewElement) =>
-                0
-              case (_, test: TestStructureViewElement) => -1
-              case (test: TestStructureViewElement, _) => 1
-              case _ =>
-                SorterUtil
-                  .getStringPresentation(o1)
-                  .compareToIgnoreCase(SorterUtil.getStringPresentation(o2))
-            }
-        }
+      override def getComparator: Comparator[_] = new Comparator[AnyRef] {
+        override def compare(o1: AnyRef, o2: AnyRef): Int =
+          (o1, o2) match {
+            case (
+                  test1: TestStructureViewElement,
+                  test2: TestStructureViewElement) =>
+              0
+            case (_, test: TestStructureViewElement) => -1
+            case (test: TestStructureViewElement, _) => 1
+            case _ =>
+              SorterUtil
+                .getStringPresentation(o1)
+                .compareToIgnoreCase(SorterUtil.getStringPresentation(o2))
+          }
+      }
 
       override def getName: String = "ALPHA_SORTER_IGNORING_TEST_NODES"
 
@@ -99,40 +98,35 @@ class ScalaStructureViewModel(
       : util.Collection[NodeProvider[_ <: TreeElement]] =
     ScalaStructureViewModel.NODE_PROVIDERS
 
-  override def isSuitable(element: PsiElement): Boolean =
-    element match {
-      case t: ScTypeDefinition =>
-        t.getParent match {
-          case _: ScalaFile | _: ScPackaging => true
-          case tb: ScTemplateBody
-              if tb.getParent.isInstanceOf[ScExtendsBlock] =>
-            isSuitable(tb.getParent.getParent)
-          case _ => false
-        }
-      case f: ScFunction =>
-        f.getParent match {
-          case b: ScBlockExpr => b.getParent.isInstanceOf[ScFunction]
-          case tb: ScTemplateBody
-              if tb.getParent.isInstanceOf[ScExtendsBlock] =>
-            isSuitable(tb.getParent.getParent)
-          case _ => false
-        }
-      case m: ScMember =>
-        m.getParent match {
-          case tb: ScTemplateBody
-              if tb.getParent.isInstanceOf[ScExtendsBlock] =>
-            isSuitable(tb.getParent.getParent)
-          case _ => false
-        }
-      case _ => false
-    }
+  override def isSuitable(element: PsiElement): Boolean = element match {
+    case t: ScTypeDefinition =>
+      t.getParent match {
+        case _: ScalaFile | _: ScPackaging => true
+        case tb: ScTemplateBody if tb.getParent.isInstanceOf[ScExtendsBlock] =>
+          isSuitable(tb.getParent.getParent)
+        case _ => false
+      }
+    case f: ScFunction =>
+      f.getParent match {
+        case b: ScBlockExpr => b.getParent.isInstanceOf[ScFunction]
+        case tb: ScTemplateBody if tb.getParent.isInstanceOf[ScExtendsBlock] =>
+          isSuitable(tb.getParent.getParent)
+        case _ => false
+      }
+    case m: ScMember =>
+      m.getParent match {
+        case tb: ScTemplateBody if tb.getParent.isInstanceOf[ScExtendsBlock] =>
+          isSuitable(tb.getParent.getParent)
+        case _ => false
+      }
+    case _ => false
+  }
 
-  override def shouldEnterElement(o: Object): Boolean =
-    o match {
-      case t: ScTypeDefinition =>
-        t.members.length > 0 || t.typeDefinitions.size > 0
-      case _ => false
-    }
+  override def shouldEnterElement(o: Object): Boolean = o match {
+    case t: ScTypeDefinition =>
+      t.members.length > 0 || t.typeDefinitions.size > 0
+    case _ => false
+  }
 }
 
 object ScalaStructureViewModel {

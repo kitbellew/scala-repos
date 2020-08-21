@@ -39,14 +39,13 @@ object LoggingReceive {
     * Create a decorated logger which will append `" in state " + label` to each message it logs.
     */
   def withLabel(label: String)(r: Receive)(implicit
-      context: ActorContext): Receive =
-    r match {
-      case _: LoggingReceive ⇒ r
-      case _ ⇒
-        if (context.system.settings.AddLoggingReceive)
-          new LoggingReceive(None, r, Option(label))
-        else r
-    }
+      context: ActorContext): Receive = r match {
+    case _: LoggingReceive ⇒ r
+    case _ ⇒
+      if (context.system.settings.AddLoggingReceive)
+        new LoggingReceive(None, r, Option(label))
+      else r
+  }
 }
 
 /**

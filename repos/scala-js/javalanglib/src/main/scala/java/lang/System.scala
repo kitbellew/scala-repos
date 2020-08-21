@@ -314,10 +314,10 @@ private[lang] final class JSConsoleBasedPrintStream(isErr: Boolean)
   override def print(l: scala.Long): Unit = printString(String.valueOf(l))
   override def print(f: scala.Float): Unit = printString(String.valueOf(f))
   override def print(d: scala.Double): Unit = printString(String.valueOf(d))
-  override def print(s: Array[scala.Char]): Unit =
-    printString(String.valueOf(s))
-  override def print(s: String): Unit =
-    printString(if (s == null) "null" else s)
+  override def print(s: Array[scala.Char]): Unit = printString(
+    String.valueOf(s))
+  override def print(s: String): Unit = printString(
+    if (s == null) "null" else s)
   override def print(obj: AnyRef): Unit = printString(String.valueOf(obj))
 
   override def println(): Unit = printString("\n")
@@ -348,12 +348,11 @@ private[lang] final class JSConsoleBasedPrintStream(isErr: Boolean)
     * line with continuation symbol at the end and schedule a line continuation
     * symbol for the new line if the buffer is flushed.
     */
-  override def flush(): Unit =
-    if (!flushed) {
-      doWriteLine(buffer + LineContEnd)
-      buffer = LineContStart
-      flushed = true
-    }
+  override def flush(): Unit = if (!flushed) {
+    doWriteLine(buffer + LineContEnd)
+    buffer = LineContStart
+    flushed = true
+  }
 
   override def close(): Unit = ()
 

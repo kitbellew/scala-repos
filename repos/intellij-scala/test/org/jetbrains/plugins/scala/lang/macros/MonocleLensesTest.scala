@@ -125,11 +125,10 @@ class MonocleLensesTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
 
   def testSimple() =
     doTest(lensesSimple, "age", "monocle.Lens[Main.Person, Int]")
-  def testTypeArgs() =
-    doTest(
-      lensesTypeParams,
-      "q",
-      "monocle.Lens[Main.Foo[A, B], Map[(A, B), Double]]")
+  def testTypeArgs() = doTest(
+    lensesTypeParams,
+    "q",
+    "monocle.Lens[Main.Foo[A, B], Map[(A, B), Double]]")
 
   def testRecursion() = {
     //SCL-9420

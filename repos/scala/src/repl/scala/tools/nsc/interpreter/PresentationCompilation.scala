@@ -116,14 +116,13 @@ trait PresentationCompilation {
   object PresentationCompileResult {
     def apply(compiler0: interactive.Global)(
         unit0: compiler0.RichCompilationUnit,
-        preambleLength0: Int) =
-      new PresentationCompileResult {
+        preambleLength0: Int) = new PresentationCompileResult {
 
-        override val compiler = compiler0
+      override val compiler = compiler0
 
-        override def unit = unit0.asInstanceOf[compiler.RichCompilationUnit]
+      override def unit = unit0.asInstanceOf[compiler.RichCompilationUnit]
 
-        override def preambleLength = preambleLength0
-      }
+      override def preambleLength = preambleLength0
+    }
   }
 }

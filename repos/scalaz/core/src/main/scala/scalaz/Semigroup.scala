@@ -33,12 +33,11 @@ trait Semigroup[F] { self =>
     */
   def multiply1(value: F, n: Int): F = {
     @scala.annotation.tailrec
-    def go(x: F, y: Int, z: F): F =
-      y match {
-        case y if (y & 1) == 0 => go(append(x, x), y >>> 1, z)
-        case y if (y == 1)     => append(x, z)
-        case _                 => go(append(x, x), (y - 1) >>> 1, append(x, z))
-      }
+    def go(x: F, y: Int, z: F): F = y match {
+      case y if (y & 1) == 0 => go(append(x, x), y >>> 1, z)
+      case y if (y == 1)     => append(x, z)
+      case _                 => go(append(x, x), (y - 1) >>> 1, append(x, z))
+    }
     if (n <= 0) value else go(value, n, value)
   }
 

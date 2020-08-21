@@ -8,8 +8,8 @@ final case class Cokleisli[F[_], A, B](run: F[A] => B) { self =>
       b: Functor[F]): Cokleisli[F, C, D] =
     Cokleisli(c => g(run(b.map(c)(f)))) // b.map(run(f(c)))(g))
 
-  def contramapValue[C](f: F[C] => F[A]): Cokleisli[F, C, B] =
-    Cokleisli(run compose f)
+  def contramapValue[C](f: F[C] => F[A]): Cokleisli[F, C, B] = Cokleisli(
+    run compose f)
 
   def map[C](f: B => C): Cokleisli[F, A, C] = Cokleisli(f compose run)
 

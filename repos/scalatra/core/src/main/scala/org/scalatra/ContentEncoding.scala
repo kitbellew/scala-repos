@@ -74,12 +74,11 @@ object ContentEncoding {
       in => new InflaterInputStream(in))
   }
 
-  def forName(name: String): Option[ContentEncoding] =
-    name.toLowerCase match {
-      case "gzip"    => Some(GZip)
-      case "deflate" => Some(Deflate)
-      case _         => None
-    }
+  def forName(name: String): Option[ContentEncoding] = name.toLowerCase match {
+    case "gzip"    => Some(GZip)
+    case "deflate" => Some(Deflate)
+    case _         => None
+  }
 }
 
 // - Request decoding --------------------------------------------------------------------------------------------------
@@ -148,15 +147,14 @@ private class EncodedServletResponse(
   }
 
   /** Returns the charset with which to encode the response. */
-  private def getCharset: Charset =
-    (for {
-      name <- Option(getCharacterEncoding)
-      charset <- Try(Charset.forName(name)).toOption
-    } yield charset).getOrElse {
-      // The charset is either not known or not supported, defaults to ISO 8859 1, as per RFC and servlet documentation.
-      setCharacterEncoding("ISO-8859-1")
-      Charset.forName("ISO-8859-1")
-    }
+  private def getCharset: Charset = (for {
+    name <- Option(getCharacterEncoding)
+    charset <- Try(Charset.forName(name)).toOption
+  } yield charset).getOrElse {
+    // The charset is either not known or not supported, defaults to ISO 8859 1, as per RFC and servlet documentation.
+    setCharacterEncoding("ISO-8859-1")
+    Charset.forName("ISO-8859-1")
+  }
 
   /** Ensures that whatever byte- or char-stream we have open is properly flushed. */
   override def flushBuffer(): Unit = {

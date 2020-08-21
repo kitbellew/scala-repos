@@ -7,13 +7,12 @@ trait FrontEnd {
   object severity extends Enumeration
   class Severity(val id: Int) extends severity.Value {
     var count: Int = 0
-    override def toString() =
-      this match {
-        case INFO    => "INFO"
-        case WARNING => "WARNING"
-        case ERROR   => "ERROR"
-        case _       => "<unknown>"
-      }
+    override def toString() = this match {
+      case INFO    => "INFO"
+      case WARNING => "WARNING"
+      case ERROR   => "ERROR"
+      case _       => "<unknown>"
+    }
   }
   val INFO = new Severity(0)
   val WARNING = new Severity(1)

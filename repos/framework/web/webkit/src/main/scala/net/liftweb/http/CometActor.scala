@@ -122,12 +122,11 @@ trait StatefulComet extends CometActor {
 object CurrentCometActor extends ThreadGlobal[LiftCometActor]
 
 object AddAListener {
-  def apply(who: SimpleActor[Any]) =
-    new AddAListener(
-      who,
-      { case _ =>
-        true
-      })
+  def apply(who: SimpleActor[Any]) = new AddAListener(
+    who,
+    { case _ =>
+      true
+    })
 }
 
 /**
@@ -1357,13 +1356,12 @@ trait BaseCometActor
     new RenderOut(Empty, internalFixedRender, additionalJs, Empty, false)
   }
 
-  implicit def pairToPair(in: (String, Any)): (String, NodeSeq) =
-    (
-      in._1,
-      Text(in._2 match {
-        case null => "null"
-        case s    => s.toString
-      }))
+  implicit def pairToPair(in: (String, Any)): (String, NodeSeq) = (
+    in._1,
+    Text(in._2 match {
+      case null => "null"
+      case s    => s.toString
+    }))
 
   implicit def nodeSeqToFull(in: NodeSeq): Box[NodeSeq] = Full(in)
 
@@ -1555,13 +1553,12 @@ private[http] class XmlOrJsCmd(
   def inSpan: NodeSeq =
     xml.openOr(Text("")) ++ javaScript.map(s => Script(s)).openOr(Text(""))
 
-  def outSpan: NodeSeq =
-    Script(
-      Run(
-        "var destroy_" + id + " = function() {" + (destroy
-          .openOr(JsCmds.Noop)
-          .toJsCmd) + "}")) ++
-      fixedXhtml.openOr(Text(""))
+  def outSpan: NodeSeq = Script(
+    Run(
+      "var destroy_" + id + " = function() {" + (destroy
+        .openOr(JsCmds.Noop)
+        .toJsCmd) + "}")) ++
+    fixedXhtml.openOr(Text(""))
 }
 
 /**

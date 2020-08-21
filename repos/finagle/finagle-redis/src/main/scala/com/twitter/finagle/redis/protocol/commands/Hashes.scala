@@ -68,13 +68,12 @@ case class HGetAll(key: ChannelBuffer) extends StrictKeyCommand {
 case class HIncrBy(key: ChannelBuffer, field: ChannelBuffer, amount: Long)
     extends StrictKeyCommand {
   def command = Commands.HINCRBY
-  def toChannelBuffer =
-    RedisCodec.toUnifiedFormat(
-      Seq(
-        CommandBytes.HINCRBY,
-        key,
-        field,
-        StringToChannelBuffer(amount.toString)))
+  def toChannelBuffer = RedisCodec.toUnifiedFormat(
+    Seq(
+      CommandBytes.HINCRBY,
+      key,
+      field,
+      StringToChannelBuffer(amount.toString)))
 }
 object HIncrBy {
   def apply(args: Seq[Array[Byte]]): Command = {

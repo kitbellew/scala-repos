@@ -101,10 +101,9 @@ class ClusterClientSpec
   def roleName(addr: Address): Option[RoleName] =
     remainingServerRoleNames.find(node(_).address == addr)
 
-  def initialContacts =
-    (remainingServerRoleNames - first - fourth).map { r ⇒
-      node(r) / "system" / "receptionist"
-    }
+  def initialContacts = (remainingServerRoleNames - first - fourth).map { r ⇒
+    node(r) / "system" / "receptionist"
+  }
 
   "A ClusterClient" must {
 

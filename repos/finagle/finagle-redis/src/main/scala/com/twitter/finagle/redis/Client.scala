@@ -12,14 +12,13 @@ object Client {
     * Construct a client from a single host.
     * @param host a String of host:port combination.
     */
-  def apply(host: String): Client =
-    Client(
-      ClientBuilder()
-        .hosts(host)
-        .hostConnectionLimit(1)
-        .codec(Redis())
-        .daemon(true)
-        .build())
+  def apply(host: String): Client = Client(
+    ClientBuilder()
+      .hosts(host)
+      .hostConnectionLimit(1)
+      .codec(Redis())
+      .daemon(true)
+      .build())
 
   /**
     * Construct a client from a single Service.
@@ -167,14 +166,13 @@ object TransactionalClient {
     * Construct a client from a single host with transaction commands
     * @param host a String of host:port combination.
     */
-  def apply(host: String): TransactionalClient =
-    TransactionalClient(
-      ClientBuilder()
-        .hosts(host)
-        .hostConnectionLimit(1)
-        .codec(Redis())
-        .daemon(true)
-        .buildFactory())
+  def apply(host: String): TransactionalClient = TransactionalClient(
+    ClientBuilder()
+      .hosts(host)
+      .hostConnectionLimit(1)
+      .codec(Redis())
+      .daemon(true)
+      .buildFactory())
 
   /**
     * Construct a client from a service factory

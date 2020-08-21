@@ -75,12 +75,11 @@ private[spark] class DecisionTreeMetadata(
     * For unordered features, there is 1 bin per split.
     * For ordered features, there is 1 more bin than split.
     */
-  def numSplits(featureIndex: Int): Int =
-    if (isUnordered(featureIndex)) {
-      numBins(featureIndex)
-    } else {
-      numBins(featureIndex) - 1
-    }
+  def numSplits(featureIndex: Int): Int = if (isUnordered(featureIndex)) {
+    numBins(featureIndex)
+  } else {
+    numBins(featureIndex) - 1
+  }
 
   /**
     * Set number of splits for a continuous feature.

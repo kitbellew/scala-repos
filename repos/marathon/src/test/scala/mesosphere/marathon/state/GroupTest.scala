@@ -152,11 +152,10 @@ class GroupTest extends FunSpec with GivenWhenThen with Matchers {
 
       When("the group will be updated")
       val timestamp = Timestamp.now()
-      def change(group: Group) =
-        Group(
-          "/test/group3".toPath,
-          Set(AppDefinition("app2".toPath)),
-          version = timestamp)
+      def change(group: Group) = Group(
+        "/test/group3".toPath,
+        Set(AppDefinition("app2".toPath)),
+        version = timestamp)
 
       val result = current.update(PathId("/test/group2"), change, timestamp)
 

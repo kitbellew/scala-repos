@@ -66,8 +66,8 @@ trait StreamingInvokerAction[R, T, -E <: Effect]
       with FixedSqlAction[T, NoStream, E] {
     def run(ctx: JdbcBackend#Context): T =
       createInvoker(statements).first(ctx.session)
-    def overrideStatements(_statements: Iterable[String]) =
-      new HeadAction(_statements)
+    def overrideStatements(_statements: Iterable[String]) = new HeadAction(
+      _statements)
   }
 
   private[this] class HeadOptionAction(val statements: Iterable[String])

@@ -11,11 +11,10 @@ trait Blox { self: MyCodes =>
   class Basick {
     var foo: Instru = null
 
-    def bar =
-      foo match {
-        case SWITCH(i)  => i
-        case EmptyInstr => 0
-      }
+    def bar = foo match {
+      case SWITCH(i)  => i
+      case EmptyInstr => 0
+    }
   }
 }
 

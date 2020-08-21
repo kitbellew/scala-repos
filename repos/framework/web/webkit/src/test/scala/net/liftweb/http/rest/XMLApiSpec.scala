@@ -38,21 +38,20 @@ object XmlApiSpec extends Specification {
     def createTag(contents: NodeSeq): Elem = <api>{contents}</api>
 
     // This method exists to test the non-XML implicit conversions on XMLApiHelper
-    def produce(in: Any): LiftResponse =
-      in match {
-        // Tests boolToResponse
-        case "true"  => true
-        case "false" => false
-        // Tests canBoolToResponse
-        case s: String => tryo[Boolean] { s.toInt > 5 }
-        // Tests pairToResponse
-        case i: Int if i == 42 => (true, "But what is the question?")
-        // These test the listElemToResponse conversion
-        case f: Float if f == 42f => (<float>perfect</float>: Elem)
-        case f: Float if f == 0f  => (<float>zero</float>: Node)
-        case f: Float if f > 0f   => (<float>positive</float>: NodeSeq)
-        case f: Float if f < 0f   => (<float>negative</float>: Seq[Node])
-      }
+    def produce(in: Any): LiftResponse = in match {
+      // Tests boolToResponse
+      case "true"  => true
+      case "false" => false
+      // Tests canBoolToResponse
+      case s: String => tryo[Boolean] { s.toInt > 5 }
+      // Tests pairToResponse
+      case i: Int if i == 42 => (true, "But what is the question?")
+      // These test the listElemToResponse conversion
+      case f: Float if f == 42f => (<float>perfect</float>: Elem)
+      case f: Float if f == 0f  => (<float>zero</float>: Node)
+      case f: Float if f > 0f   => (<float>positive</float>: NodeSeq)
+      case f: Float if f < 0f   => (<float>negative</float>: Seq[Node])
+    }
 
     // This method tests the XML implicit conversions on XMLApiHelper
     def calculator: LiftRules.DispatchPF = {
@@ -65,16 +64,15 @@ object XmlApiSpec extends Specification {
     }
 
     // ===== Handler methods =====
-    def reduceOp(operation: (Int, Int) => Int)(r: Req): Box[Elem] =
-      tryo {
-        (r.param("args").map { args =>
-          <result>{args.split(",").map(_.toInt).reduceLeft(operation)}</result>
-        }) ?~ "Missing args"
-      } match {
-        case Full(x)    => x
-        case f: Failure => f
-        case Empty      => Empty
-      }
+    def reduceOp(operation: (Int, Int) => Int)(r: Req): Box[Elem] = tryo {
+      (r.param("args").map { args =>
+        <result>{args.split(",").map(_.toInt).reduceLeft(operation)}</result>
+      }) ?~ "Missing args"
+    } match {
+      case Full(x)    => x
+      case f: Failure => f
+      case Empty      => Empty
+    }
 
     // We specify the LiftResponse return type to force use of the implicit
     // canNodeToResponse conversion

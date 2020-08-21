@@ -12,10 +12,9 @@ import tube.reportTube
 
 private[report] final class ReportApi {
 
-  def create(setup: ReportSetup, by: User): Funit =
-    !by.troll ?? {
-      Reason(setup.reason).fold[Funit](
-        fufail(s"Invalid report reason ${setup.reason}")) { reason =>
+  def create(setup: ReportSetup, by: User): Funit = !by.troll ?? {
+    Reason(setup.reason)
+      .fold[Funit](fufail(s"Invalid report reason ${setup.reason}")) { reason =>
         val user = setup.user
         val report = Report.make(
           user = setup.user,
@@ -37,12 +36,11 @@ private[report] final class ReportApi {
           else $insert(report)
         }
       } >>- monitorUnprocessed
-    }
+  }
 
-  private def monitorUnprocessed =
-    nbUnprocessed foreach { nb =>
-      lila.mon.mod.report.unprocessed(nb)
-    }
+  private def monitorUnprocessed = nbUnprocessed foreach { nb =>
+    lila.mon.mod.report.unprocessed(nb)
+  }
 
   private def isAlreadySlain(report: Report, user: User) =
     (report.isCheat && user.engine) ||
@@ -112,47 +110,43 @@ private[report] final class ReportApi {
     }
   }
 
-  def clean(userId: String): Funit =
-    $update(
-      Json.obj(
-        "user" -> userId,
-        "reason" -> "cheat"
-      ) ++ unprocessedSelect,
-      $set("processedBy" -> "lichess"),
-      multi = true)
+  def clean(userId: String): Funit = $update(
+    Json.obj(
+      "user" -> userId,
+      "reason" -> "cheat"
+    ) ++ unprocessedSelect,
+    $set("processedBy" -> "lichess"),
+    multi = true)
 
-  def process(id: String, by: User): Funit =
-    $find byId id flatMap {
-      _ ?? { report =>
-        $update(
-          Json.obj(
-            "user" -> report.user,
-            "reason" -> report.reason
-          ) ++ unprocessedSelect,
-          $set("processedBy" -> by.id),
-          multi = true)
-      } >>- monitorUnprocessed >>- lila.mon.mod.report.close()
-    }
+  def process(id: String, by: User): Funit = $find byId id flatMap {
+    _ ?? { report =>
+      $update(
+        Json.obj(
+          "user" -> report.user,
+          "reason" -> report.reason
+        ) ++ unprocessedSelect,
+        $set("processedBy" -> by.id),
+        multi = true)
+    } >>- monitorUnprocessed >>- lila.mon.mod.report.close()
+  }
 
-  def processEngine(userId: String, byModId: String): Funit =
-    $update(
-      Json.obj(
-        "user" -> userId,
-        "reason" -> $in(List(Reason.Cheat.name, Reason.CheatPrint.name))
-      ) ++ unprocessedSelect,
-      $set("processedBy" -> byModId),
-      multi = true) >>- monitorUnprocessed
+  def processEngine(userId: String, byModId: String): Funit = $update(
+    Json.obj(
+      "user" -> userId,
+      "reason" -> $in(List(Reason.Cheat.name, Reason.CheatPrint.name))
+    ) ++ unprocessedSelect,
+    $set("processedBy" -> byModId),
+    multi = true) >>- monitorUnprocessed
 
-  def processTroll(userId: String, byModId: String): Funit =
-    $update(
-      Json.obj(
-        "user" -> userId,
-        "reason" -> $in(
-          List(Reason.Insult.name, Reason.Troll.name, Reason.Other.name))
-      ) ++ unprocessedSelect,
-      $set("processedBy" -> byModId),
-      multi = true
-    ) >>- monitorUnprocessed
+  def processTroll(userId: String, byModId: String): Funit = $update(
+    Json.obj(
+      "user" -> userId,
+      "reason" -> $in(
+        List(Reason.Insult.name, Reason.Troll.name, Reason.Other.name))
+    ) ++ unprocessedSelect,
+    $set("processedBy" -> byModId),
+    multi = true
+  ) >>- monitorUnprocessed
 
   def autoInsultReport(userId: String, text: String): Funit = {
     UserRepo byId userId zip UserRepo.lichess flatMap {
@@ -197,11 +191,10 @@ private[report] final class ReportApi {
   def recentProcessed(nb: Int) =
     $find($query(processedSelect) sort $sort.createdDesc, nb)
 
-  private def selectRecent(user: User, reason: Reason) =
-    Json.obj(
-      "createdAt" -> $gt($date(DateTime.now minusDays 7)),
-      "user" -> user.id,
-      "reason" -> reason.name)
+  private def selectRecent(user: User, reason: Reason) = Json.obj(
+    "createdAt" -> $gt($date(DateTime.now minusDays 7)),
+    "user" -> user.id,
+    "reason" -> reason.name)
 
   private def findRecent(user: User, reason: Reason): Fu[Option[Report]] =
     $find.one(selectRecent(user, reason))

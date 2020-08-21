@@ -55,8 +55,8 @@ object ScalarTagLong extends ScalarTag[Long] {
     new IndexLong(vec)
   def makeSorter(implicit ord: ORD[Long]): Sorter[Long] = Sorter.longSorter
 
-  def concat(arrs: IndexedSeq[Vec[Long]]): Vec[Long] =
-    Vec(array.flatten(arrs.map(_.toArray)))
+  def concat(arrs: IndexedSeq[Vec[Long]]): Vec[Long] = Vec(
+    array.flatten(arrs.map(_.toArray)))
 
   override def toString = "ScalarTagLong"
 }

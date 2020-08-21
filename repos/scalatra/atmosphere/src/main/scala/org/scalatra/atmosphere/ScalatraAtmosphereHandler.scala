@@ -185,17 +185,16 @@ class ScalatraAtmosphereHandler(scalatraApp: ScalatraBase)(implicit
     resource.addEventListener(new ScalatraResourceEventListener)
   }
 
-  private[this] def liftAction(action: org.scalatra.Action) =
-    try {
-      action() match {
-        case cl: AtmosphereClient => Some(cl)
-        case _                    => None
-      }
-    } catch {
-      case t: Throwable =>
-        t.printStackTrace()
-        None
+  private[this] def liftAction(action: org.scalatra.Action) = try {
+    action() match {
+      case cl: AtmosphereClient => Some(cl)
+      case _                    => None
     }
+  } catch {
+    case t: Throwable =>
+      t.printStackTrace()
+      None
+  }
 
   private[this] def resumeIfNeeded(resource: AtmosphereResource) {
     import org.atmosphere.cpr.AtmosphereResource.TRANSPORT._

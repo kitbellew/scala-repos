@@ -220,10 +220,9 @@ object ActorMailboxSpec {
       extends MailboxType
       with ProducesMessageQueue[MCBoundedMessageQueueSemantics] {
 
-    def this(settings: ActorSystem.Settings, config: Config) =
-      this(
-        config.getInt("mailbox-capacity"),
-        config.getNanosDuration("mailbox-push-timeout-time"))
+    def this(settings: ActorSystem.Settings, config: Config) = this(
+      config.getInt("mailbox-capacity"),
+      config.getNanosDuration("mailbox-push-timeout-time"))
 
     final override def create(
         owner: Option[ActorRef],

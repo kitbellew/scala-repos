@@ -9,6 +9,6 @@ package expr
   */
 
 trait ScConstrBlock extends ScBlockExpr {
-  def selfInvocation: Option[ScSelfInvocation] =
-    findChild(classOf[ScSelfInvocation])
+  def selfInvocation: Option[ScSelfInvocation] = findChild(
+    classOf[ScSelfInvocation])
 }

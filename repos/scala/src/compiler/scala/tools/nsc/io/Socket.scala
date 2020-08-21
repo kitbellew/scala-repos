@@ -28,19 +28,17 @@ object Socket {
     private val optHandler = handlerFn[Option[T]](_ => None)
     private val eitherHandler = handlerFn[Either[Throwable, T]](x => Left(x))
 
-    def either: Either[Throwable, T] =
-      try Right(f())
-      catch eitherHandler
-    def opt: Option[T] =
-      try Some(f())
-      catch optHandler
+    def either: Either[Throwable, T] = try Right(f())
+    catch eitherHandler
+    def opt: Option[T] = try Some(f())
+    catch optHandler
   }
 
   def localhost(port: Int) = apply(InetAddress.getLocalHost(), port)
-  def apply(host: InetAddress, port: Int) =
-    new Box(() => new Socket(new JSocket(host, port)))
-  def apply(host: String, port: Int) =
-    new Box(() => new Socket(new JSocket(host, port)))
+  def apply(host: InetAddress, port: Int) = new Box(() =>
+    new Socket(new JSocket(host, port)))
+  def apply(host: String, port: Int) = new Box(() =>
+    new Socket(new JSocket(host, port)))
 }
 
 class Socket(jsocket: JSocket) extends Streamable.Bytes with Closeable {
@@ -50,8 +48,8 @@ class Socket(jsocket: JSocket) extends Streamable.Bytes with Closeable {
   def close() = jsocket.close()
 
   def printWriter() = new PrintWriter(outputStream(), true)
-  def bufferedReader(implicit codec: Codec) =
-    new BufferedReader(new InputStreamReader(inputStream()))
+  def bufferedReader(implicit codec: Codec) = new BufferedReader(
+    new InputStreamReader(inputStream()))
   def bufferedOutput(size: Int) = new BufferedOutputStream(outputStream(), size)
 
   /** Creates an InputStream and applies the closure, automatically closing it on completion.

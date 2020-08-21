@@ -219,8 +219,8 @@ object Attributes {
   /**
     * Specifies the initial and maximum size of the input buffer.
     */
-  def inputBuffer(initial: Int, max: Int): Attributes =
-    Attributes(InputBuffer(initial, max))
+  def inputBuffer(initial: Int, max: Int): Attributes = Attributes(
+    InputBuffer(initial, max))
 
   /**
     * Java API
@@ -279,8 +279,8 @@ object ActorAttributes {
   /**
     * Specifies the name of the dispatcher.
     */
-  def dispatcher(dispatcher: String): Attributes =
-    Attributes(Dispatcher(dispatcher))
+  def dispatcher(dispatcher: String): Attributes = Attributes(
+    Dispatcher(dispatcher))
 
   /**
     * Scala API: Decides how exceptions from user are to be handled.

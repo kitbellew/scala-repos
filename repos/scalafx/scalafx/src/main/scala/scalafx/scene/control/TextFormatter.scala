@@ -200,8 +200,8 @@ object TextFormatter {
       : UnaryOperator[jfxsc.TextFormatter.Change] =
     new UnaryOperator[jfxsc.TextFormatter.Change] {
       override def apply(
-          a: jfxsc.TextFormatter.Change): jfxsc.TextFormatter.Change =
-        op(new TextFormatter.Change(a))
+          a: jfxsc.TextFormatter.Change): jfxsc.TextFormatter.Change = op(
+        new TextFormatter.Change(a))
     }
 }
 

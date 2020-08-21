@@ -158,13 +158,12 @@ object TellOnlyBenchmark {
       prerequisites: DispatcherPrerequisites)
       extends MessageDispatcherConfigurator(config, prerequisites) {
 
-    override def dispatcher(): MessageDispatcher =
-      new DroppingDispatcher(
-        this,
-        config.getString("id"),
-        config.getInt("throughput"),
-        config.getNanosDuration("throughput-deadline-time"),
-        configureExecutor(),
-        config.getMillisDuration("shutdown-timeout"))
+    override def dispatcher(): MessageDispatcher = new DroppingDispatcher(
+      this,
+      config.getString("id"),
+      config.getInt("throughput"),
+      config.getNanosDuration("throughput-deadline-time"),
+      configureExecutor(),
+      config.getMillisDuration("shutdown-timeout"))
   }
 }

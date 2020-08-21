@@ -99,8 +99,8 @@ object KMeansExample extends App {
       vs: VectorSpace[V, A],
       cbf: CanBuildFrom[Nothing, V, CC[V]]): CC[V] = {
 
-    def randPoint(gen: => Double): V =
-      f((1 to d).map(_ => gen)(collection.breakOut))
+    def randPoint(gen: => Double): V = f(
+      (1 to d).map(_ => gen)(collection.breakOut))
 
     val centers: Vector[V] = (1 to k).map({ _ =>
       randPoint(nextDouble() * 10)

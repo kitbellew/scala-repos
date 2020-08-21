@@ -81,11 +81,10 @@ private[finagle] class LatencyProfile(stopWatch: () => Duration) {
     * within `start` and `end`.
     */
   def slowWithin(start: Duration, end: Duration, factor: Long)(
-      next: () => Duration) =
-    () => {
-      val time = stopWatch()
-      if (time >= start && time <= end) next() * factor else next()
-    }
+      next: () => Duration) = () => {
+    val time = stopWatch()
+    if (time >= start && time <= end) next() * factor else next()
+  }
 
   /**
     * Progressively improve latencies returned from `next` while `stopWatch` is still
@@ -191,8 +190,9 @@ private[finagle] object Simulation extends com.twitter.app.App {
     val balancer = factory.toService
 
     val latstat = stats.stat("latency")
-    def call() =
-      Stat.timeFuture(latstat, TimeUnit.MILLISECONDS) { balancer(()) }
+    def call() = Stat.timeFuture(latstat, TimeUnit.MILLISECONDS) {
+      balancer(())
+    }
 
     val stopWatch = Stopwatch.start()
     val p = new LatencyProfile(stopWatch)

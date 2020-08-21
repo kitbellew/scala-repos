@@ -401,8 +401,9 @@ abstract class BCodeSyncAndTry extends BCodeBodyBuilder {
     }
 
     /* Does this tree have a try-catch block? */
-    def mayCleanStack(tree: Tree): Boolean =
-      tree exists { t => t.isInstanceOf[Try] }
+    def mayCleanStack(tree: Tree): Boolean = tree exists { t =>
+      t.isInstanceOf[Try]
+    }
 
     trait EHClause
     case class NamelessEH(typeToDrop: ClassBType, caseBody: Tree)

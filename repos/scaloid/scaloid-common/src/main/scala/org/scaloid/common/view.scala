@@ -220,8 +220,8 @@ trait TraitView[This <: android.view.View]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setBackground(android.graphics.drawable.Drawable) setBackground(android.graphics.drawable.Drawable)]]`
     */
-  @inline def background(p: android.graphics.drawable.Drawable) =
-    background_=(p)
+  @inline def background(p: android.graphics.drawable.Drawable) = background_=(
+    p)
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setBackground(android.graphics.drawable.Drawable) setBackground(android.graphics.drawable.Drawable)]]`
@@ -231,9 +231,8 @@ trait TraitView[This <: android.view.View]
   } // to avoid compatibility issue on API Level < 16, calls setBackgroundDrawable() although it is deprecated.
 
   @inline def accessibilityDelegate(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'accessibilityDelegate'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'accessibilityDelegate'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setAccessibilityDelegate(android.view.View.AccessibilityDelegate) setAccessibilityDelegate(android.view.View.AccessibilityDelegate)]]`
@@ -325,9 +324,8 @@ trait TraitView[This <: android.view.View]
   @inline def backgroundColor_=(p: Int) = { basis.setBackgroundColor(p); basis }
 
   @inline def backgroundDrawable(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'backgroundDrawable'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'backgroundDrawable'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setBackgroundDrawable(android.graphics.drawable.Drawable) setBackgroundDrawable(android.graphics.drawable.Drawable)]]`
@@ -344,9 +342,8 @@ trait TraitView[This <: android.view.View]
   }
 
   @inline def backgroundResource(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'backgroundResource'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'backgroundResource'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setBackgroundResource(int) setBackgroundResource(int)]]`
@@ -1010,9 +1007,8 @@ trait TraitView[This <: android.view.View]
   }
 
   @inline def onCreateContextMenuListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onCreateContextMenuListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onCreateContextMenuListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setOnCreateContextMenuListener(android.view.View.OnCreateContextMenuListener) setOnCreateContextMenuListener(android.view.View.OnCreateContextMenuListener)]]`
@@ -1065,16 +1061,15 @@ trait TraitView[This <: android.view.View]
   }
 
   @inline def onGenericMotionListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onGenericMotionListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onGenericMotionListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setOnGenericMotionListener(android.view.View.OnGenericMotionListener) setOnGenericMotionListener(android.view.View.OnGenericMotionListener)]]`
     */
   @inline def onGenericMotionListener(
-      p: android.view.View.OnGenericMotionListener) =
-    onGenericMotionListener_=(p)
+      p: android.view.View.OnGenericMotionListener) = onGenericMotionListener_=(
+    p)
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setOnGenericMotionListener(android.view.View.OnGenericMotionListener) setOnGenericMotionListener(android.view.View.OnGenericMotionListener)]]`
@@ -1117,9 +1112,8 @@ trait TraitView[This <: android.view.View]
   }
 
   @inline def onLongClickListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onLongClickListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onLongClickListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setOnLongClickListener(android.view.View.OnLongClickListener) setOnLongClickListener(android.view.View.OnLongClickListener)]]`
@@ -1136,9 +1130,8 @@ trait TraitView[This <: android.view.View]
   }
 
   @inline def onSystemUiVisibilityChangeListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onSystemUiVisibilityChangeListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onSystemUiVisibilityChangeListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setOnSystemUiVisibilityChangeListener(android.view.View.OnSystemUiVisibilityChangeListener) setOnSystemUiVisibilityChangeListener(android.view.View.OnSystemUiVisibilityChangeListener)]]`
@@ -1721,8 +1714,8 @@ trait TraitView[This <: android.view.View]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setVerticalScrollBarEnabled(boolean) setVerticalScrollBarEnabled(boolean)]]`
     */
-  @inline def verticalScrollBarEnabled(p: Boolean) =
-    verticalScrollBarEnabled_=(p)
+  @inline def verticalScrollBarEnabled(p: Boolean) = verticalScrollBarEnabled_=(
+    p)
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setVerticalScrollBarEnabled(boolean) setVerticalScrollBarEnabled(boolean)]]`
@@ -2301,8 +2294,8 @@ trait TraitViewGroup[This <: android.view.ViewGroup] extends TraitView[This] {
     * Shortcut for `[[https://developer.android.com/reference/android/view/ViewGroup.html#setLayoutAnimation(android.view.animation.LayoutAnimationController) setLayoutAnimation(android.view.animation.LayoutAnimationController)]]`
     */
   @inline def layoutAnimation(
-      p: android.view.animation.LayoutAnimationController) =
-    layoutAnimation_=(p)
+      p: android.view.animation.LayoutAnimationController) = layoutAnimation_=(
+    p)
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/view/ViewGroup.html#setLayoutAnimation(android.view.animation.LayoutAnimationController) setLayoutAnimation(android.view.animation.LayoutAnimationController)]]`
@@ -2376,9 +2369,8 @@ trait TraitViewGroup[This <: android.view.ViewGroup] extends TraitView[This] {
   }
 
   @inline def onHierarchyChangeListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onHierarchyChangeListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onHierarchyChangeListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/view/ViewGroup.html#setOnHierarchyChangeListener(android.view.ViewGroup.OnHierarchyChangeListener) setOnHierarchyChangeListener(android.view.ViewGroup.OnHierarchyChangeListener)]]`
@@ -2688,8 +2680,8 @@ trait TraitContextMenu[This <: android.view.ContextMenu] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/view/ContextMenu.html#setHeaderIcon(android.graphics.drawable.Drawable) setHeaderIcon(android.graphics.drawable.Drawable)]]`
     */
-  @inline def headerIcon(p: android.graphics.drawable.Drawable) =
-    headerIcon_=(p)
+  @inline def headerIcon(p: android.graphics.drawable.Drawable) = headerIcon_=(
+    p)
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/view/ContextMenu.html#setHeaderIcon(android.graphics.drawable.Drawable) setHeaderIcon(android.graphics.drawable.Drawable)]]`
@@ -2758,9 +2750,8 @@ trait TraitSurfaceView[This <: android.view.SurfaceView]
   @inline def holder = basis.getHolder
 
   @inline def zOrderMediaOverlay(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'zOrderMediaOverlay'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'zOrderMediaOverlay'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/view/SurfaceView.html#setZOrderMediaOverlay(boolean) setZOrderMediaOverlay(boolean)]]`
@@ -2848,8 +2839,8 @@ trait TraitViewStub[This <: android.view.ViewStub] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/view/ViewStub.html#setLayoutInflater(android.view.LayoutInflater) setLayoutInflater(android.view.LayoutInflater)]]`
     */
-  @inline def layoutInflater(p: android.view.LayoutInflater) =
-    layoutInflater_=(p)
+  @inline def layoutInflater(p: android.view.LayoutInflater) = layoutInflater_=(
+    p)
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/view/ViewStub.html#setLayoutInflater(android.view.LayoutInflater) setLayoutInflater(android.view.LayoutInflater)]]`
@@ -2926,16 +2917,15 @@ trait TraitActionProvider[This <: android.view.ActionProvider] {
   def basis: This
 
   @inline def visibilityListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'visibilityListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'visibilityListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/view/ActionProvider.html#setVisibilityListener(android.view.ActionProvider.VisibilityListener) setVisibilityListener(android.view.ActionProvider.VisibilityListener)]]`
     */
   @inline def visibilityListener(
-      p: android.view.ActionProvider.VisibilityListener) =
-    visibilityListener_=(p)
+      p: android.view.ActionProvider.VisibilityListener) = visibilityListener_=(
+    p)
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/view/ActionProvider.html#setVisibilityListener(android.view.ActionProvider.VisibilityListener) setVisibilityListener(android.view.ActionProvider.VisibilityListener)]]`

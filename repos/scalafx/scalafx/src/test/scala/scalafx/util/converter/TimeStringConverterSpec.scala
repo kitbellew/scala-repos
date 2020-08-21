@@ -52,7 +52,7 @@ class TimeStringConverterSpec
     (dateFormat.parse("1970-01-01 12:34:56"), "12:34:56"),
     (dateFormat.parse("1970-01-01 00:00:00"), "00:00:00"))
 
-  override protected def getConverterForExample =
-    new TimeStringConverter("HH:mm:ss")
+  override protected def getConverterForExample = new TimeStringConverter(
+    "HH:mm:ss")
 
 }

@@ -182,12 +182,11 @@ object Test4 {
 }
 
 object Test5 {
-  def show(xs: List[String]) =
-    xs match {
-      case "foo" :: args => args.toString
-      case List(x)       => x.toString
-      case Nil           => "Nil"
-    }
+  def show(xs: List[String]) = xs match {
+    case "foo" :: args => args.toString
+    case List(x)       => x.toString
+    case Nil           => "Nil"
+  }
   def run() {
     assert(show(List()) == "Nil")
     assert(show(List("a")) == "a")

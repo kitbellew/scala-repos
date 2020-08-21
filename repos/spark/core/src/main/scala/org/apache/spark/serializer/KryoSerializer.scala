@@ -680,8 +680,8 @@ private[spark] class KryoInputObjectInputBridge(kryo: Kryo, input: KryoInput)
   override def readFully(b: Array[Byte]): Unit = input.read(b)
   override def readFully(b: Array[Byte], off: Int, len: Int): Unit =
     input.read(b, off, len)
-  override def readLine(): String =
-    throw new UnsupportedOperationException("readLine")
+  override def readLine(): String = throw new UnsupportedOperationException(
+    "readLine")
   override def readBoolean(): Boolean = input.readBoolean()
   override def readUnsignedByte(): Int = input.readByteUnsigned()
   override def readDouble(): Double = input.readDouble()

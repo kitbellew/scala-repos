@@ -28,10 +28,9 @@ class HTTPServletSession(session: HttpSession) extends HTTPSession {
 
   def sessionId: String = session.getId
 
-  def link(liftSession: LiftSession) =
-    session.setAttribute(
-      LiftMagicID,
-      SessionToServletBridge(liftSession.underlyingId))
+  def link(liftSession: LiftSession) = session.setAttribute(
+    LiftMagicID,
+    SessionToServletBridge(liftSession.underlyingId))
 
   def unlink(liftSession: LiftSession) = session.removeAttribute(LiftMagicID)
 

@@ -24,13 +24,12 @@ object ShowPickled extends Names {
       tag: Int,
       bytes: Array[Byte]) {
     def isName = tag == TERMname || tag == TYPEname
-    def hasName =
-      tag match {
-        case TYPEsym | ALIASsym | CLASSsym | MODULEsym | VALsym | EXTref |
-            EXTMODCLASSref =>
-          true
-        case _ => false
-      }
+    def hasName = tag match {
+      case TYPEsym | ALIASsym | CLASSsym | MODULEsym | VALsym | EXTref |
+          EXTMODCLASSref =>
+        true
+      case _ => false
+    }
     def readName =
       if (isName) new String(bytes, "UTF-8")
       else sys.error("%s is no name" format tagName)
@@ -59,55 +58,54 @@ object ShowPickled extends Names {
     PickleBufferEntryList(entries)
   }
 
-  def tag2string(tag: Int): String =
-    tag match {
-      case TERMname          => "TERMname"
-      case TYPEname          => "TYPEname"
-      case NONEsym           => "NONEsym"
-      case TYPEsym           => "TYPEsym"
-      case ALIASsym          => "ALIASsym"
-      case CLASSsym          => "CLASSsym"
-      case MODULEsym         => "MODULEsym"
-      case VALsym            => "VALsym"
-      case EXTref            => "EXTref"
-      case EXTMODCLASSref    => "EXTMODCLASSref"
-      case NOtpe             => "NOtpe"
-      case NOPREFIXtpe       => "NOPREFIXtpe"
-      case THIStpe           => "THIStpe"
-      case SINGLEtpe         => "SINGLEtpe"
-      case CONSTANTtpe       => "CONSTANTtpe"
-      case TYPEREFtpe        => "TYPEREFtpe"
-      case TYPEBOUNDStpe     => "TYPEBOUNDStpe"
-      case REFINEDtpe        => "REFINEDtpe"
-      case CLASSINFOtpe      => "CLASSINFOtpe"
-      case METHODtpe         => "METHODtpe"
-      case POLYtpe           => "POLYtpe"
-      case IMPLICITMETHODtpe => "METHODtpe" // IMPLICITMETHODtpe no longer used.
-      case SUPERtpe          => "SUPERtpe"
-      case LITERALunit       => "LITERALunit"
-      case LITERALboolean    => "LITERALboolean"
-      case LITERALbyte       => "LITERALbyte"
-      case LITERALshort      => "LITERALshort"
-      case LITERALchar       => "LITERALchar"
-      case LITERALint        => "LITERALint"
-      case LITERALlong       => "LITERALlong"
-      case LITERALfloat      => "LITERALfloat"
-      case LITERALdouble     => "LITERALdouble"
-      case LITERALstring     => "LITERALstring"
-      case LITERALnull       => "LITERALnull"
-      case LITERALclass      => "LITERALclass"
-      case LITERALenum       => "LITERALenum"
-      case SYMANNOT          => "SYMANNOT"
-      case CHILDREN          => "CHILDREN"
-      case ANNOTATEDtpe      => "ANNOTATEDtpe"
-      case ANNOTINFO         => "ANNOTINFO"
-      case ANNOTARGARRAY     => "ANNOTARGARRAY"
-      case EXISTENTIALtpe    => "EXISTENTIALtpe"
-      case TREE              => "TREE"
-      case MODIFIERS         => "MODIFIERS"
+  def tag2string(tag: Int): String = tag match {
+    case TERMname          => "TERMname"
+    case TYPEname          => "TYPEname"
+    case NONEsym           => "NONEsym"
+    case TYPEsym           => "TYPEsym"
+    case ALIASsym          => "ALIASsym"
+    case CLASSsym          => "CLASSsym"
+    case MODULEsym         => "MODULEsym"
+    case VALsym            => "VALsym"
+    case EXTref            => "EXTref"
+    case EXTMODCLASSref    => "EXTMODCLASSref"
+    case NOtpe             => "NOtpe"
+    case NOPREFIXtpe       => "NOPREFIXtpe"
+    case THIStpe           => "THIStpe"
+    case SINGLEtpe         => "SINGLEtpe"
+    case CONSTANTtpe       => "CONSTANTtpe"
+    case TYPEREFtpe        => "TYPEREFtpe"
+    case TYPEBOUNDStpe     => "TYPEBOUNDStpe"
+    case REFINEDtpe        => "REFINEDtpe"
+    case CLASSINFOtpe      => "CLASSINFOtpe"
+    case METHODtpe         => "METHODtpe"
+    case POLYtpe           => "POLYtpe"
+    case IMPLICITMETHODtpe => "METHODtpe" // IMPLICITMETHODtpe no longer used.
+    case SUPERtpe          => "SUPERtpe"
+    case LITERALunit       => "LITERALunit"
+    case LITERALboolean    => "LITERALboolean"
+    case LITERALbyte       => "LITERALbyte"
+    case LITERALshort      => "LITERALshort"
+    case LITERALchar       => "LITERALchar"
+    case LITERALint        => "LITERALint"
+    case LITERALlong       => "LITERALlong"
+    case LITERALfloat      => "LITERALfloat"
+    case LITERALdouble     => "LITERALdouble"
+    case LITERALstring     => "LITERALstring"
+    case LITERALnull       => "LITERALnull"
+    case LITERALclass      => "LITERALclass"
+    case LITERALenum       => "LITERALenum"
+    case SYMANNOT          => "SYMANNOT"
+    case CHILDREN          => "CHILDREN"
+    case ANNOTATEDtpe      => "ANNOTATEDtpe"
+    case ANNOTINFO         => "ANNOTINFO"
+    case ANNOTARGARRAY     => "ANNOTARGARRAY"
+    case EXISTENTIALtpe    => "EXISTENTIALtpe"
+    case TREE              => "TREE"
+    case MODIFIERS         => "MODIFIERS"
 
-      case _ => "***BAD TAG***(" + tag + ")"
-    }
+    case _ => "***BAD TAG***(" + tag + ")"
+  }
 
   /** Extremely regrettably, essentially copied from PickleBuffer.
     */

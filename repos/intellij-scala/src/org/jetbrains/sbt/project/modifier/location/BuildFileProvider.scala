@@ -22,8 +22,8 @@ trait BuildFileProvider {
       vfsFileToCopy: mutable.Map[VirtualFile, LightVirtualFile])
       : Option[BuildFileEntry[PsiFile]] = {
 
-    def findVirtualFile(file: File) =
-      Option(VfsUtil.findFileByIoFile(file, true))
+    def findVirtualFile(file: File) = Option(
+      VfsUtil.findFileByIoFile(file, true))
 
     def toLightVirtualFile(origFile: VirtualFile) =
       vfsFileToCopy.getOrElseUpdate(
@@ -33,8 +33,8 @@ trait BuildFileProvider {
           VfsUtilCore.loadText(origFile),
           LocalTimeCounter.currentTime))
 
-    def toPsiFile(vFile: VirtualFile) =
-      Option(PsiManager.getInstance(module.getProject).findFile(vFile))
+    def toPsiFile(vFile: VirtualFile) = Option(
+      PsiManager.getInstance(module.getProject).findFile(vFile))
 
     findIoFile(module, elementType).flatMap {
       case BuildFileEntry(buildFile, isModuleLocal) =>

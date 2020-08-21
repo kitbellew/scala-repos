@@ -41,26 +41,25 @@ class ConstructorParamsInConstructorPatternSearcher
           new SubPatternWithIndexBindings(index)
 
         val processor = new Processor[PsiReference] {
-          def process(t: PsiReference): Boolean =
-            t match {
-              case correspondingSubpatternWithBindings(Seq(only)) =>
-                ReferencesSearch
-                  .search(only, scope, false)
-                  .forEach(new Processor[PsiReference] {
-                    def process(t: PsiReference): Boolean = {
-                      inReadAction {
-                        val descriptor =
-                          new UsageInfoToUsageConverter.TargetElementsDescriptor(
-                            Array(),
-                            Array(only))
-                        val usage = UsageInfoToUsageConverter
-                          .convert(descriptor, new UsageInfo(t))
-                        processor0.process(usage)
-                      }
+          def process(t: PsiReference): Boolean = t match {
+            case correspondingSubpatternWithBindings(Seq(only)) =>
+              ReferencesSearch
+                .search(only, scope, false)
+                .forEach(new Processor[PsiReference] {
+                  def process(t: PsiReference): Boolean = {
+                    inReadAction {
+                      val descriptor =
+                        new UsageInfoToUsageConverter.TargetElementsDescriptor(
+                          Array(),
+                          Array(only))
+                      val usage = UsageInfoToUsageConverter
+                        .convert(descriptor, new UsageInfo(t))
+                      processor0.process(usage)
                     }
-                  })
-              case _ => true
-            }
+                  }
+                })
+            case _ => true
+          }
         }
         ReferencesSearch.search(cls, scope, false).forEach(processor)
       case _ =>

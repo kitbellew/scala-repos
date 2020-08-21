@@ -86,25 +86,24 @@ object Settings {
           "secure")
       }
 
-      def settings: Option[Settings] =
-        for {
-          h <- host
-          i <- id
-          t <- token
-          ac <- accountsPort
-          acp <- accountsPath
-          au <- authPort
-          aup <- authPath
-          in <- ingestPort
-          inp <- ingestPath
-          j <- jobsPort
-          jp <- jobsPath
-          sh <- shardPort
-          shp <- shardPath
-          sec <- secure
-        } yield {
-          Settings(h, i, t, ac, acp, au, aup, in, inp, j, jp, sh, shp, sec)
-        }
+      def settings: Option[Settings] = for {
+        h <- host
+        i <- id
+        t <- token
+        ac <- accountsPort
+        acp <- accountsPath
+        au <- authPort
+        aup <- authPath
+        in <- ingestPort
+        inp <- ingestPath
+        j <- jobsPort
+        jp <- jobsPath
+        sh <- shardPort
+        shp <- shardPath
+        sec <- secure
+      } yield {
+        Settings(h, i, t, ac, acp, au, aup, in, inp, j, jp, sh, shp, sec)
+      }
     }
 
     val lines = io.Source.fromFile(f).getLines

@@ -6,20 +6,18 @@ import org.joda.time.DateTime
 
 object QaAuth {
 
-  def canEdit(q: Question)(implicit ctx: UserContext) =
-    noTroll { u =>
-      (q ownBy u) || Granter(_.ModerateQa)(u)
-    }
+  def canEdit(q: Question)(implicit ctx: UserContext) = noTroll { u =>
+    (q ownBy u) || Granter(_.ModerateQa)(u)
+  }
 
-  def canEdit(a: Answer)(implicit ctx: UserContext) =
-    noTroll { u =>
-      (a ownBy u) || Granter(_.ModerateQa)(u)
-    }
+  def canEdit(a: Answer)(implicit ctx: UserContext) = noTroll { u =>
+    (a ownBy u) || Granter(_.ModerateQa)(u)
+  }
 
   def canAsk(implicit ctx: UserContext) = noKid(noTroll(isNotN00b))
 
-  def canAnswer(q: Question)(implicit ctx: UserContext) =
-    noKid(noTroll(isNotN00b))
+  def canAnswer(q: Question)(implicit ctx: UserContext) = noKid(
+    noTroll(isNotN00b))
 
   def canVote(implicit ctx: UserContext) = noKid(noTroll(isNotN00b))
 

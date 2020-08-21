@@ -233,19 +233,17 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
 
       /** All definitions in this table class including disabled ones grouped into logical groups. */
       def definitions = {
-        def OptionDef =
-          new Def {
-            def doc = "Maps whole row to an option. Useful for outer joins."
-            override def enabled = optionEnabled
-            def code = option
-            def rawName = ???
-          }
-        def StarDef =
-          new Def {
-            def doc = ""
-            def code = star
-            def rawName = ???
-          }
+        def OptionDef = new Def {
+          def doc = "Maps whole row to an option. Useful for outer joins."
+          override def enabled = optionEnabled
+          def code = option
+          def rawName = ???
+        }
+        def StarDef = new Def {
+          def doc = ""
+          def code = star
+          def rawName = ???
+        }
 
         Seq[Seq[Def]](
           Seq(StarDef, OptionDef),
@@ -257,10 +255,9 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       }
 
       /** Code for enabled definitions in this table class grouped into logical groups. */
-      def body: Seq[Seq[Code]] =
-        definitions
-          .map(_.flatMap(_.getEnabled).map(_.docWithCode))
-          .filter(_.nonEmpty)
+      def body: Seq[Seq[Code]] = definitions
+        .map(_.flatMap(_.getEnabled).map(_.docWithCode))
+        .filter(_.nonEmpty)
     }
 
     /** Table value generator virtual class */
@@ -326,13 +323,12 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       def columnOptionCode: ColumnOption[_] => Option[Code]
 
       /** Generates code for the ColumnOptions (DBType, AutoInc, etc.) */
-      def options: Iterable[Code] =
-        model.options
-          .filter {
-            case t: SqlProfile.ColumnOption.SqlType => dbType
-            case _                                  => true
-          }
-          .flatMap(columnOptionCode(_).toSeq)
+      def options: Iterable[Code] = model.options
+        .filter {
+          case t: SqlProfile.ColumnOption.SqlType => dbType
+          case _                                  => true
+        }
+        .flatMap(columnOptionCode(_).toSeq)
 
       /** Indicates if a (non-portable) DBType ColumnOption should be generated */
       def dbType: Boolean = false
@@ -341,20 +337,18 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       def defaultCode: Any => Code
 
       /** Generates a literal represenation of the default value or None in case of an Option-typed autoinc column */
-      def default: Option[Code] =
-        model.options
-          .collect {
-            case RelationalProfile.ColumnOption.Default(value) => value
-            case _ if fakeNullable                             => None
-          }
-          .map(defaultCode)
-          .headOption
+      def default: Option[Code] = model.options
+        .collect {
+          case RelationalProfile.ColumnOption.Default(value) => value
+          case _ if fakeNullable                             => None
+        }
+        .map(defaultCode)
+        .headOption
 
       def rawName: String = model.name.toCamelCase.uncapitalize
-      def doc: String =
-        "Database column " + model.name + " " + model.options
-          .map(_.toString)
-          .mkString(", ")
+      def doc: String = "Database column " + model.name + " " + model.options
+        .map(_.toString)
+        .mkString(", ")
     }
 
     /** Primary key generator virtual class */
@@ -427,18 +421,17 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       def actionCode(action: ForeignKeyAction): Code
       final def onUpdate: Code = actionCode(model.onUpdate)
       final def onDelete: Code = actionCode(model.onDelete)
-      def rawName: String =
-        disambiguateTerm({
-          val fksToSameTable =
-            foreignKeys.filter(_.referencedTable == referencedTable)
-          require(
-            fksToSameTable.filter(_.model.name.isEmpty).size <= 1,
-            s"Found multiple unnamed foreign keys to same table, please manually provide names using overrides. ${referencingTable.model.name.table} -> ${referencedTable.model.name.table}"
-          )
-          val baseName = referencedTable.TableClass.rawName.uncapitalize + "Fk"
-          disambiguateTerm(
-            if (fksToSameTable.size > 1) baseName + id else baseName)
-        })
+      def rawName: String = disambiguateTerm({
+        val fksToSameTable =
+          foreignKeys.filter(_.referencedTable == referencedTable)
+        require(
+          fksToSameTable.filter(_.model.name.isEmpty).size <= 1,
+          s"Found multiple unnamed foreign keys to same table, please manually provide names using overrides. ${referencingTable.model.name.table} -> ${referencedTable.model.name.table}"
+        )
+        val baseName = referencedTable.TableClass.rawName.uncapitalize + "Fk"
+        disambiguateTerm(
+          if (fksToSameTable.size > 1) baseName + id else baseName)
+      })
       def doc =
         s"Foreign key referencing ${referencedTable.TableValue.name} (database name ${dbName})"
     }
@@ -523,12 +516,11 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       }
 
       /** Name (escaped if colliding with Scala keyword). */
-      final def name: TermName =
-        termName {
-          if (slickTableTermMembersNoArgs.contains(rawName)) {
-            disambiguateTerm(rawName)
-          } else rawName
-        }
+      final def name: TermName = termName {
+        if (slickTableTermMembersNoArgs.contains(rawName)) {
+          disambiguateTerm(rawName)
+        } else rawName
+      }
 
       /** Adds one or more X to the end of the given string to avoid collisions with column names. */
       def disambiguateTerm(name: String, postfix: String = "X"): String =
@@ -677,14 +669,13 @@ trait GeneratorHelpers[Code, TermName, TypeName] {
       * Removes one '_' from each sequence of one or more subsequent '_' (to avoid collision).
       * (Warning: Not unicode-safe, uses String#apply)
       */
-    final def toCamelCase: String =
-      str.toLowerCase
-        .split("_")
-        .map {
-          case "" => "_"
-          case s  => s
-        } // avoid possible collisions caused by multiple '_'
-        .map(_.capitalize)
-        .mkString("")
+    final def toCamelCase: String = str.toLowerCase
+      .split("_")
+      .map {
+        case "" => "_"
+        case s  => s
+      } // avoid possible collisions caused by multiple '_'
+      .map(_.capitalize)
+      .mkString("")
   }
 }

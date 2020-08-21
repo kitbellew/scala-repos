@@ -333,8 +333,8 @@ class SubFlow[-In, +Out, +Mat](
     *
     * See also [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
     */
-  def limit(n: Long): javadsl.SubFlow[In, Out, Mat] =
-    new SubFlow(delegate.limit(n))
+  def limit(n: Long): javadsl.SubFlow[In, Out, Mat] = new SubFlow(
+    delegate.limit(n))
 
   /**
     * Ensure stream boundedness by evaluating the cost of incoming elements

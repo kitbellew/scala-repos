@@ -68,11 +68,10 @@ trait RestHelper extends LiftRules.DispatchPF {
     * Take any value and convert it into a JValue.  Full box if
     * it works, empty if it does
     */
-  protected def anyToJValue(in: Any): Box[JValue] =
-    Helpers.tryo {
-      implicit def formats = DefaultFormats
-      Extraction.decompose(in)
-    }
+  protected def anyToJValue(in: Any): Box[JValue] = Helpers.tryo {
+    implicit def formats = DefaultFormats
+    Extraction.decompose(in)
+  }
 
   /**
     * If there are additional custom rules (e.g., looking at query parameters)
@@ -557,15 +556,14 @@ trait RestHelper extends LiftRules.DispatchPF {
   )(implicit
       asyncResolveProvider: CanResolveAsync[AsyncResolvableType, T],
       responseCreator: T => LiftResponse
-  ): () => Box[LiftResponse] =
-    () => {
-      RestContinuation.async(reply => {
-        asyncResolveProvider.resolveAsync(
-          asyncContainer,
-          { resolved => reply(responseCreator(resolved)) }
-        )
-      })
-    }
+  ): () => Box[LiftResponse] = () => {
+    RestContinuation.async(reply => {
+      asyncResolveProvider.resolveAsync(
+        asyncContainer,
+        { resolved => reply(responseCreator(resolved)) }
+      )
+    })
+  }
 
   /**
     * If we're returning a future, then automatically turn the request into an Async request
@@ -579,17 +577,16 @@ trait RestHelper extends LiftRules.DispatchPF {
   )(implicit
       asyncResolveProvider: CanResolveAsync[AsyncResolvableType, Box[T]],
       responseCreator: T => LiftResponse
-  ): () => Box[LiftResponse] =
-    () => {
-      RestContinuation.async(reply => {
-        asyncResolveProvider.resolveAsync(
-          asyncBoxContainer,
-          { resolvedBox =>
-            boxToResp(resolvedBox).apply() openOr NotFoundResponse()
-          }
-        )
-      })
-    }
+  ): () => Box[LiftResponse] = () => {
+    RestContinuation.async(reply => {
+      asyncResolveProvider.resolveAsync(
+        asyncBoxContainer,
+        { resolvedBox =>
+          boxToResp(resolvedBox).apply() openOr NotFoundResponse()
+        }
+      )
+    })
+  }
 
   /**
     * Turn a Box[T] into the return type expected by

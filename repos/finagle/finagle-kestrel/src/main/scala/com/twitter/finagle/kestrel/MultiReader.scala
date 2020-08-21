@@ -176,16 +176,15 @@ private[finagle] object MultiReaderHelper {
         _closeHandleOf: Offer[Unit],
         _numReadHandlesGauge: Gauge,
         _outstandingReadsGauge: Gauge
-    ): ReadHandle =
-      new ReadHandle {
-        val messages = _messages
-        val error = _error
-        def close() = _closeHandleOf.sync()
+    ): ReadHandle = new ReadHandle {
+      val messages = _messages
+      val error = _error
+      def close() = _closeHandleOf.sync()
 
-        // keep gauge references here since addGauge are weekly referenced.
-        val numReadHandlesGauge = _numReadHandlesGauge
-        val outstandingReadsGauge = _outstandingReadsGauge
-      }
+      // keep gauge references here since addGauge are weekly referenced.
+      val numReadHandlesGauge = _numReadHandlesGauge
+      val outstandingReadsGauge = _outstandingReadsGauge
+    }
 
     createReadHandle(
       messages.recv,
@@ -604,11 +603,10 @@ abstract class MultiReaderBuilder[Req, Rep, Builder] private[kestrel] (
     * Constructs a merged ReadHandle over the members of the configured cluster.
     * The handle is updated as members are added or removed.
     */
-  def build(): ReadHandle =
-    MultiReaderHelper.merge(
-      buildReadHandleVar(),
-      config.trackOutstandingRequests,
-      config.statsReceiver.scope("multireader").scope(config.queueName))
+  def build(): ReadHandle = MultiReaderHelper.merge(
+    buildReadHandleVar(),
+    config.trackOutstandingRequests,
+    config.statsReceiver.scope("multireader").scope(config.queueName))
 }
 
 abstract class MultiReaderBuilderMemcacheBase[Builder] private[kestrel] (
@@ -641,13 +639,12 @@ class ClusterMultiReaderBuilder private[kestrel] (
     extends MultiReaderBuilderMemcacheBase[ClusterMultiReaderBuilder](
       config.toMultiReaderConfig) {
 
-  private def this(config: MultiReaderConfig[Command, Response]) =
-    this(
-      ClusterMultiReaderConfig(
-        config.va,
-        config.queueName,
-        config.clientBuilder,
-        config.timer))
+  private def this(config: MultiReaderConfig[Command, Response]) = this(
+    ClusterMultiReaderConfig(
+      config.va,
+      config.queueName,
+      config.clientBuilder,
+      config.timer))
 
   protected[kestrel] def copy(
       config: MultiReaderConfig[Command, Response]): ClusterMultiReaderBuilder =

@@ -24,8 +24,8 @@ object TaskStateChange {
   case object NoChange extends TaskStateChange
   case class Failure(cause: Throwable) extends TaskStateChange
   object Failure {
-    def apply(message: String): Failure =
-      Failure(TaskStateChangeException(message))
+    def apply(message: String): Failure = Failure(
+      TaskStateChangeException(message))
   }
 }
 

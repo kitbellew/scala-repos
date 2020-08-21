@@ -29,13 +29,12 @@ trait BimonadTests[F[_]] extends MonadTests[F] with ComonadTests[F] {
       def name: String = "bimonad"
       def bases: Seq[(String, RuleSet)] = Nil
       def parents: Seq[RuleSet] = Seq(monad[A, B, C], comonad[A, B, C])
-      def props: Seq[(String, Prop)] =
-        Seq(
-          "pure andThen extract = id" -> forAll(laws.pureExtractIsId[A] _),
-          "extract/flatMap entwining" -> forAll(
-            laws.extractFlatMapEntwining[A] _),
-          "pure/coflatMap entwining" -> forAll(laws.pureCoflatMapEntwining[A] _)
-        )
+      def props: Seq[(String, Prop)] = Seq(
+        "pure andThen extract = id" -> forAll(laws.pureExtractIsId[A] _),
+        "extract/flatMap entwining" -> forAll(
+          laws.extractFlatMapEntwining[A] _),
+        "pure/coflatMap entwining" -> forAll(laws.pureCoflatMapEntwining[A] _)
+      )
     }
   }
 }

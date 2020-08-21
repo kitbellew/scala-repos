@@ -25,8 +25,8 @@ trait ThriftSerializer extends StringEncoder {
   def fromBytes(obj: TBase[_, _], bytes: Array[Byte]): Unit =
     fromInputStream(obj, new ByteArrayInputStream(bytes))
 
-  def toString(obj: TBase[_, _], bufSize: Int): String =
-    encode(toBytes(obj, bufSize))
+  def toString(obj: TBase[_, _], bufSize: Int): String = encode(
+    toBytes(obj, bufSize))
 
   def toString(obj: TBase[_, _]): String = encode(toBytes(obj))
 

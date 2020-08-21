@@ -197,13 +197,12 @@ abstract class ClassPath[T] extends ClassFileLookup[T] {
     */
   case class ClassRep(binary: Option[T], source: Option[AbstractFile])
       extends ClassRepresentation[T] {
-    def name: String =
-      binary match {
-        case Some(x) => context.toBinaryName(x)
-        case _ =>
-          assert(source.isDefined)
-          toSourceName(source.get)
-      }
+    def name: String = binary match {
+      case Some(x) => context.toBinaryName(x)
+      case _ =>
+        assert(source.isDefined)
+        toSourceName(source.get)
+    }
   }
 
   /** Filters for assessing validity of various entities.
@@ -240,11 +239,10 @@ abstract class ClassPath[T] extends ClassFileLookup[T] {
   override def asSourcePathString: String = sourcepaths.mkString(pathSeparator)
 
   def sortString = join(split(asClassPathString).sorted: _*)
-  override def equals(that: Any) =
-    that match {
-      case x: ClassPath[_] => this.sortString == x.sortString
-      case _               => false
-    }
+  override def equals(that: Any) = that match {
+    case x: ClassPath[_] => this.sortString == x.sortString
+    case _               => false
+  }
   override def hashCode = sortString.hashCode()
 }
 
@@ -351,11 +349,10 @@ class MergedClassPath[T](
   lazy val sourcepaths: IndexedSeq[AbstractFile] =
     entries flatMap (_.sourcepaths)
 
-  override def origin =
-    Some(entries map (x =>
-      x.origin getOrElse x.name) mkString ("Merged(", ", ", ")"))
-  override def asClassPathString: String =
-    join(entries map (_.asClassPathString): _*)
+  override def origin = Some(entries map (x =>
+    x.origin getOrElse x.name) mkString ("Merged(", ", ", ")"))
+  override def asClassPathString: String = join(
+    entries map (_.asClassPathString): _*)
 
   lazy val classes: IndexedSeq[ClassRepresentation[T]] = {
     var count = 0

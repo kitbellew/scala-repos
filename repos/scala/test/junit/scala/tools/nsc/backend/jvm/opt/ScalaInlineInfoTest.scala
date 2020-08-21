@@ -27,10 +27,9 @@ class ScalaInlineInfoTest extends ClearAfterClass {
 
   val compiler = newCompiler()
 
-  def inlineInfo(c: ClassNode): InlineInfo =
-    c.attrs.asScala
-      .collect({ case a: InlineInfoAttribute => a.inlineInfo })
-      .head
+  def inlineInfo(c: ClassNode): InlineInfo = c.attrs.asScala
+    .collect({ case a: InlineInfoAttribute => a.inlineInfo })
+    .head
 
   @Test
   def traitMembersInlineInfo(): Unit = {

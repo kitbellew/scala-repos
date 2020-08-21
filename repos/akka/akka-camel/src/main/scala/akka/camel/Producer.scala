@@ -154,15 +154,14 @@ trait ProducerSupport extends Actor with CamelSupport {
         xchg.exchange,
         new AsyncCallback {
           // Ignoring doneSync, sending back async uniformly.
-          def done(doneSync: Boolean): Unit =
-            producer.tell(
-              if (xchg.exchange.isFailed)
-                xchg.toFailureResult(cmsg.headers(headersToCopy))
-              else
-                MessageResult(
-                  xchg.toResponseMessage(cmsg.headers(headersToCopy))),
-              originalSender
-            )
+          def done(doneSync: Boolean): Unit = producer.tell(
+            if (xchg.exchange.isFailed)
+              xchg.toFailureResult(cmsg.headers(headersToCopy))
+            else
+              MessageResult(
+                xchg.toResponseMessage(cmsg.headers(headersToCopy))),
+            originalSender
+          )
         }
       )
     }

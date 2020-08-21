@@ -348,8 +348,8 @@ class SubSource[+Out, +Mat](
     *
     * See also [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
     */
-  def limit(n: Int): javadsl.SubSource[Out, Mat] =
-    new SubSource(delegate.limit(n))
+  def limit(n: Int): javadsl.SubSource[Out, Mat] = new SubSource(
+    delegate.limit(n))
 
   /**
     * Ensure stream boundedness by evaluating the cost of incoming elements

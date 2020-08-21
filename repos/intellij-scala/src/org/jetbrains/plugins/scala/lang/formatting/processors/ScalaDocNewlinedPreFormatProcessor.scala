@@ -213,11 +213,10 @@ object ScalaDocNewlinedPreFormatProcessor {
   def isTag(element: PsiElement): Boolean =
     element.getNode.getElementType == ScalaDocElementTypes.DOC_TAG
 
-  def isNamedTag(element: PsiElement, names: String*): Boolean =
-    element match {
-      case tag: ScDocTag => getTagName(tag).exists(names.contains)
-      case _             => false
-    }
+  def isNamedTag(element: PsiElement, names: String*): Boolean = element match {
+    case tag: ScDocTag => getTagName(tag).exists(names.contains)
+    case _             => false
+  }
 
   def isParamTag(element: PsiElement) = isNamedTag(element, "@param", "@tparam")
 

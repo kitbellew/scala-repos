@@ -61,11 +61,10 @@ object Test {
   def lines(s: String) = s split "\\n" toList
 
   // strip the random temp filename from error msgs
-  def stripFilename(s: String) =
-    (s indexOf ".scala:") match {
-      case -1  => s
-      case idx => s drop (idx + 7)
-    }
+  def stripFilename(s: String) = (s indexOf ".scala:") match {
+    case -1  => s
+    case idx => s drop (idx + 7)
+  }
   def toLines(text: String) = lines(text) map stripFilename
 
   def main(args: Array[String]): Unit = {

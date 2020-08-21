@@ -43,7 +43,7 @@ private[bookmark] object BookmarkRepo {
   def makeId(gameId: String, userId: String) = gameId + userId
   def selectId(gameId: String, userId: String) = $select(makeId(gameId, userId))
 
-  def remove(gameId: String, userId: String): Funit =
-    $remove(selectId(gameId, userId))
+  def remove(gameId: String, userId: String): Funit = $remove(
+    selectId(gameId, userId))
   def remove(selector: JsObject): Funit = $remove(selector)
 }

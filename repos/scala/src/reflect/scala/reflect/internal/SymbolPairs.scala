@@ -62,10 +62,9 @@ abstract class SymbolPairs {
     (tp1 baseType baseClass) =:= (tp2 baseType baseClass)
 
   case class SymbolPair(base: Symbol, low: Symbol, high: Symbol) {
-    def pos =
-      if (low.owner == base) low.pos
-      else if (high.owner == base) high.pos
-      else base.pos
+    def pos = if (low.owner == base) low.pos
+    else if (high.owner == base) high.pos
+    else base.pos
     def self: Type = base.thisType
     def rootType: Type = base.thisType
 
@@ -300,13 +299,11 @@ abstract class SymbolPairs {
 
     def hasNext = curEntry ne null
     def currentPair = new SymbolPair(base, low, high)
-    def iterator =
-      new Iterator[SymbolPair] {
-        def hasNext = cursor.hasNext
-        def next() =
-          try cursor.currentPair
-          finally cursor.next()
-      }
+    def iterator = new Iterator[SymbolPair] {
+      def hasNext = cursor.hasNext
+      def next() = try cursor.currentPair
+      finally cursor.next()
+    }
 
     // Note that next is called once during object initialization to
     // populate the fields tracking the current symbol pair.

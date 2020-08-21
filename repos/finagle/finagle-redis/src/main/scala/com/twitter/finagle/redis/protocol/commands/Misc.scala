@@ -17,9 +17,8 @@ case object FlushDB extends Command {
 
 case class Select(index: Int) extends Command {
   def command = Commands.SELECT
-  def toChannelBuffer =
-    RedisCodec.toUnifiedFormat(
-      Seq(CommandBytes.SELECT, StringToChannelBuffer(index.toString)))
+  def toChannelBuffer = RedisCodec.toUnifiedFormat(
+    Seq(CommandBytes.SELECT, StringToChannelBuffer(index.toString)))
 }
 
 object Select {
@@ -41,11 +40,10 @@ object Auth {
 
 case class Info(section: ChannelBuffer) extends Command {
   def command = Commands.INFO
-  def toChannelBuffer =
-    RedisCodec.toUnifiedFormat(section match {
-      case ChannelBuffers.EMPTY_BUFFER => Seq(CommandBytes.INFO)
-      case _                           => Seq(CommandBytes.INFO, section)
-    })
+  def toChannelBuffer = RedisCodec.toUnifiedFormat(section match {
+    case ChannelBuffers.EMPTY_BUFFER => Seq(CommandBytes.INFO)
+    case _                           => Seq(CommandBytes.INFO, section)
+  })
 }
 
 object Info {

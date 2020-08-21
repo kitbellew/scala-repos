@@ -9,8 +9,7 @@ object G {
 }
 
 object H {
-  def unapply(g: G) =
-    g match {
-      case G(a, _) => Option(a)
-    }
+  def unapply(g: G) = g match {
+    case G(a, _) => Option(a)
+  }
 }

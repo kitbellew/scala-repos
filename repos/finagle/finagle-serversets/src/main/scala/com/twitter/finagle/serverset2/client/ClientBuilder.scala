@@ -26,16 +26,15 @@ private[client] case class ClientConfig(
     val sessionId: Option[Long],
     val password: Option[Buf],
     val timer: Timer) {
-  def toMap: Map[String, Any] =
-    Map(
-      "hosts" -> hosts,
-      "sessionTimeout" -> sessionTimeout,
-      "statsReceiver" -> statsReceiver,
-      "readOnlyOK" -> readOnlyOK,
-      "sessionId" -> sessionId,
-      "password" -> password,
-      "timer" -> timer
-    )
+  def toMap: Map[String, Any] = Map(
+    "hosts" -> hosts,
+    "sessionTimeout" -> sessionTimeout,
+    "statsReceiver" -> statsReceiver,
+    "readOnlyOK" -> readOnlyOK,
+    "sessionId" -> sessionId,
+    "password" -> password,
+    "timer" -> timer
+  )
 
   override def toString = {
     "ClientConfig(%s)".format(toMap flatMap {
@@ -97,8 +96,8 @@ private[client] class ClientBuilder(config: ClientConfig) {
 
   override def toString() = "ClientBuilder(%s)".format(config.toString)
 
-  protected def copy(config: ClientConfig): ClientBuilder =
-    new ClientBuilder(config)
+  protected def copy(config: ClientConfig): ClientBuilder = new ClientBuilder(
+    config)
 
   protected def withConfig(f: ClientConfig => ClientConfig): ClientBuilder =
     copy(f(config))
@@ -136,8 +135,8 @@ private[client] class ClientBuilder(config: ClientConfig) {
     * @param zkHosts comma separated host:port list.
     * @return configured ClientBuilder
     */
-  def hosts(zkHosts: String): ClientBuilder =
-    withConfig(_.copy(hosts = zkHosts))
+  def hosts(zkHosts: String): ClientBuilder = withConfig(
+    _.copy(hosts = zkHosts))
 
   /**
     * Configure builder with list of ZooKeeper servers in an ensemble.

@@ -49,9 +49,8 @@ class XYChartSpec
   override def getScalaClassInstance =
     new XYChart[Number, Number](getJavaClassInstance) {}
 
-  override def getJavaClassInstance =
-    new jfxsc.LineChart[Number, Number](
-      new jfxsc.NumberAxis,
-      new jfxsc.NumberAxis)
+  override def getJavaClassInstance = new jfxsc.LineChart[Number, Number](
+    new jfxsc.NumberAxis,
+    new jfxsc.NumberAxis)
 
 }

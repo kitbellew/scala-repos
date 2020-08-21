@@ -246,11 +246,10 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
   }
 
   private def sameSourceFiles(): Boolean = {
-    def numberOfFiles(dir: File): Int =
-      dir match {
-        case d: File if d.isDirectory => d.listFiles().map(numberOfFiles).sum
-        case f                        => 1
-      }
+    def numberOfFiles(dir: File): Int = dir match {
+      case d: File if d.isDirectory => d.listFiles().map(numberOfFiles).sum
+      case f                        => 1
+    }
     val existingFilesNumber = numberOfFiles(srcDir)
     sourceFiles.size == existingFilesNumber && sourceFiles.forall {
       case (relPath, text) =>

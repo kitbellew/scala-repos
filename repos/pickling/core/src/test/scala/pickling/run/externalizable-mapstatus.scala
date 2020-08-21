@@ -88,13 +88,12 @@ class BlockManagerId private (
   override def hashCode: Int =
     (executorId.hashCode * 41 + host.hashCode) * 41 + port + nettyPort
 
-  override def equals(that: Any) =
-    that match {
-      case id: BlockManagerId =>
-        executorId == id.executorId && port == id.port && host == id.host && nettyPort == id.nettyPort
-      case _ =>
-        false
-    }
+  override def equals(that: Any) = that match {
+    case id: BlockManagerId =>
+      executorId == id.executorId && port == id.port && host == id.host && nettyPort == id.nettyPort
+    case _ =>
+      false
+  }
 }
 
 object BlockManagerId {

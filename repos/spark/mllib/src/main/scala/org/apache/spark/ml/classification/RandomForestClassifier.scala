@@ -149,8 +149,8 @@ final class RandomForestClassifier @Since("1.4.0") (
   }
 
   @Since("1.4.1")
-  override def copy(extra: ParamMap): RandomForestClassifier =
-    defaultCopy(extra)
+  override def copy(extra: ParamMap): RandomForestClassifier = defaultCopy(
+    extra)
 }
 
 @Since("1.4.0")

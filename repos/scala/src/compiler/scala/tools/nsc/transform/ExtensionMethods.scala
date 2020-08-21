@@ -108,13 +108,12 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
     *  removed from the list.
     */
   object ExtensionMethodType {
-    def unapply(tp: Type) =
-      tp match {
-        case MethodType(thiz :: rest, restpe) if thiz.name == nme.SELF =>
-          Some((thiz, if (rest.isEmpty) restpe else MethodType(rest, restpe)))
-        case _ =>
-          None
-      }
+    def unapply(tp: Type) = tp match {
+      case MethodType(thiz :: rest, restpe) if thiz.name == nme.SELF =>
+        Some((thiz, if (rest.isEmpty) restpe else MethodType(rest, restpe)))
+      case _ =>
+        None
+    }
   }
 
   /** This method removes the `$this` argument from the parameter list a method.
@@ -123,20 +122,19 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
     *  type params from its nested `MethodType`.  Or it may be a MethodType, as
     *  described at the ExtensionMethodType extractor.
     */
-  private def normalize(stpe: Type, clazz: Symbol): Type =
-    stpe match {
-      case PolyType(tparams, restpe) =>
-        // method type parameters, class type parameters
-        val (mtparams, ctparams) =
-          tparams splitAt (tparams.length - clazz.typeParams.length)
-        GenPolyType(
-          mtparams,
-          normalize(restpe.substSym(ctparams, clazz.typeParams), clazz))
-      case ExtensionMethodType(thiz, etpe) =>
-        etpe.substituteTypes(thiz :: Nil, clazz.thisType :: Nil)
-      case _ =>
-        stpe
-    }
+  private def normalize(stpe: Type, clazz: Symbol): Type = stpe match {
+    case PolyType(tparams, restpe) =>
+      // method type parameters, class type parameters
+      val (mtparams, ctparams) =
+        tparams splitAt (tparams.length - clazz.typeParams.length)
+      GenPolyType(
+        mtparams,
+        normalize(restpe.substSym(ctparams, clazz.typeParams), clazz))
+    case ExtensionMethodType(thiz, etpe) =>
+      etpe.substituteTypes(thiz :: Nil, clazz.thisType :: Nil)
+    case _ =>
+      stpe
+  }
 
   class Extender(unit: CompilationUnit) extends TypingTransformer(unit) {
     private val extensionDefs = mutable.Map[Symbol, mutable.ListBuffer[Tree]]()
@@ -336,34 +334,33 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
       extensionMeth: Symbol,
       unit: CompilationUnit)
       extends TypingTransformer(unit) {
-    override def transform(tree: Tree): Tree =
-      tree match {
-        // SI-6574 Rewrite recursive calls against the extension method so they can
-        //         be tail call optimized later. The tailcalls phases comes before
-        //         erasure, which performs this translation more generally at all call
-        //         sites.
-        //
-        //         // Source
-        //         class C[C] { def meth[M](a: A) = { { <expr>: C[C'] }.meth[M'] } }
-        //
-        //         // Translation
-        //         class C[C] { def meth[M](a: A) = { { <expr>: C[C'] }.meth[M'](a1) } }
-        //         object C   { def meth$extension[M, C](this$: C[C], a: A)
-        //                        = { meth$extension[M', C']({ <expr>: C[C'] })(a1) } }
-        case treeInfo.Applied(sel @ Select(qual, _), targs, argss)
-            if sel.symbol == origMeth =>
-          localTyper.typedPos(tree.pos) {
-            val allArgss = List(qual) :: argss
-            val origThis = extensionMeth.owner.companionClass
-            val baseType = qual.tpe.baseType(origThis)
-            val allTargs = targs.map(_.tpe) ::: baseType.typeArgs
-            val fun = gen.mkAttributedTypeApply(
-              gen.mkAttributedThis(extensionMeth.owner),
-              extensionMeth,
-              allTargs)
-            allArgss.foldLeft(fun)(Apply(_, _))
-          }
-        case _ => super.transform(tree)
-      }
+    override def transform(tree: Tree): Tree = tree match {
+      // SI-6574 Rewrite recursive calls against the extension method so they can
+      //         be tail call optimized later. The tailcalls phases comes before
+      //         erasure, which performs this translation more generally at all call
+      //         sites.
+      //
+      //         // Source
+      //         class C[C] { def meth[M](a: A) = { { <expr>: C[C'] }.meth[M'] } }
+      //
+      //         // Translation
+      //         class C[C] { def meth[M](a: A) = { { <expr>: C[C'] }.meth[M'](a1) } }
+      //         object C   { def meth$extension[M, C](this$: C[C], a: A)
+      //                        = { meth$extension[M', C']({ <expr>: C[C'] })(a1) } }
+      case treeInfo.Applied(sel @ Select(qual, _), targs, argss)
+          if sel.symbol == origMeth =>
+        localTyper.typedPos(tree.pos) {
+          val allArgss = List(qual) :: argss
+          val origThis = extensionMeth.owner.companionClass
+          val baseType = qual.tpe.baseType(origThis)
+          val allTargs = targs.map(_.tpe) ::: baseType.typeArgs
+          val fun = gen.mkAttributedTypeApply(
+            gen.mkAttributedThis(extensionMeth.owner),
+            extensionMeth,
+            allTargs)
+          allArgss.foldLeft(fun)(Apply(_, _))
+        }
+      case _ => super.transform(tree)
+    }
   }
 }

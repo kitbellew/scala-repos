@@ -41,8 +41,8 @@ sealed trait FunctionInstances0 extends FunctionInstances1 {
       with Distributive[(=> T) => ?] {
       def point[A](a: => A): (=> T) => A = _ => a
 
-      def bind[A, B](fa: (=> T) => A)(f: A => (=> T) => B): (=> T) => B =
-        (t) => f(fa(t))(t)
+      def bind[A, B](fa: (=> T) => A)(f: A => (=> T) => B): (=> T) => B = (t) =>
+        f(fa(t))(t)
 
       def zip[A, B](a: => (=> T) => A, b: => (=> T) => B): (=> T) => (A, B) =
         t => (a(t), b(t))
@@ -393,8 +393,8 @@ private trait Function1Monoid[A, R]
 private trait Function1Cobind[M, R] extends Cobind[M => ?] {
   implicit def M: Semigroup[M]
   override def cojoin[A](a: M => A) = (m1: M) => (m2: M) => a(M.append(m1, m2))
-  def cobind[A, B](fa: M => A)(f: (M => A) => B) =
-    (m1: M) => f((m2: M) => fa(M.append(m1, m2)))
+  def cobind[A, B](fa: M => A)(f: (M => A) => B) = (m1: M) =>
+    f((m2: M) => fa(M.append(m1, m2)))
   override def map[A, B](fa: M => A)(f: A => B) = fa andThen f
 }
 

@@ -37,8 +37,8 @@ object Ellipse {
   implicit def sfxEllipse2jfx(v: Ellipse): jfxss.Ellipse =
     if (v != null) v.delegate else null
 
-  def apply(radiusX: Double, radiusY: Double) =
-    new Ellipse(new jfxss.Ellipse(radiusX, radiusY))
+  def apply(radiusX: Double, radiusY: Double) = new Ellipse(
+    new jfxss.Ellipse(radiusX, radiusY))
   def apply(
       centerX: Double,
       centerY: Double,

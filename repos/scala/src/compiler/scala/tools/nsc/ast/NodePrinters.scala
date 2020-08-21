@@ -39,17 +39,16 @@ abstract class NodePrinters {
       showPosition(tree) + showName(tree.name)
     def showDefTreeName(tree: DefTree) = showName(tree.name)
     def showPosition(tree: Tree) = if (printPos) tree.pos.show else ""
-    def showFlags(tree: MemberDef) =
-      flagsToString(tree.symbol.flags | tree.mods.flags)
+    def showFlags(tree: MemberDef) = flagsToString(
+      tree.symbol.flags | tree.mods.flags)
     def showLiteral(lit: Literal) =
       showPosition(lit) + lit.value.escapedStringValue
     def showTypeTree(tt: TypeTree) =
       showPosition(tt) + "<tpt>" + emptyOrComment(showType(tt))
-    def showName(name: Name) =
-      name match {
-        case nme.EMPTY | tpnme.EMPTY => "<empty>"
-        case name                    => "\"" + name + "\""
-      }
+    def showName(name: Name) = name match {
+      case nme.EMPTY | tpnme.EMPTY => "<empty>"
+      case name                    => "\"" + name + "\""
+    }
 
     def showSymbol(tree: Tree): String = {
       val sym = tree.symbol
@@ -98,14 +97,13 @@ abstract class NodePrinters {
     }
     def showRefTree(tree: RefTree): String = {
       def prefix0 = showRefTreeName(tree.qualifier)
-      def prefix =
-        if (prefix0 == "") ""
-        else
-          (tree match {
-            case SelectFromTypeTree(_, _) => prefix0 + "#"
-            case Select(_, _)             => prefix0 + "."
-            case _                        => ""
-          })
+      def prefix = if (prefix0 == "") ""
+      else
+        (tree match {
+          case SelectFromTypeTree(_, _) => prefix0 + "#"
+          case Select(_, _)             => prefix0 + "."
+          case _                        => ""
+        })
       prefix + showNameAndPos(tree) + emptyOrComment(showAttributes(tree))
     }
 

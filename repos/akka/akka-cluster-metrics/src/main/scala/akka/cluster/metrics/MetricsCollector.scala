@@ -58,17 +58,16 @@ private[metrics] object MetricsCollector {
     val useCustom = !CollectorFallback
     val useInternal = CollectorFallback && CollectorProvider == ""
 
-    def create(provider: String) =
-      TryNative {
-        log.debug(s"Trying ${provider}.")
-        system
-          .asInstanceOf[ExtendedActorSystem]
-          .dynamicAccess
-          .createInstanceFor[MetricsCollector](
-            provider,
-            List(classOf[ActorSystem] -> system))
-          .get
-      }
+    def create(provider: String) = TryNative {
+      log.debug(s"Trying ${provider}.")
+      system
+        .asInstanceOf[ExtendedActorSystem]
+        .dynamicAccess
+        .createInstanceFor[MetricsCollector](
+          provider,
+          List(classOf[ActorSystem] -> system))
+        .get
+    }
 
     val collector =
       if (useCustom)
@@ -142,21 +141,19 @@ class JmxMetricsCollector(address: Address, decayFactor: Double)
     * returned from JMX, and None is returned from this method.
     * Creates a new instance each time.
     */
-  def systemLoadAverage: Option[Metric] =
-    Metric.create(
-      name = SystemLoadAverage,
-      value = osMBean.getSystemLoadAverage,
-      decayFactor = None)
+  def systemLoadAverage: Option[Metric] = Metric.create(
+    name = SystemLoadAverage,
+    value = osMBean.getSystemLoadAverage,
+    decayFactor = None)
 
   /**
     * (JMX) Returns the number of available processors
     * Creates a new instance each time.
     */
-  def processors: Option[Metric] =
-    Metric.create(
-      name = Processors,
-      value = osMBean.getAvailableProcessors,
-      decayFactor = None)
+  def processors: Option[Metric] = Metric.create(
+    name = Processors,
+    value = osMBean.getAvailableProcessors,
+    decayFactor = None)
 
   /**
     * Current heap to be passed in to heapUsed, heapCommitted and heapMax
@@ -167,22 +164,20 @@ class JmxMetricsCollector(address: Address, decayFactor: Double)
     * (JMX) Returns the current sum of heap memory used from all heap memory pools (in bytes).
     * Creates a new instance each time.
     */
-  def heapUsed(heap: MemoryUsage): Option[Metric] =
-    Metric.create(
-      name = HeapMemoryUsed,
-      value = heap.getUsed,
-      decayFactor = decayFactorOption)
+  def heapUsed(heap: MemoryUsage): Option[Metric] = Metric.create(
+    name = HeapMemoryUsed,
+    value = heap.getUsed,
+    decayFactor = decayFactorOption)
 
   /**
     * (JMX) Returns the current sum of heap memory guaranteed to be available to the JVM
     * from all heap memory pools (in bytes).
     * Creates a new instance each time.
     */
-  def heapCommitted(heap: MemoryUsage): Option[Metric] =
-    Metric.create(
-      name = HeapMemoryCommitted,
-      value = heap.getCommitted,
-      decayFactor = decayFactorOption)
+  def heapCommitted(heap: MemoryUsage): Option[Metric] = Metric.create(
+    name = HeapMemoryCommitted,
+    value = heap.getCommitted,
+    decayFactor = decayFactorOption)
 
   /**
     * (JMX) Returns the maximum amount of memory (in bytes) that can be used
@@ -258,11 +253,10 @@ class SigarMetricsCollector(
     *
     * Creates a new instance each time.
     */
-  override def systemLoadAverage: Option[Metric] =
-    Metric.create(
-      name = SystemLoadAverage,
-      value = sigar.getLoadAverage()(0).asInstanceOf[Number],
-      decayFactor = None)
+  override def systemLoadAverage: Option[Metric] = Metric.create(
+    name = SystemLoadAverage,
+    value = sigar.getLoadAverage()(0).asInstanceOf[Number],
+    decayFactor = None)
 
   /**
     * (SIGAR) Returns the combined CPU sum of User + Sys + Nice + Wait, in percentage. This metric can describe
@@ -274,11 +268,10 @@ class SigarMetricsCollector(
     *
     * Creates a new instance each time.
     */
-  def cpuCombined(cpuPerc: CpuPerc): Option[Metric] =
-    Metric.create(
-      name = CpuCombined,
-      value = cpuPerc.getCombined.asInstanceOf[Number],
-      decayFactor = decayFactorOption)
+  def cpuCombined(cpuPerc: CpuPerc): Option[Metric] = Metric.create(
+    name = CpuCombined,
+    value = cpuPerc.getCombined.asInstanceOf[Number],
+    decayFactor = decayFactorOption)
 
   /**
     * (SIGAR) Returns the stolen CPU time. Relevant to virtual hosting environments.
@@ -287,11 +280,10 @@ class SigarMetricsCollector(
     *
     * Creates a new instance each time.
     */
-  def cpuStolen(cpuPerc: CpuPerc): Option[Metric] =
-    Metric.create(
-      name = CpuStolen,
-      value = cpuPerc.getStolen.asInstanceOf[Number],
-      decayFactor = decayFactorOption)
+  def cpuStolen(cpuPerc: CpuPerc): Option[Metric] = Metric.create(
+    name = CpuStolen,
+    value = cpuPerc.getStolen.asInstanceOf[Number],
+    decayFactor = decayFactorOption)
 
   /**
     * (SIGAR) Returns the idle CPU time.
@@ -299,11 +291,10 @@ class SigarMetricsCollector(
     *
     * Creates a new instance each time.
     */
-  def cpuIdle(cpuPerc: CpuPerc): Option[Metric] =
-    Metric.create(
-      name = CpuIdle,
-      value = cpuPerc.getIdle.asInstanceOf[Number],
-      decayFactor = decayFactorOption)
+  def cpuIdle(cpuPerc: CpuPerc): Option[Metric] = Metric.create(
+    name = CpuIdle,
+    value = cpuPerc.getIdle.asInstanceOf[Number],
+    decayFactor = decayFactorOption)
 
   /**
     * Releases any native resources associated with this instance.

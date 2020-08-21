@@ -158,15 +158,15 @@ class ExecutionTest extends WordSpec with Matchers {
     }
 
     "Config transformer will isolate Configs" in {
-      def doesNotHaveVariable(message: String) =
-        Execution.getConfig.flatMap { cfg =>
+      def doesNotHaveVariable(message: String) = Execution.getConfig.flatMap {
+        cfg =>
           if (cfg.get("test.cfg.variable").isDefined)
             Execution.failed(
               new Exception(
                 s"${message}\n: var: ${cfg.get("test.cfg.variable")}"))
           else
             Execution.from(())
-        }
+      }
 
       val hasVariable = Execution.getConfig.flatMap { cfg =>
         if (cfg.get("test.cfg.variable").isEmpty)
@@ -305,32 +305,31 @@ class ExecutionTest extends WordSpec with Matchers {
       var timesEvaluated = 0
       import com.twitter.scalding.serialization.macros.impl.BinaryOrdering._
       // Attempt to use up 4 boxed classes for every execution
-      def baseExecution(idx: Int): Execution[Unit] =
-        TypedPipe
-          .from(0 until 1000)
-          .map(_.toShort)
-          .flatMap { i =>
-            timesEvaluated += 1
-            List((i, i), (i, i))
-          }
-          .sumByKey
-          .map { case (k, v) =>
-            (k.toInt, v)
-          }
-          .sumByKey
-          .map { case (k, v) =>
-            (k.toLong, v)
-          }
-          .sumByKey
-          .map { case (k, v) =>
-            (k.toString, v)
-          }
-          .sumByKey
-          .map { case (k, v) =>
-            (MyCustomType(k), v)
-          }
-          .sumByKey
-          .writeExecution(TypedTsv(s"/tmp/asdf_${idx}"))
+      def baseExecution(idx: Int): Execution[Unit] = TypedPipe
+        .from(0 until 1000)
+        .map(_.toShort)
+        .flatMap { i =>
+          timesEvaluated += 1
+          List((i, i), (i, i))
+        }
+        .sumByKey
+        .map { case (k, v) =>
+          (k.toInt, v)
+        }
+        .sumByKey
+        .map { case (k, v) =>
+          (k.toLong, v)
+        }
+        .sumByKey
+        .map { case (k, v) =>
+          (k.toString, v)
+        }
+        .sumByKey
+        .map { case (k, v) =>
+          (MyCustomType(k), v)
+        }
+        .sumByKey
+        .writeExecution(TypedTsv(s"/tmp/asdf_${idx}"))
 
       implicitly[OrderedSerialization[MyCustomType]] match {
         case mos: MacroEqualityOrderedSerialization[_] =>

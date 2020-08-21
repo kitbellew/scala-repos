@@ -66,11 +66,10 @@ class StreamProgress {
   override def toString: String =
     currentOffsets.map { case (k, v) => s"$k: $v" }.mkString("{", ",", "}")
 
-  override def equals(other: Any): Boolean =
-    other match {
-      case s: StreamProgress => currentOffsets == s.currentOffsets
-      case _                 => false
-    }
+  override def equals(other: Any): Boolean = other match {
+    case s: StreamProgress => currentOffsets == s.currentOffsets
+    case _                 => false
+  }
 
   override def hashCode: Int = currentOffsets.hashCode()
 }

@@ -74,18 +74,17 @@ object FontWeight
   @deprecated("Use Black; BLACK will be removed in a future release", "2.2.60")
   val BLACK = Black
 
-  protected override def unsortedValues: Array[FontWeight] =
-    Array(
-      Thin,
-      ExtraLight,
-      Light,
-      Normal,
-      Medium,
-      SemiBold,
-      Bold,
-      ExtraBold,
-      Black
-    )
+  protected override def unsortedValues: Array[FontWeight] = Array(
+    Thin,
+    ExtraLight,
+    Light,
+    Normal,
+    Medium,
+    SemiBold,
+    Bold,
+    ExtraBold,
+    Black
+  )
 
   /** Returns FontWeight by its name. */
   def findByName(name: String): FontWeight = jfxst.FontWeight.findByName(name)

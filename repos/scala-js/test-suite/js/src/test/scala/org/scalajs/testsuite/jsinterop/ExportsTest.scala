@@ -888,8 +888,9 @@ class ExportsTest {
   @Test def null_for_arguments_of_primitive_value_type_issue_1719(): Unit = {
     @JSExportAll
     class Foo {
-      def doBool(x: Boolean): Unit =
-        assertTrue((x: Any) == false) // scalastyle:ignore
+      def doBool(x: Boolean): Unit = assertTrue(
+        (x: Any) == false
+      ) // scalastyle:ignore
       def doChar(x: Char): Unit = assertTrue(x.equals('\0'))
       def doByte(x: Byte): Unit = assertEquals(0, x)
       def doShort(x: Short): Unit = assertEquals(0, x)
@@ -1049,78 +1050,74 @@ class ExportsTest {
       assertEquals("y3", dynObj.checkOriginalY3())
     }
 
-    def getJSObj(): js.Object =
-      new js.Object {
-        val x1 = "x1"
-        var y1 = "y1"
-        def z1() = "z1"
-        private val x2 = "x2"
-        private var y2 = "y2"
-        private def z2() = "z2"
-        private[this] val x3 = "x3"
-        private[this] var y3 = "y3"
-        private[this] def z3() = "z3"
-        def checkOriginalY1() = y1
-        def checkOriginalY2() = y2
-        def checkOriginalY3() = y3
-      }
+    def getJSObj(): js.Object = new js.Object {
+      val x1 = "x1"
+      var y1 = "y1"
+      def z1() = "z1"
+      private val x2 = "x2"
+      private var y2 = "y2"
+      private def z2() = "z2"
+      private[this] val x3 = "x3"
+      private[this] var y3 = "y3"
+      private[this] def z3() = "z3"
+      def checkOriginalY1() = y1
+      def checkOriginalY2() = y2
+      def checkOriginalY3() = y3
+    }
 
     @ScalaJSDefined
     class JSClass extends js.Object
 
-    def getJSObj2(): js.Object =
-      new JSClass {
-        val x1 = "x1"
-        var y1 = "y1"
-        def z1() = "z1"
-        private val x2 = "x2"
-        private var y2 = "y2"
-        private def z2() = "z2"
-        private[this] val x3 = "x3"
-        private[this] var y3 = "y3"
-        private[this] def z3() = "z3"
-        def checkOriginalY1() = y1
-        def checkOriginalY2() = y2
-        def checkOriginalY3() = y3
-      }
+    def getJSObj2(): js.Object = new JSClass {
+      val x1 = "x1"
+      var y1 = "y1"
+      def z1() = "z1"
+      private val x2 = "x2"
+      private var y2 = "y2"
+      private def z2() = "z2"
+      private[this] val x3 = "x3"
+      private[this] var y3 = "y3"
+      private[this] def z3() = "z3"
+      def checkOriginalY1() = y1
+      def checkOriginalY2() = y2
+      def checkOriginalY3() = y3
+    }
 
     @ScalaJSDefined
     abstract class JSAbstractClass extends js.Object
 
-    def getJSObj3(): js.Object =
-      new JSAbstractClass {
-        val x1 = "x1"
-        var y1 = "y1"
-        def z1() = "z1"
-        private val x2 = "x2"
-        private var y2 = "y2"
-        private def z2() = "z2"
-        private[this] val x3 = "x3"
-        private[this] var y3 = "y3"
-        private[this] def z3() = "z3"
-        def checkOriginalY1() = y1
-        def checkOriginalY2() = y2
-        def checkOriginalY3() = y3
-      }
+    def getJSObj3(): js.Object = new JSAbstractClass {
+      val x1 = "x1"
+      var y1 = "y1"
+      def z1() = "z1"
+      private val x2 = "x2"
+      private var y2 = "y2"
+      private def z2() = "z2"
+      private[this] val x3 = "x3"
+      private[this] var y3 = "y3"
+      private[this] def z3() = "z3"
+      def checkOriginalY1() = y1
+      def checkOriginalY2() = y2
+      def checkOriginalY3() = y3
+    }
 
     @ScalaJSDefined
     abstract class JSTrait extends js.Object
 
-    def getJSObj4(): js.Object =
-      new JSTrait {
-        val x1 = "x1"
-        var y1 = "y1"
-        def z1() = "z1"
-        private val x2 = "x2"
-        private var y2 = "y2"
-        private def z2() = "z2"
-        private[this] val x3 = "x3"
-        private[this] var y3 = "y3"
-        private[this] def z3() = "z3"
-        def checkOriginalY1() = y1
-        def checkOriginalY2() = y2
-        def checkOriginalY3() = y3
-      }
+    def getJSObj4(): js.Object = new JSTrait {
+      val x1 = "x1"
+      var y1 = "y1"
+      def z1() = "z1"
+      private val x2 = "x2"
+      private var y2 = "y2"
+      private def z2() = "z2"
+      private[this] val x3 = "x3"
+      private[this] var y3 = "y3"
+      private[this] def z3() = "z3"
+      def checkOriginalY1() = y1
+      def checkOriginalY2() = y2
+      def checkOriginalY3() = y3
+    }
 
     testExposure(getJSObj())
     testExposure(getJSObj2())
@@ -1129,18 +1126,17 @@ class ExportsTest {
 
     // Test that non js.Any classes were unaffected by the fix.
 
-    def getObj(): AnyRef =
-      new {
-        val x1 = "x1"
-        var y1 = "y1"
-        def z1() = "z1"
-        private val x2 = "x2"
-        private var y2 = "y2"
-        private def z2() = "z2"
-        private[this] val x3 = "x3"
-        private[this] var y3 = "y3"
-        private[this] def z3() = "z3"
-      }
+    def getObj(): AnyRef = new {
+      val x1 = "x1"
+      var y1 = "y1"
+      def z1() = "z1"
+      private val x2 = "x2"
+      private var y2 = "y2"
+      private def z2() = "z2"
+      private[this] val x3 = "x3"
+      private[this] var y3 = "y3"
+      private[this] def z3() = "z3"
+    }
 
     import scala.language.reflectiveCalls
 

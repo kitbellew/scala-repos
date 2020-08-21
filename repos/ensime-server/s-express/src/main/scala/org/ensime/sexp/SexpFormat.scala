@@ -11,10 +11,9 @@ trait SexpReader[T] {
 }
 
 object SexpReader {
-  implicit def func2Reader[T](f: Sexp => T): SexpReader[T] =
-    new SexpReader[T] {
-      def read(sexp: Sexp) = f(sexp)
-    }
+  implicit def func2Reader[T](f: Sexp => T): SexpReader[T] = new SexpReader[T] {
+    def read(sexp: Sexp) = f(sexp)
+  }
 }
 
 /** Provides the S-Exp serialization for type T. */
@@ -24,10 +23,9 @@ trait SexpWriter[T] {
 }
 
 object SexpWriter {
-  implicit def func2Writer[T](f: T => Sexp): SexpWriter[T] =
-    new SexpWriter[T] {
-      def write(obj: T) = f(obj)
-    }
+  implicit def func2Writer[T](f: T => Sexp): SexpWriter[T] = new SexpWriter[T] {
+    def write(obj: T) = f(obj)
+  }
 }
 
 /** Provides the S-Exp deserialization and serialization for type T. */

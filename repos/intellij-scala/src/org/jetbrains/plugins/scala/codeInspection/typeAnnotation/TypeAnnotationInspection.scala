@@ -114,13 +114,12 @@ class TypeAnnotationInspection extends AbstractInspection {
     }
   }
 
-  private def kindOf(member: ScMember) =
-    if (member.isLocal) "Local"
-    else {
-      if (member.isPrivate) "Private"
-      else if (member.isProtected) "Protected"
-      else "Public"
-    }
+  private def kindOf(member: ScMember) = if (member.isLocal) "Local"
+  else {
+    if (member.isPrivate) "Private"
+    else if (member.isProtected) "Protected"
+    else "Public"
+  }
 
   private def inspect(
       element: PsiElement,

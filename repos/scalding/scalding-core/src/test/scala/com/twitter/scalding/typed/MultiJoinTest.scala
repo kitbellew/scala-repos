@@ -22,8 +22,9 @@ import com.twitter.scalding.typed.FlattenGroup._
 
 class MultiJoinTest extends WordSpec {
 
-  def addKeys[V](t: Seq[V]): Seq[(Int, V)] =
-    t.iterator.zipWithIndex.map { case (v, k) => (k, v) }.toSeq
+  def addKeys[V](t: Seq[V]): Seq[(Int, V)] = t.iterator.zipWithIndex.map {
+    case (v, k) => (k, v)
+  }.toSeq
 
   val doubles = TypedPipe.from(addKeys(List(1.0d, 2.0d, 3.0d)))
   val longs = TypedPipe.from(addKeys(List(10L, 20L, 30L)))

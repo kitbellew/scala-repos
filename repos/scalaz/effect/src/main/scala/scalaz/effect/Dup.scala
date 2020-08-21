@@ -19,14 +19,13 @@ sealed abstract class DupInstances {
           : FinalizerHandle[RegionT[CS, RegionT[PS, PP, ?], ?]] => RegionT[
             CS,
             RegionT[PS, PP, ?],
-            FinalizerHandle[RegionT[PS, PP, ?]]] =
-        h =>
-          RegionT[CS, RegionT[PS, PP, ?], FinalizerHandle[RegionT[PS, PP, ?]]](
-            Kleisli[
-              RegionT[PS, PP, ?],
-              IORef[List[RefCountedFinalizer]],
-              FinalizerHandle[RegionT[PS, PP, ?]]](hsIORef =>
-              copy[PS, PP, RegionT[CS, RegionT[PS, PP, ?], ?]](h)))
+            FinalizerHandle[RegionT[PS, PP, ?]]] = h =>
+        RegionT[CS, RegionT[PS, PP, ?], FinalizerHandle[RegionT[PS, PP, ?]]](
+          Kleisli[
+            RegionT[PS, PP, ?],
+            IORef[List[RefCountedFinalizer]],
+            FinalizerHandle[RegionT[PS, PP, ?]]](hsIORef =>
+            copy[PS, PP, RegionT[CS, RegionT[PS, PP, ?], ?]](h)))
     }
 }
 

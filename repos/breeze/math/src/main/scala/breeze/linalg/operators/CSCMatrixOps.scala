@@ -653,34 +653,33 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
         CSCMatrix[T],
         DenseVector[T],
         OpMulMatrix.type,
-        DenseVector[T]] =
-    new BinaryRegistry[
-      CSCMatrix[T],
-      DenseVector[T],
-      OpMulMatrix.type,
-      DenseVector[T]] {
-      override def bindingMissing(a: CSCMatrix[T], b: DenseVector[T]) = {
-        require(a.cols == b.length, "Dimension Mismatch!")
+        DenseVector[T]] = new BinaryRegistry[
+    CSCMatrix[T],
+    DenseVector[T],
+    OpMulMatrix.type,
+    DenseVector[T]] {
+    override def bindingMissing(a: CSCMatrix[T], b: DenseVector[T]) = {
+      require(a.cols == b.length, "Dimension Mismatch!")
 
-        val res = DenseVector.zeros[T](a.rows)
-        var c = 0
-        while (c < a.cols) {
-          var rr = a.colPtrs(c)
-          val rrlast = a.colPtrs(c + 1)
-          while (rr < rrlast) {
-            val r = a.rowIndices(rr)
-            res(r) += a.data(rr) * b(c)
-            rr += 1
-          }
-          c += 1
+      val res = DenseVector.zeros[T](a.rows)
+      var c = 0
+      while (c < a.cols) {
+        var rr = a.colPtrs(c)
+        val rrlast = a.colPtrs(c + 1)
+        while (rr < rrlast) {
+          val r = a.rowIndices(rr)
+          res(r) += a.data(rr) * b(c)
+          rr += 1
         }
-
-        res
+        c += 1
       }
-      implicitly[
-        BinaryRegistry[Matrix[T], Vector[T], OpMulMatrix.type, Vector[T]]]
-        .register(this)
+
+      res
     }
+    implicitly[
+      BinaryRegistry[Matrix[T], Vector[T], OpMulMatrix.type, Vector[T]]]
+      .register(this)
+  }
 
   @expand
   @expand.valify
@@ -689,46 +688,45 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
         CSCMatrix[T],
         SparseVector[T],
         OpMulMatrix.type,
-        SparseVector[T]] =
-    new BinaryRegistry[
-      CSCMatrix[T],
-      SparseVector[T],
-      OpMulMatrix.type,
-      SparseVector[T]] {
-      override def bindingMissing(a: CSCMatrix[T], b: SparseVector[T]) = {
-        require(a.cols == b.length, "Dimension Mismatch!")
-        val res = new VectorBuilder[T](a.rows, b.iterableSize min a.rows)
-        var c = 0
-        var lastOffset = 0
-        while (c < a.cols) {
-          var rr = a.colPtrs(c)
-          val rrlast = a.colPtrs(c + 1)
-          if (rr < rrlast) {
-            val newBOffset = util.Arrays.binarySearch(
-              b.index,
-              lastOffset,
-              math.min(b.activeSize, c + 1),
-              c)
-            if (newBOffset < 0) {
-              lastOffset = ~newBOffset
-            } else {
-              while (rr < rrlast) {
-                val r = a.rowIndices(rr)
-                res.add(r, a.data(rr) * b.valueAt(newBOffset))
-                rr += 1
-              }
-              lastOffset = newBOffset + 1
+        SparseVector[T]] = new BinaryRegistry[
+    CSCMatrix[T],
+    SparseVector[T],
+    OpMulMatrix.type,
+    SparseVector[T]] {
+    override def bindingMissing(a: CSCMatrix[T], b: SparseVector[T]) = {
+      require(a.cols == b.length, "Dimension Mismatch!")
+      val res = new VectorBuilder[T](a.rows, b.iterableSize min a.rows)
+      var c = 0
+      var lastOffset = 0
+      while (c < a.cols) {
+        var rr = a.colPtrs(c)
+        val rrlast = a.colPtrs(c + 1)
+        if (rr < rrlast) {
+          val newBOffset = util.Arrays.binarySearch(
+            b.index,
+            lastOffset,
+            math.min(b.activeSize, c + 1),
+            c)
+          if (newBOffset < 0) {
+            lastOffset = ~newBOffset
+          } else {
+            while (rr < rrlast) {
+              val r = a.rowIndices(rr)
+              res.add(r, a.data(rr) * b.valueAt(newBOffset))
+              rr += 1
             }
+            lastOffset = newBOffset + 1
           }
-          c += 1
         }
-
-        res.toSparseVector
+        c += 1
       }
-      implicitly[
-        BinaryRegistry[Matrix[T], Vector[T], OpMulMatrix.type, Vector[T]]]
-        .register(this)
+
+      res.toSparseVector
     }
+    implicitly[
+      BinaryRegistry[Matrix[T], Vector[T], OpMulMatrix.type, Vector[T]]]
+      .register(this)
+  }
 
   @expand
   @expand.valify
@@ -736,37 +734,36 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
       : breeze.linalg.operators.OpMulMatrix.Impl2[
         CSCMatrix[T],
         DenseMatrix[T],
-        DenseMatrix[T]] =
-    new breeze.linalg.operators.OpMulMatrix.Impl2[
-      CSCMatrix[T],
-      DenseMatrix[T],
-      DenseMatrix[T]] {
-      def apply(a: CSCMatrix[T], b: DenseMatrix[T]) = {
+        DenseMatrix[T]] = new breeze.linalg.operators.OpMulMatrix.Impl2[
+    CSCMatrix[T],
+    DenseMatrix[T],
+    DenseMatrix[T]] {
+    def apply(a: CSCMatrix[T], b: DenseMatrix[T]) = {
 
-        if (a.cols != b.rows) throw new RuntimeException("Dimension Mismatch!")
+      if (a.cols != b.rows) throw new RuntimeException("Dimension Mismatch!")
 
-        val res = new DenseMatrix[T](a.rows, b.cols)
-        var i = 0
-        while (i < b.cols) {
-          var j = 0
-          while (j < a.cols) {
-            val v = b(j, i)
-            var k = a.colPtrs(j)
-            while (k < a.colPtrs(j + 1)) {
-              res(a.rowIndices(k), i) += v * a.data(k)
-              k += 1
-            }
-            j += 1
+      val res = new DenseMatrix[T](a.rows, b.cols)
+      var i = 0
+      while (i < b.cols) {
+        var j = 0
+        while (j < a.cols) {
+          val v = b(j, i)
+          var k = a.colPtrs(j)
+          while (k < a.colPtrs(j + 1)) {
+            res(a.rowIndices(k), i) += v * a.data(k)
+            k += 1
           }
-          i += 1
+          j += 1
         }
-
-        res
+        i += 1
       }
-      implicitly[
-        BinaryRegistry[Matrix[T], Matrix[T], OpMulMatrix.type, Matrix[T]]]
-        .register(this)
+
+      res
     }
+    implicitly[
+      BinaryRegistry[Matrix[T], Matrix[T], OpMulMatrix.type, Matrix[T]]]
+      .register(this)
+  }
 
   @expand
   @expand.valify
@@ -774,40 +771,39 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
       : breeze.linalg.operators.OpMulMatrix.Impl2[
         DenseMatrix[T],
         CSCMatrix[T],
-        DenseMatrix[T]] =
-    new breeze.linalg.operators.OpMulMatrix.Impl2[
-      DenseMatrix[T],
-      CSCMatrix[T],
-      DenseMatrix[T]] {
-      def apply(a: DenseMatrix[T], b: CSCMatrix[T]) = {
-        if (a.cols != b.rows) throw new RuntimeException("Dimension Mismatch!")
+        DenseMatrix[T]] = new breeze.linalg.operators.OpMulMatrix.Impl2[
+    DenseMatrix[T],
+    CSCMatrix[T],
+    DenseMatrix[T]] {
+    def apply(a: DenseMatrix[T], b: CSCMatrix[T]) = {
+      if (a.cols != b.rows) throw new RuntimeException("Dimension Mismatch!")
 
-        val res = new DenseMatrix[T](a.rows, b.cols)
-        var i = 0
-        while (i < b.cols) {
-          var j = b.colPtrs(i)
-          while (j < b.colPtrs(i + 1)) {
-            val dval = b.data(j)
-            val ival = b.rowIndices(j)
-            var k = 0
-            while (k < a.rows) {
-              res(k, i) += a(k, ival) * dval
-              k += 1
-            }
-            j += 1
+      val res = new DenseMatrix[T](a.rows, b.cols)
+      var i = 0
+      while (i < b.cols) {
+        var j = b.colPtrs(i)
+        while (j < b.colPtrs(i + 1)) {
+          val dval = b.data(j)
+          val ival = b.rowIndices(j)
+          var k = 0
+          while (k < a.rows) {
+            res(k, i) += a(k, ival) * dval
+            k += 1
           }
-          i += 1
+          j += 1
         }
-
-        res
+        i += 1
       }
-      implicitly[
-        BinaryRegistry[Matrix[T], Matrix[T], OpMulMatrix.type, Matrix[T]]]
-        .register(this)
-      implicitly[
-        BinaryRegistry[DenseMatrix[T], Matrix[T], OpMulMatrix.type, Matrix[T]]]
-        .register(this)
+
+      res
     }
+    implicitly[
+      BinaryRegistry[Matrix[T], Matrix[T], OpMulMatrix.type, Matrix[T]]]
+      .register(this)
+    implicitly[
+      BinaryRegistry[DenseMatrix[T], Matrix[T], OpMulMatrix.type, Matrix[T]]]
+      .register(this)
+  }
 
   @expand
   @expand.valify
@@ -815,47 +811,46 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
       : breeze.linalg.operators.OpMulMatrix.Impl2[
         CSCMatrix[T],
         CSCMatrix[T],
-        CSCMatrix[T]] =
-    new breeze.linalg.operators.OpMulMatrix.Impl2[
-      CSCMatrix[T],
-      CSCMatrix[T],
-      CSCMatrix[T]] {
-      def apply(a: CSCMatrix[T], b: CSCMatrix[T]) = {
+        CSCMatrix[T]] = new breeze.linalg.operators.OpMulMatrix.Impl2[
+    CSCMatrix[T],
+    CSCMatrix[T],
+    CSCMatrix[T]] {
+    def apply(a: CSCMatrix[T], b: CSCMatrix[T]) = {
 
-        require(a.cols == b.rows, "Dimension Mismatch")
+      require(a.cols == b.rows, "Dimension Mismatch")
 
-        var numnz = 0
-        var i = 0
-        while (i < b.cols) {
-          var j = b.colPtrs(i)
-          while (j < b.colPtrs(i + 1)) {
-            numnz += a.colPtrs(b.rowIndices(j) + 1) - a.colPtrs(b.rowIndices(j))
-            j += 1
-          }
-          i += 1
+      var numnz = 0
+      var i = 0
+      while (i < b.cols) {
+        var j = b.colPtrs(i)
+        while (j < b.colPtrs(i + 1)) {
+          numnz += a.colPtrs(b.rowIndices(j) + 1) - a.colPtrs(b.rowIndices(j))
+          j += 1
         }
-        val res = new CSCMatrix.Builder[T](a.rows, b.cols, numnz)
-        i = 0
-        while (i < b.cols) {
-          var j = b.colPtrs(i)
-          while (j < b.colPtrs(i + 1)) {
-            val dval = b.data(j)
-            var k = a.colPtrs(b.rowIndices(j))
-            while (k < a.colPtrs(b.rowIndices(j) + 1)) {
-              res.add(a.rowIndices(k), i, a.data(k) * dval)
-              k += 1
-            }
-            j += 1
-          }
-          i += 1
-        }
-
-        res.result()
+        i += 1
       }
-      implicitly[
-        BinaryRegistry[Matrix[T], Matrix[T], OpMulMatrix.type, Matrix[T]]]
-        .register(this)
+      val res = new CSCMatrix.Builder[T](a.rows, b.cols, numnz)
+      i = 0
+      while (i < b.cols) {
+        var j = b.colPtrs(i)
+        while (j < b.colPtrs(i + 1)) {
+          val dval = b.data(j)
+          var k = a.colPtrs(b.rowIndices(j))
+          while (k < a.colPtrs(b.rowIndices(j) + 1)) {
+            res.add(a.rowIndices(k), i, a.data(k) * dval)
+            k += 1
+          }
+          j += 1
+        }
+        i += 1
+      }
+
+      res.result()
     }
+    implicitly[
+      BinaryRegistry[Matrix[T], Matrix[T], OpMulMatrix.type, Matrix[T]]]
+      .register(this)
+  }
 
   // Update Ops
   protected def updateFromPure[T, Op <: OpType, Other](implicit
@@ -888,9 +883,8 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
   implicit def csc_csc_InPlace[
       @expand.args(Int, Float, Double, Long) T,
       @expand.args(OpAdd, OpSub, OpDiv, OpPow, OpMod, OpMulScalar) Op <: OpType]
-      : Op.InPlaceImpl2[CSCMatrix[T], CSCMatrix[T]] =
-    updateFromPure(
-      implicitly[Op.Impl2[CSCMatrix[T], CSCMatrix[T], CSCMatrix[T]]])
+      : Op.InPlaceImpl2[CSCMatrix[T], CSCMatrix[T]] = updateFromPure(
+    implicitly[Op.Impl2[CSCMatrix[T], CSCMatrix[T], CSCMatrix[T]]])
 
   @expand
   @expand.valify
@@ -1028,44 +1022,43 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
     CSCMatrix[T],
     SparseVector[T],
     OpMulMatrix.type,
-    SparseVector[T]] =
-    new BinaryRegistry[
-      CSCMatrix[T],
-      SparseVector[T],
-      OpMulMatrix.type,
-      SparseVector[T]] {
-      override def bindingMissing(a: CSCMatrix[T], b: SparseVector[T]) = {
-        val ring = implicitly[Semiring[T]]
-        require(a.cols == b.length, "Dimension Mismatch!")
-        val res = new VectorBuilder[T](a.rows, b.iterableSize min a.rows)
-        var c = 0
-        var lastOffset = 0
-        while (c < a.cols) {
-          var rr = a.colPtrs(c)
-          val rrlast = a.colPtrs(c + 1)
-          if (rr < rrlast) {
-            val newBOffset = util.Arrays.binarySearch(
-              b.index,
-              lastOffset,
-              math.min(b.activeSize, c + 1),
-              c)
-            if (newBOffset < 0) {
-              lastOffset = ~newBOffset
-            } else {
-              while (rr < rrlast) {
-                val r = a.rowIndices(rr)
-                res.add(r, ring.*(a.data(rr), b.valueAt(newBOffset)))
-                rr += 1
-              }
-              lastOffset = newBOffset + 1
+    SparseVector[T]] = new BinaryRegistry[
+    CSCMatrix[T],
+    SparseVector[T],
+    OpMulMatrix.type,
+    SparseVector[T]] {
+    override def bindingMissing(a: CSCMatrix[T], b: SparseVector[T]) = {
+      val ring = implicitly[Semiring[T]]
+      require(a.cols == b.length, "Dimension Mismatch!")
+      val res = new VectorBuilder[T](a.rows, b.iterableSize min a.rows)
+      var c = 0
+      var lastOffset = 0
+      while (c < a.cols) {
+        var rr = a.colPtrs(c)
+        val rrlast = a.colPtrs(c + 1)
+        if (rr < rrlast) {
+          val newBOffset = util.Arrays.binarySearch(
+            b.index,
+            lastOffset,
+            math.min(b.activeSize, c + 1),
+            c)
+          if (newBOffset < 0) {
+            lastOffset = ~newBOffset
+          } else {
+            while (rr < rrlast) {
+              val r = a.rowIndices(rr)
+              res.add(r, ring.*(a.data(rr), b.valueAt(newBOffset)))
+              rr += 1
             }
+            lastOffset = newBOffset + 1
           }
-          c += 1
         }
-
-        res.toSparseVector
+        c += 1
       }
+
+      res.toSparseVector
     }
+  }
 
   implicit def canMulM_DM_Semiring[T: Semiring: Zero: ClassTag]
       : OpMulMatrix.Impl2[CSCMatrix[T], DenseMatrix[T], DenseMatrix[T]] =

@@ -101,18 +101,17 @@ object ScribeHandler {
       maxMessagesToBuffer: Int,
       formatter: Formatter,
       level: Option[Level]
-  ): () => ScribeHandler =
-    apply(
-      hostname,
-      port,
-      category,
-      bufferTime,
-      connectBackoff,
-      maxMessagesPerTransaction,
-      maxMessagesToBuffer,
-      formatter,
-      level,
-      NullStatsReceiver)
+  ): () => ScribeHandler = apply(
+    hostname,
+    port,
+    category,
+    bufferTime,
+    connectBackoff,
+    maxMessagesPerTransaction,
+    maxMessagesToBuffer,
+    formatter,
+    level,
+    NullStatsReceiver)
 
 }
 
@@ -145,18 +144,17 @@ class ScribeHandler(
       maxMessagesToBuffer: Int,
       formatter: Formatter,
       level: Option[Level]
-  ) =
-    this(
-      hostname,
-      port,
-      category,
-      bufferTime,
-      connectBackoff,
-      maxMessagesPerTransaction,
-      maxMessagesToBuffer,
-      formatter,
-      level,
-      NullStatsReceiver)
+  ) = this(
+    hostname,
+    port,
+    category,
+    bufferTime,
+    connectBackoff,
+    maxMessagesPerTransaction,
+    maxMessagesToBuffer,
+    formatter,
+    level,
+    NullStatsReceiver)
 
   private[this] val stats = new ScribeHandlerStats(statsReceiver)
 
@@ -167,8 +165,8 @@ class ScribeHandler(
 
   @volatile private var _lastTransmission = Time.epoch
   // visible for testing
-  private[logging] def updateLastTransmission(): Unit =
-    _lastTransmission = Time.now
+  private[logging] def updateLastTransmission(): Unit = _lastTransmission =
+    Time.now
 
   private var socket: Option[Socket] = None
 

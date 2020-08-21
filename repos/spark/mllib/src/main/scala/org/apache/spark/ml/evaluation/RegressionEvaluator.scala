@@ -118,13 +118,12 @@ final class RegressionEvaluator @Since("1.4.0") (
   }
 
   @Since("1.4.0")
-  override def isLargerBetter: Boolean =
-    $(metricName) match {
-      case "rmse" => false
-      case "mse"  => false
-      case "r2"   => true
-      case "mae"  => false
-    }
+  override def isLargerBetter: Boolean = $(metricName) match {
+    case "rmse" => false
+    case "mse"  => false
+    case "r2"   => true
+    case "mae"  => false
+  }
 
   @Since("1.5.0")
   override def copy(extra: ParamMap): RegressionEvaluator = defaultCopy(extra)

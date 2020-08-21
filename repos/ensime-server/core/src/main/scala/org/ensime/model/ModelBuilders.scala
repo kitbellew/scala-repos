@@ -274,14 +274,13 @@ trait ModelBuilders { self: RichPresentationCompiler =>
         isCallable: Boolean,
         relevance: Int,
         toInsert: Option[String]
-    ) =
-      new CompletionInfo(
-        name,
-        tpeSig,
-        isCallable,
-        relevance,
-        toInsert
-      )
+    ) = new CompletionInfo(
+      name,
+      tpeSig,
+      isCallable,
+      relevance,
+      toInsert
+    )
 
     def fromSymbol(sym: Symbol, relevance: Int): CompletionInfo =
       CompletionInfo.fromSymbolAndType(sym, sym.tpe, relevance)
@@ -392,15 +391,14 @@ object LineSourcePositionHelper {
 object OffsetSourcePositionHelper {
   import org.ensime.util.file._
 
-  def fromPosition(p: Position): Option[OffsetSourcePosition] =
-    p match {
-      case NoPosition => None
-      case realPos =>
-        Some(
-          new OffsetSourcePosition(
-            File(realPos.source.file.path).canon,
-            realPos.point))
-    }
+  def fromPosition(p: Position): Option[OffsetSourcePosition] = p match {
+    case NoPosition => None
+    case realPos =>
+      Some(
+        new OffsetSourcePosition(
+          File(realPos.source.file.path).canon,
+          realPos.point))
+  }
 }
 
 object ERangePositionHelper {

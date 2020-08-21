@@ -104,24 +104,23 @@ class ReplyCodec extends UnifiedProtocolCodec {
     }
   }
 
-  def decodeBulkReply =
-    readLine { line =>
-      RequireServerProtocol.safe {
-        NumberFormat.toInt(line)
-      } match {
-        case empty if empty < 0 => emit(EmptyBulkReply())
-        case replySz =>
-          readBytes(replySz) { bytes =>
-            readBytes(2) { eol =>
-              if (eol(0) != '\r' || eol(1) != '\n') {
-                throw new ServerError(
-                  "Expected EOL after line data and didn't find it")
-              }
-              emit(BulkReply(ChannelBuffers.wrappedBuffer(bytes)))
+  def decodeBulkReply = readLine { line =>
+    RequireServerProtocol.safe {
+      NumberFormat.toInt(line)
+    } match {
+      case empty if empty < 0 => emit(EmptyBulkReply())
+      case replySz =>
+        readBytes(replySz) { bytes =>
+          readBytes(2) { eol =>
+            if (eol(0) != '\r' || eol(1) != '\n') {
+              throw new ServerError(
+                "Expected EOL after line data and didn't find it")
             }
+            emit(BulkReply(ChannelBuffers.wrappedBuffer(bytes)))
           }
-      }
+        }
     }
+  }
 
   def decodeMBulkReply(argCount: Long) =
     decodeMBulkLines(argCount, Nil, Nil)

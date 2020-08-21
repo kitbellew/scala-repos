@@ -2,9 +2,8 @@
  * filter: inliner warnings; re-run with
  */
 object Test {
-  def x =
-    BigInt(
-      "10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
+  def x = BigInt(
+    "10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
   def y = BigDecimal("" + (Short.MaxValue + 1) + ".0")
   def y1 = BigDecimal("0.1")
   def y2 = BigDecimal("0.5")

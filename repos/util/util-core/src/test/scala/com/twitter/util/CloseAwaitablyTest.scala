@@ -9,11 +9,10 @@ class CloseAwaitablyTest extends FunSuite {
   class Context extends Closable with CloseAwaitably {
     val p = new Promise[Unit]
     var n = 0
-    def close(deadline: Time): Future[Unit] =
-      closeAwaitably {
-        n += 1
-        p
-      }
+    def close(deadline: Time): Future[Unit] = closeAwaitably {
+      n += 1
+      p
+    }
   }
 
   def make(): Context = new Context()

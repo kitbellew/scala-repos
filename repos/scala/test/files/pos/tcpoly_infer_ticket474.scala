@@ -10,12 +10,11 @@ trait Buildable[C[_]] {
 object Test {
 
   implicit object buildableList extends Buildable[List] {
-    def builder[T] =
-      new Builder[List, T] {
-        val buf = new scala.collection.mutable.ListBuffer[T]
-        def +=(x: T) = buf += x
-        def finalise = buf.toList
-      }
+    def builder[T] = new Builder[List, T] {
+      val buf = new scala.collection.mutable.ListBuffer[T]
+      def +=(x: T) = buf += x
+      def finalise = buf.toList
+    }
   }
 
   def foo[C[_], T](x: T)(implicit b: Buildable[C]): C[T] = {

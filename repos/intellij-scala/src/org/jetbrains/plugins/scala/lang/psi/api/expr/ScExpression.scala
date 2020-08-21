@@ -80,11 +80,10 @@ trait ScExpression
       fromUnderscore: Boolean = false): ExpressionTypeResult = {
     if (isShape) {
       val tp: ScType = getShape()._1
-      def default =
-        ExpressionTypeResult(
-          Success(tp, Some(ScExpression.this)),
-          Set.empty,
-          None)
+      def default = ExpressionTypeResult(
+        Success(tp, Some(ScExpression.this)),
+        Set.empty,
+        None)
       val expectedOpt = expectedOption.orElse(expectedType(fromUnderscore))
       expectedOpt match {
         case Some(expected) if !tp.conforms(expected) =>
@@ -184,9 +183,8 @@ trait ScExpression
       tp: ScType) = {
     def checkForSAM(
         etaExpansionHappened: Boolean = false): Option[ExpressionTypeResult] = {
-      def expectedResult =
-        Some(
-          ExpressionTypeResult(Success(expected, Some(this)), Set.empty, None))
+      def expectedResult = Some(
+        ExpressionTypeResult(Success(expected, Some(this)), Set.empty, None))
       tp match {
         case ScFunctionType(_, params) if ScalaPsiUtil.isSAMEnabled(this) =>
           ScalaPsiUtil.toSAMType(expected, getResolveScope) match {

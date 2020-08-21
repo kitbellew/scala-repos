@@ -43,8 +43,8 @@ private[spark] class GraphiteSink(
   val GRAPHITE_KEY_PREFIX = "prefix"
   val GRAPHITE_KEY_PROTOCOL = "protocol"
 
-  def propertyToOption(prop: String): Option[String] =
-    Option(property.getProperty(prop))
+  def propertyToOption(prop: String): Option[String] = Option(
+    property.getProperty(prop))
 
   if (!propertyToOption(GRAPHITE_KEY_HOST).isDefined) {
     throw new Exception("Graphite sink requires 'host' property.")

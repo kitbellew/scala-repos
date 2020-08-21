@@ -84,11 +84,10 @@ abstract class DoubleBuffer private[nio] (
   override def hashCode(): Int =
     GenBuffer(this).generic_hashCode(DoubleBuffer.HashSeed)
 
-  override def equals(that: Any): Boolean =
-    that match {
-      case that: DoubleBuffer => compareTo(that) == 0
-      case _                  => false
-    }
+  override def equals(that: Any): Boolean = that match {
+    case that: DoubleBuffer => compareTo(that) == 0
+    case _                  => false
+  }
 
   @noinline
   def compareTo(that: DoubleBuffer): Int =

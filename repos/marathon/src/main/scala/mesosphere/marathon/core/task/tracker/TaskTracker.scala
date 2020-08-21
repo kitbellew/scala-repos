@@ -65,17 +65,15 @@ object TaskTracker {
       appTasksMap.get(appId).map(_.marathonTasks).getOrElse(Iterable.empty)
     }
 
-    def marathonTask(taskId: Task.Id): Option[MarathonTask] =
-      for {
-        app <- appTasksMap.get(taskId.appId)
-        task <- app.taskMap.get(taskId)
-      } yield task
+    def marathonTask(taskId: Task.Id): Option[MarathonTask] = for {
+      app <- appTasksMap.get(taskId.appId)
+      task <- app.taskMap.get(taskId)
+    } yield task
 
-    def task(taskId: Task.Id): Option[Task] =
-      for {
-        app <- appTasksMap.get(taskId.appId)
-        taskState <- app.taskStateMap.get(taskId)
-      } yield taskState
+    def task(taskId: Task.Id): Option[Task] = for {
+      app <- appTasksMap.get(taskId.appId)
+      taskState <- app.taskStateMap.get(taskId)
+    } yield taskState
 
     def allTasks: Iterable[Task] = appTasksMap.values.view.flatMap(_.tasks)
 
@@ -101,18 +99,17 @@ object TaskTracker {
       new TasksByApp(appTasks.withDefault(appId => TaskTracker.AppTasks(appId)))
     }
 
-    def of(apps: TaskTracker.AppTasks*): TasksByApp =
-      of(Map(apps.map(app => app.appId -> app): _*))
+    def of(apps: TaskTracker.AppTasks*): TasksByApp = of(
+      Map(apps.map(app => app.appId -> app): _*))
 
-    def forTasks(tasks: Task*): TasksByApp =
-      of(
-        tasks.groupBy(_.appId).map { case (appId, appTasks) =>
-          appId -> AppTasks.forTasks(appId, appTasks)
-        }
-      )
+    def forTasks(tasks: Task*): TasksByApp = of(
+      tasks.groupBy(_.appId).map { case (appId, appTasks) =>
+        appId -> AppTasks.forTasks(appId, appTasks)
+      }
+    )
 
-    def empty: TasksByApp =
-      of(collection.immutable.Map.empty[PathId, TaskTracker.AppTasks])
+    def empty: TasksByApp = of(
+      collection.immutable.Map.empty[PathId, TaskTracker.AppTasks])
   }
 
   /**

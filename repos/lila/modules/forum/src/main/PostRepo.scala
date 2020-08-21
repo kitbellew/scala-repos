@@ -52,11 +52,10 @@ sealed abstract class PostRepo(troll: Boolean) {
   def removeByTopic(topicId: String): Fu[Unit] =
     $remove(selectTopic(topicId))
 
-  def hideByTopic(topicId: String, value: Boolean): Fu[Unit] =
-    $update(
-      selectTopic(topicId),
-      BSONDocument("$set" -> BSONDocument("hidden" -> value)),
-      multi = true)
+  def hideByTopic(topicId: String, value: Boolean): Fu[Unit] = $update(
+    selectTopic(topicId),
+    BSONDocument("$set" -> BSONDocument("hidden" -> value)),
+    multi = true)
 
   def selectTopic(topicId: String) =
     Json.obj("topicId" -> topicId) ++ trollFilter
@@ -74,13 +73,12 @@ sealed abstract class PostRepo(troll: Boolean) {
     if (langs.isEmpty) Json.obj()
     else Json.obj("lang" -> $in(langs))
 
-  def findDuplicate(post: Post): Fu[Option[Post]] =
-    $find.one(
-      Json.obj(
-        "createdAt" -> $gt($date(DateTime.now.minusHours(1))),
-        "userId" -> ~post.userId,
-        "text" -> post.text
-      ))
+  def findDuplicate(post: Post): Fu[Option[Post]] = $find.one(
+    Json.obj(
+      "createdAt" -> $gt($date(DateTime.now.minusHours(1))),
+      "userId" -> ~post.userId,
+      "text" -> post.text
+    ))
 
   def sortQuery = $sort.createdAsc
 

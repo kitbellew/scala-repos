@@ -60,12 +60,11 @@ class ParHashMap[K, V] private[collection] (
   override def seq =
     new scala.collection.mutable.HashMap[K, V](hashTableContents)
 
-  def splitter =
-    new ParHashMapIterator(
-      1,
-      table.length,
-      size,
-      table(0).asInstanceOf[DefaultEntry[K, V]])
+  def splitter = new ParHashMapIterator(
+    1,
+    table.length,
+    size,
+    table(0).asInstanceOf[DefaultEntry[K, V]])
 
   override def size = tableSize
 
@@ -353,7 +352,6 @@ private[parallel] object ParHashMapCombiner {
   private[mutable] val discriminantmask = ((1 << discriminantbits) - 1)
   private[mutable] val nonmasklength = 32 - discriminantbits
 
-  def apply[K, V] =
-    new ParHashMapCombiner[K, V](
-      HashTable.defaultLoadFactor) {} // was: with EnvironmentPassingCombiner[(K, V), ParHashMap[K, V]]
+  def apply[K, V] = new ParHashMapCombiner[K, V](
+    HashTable.defaultLoadFactor) {} // was: with EnvironmentPassingCombiner[(K, V), ParHashMap[K, V]]
 }

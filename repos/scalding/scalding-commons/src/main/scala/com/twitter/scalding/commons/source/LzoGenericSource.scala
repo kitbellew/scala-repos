@@ -35,9 +35,8 @@ abstract class LzoGenericSource[T]
   def conv: BinaryConverter[T]
   override def setter[U <: T] =
     TupleSetter.asSubSetter[T, U](TupleSetter.singleSetter[T])
-  override def hdfsScheme =
-    HadoopSchemeInstance(
-      LzoGenericScheme[T](conv, clazz).asInstanceOf[Scheme[_, _, _, _, _]])
+  override def hdfsScheme = HadoopSchemeInstance(
+    LzoGenericScheme[T](conv, clazz).asInstanceOf[Scheme[_, _, _, _, _]])
 }
 
 object LzoGenericSource {

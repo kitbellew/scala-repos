@@ -31,34 +31,31 @@ final class Firewall(
   //     }
   //   }
 
-  def blocks(req: RequestHeader): Fu[Boolean] =
-    if (enabled) {
-      cookieName.fold(blocksIp(req.remoteAddress)) { cn =>
-        blocksIp(req.remoteAddress) map (_ || blocksCookies(req.cookies, cn))
-      } addEffect { v =>
-        if (v) lila.mon.security.firewall.block()
-      }
-    } else fuccess(false)
+  def blocks(req: RequestHeader): Fu[Boolean] = if (enabled) {
+    cookieName.fold(blocksIp(req.remoteAddress)) { cn =>
+      blocksIp(req.remoteAddress) map (_ || blocksCookies(req.cookies, cn))
+    } addEffect { v =>
+      if (v) lila.mon.security.firewall.block()
+    }
+  } else fuccess(false)
 
   def accepts(req: RequestHeader): Fu[Boolean] = blocks(req) map (!_)
 
-  def blockIp(ip: String): Funit =
-    validIp(ip) ?? {
-      $update(
-        Json.obj("_id" -> ip),
-        Json.obj("_id" -> ip, "date" -> $date(DateTime.now)),
-        upsert = true) >>- refresh
-    }
+  def blockIp(ip: String): Funit = validIp(ip) ?? {
+    $update(
+      Json.obj("_id" -> ip),
+      Json.obj("_id" -> ip, "date" -> $date(DateTime.now)),
+      upsert = true) >>- refresh
+  }
 
   def unblockIps(ips: Iterable[String]): Funit =
     $remove($select.byIds(ips filter validIp)) >>- refresh
 
-  private def infectCookie(name: String)(implicit req: RequestHeader) =
-    Action {
-      logger.info("Infect cookie " + formatReq(req))
-      val cookie = LilaCookie.cookie(name, Random nextStringUppercase 32)
-      Redirect("/") withCookies cookie
-    }
+  private def infectCookie(name: String)(implicit req: RequestHeader) = Action {
+    logger.info("Infect cookie " + formatReq(req))
+    val cookie = LilaCookie.cookie(name, Random nextStringUppercase 32)
+    Redirect("/") withCookies cookie
+  }
 
   def blocksIp(ip: String): Fu[Boolean] = ips contains ip
 

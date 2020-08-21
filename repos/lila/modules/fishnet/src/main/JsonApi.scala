@@ -14,12 +14,11 @@ object JsonApi {
     val fishnet: Request.Fishnet
     val engine: Request.Engine
 
-    def instance(ip: Client.IpAddress) =
-      Client.Instance(
-        fishnet.version,
-        Client.Engine(engine.name),
-        ip,
-        DateTime.now)
+    def instance(ip: Client.IpAddress) = Client.Instance(
+      fishnet.version,
+      Client.Engine(engine.name),
+      ip,
+      DateTime.now)
   }
 
   object Request {
@@ -88,12 +87,11 @@ object JsonApi {
       variant: Variant,
       moves: String)
 
-  def fromGame(g: W.Game) =
-    Game(
-      game_id = g.id,
-      position = g.initialFen | FEN(Forsyth.initial),
-      variant = g.variant,
-      moves = g.moves)
+  def fromGame(g: W.Game) = Game(
+    game_id = g.id,
+    position = g.initialFen | FEN(Forsyth.initial),
+    variant = g.variant,
+    moves = g.moves)
 
   sealed trait Work {
     val id: String
@@ -103,11 +101,10 @@ object JsonApi {
 
   case class Analysis(id: String, game: Game) extends Work
 
-  def fromWork(w: W): Work =
-    w match {
-      case m: W.Move     => Move(w.id.value, m.level, fromGame(m.game))
-      case a: W.Analysis => Analysis(w.id.value, fromGame(a.game))
-    }
+  def fromWork(w: W): Work = w match {
+    case m: W.Move     => Move(w.id.value, m.level, fromGame(m.game))
+    case a: W.Analysis => Analysis(w.id.value, fromGame(a.game))
+  }
 
   object readers {
     implicit val ClientVersionReads =

@@ -23,11 +23,10 @@ object Lens {
     }
   }
 
-  implicit def identity[T]: Lens[T, T] =
-    new Lens[T, T] {
-      def get(t: T) = t
-      def set(t: T, u: T) = u
-    }
+  implicit def identity[T]: Lens[T, T] = new Lens[T, T] {
+    def get(t: T) = t
+    def set(t: T, u: T) = u
+  }
 
   implicit def isomorphismYieldsLens[T, U](implicit iso: Isomorphism[T, U]) =
     new Lens[T, U] {

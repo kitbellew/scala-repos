@@ -58,12 +58,11 @@ object HttpMethod {
     * Creates a custom method by name and assumes properties conservatively to be
     * safe = false, idempotent = false and requestEntityAcceptance = Expected.
     */
-  def custom(name: String): HttpMethod =
-    custom(
-      name,
-      safe = false,
-      idempotent = false,
-      requestEntityAcceptance = Expected)
+  def custom(name: String): HttpMethod = custom(
+    name,
+    safe = false,
+    idempotent = false,
+    requestEntityAcceptance = Expected)
 }
 
 object HttpMethods extends ObjectRegistry[String, HttpMethod] {

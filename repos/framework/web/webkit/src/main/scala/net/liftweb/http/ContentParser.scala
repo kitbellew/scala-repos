@@ -90,8 +90,8 @@ object ContentParser {
       override def templateSuffixes: Seq[String] = Seq(templateSuffix)
       override def parse(content: InputStream): Box[NodeSeq] =
         toInputStreamParser(parseFunction)(content)
-      override def surround(content: NodeSeq): NodeSeq =
-        surroundFunction(content)
+      override def surround(content: NodeSeq): NodeSeq = surroundFunction(
+        content)
     }
 
   /**

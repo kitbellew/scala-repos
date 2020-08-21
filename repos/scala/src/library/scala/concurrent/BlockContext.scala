@@ -64,15 +64,14 @@ object BlockContext {
   /**
     *    @return the `BlockContext` that would be used for the current `java.lang.Thread` at this point
     */
-  def current: BlockContext =
-    contextLocal.get match {
-      case null =>
-        Thread.currentThread match {
-          case ctx: BlockContext => ctx
-          case _                 => DefaultBlockContext
-        }
-      case some => some
-    }
+  def current: BlockContext = contextLocal.get match {
+    case null =>
+      Thread.currentThread match {
+        case ctx: BlockContext => ctx
+        case _                 => DefaultBlockContext
+      }
+    case some => some
+  }
 
   /**
     * Installs a current `BlockContext` around executing `body`.

@@ -316,8 +316,8 @@ object Act {
       index: KeyIndex,
       currentBuild: URI,
       trailing: Parser[_]): Parser[ResolvedReference] = {
-    def projectID(uri: URI) =
-      token(examplesStrict(ID, index projects uri, "project ID") <~ trailing)
+    def projectID(uri: URI) = token(
+      examplesStrict(ID, index projects uri, "project ID") <~ trailing)
     def projectRef(uri: URI) = projectID(uri) map { id => ProjectRef(uri, id) }
 
     val uris = index.buildURIs
@@ -386,8 +386,8 @@ object Act {
   @deprecated("No longer used.", "0.13.2")
   def showParser = token((ShowCommand ~ Space) ^^^ true) ?? false
 
-  def scopedKeyParser(state: State): Parser[ScopedKey[_]] =
-    scopedKeyParser(Project extract state)
+  def scopedKeyParser(state: State): Parser[ScopedKey[_]] = scopedKeyParser(
+    Project extract state)
   def scopedKeyParser(extracted: Extracted): Parser[ScopedKey[_]] =
     scopedKeyParser(extracted.structure, extracted.currentRef)
   def scopedKeyParser(
@@ -401,8 +401,8 @@ object Act {
       structure.data)
 
   type KeysParser = Parser[Seq[ScopedKey[T]] forSome { type T }]
-  def aggregatedKeyParser(state: State): KeysParser =
-    aggregatedKeyParser(Project extract state)
+  def aggregatedKeyParser(state: State): KeysParser = aggregatedKeyParser(
+    Project extract state)
   def aggregatedKeyParser(extracted: Extracted): KeysParser =
     aggregatedKeyParser(extracted.structure, extracted.currentRef)
   def aggregatedKeyParser(
@@ -450,6 +450,7 @@ object Act {
   final object ParsedGlobal extends ParsedAxis[Nothing]
   final object Omitted extends ParsedAxis[Nothing]
   final class ParsedValue[T](val value: T) extends ParsedAxis[T]
-  def value[T](t: Parser[T]): Parser[ParsedAxis[T]] =
-    t map { v => new ParsedValue(v) }
+  def value[T](t: Parser[T]): Parser[ParsedAxis[T]] = t map { v =>
+    new ParsedValue(v)
+  }
 }

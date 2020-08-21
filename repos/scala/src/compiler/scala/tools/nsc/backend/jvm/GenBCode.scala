@@ -254,13 +254,12 @@ abstract class GenBCode extends BCodeSyncAndTry {
           localOpt.methodOptimizations(classNode))
       }
 
-      def setInnerClasses(classNode: ClassNode): Unit =
-        if (classNode != null) {
-          classNode.innerClasses.clear()
-          addInnerClasses(
-            classNode,
-            bTypes.backendUtils.collectNestedClasses(classNode))
-        }
+      def setInnerClasses(classNode: ClassNode): Unit = if (classNode != null) {
+        classNode.innerClasses.clear()
+        addInnerClasses(
+          classNode,
+          bTypes.backendUtils.collectNestedClasses(classNode))
+      }
 
       def run() {
         runGlobalOptimizations()

@@ -964,24 +964,23 @@ class FutureSpec
     }
   }
 
-  implicit def arbFuture: Arbitrary[Future[Int]] =
-    Arbitrary(for (n ← arbitrary[Int]) yield Future(n))
+  implicit def arbFuture: Arbitrary[Future[Int]] = Arbitrary(
+    for (n ← arbitrary[Int]) yield Future(n))
 
-  implicit def arbFutureAction: Arbitrary[FutureAction] =
-    Arbitrary {
+  implicit def arbFutureAction: Arbitrary[FutureAction] = Arbitrary {
 
-      val genIntAction = for {
-        n ← arbitrary[Int]
-        a ← Gen.oneOf(IntAdd(n), IntSub(n), IntMul(n), IntDiv(n))
-      } yield a
+    val genIntAction = for {
+      n ← arbitrary[Int]
+      a ← Gen.oneOf(IntAdd(n), IntSub(n), IntMul(n), IntDiv(n))
+    } yield a
 
-      val genMapAction = genIntAction map (MapAction(_))
+    val genMapAction = genIntAction map (MapAction(_))
 
-      val genFlatMapAction = genIntAction map (FlatMapAction(_))
+    val genFlatMapAction = genIntAction map (FlatMapAction(_))
 
-      Gen.oneOf(genMapAction, genFlatMapAction)
+    Gen.oneOf(genMapAction, genFlatMapAction)
 
-    }
+  }
 
   def checkType[A: ClassTag, B](in: Future[A], reftag: ClassTag[B]): Boolean =
     implicitly[ClassTag[A]].runtimeClass == reftag.runtimeClass

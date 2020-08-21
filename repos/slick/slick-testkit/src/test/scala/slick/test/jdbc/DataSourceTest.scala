@@ -67,8 +67,8 @@ class MockDriver extends Driver {
       url: String,
       info: Properties): Array[DriverPropertyInfo] = Array()
   def getMinorVersion: Int = 0
-  def getParentLogger: Logger =
-    throw new SQLException("feature not implemented")
+  def getParentLogger: Logger = throw new SQLException(
+    "feature not implemented")
   def connect(url: String, info: Properties): Connection = {
     MockDriver.last = Some((url, info))
     throw new SQLException("Connection data has been recorded")

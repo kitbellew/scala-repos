@@ -118,8 +118,8 @@ object Random {
   /**
     * Create Random instance from provided seed
     */
-  def apply(seed: Long) =
-    new Random(XorShift(new java.util.Random(seed).nextLong))
+  def apply(seed: Long) = new Random(
+    XorShift(new java.util.Random(seed).nextLong))
 
   /**
     * Create Random instance from custom RNG function

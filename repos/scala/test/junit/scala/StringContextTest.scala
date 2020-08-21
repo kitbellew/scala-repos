@@ -64,25 +64,22 @@ class StringContextTest {
     val res = treatEscapes(s)
     assertEquals("ScalaSyntax", res)
   }
-  @Test def badly() =
-    assertThrows[InvalidEscapeException] {
-      val s = """Scala\"""
-      val res = treatEscapes(s)
-      assertEquals("Scala", res)
-    }
-  @Test def noOctal() =
-    assertThrows[InvalidEscapeException] {
-      val s = """\123cala"""
-      val res = processEscapes(s)
-      assertEquals("Scala", res)
-    }
+  @Test def badly() = assertThrows[InvalidEscapeException] {
+    val s = """Scala\"""
+    val res = treatEscapes(s)
+    assertEquals("Scala", res)
+  }
+  @Test def noOctal() = assertThrows[InvalidEscapeException] {
+    val s = """\123cala"""
+    val res = processEscapes(s)
+    assertEquals("Scala", res)
+  }
 
   @Test def t6631_baseline() = assertEquals("\f\r\n\t", s"""\f\r\n\t""")
 
-  @Test def t6631_badEscape() =
-    assertThrows[InvalidEscapeException] {
-      s"""\x"""
-    }
+  @Test def t6631_badEscape() = assertThrows[InvalidEscapeException] {
+    s"""\x"""
+  }
 
   // verifying that the standard interpolators can be supplanted
   @Test def antiHijack_?() = {

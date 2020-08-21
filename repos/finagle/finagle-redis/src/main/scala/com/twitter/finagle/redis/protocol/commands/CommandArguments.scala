@@ -11,11 +11,10 @@ case object WithScores extends CommandArgument {
   def command = "WITHSCORES"
   val WITHSCORES = command
   def commandBytes = StringToChannelBuffer(command)
-  def unapply(s: String) =
-    s.toUpperCase match {
-      case WITHSCORES => Some(s)
-      case _          => None
-    }
+  def unapply(s: String) = s.toUpperCase match {
+    case WITHSCORES => Some(s)
+    case _          => None
+  }
   override def toString = command
   def toChannelBuffer = commandBytes
   @deprecated("Prefer option") val asArg = Some(WithScores)
@@ -28,11 +27,10 @@ case class Limit(offset: Long, count: Long) extends CommandArgument {
   override def toString = "%s %d %d".format(Limit.LIMIT, offset, count)
   def toChannelBuffer =
     ChannelBuffers.wrappedBuffer(toChannelBuffers.toArray: _*)
-  def toChannelBuffers =
-    Seq(
-      Limit.LIMIT_CB,
-      StringToChannelBuffer(offset.toString),
-      StringToChannelBuffer(count.toString))
+  def toChannelBuffers = Seq(
+    Limit.LIMIT_CB,
+    StringToChannelBuffer(offset.toString),
+    StringToChannelBuffer(count.toString))
 }
 object Limit {
   val LIMIT = "LIMIT"

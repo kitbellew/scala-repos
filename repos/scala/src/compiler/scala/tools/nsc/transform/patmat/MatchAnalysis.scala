@@ -86,18 +86,17 @@ trait TreeAndTypeAnalysis extends Debugging {
     tp <:< tpImpliedNormalizedToAny
   }
 
-  def equivalentTree(a: Tree, b: Tree): Boolean =
-    (a, b) match {
-      case (Select(qual1, _), Select(qual2, _)) =>
-        equivalentTree(qual1, qual2) && a.symbol == b.symbol
-      case (Ident(_), Ident(_))       => a.symbol == b.symbol
-      case (Literal(c1), Literal(c2)) => c1 == c2
-      case (This(_), This(_))         => a.symbol == b.symbol
-      case (Apply(fun1, args1), Apply(fun2, args2)) =>
-        equivalentTree(fun1, fun2) && args1.corresponds(args2)(equivalentTree)
-      // Those are the only cases we need to handle in the pattern matcher
-      case _ => false
-    }
+  def equivalentTree(a: Tree, b: Tree): Boolean = (a, b) match {
+    case (Select(qual1, _), Select(qual2, _)) =>
+      equivalentTree(qual1, qual2) && a.symbol == b.symbol
+    case (Ident(_), Ident(_))       => a.symbol == b.symbol
+    case (Literal(c1), Literal(c2)) => c1 == c2
+    case (This(_), This(_))         => a.symbol == b.symbol
+    case (Apply(fun1, args1), Apply(fun2, args2)) =>
+      equivalentTree(fun1, fun2) && args1.corresponds(args2)(equivalentTree)
+    // Those are the only cases we need to handle in the pattern matcher
+    case _ => false
+  }
 
   trait CheckableTreeAndTypeAnalysis {
     val typer: Typer
@@ -159,18 +158,17 @@ trait TreeAndTypeAnalysis extends Debugging {
             // and added to a new group
             def groupChildren(
                 wl: List[Symbol],
-                acc: List[List[Type]]): List[List[Type]] =
-              wl match {
-                case hd :: tl =>
-                  val children = enumerateChildren(hd)
-                  // put each trait in a new group, since traits could belong to the same
-                  // group as a derived class
-                  val (traits, nonTraits) = children.partition(_.isTrait)
-                  val filtered =
-                    (traits.map(List(_)) ++ List(nonTraits)).map(filterChildren)
-                  groupChildren(tl ++ children, acc ++ filtered)
-                case Nil => acc
-              }
+                acc: List[List[Type]]): List[List[Type]] = wl match {
+              case hd :: tl =>
+                val children = enumerateChildren(hd)
+                // put each trait in a new group, since traits could belong to the same
+                // group as a derived class
+                val (traits, nonTraits) = children.partition(_.isTrait)
+                val filtered =
+                  (traits.map(List(_)) ++ List(nonTraits)).map(filterChildren)
+                groupChildren(tl ++ children, acc ++ filtered)
+              case Nil => acc
+            }
 
             groupChildren(sym :: Nil, Nil)
           } else {
@@ -215,14 +213,13 @@ trait TreeAndTypeAnalysis extends Debugging {
       object typeArgsToWildcardsExceptArray extends TypeMap {
         // SI-6771 dealias would be enough today, but future proofing with the dealiasWiden.
         // See neg/t6771b.scala for elaboration
-        def apply(tp: Type): Type =
-          tp.dealias match {
-            case TypeRef(pre, sym, args)
-                if args.nonEmpty && (sym ne ArrayClass) =>
-              TypeRef(pre, sym, args map (_ => WildcardType))
-            case _ =>
-              mapOver(tp)
-          }
+        def apply(tp: Type): Type = tp.dealias match {
+          case TypeRef(pre, sym, args)
+              if args.nonEmpty && (sym ne ArrayClass) =>
+            TypeRef(pre, sym, args map (_ => WildcardType))
+          case _ =>
+            mapOver(tp)
+        }
       }
       val result = typeArgsToWildcardsExceptArray(tp)
       debug.patmatResult(s"checkableType($tp)")(result)
@@ -323,14 +320,13 @@ trait MatchApproximation
             else t
         }
 
-      def uniqueTp(tp: Type): Type =
-        tp match {
-          // typerefs etc are already hashconsed
-          case _: UniqueType => tp
-          case tp @ RefinedType(parents, EmptyScope) =>
-            tp.memo(tp: Type)(identity) // TODO: does this help?
-          case _ => tp
-        }
+      def uniqueTp(tp: Type): Type = tp match {
+        // typerefs etc are already hashconsed
+        case _: UniqueType => tp
+        case tp @ RefinedType(parents, EmptyScope) =>
+          tp.memo(tp: Type)(identity) // TODO: does this help?
+        case _ => tp
+      }
 
       // produce the unique tree used to refer to this binder
       // the type of the binder passed to the first invocation
@@ -400,17 +396,16 @@ trait MatchApproximation
                   val p = binderToUniqueTree(b);
                   And(uniqueNonNullProp(p), uniqueTypeProp(p, uniqueTp(pt)))
                 }
-                def nonNullTest(testedBinder: Symbol) =
-                  uniqueNonNullProp(binderToUniqueTree(testedBinder))
+                def nonNullTest(testedBinder: Symbol) = uniqueNonNullProp(
+                  binderToUniqueTree(testedBinder))
                 def equalsTest(pat: Tree, testedBinder: Symbol) =
                   uniqueEqualityProp(
                     binderToUniqueTree(testedBinder),
                     unique(pat))
                 // rewrite eq test to type test against the singleton type `pat.tpe`; unrelated to == (uniqueEqualityProp), could be null
-                def eqTest(pat: Tree, testedBinder: Symbol) =
-                  uniqueTypeProp(
-                    binderToUniqueTree(testedBinder),
-                    uniqueTp(pat.tpe))
+                def eqTest(pat: Tree, testedBinder: Symbol) = uniqueTypeProp(
+                  binderToUniqueTree(testedBinder),
+                  uniqueTp(pat.tpe))
                 def tru = True
               }
               ttm.renderCondition(condStrategy)
@@ -455,10 +450,9 @@ trait MatchApproximation
       val fullRewrite = (irrefutableExtractor orElse rewriteListPattern)
       val refutableRewrite = irrefutableExtractor
 
-      @inline def onUnknown(handler: TreeMaker => Prop) =
-        new TreeMakerToProp {
-          def handleUnknown(tm: TreeMaker) = handler(tm)
-        }
+      @inline def onUnknown(handler: TreeMaker => Prop) = new TreeMakerToProp {
+        def handleUnknown(tm: TreeMaker) = handler(tm)
+      }
 
       // used for CSE -- rewrite all unknowns to False (the most conservative option)
       object conservative extends TreeMakerToProp {
@@ -533,12 +527,11 @@ trait MatchAnalysis extends MatchApproximation {
       // but need different conditions depending on whether we're conservatively looking for failure or success
       // don't rewrite List-like patterns, as List() and Nil need to distinguished for unreachability
       val approx = new TreeMakersToProps(prevBinder)
-      def approximate(default: Prop) =
-        approx.approximateMatch(
-          cases,
-          approx.onUnknown { tm =>
-            approx.refutableRewrite.applyOrElse(tm, (_: TreeMaker) => default)
-          })
+      def approximate(default: Prop) = approx.approximateMatch(
+        cases,
+        approx.onUnknown { tm =>
+          approx.refutableRewrite.applyOrElse(tm, (_: TreeMaker) => default)
+        })
 
       val propsCasesOk = approximate(True) map caseWithoutBodyToProp
       val propsCasesFail =
@@ -601,91 +594,90 @@ trait MatchAnalysis extends MatchApproximation {
     def exhaustive(
         prevBinder: Symbol,
         cases: List[List[TreeMaker]],
-        pt: Type): List[String] =
-      if (uncheckableType(prevBinder.info)) Nil
-      else {
-        // customize TreeMakersToProps (which turns a tree of tree makers into a more abstract DAG of tests)
-        // - approximate the pattern `List()` (unapplySeq on List with empty length) as `Nil`,
-        //   otherwise the common (xs: List[Any]) match { case List() => case x :: xs => } is deemed unexhaustive
-        // - back off (to avoid crying exhaustive too often) when:
-        //    - there are guards -->
-        //    - there are extractor calls (that we can't secretly/soundly) rewrite
-        val start =
-          if (Statistics.canEnable) Statistics.startTimer(patmatAnaExhaust)
-          else null
-        var backoff = false
+        pt: Type): List[String] = if (uncheckableType(prevBinder.info)) Nil
+    else {
+      // customize TreeMakersToProps (which turns a tree of tree makers into a more abstract DAG of tests)
+      // - approximate the pattern `List()` (unapplySeq on List with empty length) as `Nil`,
+      //   otherwise the common (xs: List[Any]) match { case List() => case x :: xs => } is deemed unexhaustive
+      // - back off (to avoid crying exhaustive too often) when:
+      //    - there are guards -->
+      //    - there are extractor calls (that we can't secretly/soundly) rewrite
+      val start =
+        if (Statistics.canEnable) Statistics.startTimer(patmatAnaExhaust)
+        else null
+      var backoff = false
 
-        val approx = new TreeMakersToPropsIgnoreNullChecks(prevBinder)
-        val symbolicCases = approx.approximateMatch(
-          cases,
-          approx.onUnknown { tm =>
-            approx.fullRewrite.applyOrElse[TreeMaker, Prop](
-              tm,
-              {
-                case BodyTreeMaker(_, _) =>
-                  True // irrelevant -- will be discarded by symbolCase later
-                case _ => // debug.patmat("backing off due to "+ tm)
-                  backoff = true
-                  False
-              }
-            )
-          }
-        ) map caseWithoutBodyToProp
-
-        if (backoff) Nil
-        else {
-          val prevBinderTree = approx.binderToUniqueTree(prevBinder)
-
-          // TODO: null tests generate too much noise, so disabled them -- is there any way to bring them back?
-          // assuming we're matching on a non-null scrutinee (prevBinder), when does the match fail?
-          // val nonNullScrutineeCond =
-          //   assume non-null for all the components of the tuple we're matching on (if we're matching on a tuple)
-          //   if (isTupleType(prevBinder.tpe))
-          //     prevBinder.tpe.typeArgs.mapWithIndex{case (_, i) => NonNullProp(codegen.tupleSel(prevBinderTree)(i))}.reduceLeft(And)
-          //   else
-          //     NonNullProp(prevBinderTree)
-          // val matchFails = And(symbolic(nonNullScrutineeCond), Not(symbolicCases reduceLeft (Or(_, _))))
-
-          // when does the match fail?
-          val matchFails = Not(\/(symbolicCases))
-
-          // debug output:
-          debug.patmat("analysing:")
-          showTreeMakers(cases)
-
-          // debug.patmat("\nvars:\n"+ (vars map (_.describe) mkString ("\n")))
-          // debug.patmat("\nmatchFails as CNF:\n"+ cnfString(propToSolvable(matchFails)))
-
-          try {
-            // find the models (under which the match fails)
-            val matchFailModels =
-              findAllModelsFor(propToSolvable(matchFails), prevBinder.pos)
-
-            val scrutVar = Var(prevBinderTree)
-            val counterExamples = {
-              matchFailModels.flatMap { model =>
-                val varAssignments = expandModel(model)
-                varAssignments.flatMap(modelToCounterExample(scrutVar) _)
-              }
+      val approx = new TreeMakersToPropsIgnoreNullChecks(prevBinder)
+      val symbolicCases = approx.approximateMatch(
+        cases,
+        approx.onUnknown { tm =>
+          approx.fullRewrite.applyOrElse[TreeMaker, Prop](
+            tm,
+            {
+              case BodyTreeMaker(_, _) =>
+                True // irrelevant -- will be discarded by symbolCase later
+              case _ => // debug.patmat("backing off due to "+ tm)
+                backoff = true
+                False
             }
+          )
+        }
+      ) map caseWithoutBodyToProp
 
-            // sorting before pruning is important here in order to
-            // keep neg/t7020.scala stable
-            // since e.g. List(_, _) would cover List(1, _)
-            val pruned = CounterExample
-              .prune(counterExamples.sortBy(_.toString))
-              .map(_.toString)
+      if (backoff) Nil
+      else {
+        val prevBinderTree = approx.binderToUniqueTree(prevBinder)
 
-            if (Statistics.canEnable)
-              Statistics.stopTimer(patmatAnaExhaust, start)
-            pruned
-          } catch {
-            case ex: AnalysisBudget.Exception =>
-              warn(prevBinder.pos, ex, "exhaustivity")
-              Nil // CNF budget exceeded
+        // TODO: null tests generate too much noise, so disabled them -- is there any way to bring them back?
+        // assuming we're matching on a non-null scrutinee (prevBinder), when does the match fail?
+        // val nonNullScrutineeCond =
+        //   assume non-null for all the components of the tuple we're matching on (if we're matching on a tuple)
+        //   if (isTupleType(prevBinder.tpe))
+        //     prevBinder.tpe.typeArgs.mapWithIndex{case (_, i) => NonNullProp(codegen.tupleSel(prevBinderTree)(i))}.reduceLeft(And)
+        //   else
+        //     NonNullProp(prevBinderTree)
+        // val matchFails = And(symbolic(nonNullScrutineeCond), Not(symbolicCases reduceLeft (Or(_, _))))
+
+        // when does the match fail?
+        val matchFails = Not(\/(symbolicCases))
+
+        // debug output:
+        debug.patmat("analysing:")
+        showTreeMakers(cases)
+
+        // debug.patmat("\nvars:\n"+ (vars map (_.describe) mkString ("\n")))
+        // debug.patmat("\nmatchFails as CNF:\n"+ cnfString(propToSolvable(matchFails)))
+
+        try {
+          // find the models (under which the match fails)
+          val matchFailModels =
+            findAllModelsFor(propToSolvable(matchFails), prevBinder.pos)
+
+          val scrutVar = Var(prevBinderTree)
+          val counterExamples = {
+            matchFailModels.flatMap { model =>
+              val varAssignments = expandModel(model)
+              varAssignments.flatMap(modelToCounterExample(scrutVar) _)
+            }
           }
+
+          // sorting before pruning is important here in order to
+          // keep neg/t7020.scala stable
+          // since e.g. List(_, _) would cover List(1, _)
+          val pruned = CounterExample
+            .prune(counterExamples.sortBy(_.toString))
+            .map(_.toString)
+
+          if (Statistics.canEnable)
+            Statistics.stopTimer(patmatAnaExhaust, start)
+          pruned
+        } catch {
+          case ex: AnalysisBudget.Exception =>
+            warn(prevBinder.pos, ex, "exhaustivity")
+            Nil // CNF budget exceeded
         }
       }
+    }
 
     object CounterExample {
       def prune(examples: List[CounterExample]): List[CounterExample] = {
@@ -726,11 +718,10 @@ trait MatchAnalysis extends MatchApproximation {
     case class ListExample(ctorArgs: List[CounterExample])
         extends CounterExample {
       protected[MatchAnalyzer] override def flattenConsArgs
-          : List[CounterExample] =
-        ctorArgs match {
-          case hd :: tl :: Nil => hd :: tl.flattenConsArgs
-          case _               => Nil
-        }
+          : List[CounterExample] = ctorArgs match {
+        case hd :: tl :: Nil => hd :: tl.flattenConsArgs
+        case _               => Nil
+      }
       protected[MatchAnalyzer] lazy val elems = flattenConsArgs
 
       override def coveredBy(other: CounterExample): Boolean =
@@ -757,9 +748,12 @@ trait MatchAnalysis extends MatchApproximation {
     }
     case class ConstructorExample(cls: Symbol, ctorArgs: List[CounterExample])
         extends CounterExample {
-      override def toString =
-        cls.decodedName + (if (cls.isModuleClass) ""
-                           else ctorArgs.mkString("(", ", ", ")"))
+      override def toString = cls.decodedName + (if (cls.isModuleClass) ""
+                                                 else
+                                                   ctorArgs.mkString(
+                                                     "(",
+                                                     ", ",
+                                                     ")"))
     }
 
     case object WildcardExample extends CounterExample {
@@ -902,27 +896,23 @@ trait MatchAnalysis extends MatchApproximation {
         varAssignment: Map[Var, (Seq[Const], Seq[Const])])
         : Option[CounterExample] = {
       // chop a path into a list of symbols
-      def chop(path: Tree): List[Symbol] =
-        path match {
-          case Ident(_)          => List(path.symbol)
-          case Select(pre, name) => chop(pre) :+ path.symbol
-          case _                 =>
-            // debug.patmat("don't know how to chop "+ path)
-            Nil
-        }
+      def chop(path: Tree): List[Symbol] = path match {
+        case Ident(_)          => List(path.symbol)
+        case Select(pre, name) => chop(pre) :+ path.symbol
+        case _                 =>
+          // debug.patmat("don't know how to chop "+ path)
+          Nil
+      }
 
       // turn the variable assignments into a tree
       // the root is the scrutinee (x1), edges are labelled by the fields that are assigned
       // a node is a variable example (which is later turned into a counter example)
       object VariableAssignment {
-        private def findVar(path: List[Symbol]) =
-          path match {
-            case List(root) if root == scrutVar.path.symbol => Some(scrutVar)
-            case _ =>
-              varAssignment
-                .find { case (v, a) => chop(v.path) == path }
-                .map(_._1)
-          }
+        private def findVar(path: List[Symbol]) = path match {
+          case List(root) if root == scrutVar.path.symbol => Some(scrutVar)
+          case _ =>
+            varAssignment.find { case (v, a) => chop(v.path) == path }.map(_._1)
+        }
 
         private val uniques = new mutable.HashMap[Var, VariableAssignment]
         private def unique(variable: Var): VariableAssignment =

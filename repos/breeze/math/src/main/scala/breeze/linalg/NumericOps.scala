@@ -47,8 +47,8 @@ trait ImmutableNumericOps[+This] extends Any {
    * Ring Element Ops
    */
   // Immutable
-  final def unary_-[TT >: This, That](implicit op: OpNeg.Impl[TT, That]) =
-    op(repr)
+  final def unary_-[TT >: This, That](implicit op: OpNeg.Impl[TT, That]) = op(
+    repr)
 
   /** Element-wise difference of this and b. */
   final def :-[TT >: This, B, That](b: B)(implicit
@@ -111,8 +111,8 @@ trait ImmutableNumericOps[+This] extends Any {
    * Logical Ops
    */
 
-  final def unary_![TT >: This, That](implicit op: OpNot.Impl[TT, That]) =
-    op(repr)
+  final def unary_![TT >: This, That](implicit op: OpNot.Impl[TT, That]) = op(
+    repr)
 
   /** Element-wise logical "and" operator -- returns true if corresponding elements are non-zero. */
   final def :&[TT >: This, B, That](b: B)(implicit

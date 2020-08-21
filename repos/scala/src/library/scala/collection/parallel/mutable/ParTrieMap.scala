@@ -50,11 +50,10 @@ final class ParTrieMap[K, V] private[collection] (
 
   override def seq = ctrie
 
-  def splitter =
-    new ParTrieMapSplitter(
-      0,
-      ctrie.readOnlySnapshot().asInstanceOf[TrieMap[K, V]],
-      true)
+  def splitter = new ParTrieMapSplitter(
+    0,
+    ctrie.readOnlySnapshot().asInstanceOf[TrieMap[K, V]],
+    true)
 
   override def clear() = ctrie.clear()
 
@@ -169,21 +168,20 @@ private[mutable] trait ParTrieMapCombiner[K, V]
     extends Combiner[(K, V), ParTrieMap[K, V]] {
 
   def combine[N <: (K, V), NewTo >: ParTrieMap[K, V]](
-      other: Combiner[N, NewTo]): Combiner[N, NewTo] =
-    if (this eq other) this
-    else {
-      throw new UnsupportedOperationException(
-        "This shouldn't have been called in the first place.")
+      other: Combiner[N, NewTo]): Combiner[N, NewTo] = if (this eq other) this
+  else {
+    throw new UnsupportedOperationException(
+      "This shouldn't have been called in the first place.")
 
-      val thiz = this.asInstanceOf[ParTrieMap[K, V]]
-      val that = other.asInstanceOf[ParTrieMap[K, V]]
-      val result = new ParTrieMap[K, V]
+    val thiz = this.asInstanceOf[ParTrieMap[K, V]]
+    val that = other.asInstanceOf[ParTrieMap[K, V]]
+    val result = new ParTrieMap[K, V]
 
-      result ++= thiz.iterator
-      result ++= that.iterator
+    result ++= thiz.iterator
+    result ++= that.iterator
 
-      result
-    }
+    result
+  }
 
   override def canBeShared = true
 }

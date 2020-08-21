@@ -148,8 +148,8 @@ object EitherOrderedBuf {
       override def hash(element: TermName): ctx.Tree = genHashFn(element)
       override def put(inputStream: TermName, element: TermName) =
         genPutFn(inputStream, element)
-      override def get(inputStreamA: TermName): ctx.Tree =
-        genGetFn(inputStreamA)
+      override def get(inputStreamA: TermName): ctx.Tree = genGetFn(
+        inputStreamA)
       override def compare(elementA: TermName, elementB: TermName): ctx.Tree =
         genCompareFn(elementA, elementB)
       override val lazyOuterVariables: Map[String, ctx.Tree] =

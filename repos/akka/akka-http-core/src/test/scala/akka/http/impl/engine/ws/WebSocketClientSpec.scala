@@ -309,9 +309,8 @@ class WebSocketClientSpec
     }
   }
 
-  def UpgradeRequestBytes =
-    ByteString {
-      """GET /ws HTTP/1.1
+  def UpgradeRequestBytes = ByteString {
+    """GET /ws HTTP/1.1
       |Upgrade: websocket
       |Connection: upgrade
       |Sec-WebSocket-Key: YLQguzhR2dR6y5M9vnA5mw==
@@ -320,11 +319,10 @@ class WebSocketClientSpec
       |User-Agent: akka-http/test
       |
       |""".stripMarginWithNewline("\r\n")
-    }
+  }
 
-  def UpgradeResponseBytes =
-    ByteString {
-      """HTTP/1.1 101 Switching Protocols
+  def UpgradeResponseBytes = ByteString {
+    """HTTP/1.1 101 Switching Protocols
       |Upgrade: websocket
       |Sec-WebSocket-Accept: ujmZX4KXZqjwy6vi1aQFH5p4Ygk=
       |Server: akka-http/test
@@ -332,7 +330,7 @@ class WebSocketClientSpec
       |Connection: upgrade
       |
       |""".stripMarginWithNewline("\r\n")
-    }
+  }
 
   abstract class EstablishedConnectionSetup extends TestSetup {
     expectWireData(UpgradeRequestBytes)
@@ -345,11 +343,10 @@ class WebSocketClientSpec
     protected def requestedSubProtocol: Option[String] = None
 
     val random = new Random(0)
-    def settings =
-      ClientConnectionSettings(system)
-        .withUserAgentHeader(
-          Some(`User-Agent`(List(ProductVersion("akka-http", "test")))))
-        .withWebsocketRandomFactory(() ⇒ random)
+    def settings = ClientConnectionSettings(system)
+      .withUserAgentHeader(
+        Some(`User-Agent`(List(ProductVersion("akka-http", "test")))))
+      .withWebsocketRandomFactory(() ⇒ random)
 
     def targetUri: Uri = "ws://example.org/ws"
 
@@ -391,8 +388,8 @@ class WebSocketClientSpec
         }
         .mkString("\n")
 
-    def sendWireData(data: String): Unit =
-      sendWireData(ByteString(data.stripMarginWithNewline("\r\n"), "ASCII"))
+    def sendWireData(data: String): Unit = sendWireData(
+      ByteString(data.stripMarginWithNewline("\r\n"), "ASCII"))
     def sendWireData(data: ByteString): Unit = netIn.sendNext(data)
 
     def send(bytes: ByteString): Unit = sendWireData(bytes)

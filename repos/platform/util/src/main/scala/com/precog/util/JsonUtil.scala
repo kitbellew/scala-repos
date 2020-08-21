@@ -49,15 +49,14 @@ object JsonUtil {
         stream: StreamT[M, Array[Byte]],
         parser: AsyncParser): M[Validation[Seq[Throwable], JValue]] = {
       def handle(ap: AsyncParse, next: => M[Validation[Seq[Throwable], JValue]])
-          : M[Validation[Seq[Throwable], JValue]] =
-        ap match {
-          case AsyncParse(errors, _) if errors.nonEmpty =>
-            Failure(errors).point[M]
-          case AsyncParse(_, values) if values.nonEmpty =>
-            Success(values.head).point[M]
-          case _ =>
-            next
-        }
+          : M[Validation[Seq[Throwable], JValue]] = ap match {
+        case AsyncParse(errors, _) if errors.nonEmpty =>
+          Failure(errors).point[M]
+        case AsyncParse(_, values) if values.nonEmpty =>
+          Success(values.head).point[M]
+        case _ =>
+          next
+      }
 
       stream.uncons flatMap {
         case Some((bytes, tail)) =>

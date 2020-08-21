@@ -16,12 +16,12 @@ object $find {
   def one[A: TubeInColl](q: QueryBuilder): Fu[Option[A]] =
     q.one[Option[A]] map (_.flatten)
 
-  def byId[ID: Writes, A: TubeInColl](id: ID): Fu[Option[A]] =
-    one($select byId id)
+  def byId[ID: Writes, A: TubeInColl](id: ID): Fu[Option[A]] = one(
+    $select byId id)
   def byId[A: TubeInColl](id: String): Fu[Option[A]] = byId[String, A](id)
 
-  def byIds[ID: Writes, A: TubeInColl](ids: Iterable[ID]): Fu[List[A]] =
-    apply($select byIds ids)
+  def byIds[ID: Writes, A: TubeInColl](ids: Iterable[ID]): Fu[List[A]] = apply(
+    $select byIds ids)
   def byIds[A: TubeInColl](ids: Iterable[String]): Fu[List[A]] =
     byIds[String, A](ids)
 

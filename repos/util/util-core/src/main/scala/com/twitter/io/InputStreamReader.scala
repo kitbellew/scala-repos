@@ -64,11 +64,10 @@ class InputStreamReader private[io] (
   /**
     * Discards this Reader and closes the underlying InputStream
     */
-  def close(deadline: Time) =
-    closeAwaitably {
-      discard()
-      pool { inputStream.close() }
-    }
+  def close(deadline: Time) = closeAwaitably {
+    discard()
+    pool { inputStream.close() }
+  }
 }
 
 object InputStreamReader {

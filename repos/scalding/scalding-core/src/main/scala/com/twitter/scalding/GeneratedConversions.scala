@@ -874,16 +874,15 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
 }
 trait GeneratedTupleSetters extends LowPriorityTupleSetters {
 
-  implicit def tup1Setter[Z <: Tuple1[_]]: TupleSetter[Z] =
-    new TupleSetter[Z] {
-      override def apply(arg: Z) = {
-        val tup = Tuple.size(1)
-        tup.set(0, arg._1)
-        tup
-      }
-
-      override def arity = 1
+  implicit def tup1Setter[Z <: Tuple1[_]]: TupleSetter[Z] = new TupleSetter[Z] {
+    override def apply(arg: Z) = {
+      val tup = Tuple.size(1)
+      tup.set(0, arg._1)
+      tup
     }
+
+    override def arity = 1
+  }
 
   implicit def tup2Setter[Z <: Tuple2[_, _]]: TupleSetter[Z] =
     new TupleSetter[Z] {
@@ -991,114 +990,109 @@ trait GeneratedTupleSetters extends LowPriorityTupleSetters {
     }
 
   implicit def tup9Setter[Z <: Tuple9[_, _, _, _, _, _, _, _, _]]
-      : TupleSetter[Z] =
-    new TupleSetter[Z] {
-      override def apply(arg: Z) = {
-        val tup = Tuple.size(9)
-        tup.set(0, arg._1)
-        tup.set(1, arg._2)
-        tup.set(2, arg._3)
-        tup.set(3, arg._4)
-        tup.set(4, arg._5)
-        tup.set(5, arg._6)
-        tup.set(6, arg._7)
-        tup.set(7, arg._8)
-        tup.set(8, arg._9)
-        tup
-      }
-
-      override def arity = 9
+      : TupleSetter[Z] = new TupleSetter[Z] {
+    override def apply(arg: Z) = {
+      val tup = Tuple.size(9)
+      tup.set(0, arg._1)
+      tup.set(1, arg._2)
+      tup.set(2, arg._3)
+      tup.set(3, arg._4)
+      tup.set(4, arg._5)
+      tup.set(5, arg._6)
+      tup.set(6, arg._7)
+      tup.set(7, arg._8)
+      tup.set(8, arg._9)
+      tup
     }
+
+    override def arity = 9
+  }
 
   implicit def tup10Setter[Z <: Tuple10[_, _, _, _, _, _, _, _, _, _]]
-      : TupleSetter[Z] =
-    new TupleSetter[Z] {
-      override def apply(arg: Z) = {
-        val tup = Tuple.size(10)
-        tup.set(0, arg._1)
-        tup.set(1, arg._2)
-        tup.set(2, arg._3)
-        tup.set(3, arg._4)
-        tup.set(4, arg._5)
-        tup.set(5, arg._6)
-        tup.set(6, arg._7)
-        tup.set(7, arg._8)
-        tup.set(8, arg._9)
-        tup.set(9, arg._10)
-        tup
-      }
-
-      override def arity = 10
+      : TupleSetter[Z] = new TupleSetter[Z] {
+    override def apply(arg: Z) = {
+      val tup = Tuple.size(10)
+      tup.set(0, arg._1)
+      tup.set(1, arg._2)
+      tup.set(2, arg._3)
+      tup.set(3, arg._4)
+      tup.set(4, arg._5)
+      tup.set(5, arg._6)
+      tup.set(6, arg._7)
+      tup.set(7, arg._8)
+      tup.set(8, arg._9)
+      tup.set(9, arg._10)
+      tup
     }
+
+    override def arity = 10
+  }
 
   implicit def tup11Setter[Z <: Tuple11[_, _, _, _, _, _, _, _, _, _, _]]
-      : TupleSetter[Z] =
-    new TupleSetter[Z] {
-      override def apply(arg: Z) = {
-        val tup = Tuple.size(11)
-        tup.set(0, arg._1)
-        tup.set(1, arg._2)
-        tup.set(2, arg._3)
-        tup.set(3, arg._4)
-        tup.set(4, arg._5)
-        tup.set(5, arg._6)
-        tup.set(6, arg._7)
-        tup.set(7, arg._8)
-        tup.set(8, arg._9)
-        tup.set(9, arg._10)
-        tup.set(10, arg._11)
-        tup
-      }
-
-      override def arity = 11
+      : TupleSetter[Z] = new TupleSetter[Z] {
+    override def apply(arg: Z) = {
+      val tup = Tuple.size(11)
+      tup.set(0, arg._1)
+      tup.set(1, arg._2)
+      tup.set(2, arg._3)
+      tup.set(3, arg._4)
+      tup.set(4, arg._5)
+      tup.set(5, arg._6)
+      tup.set(6, arg._7)
+      tup.set(7, arg._8)
+      tup.set(8, arg._9)
+      tup.set(9, arg._10)
+      tup.set(10, arg._11)
+      tup
     }
+
+    override def arity = 11
+  }
 
   implicit def tup12Setter[Z <: Tuple12[_, _, _, _, _, _, _, _, _, _, _, _]]
-      : TupleSetter[Z] =
-    new TupleSetter[Z] {
-      override def apply(arg: Z) = {
-        val tup = Tuple.size(12)
-        tup.set(0, arg._1)
-        tup.set(1, arg._2)
-        tup.set(2, arg._3)
-        tup.set(3, arg._4)
-        tup.set(4, arg._5)
-        tup.set(5, arg._6)
-        tup.set(6, arg._7)
-        tup.set(7, arg._8)
-        tup.set(8, arg._9)
-        tup.set(9, arg._10)
-        tup.set(10, arg._11)
-        tup.set(11, arg._12)
-        tup
-      }
-
-      override def arity = 12
+      : TupleSetter[Z] = new TupleSetter[Z] {
+    override def apply(arg: Z) = {
+      val tup = Tuple.size(12)
+      tup.set(0, arg._1)
+      tup.set(1, arg._2)
+      tup.set(2, arg._3)
+      tup.set(3, arg._4)
+      tup.set(4, arg._5)
+      tup.set(5, arg._6)
+      tup.set(6, arg._7)
+      tup.set(7, arg._8)
+      tup.set(8, arg._9)
+      tup.set(9, arg._10)
+      tup.set(10, arg._11)
+      tup.set(11, arg._12)
+      tup
     }
+
+    override def arity = 12
+  }
 
   implicit def tup13Setter[Z <: Tuple13[_, _, _, _, _, _, _, _, _, _, _, _, _]]
-      : TupleSetter[Z] =
-    new TupleSetter[Z] {
-      override def apply(arg: Z) = {
-        val tup = Tuple.size(13)
-        tup.set(0, arg._1)
-        tup.set(1, arg._2)
-        tup.set(2, arg._3)
-        tup.set(3, arg._4)
-        tup.set(4, arg._5)
-        tup.set(5, arg._6)
-        tup.set(6, arg._7)
-        tup.set(7, arg._8)
-        tup.set(8, arg._9)
-        tup.set(9, arg._10)
-        tup.set(10, arg._11)
-        tup.set(11, arg._12)
-        tup.set(12, arg._13)
-        tup
-      }
-
-      override def arity = 13
+      : TupleSetter[Z] = new TupleSetter[Z] {
+    override def apply(arg: Z) = {
+      val tup = Tuple.size(13)
+      tup.set(0, arg._1)
+      tup.set(1, arg._2)
+      tup.set(2, arg._3)
+      tup.set(3, arg._4)
+      tup.set(4, arg._5)
+      tup.set(5, arg._6)
+      tup.set(6, arg._7)
+      tup.set(7, arg._8)
+      tup.set(8, arg._9)
+      tup.set(9, arg._10)
+      tup.set(10, arg._11)
+      tup.set(11, arg._12)
+      tup.set(12, arg._13)
+      tup
     }
+
+    override def arity = 13
+  }
 
   implicit def tup14Setter[
       Z <: Tuple14[_, _, _, _, _, _, _, _, _, _, _, _, _, _]]: TupleSetter[Z] =
@@ -1127,180 +1121,174 @@ trait GeneratedTupleSetters extends LowPriorityTupleSetters {
 
   implicit def tup15Setter[
       Z <: Tuple15[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _]]
-      : TupleSetter[Z] =
-    new TupleSetter[Z] {
-      override def apply(arg: Z) = {
-        val tup = Tuple.size(15)
-        tup.set(0, arg._1)
-        tup.set(1, arg._2)
-        tup.set(2, arg._3)
-        tup.set(3, arg._4)
-        tup.set(4, arg._5)
-        tup.set(5, arg._6)
-        tup.set(6, arg._7)
-        tup.set(7, arg._8)
-        tup.set(8, arg._9)
-        tup.set(9, arg._10)
-        tup.set(10, arg._11)
-        tup.set(11, arg._12)
-        tup.set(12, arg._13)
-        tup.set(13, arg._14)
-        tup.set(14, arg._15)
-        tup
-      }
-
-      override def arity = 15
+      : TupleSetter[Z] = new TupleSetter[Z] {
+    override def apply(arg: Z) = {
+      val tup = Tuple.size(15)
+      tup.set(0, arg._1)
+      tup.set(1, arg._2)
+      tup.set(2, arg._3)
+      tup.set(3, arg._4)
+      tup.set(4, arg._5)
+      tup.set(5, arg._6)
+      tup.set(6, arg._7)
+      tup.set(7, arg._8)
+      tup.set(8, arg._9)
+      tup.set(9, arg._10)
+      tup.set(10, arg._11)
+      tup.set(11, arg._12)
+      tup.set(12, arg._13)
+      tup.set(13, arg._14)
+      tup.set(14, arg._15)
+      tup
     }
+
+    override def arity = 15
+  }
 
   implicit def tup16Setter[
       Z <: Tuple16[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _]]
-      : TupleSetter[Z] =
-    new TupleSetter[Z] {
-      override def apply(arg: Z) = {
-        val tup = Tuple.size(16)
-        tup.set(0, arg._1)
-        tup.set(1, arg._2)
-        tup.set(2, arg._3)
-        tup.set(3, arg._4)
-        tup.set(4, arg._5)
-        tup.set(5, arg._6)
-        tup.set(6, arg._7)
-        tup.set(7, arg._8)
-        tup.set(8, arg._9)
-        tup.set(9, arg._10)
-        tup.set(10, arg._11)
-        tup.set(11, arg._12)
-        tup.set(12, arg._13)
-        tup.set(13, arg._14)
-        tup.set(14, arg._15)
-        tup.set(15, arg._16)
-        tup
-      }
-
-      override def arity = 16
+      : TupleSetter[Z] = new TupleSetter[Z] {
+    override def apply(arg: Z) = {
+      val tup = Tuple.size(16)
+      tup.set(0, arg._1)
+      tup.set(1, arg._2)
+      tup.set(2, arg._3)
+      tup.set(3, arg._4)
+      tup.set(4, arg._5)
+      tup.set(5, arg._6)
+      tup.set(6, arg._7)
+      tup.set(7, arg._8)
+      tup.set(8, arg._9)
+      tup.set(9, arg._10)
+      tup.set(10, arg._11)
+      tup.set(11, arg._12)
+      tup.set(12, arg._13)
+      tup.set(13, arg._14)
+      tup.set(14, arg._15)
+      tup.set(15, arg._16)
+      tup
     }
+
+    override def arity = 16
+  }
 
   implicit def tup17Setter[
       Z <: Tuple17[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _]]
-      : TupleSetter[Z] =
-    new TupleSetter[Z] {
-      override def apply(arg: Z) = {
-        val tup = Tuple.size(17)
-        tup.set(0, arg._1)
-        tup.set(1, arg._2)
-        tup.set(2, arg._3)
-        tup.set(3, arg._4)
-        tup.set(4, arg._5)
-        tup.set(5, arg._6)
-        tup.set(6, arg._7)
-        tup.set(7, arg._8)
-        tup.set(8, arg._9)
-        tup.set(9, arg._10)
-        tup.set(10, arg._11)
-        tup.set(11, arg._12)
-        tup.set(12, arg._13)
-        tup.set(13, arg._14)
-        tup.set(14, arg._15)
-        tup.set(15, arg._16)
-        tup.set(16, arg._17)
-        tup
-      }
-
-      override def arity = 17
+      : TupleSetter[Z] = new TupleSetter[Z] {
+    override def apply(arg: Z) = {
+      val tup = Tuple.size(17)
+      tup.set(0, arg._1)
+      tup.set(1, arg._2)
+      tup.set(2, arg._3)
+      tup.set(3, arg._4)
+      tup.set(4, arg._5)
+      tup.set(5, arg._6)
+      tup.set(6, arg._7)
+      tup.set(7, arg._8)
+      tup.set(8, arg._9)
+      tup.set(9, arg._10)
+      tup.set(10, arg._11)
+      tup.set(11, arg._12)
+      tup.set(12, arg._13)
+      tup.set(13, arg._14)
+      tup.set(14, arg._15)
+      tup.set(15, arg._16)
+      tup.set(16, arg._17)
+      tup
     }
+
+    override def arity = 17
+  }
 
   implicit def tup18Setter[
       Z <: Tuple18[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _]]
-      : TupleSetter[Z] =
-    new TupleSetter[Z] {
-      override def apply(arg: Z) = {
-        val tup = Tuple.size(18)
-        tup.set(0, arg._1)
-        tup.set(1, arg._2)
-        tup.set(2, arg._3)
-        tup.set(3, arg._4)
-        tup.set(4, arg._5)
-        tup.set(5, arg._6)
-        tup.set(6, arg._7)
-        tup.set(7, arg._8)
-        tup.set(8, arg._9)
-        tup.set(9, arg._10)
-        tup.set(10, arg._11)
-        tup.set(11, arg._12)
-        tup.set(12, arg._13)
-        tup.set(13, arg._14)
-        tup.set(14, arg._15)
-        tup.set(15, arg._16)
-        tup.set(16, arg._17)
-        tup.set(17, arg._18)
-        tup
-      }
-
-      override def arity = 18
+      : TupleSetter[Z] = new TupleSetter[Z] {
+    override def apply(arg: Z) = {
+      val tup = Tuple.size(18)
+      tup.set(0, arg._1)
+      tup.set(1, arg._2)
+      tup.set(2, arg._3)
+      tup.set(3, arg._4)
+      tup.set(4, arg._5)
+      tup.set(5, arg._6)
+      tup.set(6, arg._7)
+      tup.set(7, arg._8)
+      tup.set(8, arg._9)
+      tup.set(9, arg._10)
+      tup.set(10, arg._11)
+      tup.set(11, arg._12)
+      tup.set(12, arg._13)
+      tup.set(13, arg._14)
+      tup.set(14, arg._15)
+      tup.set(15, arg._16)
+      tup.set(16, arg._17)
+      tup.set(17, arg._18)
+      tup
     }
+
+    override def arity = 18
+  }
 
   implicit def tup19Setter[
       Z <: Tuple19[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _]]
-      : TupleSetter[Z] =
-    new TupleSetter[Z] {
-      override def apply(arg: Z) = {
-        val tup = Tuple.size(19)
-        tup.set(0, arg._1)
-        tup.set(1, arg._2)
-        tup.set(2, arg._3)
-        tup.set(3, arg._4)
-        tup.set(4, arg._5)
-        tup.set(5, arg._6)
-        tup.set(6, arg._7)
-        tup.set(7, arg._8)
-        tup.set(8, arg._9)
-        tup.set(9, arg._10)
-        tup.set(10, arg._11)
-        tup.set(11, arg._12)
-        tup.set(12, arg._13)
-        tup.set(13, arg._14)
-        tup.set(14, arg._15)
-        tup.set(15, arg._16)
-        tup.set(16, arg._17)
-        tup.set(17, arg._18)
-        tup.set(18, arg._19)
-        tup
-      }
-
-      override def arity = 19
+      : TupleSetter[Z] = new TupleSetter[Z] {
+    override def apply(arg: Z) = {
+      val tup = Tuple.size(19)
+      tup.set(0, arg._1)
+      tup.set(1, arg._2)
+      tup.set(2, arg._3)
+      tup.set(3, arg._4)
+      tup.set(4, arg._5)
+      tup.set(5, arg._6)
+      tup.set(6, arg._7)
+      tup.set(7, arg._8)
+      tup.set(8, arg._9)
+      tup.set(9, arg._10)
+      tup.set(10, arg._11)
+      tup.set(11, arg._12)
+      tup.set(12, arg._13)
+      tup.set(13, arg._14)
+      tup.set(14, arg._15)
+      tup.set(15, arg._16)
+      tup.set(16, arg._17)
+      tup.set(17, arg._18)
+      tup.set(18, arg._19)
+      tup
     }
+
+    override def arity = 19
+  }
 
   implicit def tup20Setter[
       Z <: Tuple20[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _]]
-      : TupleSetter[Z] =
-    new TupleSetter[Z] {
-      override def apply(arg: Z) = {
-        val tup = Tuple.size(20)
-        tup.set(0, arg._1)
-        tup.set(1, arg._2)
-        tup.set(2, arg._3)
-        tup.set(3, arg._4)
-        tup.set(4, arg._5)
-        tup.set(5, arg._6)
-        tup.set(6, arg._7)
-        tup.set(7, arg._8)
-        tup.set(8, arg._9)
-        tup.set(9, arg._10)
-        tup.set(10, arg._11)
-        tup.set(11, arg._12)
-        tup.set(12, arg._13)
-        tup.set(13, arg._14)
-        tup.set(14, arg._15)
-        tup.set(15, arg._16)
-        tup.set(16, arg._17)
-        tup.set(17, arg._18)
-        tup.set(18, arg._19)
-        tup.set(19, arg._20)
-        tup
-      }
-
-      override def arity = 20
+      : TupleSetter[Z] = new TupleSetter[Z] {
+    override def apply(arg: Z) = {
+      val tup = Tuple.size(20)
+      tup.set(0, arg._1)
+      tup.set(1, arg._2)
+      tup.set(2, arg._3)
+      tup.set(3, arg._4)
+      tup.set(4, arg._5)
+      tup.set(5, arg._6)
+      tup.set(6, arg._7)
+      tup.set(7, arg._8)
+      tup.set(8, arg._9)
+      tup.set(9, arg._10)
+      tup.set(10, arg._11)
+      tup.set(11, arg._12)
+      tup.set(12, arg._13)
+      tup.set(13, arg._14)
+      tup.set(14, arg._15)
+      tup.set(15, arg._16)
+      tup.set(16, arg._17)
+      tup.set(17, arg._18)
+      tup.set(18, arg._19)
+      tup.set(19, arg._20)
+      tup
     }
+
+    override def arity = 20
+  }
 
   implicit def tup21Setter[Z <: Tuple21[
     _,
@@ -1323,36 +1311,35 @@ trait GeneratedTupleSetters extends LowPriorityTupleSetters {
     _,
     _,
     _,
-    _]]: TupleSetter[Z] =
-    new TupleSetter[Z] {
-      override def apply(arg: Z) = {
-        val tup = Tuple.size(21)
-        tup.set(0, arg._1)
-        tup.set(1, arg._2)
-        tup.set(2, arg._3)
-        tup.set(3, arg._4)
-        tup.set(4, arg._5)
-        tup.set(5, arg._6)
-        tup.set(6, arg._7)
-        tup.set(7, arg._8)
-        tup.set(8, arg._9)
-        tup.set(9, arg._10)
-        tup.set(10, arg._11)
-        tup.set(11, arg._12)
-        tup.set(12, arg._13)
-        tup.set(13, arg._14)
-        tup.set(14, arg._15)
-        tup.set(15, arg._16)
-        tup.set(16, arg._17)
-        tup.set(17, arg._18)
-        tup.set(18, arg._19)
-        tup.set(19, arg._20)
-        tup.set(20, arg._21)
-        tup
-      }
-
-      override def arity = 21
+    _]]: TupleSetter[Z] = new TupleSetter[Z] {
+    override def apply(arg: Z) = {
+      val tup = Tuple.size(21)
+      tup.set(0, arg._1)
+      tup.set(1, arg._2)
+      tup.set(2, arg._3)
+      tup.set(3, arg._4)
+      tup.set(4, arg._5)
+      tup.set(5, arg._6)
+      tup.set(6, arg._7)
+      tup.set(7, arg._8)
+      tup.set(8, arg._9)
+      tup.set(9, arg._10)
+      tup.set(10, arg._11)
+      tup.set(11, arg._12)
+      tup.set(12, arg._13)
+      tup.set(13, arg._14)
+      tup.set(14, arg._15)
+      tup.set(15, arg._16)
+      tup.set(16, arg._17)
+      tup.set(17, arg._18)
+      tup.set(18, arg._19)
+      tup.set(19, arg._20)
+      tup.set(20, arg._21)
+      tup
     }
+
+    override def arity = 21
+  }
 
   implicit def tup22Setter[Z <: Tuple22[
     _,
@@ -1376,36 +1363,35 @@ trait GeneratedTupleSetters extends LowPriorityTupleSetters {
     _,
     _,
     _,
-    _]]: TupleSetter[Z] =
-    new TupleSetter[Z] {
-      override def apply(arg: Z) = {
-        val tup = Tuple.size(22)
-        tup.set(0, arg._1)
-        tup.set(1, arg._2)
-        tup.set(2, arg._3)
-        tup.set(3, arg._4)
-        tup.set(4, arg._5)
-        tup.set(5, arg._6)
-        tup.set(6, arg._7)
-        tup.set(7, arg._8)
-        tup.set(8, arg._9)
-        tup.set(9, arg._10)
-        tup.set(10, arg._11)
-        tup.set(11, arg._12)
-        tup.set(12, arg._13)
-        tup.set(13, arg._14)
-        tup.set(14, arg._15)
-        tup.set(15, arg._16)
-        tup.set(16, arg._17)
-        tup.set(17, arg._18)
-        tup.set(18, arg._19)
-        tup.set(19, arg._20)
-        tup.set(20, arg._21)
-        tup.set(21, arg._22)
-        tup
-      }
-
-      override def arity = 22
+    _]]: TupleSetter[Z] = new TupleSetter[Z] {
+    override def apply(arg: Z) = {
+      val tup = Tuple.size(22)
+      tup.set(0, arg._1)
+      tup.set(1, arg._2)
+      tup.set(2, arg._3)
+      tup.set(3, arg._4)
+      tup.set(4, arg._5)
+      tup.set(5, arg._6)
+      tup.set(6, arg._7)
+      tup.set(7, arg._8)
+      tup.set(8, arg._9)
+      tup.set(9, arg._10)
+      tup.set(10, arg._11)
+      tup.set(11, arg._12)
+      tup.set(12, arg._13)
+      tup.set(13, arg._14)
+      tup.set(14, arg._15)
+      tup.set(15, arg._16)
+      tup.set(16, arg._17)
+      tup.set(17, arg._18)
+      tup.set(18, arg._19)
+      tup.set(19, arg._20)
+      tup.set(20, arg._21)
+      tup.set(21, arg._22)
+      tup
     }
+
+    override def arity = 22
+  }
 }
 // end of autogenerated

@@ -27,16 +27,15 @@ trait HasMultipartConfig extends Initializable {
     }
   }
 
-  def multipartConfig: MultipartConfig =
-    try {
-      multipartConfigFromContext getOrElse DefaultMultipartConfig
-    } catch {
-      case e: Throwable =>
-        System.err.println(
-          "Couldn't get the multipart config from the servlet context because: ")
-        e.printStackTrace()
-        DefaultMultipartConfig
-    }
+  def multipartConfig: MultipartConfig = try {
+    multipartConfigFromContext getOrElse DefaultMultipartConfig
+  } catch {
+    case e: Throwable =>
+      System.err.println(
+        "Couldn't get the multipart config from the servlet context because: ")
+      e.printStackTrace()
+      DefaultMultipartConfig
+  }
 
   private[this] var providedConfig: Option[MultipartConfig] = None
 

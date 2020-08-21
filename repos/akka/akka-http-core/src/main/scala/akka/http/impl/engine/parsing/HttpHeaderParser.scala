@@ -525,18 +525,17 @@ private[http] object HttpHeaderParser {
     def headerValueCacheLimit(headerName: String): Int
   }
 
-  private def predefinedHeaders =
-    Seq(
-      "Accept: *",
-      "Accept: */*",
-      "Connection: Keep-Alive",
-      "Connection: close",
-      "Connection: keep-alive",
-      "Content-Length: 0",
-      "Cache-Control: max-age=0",
-      "Cache-Control: no-cache",
-      "Expect: 100-continue"
-    )
+  private def predefinedHeaders = Seq(
+    "Accept: *",
+    "Accept: */*",
+    "Connection: Keep-Alive",
+    "Connection: close",
+    "Connection: keep-alive",
+    "Content-Length: 0",
+    "Cache-Control: max-age=0",
+    "Cache-Control: no-cache",
+    "Expect: 100-continue"
+  )
 
   def apply(settings: HttpHeaderParser.Settings)(
       onIllegalHeader: ErrorInfo ⇒ Unit = info ⇒
@@ -672,12 +671,13 @@ private[http] object HttpHeaderParser {
       input: ByteString,
       start: Int,
       limit: Int)(sb: JStringBuilder = null, ix: Int = start): (String, Int) = {
-    def appended(c: Char) =
-      (if (sb != null) sb
-       else new JStringBuilder(asciiString(input, start, ix))).append(c)
-    def appended2(c: Int) =
-      if ((c >> 16) != 0) appended(c.toChar).append((c >> 16).toChar)
-      else appended(c.toChar)
+    def appended(c: Char) = (if (sb != null) sb
+                             else
+                               new JStringBuilder(
+                                 asciiString(input, start, ix))).append(c)
+    def appended2(c: Int) = if ((c >> 16) != 0)
+      appended(c.toChar).append((c >> 16).toChar)
+    else appended(c.toChar)
     if (ix < limit)
       byteChar(input, ix) match {
         case '\t' ⇒

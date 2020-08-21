@@ -46,10 +46,9 @@ class FocusModelSpec[T]
   override def getScalaClassInstance =
     new FocusModel[T](this.getJavaClassInstance) {}
 
-  override def getJavaClassInstance =
-    new jfxsc.FocusModel[T] {
-      def getItemCount(): Int = 0
-      def getModelItem(index: Int): T = null.asInstanceOf[T]
-    }
+  override def getJavaClassInstance = new jfxsc.FocusModel[T] {
+    def getItemCount(): Int = 0
+    def getModelItem(index: Int): T = null.asInstanceOf[T]
+  }
 
 }

@@ -229,8 +229,8 @@ abstract class BasicDirectives extends BasicDirectivesBase {
       }
 
       object ParameterTypes {
-        def unapply(method: Method): Option[List[Class[_]]] =
-          Some(method.getParameterTypes.toList)
+        def unapply(method: Method): Option[List[Class[_]]] = Some(
+          method.getParameterTypes.toList)
       }
 
       methods

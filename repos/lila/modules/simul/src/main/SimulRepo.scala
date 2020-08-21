@@ -33,21 +33,19 @@ private[simul] final class SimulRepo(simulColl: Coll) {
   private implicit val PlayerBSONHandler = Macros.handler[SimulPlayer]
   private implicit val ApplicantBSONHandler = Macros.handler[SimulApplicant]
   private implicit val SimulPairingBSONHandler = new BSON[SimulPairing] {
-    def reads(r: BSON.Reader) =
-      SimulPairing(
-        player = r.get[SimulPlayer]("player"),
-        gameId = r str "gameId",
-        status = r.get[Status]("status"),
-        wins = r boolO "wins",
-        hostColor = r.strO("hostColor").flatMap(chess.Color.apply) | chess.White
-      )
-    def writes(w: BSON.Writer, o: SimulPairing) =
-      BSONDocument(
-        "player" -> o.player,
-        "gameId" -> o.gameId,
-        "status" -> o.status,
-        "wins" -> o.wins,
-        "hostColor" -> o.hostColor.name)
+    def reads(r: BSON.Reader) = SimulPairing(
+      player = r.get[SimulPlayer]("player"),
+      gameId = r str "gameId",
+      status = r.get[Status]("status"),
+      wins = r boolO "wins",
+      hostColor = r.strO("hostColor").flatMap(chess.Color.apply) | chess.White
+    )
+    def writes(w: BSON.Writer, o: SimulPairing) = BSONDocument(
+      "player" -> o.player,
+      "gameId" -> o.gameId,
+      "status" -> o.status,
+      "wins" -> o.wins,
+      "hostColor" -> o.hostColor.name)
   }
 
   private implicit val SimulBSONHandler = Macros.handler[Simul]
@@ -75,44 +73,40 @@ private[simul] final class SimulRepo(simulColl: Coll) {
   def findCreated(id: Simul.ID): Fu[Option[Simul]] =
     find(id) map (_ filter (_.isCreated))
 
-  def allCreated: Fu[List[Simul]] =
-    simulColl
-      .find(
-        createdSelect
-      )
-      .sort(createdSort)
-      .cursor[Simul]()
-      .collect[List]()
+  def allCreated: Fu[List[Simul]] = simulColl
+    .find(
+      createdSelect
+    )
+    .sort(createdSort)
+    .cursor[Simul]()
+    .collect[List]()
 
-  def allCreatedFeaturable: Fu[List[Simul]] =
-    simulColl
-      .find(
-        createdSelect ++ BSONDocument(
-          "createdAt" -> BSONDocument("$gte" -> DateTime.now.minusMinutes(15)),
-          "hostRating" -> BSONDocument("$gte" -> 1700)
-        )
+  def allCreatedFeaturable: Fu[List[Simul]] = simulColl
+    .find(
+      createdSelect ++ BSONDocument(
+        "createdAt" -> BSONDocument("$gte" -> DateTime.now.minusMinutes(15)),
+        "hostRating" -> BSONDocument("$gte" -> 1700)
       )
-      .sort(createdSort)
-      .cursor[Simul]()
-      .collect[List]()
+    )
+    .sort(createdSort)
+    .cursor[Simul]()
+    .collect[List]()
 
-  def allStarted: Fu[List[Simul]] =
-    simulColl
-      .find(
-        startedSelect
-      )
-      .sort(createdSort)
-      .cursor[Simul]()
-      .collect[List]()
+  def allStarted: Fu[List[Simul]] = simulColl
+    .find(
+      startedSelect
+    )
+    .sort(createdSort)
+    .cursor[Simul]()
+    .collect[List]()
 
-  def allFinished(max: Int): Fu[List[Simul]] =
-    simulColl
-      .find(
-        finishedSelect
-      )
-      .sort(createdSort)
-      .cursor[Simul]()
-      .collect[List](max)
+  def allFinished(max: Int): Fu[List[Simul]] = simulColl
+    .find(
+      finishedSelect
+    )
+    .sort(createdSort)
+    .cursor[Simul]()
+    .collect[List](max)
 
   def allNotFinished =
     simulColl
@@ -131,24 +125,21 @@ private[simul] final class SimulRepo(simulColl: Coll) {
   def remove(simul: Simul) =
     simulColl.remove(BSONDocument("_id" -> simul.id)).void
 
-  def setHostGameId(simul: Simul, gameId: String) =
-    simulColl
-      .update(
-        BSONDocument("_id" -> simul.id),
-        BSONDocument("$set" -> BSONDocument("hostGameId" -> gameId))
-      )
-      .void
+  def setHostGameId(simul: Simul, gameId: String) = simulColl
+    .update(
+      BSONDocument("_id" -> simul.id),
+      BSONDocument("$set" -> BSONDocument("hostGameId" -> gameId))
+    )
+    .void
 
-  def setHostSeenNow(simul: Simul) =
-    simulColl
-      .update(
-        BSONDocument("_id" -> simul.id),
-        BSONDocument("$set" -> BSONDocument("hostSeenAt" -> DateTime.now))
-      )
-      .void
+  def setHostSeenNow(simul: Simul) = simulColl
+    .update(
+      BSONDocument("_id" -> simul.id),
+      BSONDocument("$set" -> BSONDocument("hostSeenAt" -> DateTime.now))
+    )
+    .void
 
-  def cleanup =
-    simulColl.remove(
-      createdSelect ++ BSONDocument(
-        "createdAt" -> BSONDocument("$lt" -> (DateTime.now minusMinutes 60))))
+  def cleanup = simulColl.remove(
+    createdSelect ++ BSONDocument(
+      "createdAt" -> BSONDocument("$lt" -> (DateTime.now minusMinutes 60))))
 }

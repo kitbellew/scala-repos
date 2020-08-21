@@ -76,11 +76,10 @@ object StandardMain {
   val console =
     ConsoleOut.systemOutOverwrite(ConsoleOut.overwriteContaining("Resolving "))
 
-  def initialGlobalLogging: GlobalLogging =
-    GlobalLogging.initial(
-      MainLogging.globalDefault(console),
-      File.createTempFile("sbt", ".log"),
-      console)
+  def initialGlobalLogging: GlobalLogging = GlobalLogging.initial(
+    MainLogging.globalDefault(console),
+    File.createTempFile("sbt", ".log"),
+    console)
 
   def initialState(
       configuration: xsbti.AppConfiguration,
@@ -119,68 +118,65 @@ object BuiltinCommands {
     Seq(ignore, exit, IvyConsole.command, setLogLevel, early, act, nop)
   def ScriptCommands: Seq[Command] =
     Seq(ignore, exit, Script.command, setLogLevel, early, act, nop)
-  def DefaultCommands: Seq[Command] =
-    Seq(
-      ignore,
-      help,
-      completionsCommand,
-      about,
-      tasks,
-      settingsCommand,
-      loadProject,
-      projects,
-      project,
-      reboot,
-      read,
-      history,
-      set,
-      sessionCommand,
-      inspect,
-      loadProjectImpl,
-      loadFailed,
-      Cross.crossBuild,
-      Cross.switchVersion,
-      setOnFailure,
-      clearOnFailure,
-      stashOnFailure,
-      popOnFailure,
-      setLogLevel,
-      plugin,
-      plugins,
-      ifLast,
-      multi,
-      shell,
-      continuous,
-      eval,
-      alias,
-      append,
-      last,
-      lastGrep,
-      export,
-      boot,
-      nop,
-      call,
-      exit,
-      early,
-      initialize,
-      act
-    ) ++
-      compatCommands
+  def DefaultCommands: Seq[Command] = Seq(
+    ignore,
+    help,
+    completionsCommand,
+    about,
+    tasks,
+    settingsCommand,
+    loadProject,
+    projects,
+    project,
+    reboot,
+    read,
+    history,
+    set,
+    sessionCommand,
+    inspect,
+    loadProjectImpl,
+    loadFailed,
+    Cross.crossBuild,
+    Cross.switchVersion,
+    setOnFailure,
+    clearOnFailure,
+    stashOnFailure,
+    popOnFailure,
+    setLogLevel,
+    plugin,
+    plugins,
+    ifLast,
+    multi,
+    shell,
+    continuous,
+    eval,
+    alias,
+    append,
+    last,
+    lastGrep,
+    export,
+    boot,
+    nop,
+    call,
+    exit,
+    early,
+    initialize,
+    act
+  ) ++
+    compatCommands
   def DefaultBootCommands: Seq[String] =
     LoadProject :: (IfLast + " " + Shell) :: Nil
 
   def boot = Command.make(BootCommand)(bootParser)
 
-  def about =
-    Command.command(AboutCommand, aboutBrief, aboutDetailed) { s =>
-      s.log.info(aboutString(s)); s
-    }
+  def about = Command.command(AboutCommand, aboutBrief, aboutDetailed) { s =>
+    s.log.info(aboutString(s)); s
+  }
 
-  def setLogLevel =
-    Command.arb(const(logLevelParser), logLevelHelp)(
-      LogManager.setGlobalLogLevel)
-  private[this] def logLevelParser: Parser[Level.Value] =
-    oneOf(Level.values.toSeq.map(v => v.toString ^^^ v))
+  def setLogLevel = Command.arb(const(logLevelParser), logLevelHelp)(
+    LogManager.setGlobalLogLevel)
+  private[this] def logLevelParser: Parser[Level.Value] = oneOf(
+    Level.values.toSeq.map(v => v.toString ^^^ v))
 
   // This parser schedules the default boot commands unless overridden by an alias
   def bootParser(s: State) = {
@@ -208,9 +204,8 @@ object BuiltinCommands {
     } else "No project is currently loaded"
 
   def aboutPlugins(e: Extracted): String = {
-    def list(b: BuildUnit) =
-      b.plugins.detected.autoPlugins
-        .map(_.value.label) ++ b.plugins.detected.plugins.names
+    def list(b: BuildUnit) = b.plugins.detected.autoPlugins
+      .map(_.value.label) ++ b.plugins.detected.plugins.names
     val allPluginNames =
       e.structure.units.values.flatMap(u => list(u.unit)).toSeq.distinct
     if (allPluginNames.isEmpty) ""
@@ -244,25 +239,23 @@ object BuiltinCommands {
   }
   private[this] def selectScalaVersion(
       sv: Option[String],
-      si: ScalaInstance): String =
-    sv match { case Some(si.version) => si.version; case _ => si.actualVersion }
-  private[this] def quiet[T](t: => T): Option[T] =
-    try { Some(t) }
-    catch { case e: Exception => None }
+      si: ScalaInstance): String = sv match {
+    case Some(si.version) => si.version; case _ => si.actualVersion
+  }
+  private[this] def quiet[T](t: => T): Option[T] = try { Some(t) }
+  catch { case e: Exception => None }
 
-  def settingsCommand =
-    showSettingLike(
-      SettingsCommand,
-      settingsPreamble,
-      KeyRanks.MainSettingCutoff,
-      key => !isTask(key.manifest))
+  def settingsCommand = showSettingLike(
+    SettingsCommand,
+    settingsPreamble,
+    KeyRanks.MainSettingCutoff,
+    key => !isTask(key.manifest))
 
-  def tasks =
-    showSettingLike(
-      TasksCommand,
-      tasksPreamble,
-      KeyRanks.MainTaskCutoff,
-      key => isTask(key.manifest))
+  def tasks = showSettingLike(
+    TasksCommand,
+    tasksPreamble,
+    KeyRanks.MainTaskCutoff,
+    key => isTask(key.manifest))
 
   def showSettingLike(
       command: String,
@@ -290,11 +283,10 @@ object BuiltinCommands {
       s: State,
       keepKeys: AttributeKey[_] => Boolean): Parser[String] =
     singleArgument(allTaskAndSettingKeys(s).filter(keepKeys).map(_.label).toSet)
-  def verbosityParser: Parser[Int] =
-    success(1) | ((Space ~ "-") ~> (
-      'v'.id.+.map(_.size + 1) |
-        ("V" ^^^ Int.MaxValue)
-    ))
+  def verbosityParser: Parser[Int] = success(1) | ((Space ~ "-") ~> (
+    'v'.id.+.map(_.size + 1) |
+      ("V" ^^^ Int.MaxValue)
+  ))
   def taskDetail(keys: Seq[AttributeKey[_]]): Seq[(String, String)] =
     sortByLabel(withDescription(keys)) flatMap taskStrings
 
@@ -327,11 +319,10 @@ object BuiltinCommands {
       taskMF: Manifest[Task[_]],
       inputMF: Manifest[InputTask[_]]): Boolean =
     mf.runtimeClass == taskMF.runtimeClass || mf.runtimeClass == inputMF.runtimeClass
-  def topNRanked(n: Int) =
-    (keys: Seq[AttributeKey[_]]) => sortByRank(keys).take(n)
-  def highPass(rankCutoff: Int) =
-    (keys: Seq[AttributeKey[_]]) =>
-      sortByRank(keys).takeWhile(_.rank <= rankCutoff)
+  def topNRanked(n: Int) = (keys: Seq[AttributeKey[_]]) =>
+    sortByRank(keys).take(n)
+  def highPass(rankCutoff: Int) = (keys: Seq[AttributeKey[_]]) =>
+    sortByRank(keys).takeWhile(_.rank <= rankCutoff)
 
   def tasksHelp(
       s: State,
@@ -348,23 +339,20 @@ object BuiltinCommands {
   def taskStrings(key: AttributeKey[_]): Option[(String, String)] =
     key.description map { d => (key.label, d) }
 
-  def defaults =
-    Command.command(DefaultsCommand) { s =>
-      s.copy(definedCommands = DefaultCommands)
-    }
+  def defaults = Command.command(DefaultsCommand) { s =>
+    s.copy(definedCommands = DefaultCommands)
+  }
 
-  def initialize =
-    Command.command(InitCommand) { s =>
-      /*"load-commands -base ~/.sbt/commands" :: */
-      readLines(readable(sbtRCs(s))) ::: s
-    }
+  def initialize = Command.command(InitCommand) { s =>
+    /*"load-commands -base ~/.sbt/commands" :: */
+    readLines(readable(sbtRCs(s))) ::: s
+  }
 
-  def eval =
-    Command.single(EvalCommand, Help.more(EvalCommand, evalDetailed)) {
-      (s, arg) =>
-        if (Project.isProjectLoaded(s)) loadedEval(s, arg) else rawEval(s, arg)
-        s
-    }
+  def eval = Command.single(EvalCommand, Help.more(EvalCommand, evalDetailed)) {
+    (s, arg) =>
+      if (Project.isProjectLoaded(s)) loadedEval(s, arg) else rawEval(s, arg)
+      s
+  }
   private[this] def loadedEval(s: State, arg: String): Unit = {
     val extracted = Project extract s
     import extracted._
@@ -396,31 +384,30 @@ object BuiltinCommands {
       Project.showContextKey(newSession, structure))
     Project.setProject(newSession, newStructure, s)
   }
-  def set =
-    Command(SetCommand, setBrief, setDetailed)(setParser) {
-      case (s, (all, arg)) =>
-        val extracted = Project extract s
-        import extracted._
-        val dslVals = extracted.currentUnit.unit.definitions.dslDefinitions
-        // TODO - This is possibly inefficient (or stupid).  We should try to only attach the
-        // classloader + imports NEEDED to compile the set command, rather than
-        // just ALL of them.
-        val ims = (imports(extracted) ++ dslVals.imports.map(i => (i, -1)))
-        val cl = dslVals.classloader(currentLoader)
-        val settings = EvaluateConfigurations.evaluateSetting(
-          session.currentEval(),
-          "<set>",
-          ims,
-          arg,
-          LineRange(0, 0)
-        )(cl)
-        val setResult =
-          if (all) SettingCompletions.setAll(extracted, settings)
-          else SettingCompletions.setThis(s, extracted, settings, arg)
-        s.log.info(setResult.quietSummary)
-        s.log.debug(setResult.verboseSummary)
-        reapply(setResult.session, structure, s)
-    }
+  def set = Command(SetCommand, setBrief, setDetailed)(setParser) {
+    case (s, (all, arg)) =>
+      val extracted = Project extract s
+      import extracted._
+      val dslVals = extracted.currentUnit.unit.definitions.dslDefinitions
+      // TODO - This is possibly inefficient (or stupid).  We should try to only attach the
+      // classloader + imports NEEDED to compile the set command, rather than
+      // just ALL of them.
+      val ims = (imports(extracted) ++ dslVals.imports.map(i => (i, -1)))
+      val cl = dslVals.classloader(currentLoader)
+      val settings = EvaluateConfigurations.evaluateSetting(
+        session.currentEval(),
+        "<set>",
+        ims,
+        arg,
+        LineRange(0, 0)
+      )(cl)
+      val setResult =
+        if (all) SettingCompletions.setAll(extracted, settings)
+        else SettingCompletions.setThis(s, extracted, settings, arg)
+      s.log.info(setResult.quietSummary)
+      s.log.debug(setResult.verboseSummary)
+      reapply(setResult.session, structure, s)
+  }
   // @deprecated("Use SettingCompletions.setThis", "0.13.0")
   def setThis(
       s: State,
@@ -457,16 +444,15 @@ object BuiltinCommands {
     (ext.structure, Select(ext.currentRef), ext.showKey)
   }
 
-  def setParser =
-    (s: State) => {
-      val extracted = Project.extract(s)
-      import extracted._
-      token(Space ~> flag("every" ~ Space)) ~
-        SettingCompletions.settingParser(
-          structure.data,
-          structure.index.keyMap,
-          currentProject)
-    }
+  def setParser = (s: State) => {
+    val extracted = Project.extract(s)
+    import extracted._
+    token(Space ~> flag("every" ~ Space)) ~
+      SettingCompletions.settingParser(
+        structure.data,
+        structure.index.keyMap,
+        currentProject)
+  }
 
   @deprecated("Use Inspect.parser", "0.13.0")
   def inspectParser: State => Parser[(Inspect.Mode, Def.ScopedKey[_])] =
@@ -518,11 +504,10 @@ object BuiltinCommands {
     }
   }
 
-  def lastGrepParser(s: State) =
-    Act.requireSession(
-      s,
-      (token(Space) ~> token(NotSpace, "<pattern>")) ~ aggregatedKeyValueParser(
-        s))
+  def lastGrepParser(s: State) = Act.requireSession(
+    s,
+    (token(Space) ~> token(NotSpace, "<pattern>")) ~ aggregatedKeyValueParser(
+      s))
   def last =
     Command(LastCommand, lastBrief, lastDetailed)(aggregatedKeyValueParser) {
       case (s, Some(sks)) => lastImpl(s, sks, None)
@@ -586,39 +571,36 @@ object BuiltinCommands {
   }
 
   def act = Command.customHelp(Act.actParser, actHelp)
-  def actHelp =
-    (s: State) =>
-      CommandStrings.showHelp ++ CommandStrings.multiTaskHelp ++ keysHelp(s)
+  def actHelp = (s: State) =>
+    CommandStrings.showHelp ++ CommandStrings.multiTaskHelp ++ keysHelp(s)
   def keysHelp(s: State): Help =
     if (Project.isProjectLoaded(s))
       Help.detailOnly(taskDetail(allTaskAndSettingKeys(s)))
     else
       Help.empty
-  def plugins =
-    Command.command(PluginsCommand, pluginsBrief, pluginsDetailed) { s =>
+  def plugins = Command.command(PluginsCommand, pluginsBrief, pluginsDetailed) {
+    s =>
       val helpString = PluginsDebug.helpAll(s)
       System.out.println(helpString)
       s
-    }
+  }
   val pluginParser: State => Parser[AutoPlugin] = s => {
     val autoPlugins: Map[String, AutoPlugin] = PluginsDebug.autoPluginMap(s)
     token(Space) ~> Act.knownPluginParser(autoPlugins, "plugin")
   }
-  def plugin =
-    Command(PluginCommand)(pluginParser) { (s, plugin) =>
-      val helpString = PluginsDebug.help(plugin, s)
-      System.out.println(helpString)
-      s
-    }
+  def plugin = Command(PluginCommand)(pluginParser) { (s, plugin) =>
+    val helpString = PluginsDebug.help(plugin, s)
+    System.out.println(helpString)
+    s
+  }
 
-  def projects =
-    Command(
-      ProjectsCommand,
-      (ProjectsCommand, projectsBrief),
-      projectsDetailed)(s => projectsParser(s).?) {
-      case (s, Some(modifyBuilds)) => transformExtraBuilds(s, modifyBuilds)
-      case (s, None)               => showProjects(s); s
-    }
+  def projects = Command(
+    ProjectsCommand,
+    (ProjectsCommand, projectsBrief),
+    projectsDetailed)(s => projectsParser(s).?) {
+    case (s, Some(modifyBuilds)) => transformExtraBuilds(s, modifyBuilds)
+    case (s, None)               => showProjects(s); s
+  }
   def showProjects(s: State): Unit = {
     val extracted = Project extract s
     import extracted._
@@ -648,9 +630,8 @@ object BuiltinCommands {
         (xs: List[URI]) => xs.filterNot(toRemove.toSet))
   }
 
-  def project =
-    Command.make(ProjectCommand, projectBrief, projectDetailed)(
-      ProjectNavigation.command)
+  def project = Command.make(ProjectCommand, projectBrief, projectDetailed)(
+    ProjectNavigation.command)
 
   def loadFailed = Command(LoadFailed)(loadProjectParser)(doLoadFailed)
 
@@ -690,11 +671,10 @@ object BuiltinCommands {
       PopOnFailure ::
       State.FailureWall ::
       Nil
-  def loadProject =
-    Command(LoadProject, LoadProjectBrief, LoadProjectDetailed)(
-      loadProjectParser) { (s, arg) => loadProjectCommands(arg) ::: s }
-  private[this] def loadProjectParser =
-    (s: State) => matched(Project.loadActionParser)
+  def loadProject = Command(LoadProject, LoadProjectBrief, LoadProjectDetailed)(
+    loadProjectParser) { (s, arg) => loadProjectCommands(arg) ::: s }
+  private[this] def loadProjectParser = (s: State) =>
+    matched(Project.loadActionParser)
   private[this] def loadProjectCommand(command: String, arg: String): String =
     s"$command $arg".trim
 

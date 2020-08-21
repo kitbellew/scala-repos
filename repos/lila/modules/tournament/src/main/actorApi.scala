@@ -12,11 +12,10 @@ private[tournament] case class Member(
     extends SocketMember
 
 private[tournament] object Member {
-  def apply(channel: JsChannel, user: Option[User]): Member =
-    Member(
-      channel = channel,
-      userId = user map (_.id),
-      troll = user.??(_.troll))
+  def apply(channel: JsChannel, user: Option[User]): Member = Member(
+    channel = channel,
+    userId = user map (_.id),
+    troll = user.??(_.troll))
 }
 
 private[tournament] case class Messadata(trollish: Boolean = false)

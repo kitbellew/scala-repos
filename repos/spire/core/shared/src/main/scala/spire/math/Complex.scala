@@ -111,11 +111,10 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
     * This returns the sign of `real` if it is not 0, otherwise it returns the
     * sign of `imag`.
     */
-  def signum(implicit o: IsReal[T]): Int =
-    real.signum match {
-      case 0 => imag.signum
-      case n => n
-    }
+  def signum(implicit o: IsReal[T]): Int = real.signum match {
+    case 0 => imag.signum
+    case n => n
+  }
 
   /**
     * This implements sgn(z), which (except for z=0) observes:
@@ -412,15 +411,13 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
     else (19 * real.##) + (41 * imag.##) + 97
 
   // not typesafe, so this is the best we can do :(
-  override def equals(that: Any): Boolean =
-    that match {
-      case that: Complex[_] => this === that
-      case that: Quaternion[_] =>
-        real == that.r && imag == that.i && anyIsZero(that.j) && anyIsZero(
-          that.k)
-      case that =>
-        anyIsZero(imag) && real == that
-    }
+  override def equals(that: Any): Boolean = that match {
+    case that: Complex[_] => this === that
+    case that: Quaternion[_] =>
+      real == that.r && imag == that.i && anyIsZero(that.j) && anyIsZero(that.k)
+    case that =>
+      anyIsZero(imag) && real == that
+  }
 
   def ===(that: Complex[_]): Boolean =
     real == that.real && imag == that.imag
@@ -468,34 +465,34 @@ class FloatComplex(val u: Long) extends AnyVal {
   final def conjugate: FloatComplex = new FloatComplex(FastComplex.conjugate(u))
   final def isWhole: Boolean = FastComplex.isWhole(u)
   final def signum: Int = FastComplex.signum(u)
-  final def complexSignum: FloatComplex =
-    new FloatComplex(FastComplex.complexSignum(u))
+  final def complexSignum: FloatComplex = new FloatComplex(
+    FastComplex.complexSignum(u))
   final def negate: FloatComplex = new FloatComplex(FastComplex.negate(u))
 
-  final def +(b: FloatComplex): FloatComplex =
-    new FloatComplex(FastComplex.add(u, b.u))
-  final def -(b: FloatComplex): FloatComplex =
-    new FloatComplex(FastComplex.subtract(u, b.u))
-  final def *(b: FloatComplex): FloatComplex =
-    new FloatComplex(FastComplex.multiply(u, b.u))
-  final def /(b: FloatComplex): FloatComplex =
-    new FloatComplex(FastComplex.divide(u, b.u))
-  final def /~(b: FloatComplex): FloatComplex =
-    new FloatComplex(FastComplex.quot(u, b.u))
-  final def %(b: FloatComplex): FloatComplex =
-    new FloatComplex(FastComplex.mod(u, b.u))
+  final def +(b: FloatComplex): FloatComplex = new FloatComplex(
+    FastComplex.add(u, b.u))
+  final def -(b: FloatComplex): FloatComplex = new FloatComplex(
+    FastComplex.subtract(u, b.u))
+  final def *(b: FloatComplex): FloatComplex = new FloatComplex(
+    FastComplex.multiply(u, b.u))
+  final def /(b: FloatComplex): FloatComplex = new FloatComplex(
+    FastComplex.divide(u, b.u))
+  final def /~(b: FloatComplex): FloatComplex = new FloatComplex(
+    FastComplex.quot(u, b.u))
+  final def %(b: FloatComplex): FloatComplex = new FloatComplex(
+    FastComplex.mod(u, b.u))
 
   final def /%(b: FloatComplex): (FloatComplex, FloatComplex) =
     FastComplex.quotmod(u, b.u) match {
       case (q, m) => (new FloatComplex(q), new FloatComplex(m))
     }
 
-  final def pow(b: FloatComplex): FloatComplex =
-    new FloatComplex(FastComplex.pow(u, b.u))
+  final def pow(b: FloatComplex): FloatComplex = new FloatComplex(
+    FastComplex.pow(u, b.u))
   final def **(b: FloatComplex): FloatComplex = pow(b)
 
-  final def pow(b: Int): FloatComplex =
-    new FloatComplex(FastComplex.pow(u, FastComplex(b.toFloat, 0.0f)))
+  final def pow(b: Int): FloatComplex = new FloatComplex(
+    FastComplex.pow(u, FastComplex(b.toFloat, 0.0f)))
   final def **(b: Int): FloatComplex = pow(b)
 }
 
@@ -649,27 +646,26 @@ object FastComplex {
   }
 
   // exponentiation
-  final def pow(a: Long, b: Long): Long =
-    if (b == zero) {
-      encode(1.0f, 0.0f)
+  final def pow(a: Long, b: Long): Long = if (b == zero) {
+    encode(1.0f, 0.0f)
 
-    } else if (a == zero) {
-      if (imag(b) != 0.0f || real(b) < 0.0f)
-        throw new Exception("raising 0 to negative/complex power")
-      zero
+  } else if (a == zero) {
+    if (imag(b) != 0.0f || real(b) < 0.0f)
+      throw new Exception("raising 0 to negative/complex power")
+    zero
 
-    } else if (imag(b) != 0.0f) {
-      val im_b = imag(b)
-      val re_b = real(b)
-      val len = (Math.pow(abs(a), re_b) / exp((angle(a) * im_b))).toFloat
-      val phase = (angle(a) * re_b + log(abs(a)) * im_b).toFloat
-      polar(len, phase)
+  } else if (imag(b) != 0.0f) {
+    val im_b = imag(b)
+    val re_b = real(b)
+    val len = (Math.pow(abs(a), re_b) / exp((angle(a) * im_b))).toFloat
+    val phase = (angle(a) * re_b + log(abs(a)) * im_b).toFloat
+    polar(len, phase)
 
-    } else {
-      val len = Math.pow(abs(a), real(b)).toFloat
-      val phase = (angle(a) * real(b)).toFloat
-      polar(len, phase)
-    }
+  } else {
+    val len = Math.pow(abs(a), real(b)).toFloat
+    val phase = (angle(a) * real(b)).toFloat
+    polar(len, phase)
+  }
 }
 
 trait ComplexInstances0 {
@@ -711,8 +707,8 @@ private[math] trait ComplexIsField[@sp(Float, Double) A]
 
   implicit def algebra: Field[A]
 
-  override def fromDouble(n: Double): Complex[A] =
-    Complex(algebra.fromDouble(n))
+  override def fromDouble(n: Double): Complex[A] = Complex(
+    algebra.fromDouble(n))
   def div(a: Complex[A], b: Complex[A]): Complex[A] = a / b
   def quot(a: Complex[A], b: Complex[A]): Complex[A] = a /~ b
   def mod(a: Complex[A], b: Complex[A]): Complex[A] = a % b

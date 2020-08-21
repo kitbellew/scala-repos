@@ -44,9 +44,8 @@ case class SmallestMailboxFirstIterator(val items: Seq[ActorRef])
   def this(items: java.util.List[ActorRef]) = this(items.toList)
   def hasNext = items != Nil
 
-  def next =
-    items.reduceLeft((a1, a2) =>
-      if (a1.mailboxSize < a2.mailboxSize) a1 else a2)
+  def next = items.reduceLeft((a1, a2) =>
+    if (a1.mailboxSize < a2.mailboxSize) a1 else a2)
 
   override def exists(f: ActorRef => Boolean): Boolean = items.exists(f)
 }

@@ -19,11 +19,10 @@ object isClose extends UFunc {
 
   @expand
   implicit def impl[@expand.args(Double, Float) T]
-      : Impl3[T, T, Double, Boolean] =
-    new Impl3[T, T, Double, Boolean] {
-      override def apply(v: T, v2: T, v3: Double): Boolean =
-        math.abs(v - v2) <= v3
-    }
+      : Impl3[T, T, Double, Boolean] = new Impl3[T, T, Double, Boolean] {
+    override def apply(v: T, v2: T, v3: Double): Boolean =
+      math.abs(v - v2) <= v3
+  }
 
   implicit def fromZipValues[A, B, V1, V2](implicit
       czv: zipValues.Impl2[A, B, ZippedValues[V1, V2]],

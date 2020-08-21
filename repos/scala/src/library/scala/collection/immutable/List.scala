@@ -200,30 +200,28 @@ sealed abstract class List[+A]
     else super.++(that)
 
   override def +:[B >: A, That](elem: B)(implicit
-      bf: CanBuildFrom[List[A], B, That]): That =
-    bf match {
-      case _: List.GenericCanBuildFrom[_] => (elem :: this).asInstanceOf[That]
-      case _                              => super.+:(elem)(bf)
-    }
+      bf: CanBuildFrom[List[A], B, That]): That = bf match {
+    case _: List.GenericCanBuildFrom[_] => (elem :: this).asInstanceOf[That]
+    case _                              => super.+:(elem)(bf)
+  }
 
   override def toList: List[A] = this
 
-  override def take(n: Int): List[A] =
-    if (isEmpty || n <= 0) Nil
-    else {
-      val h = new ::(head, Nil)
-      var t = h
-      var rest = tail
-      var i = 1
-      while ({ if (rest.isEmpty) return this; i < n }) {
-        i += 1
-        val nx = new ::(rest.head, Nil)
-        t.tl = nx
-        t = nx
-        rest = rest.tail
-      }
-      h
+  override def take(n: Int): List[A] = if (isEmpty || n <= 0) Nil
+  else {
+    val h = new ::(head, Nil)
+    var t = h
+    var rest = tail
+    var i = 1
+    while ({ if (rest.isEmpty) return this; i < n }) {
+      i += 1
+      val nx = new ::(rest.head, Nil)
+      t.tl = nx
+      t = nx
+      rest = rest.tail
     }
+    h
+  }
 
   override def drop(n: Int): List[A] = {
     var these = this
@@ -253,11 +251,10 @@ sealed abstract class List[+A]
 
   override def takeRight(n: Int): List[A] = {
     @tailrec
-    def loop(lead: List[A], lag: List[A]): List[A] =
-      lead match {
-        case Nil       => lag
-        case _ :: tail => loop(tail, lag.tail)
-      }
+    def loop(lead: List[A], lag: List[A]): List[A] = lead match {
+      case Nil       => lag
+      case _ :: tail => loop(tail, lag.tail)
+    }
     loop(drop(n), this)
   }
 
@@ -430,11 +427,10 @@ case object Nil extends List[Nothing] {
   override def tail: List[Nothing] =
     throw new UnsupportedOperationException("tail of empty list")
   // Removal of equals method here might lead to an infinite recursion similar to IntMap.equals.
-  override def equals(that: Any) =
-    that match {
-      case that1: scala.collection.GenSeq[_] => that1.isEmpty
-      case _                                 => false
-    }
+  override def equals(that: Any) = that match {
+    case that1: scala.collection.GenSeq[_] => that1.isEmpty
+    case _                                 => false
+  }
 }
 
 /** A non empty list characterized by a head and a tail.

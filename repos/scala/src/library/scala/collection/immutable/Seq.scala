@@ -31,10 +31,9 @@ trait Seq[+A]
   override def companion: GenericCompanion[Seq] = Seq
   override def toSeq: Seq[A] = this
   override def seq: Seq[A] = this
-  protected[this] override def parCombiner =
-    ParSeq.newCombiner[
-      A
-    ] // if `immutable.SeqLike` gets introduced, please move this there!
+  protected[this] override def parCombiner = ParSeq.newCombiner[
+    A
+  ] // if `immutable.SeqLike` gets introduced, please move this there!
 }
 
 /** $factoryInfo

@@ -40,12 +40,11 @@ trait ScObject
   def fakeCompanionClassOrCompanionClass: PsiClass
 
   /** Is this object accessible from a stable path from the root package? */
-  def isStatic: Boolean =
-    containingClass match {
-      case obj: ScObject => obj.isStatic
-      case null          => true
-      case _             => false
-    }
+  def isStatic: Boolean = containingClass match {
+    case obj: ScObject => obj.isStatic
+    case null          => true
+    case _             => false
+  }
 
   /**
     * @return returns every time the same result, even after modification

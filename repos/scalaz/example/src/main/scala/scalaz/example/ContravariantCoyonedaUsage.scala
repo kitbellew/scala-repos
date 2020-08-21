@@ -254,12 +254,11 @@ object ContravariantCoyonedaUsage extends App {
   // It’s simple enough to “interpret” each `SortType' to a
   // contravariant co-Yoneda Order.
 
-  def sortTypeOrd(s: SortType): CtCoyo[Order, String] =
-    s match {
-      case SortType.CI      => CCOrder(caseInsensitively)
-      case SortType.Dateish => CCOrder(parseDate)
-      case SortType.Num     => CCOrder(parseCommaNum) // like numerically4
-    }
+  def sortTypeOrd(s: SortType): CtCoyo[Order, String] = s match {
+    case SortType.CI      => CCOrder(caseInsensitively)
+    case SortType.Dateish => CCOrder(parseDate)
+    case SortType.Num     => CCOrder(parseCommaNum) // like numerically4
+  }
 
   // And then, similarly to `bySchwartzianListSorts', to combine one
   // of these `k's with a Vector lookup to produce a sort of records.
@@ -486,10 +485,9 @@ object ContravariantCoyonedaUsage extends App {
       Binfmt("?<" |+| a.describe |+| ">")
     implicit def desc_\/[A, B](implicit
         a: Binfmt[A],
-        b: Binfmt[B]): Binfmt[A \/ B] =
-      Binfmt(
-        "<" |+| a.describe |+| "\\/"
-          |+| b.describe |+| ">")
+        b: Binfmt[B]): Binfmt[A \/ B] = Binfmt(
+      "<" |+| a.describe |+| "\\/"
+        |+| b.describe |+| ">")
     implicit def desc2Tuple[A, B](implicit
         a: Binfmt[A],
         b: Binfmt[B]): Binfmt[(A, B)] = Binfmt(a.describe |+| b.describe)
@@ -514,12 +512,11 @@ object ContravariantCoyonedaUsage extends App {
       f: A => B)(implicit b: Binfmt[B], o: Order[B]): CtCoyo.Aux[BinOrd, A, B] =
     CtCoyo[BinOrd, A, B]((b, o))(f)
 
-  def sortTypeBinOrd(s: SortType): CtCoyo[BinOrd, String] =
-    s match {
-      case SortType.CI      => CCBinOrd(caseInsensitively)
-      case SortType.Dateish => CCBinOrd(parseDate)
-      case SortType.Num     => CCBinOrd(parseCommaNum)
-    }
+  def sortTypeBinOrd(s: SortType): CtCoyo[BinOrd, String] = s match {
+    case SortType.CI      => CCBinOrd(caseInsensitively)
+    case SortType.Dateish => CCBinOrd(parseDate)
+    case SortType.Num     => CCBinOrd(parseCommaNum)
+  }
 
   // It turns out that recItemOrd is completely abstract:
 

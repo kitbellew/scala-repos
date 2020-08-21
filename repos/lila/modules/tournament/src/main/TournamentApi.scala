@@ -103,10 +103,9 @@ private[tournament] final class TournamentApi(
         .flatMap(RankedPairing(ranking))
         .sortBy(_.bestRank)
         .headOption ?? { bestCandidate =>
-        def switch =
-          TournamentRepo.setFeaturedGameId(
-            tour.id,
-            bestCandidate.pairing.gameId)
+        def switch = TournamentRepo.setFeaturedGameId(
+          tour.id,
+          bestCandidate.pairing.gameId)
         curOption.filter(_.pairing.playing) match {
           case Some(current) if bestCandidate.bestRank < current.bestRank =>
             switch
@@ -116,23 +115,21 @@ private[tournament] final class TournamentApi(
       }
     }
 
-  def tourAndRanks(game: Game): Fu[Option[TourAndRanks]] =
-    ~ {
-      for {
-        tourId <- game.tournamentId
-        whiteId <- game.whitePlayer.userId
-        blackId <- game.blackPlayer.userId
-      } yield TournamentRepo byId tourId flatMap {
-        _ ?? { tour =>
-          cached ranking tour map { ranking =>
-            ranking.get(whiteId) |@| ranking.get(blackId) apply {
-              case (whiteR, blackR) =>
-                TourAndRanks(tour, whiteR + 1, blackR + 1)
-            }
+  def tourAndRanks(game: Game): Fu[Option[TourAndRanks]] = ~ {
+    for {
+      tourId <- game.tournamentId
+      whiteId <- game.whitePlayer.userId
+      blackId <- game.blackPlayer.userId
+    } yield TournamentRepo byId tourId flatMap {
+      _ ?? { tour =>
+        cached ranking tour map { ranking =>
+          ranking.get(whiteId) |@| ranking.get(blackId) apply {
+            case (whiteR, blackR) => TourAndRanks(tour, whiteR + 1, blackR + 1)
           }
         }
       }
     }
+  }
 
   def start(oldTour: Tournament) {
     Sequencing(oldTour.id)(TournamentRepo.createdById) { tour =>

@@ -20,8 +20,8 @@ private[concurrent] class Period(val interval: Duration) extends AnyVal {
 }
 
 private[concurrent] object Period {
-  def fromBurstiness(size: Int, interval: Duration): Period =
-    new Period(interval / size)
+  def fromBurstiness(size: Int, interval: Duration): Period = new Period(
+    interval / size)
 }
 
 object AsyncMeter {
@@ -230,25 +230,23 @@ class AsyncMeter private[concurrent] (
 
   // we refresh the bucket with as many tokens as we have accrued since we last
   // refreshed.
-  private[this] def refreshTokens(): Unit =
-    bucket.put(synchronized {
-      val newTokens = period.numPeriods(elapsed())
-      elapsed = Stopwatch.start()
-      val num = newTokens + remainder
-      val floor = math.floor(num)
-      remainder = num - floor
-      floor.toInt
-    })
+  private[this] def refreshTokens(): Unit = bucket.put(synchronized {
+    val newTokens = period.numPeriods(elapsed())
+    elapsed = Stopwatch.start()
+    val num = newTokens + remainder
+    val floor = math.floor(num)
+    remainder = num - floor
+    floor.toInt
+  })
 
-  private[this] def restartTimerIfDead(): Unit =
-    synchronized {
-      if (!running) {
-        running = true
-        task = timer.schedule(interval) {
-          allow()
-        }
+  private[this] def restartTimerIfDead(): Unit = synchronized {
+    if (!running) {
+      running = true
+      task = timer.schedule(interval) {
+        allow()
       }
     }
+  }
 
   // it's safe to race on allow, because polling loop is locked
   private[this] final def allow(): Unit = {

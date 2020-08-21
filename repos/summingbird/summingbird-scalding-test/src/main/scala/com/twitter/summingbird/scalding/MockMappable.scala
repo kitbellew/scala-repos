@@ -30,11 +30,10 @@ class MockMappable[T](val id: String)(implicit tconv: TupleConverter[T])
     with Mappable[T] {
   def converter[U >: T] = TupleConverter.asSuperConverter(tconv)
   override def toString = id
-  override def equals(that: Any) =
-    that match {
-      case m: MockMappable[_] => m.id == id
-      case _                  => false
-    }
+  override def equals(that: Any) = that match {
+    case m: MockMappable[_] => m.id == id
+    case _                  => false
+  }
   override def hashCode = id.hashCode
 
   override def createTap(readOrWrite: AccessMode)(implicit

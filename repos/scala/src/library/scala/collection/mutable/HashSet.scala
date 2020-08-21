@@ -89,10 +89,9 @@ class HashSet[A] private[collection] (contents: FlatHashTable.Contents[A])
 
   /** Toggles whether a size map is used to track hash map statistics.
     */
-  def useSizeMap(t: Boolean) =
-    if (t) {
-      if (!isSizeMapDefined) sizeMapInitAndRebuild()
-    } else sizeMapDisable()
+  def useSizeMap(t: Boolean) = if (t) {
+    if (!isSizeMapDefined) sizeMapInitAndRebuild()
+  } else sizeMapDisable()
 
 }
 

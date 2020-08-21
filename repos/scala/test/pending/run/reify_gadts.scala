@@ -22,16 +22,15 @@ object Test extends App {
       *  make use of the fact that 'T' is a more precise type,
       *  constraint by the pattern type.
       */
-    def eval[T](t: Term[T]): T =
-      t match {
-        case Lit(n) => n
+    def eval[T](t: Term[T]): T = t match {
+      case Lit(n) => n
 
-        // the right hand side makes use of the fact
-        // that T = Int and so it can use '+'
-        case Succ(u)       => eval(u) + 1
-        case IsZero(u)     => eval(u) == 0
-        case If(c, u1, u2) => eval(if (eval(c)) u1 else u2)
-      }
+      // the right hand side makes use of the fact
+      // that T = Int and so it can use '+'
+      case Succ(u)       => eval(u) + 1
+      case IsZero(u)     => eval(u) == 0
+      case If(c, u1, u2) => eval(if (eval(c)) u1 else u2)
+    }
     println(eval(If(IsZero(Lit(1)), Lit(41), Succ(Lit(41)))))
   }.eval
 }

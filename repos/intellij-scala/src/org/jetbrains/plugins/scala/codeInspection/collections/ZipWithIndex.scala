@@ -23,6 +23,6 @@ object ZipWithIndex extends SimplificationType() {
 }
 
 class ZipWithIndexInspection extends OperationOnCollectionInspection {
-  override def possibleSimplificationTypes: Array[SimplificationType] =
-    Array(ZipWithIndex)
+  override def possibleSimplificationTypes: Array[SimplificationType] = Array(
+    ZipWithIndex)
 }

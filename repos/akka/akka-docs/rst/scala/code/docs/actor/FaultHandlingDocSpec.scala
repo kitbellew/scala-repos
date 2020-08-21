@@ -106,17 +106,16 @@ class FaultHandlingDocSpec(_system: ActorSystem)
     with Matchers
     with BeforeAndAfterAll {
 
-  def this() =
-    this(
-      ActorSystem(
-        "FaultHandlingDocSpec",
-        ConfigFactory.parseString("""
+  def this() = this(
+    ActorSystem(
+      "FaultHandlingDocSpec",
+      ConfigFactory.parseString("""
       akka {
         loggers = ["akka.testkit.TestEventListener"]
         loglevel = "WARNING"
       }
       """)
-      ))
+    ))
 
   override def afterAll {
     TestKit.shutdownActorSystem(system)

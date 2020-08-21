@@ -107,9 +107,8 @@ class NodeJSEnv private (
     private[this] var jvm2js: DataOutputStream = _
     private[this] var js2jvm: DataInputStream = _
 
-    private def comSetup =
-      new MemVirtualJSFile("comSetup.js").withContent(
-        s"""
+    private def comSetup = new MemVirtualJSFile("comSetup.js").withContent(
+      s"""
       (function() {
         // The socket for communication
         var socket = null;
@@ -185,7 +184,7 @@ class NodeJSEnv private (
         }
       }).call(this);
       """
-      )
+    )
 
     def send(msg: String): Unit = {
       if (awaitConnection()) {
@@ -285,10 +284,9 @@ class NodeJSEnv private (
     /** File(s) to hack console.log to prevent if from changing `%%` to `%`.
       *  Is used by [[initFiles]], override to change/disable.
       */
-    protected def fixPercentConsole(): Seq[VirtualJSFile] =
-      Seq(
-        new MemVirtualJSFile("nodeConsoleHack.js").withContent(
-          """
+    protected def fixPercentConsole(): Seq[VirtualJSFile] = Seq(
+      new MemVirtualJSFile("nodeConsoleHack.js").withContent(
+        """
           // Hack console log to duplicate double % signs
           (function() {
             function startsWithAnyOf(s, prefixes) {
@@ -315,22 +313,21 @@ class NodeJSEnv private (
             console.log = newLog;
           })();
           """
-        )
       )
+    )
 
     /** File(s) to define `__ScalaJSEnv`. Defines `exitFunction`.
       *  Is used by [[initFiles]], override to change/disable.
       */
-    protected def runtimeEnv(): Seq[VirtualJSFile] =
-      Seq(
-        new MemVirtualJSFile("scalaJSEnvInfo.js").withContent(
-          """
+    protected def runtimeEnv(): Seq[VirtualJSFile] = Seq(
+      new MemVirtualJSFile("scalaJSEnvInfo.js").withContent(
+        """
           __ScalaJSEnv = {
             exitFunction: function(status) { process.exit(status); }
           };
           """
-        )
       )
+    )
 
     /** Concatenates results from [[installSourceMap]], [[fixPercentConsole]] and
       *  [[runtimeEnv]] (in this order).

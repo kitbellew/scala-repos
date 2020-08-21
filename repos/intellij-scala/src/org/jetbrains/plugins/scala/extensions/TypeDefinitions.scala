@@ -8,6 +8,6 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.ScToplevelElement
   */
 
 object TypeDefinitions {
-  def unapplySeq(e: ScToplevelElement): Some[Seq[PsiClass]] =
-    Some(e.typeDefinitions)
+  def unapplySeq(e: ScToplevelElement): Some[Seq[PsiClass]] = Some(
+    e.typeDefinitions)
 }

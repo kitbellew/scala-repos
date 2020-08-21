@@ -164,10 +164,9 @@ class CommandSpec extends Specification {
 
         private var _fullname: String = _
 
-        def fullName: Option[String] =
-          Option {
-            _fullname
-          }
+        def fullName: Option[String] = Option {
+          _fullname
+        }
 
         afterBinding {
           _fullname =

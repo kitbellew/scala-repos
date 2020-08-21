@@ -94,12 +94,11 @@ sealed trait ProjectDefinition[PR <: ProjectReference] {
 
   override final def hashCode: Int =
     id.hashCode ^ base.hashCode ^ getClass.hashCode
-  override final def equals(o: Any) =
-    o match {
-      case p: ProjectDefinition[_] =>
-        p.getClass == this.getClass && p.id == id && p.base == base
-      case _ => false
-    }
+  override final def equals(o: Any) = o match {
+    case p: ProjectDefinition[_] =>
+      p.getClass == this.getClass && p.id == id && p.base == base
+    case _ => false
+  }
   override def toString = {
     val agg = ifNonEmpty("aggregate", aggregate)
     val dep = ifNonEmpty("dependencies", dependencies)
@@ -223,8 +222,8 @@ sealed trait Project extends ProjectDefinition[ProjectReference] {
     copy(settings = (settings: Seq[Def.Setting[_]]) ++ Def.settings(ss: _*))
 
   @deprecated("Use settingSets method.", "0.13.5")
-  def autoSettings(select: AddSettings*): Project =
-    settingSets(select.toSeq: _*)
+  def autoSettings(select: AddSettings*): Project = settingSets(
+    select.toSeq: _*)
 
   /** Configures how settings from other sources, such as .sbt files, are appended to the explicitly specified settings for this project. */
   def settingSets(select: AddSettings*): Project =
@@ -241,17 +240,16 @@ sealed trait Project extends ProjectDefinition[ProjectReference] {
     * Sets the list of .sbt files to parse for settings to be appended to this project's settings.
     * Any configured .sbt files are removed from this project's list.
     */
-  def setSbtFiles(files: File*): Project =
-    copy(auto = AddSettings.append(
-      AddSettings.clearSbtFiles(auto),
-      AddSettings.sbtFiles(files: _*)))
+  def setSbtFiles(files: File*): Project = copy(auto = AddSettings.append(
+    AddSettings.clearSbtFiles(auto),
+    AddSettings.sbtFiles(files: _*)))
 
   /**
     * Sets the [[AutoPlugin]]s of this project.
     * A [[AutoPlugin]] is a common label that is used by plugins to determine what settings, if any, to enable on a project.
     */
-  def enablePlugins(ns: Plugins*): Project =
-    setPlugins(ns.foldLeft(plugins)(Plugins.and))
+  def enablePlugins(ns: Plugins*): Project = setPlugins(
+    ns.foldLeft(plugins)(Plugins.and))
 
   /** Disable the given plugins on this project. */
   def disablePlugins(ps: AutoPlugin*): Project =
@@ -655,11 +653,10 @@ object Project extends ProjectExtra {
   def fillTaskAxis(scoped: ScopedKey[_]): ScopedKey[_] =
     ScopedKey(Scope.fillTaskAxis(scoped.scope, scoped.key), scoped.key)
 
-  def mapScope(f: Scope => Scope) =
-    new (ScopedKey ~> ScopedKey) {
-      def apply[T](key: ScopedKey[T]) =
-        ScopedKey(f(key.scope), key.key)
-    }
+  def mapScope(f: Scope => Scope) = new (ScopedKey ~> ScopedKey) {
+    def apply[T](key: ScopedKey[T]) =
+      ScopedKey(f(key.scope), key.key)
+  }
 
   def transform(
       g: Scope => Scope,
@@ -884,29 +881,28 @@ object Project extends ProjectExtra {
   def inPluginProject(s: State): Boolean = projectReturn(s).length > 1
   def setProjectReturn(s: State, pr: List[File]): State =
     s.copy(attributes = s.attributes.put(ProjectReturn, pr))
-  def loadAction(s: State, action: LoadAction.Value) =
-    action match {
-      case Return =>
-        projectReturn(s) match {
-          case current :: returnTo :: rest =>
-            (setProjectReturn(s, returnTo :: rest), returnTo)
-          case _ => sys.error("Not currently in a plugin definition")
-        }
-      case Current =>
-        val base = s.configuration.baseDirectory
-        projectReturn(s) match {
-          case Nil     => (setProjectReturn(s, base :: Nil), base);
-          case x :: xs => (s, x)
-        }
-      case Plugins =>
-        val (newBase, oldStack) =
-          if (Project.isProjectLoaded(s))
-            (Project.extract(s).currentUnit.unit.plugins.base, projectReturn(s))
-          else // support changing to the definition project if it fails to load
-            (BuildPaths.projectStandard(s.baseDir), s.baseDir :: Nil)
-        val newS = setProjectReturn(s, newBase :: oldStack)
-        (newS, newBase)
-    }
+  def loadAction(s: State, action: LoadAction.Value) = action match {
+    case Return =>
+      projectReturn(s) match {
+        case current :: returnTo :: rest =>
+          (setProjectReturn(s, returnTo :: rest), returnTo)
+        case _ => sys.error("Not currently in a plugin definition")
+      }
+    case Current =>
+      val base = s.configuration.baseDirectory
+      projectReturn(s) match {
+        case Nil     => (setProjectReturn(s, base :: Nil), base);
+        case x :: xs => (s, x)
+      }
+    case Plugins =>
+      val (newBase, oldStack) =
+        if (Project.isProjectLoaded(s))
+          (Project.extract(s).currentUnit.unit.plugins.base, projectReturn(s))
+        else // support changing to the definition project if it fails to load
+          (BuildPaths.projectStandard(s.baseDir), s.baseDir :: Nil)
+      val newS = setProjectReturn(s, newBase :: oldStack)
+      (newS, newBase)
+  }
   @deprecated(
     "This method does not apply state changes requested during task execution.  Use 'runTask' instead, which does.",
     "0.11.1")

@@ -26,14 +26,13 @@ private[sbt] final class LoadedSbtFile(
       definitions zip o.definitions,
       generatedFiles ++ o.generatedFiles)
 
-  def clearProjects =
-    new LoadedSbtFile(
-      settings,
-      Nil,
-      importedDefs,
-      manipulations,
-      definitions,
-      generatedFiles)
+  def clearProjects = new LoadedSbtFile(
+    settings,
+    Nil,
+    importedDefs,
+    manipulations,
+    definitions,
+    generatedFiles)
 }
 
 /**

@@ -49,15 +49,14 @@ object Try {
     * @param failure a function that returns the Throwable that should be
     * returned if the option is None
     */
-  def orThrow[A](o: Option[A])(failure: () => Throwable): Try[A] =
-    try {
-      o match {
-        case Some(item) => Return(item)
-        case None       => Throw(failure())
-      }
-    } catch {
-      case NonFatal(e) => Throw(e)
+  def orThrow[A](o: Option[A])(failure: () => Throwable): Try[A] = try {
+    o match {
+      case Some(item) => Return(item)
+      case None       => Throw(failure())
     }
+  } catch {
+    case NonFatal(e) => Throw(e)
+  }
 
   implicit class OrThrow[A](val option: Option[A]) extends AnyVal {
     def orThrow(failure: => Throwable): Try[A] =

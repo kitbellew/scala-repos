@@ -131,8 +131,8 @@ case class AggregateFlatClassPath(aggregates: Seq[FlatClassPath])
     entriesBuffer.toIndexedSeq
   }
 
-  private def classesGetter(pkg: String) =
-    (cp: FlatClassPath) => cp.classes(pkg)
-  private def sourcesGetter(pkg: String) =
-    (cp: FlatClassPath) => cp.sources(pkg)
+  private def classesGetter(pkg: String) = (cp: FlatClassPath) =>
+    cp.classes(pkg)
+  private def sourcesGetter(pkg: String) = (cp: FlatClassPath) =>
+    cp.sources(pkg)
 }

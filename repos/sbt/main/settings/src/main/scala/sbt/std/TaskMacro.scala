@@ -37,8 +37,8 @@ object ParserInstance extends Instance {
   import sbt.internal.util.Classes.Applicative
   private[this] implicit val parserApplicative: Applicative[M] =
     new Applicative[M] {
-      def apply[S, T](f: M[S => T], v: M[S]): M[T] =
-        s => (f(s) ~ v(s)) map { case (a, b) => a(b) }
+      def apply[S, T](f: M[S => T], v: M[S]): M[T] = s =>
+        (f(s) ~ v(s)) map { case (a, b) => a(b) }
       def pure[S](s: => S) = const(Parser.success(s))
       def map[S, T](f: S => T, v: M[S]) = s => v(s).map(f)
     }
@@ -47,8 +47,8 @@ object ParserInstance extends Instance {
   def app[K[L[x]], Z](in: K[M], f: K[Id] => Z)(implicit a: AList[K]): M[Z] =
     a.apply(in, f)
   def map[S, T](in: M[S], f: S => T): M[T] = s => in(s) map f
-  def pure[T](t: () => T): State => Parser[T] =
-    const(DefaultParsers.success(t()))
+  def pure[T](t: () => T): State => Parser[T] = const(
+    DefaultParsers.success(t()))
 }
 
 /** Composes the Task and Initialize Instances to provide an Instance for [T] Initialize[Task[T]]. */

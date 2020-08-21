@@ -80,8 +80,8 @@ class BitSet(protected final var elems: Array[Long])
     }
   }
 
-  protected def fromBitMaskNoCopy(words: Array[Long]): BitSet =
-    new BitSet(words)
+  protected def fromBitMaskNoCopy(words: Array[Long]): BitSet = new BitSet(
+    words)
 
   override def add(elem: Int): Boolean = {
     require(elem >= 0)

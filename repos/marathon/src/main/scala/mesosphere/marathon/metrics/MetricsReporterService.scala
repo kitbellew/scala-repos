@@ -20,11 +20,10 @@ import scala.collection.JavaConverters._
 object MetricsReporterService {
 
   object QueryParam {
-    def unapply(str: String): Option[(String, String)] =
-      str.split("=") match {
-        case Array(key: String, value: String) => Some(key -> value)
-        case _                                 => None
-      }
+    def unapply(str: String): Option[(String, String)] = str.split("=") match {
+      case Array(key: String, value: String) => Some(key -> value)
+      case _                                 => None
+    }
   }
 }
 

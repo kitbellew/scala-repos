@@ -20,27 +20,26 @@ private[reflect] trait SynchronizedTypes extends internal.Types {
   // and, in particular, doesn't call any reflection APIs which makes deadlocks impossible
   private lazy val uniqueLock = new Object
   private val uniques = mutable.WeakHashMap[Type, jWeakRef[Type]]()
-  override def unique[T <: Type](tp: T): T =
-    uniqueLock.synchronized {
-      // we need to have weak uniques for runtime reflection
-      // because unlike the normal compiler universe, reflective universe isn't organized in runs
-      // therefore perRunCaches can grow infinitely large
-      //
-      // despite that toolbox universes are decorated, toolboxes are compilers,
-      // i.e. they have their caches cleaned up automatically on per-run basis,
-      // therefore they should use vanilla uniques, which are faster
-      if (!isCompilerUniverse) {
-        val inCache = uniques get tp
-        val result = if (inCache.isDefined) inCache.get.get else null
-        if (result ne null) result.asInstanceOf[T]
-        else {
-          uniques(tp) = new jWeakRef(tp)
-          tp
-        }
-      } else {
-        super.unique(tp)
+  override def unique[T <: Type](tp: T): T = uniqueLock.synchronized {
+    // we need to have weak uniques for runtime reflection
+    // because unlike the normal compiler universe, reflective universe isn't organized in runs
+    // therefore perRunCaches can grow infinitely large
+    //
+    // despite that toolbox universes are decorated, toolboxes are compilers,
+    // i.e. they have their caches cleaned up automatically on per-run basis,
+    // therefore they should use vanilla uniques, which are faster
+    if (!isCompilerUniverse) {
+      val inCache = uniques get tp
+      val result = if (inCache.isDefined) inCache.get.get else null
+      if (result ne null) result.asInstanceOf[T]
+      else {
+        uniques(tp) = new jWeakRef(tp)
+        tp
       }
+    } else {
+      super.unique(tp)
     }
+  }
 
   private lazy val _skolemizationLevel = mkThreadLocalStorage(0)
   override def skolemizationLevel = _skolemizationLevel.get

@@ -34,7 +34,7 @@ object Dsl extends FieldConversions with java.io.Serializable {
   /**
     * Enrichment on FlowDef
     */
-  implicit def flowDefToRichFlowDef(fd: FlowDef): RichFlowDef =
-    new RichFlowDef(fd)
+  implicit def flowDefToRichFlowDef(fd: FlowDef): RichFlowDef = new RichFlowDef(
+    fd)
 
 }

@@ -145,16 +145,15 @@ object MetricEvaluator {
       algorithms: Seq[NameParams],
       serving: NameParams) {
 
-    def this(evaluation: Evaluation, engineParams: EngineParams) =
-      this(
-        id = "",
-        description = "",
-        engineFactory = evaluation.getClass.getName,
-        datasource = new NameParams(engineParams.dataSourceParams),
-        preparator = new NameParams(engineParams.preparatorParams),
-        algorithms =
-          engineParams.algorithmParamsList.map(np => new NameParams(np)),
-        serving = new NameParams(engineParams.servingParams))
+    def this(evaluation: Evaluation, engineParams: EngineParams) = this(
+      id = "",
+      description = "",
+      engineFactory = evaluation.getClass.getName,
+      datasource = new NameParams(engineParams.dataSourceParams),
+      preparator = new NameParams(engineParams.preparatorParams),
+      algorithms =
+        engineParams.algorithmParamsList.map(np => new NameParams(np)),
+      serving = new NameParams(engineParams.servingParams))
   }
 }
 

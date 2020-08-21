@@ -266,8 +266,8 @@ final class BooleanOps(self: Boolean) {
     * Returns the first argument in `\/-` if this is `true`, otherwise the second argument in
     * `-\/`.
     */
-  final def either[A, B](a: => A): ConditionalEither[A] =
-    new ConditionalEither(a)
+  final def either[A, B](a: => A): ConditionalEither[A] = new ConditionalEither(
+    a)
 
   /**
     * Returns the given argument if this is `true`, otherwise, the zero element for the type of the given
@@ -285,20 +285,18 @@ final class BooleanOps(self: Boolean) {
     def apply[A](a: => A)(implicit M: Applicative[M], M0: PlusEmpty[M]): M[A]
   }
 
-  final def guard[M[_]] =
-    new GuardPrevent[M] {
-      def apply[A](a: => A)(implicit M: Applicative[M], M0: PlusEmpty[M]) =
-        b.pointOrEmpty[M, A](self)(a)
-    }
+  final def guard[M[_]] = new GuardPrevent[M] {
+    def apply[A](a: => A)(implicit M: Applicative[M], M0: PlusEmpty[M]) =
+      b.pointOrEmpty[M, A](self)(a)
+  }
 
-  final def prevent[M[_]] =
-    new GuardPrevent[M] {
-      def apply[A](a: => A)(implicit M: Applicative[M], M0: PlusEmpty[M]) =
-        b.emptyOrPure[M, A](self)(a)
-    }
+  final def prevent[M[_]] = new GuardPrevent[M] {
+    def apply[A](a: => A)(implicit M: Applicative[M], M0: PlusEmpty[M]) =
+      b.emptyOrPure[M, A](self)(a)
+  }
 }
 
 trait ToBooleanOps {
-  implicit def ToBooleanOpsFromBoolean(a: Boolean): BooleanOps =
-    new BooleanOps(a)
+  implicit def ToBooleanOpsFromBoolean(a: Boolean): BooleanOps = new BooleanOps(
+    a)
 }

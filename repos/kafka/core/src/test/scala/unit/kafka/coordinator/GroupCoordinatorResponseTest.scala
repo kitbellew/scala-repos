@@ -1156,13 +1156,13 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
           EasyMock.capture(capturedArgument)
         ))
       .andAnswer(new IAnswer[Unit] {
-        override def answer =
-          capturedArgument.getValue.apply(
-            Map(new TopicPartition(
+        override def answer = capturedArgument.getValue.apply(
+          Map(
+            new TopicPartition(
               TopicConstants.GROUP_METADATA_TOPIC_NAME,
               groupPartitionId) ->
               new PartitionResponse(Errors.NONE.code, 0L, Record.NO_TIMESTAMP))
-          )
+        )
       })
     EasyMock
       .expect(replicaManager.getMessageFormatVersion(EasyMock.anyObject()))
@@ -1274,13 +1274,13 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
           EasyMock.capture(capturedArgument)
         ))
       .andAnswer(new IAnswer[Unit] {
-        override def answer =
-          capturedArgument.getValue.apply(
-            Map(new TopicPartition(
+        override def answer = capturedArgument.getValue.apply(
+          Map(
+            new TopicPartition(
               TopicConstants.GROUP_METADATA_TOPIC_NAME,
               groupPartitionId) ->
               new PartitionResponse(Errors.NONE.code, 0L, Record.NO_TIMESTAMP))
-          )
+        )
       })
     EasyMock
       .expect(replicaManager.getMessageFormatVersion(EasyMock.anyObject()))

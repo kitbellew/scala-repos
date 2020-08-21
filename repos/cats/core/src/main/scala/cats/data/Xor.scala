@@ -21,11 +21,10 @@ import scala.util.{Failure, Success, Try}
   */
 sealed abstract class Xor[+A, +B] extends Product with Serializable {
 
-  def fold[C](fa: A => C, fb: B => C): C =
-    this match {
-      case Xor.Left(a)  => fa(a)
-      case Xor.Right(b) => fb(b)
-    }
+  def fold[C](fa: A => C, fb: B => C): C = this match {
+    case Xor.Left(a)  => fa(a)
+    case Xor.Right(b) => fb(b)
+  }
 
   def isLeft: Boolean = fold(_ => true, _ => false)
 
@@ -37,24 +36,21 @@ sealed abstract class Xor[+A, +B] extends Product with Serializable {
 
   def getOrElse[BB >: B](default: => BB): BB = fold(_ => default, identity)
 
-  def orElse[C, BB >: B](fallback: => C Xor BB): C Xor BB =
-    this match {
-      case Xor.Left(_)      => fallback
-      case r @ Xor.Right(_) => r
-    }
+  def orElse[C, BB >: B](fallback: => C Xor BB): C Xor BB = this match {
+    case Xor.Left(_)      => fallback
+    case r @ Xor.Right(_) => r
+  }
 
-  def recover[BB >: B](pf: PartialFunction[A, BB]): A Xor BB =
-    this match {
-      case Xor.Left(a) if pf.isDefinedAt(a) => Xor.right(pf(a))
-      case _                                => this
-    }
+  def recover[BB >: B](pf: PartialFunction[A, BB]): A Xor BB = this match {
+    case Xor.Left(a) if pf.isDefinedAt(a) => Xor.right(pf(a))
+    case _                                => this
+  }
 
   def recoverWith[AA >: A, BB >: B](
-      pf: PartialFunction[A, AA Xor BB]): AA Xor BB =
-    this match {
-      case Xor.Left(a) if pf.isDefinedAt(a) => pf(a)
-      case _                                => this
-    }
+      pf: PartialFunction[A, AA Xor BB]): AA Xor BB = this match {
+    case Xor.Left(a) if pf.isDefinedAt(a) => pf(a)
+    case _                                => this
+  }
 
   def valueOr[BB >: B](f: A => BB): BB = fold(f, identity)
 
@@ -85,58 +81,50 @@ sealed abstract class Xor[+A, +B] extends Product with Serializable {
       applicativeF: Applicative[F]): F[BB] =
     fold(_ => monoidKF.empty, applicativeF.pure)
 
-  def bimap[C, D](fa: A => C, fb: B => D): C Xor D =
-    this match {
-      case Xor.Left(a)  => Xor.Left(fa(a))
-      case Xor.Right(b) => Xor.Right(fb(b))
-    }
+  def bimap[C, D](fa: A => C, fb: B => D): C Xor D = this match {
+    case Xor.Left(a)  => Xor.Left(fa(a))
+    case Xor.Right(b) => Xor.Right(fb(b))
+  }
 
-  def map[D](f: B => D): A Xor D =
-    this match {
-      case l @ Xor.Left(_) => l
-      case Xor.Right(b)    => Xor.Right(f(b))
-    }
+  def map[D](f: B => D): A Xor D = this match {
+    case l @ Xor.Left(_) => l
+    case Xor.Right(b)    => Xor.Right(f(b))
+  }
 
-  def leftMap[C](f: A => C): C Xor B =
-    this match {
-      case Xor.Left(a)      => Xor.Left(f(a))
-      case r @ Xor.Right(_) => r
-    }
+  def leftMap[C](f: A => C): C Xor B = this match {
+    case Xor.Left(a)      => Xor.Left(f(a))
+    case r @ Xor.Right(_) => r
+  }
 
-  def flatMap[AA >: A, D](f: B => AA Xor D): AA Xor D =
-    this match {
-      case l @ Xor.Left(_) => l
-      case Xor.Right(b)    => f(b)
-    }
+  def flatMap[AA >: A, D](f: B => AA Xor D): AA Xor D = this match {
+    case l @ Xor.Left(_) => l
+    case Xor.Right(b)    => f(b)
+  }
 
   def compare[AA >: A, BB >: B](
-      that: AA Xor BB)(implicit AA: Order[AA], BB: Order[BB]): Int =
-    fold(
-      a => that.fold(AA.compare(a, _), _ => -1),
-      b => that.fold(_ => 1, BB.compare(b, _))
-    )
+      that: AA Xor BB)(implicit AA: Order[AA], BB: Order[BB]): Int = fold(
+    a => that.fold(AA.compare(a, _), _ => -1),
+    b => that.fold(_ => 1, BB.compare(b, _))
+  )
 
   def partialCompare[AA >: A, BB >: B](that: AA Xor BB)(implicit
       AA: PartialOrder[AA],
-      BB: PartialOrder[BB]): Double =
-    fold(
-      a => that.fold(AA.partialCompare(a, _), _ => -1),
-      b => that.fold(_ => 1, BB.partialCompare(b, _))
-    )
+      BB: PartialOrder[BB]): Double = fold(
+    a => that.fold(AA.partialCompare(a, _), _ => -1),
+    b => that.fold(_ => 1, BB.partialCompare(b, _))
+  )
 
   def ===[AA >: A, BB >: B](
-      that: AA Xor BB)(implicit AA: Eq[AA], BB: Eq[BB]): Boolean =
-    fold(
-      a => that.fold(AA.eqv(a, _), _ => false),
-      b => that.fold(_ => false, BB.eqv(b, _))
-    )
+      that: AA Xor BB)(implicit AA: Eq[AA], BB: Eq[BB]): Boolean = fold(
+    a => that.fold(AA.eqv(a, _), _ => false),
+    b => that.fold(_ => false, BB.eqv(b, _))
+  )
 
   def traverse[F[_], AA >: A, D](f: B => F[D])(implicit
-      F: Applicative[F]): F[AA Xor D] =
-    this match {
-      case l @ Xor.Left(_) => F.pure(l)
-      case Xor.Right(b)    => F.map(f(b))(Xor.right _)
-    }
+      F: Applicative[F]): F[AA Xor D] = this match {
+    case l @ Xor.Left(_) => F.pure(l)
+    case Xor.Right(b)    => F.map(f(b))(Xor.right _)
+  }
 
   def foldLeft[C](c: C)(f: (C, B) => C): C = fold(_ => c, f(c, _))
 
@@ -147,19 +135,18 @@ sealed abstract class Xor[+A, +B] extends Product with Serializable {
 
   final def combine[AA >: A, BB >: B](that: AA Xor BB)(implicit
       AA: Semigroup[AA],
-      BB: Semigroup[BB]): AA Xor BB =
-    this match {
-      case Xor.Left(a1) =>
-        that match {
-          case Xor.Left(a2)  => Xor.Left(AA.combine(a1, a2))
-          case Xor.Right(b2) => Xor.Left(a1)
-        }
-      case Xor.Right(b1) =>
-        that match {
-          case Xor.Left(a2)  => Xor.Left(a2)
-          case Xor.Right(b2) => Xor.Right(BB.combine(b1, b2))
-        }
-    }
+      BB: Semigroup[BB]): AA Xor BB = this match {
+    case Xor.Left(a1) =>
+      that match {
+        case Xor.Left(a2)  => Xor.Left(AA.combine(a1, a2))
+        case Xor.Right(b2) => Xor.Left(a1)
+      }
+    case Xor.Right(b1) =>
+      that match {
+        case Xor.Left(a2)  => Xor.Left(a2)
+        case Xor.Right(b2) => Xor.Right(BB.combine(b1, b2))
+      }
+  }
 
   def show[AA >: A, BB >: B](implicit AA: Show[AA], BB: Show[BB]): String =
     fold(
@@ -260,11 +247,10 @@ private[data] sealed abstract class XorInstances1 extends XorInstances2 {
     }
 
   implicit def xorPartialOrder[A: PartialOrder, B: PartialOrder]
-      : PartialOrder[A Xor B] =
-    new PartialOrder[A Xor B] {
-      def partialCompare(x: A Xor B, y: A Xor B): Double = x partialCompare y
-      override def eqv(x: A Xor B, y: A Xor B): Boolean = x === y
-    }
+      : PartialOrder[A Xor B] = new PartialOrder[A Xor B] {
+    def partialCompare(x: A Xor B, y: A Xor B): Double = x partialCompare y
+    override def eqv(x: A Xor B, y: A Xor B): Boolean = x === y
+  }
 }
 
 private[data] sealed abstract class XorInstances2 {

@@ -18,18 +18,16 @@ class GraphMergeSortedSpec
 
   override type Outputs = Int
 
-  override def fixture(b: GraphDSL.Builder[_]): Fixture =
-    new Fixture(b) {
-      val merge = b.add(new MergeSorted[Outputs])
+  override def fixture(b: GraphDSL.Builder[_]): Fixture = new Fixture(b) {
+    val merge = b.add(new MergeSorted[Outputs])
 
-      override def left: Inlet[Outputs] = merge.in0
-      override def right: Inlet[Outputs] = merge.in1
-      override def out: Outlet[Outputs] = merge.out
-    }
+    override def left: Inlet[Outputs] = merge.in0
+    override def right: Inlet[Outputs] = merge.in1
+    override def out: Outlet[Outputs] = merge.out
+  }
 
-  implicit def noShrink[T] =
-    Shrink[T](_ ⇒
-      Stream.empty) // do not shrink failures, it only destroys evidence
+  implicit def noShrink[T] = Shrink[T](_ ⇒
+    Stream.empty) // do not shrink failures, it only destroys evidence
 
   "MergeSorted" must {
 

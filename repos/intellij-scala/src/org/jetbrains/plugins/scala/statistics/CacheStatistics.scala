@@ -44,12 +44,10 @@ class CacheStatistics private (id: String, name: String) {
 
   def misses: Long = cachesRecalculated
 
-  def addCacheObject(obj: Any): Unit =
-    obj match {
-      case ref: AnyRef =>
-        objectsToKeepTrackOf.add(new WeakReference[AnyRef](ref))
-      case _ => //it's a primitive, its size is so tiny, so let's ignore it for now
-    }
+  def addCacheObject(obj: Any): Unit = obj match {
+    case ref: AnyRef => objectsToKeepTrackOf.add(new WeakReference[AnyRef](ref))
+    case _           => //it's a primitive, its size is so tiny, so let's ignore it for now
+  }
 
   def removeCacheObject(obj: Any): Boolean = {
     import scala.collection.JavaConversions._
@@ -123,18 +121,17 @@ object CacheStatistics {
     caches.values().asScala.foreach(c => logger.info(c.toString))
   }
 
-  def apply(id: String, name: String) =
-    Option(caches.get(id)) match {
-      case Some(res) => res
-      case _ =>
-        synchronized {
-          Option(caches.get(id)) match {
-            case Some(res) => res
-            case _ =>
-              val res = new CacheStatistics(id, name)
-              caches.put(id, res)
-              res
-          }
+  def apply(id: String, name: String) = Option(caches.get(id)) match {
+    case Some(res) => res
+    case _ =>
+      synchronized {
+        Option(caches.get(id)) match {
+          case Some(res) => res
+          case _ =>
+            val res = new CacheStatistics(id, name)
+            caches.put(id, res)
+            res
         }
-    }
+      }
+  }
 }

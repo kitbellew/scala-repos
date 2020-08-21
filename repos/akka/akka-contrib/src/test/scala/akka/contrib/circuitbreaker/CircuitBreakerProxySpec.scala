@@ -31,9 +31,8 @@ class CircuitBreakerProxySpec extends AkkaSpec() with GivenWhenThen {
 
     def circuitBreaker: ActorRef
 
-    def defaultCircuitBreaker =
-      system.actorOf(
-        baseCircuitBreakerPropsBuilder.props(target = receiver.ref))
+    def defaultCircuitBreaker = system.actorOf(
+      baseCircuitBreakerPropsBuilder.props(target = receiver.ref))
 
     def receiverRespondsWithFailureToRequest(request: Any) = {
       sender.send(circuitBreaker, request)

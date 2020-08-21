@@ -40,15 +40,13 @@ object HttpExecutionContext {
   /**
     * Create an ExecutionContext that will, when prepared, be created with values from that thread.
     */
-  def unprepared(delegate: ExecutionContext) =
-    new ExecutionContext {
-      def execute(runnable: Runnable) =
-        delegate.execute(
-          runnable
-        ) // FIXME: Make calling this an error once SI-7383 is fixed
-      def reportFailure(t: Throwable) = delegate.reportFailure(t)
-      override def prepare(): ExecutionContext = fromThread(delegate)
-    }
+  def unprepared(delegate: ExecutionContext) = new ExecutionContext {
+    def execute(runnable: Runnable) = delegate.execute(
+      runnable
+    ) // FIXME: Make calling this an error once SI-7383 is fixed
+    def reportFailure(t: Throwable) = delegate.reportFailure(t)
+    override def prepare(): ExecutionContext = fromThread(delegate)
+  }
 }
 
 /**
@@ -60,22 +58,21 @@ class HttpExecutionContext(
     httpContext: Http.Context,
     delegate: ExecutionContext)
     extends ExecutionContextExecutor {
-  override def execute(runnable: Runnable) =
-    delegate.execute(new Runnable {
-      def run() {
-        val thread = Thread.currentThread()
-        val oldContextClassLoader = thread.getContextClassLoader()
-        val oldHttpContext = Http.Context.current.get()
-        thread.setContextClassLoader(contextClassLoader)
-        Http.Context.current.set(httpContext)
-        try {
-          runnable.run()
-        } finally {
-          thread.setContextClassLoader(oldContextClassLoader)
-          Http.Context.current.set(oldHttpContext)
-        }
+  override def execute(runnable: Runnable) = delegate.execute(new Runnable {
+    def run() {
+      val thread = Thread.currentThread()
+      val oldContextClassLoader = thread.getContextClassLoader()
+      val oldHttpContext = Http.Context.current.get()
+      thread.setContextClassLoader(contextClassLoader)
+      Http.Context.current.set(httpContext)
+      try {
+        runnable.run()
+      } finally {
+        thread.setContextClassLoader(oldContextClassLoader)
+        Http.Context.current.set(oldHttpContext)
       }
-    })
+    }
+  })
 
   override def reportFailure(t: Throwable) = delegate.reportFailure(t)
 

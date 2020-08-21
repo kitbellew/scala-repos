@@ -30,13 +30,13 @@ object DependantsTest extends Properties("Dependants") {
   import TestGraphGenerators._
   import MemoryArbitraries._
   implicit def testStore: Memory#Store[Int, Int] = MMap[Int, Int]()
-  implicit def testService: Memory#Service[Int, Int] =
-    new MHashMap[Int, Int]() with MemoryService[Int, Int]
+  implicit def testService: Memory#Service[Int, Int] = new MHashMap[Int, Int]()
+    with MemoryService[Int, Int]
   implicit def sink1: Memory#Sink[Int] = ((_) => Unit)
   implicit def sink2: Memory#Sink[(Int, Int)] = ((_) => Unit)
 
-  implicit def genProducer: Arbitrary[Producer[Memory, _]] =
-    Arbitrary(oneOf(genProd1, genProd2, summed))
+  implicit def genProducer: Arbitrary[Producer[Memory, _]] = Arbitrary(
+    oneOf(genProd1, genProd2, summed))
 
   property("transitive deps includes non-transitive") = forAll {
     (prod: Producer[Memory, _]) =>

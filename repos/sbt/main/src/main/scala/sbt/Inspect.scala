@@ -16,14 +16,13 @@ object Inspect {
   val Uses: Mode = new Opt("inspect")
   val Definitions: Mode = new Opt("definitions")
 
-  def parser: State => Parser[(Inspect.Mode, ScopedKey[_])] =
-    (s: State) =>
-      spacedModeParser(s) flatMap {
-        case opt @ (Uses | Definitions) =>
-          allKeyParser(s).map(key => (opt, Def.ScopedKey(Global, key)))
-        case opt @ (DependencyTree | Details(_)) =>
-          spacedKeyParser(s).map(key => (opt, key))
-      }
+  def parser: State => Parser[(Inspect.Mode, ScopedKey[_])] = (s: State) =>
+    spacedModeParser(s) flatMap {
+      case opt @ (Uses | Definitions) =>
+        allKeyParser(s).map(key => (opt, Def.ScopedKey(Global, key)))
+      case opt @ (DependencyTree | Details(_)) =>
+        spacedKeyParser(s).map(key => (opt, key))
+    }
   val spacedModeParser: (State => Parser[Mode]) = (s: State) => {
     val actual = "actual" ^^^ Details(true)
     val tree = "tree" ^^^ DependencyTree

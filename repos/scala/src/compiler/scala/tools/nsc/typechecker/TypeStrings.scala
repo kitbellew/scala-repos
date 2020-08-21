@@ -28,11 +28,10 @@ trait StructuredTypeStrings extends DestructureTypes {
       mdelim: String,
       rdelim: String,
       labels: Boolean) {
-    def join(elems: String*): String =
-      (
-        if (elems.isEmpty) ""
-        else elems.mkString(ldelim, mdelim, rdelim)
-      )
+    def join(elems: String*): String = (
+      if (elems.isEmpty) ""
+      else elems.mkString(ldelim, mdelim, rdelim)
+    )
   }
   val NoGrouping = Grouping("", "", "", labels = false)
   val ListGrouping = Grouping("(", ", ", ")", labels = false)
@@ -144,9 +143,9 @@ trait StructuredTypeStrings extends DestructureTypes {
     def wrapSequence(nodes: List[TypeNode]) = new TypeList(nodes)
     def wrapProduct(nodes: List[TypeNode]) = new TypeProduct(nodes)
     def wrapPoly(in: TypeNode, out: TypeNode) = new PolyFunction(in, out)
-    def wrapMono(in: TypeNode, out: TypeNode) =
-      if (in == wrapEmpty) new NullaryFunction(out)
-      else new MonoFunction(in, out)
+    def wrapMono(in: TypeNode, out: TypeNode) = if (in == wrapEmpty)
+      new NullaryFunction(out)
+    else new MonoFunction(in, out)
     def wrapAtom[U](value: U) = new TypeAtom(value)
   }
 
@@ -216,8 +215,8 @@ trait TypeStrings {
     if (tps.isEmpty) ""
     else tps.mkString("[", ", ", "]")
 
-  private def tvarString(tvar: TypeVariable[_]): String =
-    tvarString(tvar.getBounds.toList)
+  private def tvarString(tvar: TypeVariable[_]): String = tvarString(
+    tvar.getBounds.toList)
   private def tvarString(bounds: List[AnyRef]): String = {
     val xs = bounds filterNot (_ == ObjectClass) collect { case x: JClass => x }
     if (xs.isEmpty) "_"
@@ -229,8 +228,9 @@ trait TypeStrings {
 
   private def tparamString[T: ru.TypeTag]: String = {
     import ru._ // get TypeRefTag in scope so that pattern match works (TypeRef is an abstract type)
-    def typeArguments: List[ru.Type] =
-      ru.typeOf[T] match { case ru.TypeRef(_, _, args) => args; case _ => Nil }
+    def typeArguments: List[ru.Type] = ru.typeOf[T] match {
+      case ru.TypeRef(_, _, args) => args; case _ => Nil
+    }
     brackets(typeArguments map (jc => tvarString(List(jc))): _*)
   }
 

@@ -22,16 +22,15 @@ case class OpenGraph(
 
     private val tupledTag = (tag _).tupled
 
-    def str =
-      List(
-        "title" -> title,
-        "description" -> description,
-        "url" -> url,
-        "type" -> `type`,
-        "site_name" -> siteName
-      ).map(tupledTag).mkString +
-        image.?? { tag("image", _) } +
-        more.map(tupledTag).mkString
+    def str = List(
+      "title" -> title,
+      "description" -> description,
+      "url" -> url,
+      "type" -> `type`,
+      "site_name" -> siteName
+    ).map(tupledTag).mkString +
+      image.?? { tag("image", _) } +
+      more.map(tupledTag).mkString
   }
 
   object twitter {
@@ -41,14 +40,13 @@ case class OpenGraph(
 
     private val tupledTag = (tag _).tupled
 
-    def str =
-      List(
-        "card" -> "summary",
-        "title" -> title,
-        "description" -> description,
-        "site" -> "@lichessorg"
-      ).map(tupledTag).mkString +
-        image.?? { tag("image", _) } +
-        more.map(tupledTag).mkString
+    def str = List(
+      "card" -> "summary",
+      "title" -> title,
+      "description" -> description,
+      "site" -> "@lichessorg"
+    ).map(tupledTag).mkString +
+      image.?? { tag("image", _) } +
+      more.map(tupledTag).mkString
   }
 }

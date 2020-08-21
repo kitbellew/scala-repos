@@ -166,15 +166,14 @@ final case class SimpleList[T](underlying: List[T]) extends JavaList[T] {
 
     import scala.annotation._
 
-    @tailrec def check(): Boolean =
-      it.hasNext() match {
-        case false => true
-        case _ =>
-          contains(it.next().asInstanceOf[Object]) match {
-            case false => false
-            case _     => check()
-          }
-      }
+    @tailrec def check(): Boolean = it.hasNext() match {
+      case false => true
+      case _ =>
+        contains(it.next().asInstanceOf[Object]) match {
+          case false => false
+          case _     => check()
+        }
+    }
 
     check()
   }
@@ -323,15 +322,14 @@ final case class SimpleVector[T](underlying: Vector[T]) extends JavaList[T] {
 
     import scala.annotation._
 
-    @tailrec def check(): Boolean =
-      it.hasNext() match {
-        case false => true
-        case _ =>
-          contains(it.next().asInstanceOf[Object]) match {
-            case false => false
-            case _     => check()
-          }
-      }
+    @tailrec def check(): Boolean = it.hasNext() match {
+      case false => true
+      case _ =>
+        contains(it.next().asInstanceOf[Object]) match {
+          case false => false
+          case _     => check()
+        }
+    }
 
     check()
   }

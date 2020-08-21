@@ -701,10 +701,9 @@ private[stream] object Fusing {
     }
 
     def hash(obj: AnyRef) = f"${System.identityHashCode(obj)}%08x"
-    def printShape(s: Shape) =
-      s"${s.getClass.getSimpleName}(ins=${s.inlets
-        .map(hash)
-        .mkString(",")} outs=${s.outlets.map(hash).mkString(",")})"
+    def printShape(s: Shape) = s"${s.getClass.getSimpleName}(ins=${s.inlets
+      .map(hash)
+      .mkString(",")} outs=${s.outlets.map(hash).mkString(",")})"
 
     /**
       * Create and return a new grouping (i.e. an AsyncBoundary-delimited context)
@@ -836,12 +835,11 @@ private[stream] object Fusing {
   /**
     * Determine whether the given CopiedModule has an AsyncBoundary attribute.
     */
-  private def isAsync(m: CopiedModule): Boolean =
-    m match {
-      case CopiedModule(_, inherited, orig) ⇒
-        val attr = inherited and orig.attributes
-        attr.contains(AsyncBoundary)
-    }
+  private def isAsync(m: CopiedModule): Boolean = m match {
+    case CopiedModule(_, inherited, orig) ⇒
+      val attr = inherited and orig.attributes
+      attr.contains(AsyncBoundary)
+  }
 
   /**
     * Figure out the dispatcher setting of a module.
@@ -857,9 +855,8 @@ private[stream] object Fusing {
   /**
     * See through copied modules to the “real” module.
     */
-  private def realModule(m: Module): Module =
-    m match {
-      case CopiedModule(_, _, of) ⇒ realModule(of)
-      case other ⇒ other
-    }
+  private def realModule(m: Module): Module = m match {
+    case CopiedModule(_, _, of) ⇒ realModule(of)
+    case other ⇒ other
+  }
 }

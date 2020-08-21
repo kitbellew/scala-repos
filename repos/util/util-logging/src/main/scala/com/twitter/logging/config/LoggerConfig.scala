@@ -98,13 +98,12 @@ class FormatterConfig extends Config[Formatter] {
     */
   var prefix: String = "%.3s [<yyyyMMdd-HH:mm:ss.SSS>] %s: "
 
-  def apply() =
-    new Formatter(
-      timezone,
-      truncateAt,
-      truncateStackTracesAt,
-      useFullPackageNames,
-      prefix)
+  def apply() = new Formatter(
+    timezone,
+    truncateAt,
+    truncateStackTracesAt,
+    useFullPackageNames,
+    prefix)
 }
 
 @deprecated("use BareFormatter directly", "6.12.1")
@@ -137,15 +136,14 @@ class SyslogFormatterConfig extends FormatterConfig {
 
   def serverName_=(name: String) { serverName = Some(name) }
 
-  override def apply() =
-    new SyslogFormatter(
-      hostname,
-      serverName,
-      useIsoDateFormat,
-      priority,
-      timezone,
-      truncateAt,
-      truncateStackTracesAt)
+  override def apply() = new SyslogFormatter(
+    hostname,
+    serverName,
+    useIsoDateFormat,
+    priority,
+    timezone,
+    truncateAt,
+    truncateStackTracesAt)
 }
 
 @deprecated("use Formatter directly", "6.12.1")
@@ -255,15 +253,14 @@ class ScribeHandlerConfig extends HandlerConfig {
   var port = 1463
   var category = "scala"
 
-  def apply() =
-    new ScribeHandler(
-      hostname,
-      port,
-      category,
-      bufferTime,
-      connectBackoff,
-      maxMessagesPerTransaction,
-      maxMessagesToBuffer,
-      formatter(),
-      level)
+  def apply() = new ScribeHandler(
+    hostname,
+    port,
+    category,
+    bufferTime,
+    connectBackoff,
+    maxMessagesPerTransaction,
+    maxMessagesToBuffer,
+    formatter(),
+    level)
 }

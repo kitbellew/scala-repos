@@ -188,13 +188,12 @@ trait IndicesSpec[M[+_]]
       test(Array(CLong(1), CLong(1)), empty)
 
       test(Array(CLong(1), CLong(2)), s1)
-      def s1 =
-        Set[RValue](
-          CLong(3),
-          CLong(999),
-          CString("cat"),
-          RObject(Map("cat" -> CLong(13), "dog" -> CLong(12)))
-        )
+      def s1 = Set[RValue](
+        CLong(3),
+        CLong(999),
+        CString("cat"),
+        RObject(Map("cat" -> CLong(13), "dog" -> CLong(12)))
+      )
 
       test(Array(CLong(2), CLong(2)), s2)
       def s2 = Set[RValue](CLong(3), CLong(13))

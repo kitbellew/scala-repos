@@ -61,17 +61,16 @@ object Hitbox {
       media_status: String,
       media_is_live: String)
   case class Result(livestream: List[Stream]) {
-    def streamsOnAir(streamers: List[Streamer]) =
-      livestream.flatMap { s =>
-        for {
-          streamer <- StreamerList.findHitbox(streamers)(s.media_user_name)
-          if s.media_is_live == "1"
-        } yield StreamOnAir(
-          streamer = streamer,
-          name = s.media_status,
-          url = s.channel.channel_link,
-          streamId = s.media_name)
-      }
+    def streamsOnAir(streamers: List[Streamer]) = livestream.flatMap { s =>
+      for {
+        streamer <- StreamerList.findHitbox(streamers)(s.media_user_name)
+        if s.media_is_live == "1"
+      } yield StreamOnAir(
+        streamer = streamer,
+        name = s.media_status,
+        url = s.channel.channel_link,
+        streamId = s.media_name)
+    }
   }
   object Reads {
     implicit val hitboxChannelReads = Json.reads[Channel]
@@ -88,18 +87,16 @@ object Youtube {
   case class Id(videoId: String)
   case class Item(id: Id, snippet: Snippet)
   case class Result(items: List[Item]) {
-    def streamsOnAir(streamers: List[Streamer]) =
-      items.flatMap { item =>
-        for {
-          streamer <-
-            StreamerList.findYoutube(streamers)(item.snippet.channelId)
-          if item.snippet.liveBroadcastContent == "live"
-        } yield StreamOnAir(
-          streamer = streamer,
-          name = item.snippet.title,
-          url = item.id.videoId,
-          streamId = item.snippet.channelId)
-      }
+    def streamsOnAir(streamers: List[Streamer]) = items.flatMap { item =>
+      for {
+        streamer <- StreamerList.findYoutube(streamers)(item.snippet.channelId)
+        if item.snippet.liveBroadcastContent == "live"
+      } yield StreamOnAir(
+        streamer = streamer,
+        name = item.snippet.title,
+        url = item.id.videoId,
+        streamId = item.snippet.channelId)
+    }
   }
   object Reads {
     implicit val youtubeSnippetReads = Json.reads[Snippet]

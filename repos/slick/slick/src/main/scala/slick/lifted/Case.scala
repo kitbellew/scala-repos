@@ -24,8 +24,8 @@ import slick.util.ConstArray
   */
 object Case {
 
-  def If[C <: Rep[_]: CanBeQueryCondition](cond: C) =
-    new UntypedWhen(cond.toNode)
+  def If[C <: Rep[_]: CanBeQueryCondition](cond: C) = new UntypedWhen(
+    cond.toNode)
 
   final class UntypedWhen(cond: Node) {
     def Then[P, B](res: Rep[P])(implicit

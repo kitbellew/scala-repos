@@ -23,10 +23,9 @@ private object DB2Dialect extends JdbcDialect {
 
   override def canHandle(url: String): Boolean = url.startsWith("jdbc:db2")
 
-  override def getJDBCType(dt: DataType): Option[JdbcType] =
-    dt match {
-      case StringType  => Option(JdbcType("CLOB", java.sql.Types.CLOB))
-      case BooleanType => Option(JdbcType("CHAR(1)", java.sql.Types.CHAR))
-      case _           => None
-    }
+  override def getJDBCType(dt: DataType): Option[JdbcType] = dt match {
+    case StringType  => Option(JdbcType("CLOB", java.sql.Types.CLOB))
+    case BooleanType => Option(JdbcType("CHAR(1)", java.sql.Types.CHAR))
+    case _           => None
+  }
 }

@@ -15,11 +15,10 @@ package object hypothesis {
     * Returns a p value
     */
   def tTest[T](it1: TraversableOnce[T], it2: Traversable[T])(implicit
-      numeric: Numeric[T]): Double =
-    tTest[TraversableOnce[Double]](
-      it1.map(numeric.toDouble),
-      it2.map(numeric.toDouble)
-    ) //explicit type annotation ensures that the compiler runs the CanTraverseValues implementation of it
+      numeric: Numeric[T]): Double = tTest[TraversableOnce[Double]](
+    it1.map(numeric.toDouble),
+    it2.map(numeric.toDouble)
+  ) //explicit type annotation ensures that the compiler runs the CanTraverseValues implementation of it
 
   def tTest[X](it1: X, it2: X)(implicit
       ct: CanTraverseValues[X, Double]): Double = {

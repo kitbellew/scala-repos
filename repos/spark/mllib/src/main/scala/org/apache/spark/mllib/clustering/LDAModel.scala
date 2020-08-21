@@ -114,8 +114,8 @@ abstract class LDAModel private[clustering] extends Saveable {
     *          Each topic's terms are sorted in order of decreasing weight.
     */
   @Since("1.3.0")
-  def describeTopics(): Array[(Array[Int], Array[Double])] =
-    describeTopics(vocabSize)
+  def describeTopics(): Array[(Array[Int], Array[Double])] = describeTopics(
+    vocabSize)
 
   /* TODO (once LDA can be trained with Strings or given a dictionary)
    * Return the topics described by weighted terms.
@@ -597,12 +597,11 @@ class DistributedLDAModel private[clustering] (
     * documents.
     */
   @Since("1.3.0")
-  def toLocal: LocalLDAModel =
-    new LocalLDAModel(
-      topicsMatrix,
-      docConcentration,
-      topicConcentration,
-      gammaShape)
+  def toLocal: LocalLDAModel = new LocalLDAModel(
+    topicsMatrix,
+    docConcentration,
+    topicConcentration,
+    gammaShape)
 
   /**
     * Inferred topics, where each topic is represented by a distribution over terms.

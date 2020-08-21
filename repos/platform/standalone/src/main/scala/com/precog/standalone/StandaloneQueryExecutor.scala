@@ -72,10 +72,9 @@ trait StandaloneQueryExecutorConfig
 
   val idSource = new FreshAtomicIdSource
 
-  def masterAPIKey: String =
-    config[String](
-      "masterAccount.apiKey",
-      "12345678-9101-1121-3141-516171819202")
+  def masterAPIKey: String = config[String](
+    "masterAccount.apiKey",
+    "12345678-9101-1121-3141-516171819202")
 
   def maxEvalDuration: Duration =
     config[Int]("precog.evaluator.timeout.eval", 90) seconds
@@ -98,14 +97,13 @@ trait StandaloneQueryExecutor
   override def defaultTimeout = yggConfig.maxEvalDuration
 
   implicit val nt = NaturalTransformation.refl[Future]
-  def executor =
-    new ShardQueryExecutor[Future](M) {
-      val M = platform.M
-      type YggConfig = platform.YggConfig
-      val yggConfig = platform.yggConfig
-      val queryReport = LoggingQueryLogger[Future](M)
-      def freshIdScanner = platform.freshIdScanner
-    }
+  def executor = new ShardQueryExecutor[Future](M) {
+    val M = platform.M
+    type YggConfig = platform.YggConfig
+    val yggConfig = platform.yggConfig
+    val queryReport = LoggingQueryLogger[Future](M)
+    def freshIdScanner = platform.freshIdScanner
+  }
 
   protected def executor(implicit shardQueryMonad: JobQueryTFMonad)
       : QueryExecutor[JobQueryTF, StreamT[JobQueryTF, Slice]] = {

@@ -54,11 +54,10 @@ trait ServletFilterProvider extends Filter with HTTPProvider {
   private def handleLoanWrappers[T](f: => T): T = {
     val wrappers = LiftRules.allAround.toList
 
-    def handleLoan(lst: List[LoanWrapper]): T =
-      lst match {
-        case Nil     => f
-        case x :: xs => x(handleLoan(xs))
-      }
+    def handleLoan(lst: List[LoanWrapper]): T = lst match {
+      case Nil     => f
+      case x :: xs => x(handleLoan(xs))
+    }
 
     handleLoan(wrappers)
   }

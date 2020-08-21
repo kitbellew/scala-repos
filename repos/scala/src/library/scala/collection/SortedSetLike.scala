@@ -36,15 +36,14 @@ trait SortedSetLike[A, +This <: SortedSet[A] with SortedSetLike[A, This]]
   override def range(from: A, until: A): This =
     rangeImpl(Some(from), Some(until))
 
-  override def subsetOf(that: GenSet[A]): Boolean =
-    that match {
-      // TODO: It may actually be pretty rare that the guard here ever
-      // passes. Is this really worth keeping? If it is, we should add
-      // more sensible implementations of == to Ordering.
-      case that: SortedSet[_] if that.ordering == ordering =>
-        that.hasAll(this.iterator)
-      case that => super.subsetOf(that)
-    }
+  override def subsetOf(that: GenSet[A]): Boolean = that match {
+    // TODO: It may actually be pretty rare that the guard here ever
+    // passes. Is this really worth keeping? If it is, we should add
+    // more sensible implementations of == to Ordering.
+    case that: SortedSet[_] if that.ordering == ordering =>
+      that.hasAll(this.iterator)
+    case that => super.subsetOf(that)
+  }
 
   /**
     * Creates an iterator that contains all values from this collection

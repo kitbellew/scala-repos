@@ -199,14 +199,13 @@ private[sql] object JDBCRDD extends Logging {
   /**
     * Converts value to SQL expression.
     */
-  private def compileValue(value: Any): Any =
-    value match {
-      case stringValue: String       => s"'${escapeSql(stringValue)}'"
-      case timestampValue: Timestamp => "'" + timestampValue + "'"
-      case dateValue: Date           => "'" + dateValue + "'"
-      case arrayValue: Array[Any]    => arrayValue.map(compileValue).mkString(", ")
-      case _                         => value
-    }
+  private def compileValue(value: Any): Any = value match {
+    case stringValue: String       => s"'${escapeSql(stringValue)}'"
+    case timestampValue: Timestamp => "'" + timestampValue + "'"
+    case dateValue: Date           => "'" + dateValue + "'"
+    case arrayValue: Array[Any]    => arrayValue.map(compileValue).mkString(", ")
+    case _                         => value
+  }
 
   private def escapeSql(value: String): String =
     if (value == null) null else StringUtils.replace(value, "'", "''")

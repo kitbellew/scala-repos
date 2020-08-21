@@ -70,20 +70,19 @@ class SslTest extends FunSuite {
       Buf.ByteArray.Owned(Array.fill(length)('Z'.toByte))
 
     val service = new Service[Request, Response] {
-      def apply(request: Request) =
-        Future {
-          val requestedBytes = request.headerMap.get("Requested-Bytes") match {
-            case Some(s) => s.toInt
-            case None    => 17280
-          }
-          val response = Response(Version.Http11, Status.Ok)
-          request.headerMap.get("X-Transport-Cipher").foreach { cipher =>
-            response.headerMap.set("X-Transport-Cipher", cipher)
-          }
-          response.content = makeContent(requestedBytes)
-          response.contentLength = requestedBytes
-          response
+      def apply(request: Request) = Future {
+        val requestedBytes = request.headerMap.get("Requested-Bytes") match {
+          case Some(s) => s.toInt
+          case None    => 17280
         }
+        val response = Response(Version.Http11, Status.Ok)
+        request.headerMap.get("X-Transport-Cipher").foreach { cipher =>
+          response.headerMap.set("X-Transport-Cipher", cipher)
+        }
+        response.content = makeContent(requestedBytes)
+        response.contentLength = requestedBytes
+        response
+      }
     }
 
     val codec =
@@ -141,24 +140,23 @@ class SslTest extends FunSuite {
   test("be able to validate a properly constructed authentication chain") {
     // ... spin up an SSL server ...
     val service = new Service[Request, Response] {
-      def apply(request: Request) =
-        Future {
-          def makeContent(length: Int): Buf =
-            Buf.ByteArray.Owned(Array.fill(length)('Z'.toByte))
+      def apply(request: Request) = Future {
+        def makeContent(length: Int): Buf =
+          Buf.ByteArray.Owned(Array.fill(length)('Z'.toByte))
 
-          val requestedBytes = request.headerMap.get("Requested-Bytes") match {
-            case Some(s) => s.toInt
-            case None    => 17280
-          }
-          val response = Response(Version.Http11, Status.Ok)
-          request.headerMap.get("X-Transport-Cipher").foreach { cipher =>
-            response.headerMap.set("X-Transport-Cipher", cipher)
-          }
-          response.content = makeContent(requestedBytes)
-          response.contentLength = requestedBytes
-
-          response
+        val requestedBytes = request.headerMap.get("Requested-Bytes") match {
+          case Some(s) => s.toInt
+          case None    => 17280
         }
+        val response = Response(Version.Http11, Status.Ok)
+        request.headerMap.get("X-Transport-Cipher").foreach { cipher =>
+          response.headerMap.set("X-Transport-Cipher", cipher)
+        }
+        response.content = makeContent(requestedBytes)
+        response.contentLength = requestedBytes
+
+        response
+      }
     }
 
     val codec =

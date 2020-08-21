@@ -123,17 +123,16 @@ object MediaException {
       "8.0.60-R10")
     val UNKNOWN = Unknown
 
-    protected override def unsortedValues: Array[Type] =
-      Array(
-        MediaCorrupted,
-        MediaInaccessible,
-        MediaUnavailable,
-        MediaUnspecified,
-        MediaUnsupported,
-        OperationUnsupported,
-        PlaybackError,
-        PlaybackHalted,
-        Unknown)
+    protected override def unsortedValues: Array[Type] = Array(
+      MediaCorrupted,
+      MediaInaccessible,
+      MediaUnavailable,
+      MediaUnspecified,
+      MediaUnsupported,
+      OperationUnsupported,
+      PlaybackError,
+      PlaybackHalted,
+      Unknown)
 
   }
 

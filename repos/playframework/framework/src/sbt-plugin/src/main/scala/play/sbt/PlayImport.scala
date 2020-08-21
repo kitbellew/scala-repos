@@ -37,9 +37,8 @@ object PlayImport {
 
   val javaJdbc = component("play-java-jdbc")
 
-  def javaEbean =
-    movedExternal(
-      """Play ebean module has been replaced with an external Play ebean plugin.
+  def javaEbean = movedExternal(
+    """Play ebean module has been replaced with an external Play ebean plugin.
       |See https://playframework.com/documentation/2.4.x/Migration24 for details.""".stripMargin)
 
   val javaJpa = component("play-java-jpa")

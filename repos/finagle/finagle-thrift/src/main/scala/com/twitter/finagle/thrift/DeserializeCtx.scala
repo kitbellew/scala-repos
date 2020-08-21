@@ -33,12 +33,11 @@ class DeserializeCtx[Rep](
     * inputs. If different bytes are seen on future calls, this will still
     * return the first deserialized result.
     */
-  def deserialize(responseBytes: Array[Byte]): Try[Rep] =
-    synchronized {
-      if (deserialized == null)
-        deserialized = replyDeserializer(responseBytes)
-      deserialized
-    }
+  def deserialize(responseBytes: Array[Byte]): Try[Rep] = synchronized {
+    if (deserialized == null)
+      deserialized = replyDeserializer(responseBytes)
+    deserialized
+  }
 }
 
 object DeserializeCtx {

@@ -120,11 +120,10 @@ object Types {
       with ReferenceType
 
   object ArrayType {
-    def apply(innerType: ReferenceType): ArrayType =
-      innerType match {
-        case ClassType(className)      => ArrayType(className, 1)
-        case ArrayType(className, dim) => ArrayType(className, dim + 1)
-      }
+    def apply(innerType: ReferenceType): ArrayType = innerType match {
+      case ClassType(className)      => ArrayType(className, 1)
+      case ArrayType(className, dim) => ArrayType(className, dim + 1)
+    }
   }
 
   /** Record type.
@@ -151,17 +150,16 @@ object Types {
   case object NoType extends Type
 
   /** Generates a literal zero of the given type. */
-  def zeroOf(tpe: Type)(implicit pos: Position): Literal =
-    tpe match {
-      case BooleanType => BooleanLiteral(false)
-      case IntType     => IntLiteral(0)
-      case LongType    => LongLiteral(0L)
-      case FloatType   => FloatLiteral(0.0f)
-      case DoubleType  => DoubleLiteral(0.0)
-      case StringType  => StringLiteral("")
-      case UndefType   => Undefined()
-      case _           => Null()
-    }
+  def zeroOf(tpe: Type)(implicit pos: Position): Literal = tpe match {
+    case BooleanType => BooleanLiteral(false)
+    case IntType     => IntLiteral(0)
+    case LongType    => LongLiteral(0L)
+    case FloatType   => FloatLiteral(0.0f)
+    case DoubleType  => DoubleLiteral(0.0)
+    case StringType  => StringLiteral("")
+    case UndefType   => Undefined()
+    case _           => Null()
+  }
 
   /** Tests whether a type `lhs` is a subtype of `rhs` (or equal).
     *  [[NoType]] is never a subtype or supertype of anything (including

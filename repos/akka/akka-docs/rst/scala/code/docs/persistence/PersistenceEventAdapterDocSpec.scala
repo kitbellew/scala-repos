@@ -206,14 +206,13 @@ class MyManualJsonEventAdapter(system: ExtendedActorSystem)
     out
   }
 
-  override def fromJournal(event: Any, m: String): EventSeq =
-    event match {
-      case json: JsonElement =>
-        val manifest = json.getAsJsonObject.get("_manifest").getAsString
+  override def fromJournal(event: Any, m: String): EventSeq = event match {
+    case json: JsonElement =>
+      val manifest = json.getAsJsonObject.get("_manifest").getAsString
 
-        val clazz = system.dynamicAccess.getClassFor[Any](manifest).get
-        EventSeq.single(gson.fromJson(json, clazz))
-    }
+      val clazz = system.dynamicAccess.getClassFor[Any](manifest).get
+      EventSeq.single(gson.fromJson(json, clazz))
+  }
 }
 
 class MyTaggingEventAdapter(system: ExtendedActorSystem) extends EventAdapter {

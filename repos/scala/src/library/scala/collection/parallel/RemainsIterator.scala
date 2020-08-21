@@ -488,8 +488,9 @@ trait IterableSplitter[+T]
     def hasNext = remaining > 0
     def next = { remaining -= 1; self.next() }
     def dup: IterableSplitter[T] = self.dup.take(taken)
-    def split: Seq[IterableSplitter[T]] =
-      takeSeq(self.split) { (p, n) => p.take(n) }
+    def split: Seq[IterableSplitter[T]] = takeSeq(self.split) { (p, n) =>
+      p.take(n)
+    }
     protected[this] def takeSeq[PI <: IterableSplitter[T]](sq: Seq[PI])(
         taker: (PI, Int) => PI) = {
       val sizes = sq.scanLeft(0)(_ + _.remaining)
@@ -541,17 +542,15 @@ trait IterableSplitter[+T]
       extends IterableSplitter[U] {
     signalDelegate = self.signalDelegate
     protected var curr: IterableSplitter[U] = self
-    def hasNext =
-      if (curr.hasNext) true
-      else if (curr eq self) {
-        curr = that
-        curr.hasNext
-      } else false
-    def next =
-      if (curr eq self) {
-        hasNext
-        curr.next()
-      } else curr.next()
+    def hasNext = if (curr.hasNext) true
+    else if (curr eq self) {
+      curr = that
+      curr.hasNext
+    } else false
+    def next = if (curr eq self) {
+      hasNext
+      curr.next()
+    } else curr.next()
     def remaining =
       if (curr eq self) curr.remaining + that.remaining else curr.remaining
     protected def firstNonEmpty = (curr eq self) && curr.hasNext
@@ -587,11 +586,10 @@ trait IterableSplitter[+T]
       extends IterableSplitter[(U, S)] {
     signalDelegate = self.signalDelegate
     def hasNext = self.hasNext || that.hasNext
-    def next =
-      if (self.hasNext) {
-        if (that.hasNext) (self.next(), that.next())
-        else (self.next(), thatelem)
-      } else (thiselem, that.next())
+    def next = if (self.hasNext) {
+      if (that.hasNext) (self.next(), that.next())
+      else (self.next(), thatelem)
+    } else (thiselem, that.next())
 
     def remaining = self.remaining max that.remaining
     def dup: IterableSplitter[(U, S)] =
@@ -662,8 +660,8 @@ trait SeqSplitter[+T]
     def psplit(sizes: Int*): Seq[SeqSplitter[T]] =
       takeSeq(self.psplit(sizes: _*)) { (p, n) => p.take(n) }
   }
-  override private[collection] def newTaken(until: Int): Taken =
-    new Taken(until)
+  override private[collection] def newTaken(until: Int): Taken = new Taken(
+    until)
   override def take(n: Int): SeqSplitter[T] = newTaken(n)
   override def slice(from1: Int, until1: Int): SeqSplitter[T] =
     newSliceInternal(newTaken(until1), from1)
@@ -684,36 +682,34 @@ trait SeqSplitter[+T]
     override def dup = super.dup.asInstanceOf[SeqSplitter[U]]
     override def split: Seq[SeqSplitter[U]] =
       super.split.asInstanceOf[Seq[SeqSplitter[U]]]
-    def psplit(sizes: Int*): Seq[SeqSplitter[U]] =
-      if (firstNonEmpty) {
-        val selfrem = self.remaining
+    def psplit(sizes: Int*): Seq[SeqSplitter[U]] = if (firstNonEmpty) {
+      val selfrem = self.remaining
 
-        // split sizes
-        var appendMiddle = false
-        val szcum = sizes.scanLeft(0)(_ + _)
-        val splitsizes = sizes.zip(szcum.init zip szcum.tail).flatMap { t =>
-          val (sz, (from, until)) = t
-          if (from < selfrem && until > selfrem) {
-            appendMiddle = true
-            Seq(selfrem - from, until - selfrem)
-          } else Seq(sz)
-        }
-        val (selfszfrom, thatszfrom) =
-          splitsizes.zip(szcum.init).span(_._2 < selfrem)
-        val (selfsizes, thatsizes) =
-          (selfszfrom map { _._1 }, thatszfrom map { _._1 })
+      // split sizes
+      var appendMiddle = false
+      val szcum = sizes.scanLeft(0)(_ + _)
+      val splitsizes = sizes.zip(szcum.init zip szcum.tail).flatMap { t =>
+        val (sz, (from, until)) = t
+        if (from < selfrem && until > selfrem) {
+          appendMiddle = true
+          Seq(selfrem - from, until - selfrem)
+        } else Seq(sz)
+      }
+      val (selfszfrom, thatszfrom) =
+        splitsizes.zip(szcum.init).span(_._2 < selfrem)
+      val (selfsizes, thatsizes) =
+        (selfszfrom map { _._1 }, thatszfrom map { _._1 })
 
-        // split iterators
-        val selfs = self.psplit(selfsizes: _*)
-        val thats = that.psplit(thatsizes: _*)
+      // split iterators
+      val selfs = self.psplit(selfsizes: _*)
+      val thats = that.psplit(thatsizes: _*)
 
-        // appended last in self with first in rest if necessary
-        if (appendMiddle)
-          selfs.init ++ Seq(
-            selfs.last.appendParSeq[U, SeqSplitter[U]](
-              thats.head)) ++ thats.tail
-        else selfs ++ thats
-      } else curr.asInstanceOf[SeqSplitter[U]].psplit(sizes: _*)
+      // appended last in self with first in rest if necessary
+      if (appendMiddle)
+        selfs.init ++ Seq(
+          selfs.last.appendParSeq[U, SeqSplitter[U]](thats.head)) ++ thats.tail
+      else selfs ++ thats
+    } else curr.asInstanceOf[SeqSplitter[U]].psplit(sizes: _*)
   }
 
   def appendParSeq[U >: T, PI <: SeqSplitter[U]](that: PI) =

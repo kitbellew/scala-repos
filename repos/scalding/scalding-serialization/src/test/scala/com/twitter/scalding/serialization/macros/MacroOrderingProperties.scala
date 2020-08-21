@@ -55,66 +55,60 @@ object LawTester {
 }
 
 object ByteBufferArb {
-  implicit def arbitraryTestTypes: Arbitrary[ByteBuffer] =
-    Arbitrary {
-      for {
-        aBinary <- Gen.alphaStr.map(s => ByteBuffer.wrap(s.getBytes("UTF-8")))
-      } yield aBinary
-    }
+  implicit def arbitraryTestTypes: Arbitrary[ByteBuffer] = Arbitrary {
+    for {
+      aBinary <- Gen.alphaStr.map(s => ByteBuffer.wrap(s.getBytes("UTF-8")))
+    } yield aBinary
+  }
 }
 object TestCC {
   import ByteBufferArb._
-  implicit def arbitraryTestCC: Arbitrary[TestCC] =
-    Arbitrary {
-      for {
-        aInt <- arb[Int]
-        aLong <- arb[Long]
-        aDouble <- arb[Double]
-        anOption <- arb[Option[Int]]
-        anStrOption <- arb[Option[String]]
-        anOptionOfAListOfStrings <- arb[Option[List[String]]]
-        aBB <- arb[ByteBuffer]
-      } yield TestCC(
-        aInt,
-        aLong,
-        anOption,
-        aDouble,
-        anStrOption,
-        anOptionOfAListOfStrings,
-        aBB)
-    }
+  implicit def arbitraryTestCC: Arbitrary[TestCC] = Arbitrary {
+    for {
+      aInt <- arb[Int]
+      aLong <- arb[Long]
+      aDouble <- arb[Double]
+      anOption <- arb[Option[Int]]
+      anStrOption <- arb[Option[String]]
+      anOptionOfAListOfStrings <- arb[Option[List[String]]]
+      aBB <- arb[ByteBuffer]
+    } yield TestCC(
+      aInt,
+      aLong,
+      anOption,
+      aDouble,
+      anStrOption,
+      anOptionOfAListOfStrings,
+      aBB)
+  }
 
-  implicit def arbitraryTestCaseClassB: Arbitrary[TestCaseClassB] =
-    Arbitrary {
-      for {
-        aInt <- arb[Int]
-        aLong <- arb[Long]
-        aDouble <- arb[Double]
-        anOption <- arb[Option[Int]]
-        anStrOption <- arb[Option[String]]
-      } yield TestCaseClassB(aInt, aLong, anOption, aDouble, anStrOption)
-    }
+  implicit def arbitraryTestCaseClassB: Arbitrary[TestCaseClassB] = Arbitrary {
+    for {
+      aInt <- arb[Int]
+      aLong <- arb[Long]
+      aDouble <- arb[Double]
+      anOption <- arb[Option[Int]]
+      anStrOption <- arb[Option[String]]
+    } yield TestCaseClassB(aInt, aLong, anOption, aDouble, anStrOption)
+  }
 
-  implicit def arbitraryTestDD: Arbitrary[TestCaseClassD] =
-    Arbitrary {
-      for {
-        aInt <- arb[Int]
-      } yield TestCaseClassD(aInt)
-    }
+  implicit def arbitraryTestDD: Arbitrary[TestCaseClassD] = Arbitrary {
+    for {
+      aInt <- arb[Int]
+    } yield TestCaseClassD(aInt)
+  }
 
-  implicit def arbitraryTestEE: Arbitrary[TestCaseClassE] =
-    Arbitrary {
-      for {
-        aString <- arb[String]
-      } yield TestCaseClassE(aString)
-    }
+  implicit def arbitraryTestEE: Arbitrary[TestCaseClassE] = Arbitrary {
+    for {
+      aString <- arb[String]
+    } yield TestCaseClassE(aString)
+  }
 
-  implicit def arbitraryTestObjectE: Arbitrary[TestObjectE.type] =
-    Arbitrary {
-      for {
-        e <- Gen.const(TestObjectE)
-      } yield e
-    }
+  implicit def arbitraryTestObjectE: Arbitrary[TestObjectE.type] = Arbitrary {
+    for {
+      e <- Gen.const(TestObjectE)
+    } yield e
+  }
 
   implicit def arbitrarySealedTraitTest: Arbitrary[SealedTraitTest] =
     Arbitrary {
@@ -127,12 +121,11 @@ object TestCC {
     }
 
   implicit def arbitraryTestSealedAbstractClass
-      : Arbitrary[TestSealedAbstractClass] =
-    Arbitrary {
-      for {
-        testSealedAbstractClass <- Gen.oneOf(A, B)
-      } yield testSealedAbstractClass
-    }
+      : Arbitrary[TestSealedAbstractClass] = Arbitrary {
+    for {
+      testSealedAbstractClass <- Gen.oneOf(A, B)
+    } yield testSealedAbstractClass
+  }
 
 }
 
@@ -166,33 +159,30 @@ case class TestCaseClassE(a: String) extends AnyVal
 case object TestObjectE extends SealedTraitTest
 
 object MyData {
-  implicit def arbitraryTestCC: Arbitrary[MyData] =
-    Arbitrary {
-      for {
-        aInt <- arb[Int]
-        anOption <- arb[Option[Long]]
-      } yield new MyData(aInt, anOption)
-    }
+  implicit def arbitraryTestCC: Arbitrary[MyData] = Arbitrary {
+    for {
+      aInt <- arb[Int]
+      anOption <- arb[Option[Long]]
+    } yield new MyData(aInt, anOption)
+  }
 }
 
 class MyData(override val _1: Int, override val _2: Option[Long])
     extends Product2[Int, Option[Long]] {
-  override def canEqual(that: Any): Boolean =
-    that match {
-      case o: MyData => true
-      case _         => false
-    }
+  override def canEqual(that: Any): Boolean = that match {
+    case o: MyData => true
+    case _         => false
+  }
 
-  override def equals(obj: scala.Any): Boolean =
-    obj match {
-      case o: MyData =>
-        (o._2, _2) match {
-          case (Some(l), Some(r)) => r == l && _1 == o._1
-          case (None, None)       => _1 == o._1
-          case _                  => false
-        }
-      case _ => false
-    }
+  override def equals(obj: scala.Any): Boolean = obj match {
+    case o: MyData =>
+      (o._2, _2) match {
+        case (Some(l), Some(r)) => r == l && _1 == o._1
+        case (None, None)       => _1 == o._1
+        case _                  => false
+      }
+    case _ => false
+  }
 
   override def hashCode(): Int = _1.hashCode() * _2.hashCode()
 
@@ -237,20 +227,18 @@ object MacroOpaqueContainer {
 class MacroOpaqueContainer(val myField: Int) {
   override def hashCode(): Int = myField.hashCode()
 
-  override def equals(obj: scala.Any): Boolean =
-    obj match {
-      case that: MacroOpaqueContainer => that.myField == myField
-      case _                          => false
-    }
+  override def equals(obj: scala.Any): Boolean = obj match {
+    case that: MacroOpaqueContainer => that.myField == myField
+    case _                          => false
+  }
 }
 
 object Container {
-  implicit def arbitraryInnerCaseClass: Arbitrary[InnerCaseClass] =
-    Arbitrary {
-      for {
-        anOption <- arb[Set[Double]]
-      } yield InnerCaseClass(anOption)
-    }
+  implicit def arbitraryInnerCaseClass: Arbitrary[InnerCaseClass] = Arbitrary {
+    for {
+      anOption <- arb[Set[Double]]
+    } yield InnerCaseClass(anOption)
+  }
 
   type SetAlias = Set[Double]
   case class InnerCaseClass(e: SetAlias)
@@ -268,8 +256,8 @@ class MacroOrderingProperties
 
   def gen[T: Arbitrary]: Gen[T] = implicitly[Arbitrary[T]].arbitrary
 
-  def arbMap[T: Arbitrary, U](fn: T => U): Arbitrary[U] =
-    Arbitrary(gen[T].map(fn))
+  def arbMap[T: Arbitrary, U](fn: T => U): Arbitrary[U] = Arbitrary(
+    gen[T].map(fn))
 
   def collectionArb[C[_], T: Arbitrary](implicit
       cbf: collection.generic.CanBuildFrom[Nothing, T, C[T]]): Arbitrary[C[T]] =
@@ -324,10 +312,10 @@ class MacroOrderingProperties
     }
   }
 
-  def checkMany[T: Arbitrary](implicit obuf: OrderedSerialization[T]) =
-    forAll { i: List[(T, T)] =>
+  def checkMany[T: Arbitrary](implicit obuf: OrderedSerialization[T]) = forAll {
+    i: List[(T, T)] =>
       checkManyExplicit(i)
-    }
+  }
 
   def checkWithInputs[T](a: T, b: T)(implicit obuf: OrderedSerialization[T]) {
     val rta = rt(a) // before we do anything ensure these don't throw

@@ -54,12 +54,11 @@ class OffsetFetchRequest(
 
   override def toString = underlying.toString
 
-  override def equals(other: Any) =
-    canEqual(other) && {
-      val otherOffsetRequest =
-        other.asInstanceOf[kafka.javaapi.OffsetFetchRequest]
-      this.underlying.equals(otherOffsetRequest.underlying)
-    }
+  override def equals(other: Any) = canEqual(other) && {
+    val otherOffsetRequest =
+      other.asInstanceOf[kafka.javaapi.OffsetFetchRequest]
+    this.underlying.equals(otherOffsetRequest.underlying)
+  }
 
   def canEqual(other: Any) =
     other.isInstanceOf[kafka.javaapi.OffsetFetchRequest]

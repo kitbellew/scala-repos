@@ -288,30 +288,26 @@ trait Parser extends RegexParsers with Filters with AST {
       (Relate, Let, Solve, Import, Assert)
     )
 
-  private def arrayDefDeref =
-    new com.codecommit.gll.ast.Filter[Node] {
-      def apply(n: Node): Boolean =
-        n match {
-          case n if n.getClass == classOf[Deref] =>
-            n.children.head.getClass != classOf[ArrayDef]
+  private def arrayDefDeref = new com.codecommit.gll.ast.Filter[Node] {
+    def apply(n: Node): Boolean = n match {
+      case n if n.getClass == classOf[Deref] =>
+        n.children.head.getClass != classOf[ArrayDef]
 
-          case _ => true
-        }
+      case _ => true
     }
+  }
 
-  private def relateRelate =
-    new com.codecommit.gll.ast.Filter[Node] {
-      def apply(n: Node): Boolean =
-        n match {
+  private def relateRelate = new com.codecommit.gll.ast.Filter[Node] {
+    def apply(n: Node): Boolean = n match {
 
-          // desugared due to some sort of wonky scalac bug that I couldn't minimize...
-          case n if n.isInstanceOf[Relate] =>
-            !n.asInstanceOf[Relate].from.isInstanceOf[Relate] &&
-              !n.asInstanceOf[Relate].to.isInstanceOf[Relate]
+      // desugared due to some sort of wonky scalac bug that I couldn't minimize...
+      case n if n.isInstanceOf[Relate] =>
+        !n.asInstanceOf[Relate].from.isInstanceOf[Relate] &&
+          !n.asInstanceOf[Relate].to.isInstanceOf[Relate]
 
-          case _ => true
-        }
+      case _ => true
     }
+  }
 
   // %%
 

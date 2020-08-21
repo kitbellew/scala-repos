@@ -39,21 +39,20 @@ class ExpiringServiceTest extends FunSuite with MockitoSugar {
     def onExpire() { self.close() }
   }
 
-  def newCtx() =
-    new {
-      val stats = mock[StatsReceiver]
-      val idleCounter = mock[Counter]
-      val lifeCounter = mock[Counter]
-      when(stats.counter("idle")).thenReturn(idleCounter)
-      when(stats.counter("lifetime")).thenReturn(lifeCounter)
+  def newCtx() = new {
+    val stats = mock[StatsReceiver]
+    val idleCounter = mock[Counter]
+    val lifeCounter = mock[Counter]
+    when(stats.counter("idle")).thenReturn(idleCounter)
+    when(stats.counter("lifetime")).thenReturn(lifeCounter)
 
-      val timer = new MockTimer
-      val underlying = mock[Service[Any, Any]]
-      when(underlying.close(any[Time])).thenReturn(Future.Done)
-      val promise = new Promise[Int]
-      when(underlying(123)).thenReturn(promise)
-      when(underlying.status).thenReturn(Status.Open)
-    }
+    val timer = new MockTimer
+    val underlying = mock[Service[Any, Any]]
+    when(underlying.close(any[Time])).thenReturn(Future.Done)
+    val promise = new Promise[Int]
+    when(underlying(123)).thenReturn(promise)
+    when(underlying.status).thenReturn(Status.Open)
+  }
 
   test("cancelling timers on release") {
     Time.withTimeAt(frozenNow) { _ =>

@@ -30,19 +30,18 @@ import util.Helpers._
 object SnippetSpec extends Specification with XmlMatchers {
   "SnippetSpec Specification".title
 
-  def makeReq =
-    Full(
-      new Req(
-        Req.NilPath,
-        "",
-        GetRequest,
-        Empty,
-        null,
-        System.nanoTime,
-        System.nanoTime,
-        false,
-        () => ParamCalcInfo(Nil, Map.empty, Nil, Empty),
-        Map()))
+  def makeReq = Full(
+    new Req(
+      Req.NilPath,
+      "",
+      GetRequest,
+      Empty,
+      null,
+      System.nanoTime,
+      System.nanoTime,
+      false,
+      () => ParamCalcInfo(Nil, Map.empty, Nil, Empty),
+      Map()))
 
   "Templates" should {
     "Correctly process lift:content_id" in {

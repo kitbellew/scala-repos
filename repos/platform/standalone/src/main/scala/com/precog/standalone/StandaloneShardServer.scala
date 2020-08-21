@@ -72,46 +72,45 @@ trait StandaloneShardServer extends BlueEyesServer with ShardService {
       apiKeyManager: APIKeyFinder[Future],
       jobManager: JobManager[Future]): (ManagedPlatform, Stoppable)
 
-  def configureShardState(config: Configuration) =
-    M.point {
-      val apiKey = config[String]("security.masterAccount.apiKey")
-      val apiKeyFinder = new StaticAPIKeyFinder[Future](apiKey)
-      val accountFinder =
-        new StaticAccountFinder[Future]("root", apiKey, Some("/"))
+  def configureShardState(config: Configuration) = M.point {
+    val apiKey = config[String]("security.masterAccount.apiKey")
+    val apiKeyFinder = new StaticAPIKeyFinder[Future](apiKey)
+    val accountFinder =
+      new StaticAccountFinder[Future]("root", apiKey, Some("/"))
 
-      val jobManager = config.get[String]("jobs.jobdir").map { jobdir =>
-        val dir = new File(jobdir)
+    val jobManager = config.get[String]("jobs.jobdir").map { jobdir =>
+      val dir = new File(jobdir)
 
-        if (!dir.isDirectory) {
-          throw new Exception(
-            "Configured job dir %s is not a directory".format(dir))
-        }
-
-        if (!dir.canWrite) {
-          throw new Exception(
-            "Configured job dir %s is not writeable".format(dir))
-        }
-
-        FileJobManager(dir, M)
-      } getOrElse {
-        new ExpiringJobManager(
-          Duration(config[Int]("jobs.ttl", 300), TimeUnit.SECONDS))
+      if (!dir.isDirectory) {
+        throw new Exception(
+          "Configured job dir %s is not a directory".format(dir))
       }
 
-      val (platform, stoppable) = platformFor(config, apiKeyFinder, jobManager)
+      if (!dir.canWrite) {
+        throw new Exception(
+          "Configured job dir %s is not writeable".format(dir))
+      }
 
-      // We always want a managed bifrost now, for better error reporting and Labcoat compatibility
-      ShardState(
-        platform,
-        apiKeyFinder,
-        accountFinder,
-        NoopVFS,
-        NoopStoredQueries[Future],
-        NoopScheduler[Future],
-        jobManager,
-        Clock.System,
-        stoppable)
+      FileJobManager(dir, M)
+    } getOrElse {
+      new ExpiringJobManager(
+        Duration(config[Int]("jobs.ttl", 300), TimeUnit.SECONDS))
     }
+
+    val (platform, stoppable) = platformFor(config, apiKeyFinder, jobManager)
+
+    // We always want a managed bifrost now, for better error reporting and Labcoat compatibility
+    ShardState(
+      platform,
+      apiKeyFinder,
+      accountFinder,
+      NoopVFS,
+      NoopStoredQueries[Future],
+      NoopScheduler[Future],
+      jobManager,
+      Clock.System,
+      stoppable)
+  }
 
   val jettyService = this.service("labcoat", "1.0") { context =>
     startup {

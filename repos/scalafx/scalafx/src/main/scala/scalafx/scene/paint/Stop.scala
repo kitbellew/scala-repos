@@ -35,8 +35,8 @@ object Stop {
   implicit def sfxStop2jfx(s: Stop): jfxsp.Stop =
     if (s != null) s.delegate else null
 
-  def apply(offset: Double, color: Color) =
-    new Stop(new jfxsp.Stop(offset, color))
+  def apply(offset: Double, color: Color) = new Stop(
+    new jfxsp.Stop(offset, color))
 
 }
 

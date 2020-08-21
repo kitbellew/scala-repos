@@ -22,14 +22,13 @@ package org.apache.spark.mllib.tree.impurity
   */
 private[mllib] object Impurities {
 
-  def fromString(name: String): Impurity =
-    name match {
-      case "gini"     => Gini
-      case "entropy"  => Entropy
-      case "variance" => Variance
-      case _ =>
-        throw new IllegalArgumentException(
-          s"Did not recognize Impurity name: $name")
-    }
+  def fromString(name: String): Impurity = name match {
+    case "gini"     => Gini
+    case "entropy"  => Entropy
+    case "variance" => Variance
+    case _ =>
+      throw new IllegalArgumentException(
+        s"Did not recognize Impurity name: $name")
+  }
 
 }

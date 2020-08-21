@@ -53,7 +53,7 @@ class PercentageStringConverterSpec
     (new java.lang.Integer(0), "0%"),
     (new java.lang.Integer(-10), "-1,000%"))
 
-  override protected def getScalaClassInstance =
-    new PercentageStringConverter(Locale.US)
+  override protected def getScalaClassInstance = new PercentageStringConverter(
+    Locale.US)
 
 }

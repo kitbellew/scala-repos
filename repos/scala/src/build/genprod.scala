@@ -50,10 +50,9 @@ object genprod extends App {
     def covariantArgs = typeArgsString(targs map (covariantSpecs + "+" + _))
     def covariantSpecs = ""
     def contravariantSpecs = ""
-    def contraCoArgs =
-      typeArgsString(
-        (targs map (contravariantSpecs + "-" + _)) ::: List(
-          covariantSpecs + "+R"))
+    def contraCoArgs = typeArgsString(
+      (targs map (contravariantSpecs + "-" + _)) ::: List(
+        covariantSpecs + "+R"))
     def constructorArgs = (targs).map(_.toLowerCase) mkString ", "
     def fields = (mdefs, targs).zipped.map(_ + ": " + _) mkString ", "
     def funArgs = (vdefs, targs).zipped.map(_ + ": " + _) mkString ", "
@@ -102,11 +101,10 @@ object FunctionZero extends Function(0) {
   override def genprodString =
     "\n// genprod generated these sources at: " + new java.util.Date()
   override def covariantSpecs = "@specialized(Specializable.Primitives) "
-  override def descriptiveComment =
-    "  " + functionNTemplate.format(
-      "javaVersion",
-      "anonfun0",
-      """
+  override def descriptiveComment = "  " + functionNTemplate.format(
+    "javaVersion",
+    "anonfun0",
+    """
  *    val javaVersion = () => sys.props("java.version")
  *
  *    val anonfun0 = new Function0[String] {
@@ -114,7 +112,7 @@ object FunctionZero extends Function(0) {
  *    }
  *    assert(javaVersion() == anonfun0())
  * """
-    )
+  )
   override def moreMethods = ""
 }
 
@@ -126,18 +124,17 @@ object FunctionOne extends Function(1) {
   override def covariantSpecs =
     "@specialized(scala.Unit, scala.Boolean, scala.Int, scala.Float, scala.Long, scala.Double) "
 
-  override def descriptiveComment =
-    "  " + functionNTemplate.format(
-      "succ",
-      "anonfun1",
-      """
+  override def descriptiveComment = "  " + functionNTemplate.format(
+    "succ",
+    "anonfun1",
+    """
  *    val succ = (x: Int) => x + 1
  *    val anonfun1 = new Function1[Int, Int] {
  *      def apply(x: Int): Int = x + 1
  *    }
  *    assert(succ(0) == anonfun1(0))
  * """
-    ) + """
+  ) + """
  *
  *  Note that the difference between `Function1` and [[scala.PartialFunction]]
  *  is that the latter can specify inputs which it will not handle."""
@@ -167,11 +164,10 @@ object FunctionTwo extends Function(2) {
   override def covariantSpecs =
     "@specialized(scala.Unit, scala.Boolean, scala.Int, scala.Float, scala.Long, scala.Double) "
 
-  override def descriptiveComment =
-    "  " + functionNTemplate.format(
-      "max",
-      "anonfun2",
-      """
+  override def descriptiveComment = "  " + functionNTemplate.format(
+    "max",
+    "anonfun2",
+    """
  *    val max = (x: Int, y: Int) => if (x < y) y else x
  *
  *    val anonfun2 = new Function2[Int, Int, Int] {
@@ -179,18 +175,17 @@ object FunctionTwo extends Function(2) {
  *    }
  *    assert(max(0, 1) == anonfun2(0, 1))
  * """
-    )
+  )
 }
 
 object Function {
   def make(i: Int) = apply(i)()
-  def apply(i: Int) =
-    i match {
-      case 0 => FunctionZero
-      case 1 => FunctionOne
-      case 2 => FunctionTwo
-      case _ => new Function(i)
-    }
+  def apply(i: Int) = i match {
+    case 0 => FunctionZero
+    case 1 => FunctionOne
+    case 2 => FunctionTwo
+    case _ => new Function(i)
+  }
 }
 
 class Function(val i: Int) extends Group("Function") with Arity {
@@ -233,12 +228,11 @@ class Function(val i: Int) extends Group("Function") with Arity {
   }
 
   // (x1: T1) => ((x2: T2, x3: T3, x4: T4, x5: T5, x6: T6, x7: T7) => self.apply(x1,x2,x3,x4,x5,x6,x7)).curried
-  def longCurry =
-    ((xdefs, targs).zipped.map(_ + ": " + _) drop 1).mkString(
-      "(x1: T1) => ((",
-      ", ",
-      ") => self.apply%s).curried".format(commaXs)
-    )
+  def longCurry = ((xdefs, targs).zipped.map(_ + ": " + _) drop 1).mkString(
+    "(x1: T1) => ((",
+    ", ",
+    ") => self.apply%s).curried".format(commaXs)
+  )
 
   // f(x1,x2,x3,x4,x5,x6)  == (f.curried)(x1)(x2)(x3)(x4)(x5)(x6)
   def curryComment = {
@@ -284,13 +278,12 @@ object Tuple {
   val zipImports = ""
 
   def make(i: Int) = apply(i)()
-  def apply(i: Int) =
-    i match {
-      case 1 => TupleOne
-      case 2 => TupleTwo
-      case 3 => TupleThree
-      case _ => new Tuple(i)
-    }
+  def apply(i: Int) = i match {
+    case 1 => TupleOne
+    case 2 => TupleTwo
+    case 3 => TupleThree
+    case _ => new Tuple(i)
+  }
 }
 
 object TupleOne extends Tuple(1) {
@@ -322,11 +315,10 @@ class Tuple(val i: Int) extends Group("Tuple") with Arity {
         className,
         constructorArgs)
 
-  private def params =
-    (
-      1 to i map (x =>
-        " *  @param  _%d   Element %d of this Tuple%d".format(x, x, i))
-    ) mkString "\n"
+  private def params = (
+    1 to i map (x =>
+      " *  @param  _%d   Element %d of this Tuple%d".format(x, x, i))
+  ) mkString "\n"
 
   // prettifies it a little if it's overlong
   def mkToString() = {
@@ -366,12 +358,11 @@ zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz */
 
 object Product extends Group("Product") {
   def make(i: Int) = apply(i)()
-  def apply(i: Int) =
-    i match {
-      case 1 => ProductOne
-      case 2 => ProductTwo
-      case _ => new Product(i)
-    }
+  def apply(i: Int) = i match {
+    case 1 => ProductOne
+    case 2 => ProductTwo
+    case _ => new Product(i)
+  }
 }
 
 object ProductOne extends Product(1) {
@@ -476,11 +467,10 @@ abstract class {className}{contraCoArgs} extends Function{i}{superTypeArgs} {{
 }
 object AbstractFunction {
   def make(i: Int) = apply(i)()
-  def apply(i: Int) =
-    i match {
-      case 0 => AbstractFunctionZero
-      case 1 => AbstractFunctionOne
-      case 2 => AbstractFunctionTwo
-      case _ => new AbstractFunction(i)
-    }
+  def apply(i: Int) = i match {
+    case 0 => AbstractFunctionZero
+    case 1 => AbstractFunctionOne
+    case 2 => AbstractFunctionTwo
+    case _ => new AbstractFunction(i)
+  }
 }

@@ -379,24 +379,23 @@ abstract class Generator {
     }
   }
 
-  def nextGaussian(): Double =
-    if (extra) {
-      extra = false
-      value
-    } else {
-      @tailrec def loop(x: Double, y: Double): Double = {
-        val s = x * x + y * y
-        if (s >= 1.0 || s == 0.0) {
-          loop(nextDouble() * 2 - 1, nextDouble() * 2 - 1)
-        } else {
-          val scale = Math.sqrt(-2.0 * Math.log(s) / s)
-          extra = true
-          value = y * scale
-          x * scale
-        }
+  def nextGaussian(): Double = if (extra) {
+    extra = false
+    value
+  } else {
+    @tailrec def loop(x: Double, y: Double): Double = {
+      val s = x * x + y * y
+      if (s >= 1.0 || s == 0.0) {
+        loop(nextDouble() * 2 - 1, nextDouble() * 2 - 1)
+      } else {
+        val scale = Math.sqrt(-2.0 * Math.log(s) / s)
+        extra = true
+        value = y * scale
+        x * scale
       }
-      loop(nextDouble() * 2 - 1, nextDouble() * 2 - 1)
     }
+    loop(nextDouble() * 2 - 1, nextDouble() * 2 - 1)
+  }
 
   def nextGaussian(mean: Double, stddev: Double): Double =
     nextGaussian() * stddev + mean

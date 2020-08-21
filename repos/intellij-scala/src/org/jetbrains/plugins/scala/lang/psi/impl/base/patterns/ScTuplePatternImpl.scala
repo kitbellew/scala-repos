@@ -27,9 +27,8 @@ class ScTuplePatternImpl(node: ASTNode)
 
   override def toString: String = "TuplePattern"
 
-  override def subpatterns =
-    patternList match {
-      case Some(l) => l.patterns
-      case None    => Seq.empty
-    }
+  override def subpatterns = patternList match {
+    case Some(l) => l.patterns
+    case None    => Seq.empty
+  }
 }

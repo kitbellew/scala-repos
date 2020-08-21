@@ -102,8 +102,8 @@ trait RequestBuilding extends TransformerPipelineSupport {
     _ mapHeaders (_ filterNot (header ⇒
       names exists (_ equalsIgnoreCase header.name)))
 
-  def addCredentials(credentials: HttpCredentials) =
-    addHeader(headers.Authorization(credentials))
+  def addCredentials(credentials: HttpCredentials) = addHeader(
+    headers.Authorization(credentials))
 
   def logRequest(
       log: LoggingAdapter,

@@ -15,14 +15,13 @@ class PairIndex[T, U](tIndex: Index[T], uIndex: Index[U])
     else indexInT * uIndex.size + indexInU
   }
 
-  def unapply(i: Int) =
-    if (i >= 0) {
-      val ti = i / uIndex.size;
-      val ui = i % uIndex.size;
-      for (t <- tIndex.unapply(ti); u <- uIndex.unapply(ui)) yield t -> u;
-    } else {
-      None
-    }
+  def unapply(i: Int) = if (i >= 0) {
+    val ti = i / uIndex.size;
+    val ui = i % uIndex.size;
+    for (t <- tIndex.unapply(ti); u <- uIndex.unapply(ui)) yield t -> u;
+  } else {
+    None
+  }
 
   def apply(t: (T, U)) = {
     mapIndex(tIndex(t._1), uIndex(t._2))

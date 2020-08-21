@@ -37,17 +37,16 @@ trait LzoCodec[T]
   def injection: Injection[T, Array[Byte]]
   override def setter[U <: T] =
     TupleSetter.asSubSetter[T, U](TupleSetter.singleSetter[T])
-  override def hdfsScheme =
-    HadoopSchemeInstance(
-      (new LzoByteArrayScheme).asInstanceOf[Scheme[_, _, _, _, _]])
+  override def hdfsScheme = HadoopSchemeInstance(
+    (new LzoByteArrayScheme).asInstanceOf[Scheme[_, _, _, _, _]])
   override def transformForRead(pipe: Pipe) =
     pipe.flatMap(0 -> 0) { fromBytes(_: Array[Byte]) }
 
   override def transformForWrite(pipe: Pipe) =
     pipe.mapTo(0 -> 0) { injection.apply(_: T) }
 
-  protected def fromBytes(b: Array[Byte]): Option[T] =
-    Some(injection.invert(b).get)
+  protected def fromBytes(b: Array[Byte]): Option[T] = Some(
+    injection.invert(b).get)
 
   override def toIterator(implicit config: Config, mode: Mode): Iterator[T] = {
     val tap = createTap(Read)(mode)
@@ -81,9 +80,8 @@ trait LzoProtobuf[T <: Message]
   def column: Class[_]
   override def setter[U <: T] =
     TupleSetter.asSubSetter[T, U](TupleSetter.singleSetter[T])
-  override def hdfsScheme =
-    HadoopSchemeInstance(
-      (new LzoProtobufScheme[T](column)).asInstanceOf[Scheme[_, _, _, _, _]])
+  override def hdfsScheme = HadoopSchemeInstance(
+    (new LzoProtobufScheme[T](column)).asInstanceOf[Scheme[_, _, _, _, _]])
 }
 
 trait LzoThrift[T <: TBase[_, _]]
@@ -93,9 +91,8 @@ trait LzoThrift[T <: TBase[_, _]]
   def column: Class[_]
   override def setter[U <: T] =
     TupleSetter.asSubSetter[T, U](TupleSetter.singleSetter[T])
-  override def hdfsScheme =
-    HadoopSchemeInstance(
-      (new LzoThriftScheme[T](column)).asInstanceOf[Scheme[_, _, _, _, _]])
+  override def hdfsScheme = HadoopSchemeInstance(
+    (new LzoThriftScheme[T](column)).asInstanceOf[Scheme[_, _, _, _, _]])
 }
 
 trait LzoText
@@ -109,17 +106,16 @@ trait LzoText
 }
 
 trait LzoTsv extends DelimitedScheme with LocalTapSource {
-  override def hdfsScheme =
-    HadoopSchemeInstance(
-      (new LzoTextDelimited(
-        fields,
-        skipHeader,
-        writeHeader,
-        separator,
-        strict,
-        quote,
-        types,
-        safe)).asInstanceOf[Scheme[_, _, _, _, _]])
+  override def hdfsScheme = HadoopSchemeInstance(
+    (new LzoTextDelimited(
+      fields,
+      skipHeader,
+      writeHeader,
+      separator,
+      strict,
+      quote,
+      types,
+      safe)).asInstanceOf[Scheme[_, _, _, _, _]])
 }
 
 trait LzoTypedTsv[T]
@@ -129,17 +125,16 @@ trait LzoTypedTsv[T]
     with LocalTapSource {
   override def setter[U <: T] =
     TupleSetter.asSubSetter[T, U](TupleSetter.singleSetter[T])
-  override def hdfsScheme =
-    HadoopSchemeInstance(
-      (new LzoTextDelimited(
-        fields,
-        skipHeader,
-        writeHeader,
-        separator,
-        strict,
-        quote,
-        types,
-        safe)).asInstanceOf[Scheme[_, _, _, _, _]])
+  override def hdfsScheme = HadoopSchemeInstance(
+    (new LzoTextDelimited(
+      fields,
+      skipHeader,
+      writeHeader,
+      separator,
+      strict,
+      quote,
+      types,
+      safe)).asInstanceOf[Scheme[_, _, _, _, _]])
 
   def mf: Manifest[T]
 

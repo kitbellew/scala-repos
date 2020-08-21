@@ -24,11 +24,10 @@ class Member private[cluster] (
   def address: Address = uniqueAddress.address
 
   override def hashCode = uniqueAddress.##
-  override def equals(other: Any) =
-    other match {
-      case m: Member ⇒ uniqueAddress == m.uniqueAddress
-      case _ ⇒ false
-    }
+  override def equals(other: Any) = other match {
+    case m: Member ⇒ uniqueAddress == m.uniqueAddress
+    case _ ⇒ false
+  }
   override def toString = s"Member(address = ${address}, status = ${status})"
 
   def hasRole(role: String): Boolean = roles.contains(role)

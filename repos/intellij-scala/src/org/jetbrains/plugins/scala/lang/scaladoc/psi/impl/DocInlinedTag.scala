@@ -21,8 +21,8 @@ class ScDocInlinedTagImpl(node: ASTNode)
     with ScDocInlinedTag {
   override def toString: String = "DocInlinedTag"
 
-  def getValueElement: PsiDocTagValue =
-    findChildByClass(classOf[PsiDocTagValue])
+  def getValueElement: PsiDocTagValue = findChildByClass(
+    classOf[PsiDocTagValue])
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {

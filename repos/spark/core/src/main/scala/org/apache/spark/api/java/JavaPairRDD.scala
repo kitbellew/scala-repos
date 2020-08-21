@@ -81,8 +81,8 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
     *
     * @param blocking Whether to block until all blocks are deleted.
     */
-  def unpersist(blocking: Boolean): JavaPairRDD[K, V] =
-    wrapRDD(rdd.unpersist(blocking))
+  def unpersist(blocking: Boolean): JavaPairRDD[K, V] = wrapRDD(
+    rdd.unpersist(blocking))
 
   // Transformations (return a new RDD)
 
@@ -106,8 +106,8 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
   /**
     * Return a new RDD that is reduced into `numPartitions` partitions.
     */
-  def coalesce(numPartitions: Int): JavaPairRDD[K, V] =
-    fromRDD(rdd.coalesce(numPartitions))
+  def coalesce(numPartitions: Int): JavaPairRDD[K, V] = fromRDD(
+    rdd.coalesce(numPartitions))
 
   /**
     * Return a new RDD that is reduced into `numPartitions` partitions.
@@ -124,8 +124,8 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
     * If you are decreasing the number of partitions in this RDD, consider using `coalesce`,
     * which can avoid performing a shuffle.
     */
-  def repartition(numPartitions: Int): JavaPairRDD[K, V] =
-    fromRDD(rdd.repartition(numPartitions))
+  def repartition(numPartitions: Int): JavaPairRDD[K, V] = fromRDD(
+    rdd.repartition(numPartitions))
 
   /**
     * Return a sampled subset of this RDD.
@@ -406,8 +406,8 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
   def foldByKey(
       zeroValue: V,
       partitioner: Partitioner,
-      func: JFunction2[V, V, V]): JavaPairRDD[K, V] =
-    fromRDD(rdd.foldByKey(zeroValue, partitioner)(func))
+      func: JFunction2[V, V, V]): JavaPairRDD[K, V] = fromRDD(
+    rdd.foldByKey(zeroValue, partitioner)(func))
 
   /**
     * Merge the values for each key using an associative function and a neutral "zero value" which
@@ -727,8 +727,8 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
     * @note this method should only be used if the resulting data is expected to be small, as
     * all the data is loaded into the driver's memory.
     */
-  def collectAsMap(): java.util.Map[K, V] =
-    mapAsSerializableJavaMap(rdd.collectAsMap())
+  def collectAsMap(): java.util.Map[K, V] = mapAsSerializableJavaMap(
+    rdd.collectAsMap())
 
   /**
     * Pass each value in the key-value pair RDD through a map function without changing the keys;

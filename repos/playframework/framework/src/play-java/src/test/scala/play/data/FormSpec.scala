@@ -402,15 +402,14 @@ object FormSpec extends Specification {
 
       import play.core.j.PlayMagicForJava._
 
-      def render(form: Form[_], min: Int = 1) =
-        views.html.helper.repeat
-          .apply(form("foo"), min) { f =>
-            val a = f("a")
-            val b = f("b")
-            Html(
-              s"${a.name}=${a.value.getOrElse("")},${b.name}=${b.value.getOrElse("")}")
-          }
-          .map(_.toString)
+      def render(form: Form[_], min: Int = 1) = views.html.helper.repeat
+        .apply(form("foo"), min) { f =>
+          val a = f("a")
+          val b = f("b")
+          Html(
+            s"${a.name}=${a.value.getOrElse("")},${b.name}=${b.value.getOrElse("")}")
+        }
+        .map(_.toString)
 
       def fillNoBind(values: (String, String)*) = {
         val map = values.zipWithIndex.flatMap { case ((a, b), i) =>

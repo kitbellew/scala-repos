@@ -100,8 +100,8 @@ private[akka] class Mailboxes(
   /**
     * Returns a mailbox type as specified in configuration, based on the type, or if not defined None.
     */
-  def lookupByQueueType(queueType: Class[_ <: Any]): MailboxType =
-    lookup(lookupId(queueType))
+  def lookupByQueueType(queueType: Class[_ <: Any]): MailboxType = lookup(
+    lookupId(queueType))
 
   private final val rmqClass = classOf[RequiresMessageQueue[_]]
 

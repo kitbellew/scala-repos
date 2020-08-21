@@ -80,8 +80,8 @@ object ForkRun {
       reloadCompile: () => CompileResult,
       log: Logger): PlayDevServer = {
     val notifyStartHook = new RunHook {
-      override def afterStarted(address: InetSocketAddress): Unit =
-        notifyStart(address)
+      override def afterStarted(address: InetSocketAddress): Unit = notifyStart(
+        address)
     }
 
     val watchService = config.watchService match {
@@ -164,11 +164,10 @@ object ForkRun {
   }
 
   def askForReload(actor: ActorRef)(implicit
-      timeout: Timeout): () => CompileResult =
-    () => {
-      val future = (actor ? ForkRun.Reload).mapTo[CompileResult]
-      Await.result(future, timeout.duration)
-    }
+      timeout: Timeout): () => CompileResult = () => {
+    val future = (actor ? ForkRun.Reload).mapTo[CompileResult]
+    Await.result(future, timeout.duration)
+  }
 
   def waitForStop(): Unit = {
     System.in.read() match {

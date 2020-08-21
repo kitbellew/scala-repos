@@ -43,8 +43,8 @@ class LightBaseSpec
       classOf[jfxs.LightBase],
       classOf[LightBase]) {
 
-  override protected def getScalaClassInstance =
-    new AmbientLight(getJavaClassInstance) {}
+  override protected def getScalaClassInstance = new AmbientLight(
+    getJavaClassInstance) {}
 
   override protected def getJavaClassInstance = new jfxs.AmbientLight
 

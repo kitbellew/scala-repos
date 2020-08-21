@@ -69,10 +69,9 @@ class AtLeastOnceDeliveryCrashSpec
   "At least once delivery" should {
     "not send when actor crashes" in {
       val testProbe = TestProbe()
-      def createCrashActorUnderSupervisor() =
-        system.actorOf(
-          Props(new StoppingStrategySupervisor(testProbe.ref)),
-          "supervisor")
+      def createCrashActorUnderSupervisor() = system.actorOf(
+        Props(new StoppingStrategySupervisor(testProbe.ref)),
+        "supervisor")
       val superVisor = createCrashActorUnderSupervisor()
       superVisor ! CrashingActor.Message
       testProbe.expectMsgType[CrashingActor.SendingMessage]

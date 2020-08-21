@@ -49,9 +49,8 @@ trait ClusterMetricsCommonConfig extends MultiNodeConfig {
     """)
 
   // Activate slf4j logging along with test listener.
-  def customLogging =
-    parseString(
-      """akka.loggers=["akka.testkit.TestEventListener","akka.event.slf4j.Slf4jLogger"]""")
+  def customLogging = parseString(
+    """akka.loggers=["akka.testkit.TestEventListener","akka.event.slf4j.Slf4jLogger"]""")
 }
 
 object ClusterMetricsDisabledConfig extends ClusterMetricsCommonConfig {

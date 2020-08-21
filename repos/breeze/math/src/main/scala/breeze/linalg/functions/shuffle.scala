@@ -72,8 +72,8 @@ object shuffle extends UFunc {
       arrImpl: Impl[Array[T], Array[T]],
       ct: ClassTag[T]): Impl[DenseVector[T], DenseVector[T]] = {
     new Impl[DenseVector[T], DenseVector[T]] {
-      def apply(dv: DenseVector[T]): DenseVector[T] =
-        DenseVector(shuffle(dv.toArray))
+      def apply(dv: DenseVector[T]): DenseVector[T] = DenseVector(
+        shuffle(dv.toArray))
     }
   }
 

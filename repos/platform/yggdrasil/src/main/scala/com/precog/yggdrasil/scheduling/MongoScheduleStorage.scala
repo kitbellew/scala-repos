@@ -99,26 +99,25 @@ class MongoScheduleStorage private[MongoScheduleStorage] (
       insert(task.valueOr { st => st.serialize.asInstanceOf[JObject] })
         .into(collection))
 
-  def deleteTask(id: UUID) =
-    EitherT {
-      database(
-        selectOne().from(settings.tasks).where(".id" === id.toString)) flatMap {
-        case Some(taskjv) =>
-          for {
-            _ <- insertTask(\/-(taskjv), settings.deletedTasks)
-            _ <- database(
-              remove.from(settings.tasks) where (".id" === id.toString))
-          } yield {
-            taskjv.validated[ScheduledTask].disjunction leftMap {
-              _.message
-            } map { Some(_) }
-          }
+  def deleteTask(id: UUID) = EitherT {
+    database(
+      selectOne().from(settings.tasks).where(".id" === id.toString)) flatMap {
+      case Some(taskjv) =>
+        for {
+          _ <- insertTask(\/-(taskjv), settings.deletedTasks)
+          _ <-
+            database(remove.from(settings.tasks) where (".id" === id.toString))
+        } yield {
+          taskjv.validated[ScheduledTask].disjunction leftMap {
+            _.message
+          } map { Some(_) }
+        }
 
-        case None =>
-          logger.warn("Could not locate task %s for deletion".format(id))
-          Promise successful \/.right(None)
-      }
+      case None =>
+        logger.warn("Could not locate task %s for deletion".format(id))
+        Promise successful \/.right(None)
     }
+  }
 
   def reportRun(report: ScheduledRunReport) =
     database(
@@ -142,8 +141,7 @@ class MongoScheduleStorage private[MongoScheduleStorage] (
     }
   }
 
-  def listTasks =
-    database(selectAll.from(settings.tasks)) map {
-      _.toSeq map { _.deserialize[ScheduledTask] }
-    }
+  def listTasks = database(selectAll.from(settings.tasks)) map {
+    _.toSeq map { _.deserialize[ScheduledTask] }
+  }
 }

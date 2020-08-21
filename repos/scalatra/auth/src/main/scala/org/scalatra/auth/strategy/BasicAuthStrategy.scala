@@ -57,8 +57,9 @@ object BasicAuthStrategy {
     "X_HTTP_AUTHORIZATION")
   class BasicAuthRequest(r: HttpServletRequest) {
 
-    def parts =
-      authorizationKey map { r.getHeader(_).split(" ", 2).toList } getOrElse Nil
+    def parts = authorizationKey map {
+      r.getHeader(_).split(" ", 2).toList
+    } getOrElse Nil
     def scheme: Option[String] =
       parts.headOption.map(sch => sch.toLowerCase(Locale.ENGLISH))
     def params = parts.lastOption

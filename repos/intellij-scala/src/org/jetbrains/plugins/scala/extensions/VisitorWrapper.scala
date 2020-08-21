@@ -14,6 +14,6 @@ class VisitorWrapper(action: PartialFunction[PsiElement, Any])
 }
 
 object VisitorWrapper {
-  def apply(action: PartialFunction[PsiElement, Any]) =
-    new VisitorWrapper(action)
+  def apply(action: PartialFunction[PsiElement, Any]) = new VisitorWrapper(
+    action)
 }

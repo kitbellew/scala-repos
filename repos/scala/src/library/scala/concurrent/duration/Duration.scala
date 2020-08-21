@@ -24,8 +24,8 @@ object Duration {
     *
     * @throws IllegalArgumentException if the length was finite but the resulting duration cannot be expressed as a [[FiniteDuration]]
     */
-  def apply(length: Double, unit: TimeUnit): Duration =
-    fromNanos(unit.toNanos(1) * length)
+  def apply(length: Double, unit: TimeUnit): Duration = fromNanos(
+    unit.toNanos(1) * length)
 
   /**
     * Construct a finite duration from the given length and time unit. The unit given is retained
@@ -195,18 +195,16 @@ object Duration {
   }
 
   sealed abstract class Infinite extends Duration {
-    def +(other: Duration): Duration =
-      other match {
-        case x if x eq Undefined      => Undefined
-        case x: Infinite if x ne this => Undefined
-        case _                        => this
-      }
-    def -(other: Duration): Duration =
-      other match {
-        case x if x eq Undefined      => Undefined
-        case x: Infinite if x eq this => Undefined
-        case _                        => this
-      }
+    def +(other: Duration): Duration = other match {
+      case x if x eq Undefined      => Undefined
+      case x: Infinite if x ne this => Undefined
+      case _                        => this
+    }
+    def -(other: Duration): Duration = other match {
+      case x if x eq Undefined      => Undefined
+      case x: Infinite if x eq this => Undefined
+      case _                        => this
+    }
 
     def *(factor: Double): Duration =
       if (factor == 0d || factor.isNaN) Undefined
@@ -216,19 +214,17 @@ object Duration {
       if (divisor.isNaN || divisor.isInfinite) Undefined
       else if ((divisor compare 0d) < 0) -this
       else this
-    def /(divisor: Duration): Double =
-      divisor match {
-        case _: Infinite => Double.NaN
-        case x =>
-          Double.PositiveInfinity * (if ((this > Zero) ^ (divisor >= Zero)) -1
-                                     else 1)
-      }
+    def /(divisor: Duration): Double = divisor match {
+      case _: Infinite => Double.NaN
+      case x =>
+        Double.PositiveInfinity * (if ((this > Zero) ^ (divisor >= Zero)) -1
+                                   else 1)
+    }
 
     final def isFinite() = false
 
-    private[this] def fail(what: String) =
-      throw new IllegalArgumentException(
-        s"$what not allowed on infinite Durations")
+    private[this] def fail(what: String) = throw new IllegalArgumentException(
+      s"$what not allowed on infinite Durations")
     final def length: Long = fail("length")
     final def unit: TimeUnit = fail("unit")
     final def toNanos: Long = fail("toNanos")
@@ -249,13 +245,12 @@ object Duration {
     */
   val Inf: Infinite = new Infinite {
     override def toString = "Duration.Inf"
-    def compare(other: Duration) =
-      other match {
-        case x if x eq Undefined => -1 // Undefined != Undefined
-        case x if x eq this =>
-          0 // `case Inf` will include null checks in the byte code
-        case _ => 1
-      }
+    def compare(other: Duration) = other match {
+      case x if x eq Undefined => -1 // Undefined != Undefined
+      case x if x eq this =>
+        0 // `case Inf` will include null checks in the byte code
+      case _ => 1
+    }
     def unary_- : Duration = MinusInf
     def toUnit(unit: TimeUnit): Double = Double.PositiveInfinity
     private def readResolve(): AnyRef =
@@ -654,11 +649,10 @@ final class FiniteDuration(val length: Long, val unit: TimeUnit)
     timeUnitName(unit) + (if (length == 1) "" else "s")
   override def toString = "" + length + " " + unitString
 
-  def compare(other: Duration) =
-    other match {
-      case x: FiniteDuration => toNanos compare x.toNanos
-      case _                 => -(other compare this)
-    }
+  def compare(other: Duration) = other match {
+    case x: FiniteDuration => toNanos compare x.toNanos
+    case _                 => -(other compare this)
+  }
 
   // see https://www.securecoding.cert.org/confluence/display/java/NUM00-J.+Detect+or+prevent+integer+overflow
   private[this] def safeAdd(a: Long, b: Long): Long = {
@@ -677,16 +671,14 @@ final class FiniteDuration(val length: Long, val unit: TimeUnit)
     new FiniteDuration(totalLength, commonUnit)
   }
 
-  def +(other: Duration) =
-    other match {
-      case x: FiniteDuration => add(x.length, x.unit)
-      case _                 => other
-    }
-  def -(other: Duration) =
-    other match {
-      case x: FiniteDuration => add(-x.length, x.unit)
-      case _                 => -other
-    }
+  def +(other: Duration) = other match {
+    case x: FiniteDuration => add(x.length, x.unit)
+    case _                 => other
+  }
+  def -(other: Duration) = other match {
+    case x: FiniteDuration => add(-x.length, x.unit)
+    case _                 => -other
+  }
 
   def *(factor: Double) =
     if (!factor.isInfinite) fromNanos(toNanos * factor)
@@ -793,10 +785,9 @@ final class FiniteDuration(val length: Long, val unit: TimeUnit)
     else loop(length, unit)
   }
 
-  override def equals(other: Any) =
-    other match {
-      case x: FiniteDuration => toNanos == x.toNanos
-      case _                 => super.equals(other)
-    }
+  override def equals(other: Any) = other match {
+    case x: FiniteDuration => toNanos == x.toNanos
+    case _                 => super.equals(other)
+  }
   override def hashCode = toNanos.toInt
 }

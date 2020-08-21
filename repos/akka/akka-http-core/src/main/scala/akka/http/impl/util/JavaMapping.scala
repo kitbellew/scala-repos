@@ -93,15 +93,13 @@ private[http] object JavaMapping {
       j.map(mapping.toScala(_)).toList
 
     implicit def AddAsScala[J](javaObject: J)(implicit
-        mapping: J2SMapping[J]): AsScala[mapping.S] =
-      new AsScala[mapping.S] {
-        def asScala = convertToScala(javaObject)
-      }
+        mapping: J2SMapping[J]): AsScala[mapping.S] = new AsScala[mapping.S] {
+      def asScala = convertToScala(javaObject)
+    }
     implicit def AddAsJava[S](scalaObject: S)(implicit
-        mapping: S2JMapping[S]): AsJava[mapping.J] =
-      new AsJava[mapping.J] {
-        def asJava = mapping.toJava(scalaObject)
-      }
+        mapping: S2JMapping[S]): AsJava[mapping.J] = new AsJava[mapping.J] {
+      def asJava = mapping.toJava(scalaObject)
+    }
   }
 
   /** This trivial mapping isn't enabled by default to prevent it from conflicting with the `Inherited` ones */
@@ -204,10 +202,9 @@ private[http] object JavaMapping {
     new JavaMapping[Pair[J1, J2], (S1, S2)] {
       def toJava(scalaObject: (S1, S2)): J =
         Pair(_1Mapping.toJava(scalaObject._1), _2Mapping.toJava(scalaObject._2))
-      def toScala(javaObject: Pair[J1, J2]): (S1, S2) =
-        (
-          _1Mapping.toScala(javaObject.first),
-          _2Mapping.toScala(javaObject.second))
+      def toScala(javaObject: Pair[J1, J2]): (S1, S2) = (
+        _1Mapping.toScala(javaObject.first),
+        _2Mapping.toScala(javaObject.second))
     }
   implicit def tryMapping[_J, _S](implicit
       mapping: JavaMapping[_J, _S]): JavaMapping[Try[_J], Try[_S]] =

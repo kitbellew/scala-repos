@@ -27,8 +27,8 @@ trait RestResource {
       s"Group '$id' does not exist" + version.fold("")(v => s" in version $v"))
   }
 
-  protected def unknownTask(id: String): Response =
-    notFound(s"Task '$id' does not exist")
+  protected def unknownTask(id: String): Response = notFound(
+    s"Task '$id' does not exist")
 
   protected def unknownApp(
       id: PathId,
@@ -57,8 +57,8 @@ trait RestResource {
     Response.status(code).entity(entity).build()
   protected def ok(): Response = Response.ok().build()
   protected def ok(entity: String): Response = Response.ok(entity).build()
-  protected def ok[T](obj: T)(implicit writes: Writes[T]): Response =
-    ok(jsonString(obj))
+  protected def ok[T](obj: T)(implicit writes: Writes[T]): Response = ok(
+    jsonString(obj))
   protected def created(uri: String): Response =
     Response.created(new URI(uri)).build()
   protected def noContent: Response = Response.noContent().build()

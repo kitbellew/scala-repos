@@ -126,8 +126,8 @@ private[akka] class SubclassifiedIndex[K, V] private (
     *
     * @return the diff that should be added to the cache
     */
-  def addValue(key: K, value: V): Changes =
-    mergeChangesByKey(innerAddValue(key, value))
+  def addValue(key: K, value: V): Changes = mergeChangesByKey(
+    innerAddValue(key, value))
 
   protected def innerAddValue(key: K, value: V): Changes = {
     var found = false
@@ -177,8 +177,8 @@ private[akka] class SubclassifiedIndex[K, V] private (
     *
     * @return the diff that should be removed from the cache
     */
-  def removeValue(value: V): Changes =
-    mergeChangesByKey(subkeys flatMap (_ removeValue value))
+  def removeValue(value: V): Changes = mergeChangesByKey(
+    subkeys flatMap (_ removeValue value))
 
   /**
     * Find all values for a given key in the index.

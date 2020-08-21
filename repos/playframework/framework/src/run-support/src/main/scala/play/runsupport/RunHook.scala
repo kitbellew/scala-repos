@@ -56,32 +56,31 @@ object RunHook {
       * Runs all the hooks in the sequence of hooks.
       * Reports last failure if any have failure.
       */
-    def run(f: RunHook => Unit, suppressFailure: Boolean = false): Unit =
-      try {
+    def run(f: RunHook => Unit, suppressFailure: Boolean = false): Unit = try {
 
-        val failures: LinkedHashMap[RunHook, Throwable] = LinkedHashMap.empty
+      val failures: LinkedHashMap[RunHook, Throwable] = LinkedHashMap.empty
 
-        hooks foreach { hook =>
-          try {
-            f(hook)
-          } catch {
-            case NonFatal(e) =>
-              failures += hook -> e
-          }
+      hooks foreach { hook =>
+        try {
+          f(hook)
+        } catch {
+          case NonFatal(e) =>
+            failures += hook -> e
         }
-
-        // Throw failure if it occurred....
-        if (!suppressFailure && failures.nonEmpty) {
-          if (failures.size == 1) {
-            throw failures.values.head
-          } else {
-            throw RunHookCompositeThrowable(failures.values.toSet)
-          }
-        }
-      } catch {
-        case NonFatal(e) if suppressFailure =>
-        // Ignoring failure in running hooks... (CCE thrown here)
       }
+
+      // Throw failure if it occurred....
+      if (!suppressFailure && failures.nonEmpty) {
+        if (failures.size == 1) {
+          throw failures.values.head
+        } else {
+          throw RunHookCompositeThrowable(failures.values.toSet)
+        }
+      }
+    } catch {
+      case NonFatal(e) if suppressFailure =>
+      // Ignoring failure in running hooks... (CCE thrown here)
+    }
   }
 
 }

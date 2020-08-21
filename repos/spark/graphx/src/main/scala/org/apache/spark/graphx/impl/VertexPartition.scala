@@ -49,8 +49,8 @@ private[graphx] object VertexPartition {
   implicit object VertexPartitionOpsConstructor
       extends VertexPartitionBaseOpsConstructor[VertexPartition] {
     def toOps[VD: ClassTag](partition: VertexPartition[VD])
-        : VertexPartitionBaseOps[VD, VertexPartition] =
-      partitionToOps(partition)
+        : VertexPartitionBaseOps[VD, VertexPartition] = partitionToOps(
+      partition)
   }
 }
 

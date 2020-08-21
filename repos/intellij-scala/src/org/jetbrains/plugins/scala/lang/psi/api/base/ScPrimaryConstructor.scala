@@ -33,10 +33,9 @@ trait ScPrimaryConstructor
     extends ScMember
     with ScMethodLike
     with ScAnnotationsHolder {
-  def hasMalformedSignature =
-    parameterList.clauses.exists {
-      _.parameters.dropRight(1).exists(_.isRepeatedParameter)
-    }
+  def hasMalformedSignature = parameterList.clauses.exists {
+    _.parameters.dropRight(1).exists(_.isRepeatedParameter)
+  }
 
   /**
     *  @return has access modifier

@@ -89,18 +89,17 @@ abstract class QueryServiceHandler[A](implicit M: Monad[Future])
 
   private def handleErrors[A](
       query: String,
-      result: EvaluationError): HttpResponse[QueryResult] =
-    result match {
-      case SystemError(error) =>
-        logger.error("An error occurred processing the query: " + query, error)
-        HttpResponse[QueryResult](
-          HttpStatus(
-            InternalServerError,
-            "A problem was encountered processing your query. We're looking into it!"))
+      result: EvaluationError): HttpResponse[QueryResult] = result match {
+    case SystemError(error) =>
+      logger.error("An error occurred processing the query: " + query, error)
+      HttpResponse[QueryResult](
+        HttpStatus(
+          InternalServerError,
+          "A problem was encountered processing your query. We're looking into it!"))
 
-      case InvalidStateError(error) =>
-        HttpResponse[QueryResult](HttpStatus(PreconditionFailed, error))
-    }
+    case InvalidStateError(error) =>
+      HttpResponse[QueryResult](HttpStatus(PreconditionFailed, error))
+  }
 
   private def appendHeaders[A](opts: QueryOptions)(
       response: HttpResponse[A]): HttpResponse[A] = {
@@ -149,9 +148,8 @@ abstract class QueryServiceHandler[A](implicit M: Monad[Future])
     }
   }
 
-  def metadata =
-    DescriptionMetadata(
-      """Takes a quirrel query and returns the result of evaluating the query.""")
+  def metadata = DescriptionMetadata(
+    """Takes a quirrel query and returns the result of evaluating the query.""")
 }
 
 class AnalysisServiceHandler(
@@ -210,8 +208,8 @@ class AnalysisServiceHandler(
     }
   }
 
-  def metadata =
-    DescriptionMetadata("""Returns the result of executing a stored query.""")
+  def metadata = DescriptionMetadata(
+    """Returns the result of executing a stored query.""")
 }
 
 sealed trait SyncResultFormat

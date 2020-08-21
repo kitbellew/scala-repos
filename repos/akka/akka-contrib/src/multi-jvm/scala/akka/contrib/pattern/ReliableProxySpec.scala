@@ -72,14 +72,15 @@ class ReliableProxySpec
   }
 
   def expectState(s: State) = expectMsg(FSM.CurrentState(proxy, s))
-  def expectTransition(s1: State, s2: State) =
-    expectMsg(FSM.Transition(proxy, s1, s2))
+  def expectTransition(s1: State, s2: State) = expectMsg(
+    FSM.Transition(proxy, s1, s2))
   def expectTransition(max: FiniteDuration, s1: State, s2: State) =
     expectMsg(max, FSM.Transition(proxy, s1, s2))
 
   def sendN(n: Int) = (1 to n) foreach (proxy ! _)
-  def expectN(n: Int) =
-    (1 to n) foreach { n ⇒ expectMsg(n); lastSender should ===(target) }
+  def expectN(n: Int) = (1 to n) foreach { n ⇒
+    expectMsg(n); lastSender should ===(target)
+  }
 
   // avoid too long timeout for expectNoMsg when using dilated timeouts, because
   // blackhole will trigger failure detection

@@ -151,26 +151,24 @@ private[round] final class SocketHandler(
     }
   }
 
-  private def parseMove(o: JsObject) =
-    for {
-      d ← o obj "d"
-      orig ← d str "from"
-      dest ← d str "to"
-      prom = d str "promotion"
-      move <- Uci.Move.fromStrings(orig, dest, prom)
-      blur = (d int "b") == Some(1)
-      lag = d int "lag"
-    } yield (move, blur, ~lag)
+  private def parseMove(o: JsObject) = for {
+    d ← o obj "d"
+    orig ← d str "from"
+    dest ← d str "to"
+    prom = d str "promotion"
+    move <- Uci.Move.fromStrings(orig, dest, prom)
+    blur = (d int "b") == Some(1)
+    lag = d int "lag"
+  } yield (move, blur, ~lag)
 
-  private def parseDrop(o: JsObject) =
-    for {
-      d ← o obj "d"
-      role ← d str "role"
-      pos ← d str "pos"
-      drop <- Uci.Drop.fromStrings(role, pos)
-      blur = (d int "b") == Some(1)
-      lag = d int "lag"
-    } yield (drop, blur, ~lag)
+  private def parseDrop(o: JsObject) = for {
+    d ← o obj "d"
+    role ← d str "role"
+    pos ← d str "pos"
+    drop <- Uci.Drop.fromStrings(role, pos)
+    blur = (d int "b") == Some(1)
+    lag = d int "lag"
+  } yield (drop, blur, ~lag)
 
   private val ackEvent = Json.obj("t" -> "ack")
 }

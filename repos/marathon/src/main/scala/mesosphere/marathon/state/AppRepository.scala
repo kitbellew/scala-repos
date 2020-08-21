@@ -28,10 +28,10 @@ class AppRepository(
 
   def currentVersion(appId: PathId): Future[Option[AppDefinition]] =
     currentVersion(appId.safePath)
-  def listVersions(appId: PathId): Future[Iterable[Timestamp]] =
-    listVersions(appId.safePath)
-  def expunge(appId: PathId): Future[Iterable[Boolean]] =
-    expunge(appId.safePath)
+  def listVersions(appId: PathId): Future[Iterable[Timestamp]] = listVersions(
+    appId.safePath)
+  def expunge(appId: PathId): Future[Iterable[Boolean]] = expunge(
+    appId.safePath)
 
   /**
     * Returns the app with the supplied id and version.

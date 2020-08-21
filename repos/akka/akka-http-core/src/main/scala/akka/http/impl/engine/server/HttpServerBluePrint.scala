@@ -165,40 +165,32 @@ private[http] object HttpServerBluePrint {
           }
         }
 
-        override def onPush(): Unit =
-          grab(in) match {
-            case RequestStart(
-                  method,
-                  uri,
-                  protocol,
-                  hdrs,
-                  entityCreator,
-                  _,
-                  _) ⇒
-              val effectiveMethod =
-                if (method == HttpMethods.HEAD && settings.transparentHeadRequests)
-                  HttpMethods.GET
-                else method
-              val effectiveHeaders =
-                if (settings.remoteAddressHeader && remoteAddress.isDefined)
-                  headers.`Remote-Address`(
-                    RemoteAddress(remoteAddress.get)) +: hdrs
-                else hdrs
+        override def onPush(): Unit = grab(in) match {
+          case RequestStart(method, uri, protocol, hdrs, entityCreator, _, _) ⇒
+            val effectiveMethod =
+              if (method == HttpMethods.HEAD && settings.transparentHeadRequests)
+                HttpMethods.GET
+              else method
+            val effectiveHeaders =
+              if (settings.remoteAddressHeader && remoteAddress.isDefined)
+                headers.`Remote-Address`(
+                  RemoteAddress(remoteAddress.get)) +: hdrs
+              else hdrs
 
-              val entity = createEntity(
-                entityCreator) withSizeLimit settings.parserSettings.maxContentLength
-              push(
-                out,
-                HttpRequest(
-                  effectiveMethod,
-                  uri,
-                  effectiveHeaders,
-                  entity,
-                  protocol))
-            case other ⇒
-              throw new IllegalStateException(
-                s"unexpected element of type ${other.getClass}")
-          }
+            val entity = createEntity(
+              entityCreator) withSizeLimit settings.parserSettings.maxContentLength
+            push(
+              out,
+              HttpRequest(
+                effectiveMethod,
+                uri,
+                effectiveHeaders,
+                entity,
+                protocol))
+          case other ⇒
+            throw new IllegalStateException(
+              s"unexpected element of type ${other.getClass}")
+        }
 
         setIdleHandlers()
 
@@ -355,64 +347,63 @@ private[http] object HttpServerBluePrint {
 
     val shape = new BidiShape(requestIn, requestOut, responseIn, responseOut)
 
-    def createLogic(effectiveAttributes: Attributes) =
-      new GraphStageLogic(shape) {
-        var openTimeouts = immutable.Queue[TimeoutAccessImpl]()
-        setHandler(
-          requestIn,
-          new InHandler {
-            def onPush(): Unit = {
-              val request = grab(requestIn)
-              val (entity, requestEnd) =
-                HttpEntity.captureTermination(request.entity)
-              val access = new TimeoutAccessImpl(
-                request,
-                initialTimeout,
-                requestEnd,
-                getAsyncCallback(emitTimeoutResponse),
-                interpreter.materializer)
-              openTimeouts = openTimeouts.enqueue(access)
-              push(
-                requestOut,
-                request.copy(
-                  headers = request.headers :+ `Timeout-Access`(access),
-                  entity = entity))
-            }
-            override def onUpstreamFinish() = complete(requestOut)
-            override def onUpstreamFailure(ex: Throwable) = fail(requestOut, ex)
-            def emitTimeoutResponse(response: (TimeoutAccess, HttpResponse)) =
-              if (openTimeouts.head eq response._1) {
-                emit(responseOut, response._2, () ⇒ completeStage())
-              } // else the application response arrived after we scheduled the timeout response, which is close but ok
+    def createLogic(effectiveAttributes: Attributes) = new GraphStageLogic(
+      shape) {
+      var openTimeouts = immutable.Queue[TimeoutAccessImpl]()
+      setHandler(
+        requestIn,
+        new InHandler {
+          def onPush(): Unit = {
+            val request = grab(requestIn)
+            val (entity, requestEnd) =
+              HttpEntity.captureTermination(request.entity)
+            val access = new TimeoutAccessImpl(
+              request,
+              initialTimeout,
+              requestEnd,
+              getAsyncCallback(emitTimeoutResponse),
+              interpreter.materializer)
+            openTimeouts = openTimeouts.enqueue(access)
+            push(
+              requestOut,
+              request.copy(
+                headers = request.headers :+ `Timeout-Access`(access),
+                entity = entity))
           }
-        )
-        // TODO: provide and use default impl for simply connecting an input and an output port as we do here
-        setHandler(
-          requestOut,
-          new OutHandler {
-            def onPull(): Unit = pull(requestIn)
-            override def onDownstreamFinish() = cancel(requestIn)
-          })
-        setHandler(
-          responseIn,
-          new InHandler {
-            def onPush(): Unit = {
-              openTimeouts.head.clear()
-              openTimeouts = openTimeouts.tail
-              push(responseOut, grab(responseIn))
-            }
-            override def onUpstreamFinish() = complete(responseOut)
-            override def onUpstreamFailure(ex: Throwable) =
-              fail(responseOut, ex)
+          override def onUpstreamFinish() = complete(requestOut)
+          override def onUpstreamFailure(ex: Throwable) = fail(requestOut, ex)
+          def emitTimeoutResponse(response: (TimeoutAccess, HttpResponse)) =
+            if (openTimeouts.head eq response._1) {
+              emit(responseOut, response._2, () ⇒ completeStage())
+            } // else the application response arrived after we scheduled the timeout response, which is close but ok
+        }
+      )
+      // TODO: provide and use default impl for simply connecting an input and an output port as we do here
+      setHandler(
+        requestOut,
+        new OutHandler {
+          def onPull(): Unit = pull(requestIn)
+          override def onDownstreamFinish() = cancel(requestIn)
+        })
+      setHandler(
+        responseIn,
+        new InHandler {
+          def onPush(): Unit = {
+            openTimeouts.head.clear()
+            openTimeouts = openTimeouts.tail
+            push(responseOut, grab(responseIn))
           }
-        )
-        setHandler(
-          responseOut,
-          new OutHandler {
-            def onPull(): Unit = pull(responseIn)
-            override def onDownstreamFinish() = cancel(responseIn)
-          })
-      }
+          override def onUpstreamFinish() = complete(responseOut)
+          override def onUpstreamFailure(ex: Throwable) = fail(responseOut, ex)
+        }
+      )
+      setHandler(
+        responseOut,
+        new OutHandler {
+          def onPull(): Unit = pull(responseIn)
+          override def onDownstreamFinish() = cancel(responseIn)
+        })
+    }
   }
 
   private class TimeoutSetup(
@@ -520,216 +511,211 @@ private[http] object HttpServerBluePrint {
       httpResponseIn,
       responseCtxOut)
 
-    def createLogic(effectiveAttributes: Attributes) =
-      new GraphStageLogic(shape) {
-        val pullHttpResponseIn = () ⇒ pull(httpResponseIn)
-        var openRequests = immutable.Queue[RequestStart]()
-        var oneHundredContinueResponsePending = false
-        var pullSuppressed = false
-        var messageEndPending = false
+    def createLogic(effectiveAttributes: Attributes) = new GraphStageLogic(
+      shape) {
+      val pullHttpResponseIn = () ⇒ pull(httpResponseIn)
+      var openRequests = immutable.Queue[RequestStart]()
+      var oneHundredContinueResponsePending = false
+      var pullSuppressed = false
+      var messageEndPending = false
 
-        setHandler(
-          requestParsingIn,
-          new InHandler {
-            def onPush(): Unit =
-              grab(requestParsingIn) match {
-                case r: RequestStart ⇒
-                  openRequests = openRequests.enqueue(r)
-                  messageEndPending =
-                    r.createEntity.isInstanceOf[StreamedEntityCreator[_, _]]
-                  val rs = if (r.expect100Continue) {
-                    oneHundredContinueResponsePending = true
-                    r.copy(createEntity =
-                      with100ContinueTrigger(r.createEntity))
-                  } else r
-                  push(requestPrepOut, rs)
-                case MessageEnd ⇒
-                  messageEndPending = false
-                  push(requestPrepOut, MessageEnd)
-                case MessageStartError(status, info) ⇒
-                  finishWithIllegalRequestError(status, info)
-                case x ⇒ push(requestPrepOut, x)
-              }
-            override def onUpstreamFinish() =
-              if (openRequests.isEmpty) completeStage()
-              else complete(requestPrepOut)
-          }
-        )
+      setHandler(
+        requestParsingIn,
+        new InHandler {
+          def onPush(): Unit =
+            grab(requestParsingIn) match {
+              case r: RequestStart ⇒
+                openRequests = openRequests.enqueue(r)
+                messageEndPending =
+                  r.createEntity.isInstanceOf[StreamedEntityCreator[_, _]]
+                val rs = if (r.expect100Continue) {
+                  oneHundredContinueResponsePending = true
+                  r.copy(createEntity = with100ContinueTrigger(r.createEntity))
+                } else r
+                push(requestPrepOut, rs)
+              case MessageEnd ⇒
+                messageEndPending = false
+                push(requestPrepOut, MessageEnd)
+              case MessageStartError(status, info) ⇒
+                finishWithIllegalRequestError(status, info)
+              case x ⇒ push(requestPrepOut, x)
+            }
+          override def onUpstreamFinish() =
+            if (openRequests.isEmpty) completeStage()
+            else complete(requestPrepOut)
+        }
+      )
 
-        setHandler(
-          requestPrepOut,
-          new OutHandler {
-            def onPull(): Unit =
-              if (oneHundredContinueResponsePending) pullSuppressed = true
-              else pull(requestParsingIn)
-            override def onDownstreamFinish() = cancel(requestParsingIn)
-          }
-        )
+      setHandler(
+        requestPrepOut,
+        new OutHandler {
+          def onPull(): Unit =
+            if (oneHundredContinueResponsePending) pullSuppressed = true
+            else pull(requestParsingIn)
+          override def onDownstreamFinish() = cancel(requestParsingIn)
+        }
+      )
 
-        setHandler(
-          httpResponseIn,
-          new InHandler {
-            def onPush(): Unit = {
-              val response = grab(httpResponseIn)
-              val requestStart = openRequests.head
-              openRequests = openRequests.tail
-              val isEarlyResponse = messageEndPending && openRequests.isEmpty
-              if (isEarlyResponse && response.status.isSuccess)
-                log.warning("""Sending 2xx response before end of request was received...
+      setHandler(
+        httpResponseIn,
+        new InHandler {
+          def onPush(): Unit = {
+            val response = grab(httpResponseIn)
+            val requestStart = openRequests.head
+            openRequests = openRequests.tail
+            val isEarlyResponse = messageEndPending && openRequests.isEmpty
+            if (isEarlyResponse && response.status.isSuccess)
+              log.warning("""Sending 2xx response before end of request was received...
                 |Note that the connection will be closed after this response. Also, many clients will not read early responses!
                 |Consider waiting for the request end before dispatching this response!""".stripMargin)
-              val close = requestStart.closeRequested ||
-                requestStart.expect100Continue && oneHundredContinueResponsePending ||
-                isClosed(requestParsingIn) && openRequests.isEmpty ||
-                isEarlyResponse
-              emit(
-                responseCtxOut,
-                ResponseRenderingContext(
-                  response,
-                  requestStart.method,
-                  requestStart.protocol,
-                  close),
-                pullHttpResponseIn)
-              if (close) complete(responseCtxOut)
-            }
-            override def onUpstreamFinish() =
-              if (openRequests.isEmpty && isClosed(requestParsingIn))
-                completeStage()
-              else complete(responseCtxOut)
-            override def onUpstreamFailure(ex: Throwable): Unit =
-              ex match {
-                case EntityStreamException(errorInfo) ⇒
-                  // the application has forwarded a request entity stream error to the response stream
-                  finishWithIllegalRequestError(
-                    StatusCodes.BadRequest,
-                    errorInfo)
-
-                case EntityStreamSizeException(limit, contentLength) ⇒
-                  val summary = contentLength match {
-                    case Some(cl) ⇒
-                      s"Request Content-Length of $cl bytes exceeds the configured limit of $limit bytes"
-                    case None ⇒
-                      s"Aggregated data length of request entity exceeds the configured limit of $limit bytes"
-                  }
-                  val info = ErrorInfo(
-                    summary,
-                    "Consider increasing the value of akka.http.server.parsing.max-content-length")
-                  finishWithIllegalRequestError(
-                    StatusCodes.RequestEntityTooLarge,
-                    info)
-
-                case NonFatal(e) ⇒
-                  log.error(e, "Internal server error, sending 500 response")
-                  emitErrorResponse(
-                    HttpResponse(StatusCodes.InternalServerError))
-              }
-          }
-        )
-
-        class ResponseCtxOutHandler extends OutHandler {
-          override def onPull() = {}
-          override def onDownstreamFinish() =
-            cancel(
-              httpResponseIn
-            ) // we cannot fully completeState() here as the websocket pipeline would not complete properly
-        }
-        setHandler(
-          responseCtxOut,
-          new ResponseCtxOutHandler {
-            override def onPull() = {
-              pull(httpResponseIn)
-              // after the initial pull here we only ever pull after having emitted in `onPush` of `httpResponseIn`
-              setHandler(responseCtxOut, new ResponseCtxOutHandler)
-            }
-          }
-        )
-
-        def finishWithIllegalRequestError(
-            status: StatusCode,
-            info: ErrorInfo): Unit = {
-          logParsingError(
-            info withSummaryPrepended s"Illegal request, responding with status '$status'",
-            log,
-            settings.parserSettings.errorLoggingVerbosity)
-          val msg =
-            if (settings.verboseErrorMessages) info.formatPretty
-            else info.summary
-          emitErrorResponse(HttpResponse(status, entity = msg))
-        }
-
-        def emitErrorResponse(response: HttpResponse): Unit =
-          emit(
-            responseCtxOut,
-            ResponseRenderingContext(response, closeRequested = true),
-            () ⇒ complete(responseCtxOut))
-
-        /**
-          * The `Expect: 100-continue` header has a special status in HTTP.
-          * It allows the client to send an `Expect: 100-continue` header with the request and then pause request sending
-          * (i.e. hold back sending the request entity). The server reads the request headers, determines whether it wants to
-          * accept the request and responds with
-          *
-          * - `417 Expectation Failed`, if it doesn't support the `100-continue` expectation
-          * (or if the `Expect` header contains other, unsupported expectations).
-          * - a `100 Continue` response,
-          * if it is ready to accept the request entity and the client should go ahead with sending it
-          * - a final response (like a 4xx to signal some client-side error
-          * (e.g. if the request entity length is beyond the configured limit) or a 3xx redirect)
-          *
-          * Only if the client receives a `100 Continue` response from the server is it allowed to continue sending the request
-          * entity. In this case it will receive another response after having completed request sending.
-          * So this special feature breaks the normal "one request - one response" logic of HTTP!
-          * It therefore requires special handling in all HTTP stacks (client- and server-side).
-          *
-          * For us this means:
-          *
-          * - on the server-side:
-          * After having read a `Expect: 100-continue` header with the request we package up an `HttpRequest` instance and send
-          * it through to the application. Only when (and if) the application then requests data from the entity stream do we
-          * send out a `100 Continue` response and continue reading the request entity.
-          * The application can therefore determine itself whether it wants the client to send the request entity
-          * by deciding whether to look at the request entity data stream or not.
-          * If the application sends a response *without* having looked at the request entity the client receives this
-          * response *instead of* the `100 Continue` response and the server closes the connection afterwards.
-          *
-          * - on the client-side:
-          * If the user adds a `Expect: 100-continue` header to the request we need to hold back sending the entity until
-          * we've received a `100 Continue` response.
-          */
-        val emit100ContinueResponse =
-          getAsyncCallback[Unit] { _ ⇒
-            oneHundredContinueResponsePending = false
+            val close = requestStart.closeRequested ||
+              requestStart.expect100Continue && oneHundredContinueResponsePending ||
+              isClosed(requestParsingIn) && openRequests.isEmpty ||
+              isEarlyResponse
             emit(
               responseCtxOut,
-              ResponseRenderingContext(HttpResponse(StatusCodes.Continue)))
-            if (pullSuppressed) {
-              pullSuppressed = false
-              pull(requestParsingIn)
-            }
+              ResponseRenderingContext(
+                response,
+                requestStart.method,
+                requestStart.protocol,
+                close),
+              pullHttpResponseIn)
+            if (close) complete(responseCtxOut)
           }
+          override def onUpstreamFinish() =
+            if (openRequests.isEmpty && isClosed(requestParsingIn))
+              completeStage()
+            else complete(responseCtxOut)
+          override def onUpstreamFailure(ex: Throwable): Unit =
+            ex match {
+              case EntityStreamException(errorInfo) ⇒
+                // the application has forwarded a request entity stream error to the response stream
+                finishWithIllegalRequestError(StatusCodes.BadRequest, errorInfo)
 
-        def with100ContinueTrigger[T <: ParserOutput](
-            createEntity: EntityCreator[T, RequestEntity]) =
-          StreamedEntityCreator {
-            createEntity.compose[Source[T, NotUsed]] {
-              _.via(
-                Flow[T]
-                  .transform(() ⇒
-                    new PushPullStage[T, T] {
-                      private var oneHundredContinueSent = false
-                      def onPush(elem: T, ctx: Context[T]) = ctx.push(elem)
-                      def onPull(ctx: Context[T]) = {
-                        if (!oneHundredContinueSent) {
-                          oneHundredContinueSent = true
-                          emit100ContinueResponse.invoke(())
-                        }
-                        ctx.pull()
-                      }
-                    })
-                  .named("expect100continueTrigger"))
+              case EntityStreamSizeException(limit, contentLength) ⇒
+                val summary = contentLength match {
+                  case Some(cl) ⇒
+                    s"Request Content-Length of $cl bytes exceeds the configured limit of $limit bytes"
+                  case None ⇒
+                    s"Aggregated data length of request entity exceeds the configured limit of $limit bytes"
+                }
+                val info = ErrorInfo(
+                  summary,
+                  "Consider increasing the value of akka.http.server.parsing.max-content-length")
+                finishWithIllegalRequestError(
+                  StatusCodes.RequestEntityTooLarge,
+                  info)
+
+              case NonFatal(e) ⇒
+                log.error(e, "Internal server error, sending 500 response")
+                emitErrorResponse(HttpResponse(StatusCodes.InternalServerError))
             }
-          }
+        }
+      )
+
+      class ResponseCtxOutHandler extends OutHandler {
+        override def onPull() = {}
+        override def onDownstreamFinish() =
+          cancel(
+            httpResponseIn
+          ) // we cannot fully completeState() here as the websocket pipeline would not complete properly
       }
+      setHandler(
+        responseCtxOut,
+        new ResponseCtxOutHandler {
+          override def onPull() = {
+            pull(httpResponseIn)
+            // after the initial pull here we only ever pull after having emitted in `onPush` of `httpResponseIn`
+            setHandler(responseCtxOut, new ResponseCtxOutHandler)
+          }
+        }
+      )
+
+      def finishWithIllegalRequestError(
+          status: StatusCode,
+          info: ErrorInfo): Unit = {
+        logParsingError(
+          info withSummaryPrepended s"Illegal request, responding with status '$status'",
+          log,
+          settings.parserSettings.errorLoggingVerbosity)
+        val msg =
+          if (settings.verboseErrorMessages) info.formatPretty else info.summary
+        emitErrorResponse(HttpResponse(status, entity = msg))
+      }
+
+      def emitErrorResponse(response: HttpResponse): Unit =
+        emit(
+          responseCtxOut,
+          ResponseRenderingContext(response, closeRequested = true),
+          () ⇒ complete(responseCtxOut))
+
+      /**
+        * The `Expect: 100-continue` header has a special status in HTTP.
+        * It allows the client to send an `Expect: 100-continue` header with the request and then pause request sending
+        * (i.e. hold back sending the request entity). The server reads the request headers, determines whether it wants to
+        * accept the request and responds with
+        *
+        * - `417 Expectation Failed`, if it doesn't support the `100-continue` expectation
+        * (or if the `Expect` header contains other, unsupported expectations).
+        * - a `100 Continue` response,
+        * if it is ready to accept the request entity and the client should go ahead with sending it
+        * - a final response (like a 4xx to signal some client-side error
+        * (e.g. if the request entity length is beyond the configured limit) or a 3xx redirect)
+        *
+        * Only if the client receives a `100 Continue` response from the server is it allowed to continue sending the request
+        * entity. In this case it will receive another response after having completed request sending.
+        * So this special feature breaks the normal "one request - one response" logic of HTTP!
+        * It therefore requires special handling in all HTTP stacks (client- and server-side).
+        *
+        * For us this means:
+        *
+        * - on the server-side:
+        * After having read a `Expect: 100-continue` header with the request we package up an `HttpRequest` instance and send
+        * it through to the application. Only when (and if) the application then requests data from the entity stream do we
+        * send out a `100 Continue` response and continue reading the request entity.
+        * The application can therefore determine itself whether it wants the client to send the request entity
+        * by deciding whether to look at the request entity data stream or not.
+        * If the application sends a response *without* having looked at the request entity the client receives this
+        * response *instead of* the `100 Continue` response and the server closes the connection afterwards.
+        *
+        * - on the client-side:
+        * If the user adds a `Expect: 100-continue` header to the request we need to hold back sending the entity until
+        * we've received a `100 Continue` response.
+        */
+      val emit100ContinueResponse =
+        getAsyncCallback[Unit] { _ ⇒
+          oneHundredContinueResponsePending = false
+          emit(
+            responseCtxOut,
+            ResponseRenderingContext(HttpResponse(StatusCodes.Continue)))
+          if (pullSuppressed) {
+            pullSuppressed = false
+            pull(requestParsingIn)
+          }
+        }
+
+      def with100ContinueTrigger[T <: ParserOutput](
+          createEntity: EntityCreator[T, RequestEntity]) =
+        StreamedEntityCreator {
+          createEntity.compose[Source[T, NotUsed]] {
+            _.via(
+              Flow[T]
+                .transform(() ⇒
+                  new PushPullStage[T, T] {
+                    private var oneHundredContinueSent = false
+                    def onPush(elem: T, ctx: Context[T]) = ctx.push(elem)
+                    def onPull(ctx: Context[T]) = {
+                      if (!oneHundredContinueSent) {
+                        oneHundredContinueSent = true
+                        emit100ContinueResponse.invoke(())
+                      }
+                      ctx.pull()
+                    }
+                  })
+                .named("expect100continueTrigger"))
+          }
+        }
+    }
   }
 
   /**
@@ -814,12 +800,11 @@ private[http] object HttpServerBluePrint {
           })
 
         private var activeTimers = 0
-        private def timeout =
-          ActorMaterializer
-            .downcast(materializer)
-            .settings
-            .subscriptionTimeoutSettings
-            .timeout
+        private def timeout = ActorMaterializer
+          .downcast(materializer)
+          .settings
+          .subscriptionTimeoutSettings
+          .timeout
         private def addTimeout(s: SubscriptionTimeout): Unit = {
           if (activeTimers == 0) setKeepGoing(true)
           activeTimers += 1
@@ -831,13 +816,12 @@ private[http] object HttpServerBluePrint {
             if (activeTimers == 0) setKeepGoing(false)
             cancelTimer(s)
           }
-        override def onTimer(timerKey: Any): Unit =
-          timerKey match {
-            case SubscriptionTimeout(f) ⇒
-              activeTimers -= 1
-              if (activeTimers == 0) setKeepGoing(false)
-              f()
-          }
+        override def onTimer(timerKey: Any): Unit = timerKey match {
+          case SubscriptionTimeout(f) ⇒
+            activeTimers -= 1
+            if (activeTimers == 0) setKeepGoing(false)
+            f()
+        }
 
         /*
          * WebSocket support

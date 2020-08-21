@@ -137,24 +137,23 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
   /**
     * Parse a String into a CSS Selector
     */
-  def parse(_toParse: String): Box[CssSelector] =
-    synchronized {
-      // trim off leading and trailing spaces
-      val toParse = _toParse.trim
+  def parse(_toParse: String): Box[CssSelector] = synchronized {
+    // trim off leading and trailing spaces
+    val toParse = _toParse.trim
 
-      // this method is synchronized because the Parser combinator is not
-      // thread safe, so we'll only parse one at a time, but given that most
-      // of the selectors will be cached, it's not really a performance hit
-      cache.get(toParse) or {
-        internalParse(toParse).map { sel =>
-          {
-            // cache the result
-            cache(toParse) = sel
-            sel
-          }
+    // this method is synchronized because the Parser combinator is not
+    // thread safe, so we'll only parse one at a time, but given that most
+    // of the selectors will be cached, it's not really a performance hit
+    cache.get(toParse) or {
+      internalParse(toParse).map { sel =>
+        {
+          // cache the result
+          cache(toParse) = sel
+          sel
         }
       }
     }
+  }
 
   import scala.util.parsing.input.CharSequenceReader
 

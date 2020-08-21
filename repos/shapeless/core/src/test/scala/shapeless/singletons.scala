@@ -480,10 +480,12 @@ class SingletonTypesTests {
   }
 
   object Rel {
-    implicit def relTrue: Rel[True] { type Out = Int } =
-      new Rel[True] { type Out = Int }
-    implicit def relFalse: Rel[False] { type Out = String } =
-      new Rel[False] { type Out = String }
+    implicit def relTrue: Rel[True] { type Out = Int } = new Rel[True] {
+      type Out = Int
+    }
+    implicit def relFalse: Rel[False] { type Out = String } = new Rel[False] {
+      type Out = String
+    }
   }
 
   def check(w: WitnessWith[Rel])(v: w.instance.Out) = v

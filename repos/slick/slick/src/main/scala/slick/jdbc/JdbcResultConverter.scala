@@ -26,9 +26,8 @@ class BaseResultConverter[@specialized(
   def update(value: T, pr: ResultSet) = ti.updateValue(value, pr, idx)
   def set(value: T, pp: PreparedStatement) =
     ti.setValue(value, pp, idx)
-  override def getDumpInfo =
-    super.getDumpInfo
-      .copy(mainInfo = s"idx=$idx, name=$name", attrInfo = ": " + ti)
+  override def getDumpInfo = super.getDumpInfo
+    .copy(mainInfo = s"idx=$idx, name=$name", attrInfo = ": " + ti)
   def width = 1
 }
 
@@ -49,16 +48,14 @@ class OptionResultConverter[@specialized(
     val v = ti.getValue(pr, idx)
     if (ti.wasNull(pr, idx)) None else Some(v)
   }
-  def update(value: Option[T], pr: ResultSet) =
-    value match {
-      case Some(v) => ti.updateValue(v, pr, idx)
-      case _       => ti.updateNull(pr, idx)
-    }
-  def set(value: Option[T], pp: PreparedStatement) =
-    value match {
-      case Some(v) => ti.setValue(v, pp, idx)
-      case _       => ti.setNull(pp, idx)
-    }
+  def update(value: Option[T], pr: ResultSet) = value match {
+    case Some(v) => ti.updateValue(v, pr, idx)
+    case _       => ti.updateNull(pr, idx)
+  }
+  def set(value: Option[T], pp: PreparedStatement) = value match {
+    case Some(v) => ti.setValue(v, pp, idx)
+    case _       => ti.setNull(pp, idx)
+  }
   override def getDumpInfo =
     super.getDumpInfo.copy(mainInfo = s"idx=$idx", attrInfo = ": " + ti)
   def width = 1
@@ -94,13 +91,12 @@ class DefaultingResultConverter[@specialized(
   }
   def update(value: T, pr: ResultSet) = ti.updateValue(value, pr, idx)
   def set(value: T, pp: PreparedStatement) = ti.setValue(value, pp, idx)
-  override def getDumpInfo =
-    super.getDumpInfo.copy(
-      mainInfo = s"idx=$idx, default=" + {
-        try default()
-        catch { case e: Throwable => "[" + e.getClass.getName + "]" }
-      },
-      attrInfo = ": " + ti)
+  override def getDumpInfo = super.getDumpInfo.copy(
+    mainInfo = s"idx=$idx, default=" + {
+      try default()
+      catch { case e: Throwable => "[" + e.getClass.getName + "]" }
+    },
+    attrInfo = ": " + ti)
   def width = 1
 }
 

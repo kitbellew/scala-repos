@@ -85,25 +85,23 @@ object Stopwatch extends Stopwatch {
     */
   val timeMillis: () => Long = () => Time.now.inMilliseconds
 
-  def start(): Elapsed =
-    Time.localGetTime() match {
-      case Some(local) =>
-        val startAt: Time = local()
-        () => local() - startAt
-      case None =>
-        val startAt: Long = systemNanos()
-        () => Duration.fromNanoseconds(systemNanos() - startAt)
-    }
+  def start(): Elapsed = Time.localGetTime() match {
+    case Some(local) =>
+      val startAt: Time = local()
+      () => local() - startAt
+    case None =>
+      val startAt: Long = systemNanos()
+      () => Duration.fromNanoseconds(systemNanos() - startAt)
+  }
 
   /**
     * A [[Stopwatch]] that always returns `dur` for the
     * elapsed [[Duration duration]].
     */
-  def const(dur: Duration): Stopwatch =
-    new Stopwatch {
-      private[this] val fn = () => dur
-      def start(): Elapsed = fn
-    }
+  def const(dur: Duration): Stopwatch = new Stopwatch {
+    private[this] val fn = () => dur
+    def start(): Elapsed = fn
+  }
 }
 
 /**

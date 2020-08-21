@@ -41,8 +41,8 @@ final class StringBuilder(private val underlying: JavaStringBuilder)
       repr: StringBuilder): StringBuilder = repr
 
   /** Creates a string builder buffer as builder for this class */
-  override protected[this] def newBuilder =
-    new GrowingBuilder(new StringBuilder)
+  override protected[this] def newBuilder = new GrowingBuilder(
+    new StringBuilder)
 
   /** Constructs a string builder initialized with string value `initValue`
     *  and with additional character capacity `initCapacity`.
@@ -229,8 +229,8 @@ final class StringBuilder(private val underlying: JavaStringBuilder)
     *  @param  xs  the characters to be appended.
     *  @return     this StringBuilder.
     */
-  def appendAll(xs: TraversableOnce[Char]): StringBuilder =
-    appendAll(xs.toArray)
+  def appendAll(xs: TraversableOnce[Char]): StringBuilder = appendAll(
+    xs.toArray)
 
   /** Appends all the Chars in the given Array[Char] to this sequence.
     *
@@ -427,11 +427,11 @@ final class StringBuilder(private val underlying: JavaStringBuilder)
   @migration(
     "`reverse` returns a new instance.  Use `reverseContents` to update in place and return that StringBuilder itself.",
     "2.8.0")
-  override def reverse: StringBuilder =
-    new StringBuilder(new JavaStringBuilder(underlying).reverse)
+  override def reverse: StringBuilder = new StringBuilder(
+    new JavaStringBuilder(underlying).reverse)
 
-  override def clone(): StringBuilder =
-    new StringBuilder(new JavaStringBuilder(underlying))
+  override def clone(): StringBuilder = new StringBuilder(
+    new JavaStringBuilder(underlying))
 
   /** Like reverse, but destructively updates the target StringBuilder.
     *

@@ -249,8 +249,9 @@ class DelayedOperationPurgatory[T <: DelayedOperation](
    * Return all the current watcher lists,
    * note that the returned watchers may be removed from the list by other threads
    */
-  private def allWatchers =
-    inReadLock(removeWatchersLock) { watchersForKey.values }
+  private def allWatchers = inReadLock(removeWatchersLock) {
+    watchersForKey.values
+  }
 
   /*
    * Return the watch list of the given key, note that we need to

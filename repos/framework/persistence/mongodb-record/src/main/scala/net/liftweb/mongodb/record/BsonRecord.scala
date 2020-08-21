@@ -50,8 +50,8 @@ trait BsonRecord[MyType <: BsonRecord[MyType]] extends Record[MyType] {
   /**
     * Save the instance and return the instance
     */
-  override def saveTheRecord(): Box[MyType] =
-    throw new BackingStoreException("BSON Records don't save themselves")
+  override def saveTheRecord(): Box[MyType] = throw new BackingStoreException(
+    "BSON Records don't save themselves")
 
   /**
     * Pattern.equals doesn't work properly so it needs a special check. If you use PatternField, be sure to override equals with this.

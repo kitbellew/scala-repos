@@ -38,8 +38,8 @@ object Rectangle {
   implicit def sfxRectangle2jfx(v: Rectangle): jfxss.Rectangle =
     if (v != null) v.delegate else null
 
-  def apply(width: Double, height: Double) =
-    new Rectangle(new jfxss.Rectangle(width, height))
+  def apply(width: Double, height: Double) = new Rectangle(
+    new jfxss.Rectangle(width, height))
 
   def apply(x: Double, y: Double, width: Double, height: Double) =
     new Rectangle(new jfxss.Rectangle(x, y, width, height))

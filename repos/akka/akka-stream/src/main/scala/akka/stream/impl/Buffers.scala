@@ -84,8 +84,8 @@ private[akka] object FixedSizeBuffer {
     // for the maintenance parameter see dropHead
     protected def toOffset(idx: Long, maintenance: Boolean): Int
 
-    private def put(idx: Long, elem: T, maintenance: Boolean): Unit =
-      buffer(toOffset(idx, maintenance)) = elem.asInstanceOf[AnyRef]
+    private def put(idx: Long, elem: T, maintenance: Boolean): Unit = buffer(
+      toOffset(idx, maintenance)) = elem.asInstanceOf[AnyRef]
     private def get(idx: Long): T = buffer(toOffset(idx, false)).asInstanceOf[T]
 
     def peek(): T = get(readIdx)

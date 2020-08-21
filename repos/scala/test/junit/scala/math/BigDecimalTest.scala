@@ -70,12 +70,10 @@ class BigDecimalTest {
   // Motivated by SI-6456: scala.math.BigDecimal should not accept a null value
   @Test
   def refusesNullTest() {
-    def isIAE[A](a: => A) =
-      try { a; false }
-      catch { case iae: IllegalArgumentException => true }
-    def isNPE[A](a: => A) =
-      try { a; false }
-      catch { case npe: NullPointerException => true }
+    def isIAE[A](a: => A) = try { a; false }
+    catch { case iae: IllegalArgumentException => true }
+    def isNPE[A](a: => A) = try { a; false }
+    catch { case npe: NullPointerException => true }
     assert(
       isIAE(new BigDecimal(null: BD, new MC(2))) &&
         isIAE(new BigDecimal(new BD("5.7"), null: MC)) &&
@@ -105,19 +103,18 @@ class BigDecimalTest {
   // Motivated by noticing BigDecimal(0.1f) != BigDecimal(0.1)
   @Test
   def consistentTenthsTest() {
-    def tenths =
-      List[Any](
-        BigDecimal("0.1"),
-        0.1,
-        BigDecimal.decimal(0.1f),
-        BigDecimal.decimal(0.1),
-        BigDecimal(0.1),
-        BigDecimal(BigInt(1), 1),
-        BigDecimal(new BD("0.1")),
-        BigDecimal(1L, 1),
-        BigDecimal(1) / BigDecimal(10),
-        BigDecimal(10).pow(-1)
-      )
+    def tenths = List[Any](
+      BigDecimal("0.1"),
+      0.1,
+      BigDecimal.decimal(0.1f),
+      BigDecimal.decimal(0.1),
+      BigDecimal(0.1),
+      BigDecimal(BigInt(1), 1),
+      BigDecimal(new BD("0.1")),
+      BigDecimal(1L, 1),
+      BigDecimal(1) / BigDecimal(10),
+      BigDecimal(10).pow(-1)
+    )
     for (a <- tenths; b <- tenths)
       assert(a == b, s"$a != $b but both should be 0.1")
   }

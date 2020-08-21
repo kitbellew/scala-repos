@@ -320,10 +320,9 @@ private[deploy] class Worker(
           registrationRetryTimer = Some(
             forwordMessageScheduler.scheduleAtFixedRate(
               new Runnable {
-                override def run(): Unit =
-                  Utils.tryLogNonFatalError {
-                    self.send(ReregisterWithMaster)
-                  }
+                override def run(): Unit = Utils.tryLogNonFatalError {
+                  self.send(ReregisterWithMaster)
+                }
               },
               PROLONGED_REGISTRATION_RETRY_INTERVAL_SECONDS,
               PROLONGED_REGISTRATION_RETRY_INTERVAL_SECONDS,
@@ -360,10 +359,9 @@ private[deploy] class Worker(
         registrationRetryTimer = Some(
           forwordMessageScheduler.scheduleAtFixedRate(
             new Runnable {
-              override def run(): Unit =
-                Utils.tryLogNonFatalError {
-                  Option(self).foreach(_.send(ReregisterWithMaster))
-                }
+              override def run(): Unit = Utils.tryLogNonFatalError {
+                Option(self).foreach(_.send(ReregisterWithMaster))
+              }
             },
             INITIAL_REGISTRATION_RETRY_INTERVAL_SECONDS,
             INITIAL_REGISTRATION_RETRY_INTERVAL_SECONDS,
@@ -409,10 +407,9 @@ private[deploy] class Worker(
           changeMaster(masterRef, masterWebUiUrl)
           forwordMessageScheduler.scheduleAtFixedRate(
             new Runnable {
-              override def run(): Unit =
-                Utils.tryLogNonFatalError {
-                  self.send(SendHeartbeat)
-                }
+              override def run(): Unit = Utils.tryLogNonFatalError {
+                self.send(SendHeartbeat)
+              }
             },
             0,
             HEARTBEAT_MILLIS,
@@ -422,10 +419,9 @@ private[deploy] class Worker(
               s"Worker cleanup enabled; old application directories will be deleted in: $workDir")
             forwordMessageScheduler.scheduleAtFixedRate(
               new Runnable {
-                override def run(): Unit =
-                  Utils.tryLogNonFatalError {
-                    self.send(WorkDirCleanup)
-                  }
+                override def run(): Unit = Utils.tryLogNonFatalError {
+                  self.send(WorkDirCleanup)
+                }
               },
               CLEANUP_INTERVAL_MILLIS,
               CLEANUP_INTERVAL_MILLIS,
@@ -450,202 +446,199 @@ private[deploy] class Worker(
       }
     }
 
-  override def receive: PartialFunction[Any, Unit] =
-    synchronized {
-      case SendHeartbeat =>
-        if (connected) { sendToMaster(Heartbeat(workerId, self)) }
+  override def receive: PartialFunction[Any, Unit] = synchronized {
+    case SendHeartbeat =>
+      if (connected) { sendToMaster(Heartbeat(workerId, self)) }
 
-      case WorkDirCleanup =>
-        // Spin up a separate thread (in a future) to do the dir cleanup; don't tie up worker
-        // rpcEndpoint.
-        // Copy ids so that it can be used in the cleanup thread.
-        val appIds = executors.values.map(_.appId).toSet
-        val cleanupFuture = concurrent.Future {
-          val appDirs = workDir.listFiles()
-          if (appDirs == null) {
-            throw new IOException("ERROR: Failed to list files in " + appDirs)
-          }
-          appDirs
-            .filter { dir =>
-              // the directory is used by an application - check that the application is not running
-              // when cleaning up
-              val appIdFromDir = dir.getName
-              val isAppStillRunning = appIds.contains(appIdFromDir)
-              dir.isDirectory && !isAppStillRunning &&
-              !Utils.doesDirectoryContainAnyNewFiles(
-                dir,
-                APP_DATA_RETENTION_SECONDS)
-            }
-            .foreach { dir =>
-              logInfo(s"Removing directory: ${dir.getPath}")
-              Utils.deleteRecursively(dir)
-            }
-        }(cleanupThreadExecutor)
-
-        cleanupFuture.onFailure { case e: Throwable =>
-          logError("App dir cleanup failed: " + e.getMessage, e)
-        }(cleanupThreadExecutor)
-
-      case MasterChanged(masterRef, masterWebUiUrl) =>
-        logInfo(
-          "Master has changed, new master is at " + masterRef.address.toSparkURL)
-        changeMaster(masterRef, masterWebUiUrl)
-
-        val execs = executors.values.map(e =>
-          new ExecutorDescription(e.appId, e.execId, e.cores, e.state))
-        masterRef.send(
-          WorkerSchedulerStateResponse(
-            workerId,
-            execs.toList,
-            drivers.keys.toSeq))
-
-      case ReconnectWorker(masterUrl) =>
-        logInfo(
-          s"Master with url $masterUrl requested this worker to reconnect.")
-        registerWithMaster()
-
-      case LaunchExecutor(masterUrl, appId, execId, appDesc, cores_, memory_) =>
-        if (masterUrl != activeMasterUrl) {
-          logWarning(
-            "Invalid Master (" + masterUrl + ") attempted to launch executor.")
-        } else {
-          try {
-            logInfo(
-              "Asked to launch executor %s/%d for %s"
-                .format(appId, execId, appDesc.name))
-
-            // Create the executor's working directory
-            val executorDir = new File(workDir, appId + "/" + execId)
-            if (!executorDir.mkdirs()) {
-              throw new IOException("Failed to create directory " + executorDir)
-            }
-
-            // Create local dirs for the executor. These are passed to the executor via the
-            // SPARK_EXECUTOR_DIRS environment variable, and deleted by the Worker when the
-            // application finishes.
-            val appLocalDirs = appDirectories.getOrElse(
-              appId,
-              Utils
-                .getOrCreateLocalRootDirs(conf)
-                .map { dir =>
-                  val appDir =
-                    Utils.createDirectory(dir, namePrefix = "executor")
-                  Utils.chmod700(appDir)
-                  appDir.getAbsolutePath()
-                }
-                .toSeq
-            )
-            appDirectories(appId) = appLocalDirs
-            val manager = new ExecutorRunner(
-              appId,
-              execId,
-              appDesc.copy(command =
-                Worker.maybeUpdateSSLSettings(appDesc.command, conf)),
-              cores_,
-              memory_,
-              self,
-              workerId,
-              host,
-              webUi.boundPort,
-              publicAddress,
-              sparkHome,
-              executorDir,
-              workerUri,
-              conf,
-              appLocalDirs,
-              ExecutorState.RUNNING)
-            executors(appId + "/" + execId) = manager
-            manager.start()
-            coresUsed += cores_
-            memoryUsed += memory_
-            sendToMaster(
-              ExecutorStateChanged(appId, execId, manager.state, None, None))
-          } catch {
-            case e: Exception => {
-              logError(
-                s"Failed to launch executor $appId/$execId for ${appDesc.name}.",
-                e)
-              if (executors.contains(appId + "/" + execId)) {
-                executors(appId + "/" + execId).kill()
-                executors -= appId + "/" + execId
-              }
-              sendToMaster(
-                ExecutorStateChanged(
-                  appId,
-                  execId,
-                  ExecutorState.FAILED,
-                  Some(e.toString),
-                  None))
-            }
-          }
+    case WorkDirCleanup =>
+      // Spin up a separate thread (in a future) to do the dir cleanup; don't tie up worker
+      // rpcEndpoint.
+      // Copy ids so that it can be used in the cleanup thread.
+      val appIds = executors.values.map(_.appId).toSet
+      val cleanupFuture = concurrent.Future {
+        val appDirs = workDir.listFiles()
+        if (appDirs == null) {
+          throw new IOException("ERROR: Failed to list files in " + appDirs)
         }
+        appDirs
+          .filter { dir =>
+            // the directory is used by an application - check that the application is not running
+            // when cleaning up
+            val appIdFromDir = dir.getName
+            val isAppStillRunning = appIds.contains(appIdFromDir)
+            dir.isDirectory && !isAppStillRunning &&
+            !Utils.doesDirectoryContainAnyNewFiles(
+              dir,
+              APP_DATA_RETENTION_SECONDS)
+          }
+          .foreach { dir =>
+            logInfo(s"Removing directory: ${dir.getPath}")
+            Utils.deleteRecursively(dir)
+          }
+      }(cleanupThreadExecutor)
 
-      case executorStateChanged @ ExecutorStateChanged(
+      cleanupFuture.onFailure { case e: Throwable =>
+        logError("App dir cleanup failed: " + e.getMessage, e)
+      }(cleanupThreadExecutor)
+
+    case MasterChanged(masterRef, masterWebUiUrl) =>
+      logInfo(
+        "Master has changed, new master is at " + masterRef.address.toSparkURL)
+      changeMaster(masterRef, masterWebUiUrl)
+
+      val execs = executors.values.map(e =>
+        new ExecutorDescription(e.appId, e.execId, e.cores, e.state))
+      masterRef.send(
+        WorkerSchedulerStateResponse(
+          workerId,
+          execs.toList,
+          drivers.keys.toSeq))
+
+    case ReconnectWorker(masterUrl) =>
+      logInfo(s"Master with url $masterUrl requested this worker to reconnect.")
+      registerWithMaster()
+
+    case LaunchExecutor(masterUrl, appId, execId, appDesc, cores_, memory_) =>
+      if (masterUrl != activeMasterUrl) {
+        logWarning(
+          "Invalid Master (" + masterUrl + ") attempted to launch executor.")
+      } else {
+        try {
+          logInfo(
+            "Asked to launch executor %s/%d for %s"
+              .format(appId, execId, appDesc.name))
+
+          // Create the executor's working directory
+          val executorDir = new File(workDir, appId + "/" + execId)
+          if (!executorDir.mkdirs()) {
+            throw new IOException("Failed to create directory " + executorDir)
+          }
+
+          // Create local dirs for the executor. These are passed to the executor via the
+          // SPARK_EXECUTOR_DIRS environment variable, and deleted by the Worker when the
+          // application finishes.
+          val appLocalDirs = appDirectories.getOrElse(
+            appId,
+            Utils
+              .getOrCreateLocalRootDirs(conf)
+              .map { dir =>
+                val appDir = Utils.createDirectory(dir, namePrefix = "executor")
+                Utils.chmod700(appDir)
+                appDir.getAbsolutePath()
+              }
+              .toSeq
+          )
+          appDirectories(appId) = appLocalDirs
+          val manager = new ExecutorRunner(
             appId,
             execId,
-            state,
-            message,
-            exitStatus) =>
-        handleExecutorStateChanged(executorStateChanged)
-
-      case KillExecutor(masterUrl, appId, execId) =>
-        if (masterUrl != activeMasterUrl) {
-          logWarning(
-            "Invalid Master (" + masterUrl + ") attempted to launch executor " + execId)
-        } else {
-          val fullId = appId + "/" + execId
-          executors.get(fullId) match {
-            case Some(executor) =>
-              logInfo("Asked to kill executor " + fullId)
-              executor.kill()
-            case None =>
-              logInfo("Asked to kill unknown executor " + fullId)
+            appDesc.copy(command =
+              Worker.maybeUpdateSSLSettings(appDesc.command, conf)),
+            cores_,
+            memory_,
+            self,
+            workerId,
+            host,
+            webUi.boundPort,
+            publicAddress,
+            sparkHome,
+            executorDir,
+            workerUri,
+            conf,
+            appLocalDirs,
+            ExecutorState.RUNNING)
+          executors(appId + "/" + execId) = manager
+          manager.start()
+          coresUsed += cores_
+          memoryUsed += memory_
+          sendToMaster(
+            ExecutorStateChanged(appId, execId, manager.state, None, None))
+        } catch {
+          case e: Exception => {
+            logError(
+              s"Failed to launch executor $appId/$execId for ${appDesc.name}.",
+              e)
+            if (executors.contains(appId + "/" + execId)) {
+              executors(appId + "/" + execId).kill()
+              executors -= appId + "/" + execId
+            }
+            sendToMaster(
+              ExecutorStateChanged(
+                appId,
+                execId,
+                ExecutorState.FAILED,
+                Some(e.toString),
+                None))
           }
         }
-
-      case LaunchDriver(driverId, driverDesc) => {
-        logInfo(s"Asked to launch driver $driverId")
-        val driver = new DriverRunner(
-          conf,
-          driverId,
-          workDir,
-          sparkHome,
-          driverDesc.copy(command =
-            Worker.maybeUpdateSSLSettings(driverDesc.command, conf)),
-          self,
-          workerUri,
-          securityMgr)
-        drivers(driverId) = driver
-        driver.start()
-
-        coresUsed += driverDesc.cores
-        memoryUsed += driverDesc.mem
       }
 
-      case KillDriver(driverId) => {
-        logInfo(s"Asked to kill driver $driverId")
-        drivers.get(driverId) match {
-          case Some(runner) =>
-            runner.kill()
+    case executorStateChanged @ ExecutorStateChanged(
+          appId,
+          execId,
+          state,
+          message,
+          exitStatus) =>
+      handleExecutorStateChanged(executorStateChanged)
+
+    case KillExecutor(masterUrl, appId, execId) =>
+      if (masterUrl != activeMasterUrl) {
+        logWarning(
+          "Invalid Master (" + masterUrl + ") attempted to launch executor " + execId)
+      } else {
+        val fullId = appId + "/" + execId
+        executors.get(fullId) match {
+          case Some(executor) =>
+            logInfo("Asked to kill executor " + fullId)
+            executor.kill()
           case None =>
-            logError(s"Asked to kill unknown driver $driverId")
+            logInfo("Asked to kill unknown executor " + fullId)
         }
       }
 
-      case driverStateChanged @ DriverStateChanged(
-            driverId,
-            state,
-            exception) => {
-        handleDriverStateChanged(driverStateChanged)
-      }
+    case LaunchDriver(driverId, driverDesc) => {
+      logInfo(s"Asked to launch driver $driverId")
+      val driver = new DriverRunner(
+        conf,
+        driverId,
+        workDir,
+        sparkHome,
+        driverDesc.copy(command =
+          Worker.maybeUpdateSSLSettings(driverDesc.command, conf)),
+        self,
+        workerUri,
+        securityMgr)
+      drivers(driverId) = driver
+      driver.start()
 
-      case ReregisterWithMaster =>
-        reregisterWithMaster()
-
-      case ApplicationFinished(id) =>
-        finishedApps += id
-        maybeCleanupApplication(id)
+      coresUsed += driverDesc.cores
+      memoryUsed += driverDesc.mem
     }
+
+    case KillDriver(driverId) => {
+      logInfo(s"Asked to kill driver $driverId")
+      drivers.get(driverId) match {
+        case Some(runner) =>
+          runner.kill()
+        case None =>
+          logError(s"Asked to kill unknown driver $driverId")
+      }
+    }
+
+    case driverStateChanged @ DriverStateChanged(
+          driverId,
+          state,
+          exception) => {
+      handleDriverStateChanged(driverStateChanged)
+    }
+
+    case ReregisterWithMaster =>
+      reregisterWithMaster()
+
+    case ApplicationFinished(id) =>
+      finishedApps += id
+      maybeCleanupApplication(id)
+  }
 
   override def receiveAndReply(
       context: RpcCallContext): PartialFunction[Any, Unit] = {

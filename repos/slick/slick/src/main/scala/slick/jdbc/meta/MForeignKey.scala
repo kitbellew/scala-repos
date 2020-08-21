@@ -54,12 +54,11 @@ object MForeignKey {
         r.<<)
     }
 
-  private[this] def fkActionFor(v: Short) =
-    v match {
-      case DatabaseMetaData.importedKeyNoAction   => ForeignKeyAction.NoAction
-      case DatabaseMetaData.importedKeyCascade    => ForeignKeyAction.Cascade
-      case DatabaseMetaData.importedKeySetNull    => ForeignKeyAction.SetNull
-      case DatabaseMetaData.importedKeySetDefault => ForeignKeyAction.SetDefault
-      case DatabaseMetaData.importedKeyRestrict   => ForeignKeyAction.Restrict
-    }
+  private[this] def fkActionFor(v: Short) = v match {
+    case DatabaseMetaData.importedKeyNoAction   => ForeignKeyAction.NoAction
+    case DatabaseMetaData.importedKeyCascade    => ForeignKeyAction.Cascade
+    case DatabaseMetaData.importedKeySetNull    => ForeignKeyAction.SetNull
+    case DatabaseMetaData.importedKeySetDefault => ForeignKeyAction.SetDefault
+    case DatabaseMetaData.importedKeyRestrict   => ForeignKeyAction.Restrict
+  }
 }

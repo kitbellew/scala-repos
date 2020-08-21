@@ -284,12 +284,11 @@ class HoconFormatter(settings: CodeStyleSettings) {
 
     }
 
-  def getChildIndent(parent: ASTNode) =
-    parent.getElementType match {
-      case Object | Array                   => Indent.getNormalIndent
-      case Include | KeyedField.extractor() => Indent.getContinuationIndent
-      case _                                => Indent.getNoneIndent
-    }
+  def getChildIndent(parent: ASTNode) = parent.getElementType match {
+    case Object | Array                   => Indent.getNormalIndent
+    case Include | KeyedField.extractor() => Indent.getContinuationIndent
+    case _                                => Indent.getNoneIndent
+  }
 
   def getChildAlignment(alignmentCache: AlignmentCache, parent: ASTNode) =
     parent.getElementType match {

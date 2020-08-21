@@ -97,16 +97,15 @@ object RowOrdering {
   /**
     * Returns true iff the data type can be ordered (i.e. can be sorted).
     */
-  def isOrderable(dataType: DataType): Boolean =
-    dataType match {
-      case NullType       => true
-      case dt: AtomicType => true
-      case struct: StructType =>
-        struct.fields.forall(f => isOrderable(f.dataType))
-      case array: ArrayType        => isOrderable(array.elementType)
-      case udt: UserDefinedType[_] => isOrderable(udt.sqlType)
-      case _                       => false
-    }
+  def isOrderable(dataType: DataType): Boolean = dataType match {
+    case NullType       => true
+    case dt: AtomicType => true
+    case struct: StructType =>
+      struct.fields.forall(f => isOrderable(f.dataType))
+    case array: ArrayType        => isOrderable(array.elementType)
+    case udt: UserDefinedType[_] => isOrderable(udt.sqlType)
+    case _                       => false
+  }
 
   /**
     * Returns true iff outputs from the expressions can be ordered.

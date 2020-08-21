@@ -140,11 +140,10 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
 
   def compareTo(that: URI): Int = internalCompare(that)(_.compareTo(_))
 
-  override def equals(that: Any): Boolean =
-    that match {
-      case that: URI => internalCompare(that)(URI.escapeAwareCompare) == 0
-      case _         => false
-    }
+  override def equals(that: Any): Boolean = that match {
+    case that: URI => internalCompare(that)(URI.escapeAwareCompare) == 0
+    case _         => false
+  }
 
   def getAuthority(): String = _authority.map(decodeComponent).orNull
   def getFragment(): String = _fragment.map(decodeComponent).orNull
@@ -177,79 +176,77 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
   def isAbsolute(): Boolean = _isAbsolute
   def isOpaque(): Boolean = _isOpaque
 
-  def normalize(): URI =
-    if (_isOpaque || _path.isEmpty) this
-    else {
-      val origPath = _path.get
+  def normalize(): URI = if (_isOpaque || _path.isEmpty) this
+  else {
+    val origPath = _path.get
 
-      // Step 1: Remove all "." segments
-      // Step 2: Remove ".." segments preceeded by non ".." segment until no
-      // longer applicable
+    // Step 1: Remove all "." segments
+    // Step 2: Remove ".." segments preceeded by non ".." segment until no
+    // longer applicable
 
-      /** Checks whether a successive ".." may drop the head of a
-        *  reversed segment list.
-        */
-      def okToDropFrom(resRev: List[String]) =
-        resRev.nonEmpty && resRev.head != ".." && resRev.head != ""
+    /** Checks whether a successive ".." may drop the head of a
+      *  reversed segment list.
+      */
+    def okToDropFrom(resRev: List[String]) =
+      resRev.nonEmpty && resRev.head != ".." && resRev.head != ""
 
-      @tailrec
-      def loop(in: List[String], resRev: List[String]): List[String] =
-        in match {
-          case "." :: Nil =>
-            // convert "." segments at end to an empty segment
-            // (consider: /a/b/. => /a/b/, not /a/b)
-            loop(Nil, "" :: resRev)
-          case ".." :: Nil if okToDropFrom(resRev) =>
-            // prevent a ".." segment at end to change a "dir" into a "file"
-            // (consider: /a/b/.. => /a/, not /a)
-            loop(Nil, "" :: resRev.tail)
-          case "." :: xs =>
-            // remove "." segments
-            loop(xs, resRev)
-          case "" :: xs if xs.nonEmpty =>
-            // remove empty segments not at end of path
-            loop(xs, resRev)
-          case ".." :: xs if okToDropFrom(resRev) =>
-            // Remove preceeding non-".." segment
-            loop(xs, resRev.tail)
-          case x :: xs =>
-            loop(xs, x :: resRev)
-          case Nil =>
-            resRev.reverse
-        }
-
-      // Split into segments. -1 since we want empty trailing ones
-      val segments0 = origPath.split("/", -1).toList
-      val isAbsPath = segments0.nonEmpty && segments0.head == ""
-      // Don't inject first empty segment into normalization loop, so we
-      // won't need to special case it.
-      val segments1 = if (isAbsPath) segments0.tail else segments0
-      val segments2 = loop(segments1, Nil)
-
-      // Step 3: If path is relative and first segment contains ":", prepend "."
-      // segment (according to JavaDoc). If it is absolute, add empty
-      // segment again to have leading "/".
-      val segments3 = {
-        if (isAbsPath)
-          "" :: segments2
-        else if (segments2.nonEmpty && segments2.head.contains(':'))
-          "." :: segments2
-        else segments2
-      }
-
-      val newPath = segments3.mkString("/")
-
-      // Only create new instance if anything changed
-      if (newPath == origPath)
-        this
-      else
-        new URI(
-          getScheme(),
-          getRawAuthority(),
-          newPath,
-          getQuery(),
-          getFragment())
+    @tailrec
+    def loop(in: List[String], resRev: List[String]): List[String] = in match {
+      case "." :: Nil =>
+        // convert "." segments at end to an empty segment
+        // (consider: /a/b/. => /a/b/, not /a/b)
+        loop(Nil, "" :: resRev)
+      case ".." :: Nil if okToDropFrom(resRev) =>
+        // prevent a ".." segment at end to change a "dir" into a "file"
+        // (consider: /a/b/.. => /a/, not /a)
+        loop(Nil, "" :: resRev.tail)
+      case "." :: xs =>
+        // remove "." segments
+        loop(xs, resRev)
+      case "" :: xs if xs.nonEmpty =>
+        // remove empty segments not at end of path
+        loop(xs, resRev)
+      case ".." :: xs if okToDropFrom(resRev) =>
+        // Remove preceeding non-".." segment
+        loop(xs, resRev.tail)
+      case x :: xs =>
+        loop(xs, x :: resRev)
+      case Nil =>
+        resRev.reverse
     }
+
+    // Split into segments. -1 since we want empty trailing ones
+    val segments0 = origPath.split("/", -1).toList
+    val isAbsPath = segments0.nonEmpty && segments0.head == ""
+    // Don't inject first empty segment into normalization loop, so we
+    // won't need to special case it.
+    val segments1 = if (isAbsPath) segments0.tail else segments0
+    val segments2 = loop(segments1, Nil)
+
+    // Step 3: If path is relative and first segment contains ":", prepend "."
+    // segment (according to JavaDoc). If it is absolute, add empty
+    // segment again to have leading "/".
+    val segments3 = {
+      if (isAbsPath)
+        "" :: segments2
+      else if (segments2.nonEmpty && segments2.head.contains(':'))
+        "." :: segments2
+      else segments2
+    }
+
+    val newPath = segments3.mkString("/")
+
+    // Only create new instance if anything changed
+    if (newPath == origPath)
+      this
+    else
+      new URI(
+        getScheme(),
+        getRawAuthority(),
+        newPath,
+        getQuery(),
+        getFragment())
+  }
 
   def parseServerAuthority(): URI = {
     if (_authority.nonEmpty && _host.isEmpty)
@@ -258,10 +255,9 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
   }
 
   def relativize(uri: URI): URI = {
-    def authoritiesEqual =
-      this._authority.fold(uri._authority.isEmpty) { a1 =>
-        uri._authority.fold(false)(a2 => URI.escapeAwareCompare(a1, a2) == 0)
-      }
+    def authoritiesEqual = this._authority.fold(uri._authority.isEmpty) { a1 =>
+      uri._authority.fold(false)(a2 => URI.escapeAwareCompare(a1, a2) == 0)
+    }
 
     if (this.isOpaque || uri.isOpaque ||
       this._scheme != uri._scheme || !authoritiesEqual) uri

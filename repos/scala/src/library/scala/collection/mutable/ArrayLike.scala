@@ -42,11 +42,10 @@ trait ArrayLike[A, +Repr] extends Any with IndexedSeqOptimized[A, Repr] {
     new scala.collection.AbstractSeq[Any]
       with scala.collection.IndexedSeq[Any] {
       def length = self.length
-      def apply(idx: Int): Any =
-        self.apply(idx) match {
-          case x: AnyRef if x.getClass.isArray => WrappedArray.make(x).deep
-          case x                               => x
-        }
+      def apply(idx: Int): Any = self.apply(idx) match {
+        case x: AnyRef if x.getClass.isArray => WrappedArray.make(x).deep
+        case x                               => x
+      }
       override def stringPrefix = "Array"
     }
 }

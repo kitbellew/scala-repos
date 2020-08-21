@@ -154,15 +154,14 @@ object ProtectedBranchService {
       }
     }
     def unSuccessedContexts(sha1: String)(implicit
-        session: Session): Set[String] =
-      if (contexts.isEmpty) {
-        Set.empty
-      } else {
-        contexts.toSet -- getCommitStatues(owner, repository, sha1)
-          .filter(_.state == CommitState.SUCCESS)
-          .map(_.context)
-          .toSet
-      }
+        session: Session): Set[String] = if (contexts.isEmpty) {
+      Set.empty
+    } else {
+      contexts.toSet -- getCommitStatues(owner, repository, sha1)
+        .filter(_.state == CommitState.SUCCESS)
+        .map(_.context)
+        .toSet
+    }
     def needStatusCheck(pusher: String)(implicit session: Session): Boolean =
       pusher match {
         case _ if !enabled              => false

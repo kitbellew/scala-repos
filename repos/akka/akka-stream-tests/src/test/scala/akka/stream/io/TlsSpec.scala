@@ -71,29 +71,29 @@ object TlsSpec {
     private val out = Outlet[ByteString]("out")
     override val shape = FlowShape(in, out)
 
-    override def createLogic(attr: Attributes) =
-      new TimerGraphStageLogic(shape) {
-        override def preStart(): Unit = scheduleOnce((), duration)
+    override def createLogic(attr: Attributes) = new TimerGraphStageLogic(
+      shape) {
+      override def preStart(): Unit = scheduleOnce((), duration)
 
-        var last: ByteString = _
-        setHandler(
-          in,
-          new InHandler {
-            override def onPush(): Unit = {
-              last = grab(in)
-              push(out, last)
-            }
-          })
-        setHandler(
-          out,
-          new OutHandler {
-            override def onPull(): Unit = pull(in)
-          })
-        override def onTimer(x: Any): Unit = {
-          failStage(
-            new TimeoutException(s"timeout expired, last element was $last"))
-        }
+      var last: ByteString = _
+      setHandler(
+        in,
+        new InHandler {
+          override def onPush(): Unit = {
+            last = grab(in)
+            push(out, last)
+          }
+        })
+      setHandler(
+        out,
+        new OutHandler {
+          override def onPull(): Unit = pull(in)
+        })
+      override def onTimer(x: Any): Unit = {
+        failStage(
+          new TimeoutException(s"timeout expired, last element was $last"))
       }
+    }
   }
 
 }
@@ -359,17 +359,15 @@ class TlsSpec
 
     object SessionRenegotiationFirstOne extends PayloadScenario {
       override def flow = logCipherSuite
-      def inputs =
-        NegotiateNewSession.withCipherSuites(
-          "TLS_RSA_WITH_AES_128_CBC_SHA") :: send("hello") :: Nil
+      def inputs = NegotiateNewSession.withCipherSuites(
+        "TLS_RSA_WITH_AES_128_CBC_SHA") :: send("hello") :: Nil
       def output = ByteString("TLS_RSA_WITH_AES_128_CBC_SHAhello")
     }
 
     object SessionRenegotiationFirstTwo extends PayloadScenario {
       override def flow = logCipherSuite
-      def inputs =
-        NegotiateNewSession.withCipherSuites(
-          "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA") :: send("hello") :: Nil
+      def inputs = NegotiateNewSession.withCipherSuites(
+        "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA") :: send("hello") :: Nil
       def output = ByteString("TLS_ECDHE_RSA_WITH_AES_128_CBC_SHAhello")
     }
 

@@ -65,41 +65,39 @@ class MongoMapField[OwnerType <: BsonRecord[OwnerType], MapValueType](
     }
   }
 
-  def setFromJValue(jvalue: JValue) =
-    jvalue match {
-      case JNothing | JNull if optional_? => setBox(Empty)
-      case JObject(obj) =>
-        setBox(
-          Full(
-            Map() ++ obj.map(jf =>
-              (jf.name, jf.value.values.asInstanceOf[MapValueType]))
-          ))
-      case other => setBox(FieldHelpers.expectedA("JObject", other))
-    }
+  def setFromJValue(jvalue: JValue) = jvalue match {
+    case JNothing | JNull if optional_? => setBox(Empty)
+    case JObject(obj) =>
+      setBox(
+        Full(
+          Map() ++ obj.map(jf =>
+            (jf.name, jf.value.values.asInstanceOf[MapValueType]))
+        ))
+    case other => setBox(FieldHelpers.expectedA("JObject", other))
+  }
 
-  def setFromString(in: String): Box[Map[String, MapValueType]] =
-    tryo(JsonParser.parse(in)) match {
-      case Full(jv: JValue) => setFromJValue(jv)
-      case f: Failure       => setBox(f)
-      case other            => setBox(Failure("Error parsing String into a JValue: " + in))
-    }
+  def setFromString(in: String): Box[Map[String, MapValueType]] = tryo(
+    JsonParser.parse(in)) match {
+    case Full(jv: JValue) => setFromJValue(jv)
+    case f: Failure       => setBox(f)
+    case other            => setBox(Failure("Error parsing String into a JValue: " + in))
+  }
 
   def toForm: Box[NodeSeq] = Empty
 
-  def asJValue: JValue =
-    JObject(value.keys.map { k =>
-      JField(
-        k,
-        value(k).asInstanceOf[AnyRef] match {
-          case x if primitive_?(x.getClass) => primitive2jvalue(x)
-          case x if mongotype_?(x.getClass) =>
-            mongotype2jvalue(x)(owner.meta.formats)
-          case x if datetype_?(x.getClass) =>
-            datetype2jvalue(x)(owner.meta.formats)
-          case _ => JNothing
-        }
-      )
-    }.toList)
+  def asJValue: JValue = JObject(value.keys.map { k =>
+    JField(
+      k,
+      value(k).asInstanceOf[AnyRef] match {
+        case x if primitive_?(x.getClass) => primitive2jvalue(x)
+        case x if mongotype_?(x.getClass) =>
+          mongotype2jvalue(x)(owner.meta.formats)
+        case x if datetype_?(x.getClass) =>
+          datetype2jvalue(x)(owner.meta.formats)
+        case _ => JNothing
+      }
+    )
+  }.toList)
 
   /*
    * Convert this field's value into a DBObject so it can be stored in Mongo.

@@ -1003,12 +1003,11 @@ class TcpConnectionSpec extends AkkaSpec("""
     // calling .underlyingActor ensures that the actor is actually created at this point
     lazy val clientSideChannel = connectionActor.underlyingActor.channel
 
-    override def run(body: ⇒ Unit): Unit =
-      super.run {
-        registerCallReceiver.expectMsg(Registration(clientSideChannel, 0))
-        registerCallReceiver.sender should ===(connectionActor)
-        body
-      }
+    override def run(body: ⇒ Unit): Unit = super.run {
+      registerCallReceiver.expectMsg(Registration(clientSideChannel, 0))
+      registerCallReceiver.sender should ===(connectionActor)
+      body
+    }
   }
 
   abstract class EstablishedConnectionTest(
@@ -1038,37 +1037,36 @@ class TcpConnectionSpec extends AkkaSpec("""
       if (Helpers.isWindows) clientSelectionKey.interestOps(OP_CONNECT)
     }
 
-    override def run(body: ⇒ Unit): Unit =
-      super.run {
-        try {
-          serverSideChannel.configureBlocking(false)
-          serverSideChannel should not be (null)
+    override def run(body: ⇒ Unit): Unit = super.run {
+      try {
+        serverSideChannel.configureBlocking(false)
+        serverSideChannel should not be (null)
 
-          interestCallReceiver.expectMsg(OP_CONNECT)
-          selector.send(connectionActor, ChannelConnectable)
-          userHandler.expectMsg(
-            Connected(
-              serverAddress,
-              clientSideChannel.socket.getLocalSocketAddress
-                .asInstanceOf[InetSocketAddress]))
+        interestCallReceiver.expectMsg(OP_CONNECT)
+        selector.send(connectionActor, ChannelConnectable)
+        userHandler.expectMsg(
+          Connected(
+            serverAddress,
+            clientSideChannel.socket.getLocalSocketAddress
+              .asInstanceOf[InetSocketAddress]))
 
-          userHandler.send(
-            connectionActor,
-            Register(
-              connectionHandler.ref,
-              keepOpenOnPeerClosed,
-              useResumeWriting))
-          ignoreWindowsWorkaroundForTicket15766()
-          if (!pullMode) interestCallReceiver.expectMsg(OP_READ)
+        userHandler.send(
+          connectionActor,
+          Register(
+            connectionHandler.ref,
+            keepOpenOnPeerClosed,
+            useResumeWriting))
+        ignoreWindowsWorkaroundForTicket15766()
+        if (!pullMode) interestCallReceiver.expectMsg(OP_READ)
 
-          clientSelectionKey // trigger initialization
-          serverSelectionKey // trigger initialization
-          body
-        } finally {
-          serverSideChannel.close()
-          nioSelector.close()
-        }
+        clientSelectionKey // trigger initialization
+        serverSelectionKey // trigger initialization
+        body
+      } finally {
+        serverSideChannel.close()
+        nioSelector.close()
       }
+    }
 
     final val TestSize = 10000 // compile-time constant
 

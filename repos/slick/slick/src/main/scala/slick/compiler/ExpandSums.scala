@@ -290,87 +290,82 @@ class ExpandSums extends Phase {
   }
 
   /** Create a SilentCast call unless the type already matches */
-  def silentCast(tpe: Type, n: Node): Node =
-    n match {
-      case LiteralNode(None) :@ OptionType(ScalaBaseType.nullType) =>
-        buildMultiColumnNone(tpe)
-      case n :@ tpe2 if tpe2 == tpe => n
-      case n =>
-        if (tpe == UnassignedType)
-          throw new SlickTreeException("Unexpected UnassignedType for:", n)
-        Library.SilentCast.typed(tpe, n).infer()
-    }
+  def silentCast(tpe: Type, n: Node): Node = n match {
+    case LiteralNode(None) :@ OptionType(ScalaBaseType.nullType) =>
+      buildMultiColumnNone(tpe)
+    case n :@ tpe2 if tpe2 == tpe => n
+    case n =>
+      if (tpe == UnassignedType)
+        throw new SlickTreeException("Unexpected UnassignedType for:", n)
+      Library.SilentCast.typed(tpe, n).infer()
+  }
 
   /** Create a Node representing a structure of null values of the given Type */
-  def buildMultiColumnNone(tpe: Type): Node =
-    (tpe.structural match {
-      case ProductType(ch) => ProductNode(ch.map(buildMultiColumnNone))
-      case StructType(ch) =>
-        StructNode(ch.map { case (sym, t) => (sym, buildMultiColumnNone(t)) })
-      case OptionType(ch) => LiteralNode(tpe, None)
-      case t =>
-        throw new SlickException(
-          "Unexpected non-Option type in multi-column None")
-    }) :@ tpe
+  def buildMultiColumnNone(tpe: Type): Node = (tpe.structural match {
+    case ProductType(ch) => ProductNode(ch.map(buildMultiColumnNone))
+    case StructType(ch) =>
+      StructNode(ch.map { case (sym, t) => (sym, buildMultiColumnNone(t)) })
+    case OptionType(ch) => LiteralNode(tpe, None)
+    case t =>
+      throw new SlickException(
+        "Unexpected non-Option type in multi-column None")
+  }) :@ tpe
 
   /** Perform the sum expansion on a Type */
   def trType(tpe: Type): Type = {
-    def f(tpe: Type): Type =
-      tpe.mapChildren(f) match {
-        case t @ OptionType.Primitive(_) => t
-        case OptionType(ch) =>
-          ProductType(
-            ConstArray(
-              ScalaBaseType.optionDiscType.optionType,
-              toOptionColumns(ch)))
-        case t => t
-      }
+    def f(tpe: Type): Type = tpe.mapChildren(f) match {
+      case t @ OptionType.Primitive(_) => t
+      case OptionType(ch) =>
+        ProductType(
+          ConstArray(
+            ScalaBaseType.optionDiscType.optionType,
+            toOptionColumns(ch)))
+      case t => t
+    }
     val tpe2 = f(tpe)
     logger.debug(s"Translated type: $tpe -> $tpe2")
     tpe2
   }
 
   /** Strip nominal types and convert all atomic types to OptionTypes */
-  def toOptionColumns(tpe: Type): Type =
-    tpe match {
-      case NominalType(_, str)                                          => toOptionColumns(str)
-      case o @ OptionType(ch) if ch.structural.isInstanceOf[AtomicType] => o
-      case t: AtomicType                                                => OptionType(t)
-      case t                                                            => t.mapChildren(toOptionColumns)
-    }
+  def toOptionColumns(tpe: Type): Type = tpe match {
+    case NominalType(_, str)                                          => toOptionColumns(str)
+    case o @ OptionType(ch) if ch.structural.isInstanceOf[AtomicType] => o
+    case t: AtomicType                                                => OptionType(t)
+    case t                                                            => t.mapChildren(toOptionColumns)
+  }
 
   /** Fuse unnecessary Option operations */
-  def fuse(n: Node): Node =
-    n match {
-      // Option.map
-      case IfThenElse(
-            ConstArray(
-              Library.Not(Library.==(disc, LiteralNode(null))),
-              ProductNode(ConstArray(Disc1, map)),
-              ProductNode(ConstArray(DiscNone, _)))) =>
-        ProductNode(ConstArray(disc, map)).infer()
-      case n => n
-    }
+  def fuse(n: Node): Node = n match {
+    // Option.map
+    case IfThenElse(
+          ConstArray(
+            Library.Not(Library.==(disc, LiteralNode(null))),
+            ProductNode(ConstArray(Disc1, map)),
+            ProductNode(ConstArray(DiscNone, _)))) =>
+      ProductNode(ConstArray(disc, map)).infer()
+    case n => n
+  }
 
   /** Collect discriminator candidate fields in a predicate. These are all paths below an
     * OptionApply, which indicates their future use under a discriminator guard.
     */
   def collectDiscriminatorCandidates(
-      n: Node): Set[(TypeSymbol, List[TermSymbol])] =
-    n.collectAll[(TypeSymbol, List[TermSymbol])] { case OptionApply(ch) =>
+      n: Node): Set[(TypeSymbol, List[TermSymbol])] = n
+    .collectAll[(TypeSymbol, List[TermSymbol])] { case OptionApply(ch) =>
       ch.collect[(TypeSymbol, List[TermSymbol])] {
         case PathOnTypeSymbol(ts, ss) => (ts, ss)
       }
-    }.toSet
+    }
+    .toSet
 
   object PathOnTypeSymbol {
-    def unapply(n: Node): Option[(TypeSymbol, List[TermSymbol])] =
-      n match {
-        case (n: PathElement) :@ NominalType(ts, _) => Some((ts, Nil))
-        case Select(in, s)                          => unapply(in).map { case (ts, l) => (ts, s :: l) }
-        case Library.SilentCast(ch)                 => unapply(ch)
-        case _                                      => None
-      }
+    def unapply(n: Node): Option[(TypeSymbol, List[TermSymbol])] = n match {
+      case (n: PathElement) :@ NominalType(ts, _) => Some((ts, Nil))
+      case Select(in, s)                          => unapply(in).map { case (ts, l) => (ts, s :: l) }
+      case Library.SilentCast(ch)                 => unapply(ch)
+      case _                                      => None
+    }
   }
 
   /** Expand multi-column conditional expressions and SilentCasts.
@@ -378,78 +373,78 @@ class ExpandSums extends Phase {
     */
   def expandConditionals(n: Node): Node = {
     val invalid = mutable.HashSet.empty[TypeSymbol]
-    def invalidate(n: Node): Unit =
-      invalid ++= n.nodeType.collect { case NominalType(ts, _) => ts }.toSeq
+    def invalidate(n: Node): Unit = invalid ++= n.nodeType.collect {
+      case NominalType(ts, _) => ts
+    }.toSeq
 
-    def tr(n: Node): Node =
-      n.mapChildren(tr, keepType = true) match {
-        // Expand multi-column SilentCasts
-        case cast @ Library.SilentCast(ch) :@ Type.Structural(
-              ProductType(typeCh)) =>
-          invalidate(ch)
-          val elems = typeCh.zipWithIndex.map { case (t, idx) =>
-            tr(
-              Library.SilentCast
-                .typed(t, ch.select(ElementSymbol(idx + 1)))
-                .infer())
-          }
-          ProductNode(elems).infer()
-        case Library.SilentCast(ch) :@ Type.Structural(StructType(typeCh)) =>
-          invalidate(ch)
-          val elems = typeCh.map { case (sym, t) =>
-            (sym, tr(Library.SilentCast.typed(t, ch.select(sym)).infer()))
-          }
-          StructNode(elems).infer()
+    def tr(n: Node): Node = n.mapChildren(tr, keepType = true) match {
+      // Expand multi-column SilentCasts
+      case cast @ Library.SilentCast(ch) :@ Type.Structural(
+            ProductType(typeCh)) =>
+        invalidate(ch)
+        val elems = typeCh.zipWithIndex.map { case (t, idx) =>
+          tr(
+            Library.SilentCast
+              .typed(t, ch.select(ElementSymbol(idx + 1)))
+              .infer())
+        }
+        ProductNode(elems).infer()
+      case Library.SilentCast(ch) :@ Type.Structural(StructType(typeCh)) =>
+        invalidate(ch)
+        val elems = typeCh.map { case (sym, t) =>
+          (sym, tr(Library.SilentCast.typed(t, ch.select(sym)).infer()))
+        }
+        StructNode(elems).infer()
 
-        // Optimize trivial SilentCasts
-        case Library.SilentCast(v :@ tpe) :@ tpe2
-            if tpe.structural == tpe2.structural =>
-          invalidate(v)
-          v
-        case Library.SilentCast(Library.SilentCast(ch)) :@ tpe =>
-          tr(Library.SilentCast.typed(tpe, ch).infer())
-        case Library.SilentCast(LiteralNode(None)) :@ (tpe @ OptionType
-              .Primitive(_)) =>
-          LiteralNode(tpe, None).infer()
+      // Optimize trivial SilentCasts
+      case Library.SilentCast(v :@ tpe) :@ tpe2
+          if tpe.structural == tpe2.structural =>
+        invalidate(v)
+        v
+      case Library.SilentCast(Library.SilentCast(ch)) :@ tpe =>
+        tr(Library.SilentCast.typed(tpe, ch).infer())
+      case Library.SilentCast(LiteralNode(None)) :@ (tpe @ OptionType.Primitive(
+            _)) =>
+        LiteralNode(tpe, None).infer()
 
-        // Expand multi-column IfThenElse
-        case (cond @ IfThenElse(_)) :@ Type.Structural(ProductType(chTypes)) =>
-          val ch = ConstArrayOp.from(1 to chTypes.length).map { idx =>
-            val sym = ElementSymbol(idx)
-            tr(cond.mapResultClauses(n => n.select(sym)).infer())
-          }
-          ProductNode(ch).infer()
-        case (cond @ IfThenElse(_)) :@ Type.Structural(StructType(chTypes)) =>
-          val ch = chTypes.map { case (sym, _) =>
-            (sym, tr(cond.mapResultClauses(n => n.select(sym)).infer()))
-          }
-          StructNode(ch).infer()
+      // Expand multi-column IfThenElse
+      case (cond @ IfThenElse(_)) :@ Type.Structural(ProductType(chTypes)) =>
+        val ch = ConstArrayOp.from(1 to chTypes.length).map { idx =>
+          val sym = ElementSymbol(idx)
+          tr(cond.mapResultClauses(n => n.select(sym)).infer())
+        }
+        ProductNode(ch).infer()
+      case (cond @ IfThenElse(_)) :@ Type.Structural(StructType(chTypes)) =>
+        val ch = chTypes.map { case (sym, _) =>
+          (sym, tr(cond.mapResultClauses(n => n.select(sym)).infer()))
+        }
+        StructNode(ch).infer()
 
-        // Optimize null-propagating single-column IfThenElse
-        case IfThenElse(
-              ConstArray(
-                Library.==(r, LiteralNode(null)),
-                Library.SilentCast(LiteralNode(None)),
-                c @ Library.SilentCast(r2))) if r == r2 =>
-          c
+      // Optimize null-propagating single-column IfThenElse
+      case IfThenElse(
+            ConstArray(
+              Library.==(r, LiteralNode(null)),
+              Library.SilentCast(LiteralNode(None)),
+              c @ Library.SilentCast(r2))) if r == r2 =>
+        c
 
-        // Fix Untyped nulls in else clauses
-        case cond @ IfThenElse(clauses) if (clauses.last match {
-              case LiteralNode(None) :@ OptionType(ScalaBaseType.nullType) =>
-                true; case _                                               => false
-            }) =>
-          cond.copy(clauses.init :+ LiteralNode(cond.nodeType, None))
+      // Fix Untyped nulls in else clauses
+      case cond @ IfThenElse(clauses) if (clauses.last match {
+            case LiteralNode(None) :@ OptionType(ScalaBaseType.nullType) =>
+              true; case _                                               => false
+          }) =>
+        cond.copy(clauses.init :+ LiteralNode(cond.nodeType, None))
 
-        // Resolve Selects into ProductNodes and StructNodes
-        case Select(ProductNode(ch), ElementSymbol(idx)) => ch(idx - 1)
-        case Select(StructNode(ch), sym)                 => ch.find(_._1 == sym).get._2
+      // Resolve Selects into ProductNodes and StructNodes
+      case Select(ProductNode(ch), ElementSymbol(idx)) => ch(idx - 1)
+      case Select(StructNode(ch), sym)                 => ch.find(_._1 == sym).get._2
 
-        case n2 @ Pure(_, ts) if n2 ne n =>
-          invalid += ts
-          n2
+      case n2 @ Pure(_, ts) if n2 ne n =>
+        invalid += ts
+        n2
 
-        case n => n
-      }
+      case n => n
+    }
 
     val n2 = tr(n)
     logger.debug("Invalidated TypeSymbols: " + invalid.mkString(", "))

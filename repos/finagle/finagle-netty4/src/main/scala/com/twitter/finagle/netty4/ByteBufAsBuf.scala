@@ -20,8 +20,8 @@ private[finagle] object ByteBufAsBuf {
     /**
       * Extract a [[ByteBufAsBuf]]'s underlying ByteBuf without copying.
       */
-    def unapply(wrapped: ByteBufAsBuf): Option[ByteBuf] =
-      Some(wrapped.underlying)
+    def unapply(wrapped: ByteBufAsBuf): Option[ByteBuf] = Some(
+      wrapped.underlying)
 
     /**
       * Extract a read-only `ByteBuf` from [[Buf]] potentially without copying.
@@ -43,8 +43,8 @@ private[finagle] object ByteBufAsBuf {
     /**
       * Extract a copy of the [[ByteBufAsBuf]]'s underlying ByteBuf.
       */
-    def unapply(wrapped: ByteBufAsBuf): Option[ByteBuf] =
-      Some(wrapped.underlying.copy())
+    def unapply(wrapped: ByteBufAsBuf): Option[ByteBuf] = Some(
+      wrapped.underlying.copy())
 
     /**
       * Extract a read-only `ByteBuf` copy from [[Buf]].
@@ -85,10 +85,9 @@ private[finagle] class ByteBufAsBuf(private val underlying: ByteBuf)
         underlying.slice(from, Math.min((until - from), (length - from))))
   }
 
-  override def equals(other: Any): Boolean =
-    other match {
-      case ByteBufAsBuf.Owned(otherBB) => underlying.equals(otherBB)
-      case other: Buf                  => Buf.equals(this, other)
-      case _                           => false
-    }
+  override def equals(other: Any): Boolean = other match {
+    case ByteBufAsBuf.Owned(otherBB) => underlying.equals(otherBB)
+    case other: Buf                  => Buf.equals(this, other)
+    case _                           => false
+  }
 }

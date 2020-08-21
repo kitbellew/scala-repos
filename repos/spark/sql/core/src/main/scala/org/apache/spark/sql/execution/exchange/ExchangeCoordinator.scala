@@ -106,10 +106,9 @@ private[sql] class ExchangeCoordinator(
     * be called in the `doPrepare` method of an [[ShuffleExchange]] operator.
     */
   @GuardedBy("this")
-  def registerExchange(exchange: ShuffleExchange): Unit =
-    synchronized {
-      exchanges += exchange
-    }
+  def registerExchange(exchange: ShuffleExchange): Unit = synchronized {
+    exchanges += exchange
+  }
 
   def isEstimated: Boolean = estimated
 
@@ -202,78 +201,77 @@ private[sql] class ExchangeCoordinator(
   }
 
   @GuardedBy("this")
-  private def doEstimationIfNecessary(): Unit =
-    synchronized {
-      // It is unlikely that this method will be called from multiple threads
-      // (when multiple threads trigger the execution of THIS physical)
-      // because in common use cases, we will create new physical plan after
-      // users apply operations (e.g. projection) to an existing DataFrame.
-      // However, if it happens, we have synchronized to make sure only one
-      // thread will trigger the job submission.
-      if (!estimated) {
-        // Make sure we have the expected number of registered Exchange operators.
-        assert(exchanges.length == numExchanges)
+  private def doEstimationIfNecessary(): Unit = synchronized {
+    // It is unlikely that this method will be called from multiple threads
+    // (when multiple threads trigger the execution of THIS physical)
+    // because in common use cases, we will create new physical plan after
+    // users apply operations (e.g. projection) to an existing DataFrame.
+    // However, if it happens, we have synchronized to make sure only one
+    // thread will trigger the job submission.
+    if (!estimated) {
+      // Make sure we have the expected number of registered Exchange operators.
+      assert(exchanges.length == numExchanges)
 
-        val newPostShuffleRDDs =
-          new JHashMap[ShuffleExchange, ShuffledRowRDD](numExchanges)
+      val newPostShuffleRDDs =
+        new JHashMap[ShuffleExchange, ShuffledRowRDD](numExchanges)
 
-        // Submit all map stages
-        val shuffleDependencies =
-          ArrayBuffer[ShuffleDependency[Int, InternalRow, InternalRow]]()
-        val submittedStageFutures =
-          ArrayBuffer[SimpleFutureAction[MapOutputStatistics]]()
-        var i = 0
-        while (i < numExchanges) {
-          val exchange = exchanges(i)
-          val shuffleDependency = exchange.prepareShuffleDependency()
-          shuffleDependencies += shuffleDependency
-          if (shuffleDependency.rdd.partitions.length != 0) {
-            // submitMapStage does not accept RDD with 0 partition.
-            // So, we will not submit this dependency.
-            submittedStageFutures +=
-              exchange.sqlContext.sparkContext.submitMapStage(shuffleDependency)
-          }
-          i += 1
+      // Submit all map stages
+      val shuffleDependencies =
+        ArrayBuffer[ShuffleDependency[Int, InternalRow, InternalRow]]()
+      val submittedStageFutures =
+        ArrayBuffer[SimpleFutureAction[MapOutputStatistics]]()
+      var i = 0
+      while (i < numExchanges) {
+        val exchange = exchanges(i)
+        val shuffleDependency = exchange.prepareShuffleDependency()
+        shuffleDependencies += shuffleDependency
+        if (shuffleDependency.rdd.partitions.length != 0) {
+          // submitMapStage does not accept RDD with 0 partition.
+          // So, we will not submit this dependency.
+          submittedStageFutures +=
+            exchange.sqlContext.sparkContext.submitMapStage(shuffleDependency)
         }
-
-        // Wait for the finishes of those submitted map stages.
-        val mapOutputStatistics =
-          new Array[MapOutputStatistics](submittedStageFutures.length)
-        var j = 0
-        while (j < submittedStageFutures.length) {
-          // This call is a blocking call. If the stage has not finished, we will wait at here.
-          mapOutputStatistics(j) = submittedStageFutures(j).get()
-          j += 1
-        }
-
-        // Now, we estimate partitionStartIndices. partitionStartIndices.length will be the
-        // number of post-shuffle partitions.
-        val partitionStartIndices =
-          if (mapOutputStatistics.length == 0) {
-            None
-          } else {
-            Some(estimatePartitionStartIndices(mapOutputStatistics))
-          }
-
-        var k = 0
-        while (k < numExchanges) {
-          val exchange = exchanges(k)
-          val rdd =
-            exchange.preparePostShuffleRDD(
-              shuffleDependencies(k),
-              partitionStartIndices)
-          newPostShuffleRDDs.put(exchange, rdd)
-
-          k += 1
-        }
-
-        // Finally, we set postShuffleRDDs and estimated.
-        assert(postShuffleRDDs.isEmpty)
-        assert(newPostShuffleRDDs.size() == numExchanges)
-        postShuffleRDDs.putAll(newPostShuffleRDDs)
-        estimated = true
+        i += 1
       }
+
+      // Wait for the finishes of those submitted map stages.
+      val mapOutputStatistics =
+        new Array[MapOutputStatistics](submittedStageFutures.length)
+      var j = 0
+      while (j < submittedStageFutures.length) {
+        // This call is a blocking call. If the stage has not finished, we will wait at here.
+        mapOutputStatistics(j) = submittedStageFutures(j).get()
+        j += 1
+      }
+
+      // Now, we estimate partitionStartIndices. partitionStartIndices.length will be the
+      // number of post-shuffle partitions.
+      val partitionStartIndices =
+        if (mapOutputStatistics.length == 0) {
+          None
+        } else {
+          Some(estimatePartitionStartIndices(mapOutputStatistics))
+        }
+
+      var k = 0
+      while (k < numExchanges) {
+        val exchange = exchanges(k)
+        val rdd =
+          exchange.preparePostShuffleRDD(
+            shuffleDependencies(k),
+            partitionStartIndices)
+        newPostShuffleRDDs.put(exchange, rdd)
+
+        k += 1
+      }
+
+      // Finally, we set postShuffleRDDs and estimated.
+      assert(postShuffleRDDs.isEmpty)
+      assert(newPostShuffleRDDs.size() == numExchanges)
+      postShuffleRDDs.putAll(newPostShuffleRDDs)
+      estimated = true
     }
+  }
 
   def postShuffleRDD(exchange: ShuffleExchange): ShuffledRowRDD = {
     doEstimationIfNecessary()

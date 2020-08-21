@@ -41,29 +41,28 @@ class IndexIntRange(val length: Int, val from: Int = 0) extends Index[Int] {
     * Custom implementation of a Locator to serve as the backing map in a
     * more space-efficient manner than the full blown LocatorInt implementation.
     */
-  protected def locator =
-    new Locator[Int] {
-      def size = length
+  protected def locator = new Locator[Int] {
+    def size = length
 
-      lazy val cts = {
-        val res = Array.ofDim[Int](length)
-        var i = 0
-        while (i < length) {
-          res(i) = 1
-          i += 1
-        }
-        res
+    lazy val cts = {
+      val res = Array.ofDim[Int](length)
+      var i = 0
+      while (i < length) {
+        res(i) = 1
+        i += 1
       }
-
-      def contains(key: Int) = key >= from && key < from + length
-      def get(key: Int) = if (contains(key)) key - from else -1
-      def count(key: Int) = if (contains(key)) 1 else 0
-
-      def put(key: Int, value: Int) { sys.error("Not supported") }
-      def inc(key: Int) = sys.error("Not supported")
-      def keys() = asArr
-      def counts() = cts
+      res
     }
+
+    def contains(key: Int) = key >= from && key < from + length
+    def get(key: Int) = if (contains(key)) key - from else -1
+    def count(key: Int) = if (contains(key)) 1 else 0
+
+    def put(key: Int, value: Int) { sys.error("Not supported") }
+    def inc(key: Int) = sys.error("Not supported")
+    def keys() = asArr
+    def counts() = cts
+  }
 
   private def guardLoc(loc: Int): Int =
     if (loc < 0 || loc >= length)

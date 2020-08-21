@@ -132,13 +132,12 @@ case class BenchmarkResults[T](
     baseline: Double,
     timings: Vector[Long],
     results: Vector[T] = Vector.empty[T]) {
-  def add(timing: Long, result: T): BenchmarkResults[T] =
-    BenchmarkResults(
-      testRuns + 1,
-      repCount,
-      baseline,
-      timings :+ timing,
-      results :+ result)
+  def add(timing: Long, result: T): BenchmarkResults[T] = BenchmarkResults(
+    testRuns + 1,
+    repCount,
+    baseline,
+    timings :+ timing,
+    results :+ result)
 
   private val reportTemplate = """
 Performance Measurement Results [%s]

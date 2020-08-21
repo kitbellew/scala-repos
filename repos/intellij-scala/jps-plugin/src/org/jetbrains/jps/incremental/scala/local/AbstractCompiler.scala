@@ -15,11 +15,11 @@ abstract class AbstractCompiler extends Compiler {
 
   def getReporter(client: Client): Reporter = new ClientReporter(client)
 
-  def getLogger(client: Client): Logger =
-    new ClientLogger(client) with JavacOutputParsing
+  def getLogger(client: Client): Logger = new ClientLogger(client)
+    with JavacOutputParsing
 
-  def getProgress(client: Client): ExtendedCompileProgress =
-    new ClientProgress(client)
+  def getProgress(client: Client): ExtendedCompileProgress = new ClientProgress(
+    client)
 
   private class ClientLogger(val client: Client) extends Logger {
     def error(msg: F0[String]) {

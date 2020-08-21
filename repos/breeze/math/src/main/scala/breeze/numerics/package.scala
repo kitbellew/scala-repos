@@ -303,9 +303,8 @@ package object numerics {
         if (v == 0) 1d else { val temp = v * m.Pi; m.sin(temp) / temp }
     }
     implicit object sincpiFloatImpl extends Impl[Float, Float] {
-      def apply(v: Float) =
-        if (v == 0) 1f
-        else { val temp = v * m.Pi; (m.sin(temp) / temp).toFloat }
+      def apply(v: Float) = if (v == 0) 1f
+      else { val temp = v * m.Pi; (m.sin(temp) / temp).toFloat }
     }
   }
 
@@ -921,10 +920,9 @@ package object numerics {
       def apply(b: Boolean) = if (b) 1.0 else 0.0
     }
 
-    implicit def vImpl[V: Semiring]: Impl[V, Double] =
-      new Impl[V, Double] {
-        def apply(b: V) = if (b != implicitly[Semiring[V]].zero) 1.0 else 0.0
-      }
+    implicit def vImpl[V: Semiring]: Impl[V, Double] = new Impl[V, Double] {
+      def apply(b: V) = if (b != implicitly[Semiring[V]].zero) 1.0 else 0.0
+    }
   }
 
   /**

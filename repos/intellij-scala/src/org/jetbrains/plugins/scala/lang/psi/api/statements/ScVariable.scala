@@ -52,16 +52,15 @@ trait ScVariable
 
   override protected def isSimilarMemberForNavigation(
       m: ScMember,
-      isStrict: Boolean): Boolean =
-    m match {
-      case other: ScVariable =>
-        for (elem <- self.declaredElements) {
-          if (other.declaredElements.exists(_.name == elem.name))
-            return true
-        }
-        false
-      case _ => false
-    }
+      isStrict: Boolean): Boolean = m match {
+    case other: ScVariable =>
+      for (elem <- self.declaredElements) {
+        if (other.declaredElements.exists(_.name == elem.name))
+          return true
+      }
+      false
+    case _ => false
+  }
   override def getIcon(flags: Int): Icon = {
     var parent = getParent
     while (parent != null) {
@@ -80,6 +79,6 @@ trait ScVariable
     hasAnnotation("scala.deprecated") != None || hasAnnotation(
       "java.lang.Deprecated") != None
 
-  override def modifiableReturnType: Option[ScType] =
-    getType(TypingContext.empty).toOption
+  override def modifiableReturnType: Option[ScType] = getType(
+    TypingContext.empty).toOption
 }

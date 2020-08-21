@@ -54,8 +54,8 @@ object AnimationTimer {
     * @param handler function that is called in every frame while the $AT is active.
     * @return a new $AT.
     */
-  def apply(handler: Long => Unit): AnimationTimer =
-    new AnimationTimer(new jfxa.AnimationTimer {
+  def apply(handler: Long => Unit): AnimationTimer = new AnimationTimer(
+    new jfxa.AnimationTimer {
       def handle(now: Long) {
         handler(now)
       }

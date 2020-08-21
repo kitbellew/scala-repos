@@ -23,13 +23,12 @@ class CoderResult private (kind: Int, _length: Int) {
     l
   }
 
-  def throwException(): Unit =
-    (kind: @switch) match {
-      case Overflow   => throw new BufferOverflowException
-      case Underflow  => throw new BufferUnderflowException
-      case Malformed  => throw new MalformedInputException(_length)
-      case Unmappable => throw new UnmappableCharacterException(_length)
-    }
+  def throwException(): Unit = (kind: @switch) match {
+    case Overflow   => throw new BufferOverflowException
+    case Underflow  => throw new BufferUnderflowException
+    case Malformed  => throw new MalformedInputException(_length)
+    case Unmappable => throw new UnmappableCharacterException(_length)
+  }
 }
 
 object CoderResult {

@@ -66,12 +66,11 @@ object Patterns {
 
 object XmlPatterns extends ParserNode {
   def parse(builder: ScalaPsiBuilder): Boolean = {
-    def isVarId =
-      builder.getTokenText.substring(0, 1).toLowerCase ==
-        builder.getTokenText.substring(0, 1) && !(
-        builder.getTokenText.apply(0) == '`' && builder.getTokenText.apply(
-          builder.getTokenText.length - 1) == '`'
-      )
+    def isVarId = builder.getTokenText.substring(0, 1).toLowerCase ==
+      builder.getTokenText.substring(0, 1) && !(
+      builder.getTokenText.apply(0) == '`' && builder.getTokenText.apply(
+        builder.getTokenText.length - 1) == '`'
+    )
     val args = builder.mark
     def parseSeqWildcard(withComma: Boolean): Boolean = {
       if (if (withComma)

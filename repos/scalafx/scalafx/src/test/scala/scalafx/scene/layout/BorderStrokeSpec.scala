@@ -45,15 +45,14 @@ class BorderStrokeSpec
       classOf[jfxsl.BorderStroke],
       classOf[BorderStroke]) {
 
-  override protected def getScalaClassInstance =
-    new BorderStroke(getJavaClassInstance) {}
+  override protected def getScalaClassInstance = new BorderStroke(
+    getJavaClassInstance) {}
 
-  override protected def getJavaClassInstance =
-    new jfxsl.BorderStroke(
-      Color.Blue,
-      BorderStrokeStyle.None,
-      CornerRadii.Empty,
-      BorderWidths.Default
-    )
+  override protected def getJavaClassInstance = new jfxsl.BorderStroke(
+    Color.Blue,
+    BorderStrokeStyle.None,
+    CornerRadii.Empty,
+    BorderWidths.Default
+  )
 
 }

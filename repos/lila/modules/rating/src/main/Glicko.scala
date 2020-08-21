@@ -38,25 +38,22 @@ case object Glicko {
 
   val provisionalDeviation = 110
 
-  def range(rating: Double, deviation: Double) =
-    (
-      rating - (deviation * 2),
-      rating + (deviation * 2)
-    )
+  def range(rating: Double, deviation: Double) = (
+    rating - (deviation * 2),
+    rating + (deviation * 2)
+  )
 
   implicit val glickoBSONHandler = new BSON[Glicko] {
 
-    def reads(r: BSON.Reader): Glicko =
-      Glicko(
-        rating = r double "r",
-        deviation = r double "d",
-        volatility = r double "v")
+    def reads(r: BSON.Reader): Glicko = Glicko(
+      rating = r double "r",
+      deviation = r double "d",
+      volatility = r double "v")
 
-    def writes(w: BSON.Writer, o: Glicko) =
-      BSONDocument(
-        "r" -> w.double(o.rating),
-        "d" -> w.double(o.deviation),
-        "v" -> w.double(o.volatility))
+    def writes(w: BSON.Writer, o: Glicko) = BSONDocument(
+      "r" -> w.double(o.rating),
+      "d" -> w.double(o.deviation),
+      "v" -> w.double(o.volatility))
   }
 
   sealed abstract class Result(val v: Double) {

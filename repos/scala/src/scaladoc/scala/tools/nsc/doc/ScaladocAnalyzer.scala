@@ -21,8 +21,8 @@ trait ScaladocAnalyzer extends Analyzer {
   val global: Global // generally, a ScaladocGlobal
   import global._
 
-  override def newTyper(context: Context): ScaladocTyper =
-    new Typer(context) with ScaladocTyper
+  override def newTyper(context: Context): ScaladocTyper = new Typer(context)
+    with ScaladocTyper
 
   trait ScaladocTyper extends Typer {
     private def unit = context.unit
@@ -30,11 +30,10 @@ trait ScaladocAnalyzer extends Analyzer {
     override def canAdaptConstantTypeToLiteral = false
 
     override protected def macroImplementationNotFoundMessage(
-        name: Name): String =
-      (
-        super.macroImplementationNotFoundMessage(name)
-          + "\nWhen generating scaladocs for multiple projects at once, consider using -Ymacro-no-expand to disable macro expansions altogether."
-      )
+        name: Name): String = (
+      super.macroImplementationNotFoundMessage(name)
+        + "\nWhen generating scaladocs for multiple projects at once, consider using -Ymacro-no-expand to disable macro expansions altogether."
+    )
 
     override def typedDocDef(docDef: DocDef, mode: Mode, pt: Type): Tree = {
       val sym = docDef.symbol
@@ -76,26 +75,25 @@ trait ScaladocAnalyzer extends Analyzer {
       val trees = stringParser(useCase.body + ";").nonLocalDefOrDcl
       val enclClass = context.enclClass.owner
 
-      def defineAlias(name: Name) =
-        (
-          if (context.scope.lookup(name) == NoSymbol) {
-            lookupVariable(name.toString.substring(1), enclClass) foreach {
-              repl =>
-                silent(_.typedTypeConstructor(stringParser(repl).typ())) map {
-                  tpt =>
-                    val alias =
-                      enclClass.newAliasType(name.toTypeName, useCase.pos)
-                    val tparams =
-                      cloneSymbolsAtOwner(tpt.tpe.typeSymbol.typeParams, alias)
-                    val newInfo = genPolyType(
-                      tparams,
-                      appliedType(tpt.tpe, tparams map (_.tpe)))
-                    alias setInfo newInfo
-                    context.scope.enter(alias)
-                }
-            }
+      def defineAlias(name: Name) = (
+        if (context.scope.lookup(name) == NoSymbol) {
+          lookupVariable(name.toString.substring(1), enclClass) foreach {
+            repl =>
+              silent(_.typedTypeConstructor(stringParser(repl).typ())) map {
+                tpt =>
+                  val alias =
+                    enclClass.newAliasType(name.toTypeName, useCase.pos)
+                  val tparams =
+                    cloneSymbolsAtOwner(tpt.tpe.typeSymbol.typeParams, alias)
+                  val newInfo = genPolyType(
+                    tparams,
+                    appliedType(tpt.tpe, tparams map (_.tpe)))
+                  alias setInfo newInfo
+                  context.scope.enter(alias)
+              }
           }
-        )
+        }
+      )
 
       for (tree <- trees; t <- tree)
         t match {
@@ -224,9 +222,8 @@ abstract class ScaladocSyntaxAnalyzer[G <: Global](val global: G)
         reporter.warning(doc.pos, "discarding unmoored doc comment")
     }
 
-    override def flushDoc(): DocComment =
-      (try lastDoc
-      finally lastDoc = null)
+    override def flushDoc(): DocComment = (try lastDoc
+    finally lastDoc = null)
 
     override protected def putCommentChar() {
       if (inDocComment)
@@ -247,19 +244,18 @@ abstract class ScaladocSyntaxAnalyzer[G <: Global](val global: G)
     }
     override def skipComment(): Boolean = {
       // emit a block comment; if it's double-star, make Doc at this pos
-      def foundStarComment(start: Int, end: Int) =
-        try {
-          val str = docBuffer.toString
-          val pos = Position.range(unit.source, start, start, end)
-          if (inDocComment) {
-            signalParsedDocComment(str, pos)
-            lastDoc = DocComment(str, pos)
-          }
-          true
-        } finally {
-          docBuffer = null
-          inDocComment = false
+      def foundStarComment(start: Int, end: Int) = try {
+        val str = docBuffer.toString
+        val pos = Position.range(unit.source, start, start, end)
+        if (inDocComment) {
+          signalParsedDocComment(str, pos)
+          lastDoc = DocComment(str, pos)
         }
+        true
+      } finally {
+        docBuffer = null
+        inDocComment = false
+      }
       super.skipComment() && ((docBuffer eq null) || foundStarComment(
         offset,
         charOffset - 2))

@@ -24,9 +24,8 @@ trait Foo extends Bar with Barzoo {
 }
 
 class Quux extends Foo {
-  override def hashCode =
-    super.hashCode + super[Object].hashCode + super[
-      ScalaObject].hashCode + super[Foo].hashCode
+  override def hashCode = super.hashCode + super[Object].hashCode + super[
+    ScalaObject].hashCode + super[Foo].hashCode
 }
 
 trait Borp extends Quux {

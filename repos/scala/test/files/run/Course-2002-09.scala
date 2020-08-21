@@ -13,13 +13,12 @@ object NoConstraint extends Constraint {
 }
 
 class Adder(a1: Quantity, a2: Quantity, sum: Quantity) extends Constraint {
-  def newValue =
-    (a1.getValue, a2.getValue, sum.getValue) match {
-      case (Some(x1), Some(x2), _) => sum.setValue(x1 + x2, this)
-      case (Some(x1), _, Some(r))  => a2.setValue(r - x1, this)
-      case (_, Some(x2), Some(r))  => a1.setValue(r - x2, this)
-      case _                       =>
-    }
+  def newValue = (a1.getValue, a2.getValue, sum.getValue) match {
+    case (Some(x1), Some(x2), _) => sum.setValue(x1 + x2, this)
+    case (Some(x1), _, Some(r))  => a2.setValue(r - x1, this)
+    case (_, Some(x2), Some(r))  => a1.setValue(r - x2, this)
+    case _                       =>
+  }
   def dropValue: Unit = {
     a1.forgetValue(this); a2.forgetValue(this); sum.forgetValue(this);
   }
@@ -30,15 +29,14 @@ class Adder(a1: Quantity, a2: Quantity, sum: Quantity) extends Constraint {
 
 class Multiplier(m1: Quantity, m2: Quantity, prod: Quantity)
     extends Constraint {
-  def newValue =
-    (m1.getValue, m2.getValue, prod.getValue) match {
-      case (Some(0d), _, _)        => prod.setValue(0, this);
-      case (_, Some(0d), _)        => prod.setValue(0, this);
-      case (Some(x1), Some(x2), _) => prod.setValue(x1 * x2, this)
-      case (Some(x1), _, Some(r))  => m2.setValue(r / x1, this)
-      case (_, Some(x2), Some(r))  => m1.setValue(r / x2, this)
-      case _                       =>
-    }
+  def newValue = (m1.getValue, m2.getValue, prod.getValue) match {
+    case (Some(0d), _, _)        => prod.setValue(0, this);
+    case (_, Some(0d), _)        => prod.setValue(0, this);
+    case (Some(x1), Some(x2), _) => prod.setValue(x1 * x2, this)
+    case (Some(x1), _, Some(r))  => m2.setValue(r / x1, this)
+    case (_, Some(x2), Some(r))  => m1.setValue(r / x2, this)
+    case _                       =>
+  }
   def dropValue: Unit = {
     m1.forgetValue(this); m2.forgetValue(this); prod.forgetValue(this);
   }
@@ -48,13 +46,12 @@ class Multiplier(m1: Quantity, m2: Quantity, prod: Quantity)
 }
 
 class Squarer(square: Quantity, root: Quantity) extends Constraint {
-  def newValue: Unit =
-    (square.getValue, root.getValue) match {
-      case (Some(x), _) if (x < 0) => sys.error("Square of negative number")
-      case (Some(x), _)            => root.setValue(Math.sqrt(x), this)
-      case (_, Some(x))            => square.setValue(x * x, this)
-      case _                       =>
-    }
+  def newValue: Unit = (square.getValue, root.getValue) match {
+    case (Some(x), _) if (x < 0) => sys.error("Square of negative number")
+    case (Some(x), _)            => root.setValue(Math.sqrt(x), this)
+    case (_, Some(x))            => square.setValue(x * x, this)
+    case _                       =>
+  }
   def dropValue: Unit = {
     square.forgetValue(this); root.forgetValue(this);
   }
@@ -63,11 +60,10 @@ class Squarer(square: Quantity, root: Quantity) extends Constraint {
 }
 
 class Eq(a: Quantity, b: Quantity) extends Constraint {
-  def newValue =
-    ((a.getValue, b.getValue): @unchecked) match {
-      case (Some(x), _) => b.setValue(x, this);
-      case (_, Some(y)) => a.setValue(y, this);
-    }
+  def newValue = ((a.getValue, b.getValue): @unchecked) match {
+    case (Some(x), _) => b.setValue(x, this);
+    case (_, Some(y)) => a.setValue(y, this);
+  }
   def dropValue {
     a.forgetValue(this); b.forgetValue(this);
   }
@@ -102,16 +98,15 @@ class Quantity() {
 
   def getValue: Option[Double] = value;
 
-  def setValue(v: Double, setter: Constraint) =
-    value match {
-      case Some(v1) =>
-        if (v != v1) sys.error("Error! contradiction: " + v + " and " + v1);
-      case None =>
-        informant = setter; value = Some(v);
-        for (c <- constraints; if !(c == informant)) {
-          c.newValue;
-        }
-    }
+  def setValue(v: Double, setter: Constraint) = value match {
+    case Some(v1) =>
+      if (v != v1) sys.error("Error! contradiction: " + v + " and " + v1);
+    case None =>
+      informant = setter; value = Some(v);
+      for (c <- constraints; if !(c == informant)) {
+        c.newValue;
+      }
+  }
   def setValue(v: Double): Unit = setValue(v, NoConstraint);
 
   def forgetValue(retractor: Constraint): Unit = {
@@ -158,11 +153,10 @@ class Quantity() {
     new Eq(this, that);
   }
 
-  override def toString(): String =
-    value match {
-      case None    => "  ?"
-      case Some(v) => v.toString()
-    }
+  override def toString(): String = value match {
+    case None    => "  ?"
+    case Some(v) => v.toString()
+  }
 
   def str: String = toString();
 }

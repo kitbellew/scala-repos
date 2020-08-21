@@ -71,14 +71,13 @@ class SparkSubmitSuite
     SparkSubmit.exitFn = (_) => exitedCleanly = true
 
     val thread = new Thread {
-      override def run() =
-        try {
-          SparkSubmit.main(input)
-        } catch {
-          // If exceptions occur after the "exit" has happened, fine to ignore them.
-          // These represent code paths not reachable during normal execution.
-          case e: Exception => if (!exitedCleanly) throw e
-        }
+      override def run() = try {
+        SparkSubmit.main(input)
+      } catch {
+        // If exceptions occur after the "exit" has happened, fine to ignore them.
+        // These represent code paths not reachable during normal execution.
+        case e: Exception => if (!exitedCleanly) throw e
+      }
     }
     thread.start()
     thread.join()

@@ -84,19 +84,17 @@ class HashPartitioner(partitions: Int) extends Partitioner {
 
   def numPartitions: Int = partitions
 
-  def getPartition(key: Any): Int =
-    key match {
-      case null => 0
-      case _    => Utils.nonNegativeMod(key.hashCode, numPartitions)
-    }
+  def getPartition(key: Any): Int = key match {
+    case null => 0
+    case _    => Utils.nonNegativeMod(key.hashCode, numPartitions)
+  }
 
-  override def equals(other: Any): Boolean =
-    other match {
-      case h: HashPartitioner =>
-        h.numPartitions == numPartitions
-      case _ =>
-        false
-    }
+  override def equals(other: Any): Boolean = other match {
+    case h: HashPartitioner =>
+      h.numPartitions == numPartitions
+    case _ =>
+      false
+  }
 
   override def hashCode: Int = numPartitions
 }
@@ -202,13 +200,12 @@ class RangePartitioner[K: Ordering: ClassTag, V](
     }
   }
 
-  override def equals(other: Any): Boolean =
-    other match {
-      case r: RangePartitioner[_, _] =>
-        r.rangeBounds.sameElements(rangeBounds) && r.ascending == ascending
-      case _ =>
-        false
-    }
+  override def equals(other: Any): Boolean = other match {
+    case r: RangePartitioner[_, _] =>
+      r.rangeBounds.sameElements(rangeBounds) && r.ascending == ascending
+    case _ =>
+      false
+  }
 
   override def hashCode(): Int = {
     val prime = 31
@@ -242,23 +239,22 @@ class RangePartitioner[K: Ordering: ClassTag, V](
     }
 
   @throws(classOf[IOException])
-  private def readObject(in: ObjectInputStream): Unit =
-    Utils.tryOrIOException {
-      val sfactory = SparkEnv.get.serializer
-      sfactory match {
-        case js: JavaSerializer => in.defaultReadObject()
-        case _ =>
-          ascending = in.readBoolean()
-          ordering = in.readObject().asInstanceOf[Ordering[K]]
-          binarySearch = in.readObject().asInstanceOf[(Array[K], K) => Int]
+  private def readObject(in: ObjectInputStream): Unit = Utils.tryOrIOException {
+    val sfactory = SparkEnv.get.serializer
+    sfactory match {
+      case js: JavaSerializer => in.defaultReadObject()
+      case _ =>
+        ascending = in.readBoolean()
+        ordering = in.readObject().asInstanceOf[Ordering[K]]
+        binarySearch = in.readObject().asInstanceOf[(Array[K], K) => Int]
 
-          val ser = sfactory.newInstance()
-          Utils.deserializeViaNestedStream(in, ser) { ds =>
-            implicit val classTag = ds.readObject[ClassTag[Array[K]]]()
-            rangeBounds = ds.readObject[Array[K]]()
-          }
-      }
+        val ser = sfactory.newInstance()
+        Utils.deserializeViaNestedStream(in, ser) { ds =>
+          implicit val classTag = ds.readObject[ClassTag[Array[K]]]()
+          rangeBounds = ds.readObject[Array[K]]()
+        }
     }
+  }
 }
 
 private[spark] object RangePartitioner {

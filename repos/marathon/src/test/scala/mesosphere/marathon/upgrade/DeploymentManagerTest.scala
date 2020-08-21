@@ -125,12 +125,11 @@ class DeploymentManagerTest
     val probe = TestProbe()
 
     probe.setAutoPilot(new AutoPilot {
-      override def run(sender: ActorRef, msg: Any): AutoPilot =
-        msg match {
-          case Cancel(_) =>
-            system.stop(probe.ref)
-            NoAutoPilot
-        }
+      override def run(sender: ActorRef, msg: Any): AutoPilot = msg match {
+        case Cancel(_) =>
+          system.stop(probe.ref)
+          NoAutoPilot
+      }
     })
 
     val ex = new Exception

@@ -65,8 +65,8 @@ class WebAPIKeyFinderSpec extends APIKeyFinderSpec[Future] with AkkaDefaults {
       val rootAPIKey = self.M.copoint(mgr.rootAPIKey)
       val rootGrantId = self.M.copoint(mgr.rootGrantId)
       val executor = self.executionContext
-      protected def withRawClient[A](f: HttpClient[ByteChunk] => A): A =
-        f(client.path("/security/v1/"))
+      protected def withRawClient[A](f: HttpClient[ByteChunk] => A): A = f(
+        client.path("/security/v1/"))
     }
 
     val result = f(apiKeyFinder.withM[Future])

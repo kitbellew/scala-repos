@@ -66,23 +66,22 @@ case class Spdy(
 
   def client = { config =>
     new Codec[HttpRequest, HttpResponse] {
-      def pipelineFactory =
-        new ChannelPipelineFactory {
-          def getPipeline() = {
-            val maxHeaderSizeInBytes = _maxHeaderSize.inBytes.toInt
-            val maxResponseSizeInBytes = _maxResponseSize.inBytes.toInt
+      def pipelineFactory = new ChannelPipelineFactory {
+        def getPipeline() = {
+          val maxHeaderSizeInBytes = _maxHeaderSize.inBytes.toInt
+          val maxResponseSizeInBytes = _maxResponseSize.inBytes.toInt
 
-            val pipeline = Channels.pipeline()
-            pipeline.addLast("spdyFrameCodec", spdyFrameCodec)
-            pipeline.addLast(
-              "spdySessionHandler",
-              new SpdySessionHandler(_version, false))
-            pipeline.addLast(
-              "spdyHttpCodec",
-              new SpdyHttpCodec(_version, maxResponseSizeInBytes))
-            pipeline
-          }
+          val pipeline = Channels.pipeline()
+          pipeline.addLast("spdyFrameCodec", spdyFrameCodec)
+          pipeline.addLast(
+            "spdySessionHandler",
+            new SpdySessionHandler(_version, false))
+          pipeline.addLast(
+            "spdyHttpCodec",
+            new SpdyHttpCodec(_version, maxResponseSizeInBytes))
+          pipeline
         }
+      }
 
       override def prepareConnFactory(
           underlying: ServiceFactory[HttpRequest, HttpResponse],
@@ -108,22 +107,21 @@ case class Spdy(
 
   def server = { config =>
     new Codec[HttpRequest, HttpResponse] {
-      def pipelineFactory =
-        new ChannelPipelineFactory {
-          def getPipeline() = {
-            val maxRequestSizeInBytes = _maxRequestSize.inBytes.toInt
+      def pipelineFactory = new ChannelPipelineFactory {
+        def getPipeline() = {
+          val maxRequestSizeInBytes = _maxRequestSize.inBytes.toInt
 
-            val pipeline = Channels.pipeline()
-            pipeline.addLast("spdyFrameCodec", spdyFrameCodec)
-            pipeline.addLast(
-              "spdySessionHandler",
-              new SpdySessionHandler(_version, true))
-            pipeline.addLast(
-              "spdyHttpCodec",
-              new SpdyHttpCodec(_version, maxRequestSizeInBytes))
-            pipeline
-          }
+          val pipeline = Channels.pipeline()
+          pipeline.addLast("spdyFrameCodec", spdyFrameCodec)
+          pipeline.addLast(
+            "spdySessionHandler",
+            new SpdySessionHandler(_version, true))
+          pipeline.addLast(
+            "spdyHttpCodec",
+            new SpdyHttpCodec(_version, maxRequestSizeInBytes))
+          pipeline
         }
+      }
 
       override def prepareConnFactory(
           underlying: ServiceFactory[HttpRequest, HttpResponse],
@@ -137,10 +135,9 @@ case class Spdy(
       override def newServerDispatcher(
           transport: Transport[Any, Any],
           service: Service[HttpRequest, HttpResponse]
-      ): Closable =
-        new SpdyServerDispatcher(
-          Transport.cast[HttpResponse, HttpRequest](transport),
-          service)
+      ): Closable = new SpdyServerDispatcher(
+        Transport.cast[HttpResponse, HttpRequest](transport),
+        service)
     }
   }
 

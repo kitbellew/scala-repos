@@ -21,13 +21,12 @@ private[qa] final class DataForm(
     )(QuestionData.apply)(QuestionData.unapply)
       .verifying(captchaFailMessage, validateCaptcha _))
 
-  def editQuestion(q: Question) =
-    question fill QuestionData(
-      title = q.title,
-      body = q.body,
-      `hidden-tags` = q.tags mkString ",",
-      gameId = "",
-      move = "")
+  def editQuestion(q: Question) = question fill QuestionData(
+    title = q.title,
+    body = q.body,
+    `hidden-tags` = q.tags mkString ",",
+    gameId = "",
+    move = "")
 
   lazy val answer = Form(
     mapping(

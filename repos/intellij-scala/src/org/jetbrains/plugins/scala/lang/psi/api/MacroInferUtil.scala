@@ -34,8 +34,8 @@ object MacroInferUtil {
     }
 
     class Checker(l: List[() => Option[ScType]] = List.empty) {
-      def withCheck(checker: () => Option[ScType]): Checker =
-        new Checker(checker :: l)
+      def withCheck(checker: () => Option[ScType]): Checker = new Checker(
+        checker :: l)
       def withCheck(
           functionName: String,
           classFqn: String,

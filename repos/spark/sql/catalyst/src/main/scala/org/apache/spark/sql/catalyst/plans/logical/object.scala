@@ -92,8 +92,8 @@ case class MapPartitions(
     child: LogicalPlan)
     extends UnaryNode
     with ObjectOperator {
-  override def deserializers: Seq[(Expression, Seq[Attribute])] =
-    Seq(deserializer -> child.output)
+  override def deserializers: Seq[(Expression, Seq[Attribute])] = Seq(
+    deserializer -> child.output)
 }
 
 /** Factory for constructing new `AppendColumn` nodes. */
@@ -128,8 +128,8 @@ case class AppendColumns(
 
   def newColumns: Seq[Attribute] = serializer.map(_.toAttribute)
 
-  override def deserializers: Seq[(Expression, Seq[Attribute])] =
-    Seq(deserializer -> child.output)
+  override def deserializers: Seq[(Expression, Seq[Attribute])] = Seq(
+    deserializer -> child.output)
 }
 
 /** Factory for constructing new `MapGroups` nodes. */

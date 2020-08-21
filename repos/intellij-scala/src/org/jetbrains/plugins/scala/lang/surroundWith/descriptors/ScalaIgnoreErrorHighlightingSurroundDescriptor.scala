@@ -31,8 +31,8 @@ class ScalaIgnoreErrorHighlightingSurroundDescriptor
     range.toArray
   }
 
-  def getSurrounders: Array[Surrounder] =
-    Array(new IgnoreErrorHighlightingSurrounder)
+  def getSurrounders: Array[Surrounder] = Array(
+    new IgnoreErrorHighlightingSurrounder)
 
   def isExclusive: Boolean = false
 }

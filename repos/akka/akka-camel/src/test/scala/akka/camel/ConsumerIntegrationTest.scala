@@ -138,13 +138,12 @@ class ConsumerIntegrationTest
     "Error passing consumer supports error handling through route modification" in {
       val ref = start(
         new ErrorThrowingConsumer("direct:error-handler-test") {
-          override def onRouteDefinition =
-            (rd: RouteDefinition) ⇒ {
-              rd.onException(classOf[TestException])
-                .handled(true)
-                .transform(Builder.exceptionMessage)
-                .end
-            }
+          override def onRouteDefinition = (rd: RouteDefinition) ⇒ {
+            rd.onException(classOf[TestException])
+              .handled(true)
+              .transform(Builder.exceptionMessage)
+              .end
+          }
         },
         name = "direct-error-handler-test"
       )
@@ -158,10 +157,9 @@ class ConsumerIntegrationTest
     "Error passing consumer supports redelivery through route modification" in {
       val ref = start(
         new FailingOnceConsumer("direct:failing-once-concumer") {
-          override def onRouteDefinition =
-            (rd: RouteDefinition) ⇒ {
-              rd.onException(classOf[TestException]).maximumRedeliveries(1).end
-            }
+          override def onRouteDefinition = (rd: RouteDefinition) ⇒ {
+            rd.onException(classOf[TestException]).maximumRedeliveries(1).end
+          }
         },
         name = "direct-failing-once-consumer"
       )
@@ -249,14 +247,13 @@ class ErrorRespondingConsumer(override val endpointUri: String)
   def receive = { case msg: CamelMessage ⇒
     throw new TestException("Error!")
   }
-  override def onRouteDefinition =
-    (rd: RouteDefinition) ⇒ {
-      // Catch TestException and handle it by returning a modified version of the in message
-      rd.onException(classOf[TestException])
-        .handled(true)
-        .transform(Builder.body.append(" has an error"))
-        .end
-    }
+  override def onRouteDefinition = (rd: RouteDefinition) ⇒ {
+    // Catch TestException and handle it by returning a modified version of the in message
+    rd.onException(classOf[TestException])
+      .handled(true)
+      .transform(Builder.body.append(" has an error"))
+      .end
+  }
 
   final override def preRestart(reason: Throwable, message: Option[Any]) {
     super.preRestart(reason, message)

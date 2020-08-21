@@ -111,13 +111,12 @@ trait NIHDBSnapshot {
     * value at each path (and their children).
     */
   def count(id: Option[Long], paths0: Option[Set[CPath]]): Option[Long] = {
-    def countSegments(segs: Seq[Segment]): Long =
-      segs
-        .foldLeft(new BitSet) { (acc, seg) =>
-          acc.or(seg.defined)
-          acc
-        }
-        .cardinality
+    def countSegments(segs: Seq[Segment]): Long = segs
+      .foldLeft(new BitSet) { (acc, seg) =>
+        acc.or(seg.defined)
+        acc
+      }
+      .cardinality
 
     findReader(id).map { reader =>
       paths0 map { paths =>

@@ -258,23 +258,22 @@ object ButtonBar {
       */
     val SmallGap = new ButtonData(jfxsc.ButtonBar.ButtonData.SMALL_GAP)
 
-    protected override def unsortedValues: Array[ButtonData] =
-      Array(
-        Left,
-        Right,
-        Help,
-        Help2,
-        Yes,
-        No,
-        NextForward,
-        BackPrevious,
-        Finish,
-        Apply,
-        CancelClose,
-        OKDone,
-        Other,
-        BigGap,
-        SmallGap)
+    protected override def unsortedValues: Array[ButtonData] = Array(
+      Left,
+      Right,
+      Help,
+      Help2,
+      Yes,
+      No,
+      NextForward,
+      BackPrevious,
+      Finish,
+      Apply,
+      CancelClose,
+      OKDone,
+      Other,
+      BigGap,
+      SmallGap)
   }
 
 }

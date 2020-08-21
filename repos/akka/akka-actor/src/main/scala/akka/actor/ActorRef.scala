@@ -157,11 +157,10 @@ abstract class ActorRef
   /**
     * Equals takes path and the unique id of the actor cell into account.
     */
-  final override def equals(that: Any): Boolean =
-    that match {
-      case other: ActorRef ⇒ path.uid == other.path.uid && path == other.path
-      case _ ⇒ false
-    }
+  final override def equals(that: Any): Boolean = that match {
+    case other: ActorRef ⇒ path.uid == other.path.uid && path == other.path
+    case _ ⇒ false
+  }
 
   override def toString: String =
     if (path.uid == ActorCell.undefinedUid) s"Actor[${path}]"
@@ -291,8 +290,8 @@ private[akka] abstract class ActorRefWithCell extends InternalActorRef {
 private[akka] case object Nobody extends MinimalActorRef {
   override val path: RootActorPath =
     new RootActorPath(Address("akka", "all-systems"), "/Nobody")
-  override def provider =
-    throw new UnsupportedOperationException("Nobody does not provide")
+  override def provider = throw new UnsupportedOperationException(
+    "Nobody does not provide")
 
   private val serialized = new SerializedNobody
 
@@ -447,15 +446,14 @@ private[akka] final case class SerializedActorRef private (path: String) {
   }
 
   @throws(classOf[java.io.ObjectStreamException])
-  def readResolve(): AnyRef =
-    currentSystem.value match {
-      case null ⇒
-        throw new IllegalStateException(
-          "Trying to deserialize a serialized ActorRef without an ActorSystem in scope." +
-            " Use 'akka.serialization.Serialization.currentSystem.withValue(system) { ... }'")
-      case someSystem ⇒
-        someSystem.provider.resolveActorRef(path)
-    }
+  def readResolve(): AnyRef = currentSystem.value match {
+    case null ⇒
+      throw new IllegalStateException(
+        "Trying to deserialize a serialized ActorRef without an ActorSystem in scope." +
+          " Use 'akka.serialization.Serialization.currentSystem.withValue(system) { ... }'")
+    case someSystem ⇒
+      someSystem.provider.resolveActorRef(path)
+  }
 }
 
 /**
@@ -567,59 +565,57 @@ private[akka] class EmptyLocalActorRef(
   }
 
   override def !(message: Any)(implicit
-      sender: ActorRef = Actor.noSender): Unit =
-    message match {
-      case null ⇒ throw new InvalidMessageException("Message is null")
-      case d: DeadLetter ⇒
-        specialHandle(
-          d.message,
-          d.sender
-        ) // do NOT form endless loops, since deadLetters will resend!
-      case _ if !specialHandle(message, sender) ⇒
-        eventStream.publish(
-          DeadLetter(
-            message,
-            if (sender eq Actor.noSender) provider.deadLetters else sender,
-            this))
-      case _ ⇒
-    }
+      sender: ActorRef = Actor.noSender): Unit = message match {
+    case null ⇒ throw new InvalidMessageException("Message is null")
+    case d: DeadLetter ⇒
+      specialHandle(
+        d.message,
+        d.sender
+      ) // do NOT form endless loops, since deadLetters will resend!
+    case _ if !specialHandle(message, sender) ⇒
+      eventStream.publish(
+        DeadLetter(
+          message,
+          if (sender eq Actor.noSender) provider.deadLetters else sender,
+          this))
+    case _ ⇒
+  }
 
-  protected def specialHandle(msg: Any, sender: ActorRef): Boolean =
-    msg match {
-      case w: Watch ⇒
-        if (w.watchee == this && w.watcher != this)
-          w.watcher.sendSystemMessage(
-            DeathWatchNotification(
-              w.watchee,
-              existenceConfirmed = false,
-              addressTerminated = false))
-        true
-      case _: Unwatch ⇒ true // Just ignore
-      case Identify(messageId) ⇒
-        sender ! ActorIdentity(messageId, None)
-        true
-      case sel: ActorSelectionMessage ⇒
-        sel.identifyRequest match {
-          case Some(identify) ⇒
-            if (!sel.wildcardFanOut)
-              sender ! ActorIdentity(identify.messageId, None)
-          case None ⇒
-            eventStream.publish(
-              DeadLetter(
-                sel.msg,
-                if (sender eq Actor.noSender) provider.deadLetters else sender,
-                this))
-        }
-        true
-      case m: DeadLetterSuppression ⇒
-        eventStream.publish(
-          SuppressedDeadLetter(
-            m,
-            if (sender eq Actor.noSender) provider.deadLetters else sender,
-            this))
-        true
-      case _ ⇒ false
-    }
+  protected def specialHandle(msg: Any, sender: ActorRef): Boolean = msg match {
+    case w: Watch ⇒
+      if (w.watchee == this && w.watcher != this)
+        w.watcher.sendSystemMessage(
+          DeathWatchNotification(
+            w.watchee,
+            existenceConfirmed = false,
+            addressTerminated = false))
+      true
+    case _: Unwatch ⇒ true // Just ignore
+    case Identify(messageId) ⇒
+      sender ! ActorIdentity(messageId, None)
+      true
+    case sel: ActorSelectionMessage ⇒
+      sel.identifyRequest match {
+        case Some(identify) ⇒
+          if (!sel.wildcardFanOut)
+            sender ! ActorIdentity(identify.messageId, None)
+        case None ⇒
+          eventStream.publish(
+            DeadLetter(
+              sel.msg,
+              if (sender eq Actor.noSender) provider.deadLetters else sender,
+              this))
+      }
+      true
+    case m: DeadLetterSuppression ⇒
+      eventStream.publish(
+        SuppressedDeadLetter(
+          m,
+          if (sender eq Actor.noSender) provider.deadLetters else sender,
+          this))
+      true
+    case _ ⇒ false
+  }
 }
 
 /**
@@ -685,37 +681,35 @@ private[akka] class VirtualPathContainer(
     * are supported, otherwise messages are sent to [[EmptyLocalActorRef]].
     */
   override def !(message: Any)(implicit
-      sender: ActorRef = Actor.noSender): Unit =
-    message match {
-      case sel @ ActorSelectionMessage(msg, elements, wildcardFanOut) ⇒ {
-        require(elements.nonEmpty)
+      sender: ActorRef = Actor.noSender): Unit = message match {
+    case sel @ ActorSelectionMessage(msg, elements, wildcardFanOut) ⇒ {
+      require(elements.nonEmpty)
 
-        def emptyRef =
-          new EmptyLocalActorRef(
-            provider,
-            path / sel.elements.map(_.toString),
-            provider.systemGuardian.underlying.system.eventStream)
+      def emptyRef = new EmptyLocalActorRef(
+        provider,
+        path / sel.elements.map(_.toString),
+        provider.systemGuardian.underlying.system.eventStream)
 
-        elements.head match {
-          case SelectChildName(name) ⇒
-            getChild(name) match {
-              case null ⇒
-                if (!wildcardFanOut)
-                  emptyRef.tell(msg, sender)
-              case child ⇒
-                if (elements.tail.isEmpty) {
-                  child ! msg
-                } else if (!wildcardFanOut) {
-                  emptyRef.tell(msg, sender)
-                }
-            }
-          case _ ⇒
-            if (!wildcardFanOut)
-              emptyRef.tell(msg, sender)
-        }
+      elements.head match {
+        case SelectChildName(name) ⇒
+          getChild(name) match {
+            case null ⇒
+              if (!wildcardFanOut)
+                emptyRef.tell(msg, sender)
+            case child ⇒
+              if (elements.tail.isEmpty) {
+                child ! msg
+              } else if (!wildcardFanOut) {
+                emptyRef.tell(msg, sender)
+              }
+          }
+        case _ ⇒
+          if (!wildcardFanOut)
+            emptyRef.tell(msg, sender)
       }
-      case _ ⇒ super.!(message)
     }
+    case _ ⇒ super.!(message)
+  }
 
   def addChild(name: String, ref: InternalActorRef): Unit = {
     children.put(name, ref) match {
@@ -905,9 +899,8 @@ private[akka] final class FunctionRef(
     }
   }
 
-  private def publish(e: Logging.LogEvent): Unit =
-    try eventStream.publish(e)
-    catch { case NonFatal(_) ⇒ }
+  private def publish(e: Logging.LogEvent): Unit = try eventStream.publish(e)
+  catch { case NonFatal(_) ⇒ }
 
   /**
     * Have this FunctionRef watch the given Actor. This method must not be

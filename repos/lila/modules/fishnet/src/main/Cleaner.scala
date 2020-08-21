@@ -33,27 +33,24 @@ private final class Cleaner(
     scheduleMoves
   }
 
-  private def cleanAnalysis: Funit =
-    analysisColl
-      .find(
-        BSONDocument(
-          "acquired.date" -> BSONDocument(
-            "$lt" -> durationAgo(analysisTimeoutBase))
-        ))
-      .sort(BSONDocument("acquired.date" -> 1))
-      .cursor[Work.Analysis]()
-      .collect[List](100)
-      .flatMap {
-        _.filter { ana =>
-          ana.acquiredAt.??(_ isBefore durationAgo(analysisTimeout(ana.nbPly)))
-        }.map { ana =>
-          repo.updateOrGiveUpAnalysis(ana.timeout) >>- {
-            clientTimeout(ana)
-            logger.warn(s"Timeout analysis ${ana.game.id}")
-          }
-        }.sequenceFu
-          .void
-      } andThenAnyway scheduleAnalysis
+  private def cleanAnalysis: Funit = analysisColl
+    .find(BSONDocument(
+      "acquired.date" -> BSONDocument("$lt" -> durationAgo(analysisTimeoutBase))
+    ))
+    .sort(BSONDocument("acquired.date" -> 1))
+    .cursor[Work.Analysis]()
+    .collect[List](100)
+    .flatMap {
+      _.filter { ana =>
+        ana.acquiredAt.??(_ isBefore durationAgo(analysisTimeout(ana.nbPly)))
+      }.map { ana =>
+        repo.updateOrGiveUpAnalysis(ana.timeout) >>- {
+          clientTimeout(ana)
+          logger.warn(s"Timeout analysis ${ana.game.id}")
+        }
+      }.sequenceFu
+        .void
+    } andThenAnyway scheduleAnalysis
 
   private def clientTimeout(work: Work) =
     work.acquiredByKey ?? repo.getClient foreach {

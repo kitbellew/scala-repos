@@ -32,21 +32,20 @@ object PolynomialSetup {
     BigDecimal(r)
   })
 
-  implicit def arbitraryComplex[A: Arbitrary: Fractional: Trig] =
-    Arbitrary(for {
+  implicit def arbitraryComplex[A: Arbitrary: Fractional: Trig] = Arbitrary(
+    for {
       re <- arbitrary[A]
       im <- arbitrary[A]
     } yield {
       Complex(re, im)
     })
 
-  implicit def arbitraryTerm[A: Arbitrary: Ring: Eq: ClassTag] =
-    Arbitrary(for {
-      c <- arbitrary[A]
-      e0 <- arbitrary[Int]
-    } yield {
-      Term(c, (e0 % 100).abs)
-    })
+  implicit def arbitraryTerm[A: Arbitrary: Ring: Eq: ClassTag] = Arbitrary(for {
+    c <- arbitrary[A]
+    e0 <- arbitrary[Int]
+  } yield {
+    Term(c, (e0 % 100).abs)
+  })
 }
 
 class PolynomialCheck

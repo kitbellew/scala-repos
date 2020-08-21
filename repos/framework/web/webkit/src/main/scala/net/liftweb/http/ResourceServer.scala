@@ -42,14 +42,13 @@ object ResourceServer {
     case "jquery-autocomplete" :: "indicator.gif" :: Nil           => true
   }
 
-  private def rewriter =
-    new PartialFunction[List[String], List[String]] {
-      def isDefinedAt(in: List[String]) =
-        LiftRules.jsArtifacts.pathRewriter.isDefinedAt(in)
+  private def rewriter = new PartialFunction[List[String], List[String]] {
+    def isDefinedAt(in: List[String]) =
+      LiftRules.jsArtifacts.pathRewriter.isDefinedAt(in)
 
-      def apply(in: List[String]): List[String] =
-        LiftRules.jsArtifacts.pathRewriter(in)
-    }
+    def apply(in: List[String]): List[String] =
+      LiftRules.jsArtifacts.pathRewriter(in)
+  }
 
   @volatile var pathRewriter: PartialFunction[List[String], List[String]] =
     rewriter orElse {

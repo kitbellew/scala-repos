@@ -50,40 +50,37 @@ private[macroimpls] trait JSMembers {
   case class JSMethod(params: List[JSMethodParam], resultType: Type)
       extends JSMember {
 
-    def conformsTo(that: JSMember): Boolean =
-      that match {
-        case JSMethod(thatParams, thatResultType) =>
-          val (used, unused) = params.splitAt(thatParams.size)
+    def conformsTo(that: JSMember): Boolean = that match {
+      case JSMethod(thatParams, thatResultType) =>
+        val (used, unused) = params.splitAt(thatParams.size)
 
-          params.size >= thatParams.size &&
-          resultType <:< thatResultType &&
-          unused.forall(_.isDefault) &&
-          (used zip thatParams).forall { case (x, y) => x.conformsTo(y) }
+        params.size >= thatParams.size &&
+        resultType <:< thatResultType &&
+        unused.forall(_.isDefault) &&
+        (used zip thatParams).forall { case (x, y) => x.conformsTo(y) }
 
-        case _ =>
-          false
-      }
+      case _ =>
+        false
+    }
 
     def displayStr(name: String): String =
       s"method $name(${params.mkString(", ")}): $resultType"
   }
 
   case class JSGetter(tpe: Type) extends JSMember {
-    def conformsTo(that: JSMember): Boolean =
-      that match {
-        case JSGetter(thatTpe) => tpe <:< thatTpe
-        case _                 => false
-      }
+    def conformsTo(that: JSMember): Boolean = that match {
+      case JSGetter(thatTpe) => tpe <:< thatTpe
+      case _                 => false
+    }
 
     def displayStr(name: String): String = s"getter $name: $tpe"
   }
 
   case class JSSetter(tpe: Type) extends JSMember {
-    def conformsTo(that: JSMember): Boolean =
-      that match {
-        case JSSetter(thatTpe) => thatTpe <:< tpe
-        case _                 => false
-      }
+    def conformsTo(that: JSMember): Boolean = that match {
+      case JSSetter(thatTpe) => thatTpe <:< tpe
+      case _                 => false
+    }
 
     def displayStr(name: String): String = s"setter $name: $tpe"
   }

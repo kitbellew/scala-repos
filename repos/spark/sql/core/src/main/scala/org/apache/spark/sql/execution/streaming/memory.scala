@@ -118,49 +118,43 @@ class MemorySink(schema: StructType) extends Sink with Logging {
   /** Used to convert an [[InternalRow]] to an external [[Row]] for comparison in testing. */
   private val externalRowConverter = RowEncoder(schema)
 
-  override def currentOffset: Option[Offset] =
-    synchronized {
-      batches.lastOption.map(_.end)
-    }
+  override def currentOffset: Option[Offset] = synchronized {
+    batches.lastOption.map(_.end)
+  }
 
-  override def addBatch(nextBatch: Batch): Unit =
-    synchronized {
-      nextBatch.data
-        .collect() // 'compute' the batch's data and record the batch
-      batches.append(nextBatch)
-    }
+  override def addBatch(nextBatch: Batch): Unit = synchronized {
+    nextBatch.data.collect() // 'compute' the batch's data and record the batch
+    batches.append(nextBatch)
+  }
 
   /** Returns all rows that are stored in this [[Sink]]. */
-  def allData: Seq[Row] =
-    synchronized {
-      batches
-        .map(_.data)
-        .reduceOption(_ unionAll _)
-        .map(_.collect().toSeq)
-        .getOrElse(Seq.empty)
-    }
+  def allData: Seq[Row] = synchronized {
+    batches
+      .map(_.data)
+      .reduceOption(_ unionAll _)
+      .map(_.collect().toSeq)
+      .getOrElse(Seq.empty)
+  }
 
   /**
     * Atomically drops the most recent `num` batches and resets the [[StreamProgress]] to the
     * corresponding point in the input. This function can be used when testing to simulate data
     * that has been lost due to buffering.
     */
-  def dropBatches(num: Int): Unit =
-    synchronized {
-      batches.dropRight(num)
-    }
+  def dropBatches(num: Int): Unit = synchronized {
+    batches.dropRight(num)
+  }
 
-  def toDebugString: String =
-    synchronized {
-      batches
-        .map { b =>
-          val dataStr =
-            try b.data.collect().mkString(" ")
-            catch {
-              case NonFatal(e) => "[Error converting to string]"
-            }
-          s"${b.end}: $dataStr"
-        }
-        .mkString("\n")
-    }
+  def toDebugString: String = synchronized {
+    batches
+      .map { b =>
+        val dataStr =
+          try b.data.collect().mkString(" ")
+          catch {
+            case NonFatal(e) => "[Error converting to string]"
+          }
+        s"${b.end}: $dataStr"
+      }
+      .mkString("\n")
+  }
 }

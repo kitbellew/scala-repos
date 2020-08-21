@@ -73,12 +73,11 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
     this(rows, cols, data, 0, rows)
 
   /** Creates a matrix with the specified data array and rows. columns inferred automatically */
-  def this(rows: Int, data: Array[V], offset: Int) =
-    this(
-      rows,
-      { assert(data.length % rows == 0); data.length / rows },
-      data,
-      offset)
+  def this(rows: Int, data: Array[V], offset: Int) = this(
+    rows,
+    { assert(data.length % rows == 0); data.length / rows },
+    data,
+    offset)
 
   if (isTranspose && (math.abs(majorStride) < cols)) {
     throw new IndexOutOfBoundsException(
@@ -207,19 +206,18 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
     *
     * Views are only possible (if(isTranspose) majorStride == cols else majorStride == rows) == true
     */
-  def flatten(view: View = View.Prefer): DenseVector[V] =
-    view match {
-      case View.Require =>
-        if (!canFlattenView)
-          throw new UnsupportedOperationException(
-            "Cannot make a view of this matrix.")
-        else
-          DenseVector.create(data, offset, 1, rows * cols)
-      case View.Copy =>
-        toDenseVector
-      case View.Prefer =>
-        flatten(canFlattenView)
-    }
+  def flatten(view: View = View.Prefer): DenseVector[V] = view match {
+    case View.Require =>
+      if (!canFlattenView)
+        throw new UnsupportedOperationException(
+          "Cannot make a view of this matrix.")
+      else
+        DenseVector.create(data, offset, 1, rows * cols)
+    case View.Copy =>
+      toDenseVector
+    case View.Prefer =>
+      flatten(canFlattenView)
+  }
 
   private def canFlattenView =
     if (isTranspose) majorStride == cols else majorStride == rows
@@ -992,12 +990,11 @@ object DenseMatrix
     }
   }
 
-  implicit def canCopyDenseMatrix[V: ClassTag] =
-    new CanCopy[DenseMatrix[V]] {
-      def apply(v1: DenseMatrix[V]) = {
-        v1.copy
-      }
+  implicit def canCopyDenseMatrix[V: ClassTag] = new CanCopy[DenseMatrix[V]] {
+    def apply(v1: DenseMatrix[V]) = {
+      v1.copy
     }
+  }
 
   def binaryOpFromUpdateOp[Op <: OpType, V, Other](implicit
       copy: CanCopy[DenseMatrix[V]],
@@ -1036,31 +1033,30 @@ object DenseMatrix
         Axis._0.type,
         DenseVector[V],
         DenseVector[R],
-        DenseMatrix[R]] =
-    new CanCollapseAxis[
-      DenseMatrix[V],
-      Axis._0.type,
-      DenseVector[V],
-      DenseVector[R],
-      DenseMatrix[R]] {
-      def apply(from: DenseMatrix[V], axis: Axis._0.type)(
-          f: (DenseVector[V]) => DenseVector[R]): DenseMatrix[R] = {
-        var result: DenseMatrix[R] = null
-        for (c <- 0 until from.cols) {
-          val col = f(from(::, c))
-          if (result eq null) {
-            result = DenseMatrix.zeros[R](col.length, from.cols)
-          }
-          result(::, c) := col
-        }
-
+        DenseMatrix[R]] = new CanCollapseAxis[
+    DenseMatrix[V],
+    Axis._0.type,
+    DenseVector[V],
+    DenseVector[R],
+    DenseMatrix[R]] {
+    def apply(from: DenseMatrix[V], axis: Axis._0.type)(
+        f: (DenseVector[V]) => DenseVector[R]): DenseMatrix[R] = {
+      var result: DenseMatrix[R] = null
+      for (c <- 0 until from.cols) {
+        val col = f(from(::, c))
         if (result eq null) {
-          DenseMatrix.zeros[R](0, from.cols)
-        } else {
-          result
+          result = DenseMatrix.zeros[R](col.length, from.cols)
         }
+        result(::, c) := col
+      }
+
+      if (result eq null) {
+        DenseMatrix.zeros[R](0, from.cols)
+      } else {
+        result
       }
     }
+  }
 
   implicit def handholdCanMapRows[V]
       : CanCollapseAxis.HandHold[DenseMatrix[V], Axis._0.type, DenseVector[V]] =
@@ -1071,31 +1067,30 @@ object DenseMatrix
     Axis._0.type,
     DenseVector[V],
     BitVector,
-    DenseMatrix[Boolean]] =
-    new CanCollapseAxis[
-      DenseMatrix[V],
-      Axis._0.type,
-      DenseVector[V],
-      BitVector,
-      DenseMatrix[Boolean]] {
-      def apply(from: DenseMatrix[V], axis: Axis._0.type)(
-          f: (DenseVector[V]) => BitVector): DenseMatrix[Boolean] = {
-        var result: DenseMatrix[Boolean] = null
-        for (c <- 0 until from.cols) {
-          val col = f(from(::, c))
-          if (result eq null) {
-            result = DenseMatrix.zeros[Boolean](col.length, from.cols)
-          }
-          result(::, c) := col
-        }
-
+    DenseMatrix[Boolean]] = new CanCollapseAxis[
+    DenseMatrix[V],
+    Axis._0.type,
+    DenseVector[V],
+    BitVector,
+    DenseMatrix[Boolean]] {
+    def apply(from: DenseMatrix[V], axis: Axis._0.type)(
+        f: (DenseVector[V]) => BitVector): DenseMatrix[Boolean] = {
+      var result: DenseMatrix[Boolean] = null
+      for (c <- 0 until from.cols) {
+        val col = f(from(::, c))
         if (result eq null) {
-          DenseMatrix.zeros[Boolean](0, from.cols)
-        } else {
-          result
+          result = DenseMatrix.zeros[Boolean](col.length, from.cols)
         }
+        result(::, c) := col
+      }
+
+      if (result eq null) {
+        DenseMatrix.zeros[Boolean](0, from.cols)
+      } else {
+        result
       }
     }
+  }
 
   /**
     * transforms each column into a new column, giving a new matrix.
@@ -1148,39 +1143,38 @@ object DenseMatrix
       : CanCollapseAxis.HandHold[DenseMatrix[V], Axis._1.type, DenseVector[V]] =
     new CanCollapseAxis.HandHold[DenseMatrix[V], Axis._1.type, DenseVector[V]]()
 
-  implicit def canMapColsBitVector[V: ClassTag: Zero] =
-    new CanCollapseAxis[
-      DenseMatrix[V],
-      Axis._1.type,
-      DenseVector[V],
-      BitVector,
-      DenseMatrix[Boolean]] {
-      def apply(from: DenseMatrix[V], axis: Axis._1.type)(
-          f: (DenseVector[V]) => BitVector): DenseMatrix[Boolean] = {
-        var result: DenseMatrix[Boolean] = null
-        import from.rows
-        val t = from.t
-        for (r <- 0 until from.rows) {
-          val row = f(t(::, r))
-          if (result eq null) {
-            // scala has decided this method is overloaded, and needs a result type.
-            // It has a result type, and is not overloaded.
-            //          result = DenseMatrix.zeros[V](from.rows, row.length)
-            val data = new Array[Boolean](rows * row.length)
-            result = DenseMatrix.create(rows, row.length, data)
-          }
-          result.t apply (::, r) := row
+  implicit def canMapColsBitVector[V: ClassTag: Zero] = new CanCollapseAxis[
+    DenseMatrix[V],
+    Axis._1.type,
+    DenseVector[V],
+    BitVector,
+    DenseMatrix[Boolean]] {
+    def apply(from: DenseMatrix[V], axis: Axis._1.type)(
+        f: (DenseVector[V]) => BitVector): DenseMatrix[Boolean] = {
+      var result: DenseMatrix[Boolean] = null
+      import from.rows
+      val t = from.t
+      for (r <- 0 until from.rows) {
+        val row = f(t(::, r))
+        if (result eq null) {
+          // scala has decided this method is overloaded, and needs a result type.
+          // It has a result type, and is not overloaded.
+          //          result = DenseMatrix.zeros[V](from.rows, row.length)
+          val data = new Array[Boolean](rows * row.length)
+          result = DenseMatrix.create(rows, row.length, data)
         }
+        result.t apply (::, r) := row
+      }
 
-        if (result ne null) {
-          result
-        } else {
-          val data = new Array[Boolean](0)
-          result = DenseMatrix.create(rows, 0, data)
-          result
-        }
+      if (result ne null) {
+        result
+      } else {
+        val data = new Array[Boolean](0)
+        result = DenseMatrix.create(rows, 0, data)
+        result
       }
     }
+  }
 
   /**
     * Iterates over each columns
@@ -1364,10 +1358,9 @@ object DenseMatrix
     }
   }
 
-  implicit def canDim[E] =
-    new dim.Impl[DenseMatrix[E], (Int, Int)] {
-      def apply(v: DenseMatrix[E]): (Int, Int) = (v.rows, v.cols)
-    }
+  implicit def canDim[E] = new dim.Impl[DenseMatrix[E], (Int, Int)] {
+    def apply(v: DenseMatrix[E]): (Int, Int) = (v.rows, v.cols)
+  }
 
   object FrobeniusInnerProductDenseMatrixSpace {
 

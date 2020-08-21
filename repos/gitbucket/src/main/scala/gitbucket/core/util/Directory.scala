@@ -56,8 +56,8 @@ object Directory {
   /**
     * Directory for uploaded files by the specified user.
     */
-  def getUserUploadDir(userName: String): File =
-    new File(s"${GitBucketHome}/data/${userName}/files")
+  def getUserUploadDir(userName: String): File = new File(
+    s"${GitBucketHome}/data/${userName}/files")
 
   /**
     * Root of temporary directories for the upload file.

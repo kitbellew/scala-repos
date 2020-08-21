@@ -38,10 +38,9 @@ trait Typers {
     def withContext(tree: => Tree) = withImplicitFlag(withMacroFlag(tree))
     def withWrapping(tree: Tree)(op: Tree => Tree) =
       if (mode == TERMmode) universe.wrappingIntoTerm(tree)(op) else op(tree)
-    def typecheckInternal(tree: Tree) =
-      callsiteTyper.silent(
-        _.typed(universe.duplicateAndKeepPositions(tree), mode, pt),
-        reportAmbiguousErrors = false)
+    def typecheckInternal(tree: Tree) = callsiteTyper.silent(
+      _.typed(universe.duplicateAndKeepPositions(tree), mode, pt),
+      reportAmbiguousErrors = false)
     withWrapping(tree)(wrappedTree =>
       withContext(typecheckInternal(wrappedTree) match {
         case universe.analyzer.SilentResultValue(result) =>

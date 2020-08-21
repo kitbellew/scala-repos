@@ -38,17 +38,16 @@ class SbtResolverIndexesManager(val testIndexesDir: Option[File])
 
   loadIndexes()
 
-  def add(resolver: SbtResolver) =
-    find(resolver) match {
-      case Some(index) => index
-      case None =>
-        val newIndex = SbtResolverIndex.create(
-          resolver.kind,
-          resolver.root,
-          getIndexDirectory(resolver.root))
-        indexes.add(newIndex)
-        newIndex
-    }
+  def add(resolver: SbtResolver) = find(resolver) match {
+    case Some(index) => index
+    case None =>
+      val newIndex = SbtResolverIndex.create(
+        resolver.kind,
+        resolver.root,
+        getIndexDirectory(resolver.root))
+      indexes.add(newIndex)
+      newIndex
+  }
 
   def find(resolver: SbtResolver): Option[SbtResolverIndex] =
     indexes find { _.root == resolver.root }

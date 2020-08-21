@@ -42,59 +42,55 @@ private[streams] class PromiseSubscriber[T](prom: Promise[T])
 
   // Streams methods
 
-  override def onSubscribe(subscription: Subscription): Unit =
-    exclusive {
-      case Subscribed =>
-        throw new IllegalStateException("Can't call onSubscribe twice")
-      case AwaitingSubscription =>
-        // Check if promise is completed. Even if we request elements, we
-        // still need to handle the Promise completing in some other way.
-        if (prom.isCompleted) {
-          state = Completed
-          subscription.cancel()
-        } else {
-          state = Subscribed
-          subscription.request(1)
-        }
-      case Completed =>
+  override def onSubscribe(subscription: Subscription): Unit = exclusive {
+    case Subscribed =>
+      throw new IllegalStateException("Can't call onSubscribe twice")
+    case AwaitingSubscription =>
+      // Check if promise is completed. Even if we request elements, we
+      // still need to handle the Promise completing in some other way.
+      if (prom.isCompleted) {
+        state = Completed
         subscription.cancel()
-    }
+      } else {
+        state = Subscribed
+        subscription.request(1)
+      }
+    case Completed =>
+      subscription.cancel()
+  }
 
-  override def onError(cause: Throwable): Unit =
-    exclusive {
-      case AwaitingSubscription | Subscribed =>
-        state = Completed
-        prom.failure(
-          cause
-        ) // we assume any Future.onComplete handlers run asynchronously
-      case Completed =>
-        ()
-    }
+  override def onError(cause: Throwable): Unit = exclusive {
+    case AwaitingSubscription | Subscribed =>
+      state = Completed
+      prom.failure(
+        cause
+      ) // we assume any Future.onComplete handlers run asynchronously
+    case Completed =>
+      ()
+  }
 
-  override def onComplete(): Unit =
-    exclusive {
-      case AwaitingSubscription | Subscribed =>
-        prom.failure(
-          new IllegalStateException(
-            "Can't handle onComplete until an element has been received"))
-        state = Completed
-      case Completed =>
-        ()
-    }
+  override def onComplete(): Unit = exclusive {
+    case AwaitingSubscription | Subscribed =>
+      prom.failure(
+        new IllegalStateException(
+          "Can't handle onComplete until an element has been received"))
+      state = Completed
+    case Completed =>
+      ()
+  }
 
-  override def onNext(element: T): Unit =
-    exclusive {
-      case AwaitingSubscription =>
-        state = Completed
-        throw new IllegalStateException(
-          "Can't handle onNext until at least one subscription has occurred")
-      case Subscribed =>
-        state = Completed
-        prom.success(
-          element
-        ) // we assume any Future.onComplete handlers run asynchronously
-      case Completed =>
-        ()
-    }
+  override def onNext(element: T): Unit = exclusive {
+    case AwaitingSubscription =>
+      state = Completed
+      throw new IllegalStateException(
+        "Can't handle onNext until at least one subscription has occurred")
+    case Subscribed =>
+      state = Completed
+      prom.success(
+        element
+      ) // we assume any Future.onComplete handlers run asynchronously
+    case Completed =>
+      ()
+  }
 
 }

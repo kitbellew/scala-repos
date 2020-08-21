@@ -49,12 +49,12 @@ object Reflector {
   def isExcluded(t: Type, excludes: Seq[Type] = Nil) =
     (defaultExcluded ++ excludes) contains t
 
-  def scalaTypeOf[T](implicit mf: Manifest[T]): ScalaType =
-    ManifestScalaType(mf)
-  def scalaTypeOf(clazz: Class[_]): ScalaType =
-    ManifestScalaType(ManifestFactory.manifestOf(clazz))
-  def scalaTypeOf(t: Type): ScalaType =
-    ManifestScalaType(ManifestFactory.manifestOf(t))
+  def scalaTypeOf[T](implicit mf: Manifest[T]): ScalaType = ManifestScalaType(
+    mf)
+  def scalaTypeOf(clazz: Class[_]): ScalaType = ManifestScalaType(
+    ManifestFactory.manifestOf(clazz))
+  def scalaTypeOf(t: Type): ScalaType = ManifestScalaType(
+    ManifestFactory.manifestOf(t))
 
   private[this] val stringTypes = new Memo[String, Option[ScalaType]]
   def scalaTypeOf(name: String): Option[ScalaType] =
@@ -62,8 +62,8 @@ object Reflector {
       name,
       resolveClass[AnyRef](_, ClassLoaders) map (c => scalaTypeOf(c)))
 
-  def describe[T](implicit mf: Manifest[T]): ObjectDescriptor =
-    describe(scalaTypeOf[T])
+  def describe[T](implicit mf: Manifest[T]): ObjectDescriptor = describe(
+    scalaTypeOf[T])
   def describe(clazz: Class[_]): ObjectDescriptor = describe(scalaTypeOf(clazz))
   def describe(fqn: String): Option[ObjectDescriptor] =
     scalaTypeOf(fqn) map (describe(_))
@@ -260,14 +260,13 @@ object Reflector {
     }
   }
 
-  def rawClassOf(t: Type): Class[_] =
-    rawClasses(
-      t,
-      _ match {
-        case c: Class[_]          => c
-        case p: ParameterizedType => rawClassOf(p.getRawType)
-        case x                    => sys.error("Raw type of " + x + " not known")
-      })
+  def rawClassOf(t: Type): Class[_] = rawClasses(
+    t,
+    _ match {
+      case c: Class[_]          => c
+      case p: ParameterizedType => rawClassOf(p.getRawType)
+      case x                    => sys.error("Raw type of " + x + " not known")
+    })
 
   def unmangleName(name: String) =
     unmangledNames(name, scala.reflect.NameTransformer.decode)

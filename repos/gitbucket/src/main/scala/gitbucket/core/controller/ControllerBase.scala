@@ -45,42 +45,41 @@ abstract class ControllerBase
   override def doFilter(
       request: ServletRequest,
       response: ServletResponse,
-      chain: FilterChain): Unit =
-    try {
-      val httpRequest = request.asInstanceOf[HttpServletRequest]
-      val httpResponse = response.asInstanceOf[HttpServletResponse]
-      val context = request.getServletContext.getContextPath
-      val path = httpRequest.getRequestURI.substring(context.length)
+      chain: FilterChain): Unit = try {
+    val httpRequest = request.asInstanceOf[HttpServletRequest]
+    val httpResponse = response.asInstanceOf[HttpServletResponse]
+    val context = request.getServletContext.getContextPath
+    val path = httpRequest.getRequestURI.substring(context.length)
 
-      if (path.startsWith("/console/")) {
-        val account = httpRequest.getSession
-          .getAttribute(Keys.Session.LoginAccount)
-          .asInstanceOf[Account]
-        val baseUrl = this.baseUrl(httpRequest)
-        if (account == null) {
-          // Redirect to login form
-          httpResponse.sendRedirect(
-            baseUrl + "/signin?redirect=" + StringUtil.urlEncode(path))
-        } else if (account.isAdmin) {
-          // H2 Console (administrators only)
-          chain.doFilter(request, response)
-        } else {
-          // Redirect to dashboard
-          httpResponse.sendRedirect(baseUrl + "/")
-        }
-      } else if (path.startsWith("/git/")) {
-        // Git repository
+    if (path.startsWith("/console/")) {
+      val account = httpRequest.getSession
+        .getAttribute(Keys.Session.LoginAccount)
+        .asInstanceOf[Account]
+      val baseUrl = this.baseUrl(httpRequest)
+      if (account == null) {
+        // Redirect to login form
+        httpResponse.sendRedirect(
+          baseUrl + "/signin?redirect=" + StringUtil.urlEncode(path))
+      } else if (account.isAdmin) {
+        // H2 Console (administrators only)
         chain.doFilter(request, response)
       } else {
-        if (path.startsWith("/api/v3/")) {
-          httpRequest.setAttribute(Keys.Request.APIv3, true)
-        }
-        // Scalatra actions
-        super.doFilter(request, response, chain)
+        // Redirect to dashboard
+        httpResponse.sendRedirect(baseUrl + "/")
       }
-    } finally {
-      contextCache.remove();
+    } else if (path.startsWith("/git/")) {
+      // Git repository
+      chain.doFilter(request, response)
+    } else {
+      if (path.startsWith("/api/v3/")) {
+        httpRequest.setAttribute(Keys.Request.APIv3, true)
+      }
+      // Scalatra actions
+      super.doFilter(request, response, chain)
     }
+  } finally {
+    contextCache.remove();
+  }
 
   private val contextCache = new java.lang.ThreadLocal[Context]()
 
@@ -98,10 +97,9 @@ abstract class ControllerBase
     }
   }
 
-  private def LoginAccount: Option[Account] =
-    request
-      .getAs[Account](Keys.Session.LoginAccount)
-      .orElse(session.getAs[Account](Keys.Session.LoginAccount))
+  private def LoginAccount: Option[Account] = request
+    .getAs[Account](Keys.Session.LoginAccount)
+    .orElse(session.getAs[Account](Keys.Session.LoginAccount))
 
   def ajaxGet(path: String)(action: => Any): Route =
     super.get(path) {
@@ -269,14 +267,13 @@ trait AccountManagementControllerBase extends ControllerBase {
       }
     }
 
-  protected def uniqueUserName: Constraint =
-    new Constraint() {
-      override def validate(
-          name: String,
-          value: String,
-          messages: Messages): Option[String] =
-        getAccountByUserName(value, true).map { _ => "User already exists." }
-    }
+  protected def uniqueUserName: Constraint = new Constraint() {
+    override def validate(
+        name: String,
+        value: String,
+        messages: Messages): Option[String] =
+      getAccountByUserName(value, true).map { _ => "User already exists." }
+  }
 
   protected def uniqueMailAddress(paramName: String = ""): Constraint =
     new Constraint() {

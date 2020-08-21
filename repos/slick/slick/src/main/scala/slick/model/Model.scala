@@ -14,10 +14,9 @@ case class QualifiedName(
     catalog: Option[String] = None) {
 
   /** human readable String representation */
-  def asString =
-    catalog.map(_ + ".").getOrElse("") +
-      schema.map(_ + ".").getOrElse("") +
-      table
+  def asString = catalog.map(_ + ".").getOrElse("") +
+    schema.map(_ + ".").getOrElse("") +
+    table
 }
 
 case class Table(

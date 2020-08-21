@@ -31,9 +31,8 @@ package scala.collection.immutable.redblacktree {
     def treeContains[A](tree: Tree[String, A], key: String) =
       iterator(tree).map(_._1) contains key
 
-    def height(tree: Tree[_, _]): Int =
-      if (tree eq null) 0
-      else (1 + math.max(height(tree.left), height(tree.right)))
+    def height(tree: Tree[_, _]): Int = if (tree eq null) 0
+    else (1 + math.max(height(tree.left), height(tree.right)))
 
     def mkTree(
         level: Int,
@@ -58,11 +57,10 @@ package scala.collection.immutable.redblacktree {
         }
       }
 
-    def genTree =
-      for {
-        depth <- choose(minimumSize, maximumSize + 1)
-        tree <- mkTree(depth)
-      } yield tree
+    def genTree = for {
+      depth <- choose(minimumSize, maximumSize + 1)
+      tree <- mkTree(depth)
+    } yield tree
 
     type ModifyParm
     def genParm(tree: Tree[String, Int]): Gen[ModifyParm]
@@ -82,41 +80,36 @@ package scala.collection.immutable.redblacktree {
 
     def rootIsBlack[A](t: Tree[String, A]) = isBlack(t)
 
-    def areAllLeavesBlack[A](t: Tree[String, A]): Boolean =
-      t match {
-        case null => isBlack(t)
-        case ne   => List(ne.left, ne.right) forall areAllLeavesBlack
-      }
+    def areAllLeavesBlack[A](t: Tree[String, A]): Boolean = t match {
+      case null => isBlack(t)
+      case ne   => List(ne.left, ne.right) forall areAllLeavesBlack
+    }
 
-    def areRedNodeChildrenBlack[A](t: Tree[String, A]): Boolean =
-      t match {
-        case RedTree(_, _, left, right) =>
-          List(left, right) forall (t =>
-            isBlack(t) && areRedNodeChildrenBlack(t))
-        case BlackTree(_, _, left, right) =>
-          List(left, right) forall areRedNodeChildrenBlack
-        case null => true
-      }
+    def areRedNodeChildrenBlack[A](t: Tree[String, A]): Boolean = t match {
+      case RedTree(_, _, left, right) =>
+        List(left, right) forall (t => isBlack(t) && areRedNodeChildrenBlack(t))
+      case BlackTree(_, _, left, right) =>
+        List(left, right) forall areRedNodeChildrenBlack
+      case null => true
+    }
 
-    def blackNodesToLeaves[A](t: Tree[String, A]): List[Int] =
-      t match {
-        case null => List(1)
-        case BlackTree(_, _, left, right) =>
-          List(left, right) flatMap blackNodesToLeaves map (_ + 1)
-        case RedTree(_, _, left, right) =>
-          List(left, right) flatMap blackNodesToLeaves
-      }
+    def blackNodesToLeaves[A](t: Tree[String, A]): List[Int] = t match {
+      case null => List(1)
+      case BlackTree(_, _, left, right) =>
+        List(left, right) flatMap blackNodesToLeaves map (_ + 1)
+      case RedTree(_, _, left, right) =>
+        List(left, right) flatMap blackNodesToLeaves
+    }
 
-    def areBlackNodesToLeavesEqual[A](t: Tree[String, A]): Boolean =
-      t match {
-        case null => true
-        case ne =>
-          (
-            blackNodesToLeaves(ne).distinct.size == 1
-              && areBlackNodesToLeavesEqual(ne.left)
-              && areBlackNodesToLeavesEqual(ne.right)
-          )
-      }
+    def areBlackNodesToLeavesEqual[A](t: Tree[String, A]): Boolean = t match {
+      case null => true
+      case ne =>
+        (
+          blackNodesToLeaves(ne).distinct.size == 1
+            && areBlackNodesToLeavesEqual(ne.left)
+            && areBlackNodesToLeavesEqual(ne.right)
+        )
+    }
 
     def orderIsPreserved[A](t: Tree[String, A]): Boolean =
       iterator(t) zip iterator(t).drop(1) forall { case (x, y) => x._1 < y._1 }
@@ -124,10 +117,10 @@ package scala.collection.immutable.redblacktree {
     def heightIsBounded(t: Tree[_, _]): Boolean =
       height(t) <= (2 * (32 - Integer.numberOfLeadingZeros(count(t) + 2)) - 2)
 
-    def setup(invariant: Tree[String, Int] => Boolean) =
-      forAll(genInput) { case (tree, parm, newTree) =>
+    def setup(invariant: Tree[String, Int] => Boolean) = forAll(genInput) {
+      case (tree, parm, newTree) =>
         invariant(newTree)
-      }
+    }
 
     property("root is black") = setup(rootIsBlack)
     property("all leaves are black") = setup(areAllLeavesBlack)
@@ -174,10 +167,9 @@ package scala.collection.immutable.redblacktree {
       choose(0, iterator(tree).size)
     override def modify(
         tree: Tree[String, Int],
-        parm: ModifyParm): Tree[String, Int] =
-      nodeAt(tree, parm) map { case (key, _) =>
-        update(tree, key, newValue, true)
-      } getOrElse tree
+        parm: ModifyParm): Tree[String, Int] = nodeAt(tree, parm) map {
+      case (key, _) => update(tree, key, newValue, true)
+    } getOrElse tree
 
     property("update modifies values") = forAll(genInput) {
       case (tree, parm, newTree) =>
@@ -196,10 +188,9 @@ package scala.collection.immutable.redblacktree {
       choose(0, iterator(tree).size)
     override def modify(
         tree: Tree[String, Int],
-        parm: ModifyParm): Tree[String, Int] =
-      nodeAt(tree, parm) map { case (key, _) =>
-        delete(tree, key)
-      } getOrElse tree
+        parm: ModifyParm): Tree[String, Int] = nodeAt(tree, parm) map {
+      case (key, _) => delete(tree, key)
+    } getOrElse tree
 
     property("delete removes elements") = forAll(genInput) {
       case (tree, parm, newTree) =>
@@ -213,18 +204,17 @@ package scala.collection.immutable.redblacktree {
     import RB._
 
     override type ModifyParm = (Option[Int], Option[Int])
-    override def genParm(tree: Tree[String, Int]): Gen[ModifyParm] =
-      for {
-        from <- choose(0, iterator(tree).size)
-        to <- choose(0, iterator(tree).size) suchThat (from <=)
-        optionalFrom <- oneOf(
-          Some(from),
-          None,
-          Some(from)
-        ) // Double Some(n) to get around a bug
-        optionalTo <-
-          oneOf(Some(to), None, Some(to)) // Double Some(n) to get around a bug
-      } yield (optionalFrom, optionalTo)
+    override def genParm(tree: Tree[String, Int]): Gen[ModifyParm] = for {
+      from <- choose(0, iterator(tree).size)
+      to <- choose(0, iterator(tree).size) suchThat (from <=)
+      optionalFrom <- oneOf(
+        Some(from),
+        None,
+        Some(from)
+      ) // Double Some(n) to get around a bug
+      optionalTo <-
+        oneOf(Some(to), None, Some(to)) // Double Some(n) to get around a bug
+    } yield (optionalFrom, optionalTo)
 
     override def modify(
         tree: Tree[String, Int],
@@ -290,11 +280,10 @@ package scala.collection.immutable.redblacktree {
     import RB._
 
     override type ModifyParm = (Int, Int)
-    override def genParm(tree: Tree[String, Int]): Gen[ModifyParm] =
-      for {
-        from <- choose(0, iterator(tree).size)
-        to <- choose(from, iterator(tree).size)
-      } yield (from, to)
+    override def genParm(tree: Tree[String, Int]): Gen[ModifyParm] = for {
+      from <- choose(0, iterator(tree).size)
+      to <- choose(from, iterator(tree).size)
+    } yield (from, to)
     override def modify(
         tree: Tree[String, Int],
         parm: ModifyParm): Tree[String, Int] = slice(tree, parm._1, parm._2)

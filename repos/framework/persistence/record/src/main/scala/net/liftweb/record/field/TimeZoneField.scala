@@ -46,11 +46,10 @@ trait TimeZoneTypedField extends StringTypedField {
     if (optional_?) ("", emptyOptionLabel) :: TimeZoneField.timeZoneList
     else TimeZoneField.timeZoneList
 
-  private def elem =
-    SHtml.select(
-      buildDisplayList,
-      Full(valueBox openOr ""),
-      timezone => setBox(Full(timezone))) % ("tabindex" -> tabIndex.toString)
+  private def elem = SHtml.select(
+    buildDisplayList,
+    Full(valueBox openOr ""),
+    timezone => setBox(Full(timezone))) % ("tabindex" -> tabIndex.toString)
 
   override def toForm: Box[NodeSeq] =
     uniqueFieldId match {
@@ -65,11 +64,10 @@ class TimeZoneField[OwnerType <: Record[OwnerType]](rec: OwnerType)
 
   override def defaultValue = TimeZone.getDefault.getID
 
-  def isAsTimeZone: TimeZone =
-    TimeZone.getTimeZone(value) match {
-      case null => TimeZone.getDefault
-      case x    => x
-    }
+  def isAsTimeZone: TimeZone = TimeZone.getTimeZone(value) match {
+    case null => TimeZone.getDefault
+    case x    => x
+  }
 }
 
 class OptionalTimeZoneField[OwnerType <: Record[OwnerType]](rec: OwnerType)

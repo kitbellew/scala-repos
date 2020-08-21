@@ -54,8 +54,8 @@ trait CRUDify[KeyType, CrudType <: KeyedMapper[KeyType, CrudType]]
     */
   protected def computeFieldFromPointer(
       instance: TheCrudType,
-      pointer: FieldPointerType): Box[BaseField] =
-    Full(getActualField(instance, pointer))
+      pointer: FieldPointerType): Box[BaseField] = Full(
+    getActualField(instance, pointer))
 
   /**
     * Given a String that represents the primary key, find an instance of

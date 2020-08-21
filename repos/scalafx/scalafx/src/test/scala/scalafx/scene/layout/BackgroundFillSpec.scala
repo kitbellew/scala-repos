@@ -46,8 +46,8 @@ class BackgroundFillSpec
       classOf[jfxsl.BackgroundFill],
       classOf[BackgroundFill]) {
 
-  override protected def getScalaClassInstance =
-    new BackgroundFill(getJavaClassInstance) {}
+  override protected def getScalaClassInstance = new BackgroundFill(
+    getJavaClassInstance) {}
 
   override protected def getJavaClassInstance =
     new jfxsl.BackgroundFill(Color.White, CornerRadii.Empty, Insets(0))

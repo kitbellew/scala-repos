@@ -56,20 +56,18 @@ class ScTemplateBodyImpl private (
     } else findChildrenByClass(classOf[ScTypeAlias])
   }
 
-  def functions: Array[ScFunction] =
-    getStubOrPsiChildren(
-      TokenSets.FUNCTIONS,
-      JavaArrayFactoryUtil.ScFunctionFactory).filterNot(_.isLocal)
+  def functions: Array[ScFunction] = getStubOrPsiChildren(
+    TokenSets.FUNCTIONS,
+    JavaArrayFactoryUtil.ScFunctionFactory).filterNot(_.isLocal)
 
   def typeDefinitions: Seq[ScTypeDefinition] =
     getStubOrPsiChildren(
       TokenSets.TMPL_DEF_BIT_SET,
       JavaArrayFactoryUtil.ScTypeDefinitionFactory).filterNot(_.isLocal)
 
-  def members: Array[ScMember] =
-    getStubOrPsiChildren(
-      TokenSets.MEMBERS,
-      JavaArrayFactoryUtil.ScMemberFactory).filterNot(_.isLocal)
+  def members: Array[ScMember] = getStubOrPsiChildren(
+    TokenSets.MEMBERS,
+    JavaArrayFactoryUtil.ScMemberFactory).filterNot(_.isLocal)
 
   def holders: Array[ScDeclaredElementsHolder] =
     getStubOrPsiChildren(

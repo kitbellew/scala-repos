@@ -109,12 +109,11 @@ trait ScopeAnnotator {
     elements.filter(e => clashedNames.contains(nameOf(e)))
   }
 
-  private def nameOf(element: ScNamedElement): String =
-    element match {
-      case f: ScFunction if !f.getParent.isInstanceOf[ScBlockExpr] =>
-        f.name + signatureOf(f)
-      case _ => element.name
-    }
+  private def nameOf(element: ScNamedElement): String = element match {
+    case f: ScFunction if !f.getParent.isInstanceOf[ScBlockExpr] =>
+      f.name + signatureOf(f)
+    case _ => element.name
+  }
 
   private def signatureOf(f: ScFunction): String = {
     if (f.parameters.isEmpty)

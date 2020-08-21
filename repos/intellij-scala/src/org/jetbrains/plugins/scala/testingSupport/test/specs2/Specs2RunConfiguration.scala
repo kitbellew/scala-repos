@@ -19,13 +19,12 @@ class Specs2RunConfiguration(
     extends AbstractTestRunConfiguration(project, configurationFactory, name)
     with ScalaTestingConfiguration {
 
-  override def getAdditionalTestParams(testName: String): Seq[String] =
-    Seq("-Dspecs2.ex=\"\\A" + testName + "\\Z\"")
+  override def getAdditionalTestParams(testName: String): Seq[String] = Seq(
+    "-Dspecs2.ex=\"\\A" + testName + "\\Z\"")
 
-  override def suitePaths =
-    List(
-      "org.specs2.specification.SpecificationStructure",
-      "org.specs2.specification.core.SpecificationStructure")
+  override def suitePaths = List(
+    "org.specs2.specification.SpecificationStructure",
+    "org.specs2.specification.core.SpecificationStructure")
 
   override def mainClass =
     "org.jetbrains.plugins.scala.testingSupport.specs2.JavaSpecs2Runner"

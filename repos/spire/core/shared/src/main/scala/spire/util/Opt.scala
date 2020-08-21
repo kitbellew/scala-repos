@@ -8,20 +8,18 @@ object Opt extends OptVersions {
   def apply[A](a: A): Opt[A] = new Opt(a)
   def empty[A]: Opt[A] = new Opt[A](null.asInstanceOf[A])
 
-  implicit def Eq[A: Eq]: Eq[Opt[A]] =
-    new Eq[Opt[A]] {
-      def eqv(x: Opt[A], y: Opt[A]): Boolean =
-        if (x.isEmpty) y.isEmpty else x.ref === y.ref
-    }
+  implicit def Eq[A: Eq]: Eq[Opt[A]] = new Eq[Opt[A]] {
+    def eqv(x: Opt[A], y: Opt[A]): Boolean =
+      if (x.isEmpty) y.isEmpty else x.ref === y.ref
+  }
 }
 
 class Opt[+A](val ref: A) extends OptVersions.Base {
   def scala2_10hashCode: Int = ref.hashCode
-  def scala2_10equals(other: Any): Boolean =
-    other match {
-      case that: Opt[_] => ref == that.ref
-      case _            => false
-    }
+  def scala2_10equals(other: Any): Boolean = other match {
+    case that: Opt[_] => ref == that.ref
+    case _            => false
+  }
   def isDefined: Boolean = ref != null
   def nonEmpty: Boolean = ref != null
   def isEmpty: Boolean = ref == null
@@ -61,9 +59,8 @@ class Opt[+A](val ref: A) extends OptVersions.Base {
 
   def foreach[U](f: A => U): Unit = if (ref != null) f(ref)
 
-  def iterator: Iterator[A] =
-    if (ref == null) collection.Iterator.empty
-    else collection.Iterator.single(ref)
+  def iterator: Iterator[A] = if (ref == null) collection.Iterator.empty
+  else collection.Iterator.single(ref)
 
   def toRight[X](left: => X): Either[X, A] =
     if (ref == null) Left(left) else Right(ref)

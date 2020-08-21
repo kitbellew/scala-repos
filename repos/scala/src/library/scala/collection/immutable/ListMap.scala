@@ -33,13 +33,13 @@ object ListMap extends ImmutableMapFactory[ListMap] {
 
   @SerialVersionUID(-8256686706655863282L)
   private object EmptyListMap extends ListMap[Any, Nothing] {
-    override def apply(key: Any) =
-      throw new NoSuchElementException("key not found: " + key)
+    override def apply(key: Any) = throw new NoSuchElementException(
+      "key not found: " + key)
     override def contains(key: Any) = false
-    override def last: (Any, Nothing) =
-      throw new NoSuchElementException("Empty ListMap")
-    override def init: ListMap[Any, Nothing] =
-      throw new NoSuchElementException("Empty ListMap")
+    override def last: (Any, Nothing) = throw new NoSuchElementException(
+      "Empty ListMap")
+    override def init: ListMap[Any, Nothing] = throw new NoSuchElementException(
+      "Empty ListMap")
   }
 }
 
@@ -144,8 +144,8 @@ class ListMap[A, +B]
 
   protected def key: A = throw new NoSuchElementException("empty map")
   protected def value: B = throw new NoSuchElementException("empty map")
-  protected def next: ListMap[A, B] =
-    throw new NoSuchElementException("empty map")
+  protected def next: ListMap[A, B] = throw new NoSuchElementException(
+    "empty map")
 
   /** This class represents an entry in the `ListMap`.
     */

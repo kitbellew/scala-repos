@@ -61,8 +61,8 @@ private[collection] object RedBlackTree {
         parent: Node[A, B]): Node[A, B] =
       new Node(key, value, red, null, null, parent)
 
-    def unapply[A, B](t: Node[A, B]) =
-      Some((t.key, t.value, t.left, t.right, t.parent))
+    def unapply[A, B](t: Node[A, B]) = Some(
+      (t.key, t.value, t.left, t.right, t.parent))
   }
 
   // ---- getters ----
@@ -99,17 +99,15 @@ private[collection] object RedBlackTree {
   def contains[A: Ordering](tree: Tree[A, _], key: A) =
     getNode(tree.root, key) ne null
 
-  def min[A, B](tree: Tree[A, B]): Option[(A, B)] =
-    minNode(tree.root) match {
-      case null => None
-      case node => Some((node.key, node.value))
-    }
+  def min[A, B](tree: Tree[A, B]): Option[(A, B)] = minNode(tree.root) match {
+    case null => None
+    case node => Some((node.key, node.value))
+  }
 
-  def minKey[A](tree: Tree[A, _]): Option[A] =
-    minNode(tree.root) match {
-      case null => None
-      case node => Some(node.key)
-    }
+  def minKey[A](tree: Tree[A, _]): Option[A] = minNode(tree.root) match {
+    case null => None
+    case node => Some(node.key)
+  }
 
   private def minNode[A, B](node: Node[A, B]): Node[A, B] =
     if (node eq null) null else minNodeNonNull(node)
@@ -117,17 +115,15 @@ private[collection] object RedBlackTree {
   @tailrec def minNodeNonNull[A, B](node: Node[A, B]): Node[A, B] =
     if (node.left eq null) node else minNodeNonNull(node.left)
 
-  def max[A, B](tree: Tree[A, B]): Option[(A, B)] =
-    maxNode(tree.root) match {
-      case null => None
-      case node => Some((node.key, node.value))
-    }
+  def max[A, B](tree: Tree[A, B]): Option[(A, B)] = maxNode(tree.root) match {
+    case null => None
+    case node => Some((node.key, node.value))
+  }
 
-  def maxKey[A](tree: Tree[A, _]): Option[A] =
-    maxNode(tree.root) match {
-      case null => None
-      case node => Some(node.key)
-    }
+  def maxKey[A](tree: Tree[A, _]): Option[A] = maxNode(tree.root) match {
+    case null => None
+    case node => Some(node.key)
+  }
 
   private def maxNode[A, B](node: Node[A, B]): Node[A, B] =
     if (node eq null) null else maxNodeNonNull(node)
@@ -538,14 +534,13 @@ private[collection] object RedBlackTree {
 
     def hasNext: Boolean = nextNode ne null
 
-    def next(): R =
-      nextNode match {
-        case null => throw new NoSuchElementException("next on empty iterator")
-        case node =>
-          nextNode = successor(node)
-          setNullIfAfterEnd()
-          nextResult(node)
-      }
+    def next(): R = nextNode match {
+      case null => throw new NoSuchElementException("next on empty iterator")
+      case node =>
+        nextNode = successor(node)
+        setNullIfAfterEnd()
+        nextResult(node)
+    }
 
     private[this] var nextNode: Node[A, B] = start match {
       case None       => minNode(tree.root)

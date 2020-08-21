@@ -66,27 +66,25 @@ private[mongodb] object Meta {
     /*
      * This is used to convert DBObjects into JObjects
      */
-    def primitive2jvalue(a: Any) =
-      a match {
-        case x: String            => JString(x)
-        case x: Int               => JInt(x)
-        case x: Long              => JInt(x)
-        case x: Double            => JDouble(x)
-        case x: Float             => JDouble(x)
-        case x: Byte              => JInt(BigInt(x))
-        case x: BigInt            => JInt(x)
-        case x: Boolean           => JBool(x)
-        case x: Short             => JInt(BigInt(x))
-        case x: java.lang.Integer => JInt(BigInt(x.asInstanceOf[Int]))
-        case x: java.lang.Long    => JInt(BigInt(x.asInstanceOf[Long]))
-        case x: java.lang.Double  => JDouble(x.asInstanceOf[Double])
-        case x: java.lang.Float   => JDouble(x.asInstanceOf[Float])
-        case x: java.lang.Byte    => JInt(BigInt(x.asInstanceOf[Byte]))
-        case x: java.lang.Boolean => JBool(x.asInstanceOf[Boolean])
-        case x: java.lang.Short   => JInt(BigInt(x.asInstanceOf[Short]))
-        case _ =>
-          sys.error("not a primitive " + a.asInstanceOf[AnyRef].getClass)
-      }
+    def primitive2jvalue(a: Any) = a match {
+      case x: String            => JString(x)
+      case x: Int               => JInt(x)
+      case x: Long              => JInt(x)
+      case x: Double            => JDouble(x)
+      case x: Float             => JDouble(x)
+      case x: Byte              => JInt(BigInt(x))
+      case x: BigInt            => JInt(x)
+      case x: Boolean           => JBool(x)
+      case x: Short             => JInt(BigInt(x))
+      case x: java.lang.Integer => JInt(BigInt(x.asInstanceOf[Int]))
+      case x: java.lang.Long    => JInt(BigInt(x.asInstanceOf[Long]))
+      case x: java.lang.Double  => JDouble(x.asInstanceOf[Double])
+      case x: java.lang.Float   => JDouble(x.asInstanceOf[Float])
+      case x: java.lang.Byte    => JInt(BigInt(x.asInstanceOf[Byte]))
+      case x: java.lang.Boolean => JBool(x.asInstanceOf[Boolean])
+      case x: java.lang.Short   => JInt(BigInt(x.asInstanceOf[Short]))
+      case _                    => sys.error("not a primitive " + a.asInstanceOf[AnyRef].getClass)
+    }
 
     /*
      * Date types require formatting
@@ -99,19 +97,17 @@ private[mongodb] object Meta {
 
     def datetype_?(clazz: Class[_]) = datetypes contains clazz
 
-    def datetype2jvalue(a: Any)(implicit formats: Formats) =
-      a match {
-        case x: Calendar => JsonDate(x.getTime)(formats)
-        case x: Date     => JsonDate(x)(formats)
-        case x: DateTime => JsonDateTime(x)(formats)
-      }
+    def datetype2jvalue(a: Any)(implicit formats: Formats) = a match {
+      case x: Calendar => JsonDate(x.getTime)(formats)
+      case x: Date     => JsonDate(x)(formats)
+      case x: DateTime => JsonDateTime(x)(formats)
+    }
 
-    def datetype2dbovalue(a: Any) =
-      a match {
-        case x: Calendar => x.getTime
-        case x: Date     => x
-        case x: DateTime => x.toDate
-      }
+    def datetype2dbovalue(a: Any) = a match {
+      case x: Calendar => x.getTime
+      case x: Date     => x
+      case x: DateTime => x.toDate
+    }
 
     /*
      * Extended Mongo types.
@@ -127,15 +123,13 @@ private[mongodb] object Meta {
     /*
      * Definitive place for JValue conversion of mongo types
      */
-    def mongotype2jvalue(a: Any)(implicit formats: Formats) =
-      a match {
-        case x: ObjectId => JsonObjectId.asJValue(x, formats)
-        case x: Pattern  => JsonRegex(x)
-        case x: UUID     => JsonUUID(x)
-        case x: DBRef    => sys.error("DBRefs are not supported.")
-        case _ =>
-          sys.error("not a mongotype " + a.asInstanceOf[AnyRef].getClass)
-      }
+    def mongotype2jvalue(a: Any)(implicit formats: Formats) = a match {
+      case x: ObjectId => JsonObjectId.asJValue(x, formats)
+      case x: Pattern  => JsonRegex(x)
+      case x: UUID     => JsonUUID(x)
+      case x: DBRef    => sys.error("DBRefs are not supported.")
+      case _           => sys.error("not a mongotype " + a.asInstanceOf[AnyRef].getClass)
+    }
   }
 
   @deprecated("use JsonDate.apply", "2.6")

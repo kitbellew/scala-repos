@@ -41,12 +41,10 @@ class InputMethodTextRunSpec
       classOf[jfxsi.InputMethodTextRun],
       classOf[InputMethodTextRun]) {
 
-  override protected def getJavaClassInstance =
-    new jfxsi.InputMethodTextRun(
-      "Coffee rules",
-      jfxsi.InputMethodHighlight.SELECTED_CONVERTED)
-  override protected def getScalaClassInstance =
-    new InputMethodTextRun(
-      "Coffee rules",
-      InputMethodHighlight.SELECTED_CONVERTED)
+  override protected def getJavaClassInstance = new jfxsi.InputMethodTextRun(
+    "Coffee rules",
+    jfxsi.InputMethodHighlight.SELECTED_CONVERTED)
+  override protected def getScalaClassInstance = new InputMethodTextRun(
+    "Coffee rules",
+    InputMethodHighlight.SELECTED_CONVERTED)
 }

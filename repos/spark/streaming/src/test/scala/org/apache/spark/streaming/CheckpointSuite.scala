@@ -62,8 +62,8 @@ private[streaming] class CheckpointInputDStream(_ssc: StreamingContext)
     new FileInputDStreamCheckpointData
   override def start(): Unit = {}
   override def stop(): Unit = {}
-  override def compute(time: Time): Option[RDD[Int]] =
-    Some(ssc.sc.makeRDD(Seq(1)))
+  override def compute(time: Time): Option[RDD[Int]] = Some(
+    ssc.sc.makeRDD(Seq(1)))
   private[streaming] class FileInputDStreamCheckpointData
       extends DStreamCheckpointData(this) {
     @transient

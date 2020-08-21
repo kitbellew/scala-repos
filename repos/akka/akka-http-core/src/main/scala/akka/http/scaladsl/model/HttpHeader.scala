@@ -29,8 +29,8 @@ object HttpHeader {
     * Extract name and value from a header.
     * CAUTION: The name must be matched in *all-lowercase*!.
     */
-  def unapply(header: HttpHeader): Option[(String, String)] =
-    Some((header.lowercaseName, header.value))
+  def unapply(header: HttpHeader): Option[(String, String)] = Some(
+    (header.lowercaseName, header.value))
 
   /**
     * Attempts to parse the given header name and value string into a header model instance.

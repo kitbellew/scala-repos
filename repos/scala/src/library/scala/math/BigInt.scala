@@ -124,14 +124,13 @@ final class BigInt(val bigInteger: BigInteger)
 
   /** Compares this BigInt with the specified value for equality.
     */
-  override def equals(that: Any): Boolean =
-    that match {
-      case that: BigInt     => this equals that
-      case that: BigDecimal => that equals this
-      case that: Double     => isValidDouble && toDouble == that
-      case that: Float      => isValidFloat && toFloat == that
-      case x                => isValidLong && unifiedPrimitiveEquals(x)
-    }
+  override def equals(that: Any): Boolean = that match {
+    case that: BigInt     => this equals that
+    case that: BigDecimal => that equals this
+    case that: Double     => isValidDouble && toDouble == that
+    case that: Float      => isValidFloat && toFloat == that
+    case x                => isValidLong && unifiedPrimitiveEquals(x)
+  }
   override def isValidByte = this >= Byte.MinValue && this <= Byte.MaxValue
   override def isValidShort = this >= Short.MinValue && this <= Short.MaxValue
   override def isValidChar = this >= Char.MinValue && this <= Char.MaxValue
@@ -189,23 +188,23 @@ final class BigInt(val bigInteger: BigInteger)
 
   /** Subtraction of BigInts
     */
-  def -(that: BigInt): BigInt =
-    new BigInt(this.bigInteger.subtract(that.bigInteger))
+  def -(that: BigInt): BigInt = new BigInt(
+    this.bigInteger.subtract(that.bigInteger))
 
   /** Multiplication of BigInts
     */
-  def *(that: BigInt): BigInt =
-    new BigInt(this.bigInteger.multiply(that.bigInteger))
+  def *(that: BigInt): BigInt = new BigInt(
+    this.bigInteger.multiply(that.bigInteger))
 
   /** Division of BigInts
     */
-  def /(that: BigInt): BigInt =
-    new BigInt(this.bigInteger.divide(that.bigInteger))
+  def /(that: BigInt): BigInt = new BigInt(
+    this.bigInteger.divide(that.bigInteger))
 
   /** Remainder of BigInts
     */
-  def %(that: BigInt): BigInt =
-    new BigInt(this.bigInteger.remainder(that.bigInteger))
+  def %(that: BigInt): BigInt = new BigInt(
+    this.bigInteger.remainder(that.bigInteger))
 
   /** Returns a pair of two BigInts containing (this / that) and (this % that).
     */
@@ -236,29 +235,29 @@ final class BigInt(val bigInteger: BigInteger)
 
   /** Bitwise and-not of BigInts. Returns a BigInt whose value is (this & ~that).
     */
-  def &~(that: BigInt): BigInt =
-    new BigInt(this.bigInteger.andNot(that.bigInteger))
+  def &~(that: BigInt): BigInt = new BigInt(
+    this.bigInteger.andNot(that.bigInteger))
 
   /** Returns the greatest common divisor of abs(this) and abs(that)
     */
-  def gcd(that: BigInt): BigInt =
-    new BigInt(this.bigInteger.gcd(that.bigInteger))
+  def gcd(that: BigInt): BigInt = new BigInt(
+    this.bigInteger.gcd(that.bigInteger))
 
   /** Returns a BigInt whose value is (this mod that).
     *  This method differs from `%` in that it always returns a non-negative BigInt.
     */
-  def mod(that: BigInt): BigInt =
-    new BigInt(this.bigInteger.mod(that.bigInteger))
+  def mod(that: BigInt): BigInt = new BigInt(
+    this.bigInteger.mod(that.bigInteger))
 
   /** Returns the minimum of this and that
     */
-  def min(that: BigInt): BigInt =
-    new BigInt(this.bigInteger.min(that.bigInteger))
+  def min(that: BigInt): BigInt = new BigInt(
+    this.bigInteger.min(that.bigInteger))
 
   /** Returns the maximum of this and that
     */
-  def max(that: BigInt): BigInt =
-    new BigInt(this.bigInteger.max(that.bigInteger))
+  def max(that: BigInt): BigInt = new BigInt(
+    this.bigInteger.max(that.bigInteger))
 
   /** Returns a BigInt whose value is (<tt>this</tt> raised to the power of <tt>exp</tt>).
     */
@@ -272,8 +271,8 @@ final class BigInt(val bigInteger: BigInteger)
 
   /** Returns a BigInt whose value is (the inverse of <tt>this</tt> modulo <tt>m</tt>).
     */
-  def modInverse(m: BigInt): BigInt =
-    new BigInt(this.bigInteger.modInverse(m.bigInteger))
+  def modInverse(m: BigInt): BigInt = new BigInt(
+    this.bigInteger.modInverse(m.bigInteger))
 
   /** Returns a BigInt whose value is the negation of this BigInt
     */

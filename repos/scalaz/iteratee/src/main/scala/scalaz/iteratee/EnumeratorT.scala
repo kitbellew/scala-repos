@@ -63,21 +63,19 @@ trait EnumeratorT[E, F[_]] { self =>
   def reduced[B](b: B)(f: (B, E) => B)(implicit
       M: Monad[F]): EnumeratorT[B, F] =
     new EnumeratorT[B, F] {
-      def apply[A] =
-        (step: StepT[B, F, A]) => {
-          def check(s: StepT[E, F, B]): IterateeT[B, F, A] =
-            s.fold(
-              cont = k =>
-                k(eofInput) >>== { s =>
-                  s.mapContOr(_ => sys.error("diverging iteratee"), check(s))
-                },
-              done = (a, _) => step.mapCont(f => f(elInput(a)))
-            )
+      def apply[A] = (step: StepT[B, F, A]) => {
+        def check(s: StepT[E, F, B]): IterateeT[B, F, A] = s.fold(
+          cont = k =>
+            k(eofInput) >>== { s =>
+              s.mapContOr(_ => sys.error("diverging iteratee"), check(s))
+            },
+          done = (a, _) => step.mapCont(f => f(elInput(a)))
+        )
 
-          iterateeT(M.bind((IterateeT.fold[E, F, B](b)(f) &= self).value) { s =>
-            check(s).value
-          })
-        }
+        iterateeT(M.bind((IterateeT.fold[E, F, B](b)(f) &= self).value) { s =>
+          check(s).value
+        })
+      }
     }
 
   def cross[E2](e2: EnumeratorT[E2, F])(implicit
@@ -111,11 +109,10 @@ trait EnumeratorTInstances extends EnumeratorTInstances0 {
     new MonadTrans[λ[(β[_], α) => EnumeratorT[α, β]]] {
       def liftM[G[_]: Monad, E](ga: G[E]): EnumeratorT[E, G] =
         new EnumeratorT[E, G] {
-          def apply[A] =
-            (s: StepT[E, G, A]) =>
-              iterateeT(Monad[G].bind(ga) { e =>
-                s.mapCont(k => k(elInput(e))).value
-              })
+          def apply[A] = (s: StepT[E, G, A]) =>
+            iterateeT(Monad[G].bind(ga) { e =>
+              s.mapCont(k => k(elInput(e))).value
+            })
         }
 
       implicit def apply[G[_]: Monad]: Monad[EnumeratorT[?, G]] =
@@ -154,24 +151,22 @@ trait EnumeratorTFunctions {
 
   def enumStream[E, F[_]: Monad](xs: Stream[E]): EnumeratorT[E, F] =
     new EnumeratorT[E, F] {
-      def apply[A] =
-        (s: StepT[E, F, A]) =>
-          xs match {
-            case h #:: t =>
-              s.mapCont(k => k(elInput(h)) >>== enumStream[E, F](t).apply[A])
-            case _ => s.pointI
-          }
+      def apply[A] = (s: StepT[E, F, A]) =>
+        xs match {
+          case h #:: t =>
+            s.mapCont(k => k(elInput(h)) >>== enumStream[E, F](t).apply[A])
+          case _ => s.pointI
+        }
     }
 
   def enumList[E, F[_]: Monad](xs: List[E]): EnumeratorT[E, F] =
     new EnumeratorT[E, F] {
-      def apply[A] =
-        (s: StepT[E, F, A]) =>
-          xs match {
-            case h :: t =>
-              s.mapCont(k => k(elInput(h)) >>== enumList[E, F](t).apply[A])
-            case Nil => s.pointI
-          }
+      def apply[A] = (s: StepT[E, F, A]) =>
+        xs match {
+          case h :: t =>
+            s.mapCont(k => k(elInput(h)) >>== enumList[E, F](t).apply[A])
+          case Nil => s.pointI
+        }
     }
 
   def enumIterator[E, F[_]](x: => Iterator[E])(implicit
@@ -198,13 +193,12 @@ trait EnumeratorTFunctions {
       MO: MonadPartialOrder[F, IO]): EnumeratorT[IoExceptionOr[E], F] =
     new EnumeratorT[IoExceptionOr[E], F] {
       import MO._
-      def apply[A] =
-        (s: StepT[IoExceptionOr[E], F, A]) =>
-          s.mapCont(k => {
-            val i = get()
-            if (gotdata(i)) k(elInput(i.map(render))) >>== apply[A]
-            else s.pointI
-          })
+      def apply[A] = (s: StepT[IoExceptionOr[E], F, A]) =>
+        s.mapCont(k => {
+          val i = get()
+          if (gotdata(i)) k(elInput(i.map(render))) >>== apply[A]
+          else s.pointI
+        })
     }
 
   def enumReader[F[_]](r: => java.io.Reader)(implicit
@@ -252,8 +246,8 @@ trait EnumeratorTFunctions {
 
   def repeat[E, F[_]: Monad](e: E): EnumeratorT[E, F] =
     new EnumeratorT[E, F] {
-      def apply[A] =
-        (s: StepT[E, F, A]) => s.mapCont(_(elInput(e)) >>== apply[A])
+      def apply[A] = (s: StepT[E, F, A]) =>
+        s.mapCont(_(elInput(e)) >>== apply[A])
     }
 
   def iterate[E, F[_]: Monad](f: E => E, e: E): EnumeratorT[E, F] =
@@ -302,10 +296,9 @@ private trait EnumeratorTMonoid[E, F[_]]
     with EnumeratorTSemigroup[E, F] {
   implicit def F: Monad[F]
 
-  def zero =
-    new EnumeratorT[E, F] {
-      def apply[A] = (s: StepT[E, F, A]) => s.pointI
-    }
+  def zero = new EnumeratorT[E, F] {
+    def apply[A] = (s: StepT[E, F, A]) => s.pointI
+  }
 }
 
 private trait EnumeratorTFunctor[F[_]] extends Functor[EnumeratorT[?, F]] {

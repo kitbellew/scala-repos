@@ -366,9 +366,8 @@ object DiscoveryClientSpec extends Specification with Mockito {
   private def verifyOptionalParam(
       params: Params,
       key: String,
-      expected: Option[String] = None) =
-    expected match {
-      case Some(value) => params.get(key) must_== Some(Seq(value))
-      case _           => params.get(key) must beNone
-    }
+      expected: Option[String] = None) = expected match {
+    case Some(value) => params.get(key) must_== Some(Seq(value))
+    case _           => params.get(key) must beNone
+  }
 }

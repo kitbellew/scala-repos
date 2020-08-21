@@ -80,24 +80,26 @@ trait IndexedSeqView[A, +Coll]
   /** Boilerplate method, to override in each subclass
     *  This method could be eliminated if Scala had virtual classes
     */
-  protected override def newFiltered(p: A => Boolean): Transformed[A] =
-    new { val pred = p } with AbstractTransformed[A] with Filtered
+  protected override def newFiltered(p: A => Boolean): Transformed[A] = new {
+    val pred = p
+  } with AbstractTransformed[A] with Filtered
   protected override def newSliced(_endpoints: SliceInterval): Transformed[A] =
     new { val endpoints = _endpoints } with AbstractTransformed[A] with Sliced
   protected override def newDroppedWhile(p: A => Boolean): Transformed[A] =
     new { val pred = p } with AbstractTransformed[A] with DroppedWhile
-  protected override def newTakenWhile(p: A => Boolean): Transformed[A] =
-    new { val pred = p } with AbstractTransformed[A] with TakenWhile
+  protected override def newTakenWhile(p: A => Boolean): Transformed[A] = new {
+    val pred = p
+  } with AbstractTransformed[A] with TakenWhile
   protected override def newReversed: Transformed[A] =
     new AbstractTransformed[A] with Reversed
 
   override def filter(p: A => Boolean): This = newFiltered(p)
   override def init: This = newSliced(SliceInterval(0, self.length - 1))
   override def drop(n: Int): This = newSliced(SliceInterval(n, self.length))
-  override def take(n: Int): This =
-    newSliced(SliceInterval(0, n min self.length))
-  override def slice(from: Int, until: Int): This =
-    newSliced(SliceInterval(from, until min self.length))
+  override def take(n: Int): This = newSliced(
+    SliceInterval(0, n min self.length))
+  override def slice(from: Int, until: Int): This = newSliced(
+    SliceInterval(from, until min self.length))
   override def dropWhile(p: A => Boolean): This = newDroppedWhile(p)
   override def takeWhile(p: A => Boolean): This = newTakenWhile(p)
   override def span(p: A => Boolean): (This, This) =

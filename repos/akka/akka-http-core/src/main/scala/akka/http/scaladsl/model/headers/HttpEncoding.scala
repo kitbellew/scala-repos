@@ -18,8 +18,8 @@ sealed abstract class HttpEncodingRange
   def matches(encoding: HttpEncoding): Boolean
 
   /** Java API */
-  def matches(encoding: jm.headers.HttpEncoding): Boolean =
-    matches(encoding.asScala)
+  def matches(encoding: jm.headers.HttpEncoding): Boolean = matches(
+    encoding.asScala)
 }
 
 object HttpEncodingRange {
@@ -77,6 +77,6 @@ object HttpEncodings extends ObjectRegistry[String, HttpEncoding] {
 
   private def register(encoding: HttpEncoding): HttpEncoding =
     register(encoding.value.toRootLowerCase, encoding)
-  private def register(value: String): HttpEncoding =
-    register(HttpEncoding(value))
+  private def register(value: String): HttpEncoding = register(
+    HttpEncoding(value))
 }

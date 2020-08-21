@@ -97,16 +97,14 @@ object Assign {
   }
 
   def bool: Initialize[Boolean] = Def.setting { true }
-  def enabledOnly[T](key: Initialize[T]): Initialize[Seq[T]] =
-    Def.setting {
-      val keys: Seq[T] = forallIn(key).value
-      val enabled: Seq[Boolean] = forallIn(bool).value
-      (keys zip enabled) collect { case (a, true) => a }
-    }
-  def forallIn[T](key: Initialize[T]): Initialize[Seq[T]] =
-    Def.setting {
-      key.value :: Nil
-    }
+  def enabledOnly[T](key: Initialize[T]): Initialize[Seq[T]] = Def.setting {
+    val keys: Seq[T] = forallIn(key).value
+    val enabled: Seq[Boolean] = forallIn(bool).value
+    (keys zip enabled) collect { case (a, true) => a }
+  }
+  def forallIn[T](key: Initialize[T]): Initialize[Seq[T]] = Def.setting {
+    key.value :: Nil
+  }
 
   // Test that Append.Sequence instances for Seq/List work and don't mess up with each other
   seqSetting := Seq("test1")

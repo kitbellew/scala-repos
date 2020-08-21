@@ -73,8 +73,8 @@ package object sys {
     *  @return   the   Thread which will run the shutdown hook.
     *  @see      [[scala.sys.ShutdownHookThread]]
     */
-  def addShutdownHook(body: => Unit): ShutdownHookThread =
-    ShutdownHookThread(body)
+  def addShutdownHook(body: => Unit): ShutdownHookThread = ShutdownHookThread(
+    body)
 
   /** Returns all active thread in the current thread's thread group and subgroups.
     *

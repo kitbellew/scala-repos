@@ -60,29 +60,27 @@ private[parquet] class CatalystSchemaConverter(
     writeLegacyParquetFormat: Boolean =
       SQLConf.PARQUET_WRITE_LEGACY_FORMAT.defaultValue.get) {
 
-  def this(conf: SQLConf) =
-    this(
-      assumeBinaryIsString = conf.isParquetBinaryAsString,
-      assumeInt96IsTimestamp = conf.isParquetINT96AsTimestamp,
-      writeLegacyParquetFormat = conf.writeLegacyParquetFormat)
+  def this(conf: SQLConf) = this(
+    assumeBinaryIsString = conf.isParquetBinaryAsString,
+    assumeInt96IsTimestamp = conf.isParquetINT96AsTimestamp,
+    writeLegacyParquetFormat = conf.writeLegacyParquetFormat)
 
-  def this(conf: Configuration) =
-    this(
-      assumeBinaryIsString =
-        conf.get(SQLConf.PARQUET_BINARY_AS_STRING.key).toBoolean,
-      assumeInt96IsTimestamp =
-        conf.get(SQLConf.PARQUET_INT96_AS_TIMESTAMP.key).toBoolean,
-      writeLegacyParquetFormat = conf
-        .get(
-          SQLConf.PARQUET_WRITE_LEGACY_FORMAT.key,
-          SQLConf.PARQUET_WRITE_LEGACY_FORMAT.defaultValue.get.toString)
-        .toBoolean)
+  def this(conf: Configuration) = this(
+    assumeBinaryIsString =
+      conf.get(SQLConf.PARQUET_BINARY_AS_STRING.key).toBoolean,
+    assumeInt96IsTimestamp =
+      conf.get(SQLConf.PARQUET_INT96_AS_TIMESTAMP.key).toBoolean,
+    writeLegacyParquetFormat = conf
+      .get(
+        SQLConf.PARQUET_WRITE_LEGACY_FORMAT.key,
+        SQLConf.PARQUET_WRITE_LEGACY_FORMAT.defaultValue.get.toString)
+      .toBoolean)
 
   /**
     * Converts Parquet [[MessageType]] `parquetSchema` to a Spark SQL [[StructType]].
     */
-  def convert(parquetSchema: MessageType): StructType =
-    convert(parquetSchema.asGroupType())
+  def convert(parquetSchema: MessageType): StructType = convert(
+    parquetSchema.asGroupType())
 
   private def convert(parquetSchema: GroupType): StructType = {
     val fields = parquetSchema.getFields.asScala.map { field =>
@@ -108,11 +106,10 @@ private[parquet] class CatalystSchemaConverter(
   /**
     * Converts a Parquet [[Type]] to a Spark SQL [[DataType]].
     */
-  def convertField(parquetType: Type): DataType =
-    parquetType match {
-      case t: PrimitiveType => convertPrimitiveField(t)
-      case t: GroupType     => convertGroupField(t.asGroupType())
-    }
+  def convertField(parquetType: Type): DataType = parquetType match {
+    case t: PrimitiveType => convertPrimitiveField(t)
+    case t: GroupType     => convertGroupField(t.asGroupType())
+  }
 
   private def convertPrimitiveField(field: PrimitiveType): DataType = {
     val typeName = field.getPrimitiveTypeName

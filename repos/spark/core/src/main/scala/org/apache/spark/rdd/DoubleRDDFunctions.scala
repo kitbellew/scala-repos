@@ -31,57 +31,50 @@ import org.apache.spark.util.StatCounter
 class DoubleRDDFunctions(self: RDD[Double]) extends Logging with Serializable {
 
   /** Add up the elements in this RDD. */
-  def sum(): Double =
-    self.withScope {
-      self.fold(0.0)(_ + _)
-    }
+  def sum(): Double = self.withScope {
+    self.fold(0.0)(_ + _)
+  }
 
   /**
     * Return a [[org.apache.spark.util.StatCounter]] object that captures the mean, variance and
     * count of the RDD's elements in one operation.
     */
-  def stats(): StatCounter =
-    self.withScope {
-      self
-        .mapPartitions(nums => Iterator(StatCounter(nums)))
-        .reduce((a, b) => a.merge(b))
-    }
+  def stats(): StatCounter = self.withScope {
+    self
+      .mapPartitions(nums => Iterator(StatCounter(nums)))
+      .reduce((a, b) => a.merge(b))
+  }
 
   /** Compute the mean of this RDD's elements. */
-  def mean(): Double =
-    self.withScope {
-      stats().mean
-    }
+  def mean(): Double = self.withScope {
+    stats().mean
+  }
 
   /** Compute the variance of this RDD's elements. */
-  def variance(): Double =
-    self.withScope {
-      stats().variance
-    }
+  def variance(): Double = self.withScope {
+    stats().variance
+  }
 
   /** Compute the standard deviation of this RDD's elements. */
-  def stdev(): Double =
-    self.withScope {
-      stats().stdev
-    }
+  def stdev(): Double = self.withScope {
+    stats().stdev
+  }
 
   /**
     * Compute the sample standard deviation of this RDD's elements (which corrects for bias in
     * estimating the standard deviation by dividing by N-1 instead of N).
     */
-  def sampleStdev(): Double =
-    self.withScope {
-      stats().sampleStdev
-    }
+  def sampleStdev(): Double = self.withScope {
+    stats().sampleStdev
+  }
 
   /**
     * Compute the sample variance of this RDD's elements (which corrects for bias in
     * estimating the variance by dividing by N-1 instead of N).
     */
-  def sampleVariance(): Double =
-    self.withScope {
-      stats().sampleVariance
-    }
+  def sampleVariance(): Double = self.withScope {
+    stats().sampleVariance
+  }
 
   /**
     * Approximate operation to return the mean within a timeout.
@@ -172,90 +165,89 @@ class DoubleRDDFunctions(self: RDD[Double]) extends Logging with Serializable {
     */
   def histogram(
       buckets: Array[Double],
-      evenBuckets: Boolean = false): Array[Long] =
-    self.withScope {
-      if (buckets.length < 2) {
-        throw new IllegalArgumentException(
-          "buckets array must have at least two elements")
-      }
-      // The histogramPartition function computes the partail histogram for a given
-      // partition. The provided bucketFunction determines which bucket in the array
-      // to increment or returns None if there is no bucket. This is done so we can
-      // specialize for uniformly distributed buckets and save the O(log n) binary
-      // search cost.
-      def histogramPartition(bucketFunction: (Double) => Option[Int])(
-          iter: Iterator[Double]): Iterator[Array[Long]] = {
-        val counters = new Array[Long](buckets.length - 1)
-        while (iter.hasNext) {
-          bucketFunction(iter.next()) match {
-            case Some(x: Int) => { counters(x) += 1 }
-            case _            => {}
-          }
+      evenBuckets: Boolean = false): Array[Long] = self.withScope {
+    if (buckets.length < 2) {
+      throw new IllegalArgumentException(
+        "buckets array must have at least two elements")
+    }
+    // The histogramPartition function computes the partail histogram for a given
+    // partition. The provided bucketFunction determines which bucket in the array
+    // to increment or returns None if there is no bucket. This is done so we can
+    // specialize for uniformly distributed buckets and save the O(log n) binary
+    // search cost.
+    def histogramPartition(bucketFunction: (Double) => Option[Int])(
+        iter: Iterator[Double]): Iterator[Array[Long]] = {
+      val counters = new Array[Long](buckets.length - 1)
+      while (iter.hasNext) {
+        bucketFunction(iter.next()) match {
+          case Some(x: Int) => { counters(x) += 1 }
+          case _            => {}
         }
-        Iterator(counters)
       }
-      // Merge the counters.
-      def mergeCounters(a1: Array[Long], a2: Array[Long]): Array[Long] = {
-        a1.indices.foreach(i => a1(i) += a2(i))
-        a1
-      }
-      // Basic bucket function. This works using Java's built in Array
-      // binary search. Takes log(size(buckets))
-      def basicBucketFunction(e: Double): Option[Int] = {
-        val location = java.util.Arrays.binarySearch(buckets, e)
-        if (location < 0) {
-          // If the location is less than 0 then the insertion point in the array
-          // to keep it sorted is -location-1
-          val insertionPoint = -location - 1
-          // If we have to insert before the first element or after the last one
-          // its out of bounds.
-          // We do this rather than buckets.lengthCompare(insertionPoint)
-          // because Array[Double] fails to override it (for now).
-          if (insertionPoint > 0 && insertionPoint < buckets.length) {
-            Some(insertionPoint - 1)
-          } else {
-            None
-          }
-        } else if (location < buckets.length - 1) {
-          // Exact match, just insert here
-          Some(location)
+      Iterator(counters)
+    }
+    // Merge the counters.
+    def mergeCounters(a1: Array[Long], a2: Array[Long]): Array[Long] = {
+      a1.indices.foreach(i => a1(i) += a2(i))
+      a1
+    }
+    // Basic bucket function. This works using Java's built in Array
+    // binary search. Takes log(size(buckets))
+    def basicBucketFunction(e: Double): Option[Int] = {
+      val location = java.util.Arrays.binarySearch(buckets, e)
+      if (location < 0) {
+        // If the location is less than 0 then the insertion point in the array
+        // to keep it sorted is -location-1
+        val insertionPoint = -location - 1
+        // If we have to insert before the first element or after the last one
+        // its out of bounds.
+        // We do this rather than buckets.lengthCompare(insertionPoint)
+        // because Array[Double] fails to override it (for now).
+        if (insertionPoint > 0 && insertionPoint < buckets.length) {
+          Some(insertionPoint - 1)
         } else {
-          // Exact match to the last element
-          Some(location - 1)
-        }
-      }
-      // Determine the bucket function in constant time. Requires that buckets are evenly spaced
-      def fastBucketFunction(min: Double, max: Double, count: Int)(
-          e: Double): Option[Int] = {
-        // If our input is not a number unless the increment is also NaN then we fail fast
-        if (e.isNaN || e < min || e > max) {
           None
-        } else {
-          // Compute ratio of e's distance along range to total range first, for better precision
-          val bucketNumber = (((e - min) / (max - min)) * count).toInt
-          // should be less than count, but will equal count if e == max, in which case
-          // it's part of the last end-range-inclusive bucket, so return count-1
-          Some(math.min(bucketNumber, count - 1))
         }
-      }
-      // Decide which bucket function to pass to histogramPartition. We decide here
-      // rather than having a general function so that the decision need only be made
-      // once rather than once per shard
-      val bucketFunction = if (evenBuckets) {
-        fastBucketFunction(buckets.head, buckets.last, buckets.length - 1) _
+      } else if (location < buckets.length - 1) {
+        // Exact match, just insert here
+        Some(location)
       } else {
-        basicBucketFunction _
-      }
-      if (self.partitions.length == 0) {
-        new Array[Long](buckets.length - 1)
-      } else {
-        // reduce() requires a non-empty RDD. This works because the mapPartitions will make
-        // non-empty partitions out of empty ones. But it doesn't handle the no-partitions case,
-        // which is below
-        self
-          .mapPartitions(histogramPartition(bucketFunction))
-          .reduce(mergeCounters)
+        // Exact match to the last element
+        Some(location - 1)
       }
     }
+    // Determine the bucket function in constant time. Requires that buckets are evenly spaced
+    def fastBucketFunction(min: Double, max: Double, count: Int)(
+        e: Double): Option[Int] = {
+      // If our input is not a number unless the increment is also NaN then we fail fast
+      if (e.isNaN || e < min || e > max) {
+        None
+      } else {
+        // Compute ratio of e's distance along range to total range first, for better precision
+        val bucketNumber = (((e - min) / (max - min)) * count).toInt
+        // should be less than count, but will equal count if e == max, in which case
+        // it's part of the last end-range-inclusive bucket, so return count-1
+        Some(math.min(bucketNumber, count - 1))
+      }
+    }
+    // Decide which bucket function to pass to histogramPartition. We decide here
+    // rather than having a general function so that the decision need only be made
+    // once rather than once per shard
+    val bucketFunction = if (evenBuckets) {
+      fastBucketFunction(buckets.head, buckets.last, buckets.length - 1) _
+    } else {
+      basicBucketFunction _
+    }
+    if (self.partitions.length == 0) {
+      new Array[Long](buckets.length - 1)
+    } else {
+      // reduce() requires a non-empty RDD. This works because the mapPartitions will make
+      // non-empty partitions out of empty ones. But it doesn't handle the no-partitions case,
+      // which is below
+      self
+        .mapPartitions(histogramPartition(bucketFunction))
+        .reduce(mergeCounters)
+    }
+  }
 
 }

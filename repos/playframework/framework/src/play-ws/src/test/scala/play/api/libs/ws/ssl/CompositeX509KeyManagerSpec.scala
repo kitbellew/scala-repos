@@ -21,41 +21,40 @@ object CompositeX509KeyManagerSpec extends Specification with Mockito {
 
   def mockExtendedX509KeyManager(
       clientResponse: String = null,
-      serverResponse: String = null) =
-    new X509ExtendedKeyManager() {
+      serverResponse: String = null) = new X509ExtendedKeyManager() {
 
-      override def chooseEngineClientAlias(
-          keyType: Array[String],
-          issuers: Array[Principal],
-          engine: SSLEngine): String = clientResponse
+    override def chooseEngineClientAlias(
+        keyType: Array[String],
+        issuers: Array[Principal],
+        engine: SSLEngine): String = clientResponse
 
-      override def chooseEngineServerAlias(
-          keyType: String,
-          issuers: Array[Principal],
-          engine: SSLEngine): String = serverResponse
+    override def chooseEngineServerAlias(
+        keyType: String,
+        issuers: Array[Principal],
+        engine: SSLEngine): String = serverResponse
 
-      def getClientAliases(
-          keyType: String,
-          issuers: Array[Principal]): Array[String] = ???
+    def getClientAliases(
+        keyType: String,
+        issuers: Array[Principal]): Array[String] = ???
 
-      def chooseClientAlias(
-          keyType: Array[String],
-          issuers: Array[Principal],
-          socket: Socket): String = ???
+    def chooseClientAlias(
+        keyType: Array[String],
+        issuers: Array[Principal],
+        socket: Socket): String = ???
 
-      def getServerAliases(
-          keyType: String,
-          issuers: Array[Principal]): Array[String] = ???
+    def getServerAliases(
+        keyType: String,
+        issuers: Array[Principal]): Array[String] = ???
 
-      def chooseServerAlias(
-          keyType: String,
-          issuers: Array[Principal],
-          socket: Socket): String = ???
+    def chooseServerAlias(
+        keyType: String,
+        issuers: Array[Principal],
+        socket: Socket): String = ???
 
-      def getCertificateChain(alias: String): Array[X509Certificate] = ???
+    def getCertificateChain(alias: String): Array[X509Certificate] = ???
 
-      def getPrivateKey(alias: String): PrivateKey = ???
-    }
+    def getPrivateKey(alias: String): PrivateKey = ???
+  }
 
   "CompositeX509KeyManager" should {
 

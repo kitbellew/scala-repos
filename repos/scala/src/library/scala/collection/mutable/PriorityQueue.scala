@@ -169,9 +169,8 @@ class PriorityQueue[A](implicit val ord: Ordering[A])
     *
     *  @return   the element with the highest priority.
     */
-  override def head: A =
-    if (resarr.p_size0 > 1) toA(resarr.p_array(1))
-    else throw new NoSuchElementException("queue is empty")
+  override def head: A = if (resarr.p_size0 > 1) toA(resarr.p_array(1))
+  else throw new NoSuchElementException("queue is empty")
 
   /** Removes all elements from the queue. After this operation is completed,
     *  the queue will be empty.
@@ -186,16 +185,15 @@ class PriorityQueue[A](implicit val ord: Ordering[A])
     *
     *  @return  an iterator over all the elements.
     */
-  override def iterator: Iterator[A] =
-    new AbstractIterator[A] {
-      private var i = 1
-      def hasNext: Boolean = i < resarr.p_size0
-      def next(): A = {
-        val n = resarr.p_array(i)
-        i += 1
-        toA(n)
-      }
+  override def iterator: Iterator[A] = new AbstractIterator[A] {
+    private var i = 1
+    def hasNext: Boolean = i < resarr.p_size0
+    def next(): A = {
+      val n = resarr.p_array(i)
+      i += 1
+      toA(n)
     }
+  }
 
   /** Returns the reverse of this queue. The priority queue that gets
     *  returned will have an inversed ordering - if for some elements
@@ -225,16 +223,15 @@ class PriorityQueue[A](implicit val ord: Ordering[A])
     *
     *  @return  an iterator over all elements sorted in descending order.
     */
-  def reverseIterator: Iterator[A] =
-    new AbstractIterator[A] {
-      private var i = resarr.p_size0 - 1
-      def hasNext: Boolean = i >= 1
-      def next(): A = {
-        val n = resarr.p_array(i)
-        i -= 1
-        toA(n)
-      }
+  def reverseIterator: Iterator[A] = new AbstractIterator[A] {
+    private var i = resarr.p_size0 - 1
+    def hasNext: Boolean = i >= 1
+    def next(): A = {
+      val n = resarr.p_array(i)
+      i -= 1
+      toA(n)
     }
+  }
 
   /** The hashCode method always yields an error, since it is not
     *  safe to use mutable queues as keys in hash tables.

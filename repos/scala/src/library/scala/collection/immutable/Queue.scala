@@ -94,19 +94,17 @@ class Queue[+A] protected (
   override def length = in.length + out.length
 
   override def +:[B >: A, That](elem: B)(implicit
-      bf: CanBuildFrom[Queue[A], B, That]): That =
-    bf match {
-      case _: Queue.GenericCanBuildFrom[_] =>
-        new Queue(in, elem :: out).asInstanceOf[That]
-      case _ => super.+:(elem)(bf)
-    }
+      bf: CanBuildFrom[Queue[A], B, That]): That = bf match {
+    case _: Queue.GenericCanBuildFrom[_] =>
+      new Queue(in, elem :: out).asInstanceOf[That]
+    case _ => super.+:(elem)(bf)
+  }
 
   override def :+[B >: A, That](elem: B)(implicit
-      bf: CanBuildFrom[Queue[A], B, That]): That =
-    bf match {
-      case _: Queue.GenericCanBuildFrom[_] => enqueue(elem).asInstanceOf[That]
-      case _                               => super.:+(elem)(bf)
-    }
+      bf: CanBuildFrom[Queue[A], B, That]): That = bf match {
+    case _: Queue.GenericCanBuildFrom[_] => enqueue(elem).asInstanceOf[That]
+    case _                               => super.:+(elem)(bf)
+  }
 
   /** Creates a new queue with element added at the end
     *  of the old queue.
@@ -132,13 +130,12 @@ class Queue[+A] protected (
     *  @throws java.util.NoSuchElementException
     *  @return the first element of the queue.
     */
-  def dequeue: (A, Queue[A]) =
-    out match {
-      case Nil if !in.isEmpty =>
-        val rev = in.reverse; (rev.head, new Queue(Nil, rev.tail))
-      case x :: xs => (x, new Queue(in, xs))
-      case _       => throw new NoSuchElementException("dequeue on empty queue")
-    }
+  def dequeue: (A, Queue[A]) = out match {
+    case Nil if !in.isEmpty =>
+      val rev = in.reverse; (rev.head, new Queue(Nil, rev.tail))
+    case x :: xs => (x, new Queue(in, xs))
+    case _       => throw new NoSuchElementException("dequeue on empty queue")
+  }
 
   /** Optionally retrieves the first element and a queue of the remaining elements.
     *

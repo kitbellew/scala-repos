@@ -31,25 +31,23 @@ final class VirtualFileMaterializer(singleDir: Boolean = false) {
     f
   }
 
-  def materialize(vf: VirtualTextFile): File =
-    vf match {
-      case vf: FileVirtualFile if !singleDir =>
-        vf.file
-      case _ =>
-        val trg = trgFile(vf.name)
-        IO.copyTo(vf, WritableFileVirtualTextFile(trg))
-        trg
-    }
+  def materialize(vf: VirtualTextFile): File = vf match {
+    case vf: FileVirtualFile if !singleDir =>
+      vf.file
+    case _ =>
+      val trg = trgFile(vf.name)
+      IO.copyTo(vf, WritableFileVirtualTextFile(trg))
+      trg
+  }
 
-  def materialize(vf: VirtualBinaryFile): File =
-    vf match {
-      case vf: FileVirtualFile if !singleDir =>
-        vf.file
-      case _ =>
-        val trg = trgFile(vf.name)
-        IO.copyTo(vf, WritableFileVirtualBinaryFile(trg))
-        trg
-    }
+  def materialize(vf: VirtualBinaryFile): File = vf match {
+    case vf: FileVirtualFile if !singleDir =>
+      vf.file
+    case _ =>
+      val trg = trgFile(vf.name)
+      IO.copyTo(vf, WritableFileVirtualBinaryFile(trg))
+      trg
+  }
 
   /** Removes the cache directory. Any operation on this
     *  VirtualFileMaterializer is invalid after [[close]] has been

@@ -38,12 +38,11 @@ case class Group(
   }
 
   def findGroup(fn: Group => Boolean): Option[Group] = {
-    def in(groups: List[Group]): Option[Group] =
-      groups match {
-        case head :: rest =>
-          if (fn(head)) Some(head) else in(rest).orElse(in(head.groups.toList))
-        case Nil => None
-      }
+    def in(groups: List[Group]): Option[Group] = groups match {
+      case head :: rest =>
+        if (fn(head)) Some(head) else in(rest).orElse(in(head.groups.toList))
+      case Nil => None
+    }
     if (fn(this)) Some(this) else in(groups.toList)
   }
 
@@ -83,11 +82,10 @@ case class Group(
 
   def update(timestamp: Timestamp = Timestamp.now())(
       fn: Group => Group): Group = {
-    def in(groups: List[Group]): List[Group] =
-      groups match {
-        case head :: rest => head.update(timestamp)(fn) :: in(rest)
-        case Nil          => Nil
-      }
+    def in(groups: List[Group]): List[Group] = groups match {
+      case head :: rest => head.update(timestamp)(fn) :: in(rest)
+      case Nil          => Nil
+    }
     fn(this.copy(groups = in(groups.toList).toSet, version = timestamp))
   }
 

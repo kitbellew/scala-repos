@@ -35,44 +35,40 @@ trait MatchTranslation {
       * They are discarded during the translation.
       */
     object WildcardPattern {
-      def unapply(pat: Tree): Boolean =
-        pat match {
-          case Bind(nme.WILDCARD, WildcardPattern()) =>
-            true // don't skip when binding an interesting symbol!
-          case Star(WildcardPattern()) => true
-          case x: Ident                => treeInfo.isVarPattern(x)
-          case Alternative(ps)         => ps forall unapply
-          case EmptyTree               => true
-          case _                       => false
-        }
+      def unapply(pat: Tree): Boolean = pat match {
+        case Bind(nme.WILDCARD, WildcardPattern()) =>
+          true // don't skip when binding an interesting symbol!
+        case Star(WildcardPattern()) => true
+        case x: Ident                => treeInfo.isVarPattern(x)
+        case Alternative(ps)         => ps forall unapply
+        case EmptyTree               => true
+        case _                       => false
+      }
     }
 
     object PatternBoundToUnderscore {
-      def unapply(pat: Tree): Boolean =
-        pat match {
-          case Bind(nme.WILDCARD, _) =>
-            true // don't skip when binding an interesting symbol!
-          case Ident(nme.WILDCARD)                  => true
-          case Alternative(ps)                      => ps forall unapply
-          case Typed(PatternBoundToUnderscore(), _) => true
-          case _                                    => false
-        }
+      def unapply(pat: Tree): Boolean = pat match {
+        case Bind(nme.WILDCARD, _) =>
+          true // don't skip when binding an interesting symbol!
+        case Ident(nme.WILDCARD)                  => true
+        case Alternative(ps)                      => ps forall unapply
+        case Typed(PatternBoundToUnderscore(), _) => true
+        case _                                    => false
+      }
     }
 
     object SymbolBound {
-      def unapply(tree: Tree): Option[(Symbol, Tree)] =
-        tree match {
-          case Bind(_, expr) if hasSym(tree) => Some(tree.symbol -> expr)
-          case _                             => None
-        }
+      def unapply(tree: Tree): Option[(Symbol, Tree)] = tree match {
+        case Bind(_, expr) if hasSym(tree) => Some(tree.symbol -> expr)
+        case _                             => None
+      }
     }
 
-    def newBoundTree(tree: Tree, pt: Type): BoundTree =
-      tree match {
-        case SymbolBound(sym, expr) => BoundTree(setVarInfo(sym, pt), expr)
-        case _ =>
-          BoundTree(setVarInfo(freshSym(tree.pos, prefix = "p"), pt), tree)
-      }
+    def newBoundTree(tree: Tree, pt: Type): BoundTree = tree match {
+      case SymbolBound(sym, expr) => BoundTree(setVarInfo(sym, pt), expr)
+      case _ =>
+        BoundTree(setVarInfo(freshSym(tree.pos, prefix = "p"), pt), tree)
+    }
 
     final case class BoundTree(binder: Symbol, tree: Tree) {
       private lazy val extractor = ExtractorCall(tree)
@@ -80,29 +76,26 @@ trait MatchTranslation {
       def pos = tree.pos
       def tpe =
         binder.info.dealiasWiden // the type of the variable bound to the pattern
-      def pt =
-        unbound match {
-          case Star(tpt)      => this glbWith seqType(tpt.tpe)
-          case TypeBound(tpe) => tpe
-          case tree           => tree.tpe
-        }
+      def pt = unbound match {
+        case Star(tpt)      => this glbWith seqType(tpt.tpe)
+        case TypeBound(tpe) => tpe
+        case tree           => tree.tpe
+      }
       def glbWith(other: Type) = glb(tpe :: other :: Nil).normalize
 
       object SymbolAndTypeBound {
-        def unapply(tree: Tree): Option[(Symbol, Type)] =
-          tree match {
-            case SymbolBound(sym, TypeBound(tpe)) => Some(sym -> tpe)
-            case TypeBound(tpe)                   => Some(binder -> tpe)
-            case _                                => None
-          }
+        def unapply(tree: Tree): Option[(Symbol, Type)] = tree match {
+          case SymbolBound(sym, TypeBound(tpe)) => Some(sym -> tpe)
+          case TypeBound(tpe)                   => Some(binder -> tpe)
+          case _                                => None
+        }
       }
 
       object TypeBound {
-        def unapply(tree: Tree): Option[Type] =
-          tree match {
-            case Typed(Ident(_), _) if tree.tpe != null => Some(tree.tpe)
-            case _                                      => None
-          }
+        def unapply(tree: Tree): Option[Type] = tree match {
+          case Typed(Ident(_), _) if tree.tpe != null => Some(tree.tpe)
+          case _                                      => None
+        }
       }
 
       private def rebindTo(pattern: Tree) = BoundTree(binder, pattern)
@@ -116,9 +109,8 @@ trait MatchTranslation {
         step(EqualityTestTreeMaker(binder, tree, pos))()
       private def typeTestStep(sub: Symbol, subPt: Type) =
         step(TypeTestTreeMaker(sub, binder, subPt, glbWith(subPt))(pos))()
-      private def alternativesStep(alts: List[Tree]) =
-        step(
-          AlternativesTreeMaker(binder, translatedAlts(alts), alts.head.pos))()
+      private def alternativesStep(alts: List[Tree]) = step(
+        AlternativesTreeMaker(binder, translatedAlts(alts), alts.head.pos))()
       private def translatedAlts(alts: List[Tree]) =
         alts map (alt => rebindTo(alt).translate())
       private def noStep() = step()()
@@ -142,11 +134,10 @@ trait MatchTranslation {
         // check whether typetest implies binder is not null,
         // even though the eventual null check will be on typeTest.nextBinder
         // it'll be equal to binder casted to paramType anyway (and the type test is on binder)
-        def extraction: TreeMaker =
-          treeMaker(
-            typeTest.nextBinder,
-            typeTest impliesBinderNonNull binder,
-            pos)
+        def extraction: TreeMaker = treeMaker(
+          typeTest.nextBinder,
+          typeTest impliesBinderNonNull binder,
+          pos)
 
         // paramType = the type expected by the unapply
         // TODO: paramType may contain unbound type params (run/t2800, run/t3530)
@@ -174,18 +165,17 @@ trait MatchTranslation {
       // [6] pattern alternatives
       // [7] symbol-less bind patterns - this happens in certain ill-formed programs, there'll be an error later
       //     don't fail here though (or should we?)
-      def nextStep(): TranslationStep =
-        tree match {
-          case WildcardPattern()            => noStep()
-          case _: UnApply | _: Apply        => extractorStep()
-          case SymbolAndTypeBound(sym, tpe) => typeTestStep(sym, tpe)
-          case TypeBound(tpe)               => typeTestStep(binder, tpe)
-          case SymbolBound(sym, expr)       => bindingStep(sym, expr)
-          case Literal(Constant(_)) | Ident(_) | Select(_, _) | This(_) =>
-            equalityTestStep()
-          case Alternative(alts) => alternativesStep(alts)
-          case _                 => reporter.error(pos, unsupportedPatternMsg); noStep()
-        }
+      def nextStep(): TranslationStep = tree match {
+        case WildcardPattern()            => noStep()
+        case _: UnApply | _: Apply        => extractorStep()
+        case SymbolAndTypeBound(sym, tpe) => typeTestStep(sym, tpe)
+        case TypeBound(tpe)               => typeTestStep(binder, tpe)
+        case SymbolBound(sym, expr)       => bindingStep(sym, expr)
+        case Literal(Constant(_)) | Ident(_) | Select(_, _) | This(_) =>
+          equalityTestStep()
+        case Alternative(alts) => alternativesStep(alts)
+        case _                 => reporter.error(pos, unsupportedPatternMsg); noStep()
+      }
       def translate(): List[TreeMaker] = nextStep() merge (_.translate())
 
       private def setInfo(paramType: Type): Boolean = {
@@ -199,21 +189,19 @@ trait MatchTranslation {
       // accessors) TODO: get to the bottom of this -- I assume it happens when type checking
       // infers a weird type for an unapply call. By going back to the parameterType for the
       // extractor call we get a saner type, so let's just do that for now.
-      def ensureConformsTo(paramType: Type): Boolean =
-        (
-          (tpe =:= paramType)
-            || (tpe <:< paramType) && setInfo(paramType)
-        )
+      def ensureConformsTo(paramType: Type): Boolean = (
+        (tpe =:= paramType)
+          || (tpe <:< paramType) && setInfo(paramType)
+      )
 
       private def concreteType = tpe.bounds.hi
       private def unbound = unbind(tree)
       private def tpe_s =
         if (pt <:< concreteType) "" + pt else s"$pt (binder: $tpe)"
-      private def at_s =
-        unbound match {
-          case WildcardPattern() => ""
-          case pat               => s" @ $pat"
-        }
+      private def at_s = unbound match {
+        case WildcardPattern() => ""
+        case pat               => s" @ $pat"
+      }
       override def toString = s"${binder.name}: $tpe_s$at_s"
     }
 
@@ -450,21 +438,20 @@ trait MatchTranslation {
 
     object ExtractorCall {
       // TODO: check unargs == args
-      def apply(tree: Tree): ExtractorCall =
-        tree match {
-          case UnApply(unfun, args) =>
-            new ExtractorCallRegular(
-              alignPatterns(context, tree),
-              unfun,
-              args
-            ) // extractor
-          case Apply(fun, args) =>
-            new ExtractorCallProd(
-              alignPatterns(context, tree),
-              fun,
-              args
-            ) // case class
-        }
+      def apply(tree: Tree): ExtractorCall = tree match {
+        case UnApply(unfun, args) =>
+          new ExtractorCallRegular(
+            alignPatterns(context, tree),
+            unfun,
+            args
+          ) // extractor
+        case Apply(fun, args) =>
+          new ExtractorCallProd(
+            alignPatterns(context, tree),
+            fun,
+            args
+          ) // case class
+      }
     }
 
     abstract class ExtractorCall(val aligner: PatternAligned) {
@@ -530,12 +517,11 @@ trait MatchTranslation {
       // the trees that select the subpatterns on the extractor's result,
       // referenced by `binder`
       protected def subPatRefsSeq(binder: Symbol): List[Tree] = {
-        def lastTrees: List[Tree] =
-          (
-            if (!aligner.isStar) Nil
-            else if (expectedLength == 0) seqTree(binder) :: Nil
-            else genDrop(binder, expectedLength)
-          )
+        def lastTrees: List[Tree] = (
+          if (!aligner.isStar) Nil
+          else if (expectedLength == 0) seqTree(binder) :: Nil
+          else genDrop(binder, expectedLength)
+        )
         // this error-condition has already been checked by checkStarPatOK:
         //   if(isSeq) assert(firstIndexingBinder + nbIndexingIndices + (if(lastIsStar) 1 else 0) == totalArity, "(resultInMonad, ts, subPatTypes, subPats)= "+(resultInMonad, ts, subPatTypes, subPats))
 
@@ -550,11 +536,10 @@ trait MatchTranslation {
 
       // the trees that select the subpatterns on the extractor's result, referenced by `binder`
       // require (nbSubPats > 0 && (!lastIsStar || isSeq))
-      protected def subPatRefs(binder: Symbol): List[Tree] =
-        (
-          if (totalArity > 0 && isSeq) subPatRefsSeq(binder)
-          else productElemsToN(binder, totalArity)
-        )
+      protected def subPatRefs(binder: Symbol): List[Tree] = (
+        if (totalArity > 0 && isSeq) subPatRefsSeq(binder)
+        else productElemsToN(binder, totalArity)
+      )
 
       private def compareInts(t1: Tree, t2: Tree) =
         gen.mkMethodCall(
@@ -616,8 +601,8 @@ trait MatchTranslation {
           pos: Position): TreeMaker = {
         val paramAccessors = binder.constrParamAccessors
         val numParams = paramAccessors.length
-        def paramAccessorAt(subPatIndex: Int) =
-          paramAccessors(math.min(subPatIndex, numParams - 1))
+        def paramAccessorAt(subPatIndex: Int) = paramAccessors(
+          math.min(subPatIndex, numParams - 1))
         // binders corresponding to mutable fields should be stored (SI-5158, SI-6070)
         // make an exception for classes under the scala package as they should be well-behaved,
         // to optimize matching on List
@@ -722,23 +707,21 @@ trait MatchTranslation {
         object splice extends Transformer {
           def binderRef(pos: Position): Tree =
             REF(binder) setPos pos
-          override def transform(t: Tree) =
-            t match {
-              // duplicated with the extractor Unapplied
-              case Apply(x, List(i @ Ident(nme.SELECTOR_DUMMY))) =>
-                treeCopy.Apply(t, x, binderRef(i.pos) :: Nil)
-              // SI-7868 Account for numeric widening, e.g. <unapplySelector>.toInt
-              case Apply(
-                    x,
-                    List(
-                      i @ (sel @ Select(Ident(nme.SELECTOR_DUMMY), name)))) =>
-                treeCopy.Apply(
-                  t,
+          override def transform(t: Tree) = t match {
+            // duplicated with the extractor Unapplied
+            case Apply(x, List(i @ Ident(nme.SELECTOR_DUMMY))) =>
+              treeCopy.Apply(t, x, binderRef(i.pos) :: Nil)
+            // SI-7868 Account for numeric widening, e.g. <unapplySelector>.toInt
+            case Apply(
                   x,
-                  treeCopy.Select(sel, binderRef(i.pos), name) :: Nil)
-              case _ =>
-                super.transform(t)
-            }
+                  List(i @ (sel @ Select(Ident(nme.SELECTOR_DUMMY), name)))) =>
+              treeCopy.Apply(
+                t,
+                x,
+                treeCopy.Select(sel, binderRef(i.pos), name) :: Nil)
+            case _ =>
+              super.transform(t)
+          }
         }
         splice transform extractorCallIncludingDummy
       }

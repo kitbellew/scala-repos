@@ -7,8 +7,9 @@ class Automaton[@specialized(Double) W, State] {
   /**
     * Returns a map from states to its final weight. may expand all nodes.
     */
-  def finalStateWeights =
-    Map.empty ++ allStates.map { s => (s, finalWeight(s)) }
+  def finalStateWeights = Map.empty ++ allStates.map { s =>
+    (s, finalWeight(s))
+  }
 
   // This works fine:
   /*

@@ -81,13 +81,12 @@ object Store {
 
   // useful when closing an account,
   // we want to logout too
-  def disconnect(userId: String): Funit =
-    storeColl
-      .update(
-        BSONDocument("user" -> userId),
-        BSONDocument("$set" -> BSONDocument("up" -> false)),
-        multi = true)
-      .void
+  def disconnect(userId: String): Funit = storeColl
+    .update(
+      BSONDocument("user" -> userId),
+      BSONDocument("$set" -> BSONDocument("up" -> false)),
+      multi = true)
+    .void
 
   private implicit val UserSessionBSONHandler = Macros.handler[UserSession]
   def openSessions(userId: String, nb: Int): Fu[List[UserSession]] =

@@ -114,8 +114,8 @@ sealed abstract class IterateeT[E, F[_], A] {
         cont = k => scont[E, G, A](k andThen loop),
         done = (a, i) => sdone[E, G, A](a, i)
       )
-    def loop: IterateeT[E, F, A] => IterateeT[E, G, A] =
-      i => iterateeT(f(F.map(i.value)(step)))
+    def loop: IterateeT[E, F, A] => IterateeT[E, G, A] = i =>
+      iterateeT(f(F.map(i.value)(step)))
     loop(this)
   }
 
@@ -131,14 +131,13 @@ sealed abstract class IterateeT[E, F[_], A] {
       outer: IterateeT[E, F, A] =:= IterateeT[E, F, StepT[I, F, B]],
       M: Monad[F]): IterateeT[E, F, B] = {
     val M0 = IterateeT.IterateeTMonad[E, F]
-    def check: StepT[I, F, B] => IterateeT[E, F, B] =
-      _.fold(
-        cont = k =>
-          k(eofInput) >>== { s =>
-            s.mapContOr(_ => sys.error("diverging iteratee"), check(s))
-          },
-        done = (a, _) => M0.point(a)
-      )
+    def check: StepT[I, F, B] => IterateeT[E, F, B] = _.fold(
+      cont = k =>
+        k(eofInput) >>== { s =>
+          s.mapContOr(_ => sys.error("diverging iteratee"), check(s))
+        },
+      done = (a, _) => M0.point(a)
+    )
 
     outer(this) flatMap check
   }
@@ -176,22 +175,21 @@ sealed abstract class IterateeT[E, F[_], A] {
             done = (a, x) => F.point((Some((a, x)), done(a, x)))
           ))
     def loop(x: IterateeT[E, F, A], y: IterateeT[E, F, B])(
-        in: Input[E]): IterateeT[E, F, (A, B)] =
-      in(
-        el = _ =>
-          step(x, in) flatMap { case (a, xx) =>
-            step(y, in) flatMap { case (b, yy) =>
-              (a, b) match {
-                case (Some((a, e)), Some((b, ee))) =>
-                  done((a, b), if (e.isEl) e else ee)
-                case _ => cont(loop(xx, yy))
-              }
+        in: Input[E]): IterateeT[E, F, (A, B)] = in(
+      el = _ =>
+        step(x, in) flatMap { case (a, xx) =>
+          step(y, in) flatMap { case (b, yy) =>
+            (a, b) match {
+              case (Some((a, e)), Some((b, ee))) =>
+                done((a, b), if (e.isEl) e else ee)
+              case _ => cont(loop(xx, yy))
             }
-          },
-        empty = cont(loop(x, y)),
-        eof = (x &= enumEofT[E, F]) flatMap (a =>
-          (y &= enumEofT[E, F]) map (b => (a, b)))
-      )
+          }
+        },
+      empty = cont(loop(x, y)),
+      eof = (x &= enumEofT[E, F]) flatMap (a =>
+        (y &= enumEofT[E, F]) map (b => (a, b)))
+    )
     cont(loop(this, other))
   }
 }
@@ -315,11 +313,10 @@ trait IterateeTFunctions {
 
   /** An iteratee that returns the first element of the input * */
   def peek[E, F[_]: Applicative]: IterateeT[E, F, Option[E]] = {
-    def step(s: Input[E]): IterateeT[E, F, Option[E]] =
-      s(
-        el = e => done(Some(e), s),
-        empty = cont(step),
-        eof = done(None, eofInput[E]))
+    def step(s: Input[E]): IterateeT[E, F, Option[E]] = s(
+      el = e => done(Some(e), s),
+      empty = cont(step),
+      eof = done(None, eofInput[E]))
     cont(step)
   }
 
@@ -361,25 +358,23 @@ trait IterateeTFunctions {
 
   def fold[E, F[_]: Applicative, A](init: A)(
       f: (A, E) => A): IterateeT[E, F, A] = {
-    def step(acc: A): Input[E] => IterateeT[E, F, A] =
-      s =>
-        s(
-          el = e => cont(step(f(acc, e))),
-          empty = cont(step(acc)),
-          eof = done(acc, eofInput[E]))
+    def step(acc: A): Input[E] => IterateeT[E, F, A] = s =>
+      s(
+        el = e => cont(step(f(acc, e))),
+        empty = cont(step(acc)),
+        eof = done(acc, eofInput[E]))
     cont(step(init))
   }
 
   def foldM[E, F[_], A](init: A)(f: (A, E) => F[A])(implicit
       m: Monad[F]): IterateeT[E, F, A] = {
-    def step(acc: A): Input[E] => IterateeT[E, F, A] =
-      s =>
-        s(
-          el = e =>
-            IterateeT.IterateeTMonadTrans[E].liftM(f(acc, e)) flatMap (a =>
-              cont(step(a))),
-          empty = cont(step(acc)),
-          eof = done(acc, eofInput[E]))
+    def step(acc: A): Input[E] => IterateeT[E, F, A] = s =>
+      s(
+        el = e =>
+          IterateeT.IterateeTMonadTrans[E].liftM(f(acc, e)) flatMap (a =>
+            cont(step(a))),
+        empty = cont(step(acc)),
+        eof = done(acc, eofInput[E]))
     cont(step(init))
   }
 

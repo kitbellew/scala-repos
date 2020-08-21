@@ -102,13 +102,12 @@ class Engine[TD, EI, PD, Q, P, A](
       dataSourceClass: Class[_ <: BaseDataSource[TD, EI, Q, A]],
       preparatorClass: Class[_ <: BasePreparator[TD, PD]],
       algorithmClassMap: Map[String, Class[_ <: BaseAlgorithm[PD, _, Q, P]]],
-      servingClass: Class[_ <: BaseServing[Q, P]]) =
-    this(
-      Map("" -> dataSourceClass),
-      Map("" -> preparatorClass),
-      algorithmClassMap,
-      Map("" -> servingClass)
-    )
+      servingClass: Class[_ <: BaseServing[Q, P]]) = this(
+    Map("" -> dataSourceClass),
+    Map("" -> preparatorClass),
+    algorithmClassMap,
+    Map("" -> servingClass)
+  )
 
   /** Java-friendly constructor
     *
@@ -123,13 +122,12 @@ class Engine[TD, EI, PD, Q, P, A](
       algorithmClassMap: _root_.java.util.Map[
         String,
         Class[_ <: BaseAlgorithm[PD, _, Q, P]]],
-      servingClass: Class[_ <: BaseServing[Q, P]]) =
-    this(
-      Map("" -> dataSourceClass),
-      Map("" -> preparatorClass),
-      JavaConversions.mapAsScalaMap(algorithmClassMap).toMap,
-      Map("" -> servingClass)
-    )
+      servingClass: Class[_ <: BaseServing[Q, P]]) = this(
+    Map("" -> dataSourceClass),
+    Map("" -> preparatorClass),
+    JavaConversions.mapAsScalaMap(algorithmClassMap).toMap,
+    Map("" -> servingClass)
+  )
 
   /** Returns a new Engine instance, mimicking case class's copy method behavior.
     */
@@ -614,13 +612,12 @@ object Engine {
       dataSourceMap: DataSourceMap[TD, EI, Q, A],
       preparatorMap: PreparatorMap[TD, PD],
       algorithmClassMap: Map[String, Class[_ <: BaseAlgorithm[PD, _, Q, P]]],
-      servingMap: ServingMap[Q, P]): Engine[TD, EI, PD, Q, P, A] =
-    new Engine(
-      dataSourceMap.m,
-      preparatorMap.m,
-      algorithmClassMap,
-      servingMap.m
-    )
+      servingMap: ServingMap[Q, P]): Engine[TD, EI, PD, Q, P, A] = new Engine(
+    dataSourceMap.m,
+    preparatorMap.m,
+    algorithmClassMap,
+    servingMap.m
+  )
 
   /** Provides concrete implementation of training for [[Engine]].
     *

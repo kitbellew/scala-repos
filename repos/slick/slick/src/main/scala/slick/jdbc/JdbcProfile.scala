@@ -112,17 +112,16 @@ trait JdbcProfile
   val api: API = new API {}
 
   def runSynchronousQuery[R](tree: Node, param: Any)(implicit
-      session: Backend#Session): R =
-    tree match {
-      case rsm @ ResultSetMapping(
-            _,
-            _,
-            CompiledMapping(_, elemType)) :@ CollectionType(cons, el) =>
-        val b = cons.createBuilder(el.classTag).asInstanceOf[Builder[Any, R]]
-        createQueryInvoker[Any](rsm, param, null).foreach({ x => b += x }, 0)(
-          session)
-        b.result()
-      case First(rsm: ResultSetMapping) =>
-        createQueryInvoker[R](rsm, param, null).first
-    }
+      session: Backend#Session): R = tree match {
+    case rsm @ ResultSetMapping(
+          _,
+          _,
+          CompiledMapping(_, elemType)) :@ CollectionType(cons, el) =>
+      val b = cons.createBuilder(el.classTag).asInstanceOf[Builder[Any, R]]
+      createQueryInvoker[Any](rsm, param, null).foreach({ x => b += x }, 0)(
+        session)
+      b.result()
+    case First(rsm: ResultSetMapping) =>
+      createQueryInvoker[R](rsm, param, null).first
+  }
 }

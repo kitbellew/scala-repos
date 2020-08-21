@@ -95,10 +95,9 @@ private[ui] case class BatchUIData(
   /**
     * Return the number of completed output operations.
     */
-  def numCompletedOutputOp: Int =
-    outputOperations.values.count { op =>
-      op.failureReason.isEmpty && op.endTime.nonEmpty
-    }
+  def numCompletedOutputOp: Int = outputOperations.values.count { op =>
+    op.failureReason.isEmpty && op.endTime.nonEmpty
+  }
 
   /**
     * Return if this batch has any output operations

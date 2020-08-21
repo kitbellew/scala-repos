@@ -42,17 +42,16 @@ private[plugin] class PluginManagerImpl(
     log.info(
       s"Loading plugins implementing '${ct.runtimeClass.getName}' from these urls: [${urls
         .mkString(", ")}]")
-    def configure(plugin: T, definition: PluginDefinition): T =
-      plugin match {
-        case cf: PluginConfiguration if definition.configuration.isDefined =>
-          log.info(
-            s"Configure the plugin with this configuration: ${definition.configuration}")
-          cf.initialize(
-            Map("frameworkName" -> config.frameworkName()),
-            definition.configuration.get)
-          plugin
-        case _ => plugin
-      }
+    def configure(plugin: T, definition: PluginDefinition): T = plugin match {
+      case cf: PluginConfiguration if definition.configuration.isDefined =>
+        log.info(
+          s"Configure the plugin with this configuration: ${definition.configuration}")
+        cf.initialize(
+          Map("frameworkName" -> config.frameworkName()),
+          definition.configuration.get)
+        plugin
+      case _ => plugin
+    }
     val serviceLoader =
       ServiceLoader.load(ct.runtimeClass.asInstanceOf[Class[T]], classLoader)
     val providers = serviceLoader.iterator().asScala.toSeq
@@ -75,21 +74,20 @@ private[plugin] class PluginManagerImpl(
     * Each plugin is loaded once and gets cached.
     * @return the list of all service providers for the given type.
     */
-  def plugins[T](implicit ct: ClassTag[T]): Seq[T] =
-    synchronized {
-      def loadAndAdd: PluginHolder[T] = {
-        val pluginHolder: PluginHolder[T] = load[T]
-        pluginHolders ::= pluginHolder
-        pluginHolder
-      }
-
-      pluginHolders
-        .find(_.classTag == ct)
-        .map(_.asInstanceOf[PluginHolder[T]])
-        .getOrElse(loadAndAdd)
-        .plugins
-        .map(_.plugin)
+  def plugins[T](implicit ct: ClassTag[T]): Seq[T] = synchronized {
+    def loadAndAdd: PluginHolder[T] = {
+      val pluginHolder: PluginHolder[T] = load[T]
+      pluginHolders ::= pluginHolder
+      pluginHolder
     }
+
+    pluginHolders
+      .find(_.classTag == ct)
+      .map(_.asInstanceOf[PluginHolder[T]])
+      .getOrElse(loadAndAdd)
+      .plugins
+      .map(_.plugin)
+  }
 }
 
 object PluginManagerImpl {

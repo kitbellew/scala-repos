@@ -132,129 +132,124 @@ object PlayDocsPlugin extends AutoPlugin {
   override def projectSettings =
     docsRunSettings ++ docsReportSettings ++ docsTestSettings
 
-  def docsRunSettings =
-    Seq(
-      playDocsValidationConfig := ValidationConfig(),
-      manualPath := baseDirectory.value,
-      run <<= docsRunSetting,
-      generateMarkdownRefReport <<= PlayDocsValidation.generateMarkdownRefReportTask,
-      validateDocs <<= PlayDocsValidation.validateDocsTask,
-      validateExternalLinks <<= PlayDocsValidation.validateExternalLinksTask,
-      docsVersion := PlayVersion.current,
-      docsName := "play-docs",
-      docsJarFile <<= docsJarFileSetting,
-      PlayDocsKeys.resources := Seq(
-        PlayDocsDirectoryResource(manualPath.value)) ++
-        docsJarFile.value
-          .map(jar => PlayDocsJarFileResource(jar, Some("play/docs/content")))
-          .toSeq,
-      docsJarScalaBinaryVersion <<= scalaBinaryVersion,
-      libraryDependencies ++= Seq(
-        "com.typesafe.play" %% docsName.value % PlayVersion.current,
-        "com.typesafe.play" % s"${docsName.value}_${docsJarScalaBinaryVersion.value}" % docsVersion.value % "docs" notTransitive ()
-      )
+  def docsRunSettings = Seq(
+    playDocsValidationConfig := ValidationConfig(),
+    manualPath := baseDirectory.value,
+    run <<= docsRunSetting,
+    generateMarkdownRefReport <<= PlayDocsValidation.generateMarkdownRefReportTask,
+    validateDocs <<= PlayDocsValidation.validateDocsTask,
+    validateExternalLinks <<= PlayDocsValidation.validateExternalLinksTask,
+    docsVersion := PlayVersion.current,
+    docsName := "play-docs",
+    docsJarFile <<= docsJarFileSetting,
+    PlayDocsKeys.resources := Seq(
+      PlayDocsDirectoryResource(manualPath.value)) ++
+      docsJarFile.value
+        .map(jar => PlayDocsJarFileResource(jar, Some("play/docs/content")))
+        .toSeq,
+    docsJarScalaBinaryVersion <<= scalaBinaryVersion,
+    libraryDependencies ++= Seq(
+      "com.typesafe.play" %% docsName.value % PlayVersion.current,
+      "com.typesafe.play" % s"${docsName.value}_${docsJarScalaBinaryVersion.value}" % docsVersion.value % "docs" notTransitive ()
     )
+  )
 
-  def docsReportSettings =
-    Seq(
-      generateMarkdownCodeSamplesReport <<= PlayDocsValidation.generateMarkdownCodeSamplesTask,
-      generateUpstreamCodeSamplesReport <<= PlayDocsValidation.generateUpstreamCodeSamplesTask,
-      translationCodeSamplesReportFile := target.value / "report.html",
-      translationCodeSamplesReport <<= PlayDocsValidation.translationCodeSamplesReportTask,
-      cachedTranslationCodeSamplesReport <<= PlayDocsValidation.cachedTranslationCodeSamplesReportTask
-    )
+  def docsReportSettings = Seq(
+    generateMarkdownCodeSamplesReport <<= PlayDocsValidation.generateMarkdownCodeSamplesTask,
+    generateUpstreamCodeSamplesReport <<= PlayDocsValidation.generateUpstreamCodeSamplesTask,
+    translationCodeSamplesReportFile := target.value / "report.html",
+    translationCodeSamplesReport <<= PlayDocsValidation.translationCodeSamplesReportTask,
+    cachedTranslationCodeSamplesReport <<= PlayDocsValidation.cachedTranslationCodeSamplesReportTask
+  )
 
-  def docsTestSettings =
-    Seq(
-      migrationManualSources := Nil,
-      javaManualSourceDirectories := Nil,
-      scalaManualSourceDirectories := Nil,
-      commonManualSourceDirectories := Nil,
-      unmanagedSourceDirectories in Test ++= javaManualSourceDirectories.value ++ scalaManualSourceDirectories.value ++
-        commonManualSourceDirectories.value ++ migrationManualSources.value,
-      unmanagedResourceDirectories in Test ++= javaManualSourceDirectories.value ++ scalaManualSourceDirectories.value ++
-        commonManualSourceDirectories.value ++ migrationManualSources.value,
-      javaTwirlSourceManaged := target.value / "twirl" / "java",
-      scalaTwirlSourceManaged := target.value / "twirl" / "scala",
-      managedSourceDirectories in Test ++= Seq(
-        javaTwirlSourceManaged.value,
-        scalaTwirlSourceManaged.value
-      ),
-      // Need to ensure that templates in the Java docs get Java imports, and in the Scala docs get Scala imports
-      sourceGenerators in Test <+= (
-        javaManualSourceDirectories,
-        javaTwirlSourceManaged,
-        streams) map { (from, to, s) =>
-        compileTemplates(
-          from,
-          to,
-          TemplateImports.defaultJavaTemplateImports.asScala,
-          s.log)
-      },
-      sourceGenerators in Test <+= (
-        scalaManualSourceDirectories,
-        scalaTwirlSourceManaged,
-        streams) map { (from, to, s) =>
-        compileTemplates(
-          from,
-          to,
-          TemplateImports.defaultScalaTemplateImports.asScala,
-          s.log)
-      },
-      routesCompilerTasks in Test := {
-        val javaRoutes = (javaManualSourceDirectories.value * "*.routes").get
-        val scalaRoutes = (scalaManualSourceDirectories.value * "*.routes").get
-        val commonRoutes =
-          (commonManualSourceDirectories.value * "*.routes").get
-        (javaRoutes.map(_ -> Seq("play.libs.F")) ++ scalaRoutes.map(
-          _ -> Nil) ++ commonRoutes.map(_ -> Nil)).map { case (file, imports) =>
-          RoutesCompilerTask(file, imports, true, true, true)
+  def docsTestSettings = Seq(
+    migrationManualSources := Nil,
+    javaManualSourceDirectories := Nil,
+    scalaManualSourceDirectories := Nil,
+    commonManualSourceDirectories := Nil,
+    unmanagedSourceDirectories in Test ++= javaManualSourceDirectories.value ++ scalaManualSourceDirectories.value ++
+      commonManualSourceDirectories.value ++ migrationManualSources.value,
+    unmanagedResourceDirectories in Test ++= javaManualSourceDirectories.value ++ scalaManualSourceDirectories.value ++
+      commonManualSourceDirectories.value ++ migrationManualSources.value,
+    javaTwirlSourceManaged := target.value / "twirl" / "java",
+    scalaTwirlSourceManaged := target.value / "twirl" / "scala",
+    managedSourceDirectories in Test ++= Seq(
+      javaTwirlSourceManaged.value,
+      scalaTwirlSourceManaged.value
+    ),
+    // Need to ensure that templates in the Java docs get Java imports, and in the Scala docs get Scala imports
+    sourceGenerators in Test <+= (
+      javaManualSourceDirectories,
+      javaTwirlSourceManaged,
+      streams) map { (from, to, s) =>
+      compileTemplates(
+        from,
+        to,
+        TemplateImports.defaultJavaTemplateImports.asScala,
+        s.log)
+    },
+    sourceGenerators in Test <+= (
+      scalaManualSourceDirectories,
+      scalaTwirlSourceManaged,
+      streams) map { (from, to, s) =>
+      compileTemplates(
+        from,
+        to,
+        TemplateImports.defaultScalaTemplateImports.asScala,
+        s.log)
+    },
+    routesCompilerTasks in Test := {
+      val javaRoutes = (javaManualSourceDirectories.value * "*.routes").get
+      val scalaRoutes = (scalaManualSourceDirectories.value * "*.routes").get
+      val commonRoutes = (commonManualSourceDirectories.value * "*.routes").get
+      (javaRoutes.map(_ -> Seq("play.libs.F")) ++ scalaRoutes.map(
+        _ -> Nil) ++ commonRoutes.map(_ -> Nil)).map { case (file, imports) =>
+        RoutesCompilerTask(file, imports, true, true, true)
+      }
+    },
+    routesGenerator := InjectedRoutesGenerator,
+    evaluateSbtFiles := {
+      val unit = loadedBuild.value.units(thisProjectRef.value.build)
+      val (eval, structure) =
+        Load.defaultLoad(state.value, unit.localBase, state.value.log)
+      val sbtFiles = ((unmanagedSourceDirectories in Test).value * "*.sbt").get
+      val log = state.value.log
+      if (sbtFiles.nonEmpty) {
+        log.info("Testing .sbt files...")
+      }
+      val result = sbtFiles.map { sbtFile =>
+        val relativeFile = relativeTo(baseDirectory.value)(sbtFile)
+          .getOrElse(sbtFile.getAbsolutePath)
+        try {
+          EvaluateConfigurations.evaluateConfiguration(
+            eval(),
+            sbtFile,
+            unit.imports)(unit.loader)
+          log.info(s"  ${Colors.green("+")} $relativeFile")
+          true
+        } catch {
+          case NonFatal(_) =>
+            log.error(s" ${Colors.yellow("x")} $relativeFile")
+            false
         }
-      },
-      routesGenerator := InjectedRoutesGenerator,
-      evaluateSbtFiles := {
-        val unit = loadedBuild.value.units(thisProjectRef.value.build)
-        val (eval, structure) =
-          Load.defaultLoad(state.value, unit.localBase, state.value.log)
-        val sbtFiles =
-          ((unmanagedSourceDirectories in Test).value * "*.sbt").get
-        val log = state.value.log
-        if (sbtFiles.nonEmpty) {
-          log.info("Testing .sbt files...")
-        }
-        val result = sbtFiles.map { sbtFile =>
-          val relativeFile = relativeTo(baseDirectory.value)(sbtFile)
-            .getOrElse(sbtFile.getAbsolutePath)
-          try {
-            EvaluateConfigurations.evaluateConfiguration(
-              eval(),
-              sbtFile,
-              unit.imports)(unit.loader)
-            log.info(s"  ${Colors.green("+")} $relativeFile")
-            true
-          } catch {
-            case NonFatal(_) =>
-              log.error(s" ${Colors.yellow("x")} $relativeFile")
-              false
-          }
-        }
-        if (result.contains(false)) {
-          throw new TestsFailedException
-        }
-      },
-      parallelExecution in Test := false,
-      javacOptions in Test ++= Seq("-g", "-Xlint:deprecation"),
-      testOptions in Test += Tests.Argument(
-        TestFrameworks.Specs2,
-        "sequential",
-        "true",
-        "junitxml",
-        "console"),
-      testOptions in Test += Tests.Argument(
-        TestFrameworks.JUnit,
-        "-v",
-        "--ignore-runners=org.specs2.runner.JUnitRunner")
-    )
+      }
+      if (result.contains(false)) {
+        throw new TestsFailedException
+      }
+    },
+    parallelExecution in Test := false,
+    javacOptions in Test ++= Seq("-g", "-Xlint:deprecation"),
+    testOptions in Test += Tests.Argument(
+      TestFrameworks.Specs2,
+      "sequential",
+      "true",
+      "junitxml",
+      "console"),
+    testOptions in Test += Tests.Argument(
+      TestFrameworks.JUnit,
+      "-v",
+      "--ignore-runners=org.specs2.runner.JUnitRunner")
+  )
 
   val docsJarFileSetting: Def.Initialize[Task[Option[File]]] = Def.task {
     val jars = update.value
@@ -323,24 +318,22 @@ object PlayDocsPlugin extends AutoPlugin {
       classOf[java.lang.Integer])
 
     val translationReport = new Callable[File] {
-      def call() =
-        Project
-          .runTask(cachedTranslationCodeSamplesReport, state.value)
-          .get
-          ._2
-          .toEither
-          .right
-          .get
+      def call() = Project
+        .runTask(cachedTranslationCodeSamplesReport, state.value)
+        .get
+        ._2
+        .toEither
+        .right
+        .get
     }
     val forceTranslationReport = new Callable[File] {
-      def call() =
-        Project
-          .runTask(translationCodeSamplesReport, state.value)
-          .get
-          ._2
-          .toEither
-          .right
-          .get
+      def call() = Project
+        .runTask(translationCodeSamplesReport, state.value)
+        .get
+        ._2
+        .toEither
+        .right
+        .get
     }
     val docServerStart = constructor.newInstance()
     val server: ServerWithStop = startMethod

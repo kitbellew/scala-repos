@@ -12,11 +12,11 @@ object CrossValidationTest {
 
   case class EmptyEvaluationParams()
 
-  def toTrainingData(labeledPoints: RDD[LabeledPoint]) =
-    TrainingData(labeledPoints.collect().toSeq)
+  def toTrainingData(labeledPoints: RDD[LabeledPoint]) = TrainingData(
+    labeledPoints.collect().toSeq)
   def toQuery(labeledPoint: LabeledPoint) = Query(labeledPoint.features)
-  def toActualResult(labeledPoint: LabeledPoint) =
-    ActualResult(labeledPoint.label)
+  def toActualResult(labeledPoint: LabeledPoint) = ActualResult(
+    labeledPoint.label)
 
 }
 

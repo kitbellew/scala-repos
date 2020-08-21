@@ -12,13 +12,12 @@ object Apply {
 
 object TestUnit {
   //Error is here:
-  def goo =
-    Apply { i =>
-      i match {
-        case 1 => Success(Some(1))
-        case _ => Success(None)
-      }
+  def goo = Apply { i =>
+    i match {
+      case 1 => Success(Some(1))
+      case _ => Success(None)
     }
+  }
 
   //If type is defined explicitly (which I wanted from compiler to infer), then all is ok
   def foo =

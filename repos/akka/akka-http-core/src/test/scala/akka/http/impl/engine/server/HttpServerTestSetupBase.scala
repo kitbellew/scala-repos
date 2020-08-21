@@ -26,9 +26,8 @@ abstract class HttpServerTestSetupBase {
   val requests = TestSubscriber.probe[HttpRequest]
   val responses = TestPublisher.probe[HttpResponse]()
 
-  def settings =
-    ServerSettings(system)
-      .withServerHeader(Some(Server(List(ProductVersion("akka-http", "test")))))
+  def settings = ServerSettings(system)
+    .withServerHeader(Some(Server(List(ProductVersion("akka-http", "test")))))
   def remoteAddress: Option[InetSocketAddress] = None
 
   val (netIn, netOut) = {
@@ -84,8 +83,8 @@ abstract class HttpServerTestSetupBase {
   def expectNetworkClose(): Unit = netOut.expectComplete()
 
   def send(data: ByteString): Unit = netIn.sendNext(data)
-  def send(string: String): Unit =
-    send(ByteString(string.stripMarginWithNewline("\r\n"), "UTF8"))
+  def send(string: String): Unit = send(
+    ByteString(string.stripMarginWithNewline("\r\n"), "UTF8"))
 
   def closeNetworkInput(): Unit = netIn.sendComplete()
 }

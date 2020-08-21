@@ -223,18 +223,16 @@ class DerefSlice(source: Slice, derefBy: PartialFunction[Int, CPathNode])
 
         case CEmptyObject =>
           new EmptyObjectColumn {
-            def isDefinedAt(row: Int) =
-              derefBy.isDefinedAt(row) &&
-                derefColumns(derefBy(row)).exists(
-                  _.get(resultRef).exists(_.isDefinedAt(row)))
+            def isDefinedAt(row: Int) = derefBy.isDefinedAt(row) &&
+              derefColumns(derefBy(row)).exists(
+                _.get(resultRef).exists(_.isDefinedAt(row)))
           }
 
         case CEmptyArray =>
           new EmptyArrayColumn {
-            def isDefinedAt(row: Int) =
-              derefBy.isDefinedAt(row) &&
-                derefColumns(derefBy(row)).exists(
-                  _.get(resultRef).exists(_.isDefinedAt(row)))
+            def isDefinedAt(row: Int) = derefBy.isDefinedAt(row) &&
+              derefColumns(derefBy(row)).exists(
+                _.get(resultRef).exists(_.isDefinedAt(row)))
           }
 
         case CNull =>

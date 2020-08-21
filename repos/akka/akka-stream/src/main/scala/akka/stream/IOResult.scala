@@ -28,11 +28,10 @@ final case class IOResult private[stream] (count: Long, status: Try[Done]) {
     * Java API: If the IO operation resulted in an error, returns the corresponding [[Throwable]]
     * or throws [[UnsupportedOperationException]] otherwise.
     */
-  def getError: Throwable =
-    status match {
-      case Failure(t) ⇒ t
-      case Success(_) ⇒
-        throw new UnsupportedOperationException("IO operation was successful.")
-    }
+  def getError: Throwable = status match {
+    case Failure(t) ⇒ t
+    case Success(_) ⇒
+      throw new UnsupportedOperationException("IO operation was successful.")
+  }
 
 }

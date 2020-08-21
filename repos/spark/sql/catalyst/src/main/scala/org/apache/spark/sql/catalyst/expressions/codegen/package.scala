@@ -32,10 +32,9 @@ package object codegen {
       Batch("CleanExpressions", FixedPoint(20), CleanExpressions) :: Nil
 
     object CleanExpressions extends rules.Rule[Expression] {
-      def apply(e: Expression): Expression =
-        e transform { case Alias(c, _) =>
-          c
-        }
+      def apply(e: Expression): Expression = e transform { case Alias(c, _) =>
+        c
+      }
     }
   }
 

@@ -38,8 +38,8 @@ import org.junit.Assert._
   "0.10.0.0")
 class AutoOffsetResetTest extends KafkaServerTestHarness with Logging {
 
-  def generateConfigs() =
-    List(KafkaConfig.fromProps(TestUtils.createBrokerConfig(0, zkConnect)))
+  def generateConfigs() = List(
+    KafkaConfig.fromProps(TestUtils.createBrokerConfig(0, zkConnect)))
 
   val topic = "test_topic"
   val group = "default_group"

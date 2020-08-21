@@ -74,10 +74,9 @@ class OrderedRDDFunctions[
     * because it can push the sorting down into the shuffle machinery.
     */
   def repartitionAndSortWithinPartitions(
-      partitioner: Partitioner): RDD[(K, V)] =
-    self.withScope {
-      new ShuffledRDD[K, V, V](self, partitioner).setKeyOrdering(ordering)
-    }
+      partitioner: Partitioner): RDD[(K, V)] = self.withScope {
+    new ShuffledRDD[K, V, V](self, partitioner).setKeyOrdering(ordering)
+  }
 
   /**
     * Returns an RDD containing only the elements in the inclusive range `lower` to `upper`.
@@ -85,24 +84,23 @@ class OrderedRDDFunctions[
     * performed efficiently by only scanning the partitions that might contain matching elements.
     * Otherwise, a standard `filter` is applied to all partitions.
     */
-  def filterByRange(lower: K, upper: K): RDD[P] =
-    self.withScope {
+  def filterByRange(lower: K, upper: K): RDD[P] = self.withScope {
 
-      def inRange(k: K): Boolean =
-        ordering.gteq(k, lower) && ordering.lteq(k, upper)
+    def inRange(k: K): Boolean =
+      ordering.gteq(k, lower) && ordering.lteq(k, upper)
 
-      val rddToFilter: RDD[P] = self.partitioner match {
-        case Some(rp: RangePartitioner[K, V]) => {
-          val partitionIndicies =
-            (rp.getPartition(lower), rp.getPartition(upper)) match {
-              case (l, u) => Math.min(l, u) to Math.max(l, u)
-            }
-          PartitionPruningRDD.create(self, partitionIndicies.contains)
-        }
-        case _ =>
-          self
+    val rddToFilter: RDD[P] = self.partitioner match {
+      case Some(rp: RangePartitioner[K, V]) => {
+        val partitionIndicies =
+          (rp.getPartition(lower), rp.getPartition(upper)) match {
+            case (l, u) => Math.min(l, u) to Math.max(l, u)
+          }
+        PartitionPruningRDD.create(self, partitionIndicies.contains)
       }
-      rddToFilter.filter { case (k, v) => inRange(k) }
+      case _ =>
+        self
     }
+    rddToFilter.filter { case (k, v) => inRange(k) }
+  }
 
 }

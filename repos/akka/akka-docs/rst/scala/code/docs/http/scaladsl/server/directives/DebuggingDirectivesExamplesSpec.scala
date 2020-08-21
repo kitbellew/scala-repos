@@ -87,11 +87,10 @@ class DebuggingDirectivesExamplesSpec extends RoutingSpec {
     DebuggingDirectives.logResult(("get-user", Logging.InfoLevel))
 
     // logs just the response status at debug level
-    def responseStatus(res: Any): String =
-      res match {
-        case x: HttpResponse => x.status.toString
-        case _               => "unknown response part"
-      }
+    def responseStatus(res: Any): String = res match {
+      case x: HttpResponse => x.status.toString
+      case _               => "unknown response part"
+    }
     DebuggingDirectives.logResult(responseStatus _)
 
     // logs just the response status at info level

@@ -12,8 +12,8 @@ import org.scalacheck._
 
 object ClientMergeableLaws extends Properties("ClientMergeable") {
 
-  implicit def batchArb: Arbitrary[BatchID] =
-    Arbitrary(Gen.choose(0L, 100L).map(BatchID(_)))
+  implicit def batchArb: Arbitrary[BatchID] = Arbitrary(
+    Gen.choose(0L, 100L).map(BatchID(_)))
 
   object Machine {
     def empty[K, V](implicit b: Batcher, sg: Semigroup[V]) =

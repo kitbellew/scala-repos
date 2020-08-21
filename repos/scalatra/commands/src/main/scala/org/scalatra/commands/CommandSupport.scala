@@ -33,12 +33,11 @@ trait CommandSupport extends ParamsValueReaderProperties with CommandExecutors {
   def command[T <: CommandType](implicit
       request: HttpServletRequest,
       mf: Manifest[T]): T = {
-    def createCommand =
-      commandFactories
-        .get(mf.erasure)
-        .map(_())
-        .getOrElse(mf.erasure.newInstance())
-        .asInstanceOf[T]
+    def createCommand = commandFactories
+      .get(mf.erasure)
+      .map(_())
+      .getOrElse(mf.erasure.newInstance())
+      .asInstanceOf[T]
     commandOption[T] getOrElse bindCommand(createCommand)
   }
 

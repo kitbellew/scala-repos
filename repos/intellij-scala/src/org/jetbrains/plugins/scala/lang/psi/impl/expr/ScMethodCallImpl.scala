@@ -19,8 +19,8 @@ import scala.collection.Seq
 class ScMethodCallImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScMethodCall {
-  def getInvokedExpr: ScExpression =
-    findChildByClassScala(classOf[ScExpression])
+  def getInvokedExpr: ScExpression = findChildByClassScala(
+    classOf[ScExpression])
 
   def argumentExpressions: Seq[ScExpression] =
     if (args != null) args.exprs else Nil

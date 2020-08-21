@@ -66,12 +66,11 @@ class CopyWorksheetAction extends AnAction with TopComponentAction {
       result append lineSeparator
     }
 
-    def getFromDoc(lineNumber: Int, document: Document) =
-      document getText {
-        new TextRange(
-          document getLineStartOffset lineNumber,
-          document getLineEndOffset lineNumber)
-      }
+    def getFromDoc(lineNumber: Int, document: Document) = document getText {
+      new TextRange(
+        document getLineStartOffset lineNumber,
+        document getLineEndOffset lineNumber)
+    }
 
     def getFromLeft(lineNumber: Int) = getFromDoc(lineNumber, leftDocument)
 

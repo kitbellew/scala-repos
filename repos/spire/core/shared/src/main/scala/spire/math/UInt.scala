@@ -115,8 +115,8 @@ private[math] class UIntBitString extends BitString[UInt] with Serializable {
   def rightShift(n: UInt, i: Int): UInt = n >> i
   def signedRightShift(n: UInt, i: Int): UInt = n >>> i
   def rotateLeft(n: UInt, i: Int): UInt = UInt(Integer.rotateLeft(n.signed, i))
-  def rotateRight(n: UInt, i: Int): UInt =
-    UInt(Integer.rotateRight(n.signed, i))
+  def rotateRight(n: UInt, i: Int): UInt = UInt(
+    Integer.rotateRight(n.signed, i))
 }
 
 private[math] trait UIntIsSigned extends Signed[UInt] {

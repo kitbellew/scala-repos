@@ -23,16 +23,15 @@ object AbstractDecodingToResponse {
 }
 
 abstract class AbstractDecodingToResponse[R <: AnyRef] extends OneToOneDecoder {
-  def decode(ctx: ChannelHandlerContext, ch: Channel, m: AnyRef): R =
-    m match {
-      case Tokens(tokens) =>
-        parseResponse(tokens)
-      case ValueLines(lines) =>
-        parseValues(lines)
-      case StatLines(lines) =>
-        parseStatLines(lines)
-      case _ => throw new IllegalArgumentException("Expecting a Decoding")
-    }
+  def decode(ctx: ChannelHandlerContext, ch: Channel, m: AnyRef): R = m match {
+    case Tokens(tokens) =>
+      parseResponse(tokens)
+    case ValueLines(lines) =>
+      parseValues(lines)
+    case StatLines(lines) =>
+      parseStatLines(lines)
+    case _ => throw new IllegalArgumentException("Expecting a Decoding")
+  }
 
   protected def parseResponse(tokens: Seq[Buf]): R
   protected def parseValues(valueLines: Seq[TokensWithData]): R

@@ -26,8 +26,8 @@ private[akka] trait ReceiveTimeout { this: ActorCell ⇒
 
   final def receiveTimeout: Duration = receiveTimeoutData._1
 
-  final def setReceiveTimeout(timeout: Duration): Unit =
-    receiveTimeoutData = receiveTimeoutData.copy(_1 = timeout)
+  final def setReceiveTimeout(timeout: Duration): Unit = receiveTimeoutData =
+    receiveTimeoutData.copy(_1 = timeout)
 
   final def checkReceiveTimeout() {
     val recvtimeout = receiveTimeoutData

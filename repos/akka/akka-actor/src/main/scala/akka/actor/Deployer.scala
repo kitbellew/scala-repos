@@ -160,8 +160,8 @@ private[akka] class Deployer(
     case _ ⇒ None
   } foreach deploy
 
-  def lookup(path: ActorPath): Option[Deploy] =
-    lookup(path.elements.drop(1).iterator)
+  def lookup(path: ActorPath): Option[Deploy] = lookup(
+    path.elements.drop(1).iterator)
 
   def lookup(path: Iterable[String]): Option[Deploy] = lookup(path.iterator)
 

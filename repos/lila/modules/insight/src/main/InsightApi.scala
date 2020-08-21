@@ -17,17 +17,16 @@ final class InsightApi(
   import lila.insight.{Dimension => D, Metric => M}
   import InsightApi._
 
-  def userCache(user: User): Fu[UserCache] =
-    userCacheApi find user.id flatMap {
-      case Some(c) => fuccess(c)
-      case None =>
-        for {
-          count <- storage count user.id
-          ecos <- storage ecos user.id
-          c = UserCache(user.id, count, ecos, DateTime.now)
-          _ <- userCacheApi save c
-        } yield c
-    }
+  def userCache(user: User): Fu[UserCache] = userCacheApi find user.id flatMap {
+    case Some(c) => fuccess(c)
+    case None =>
+      for {
+        count <- storage count user.id
+        ecos <- storage ecos user.id
+        c = UserCache(user.id, count, ecos, DateTime.now)
+        _ <- userCacheApi save c
+      } yield c
+  }
 
   def ask[X](question: Question[X], user: User): Fu[Answer[X]] =
     storage
@@ -59,19 +58,18 @@ final class InsightApi(
       userCacheApi.remove(user.id) >>-
       lila.mon.insight.index.count()
 
-  def updateGame(g: Game) =
-    Pov(g)
-      .map { pov =>
-        pov.player.userId ?? { userId =>
-          storage find Entry.povToId(pov) flatMap {
-            _ ?? { old =>
-              indexer.update(g, userId, old)
-            }
+  def updateGame(g: Game) = Pov(g)
+    .map { pov =>
+      pov.player.userId ?? { userId =>
+        storage find Entry.povToId(pov) flatMap {
+          _ ?? { old =>
+            indexer.update(g, userId, old)
           }
         }
       }
-      .sequenceFu
-      .void
+    }
+    .sequenceFu
+    .void
 }
 
 object InsightApi {

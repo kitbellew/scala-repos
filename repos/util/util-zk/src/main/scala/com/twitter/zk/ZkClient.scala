@@ -63,30 +63,29 @@ trait ZkClient {
   def withRetryPolicy(r: RetryPolicy): ZkClient = transform(_retryPolicy = r)
 
   /** Use the current retry policy to perform an operation with a ZooKeeper handle. */
-  def retrying[T](op: ZooKeeper => Future[T]): Future[T] =
-    retryPolicy { apply() flatMap (op) }
+  def retrying[T](op: ZooKeeper => Future[T]): Future[T] = retryPolicy {
+    apply() flatMap (op)
+  }
 
   /** Create a new ZkClient, possibly overriding configuration. */
   protected[this] def transform(
       _connector: Connector = connector,
       _acl: Seq[ACL] = acl,
       _mode: CreateMode = mode,
-      _retryPolicy: RetryPolicy = retryPolicy) =
-    new ZkClient {
-      val connector = _connector
-      override val acl = _acl
-      override val mode = _mode
-      override val retryPolicy = _retryPolicy
-    }
+      _retryPolicy: RetryPolicy = retryPolicy) = new ZkClient {
+    val connector = _connector
+    override val acl = _acl
+    override val mode = _mode
+    override val retryPolicy = _retryPolicy
+  }
 }
 
 object ZkClient {
 
   /** Build a ZkClient with a provided Connector */
-  def apply(_connector: Connector) =
-    new ZkClient {
-      protected[this] val connector = _connector
-    }
+  def apply(_connector: Connector) = new ZkClient {
+    protected[this] val connector = _connector
+  }
 
   /** Build a ZkClient with a NativeConnector */
   def apply(

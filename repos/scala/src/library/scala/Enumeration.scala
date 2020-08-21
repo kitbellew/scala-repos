@@ -133,10 +133,9 @@ abstract class Enumeration(initial: Int) extends Serializable {
     * @throws   NoSuchElementException if no `Value` with a matching
     *           name is in this `Enumeration`
     */
-  final def withName(s: String): Value =
-    values
-      .find(_.toString == s)
-      .getOrElse(throw new NoSuchElementException(s"No value found for '$s'"))
+  final def withName(s: String): Value = values
+    .find(_.toString == s)
+    .getOrElse(throw new NoSuchElementException(s"No value found for '$s'"))
 
   /** Creates a fresh value, part of this enumeration. */
   protected final def Value: Value = Value(nextId)
@@ -169,9 +168,8 @@ abstract class Enumeration(initial: Int) extends Serializable {
 
   private def populateNameMap() {
     val fields: Array[JField] = getClass.getDeclaredFields
-    def isValDef(m: JMethod): Boolean =
-      fields exists (fd =>
-        fd.getName == m.getName && fd.getType == m.getReturnType)
+    def isValDef(m: JMethod): Boolean = fields exists (fd =>
+      fd.getName == m.getName && fd.getType == m.getReturnType)
 
     // The list of possible Value methods: 0-args which return a conforming type
     val methods: Array[JMethod] = getClass.getMethods filter (m =>
@@ -194,8 +192,9 @@ abstract class Enumeration(initial: Int) extends Serializable {
   /* Obtains the name for the value with id `i`. If no name is cached
    * in `nmap`, it populates `nmap` using reflection.
    */
-  private def nameOf(i: Int): String =
-    synchronized { nmap.getOrElse(i, { populateNameMap(); nmap(i) }) }
+  private def nameOf(i: Int): String = synchronized {
+    nmap.getOrElse(i, { populateNameMap(); nmap(i) })
+  }
 
   /** The type of the enumerated values. */
   @SerialVersionUID(7091335633555234129L)
@@ -211,12 +210,11 @@ abstract class Enumeration(initial: Int) extends Serializable {
       if (this.id < that.id) -1
       else if (this.id == that.id) 0
       else 1
-    override def equals(other: Any) =
-      other match {
-        case that: Enumeration#Value =>
-          (outerEnum eq that.outerEnum) && (id == that.id)
-        case _ => false
-      }
+    override def equals(other: Any) = other match {
+      case that: Enumeration#Value =>
+        (outerEnum eq that.outerEnum) && (id == that.id)
+      case _ => false
+    }
     override def hashCode: Int = id.##
 
     /** Create a ValueSet which contains this value and another one */
@@ -307,8 +305,8 @@ abstract class Enumeration(initial: Int) extends Serializable {
     /** A value set containing all the values for the zero-adjusted ids
       *  corresponding to the bits in an array
       */
-    def fromBitMask(elems: Array[Long]): ValueSet =
-      new ValueSet(immutable.BitSet.fromBitMask(elems))
+    def fromBitMask(elems: Array[Long]): ValueSet = new ValueSet(
+      immutable.BitSet.fromBitMask(elems))
 
     /** A builder object for value sets */
     def newBuilder: mutable.Builder[Value, ValueSet] =

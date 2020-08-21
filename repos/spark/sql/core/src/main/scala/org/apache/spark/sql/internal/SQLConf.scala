@@ -732,8 +732,8 @@ class SQLConf
 
   def verifyPartitionPath: Boolean = getConf(HIVE_VERIFY_PARTITION_PATH)
 
-  def metastorePartitionPruning: Boolean =
-    getConf(HIVE_METASTORE_PARTITION_PRUNING)
+  def metastorePartitionPruning: Boolean = getConf(
+    HIVE_METASTORE_PARTITION_PRUNING)
 
   def nativeView: Boolean = getConf(NATIVE_VIEW)
 
@@ -789,15 +789,15 @@ class SQLConf
   def dataFrameSelfJoinAutoResolveAmbiguity: Boolean =
     getConf(DATAFRAME_SELF_JOIN_AUTO_RESOLVE_AMBIGUITY)
 
-  def dataFrameRetainGroupColumns: Boolean =
-    getConf(DATAFRAME_RETAIN_GROUP_COLUMNS)
+  def dataFrameRetainGroupColumns: Boolean = getConf(
+    DATAFRAME_RETAIN_GROUP_COLUMNS)
 
   def runSQLOnFile: Boolean = getConf(RUN_SQL_ON_FILES)
 
   def supportQuotedId: Boolean = getConf(PARSER_SUPPORT_QUOTEDID)
 
-  def supportSQL11ReservedKeywords: Boolean =
-    getConf(PARSER_SUPPORT_SQL11_RESERVED_KEYWORDS)
+  def supportSQL11ReservedKeywords: Boolean = getConf(
+    PARSER_SUPPORT_SQL11_RESERVED_KEYWORDS)
 
   override def orderByOrdinal: Boolean = getConf(ORDER_BY_ORDINAL)
 
@@ -805,10 +805,9 @@ class SQLConf
     */
 
   /** Set Spark SQL configuration properties. */
-  def setConf(props: Properties): Unit =
-    settings.synchronized {
-      props.asScala.foreach { case (k, v) => setConfString(k, v) }
-    }
+  def setConf(props: Properties): Unit = settings.synchronized {
+    props.asScala.foreach { case (k, v) => setConfString(k, v) }
+  }
 
   /** Set the given Spark SQL configuration property using a `string` value. */
   def setConfString(key: String, value: String): Unit = {

@@ -36,10 +36,9 @@ class ConsumerIteratorTest extends KafkaServerTestHarness {
 
   val numNodes = 1
 
-  def generateConfigs() =
-    TestUtils
-      .createBrokerConfigs(numNodes, zkConnect)
-      .map(KafkaConfig.fromProps)
+  def generateConfigs() = TestUtils
+    .createBrokerConfigs(numNodes, zkConnect)
+    .map(KafkaConfig.fromProps)
 
   val messages = new mutable.HashMap[Int, Seq[Message]]
   val topic = "topic"
@@ -49,9 +48,8 @@ class ConsumerIteratorTest extends KafkaServerTestHarness {
   val queue = new LinkedBlockingQueue[FetchedDataChunk]
   var topicInfos: Seq[PartitionTopicInfo] = null
 
-  def consumerConfig =
-    new ConsumerConfig(
-      TestUtils.createConsumerProperties(zkConnect, group, consumer0))
+  def consumerConfig = new ConsumerConfig(
+    TestUtils.createConsumerProperties(zkConnect, group, consumer0))
 
   @Before
   override def setUp() {

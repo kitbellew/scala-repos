@@ -45,11 +45,10 @@ import org.scalatest.junit.JUnitRunner
   */
 @RunWith(classOf[JUnitRunner])
 class JavaJournalPerfSpec(config: Config) extends JournalPerfSpec(config) {
-  override protected def info: Informer =
-    new Informer {
-      override def apply(message: String, payload: Option[Any]): Unit =
-        System.out.println(message)
-    }
+  override protected def info: Informer = new Informer {
+    override def apply(message: String, payload: Option[Any]): Unit =
+      System.out.println(message)
+  }
 
   override protected def supportsRejectingNonSerializableObjects
       : CapabilityFlag = CapabilityFlag.on

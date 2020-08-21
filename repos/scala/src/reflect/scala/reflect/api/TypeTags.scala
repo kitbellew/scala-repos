@@ -265,10 +265,9 @@ trait TypeTags { self: Universe =>
 
     override def canEqual(x: Any) = x.isInstanceOf[TypeTag[_]]
 
-    override def equals(x: Any) =
-      x.isInstanceOf[TypeTag[_]] && this.mirror == x
-        .asInstanceOf[TypeTag[_]]
-        .mirror && this.tpe == x.asInstanceOf[TypeTag[_]].tpe
+    override def equals(x: Any) = x.isInstanceOf[TypeTag[_]] && this.mirror == x
+      .asInstanceOf[TypeTag[_]]
+      .mirror && this.tpe == x.asInstanceOf[TypeTag[_]].tpe
 
     override def hashCode = mirror.hashCode * 31 + tpe.hashCode
 

@@ -41,8 +41,8 @@ object ReadOnlyLongWrapper {
   /** Creates a new ReadOnlyLongWrapper instance.
     * @param value the initial value of the wrapped value
     */
-  def apply(value: Long) =
-    new ReadOnlyLongWrapper(new jfxbp.ReadOnlyLongWrapper(value))
+  def apply(value: Long) = new ReadOnlyLongWrapper(
+    new jfxbp.ReadOnlyLongWrapper(value))
 }
 
 /** Wrapper for [[http://docs.oracle.com/javase/8/javafx/api/javafx/beans/property/ReadOnlyLongWrapper.html javafx.beans.property.ReadOnlyLongWrapper]] */

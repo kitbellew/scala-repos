@@ -42,8 +42,8 @@ class SplitMenuButtonSpec
       classOf[SplitMenuButton])
     with RunOnApplicationThread {
 
-  override protected def getScalaClassInstance =
-    new SplitMenuButton(new jfxsc.SplitMenuButton())
+  override protected def getScalaClassInstance = new SplitMenuButton(
+    new jfxsc.SplitMenuButton())
 
   override protected def getJavaClassInstance = new jfxsc.SplitMenuButton()
 }

@@ -135,11 +135,10 @@ final case class Router(
       routee.send(unwrap(msg), sender)
   }
 
-  private def unwrap(msg: Any): Any =
-    msg match {
-      case env: RouterEnvelope ⇒ env.message
-      case _ ⇒ msg
-    }
+  private def unwrap(msg: Any): Any = msg match {
+    case env: RouterEnvelope ⇒ env.message
+    case _ ⇒ msg
+  }
 
   /**
     * Create a new instance with the specified routees and the same [[RoutingLogic]].
@@ -161,8 +160,8 @@ final case class Router(
     * Create a new instance with one more [[ActorSelectionRoutee]] for the
     * specified [[akka.actor.ActorSelection]] and the same [[RoutingLogic]].
     */
-  def addRoutee(sel: ActorSelection): Router =
-    addRoutee(ActorSelectionRoutee(sel))
+  def addRoutee(sel: ActorSelection): Router = addRoutee(
+    ActorSelectionRoutee(sel))
 
   /**
     * Create a new instance without the specified routee.
@@ -180,8 +179,8 @@ final case class Router(
     * Create a new instance without the [[ActorSelectionRoutee]] for the specified
     * [[akka.actor.ActorSelection]].
     */
-  def removeRoutee(sel: ActorSelection): Router =
-    removeRoutee(ActorSelectionRoutee(sel))
+  def removeRoutee(sel: ActorSelection): Router = removeRoutee(
+    ActorSelectionRoutee(sel))
 
 }
 

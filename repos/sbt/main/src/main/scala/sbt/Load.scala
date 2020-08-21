@@ -273,33 +273,28 @@ object Load {
   // 3. resolvedScoped is replaced with the defining key as a value
   // Note: this must be idempotent.
   def finalTransforms(ss: Seq[Setting[_]]): Seq[Setting[_]] = {
-    def mapSpecial(to: ScopedKey[_]) =
-      new (ScopedKey ~> ScopedKey) {
-        def apply[T](key: ScopedKey[T]) =
-          if (key.key == streams.key)
-            ScopedKey(
-              Scope.fillTaskAxis(
-                Scope.replaceThis(to.scope)(key.scope),
-                to.key),
-              key.key)
-          else key
+    def mapSpecial(to: ScopedKey[_]) = new (ScopedKey ~> ScopedKey) {
+      def apply[T](key: ScopedKey[T]) =
+        if (key.key == streams.key)
+          ScopedKey(
+            Scope.fillTaskAxis(Scope.replaceThis(to.scope)(key.scope), to.key),
+            key.key)
+        else key
+    }
+    def setDefining[T] = (key: ScopedKey[T], value: T) =>
+      value match {
+        case tk: Task[t] => setDefinitionKey(tk, key).asInstanceOf[T]
+        case ik: InputTask[t] =>
+          ik.mapTask(tk => setDefinitionKey(tk, key)).asInstanceOf[T]
+        case _ => value
       }
-    def setDefining[T] =
-      (key: ScopedKey[T], value: T) =>
-        value match {
-          case tk: Task[t] => setDefinitionKey(tk, key).asInstanceOf[T]
-          case ik: InputTask[t] =>
-            ik.mapTask(tk => setDefinitionKey(tk, key)).asInstanceOf[T]
-          case _ => value
+    def setResolved(defining: ScopedKey[_]) = new (ScopedKey ~> Option) {
+      def apply[T](key: ScopedKey[T]): Option[T] =
+        key.key match {
+          case resolvedScoped.key => Some(defining.asInstanceOf[T])
+          case _                  => None
         }
-    def setResolved(defining: ScopedKey[_]) =
-      new (ScopedKey ~> Option) {
-        def apply[T](key: ScopedKey[T]): Option[T] =
-          key.key match {
-            case resolvedScoped.key => Some(defining.asInstanceOf[T])
-            case _                  => None
-          }
-      }
+    }
     ss.map(s =>
       s mapConstant setResolved(s.key) mapReferenced mapSpecial(
         s.key) mapInit setDefining)
@@ -350,10 +345,9 @@ object Load {
       scopeLocal = structure.scopeLocal)
   }
 
-  def isProjectThis(s: Setting[_]) =
-    s.key.scope.project match {
-      case This | Select(ThisProject) => true; case _ => false
-    }
+  def isProjectThis(s: Setting[_]) = s.key.scope.project match {
+    case This | Select(ThisProject) => true; case _ => false
+  }
   def buildConfigurations(
       loaded: sbt.LoadedBuild,
       rootProject: URI => String,
@@ -422,11 +416,10 @@ object Load {
     lazy val eval = mkEval(unit)
     () => eval
   }
-  def mkEval(unit: sbt.BuildUnit): Eval =
-    mkEval(
-      unit.definitions,
-      unit.plugins,
-      unit.plugins.pluginData.scalacOptions)
+  def mkEval(unit: sbt.BuildUnit): Eval = mkEval(
+    unit.definitions,
+    unit.plugins,
+    unit.plugins.pluginData.scalacOptions)
   def mkEval(
       defs: sbt.LoadedDefinitions,
       plugs: sbt.LoadedPlugins,
@@ -793,11 +786,10 @@ object Load {
       localBase: File,
       context: PluginManagement.Context,
       existingIDs: Seq[String]): String = {
-    def normalizeID(f: File) =
-      Project.normalizeProjectID(f.getName) match {
-        case Right(id) => id
-        case Left(msg) => sys.error(autoIDError(f, msg))
-      }
+    def normalizeID(f: File) = Project.normalizeProjectID(f.getName) match {
+      case Right(id) => id
+      case Left(msg) => sys.error(autoIDError(f, msg))
+    }
     def nthParentName(f: File, i: Int): String =
       if (f eq null) Build.defaultID(localBase)
       else if (i <= 0) normalizeID(f)
@@ -1056,21 +1048,19 @@ object Load {
           setting <- config.settings
         } yield setting
       // Expand the AddSettings instance into a real Seq[Setting[_]] we'll use on the project
-      def expandSettings(auto: AddSettings): Seq[Setting[_]] =
-        auto match {
-          case BuildScalaFiles => rawProject.settings
-          case User            => globalUserSettings.projectLoaded(loadedPlugins.loader)
-          case sf: SbtFiles =>
-            settings(sf.files.map(f => IO.resolve(rawProject.base, f)))
-          case sf: DefaultSbtFiles =>
-            settings(defaultSbtFiles.filter(sf.include))
-          case p: Plugins     => pluginSettings(p)
-          case p: AutoPlugins => autoPluginSettings(p)
-          case q: Sequence =>
-            (Seq.empty[Setting[_]] /: q.sequence) { (b, add) =>
-              b ++ expandSettings(add)
-            }
-        }
+      def expandSettings(auto: AddSettings): Seq[Setting[_]] = auto match {
+        case BuildScalaFiles => rawProject.settings
+        case User            => globalUserSettings.projectLoaded(loadedPlugins.loader)
+        case sf: SbtFiles =>
+          settings(sf.files.map(f => IO.resolve(rawProject.base, f)))
+        case sf: DefaultSbtFiles => settings(defaultSbtFiles.filter(sf.include))
+        case p: Plugins          => pluginSettings(p)
+        case p: AutoPlugins      => autoPluginSettings(p)
+        case q: Sequence =>
+          (Seq.empty[Setting[_]] /: q.sequence) { (b, add) =>
+            b ++ expandSettings(add)
+          }
+      }
       expandSettings(transformedProject.auto)
     }
     // Finally, a project we can use in buildStructure.
@@ -1116,13 +1106,12 @@ object Load {
       (LoadedSbtFile.empty /: ls) { _ merge _ }
     // Loads a given file, or pulls from the cache.
 
-    def memoLoadSettingsFile(src: File): LoadedSbtFile =
-      memoSettings.getOrElse(
-        src, {
-          val lf = loadSettingsFile(src)
-          memoSettings.put(src, lf.clearProjects) // don't load projects twice
-          lf
-        })
+    def memoLoadSettingsFile(src: File): LoadedSbtFile = memoSettings.getOrElse(
+      src, {
+        val lf = loadSettingsFile(src)
+        memoSettings.put(src, lf.clearProjects) // don't load projects twice
+        lf
+      })
 
     // Loads a set of sbt files, sorted by their lexical name (current behavior of sbt).
     def loadFiles(fs: Seq[File]): LoadedSbtFile =
@@ -1138,18 +1127,17 @@ object Load {
       Sequence,
       BuildScalaFiles
     }
-    def associatedFiles(auto: AddSettings): Seq[File] =
-      auto match {
-        case sf: SbtFiles =>
-          sf.files.map(f => IO.resolve(projectBase, f)).filterNot(_.isHidden)
-        case sf: DefaultSbtFiles =>
-          defaultSbtFiles.filter(sf.include).filterNot(_.isHidden)
-        case q: Sequence =>
-          (Seq.empty[File] /: q.sequence) { (b, add) =>
-            b ++ associatedFiles(add)
-          }
-        case _ => Seq.empty
-      }
+    def associatedFiles(auto: AddSettings): Seq[File] = auto match {
+      case sf: SbtFiles =>
+        sf.files.map(f => IO.resolve(projectBase, f)).filterNot(_.isHidden)
+      case sf: DefaultSbtFiles =>
+        defaultSbtFiles.filter(sf.include).filterNot(_.isHidden)
+      case q: Sequence =>
+        (Seq.empty[File] /: q.sequence) { (b, add) =>
+          b ++ associatedFiles(add)
+        }
+      case _ => Seq.empty
+    }
     val rawFiles = associatedFiles(auto)
     val loadedFiles = loadFiles(rawFiles)
     val rawProjects = loadedFiles.projects
@@ -1411,8 +1399,9 @@ object Load {
   def getImports(unit: sbt.BuildUnit): Seq[String] = BuildUtil.getImports(unit)
 
   def referenced[PR <: ProjectReference](
-      definitions: Seq[ProjectDefinition[PR]]): Seq[PR] =
-    definitions flatMap { _.referenced }
+      definitions: Seq[ProjectDefinition[PR]]): Seq[PR] = definitions flatMap {
+    _.referenced
+  }
 
   @deprecated("LoadedBuildUnit is now top-level", "0.13.0")
   type LoadedBuildUnit = sbt.LoadedBuildUnit

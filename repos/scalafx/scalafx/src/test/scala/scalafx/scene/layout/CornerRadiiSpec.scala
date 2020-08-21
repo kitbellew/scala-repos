@@ -44,8 +44,8 @@ class CornerRadiiSpec
       classOf[jfxsl.CornerRadii],
       classOf[CornerRadii]) {
 
-  override protected def getScalaClassInstance =
-    new CornerRadii(getJavaClassInstance) {}
+  override protected def getScalaClassInstance = new CornerRadii(
+    getJavaClassInstance) {}
 
   override protected def getJavaClassInstance = CornerRadii.Empty
 }

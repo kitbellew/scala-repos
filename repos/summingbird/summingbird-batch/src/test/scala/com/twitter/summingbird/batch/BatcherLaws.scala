@@ -32,28 +32,26 @@ object BatcherLaws extends Properties("Batcher") {
     batcher.batchOf(batcher.earliestTimeOf(b))
   }
 
-  def earliestIs_<=(batcher: Batcher) =
-    forAll { (d: Timestamp) =>
-      val ord = implicitly[Ordering[Timestamp]]
-      ord.compare(batcher.earliestTimeOf(batcher.batchOf(d)), d) <= 0
-    }
+  def earliestIs_<=(batcher: Batcher) = forAll { (d: Timestamp) =>
+    val ord = implicitly[Ordering[Timestamp]]
+    ord.compare(batcher.earliestTimeOf(batcher.batchOf(d)), d) <= 0
+  }
 
-  def batchesAreWeakOrderings(batcher: Batcher) =
-    forAll { (d1: Timestamp, d2: Timestamp) =>
+  def batchesAreWeakOrderings(batcher: Batcher) = forAll {
+    (d1: Timestamp, d2: Timestamp) =>
       val ord = implicitly[Ordering[BatchID]]
       val ordT = implicitly[Ordering[Timestamp]]
       ord.compare(batcher.batchOf(d1), batcher.batchOf(d2)) match {
         case 0 => true // can't say much
         case x => ordT.compare(d1, d2) == x
       }
-    }
+  }
 
-  def batchesIncreaseByAtMostOne(batcher: Batcher) =
-    forAll { (d: Timestamp) =>
-      val nextTimeB = batcher.batchOf(d.next)
-      batcher.batchOf(d) == nextTimeB ||
-      batcher.batchOf(d) == nextTimeB.prev
-    }
+  def batchesIncreaseByAtMostOne(batcher: Batcher) = forAll { (d: Timestamp) =>
+    val nextTimeB = batcher.batchOf(d.next)
+    batcher.batchOf(d) == nextTimeB ||
+    batcher.batchOf(d) == nextTimeB.prev
+  }
 
   def batchesCoveredByIdent(batcher: Batcher) =
     forAll { (d: Timestamp) =>

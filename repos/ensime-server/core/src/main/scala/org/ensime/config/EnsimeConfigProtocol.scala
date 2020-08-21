@@ -40,10 +40,9 @@ object EnsimeConfigProtocol {
     if (Properties.envOrNone("ENSIME_SKIP_JRE_INDEX").isDefined) Nil
     else javaHome.tree.filter(_.getName == "rt.jar").toList
 
-  def validated(c: EnsimeConfig): EnsimeConfig =
-    c.copy(
-      subprojects = c.subprojects.map(validated)
-    )
+  def validated(c: EnsimeConfig): EnsimeConfig = c.copy(
+    subprojects = c.subprojects.map(validated)
+  )
 
   /*
    We use the canonical form of files/directories to keep OS X happy

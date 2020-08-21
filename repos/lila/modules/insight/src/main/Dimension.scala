@@ -163,85 +163,79 @@ object Dimension {
     OpCastling)
   val byKey = all map { p => (p.key, p) } toMap
 
-  def requiresStableRating(d: Dimension[_]) =
-    d match {
-      case OpponentStrength => true
-      case _                => false
-    }
+  def requiresStableRating(d: Dimension[_]) = d match {
+    case OpponentStrength => true
+    case _                => false
+  }
 
-  def valuesOf[X](d: Dimension[X]): List[X] =
-    d match {
-      case Perf                    => PerfType.nonPuzzle
-      case Phase                   => lila.insight.Phase.all
-      case Result                  => lila.insight.Result.all
-      case Termination             => lila.insight.Termination.all
-      case Color                   => chess.Color.all
-      case Opening                 => EcopeningDB.all
-      case OpponentStrength        => RelativeStrength.all
-      case PieceRole               => chess.Role.all.reverse
-      case MovetimeRange           => lila.insight.MovetimeRange.all
-      case MyCastling | OpCastling => lila.insight.Castling.all
-      case QueenTrade              => lila.insight.QueenTrade.all
-      case MaterialRange           => lila.insight.MaterialRange.all
-    }
+  def valuesOf[X](d: Dimension[X]): List[X] = d match {
+    case Perf                    => PerfType.nonPuzzle
+    case Phase                   => lila.insight.Phase.all
+    case Result                  => lila.insight.Result.all
+    case Termination             => lila.insight.Termination.all
+    case Color                   => chess.Color.all
+    case Opening                 => EcopeningDB.all
+    case OpponentStrength        => RelativeStrength.all
+    case PieceRole               => chess.Role.all.reverse
+    case MovetimeRange           => lila.insight.MovetimeRange.all
+    case MyCastling | OpCastling => lila.insight.Castling.all
+    case QueenTrade              => lila.insight.QueenTrade.all
+    case MaterialRange           => lila.insight.MaterialRange.all
+  }
 
-  def valueByKey[X](d: Dimension[X], key: String): Option[X] =
-    d match {
-      case Perf   => PerfType.byKey get key
-      case Phase  => parseIntOption(key) flatMap lila.insight.Phase.byId.get
-      case Result => parseIntOption(key) flatMap lila.insight.Result.byId.get
-      case Termination =>
-        parseIntOption(key) flatMap lila.insight.Termination.byId.get
-      case Color   => chess.Color(key)
-      case Opening => EcopeningDB.allByEco get key
-      case OpponentStrength =>
-        parseIntOption(key) flatMap RelativeStrength.byId.get
-      case PieceRole => chess.Role.all.find(_.name == key)
-      case MovetimeRange =>
-        parseIntOption(key) flatMap lila.insight.MovetimeRange.byId.get
-      case MyCastling | OpCastling =>
-        parseIntOption(key) flatMap lila.insight.Castling.byId.get
-      case QueenTrade => lila.insight.QueenTrade(key == "true").some
-      case MaterialRange =>
-        parseIntOption(key) flatMap lila.insight.MaterialRange.byId.get
-    }
+  def valueByKey[X](d: Dimension[X], key: String): Option[X] = d match {
+    case Perf   => PerfType.byKey get key
+    case Phase  => parseIntOption(key) flatMap lila.insight.Phase.byId.get
+    case Result => parseIntOption(key) flatMap lila.insight.Result.byId.get
+    case Termination =>
+      parseIntOption(key) flatMap lila.insight.Termination.byId.get
+    case Color   => chess.Color(key)
+    case Opening => EcopeningDB.allByEco get key
+    case OpponentStrength =>
+      parseIntOption(key) flatMap RelativeStrength.byId.get
+    case PieceRole => chess.Role.all.find(_.name == key)
+    case MovetimeRange =>
+      parseIntOption(key) flatMap lila.insight.MovetimeRange.byId.get
+    case MyCastling | OpCastling =>
+      parseIntOption(key) flatMap lila.insight.Castling.byId.get
+    case QueenTrade => lila.insight.QueenTrade(key == "true").some
+    case MaterialRange =>
+      parseIntOption(key) flatMap lila.insight.MaterialRange.byId.get
+  }
 
   def valueToJson[X](d: Dimension[X])(v: X): play.api.libs.json.JsObject = {
     play.api.libs.json.Json
       .obj("key" -> valueKey(d)(v), "name" -> d.valueName(v))
   }
 
-  def valueKey[X](d: Dimension[X])(v: X): String =
-    (d match {
-      case Perf                    => v.key
-      case Phase                   => v.id
-      case Result                  => v.id
-      case Termination             => v.id
-      case Color                   => v.name
-      case Opening                 => v.eco
-      case OpponentStrength        => v.id
-      case PieceRole               => v.name
-      case MovetimeRange           => v.id
-      case MyCastling | OpCastling => v.id
-      case QueenTrade              => v.id
-      case MaterialRange           => v.id
-    }).toString
+  def valueKey[X](d: Dimension[X])(v: X): String = (d match {
+    case Perf                    => v.key
+    case Phase                   => v.id
+    case Result                  => v.id
+    case Termination             => v.id
+    case Color                   => v.name
+    case Opening                 => v.eco
+    case OpponentStrength        => v.id
+    case PieceRole               => v.name
+    case MovetimeRange           => v.id
+    case MyCastling | OpCastling => v.id
+    case QueenTrade              => v.id
+    case MaterialRange           => v.id
+  }).toString
 
-  def filtersOf[X](d: Dimension[X], selected: List[X]): BSONDocument =
-    d match {
-      case Dimension.MovetimeRange =>
-        selected match {
-          case Nil => BSONDocument()
-          case xs =>
-            BSONDocument(
-              d.dbKey -> BSONDocument("$in" -> xs.flatMap(_.tenths.list)))
-        }
-      case _ =>
-        selected map d.bson.write match {
-          case Nil     => BSONDocument()
-          case List(x) => BSONDocument(d.dbKey -> x)
-          case xs =>
-            BSONDocument(d.dbKey -> BSONDocument("$in" -> BSONArray(xs)))
-        }
-    }
+  def filtersOf[X](d: Dimension[X], selected: List[X]): BSONDocument = d match {
+    case Dimension.MovetimeRange =>
+      selected match {
+        case Nil => BSONDocument()
+        case xs =>
+          BSONDocument(
+            d.dbKey -> BSONDocument("$in" -> xs.flatMap(_.tenths.list)))
+      }
+    case _ =>
+      selected map d.bson.write match {
+        case Nil     => BSONDocument()
+        case List(x) => BSONDocument(d.dbKey -> x)
+        case xs      => BSONDocument(d.dbKey -> BSONDocument("$in" -> BSONArray(xs)))
+      }
+  }
 }

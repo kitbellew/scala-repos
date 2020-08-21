@@ -55,16 +55,15 @@ trait UnrolledParArrayCombiner[T] extends Combiner[T, ParArray[T]] {
   }
 
   def combine[N <: T, NewTo >: ParArray[T]](
-      other: Combiner[N, NewTo]): Combiner[N, NewTo] =
-    other match {
-      case that if that eq this => this // just return this
-      case that: UnrolledParArrayCombiner[t] =>
-        buff concat that.buff
-        this
-      case _ =>
-        throw new UnsupportedOperationException(
-          "Cannot combine with combiner of different type.")
-    }
+      other: Combiner[N, NewTo]): Combiner[N, NewTo] = other match {
+    case that if that eq this => this // just return this
+    case that: UnrolledParArrayCombiner[t] =>
+      buff concat that.buff
+      this
+    case _ =>
+      throw new UnsupportedOperationException(
+        "Cannot combine with combiner of different type.")
+  }
 
   def size = buff.size
 
@@ -74,23 +73,22 @@ trait UnrolledParArrayCombiner[T] extends Combiner[T, ParArray[T]] {
       extends Task[Unit, CopyUnrolledToArray] {
     var result = ()
 
-    def leaf(prev: Option[Unit]) =
-      if (howmany > 0) {
-        var totalleft = howmany
-        val (startnode, startpos) = findStart(offset)
-        var curr = startnode
-        var pos = startpos
-        var arroffset = offset
-        while (totalleft > 0) {
-          val lefthere = scala.math.min(totalleft, curr.size - pos)
-          Array.copy(curr.array, pos, array, arroffset, lefthere)
-          // println("from: " + arroffset + " elems " + lefthere + " - " + pos + ", " + curr + " -> " + array.toList + " by " + this + " !! " + buff.headPtr)
-          totalleft -= lefthere
-          arroffset += lefthere
-          pos = 0
-          curr = curr.next
-        }
+    def leaf(prev: Option[Unit]) = if (howmany > 0) {
+      var totalleft = howmany
+      val (startnode, startpos) = findStart(offset)
+      var curr = startnode
+      var pos = startpos
+      var arroffset = offset
+      while (totalleft > 0) {
+        val lefthere = scala.math.min(totalleft, curr.size - pos)
+        Array.copy(curr.array, pos, array, arroffset, lefthere)
+        // println("from: " + arroffset + " elems " + lefthere + " - " + pos + ", " + curr + " -> " + array.toList + " by " + this + " !! " + buff.headPtr)
+        totalleft -= lefthere
+        arroffset += lefthere
+        pos = 0
+        curr = curr.next
       }
+    }
     private def findStart(pos: Int) = {
       var left = pos
       var node = buff.headPtr
@@ -106,16 +104,14 @@ trait UnrolledParArrayCombiner[T] extends Combiner[T, ParArray[T]] {
         new CopyUnrolledToArray(array, offset, fp),
         new CopyUnrolledToArray(array, offset + fp, howmany - fp))
     }
-    def shouldSplitFurther =
-      howmany > scala.collection.parallel
-        .thresholdFromSize(size, combinerTaskSupport.parallelismLevel)
+    def shouldSplitFurther = howmany > scala.collection.parallel
+      .thresholdFromSize(size, combinerTaskSupport.parallelismLevel)
     override def toString =
       "CopyUnrolledToArray(" + offset + ", " + howmany + ")"
   }
 }
 
 object UnrolledParArrayCombiner {
-  def apply[T](): UnrolledParArrayCombiner[T] =
-    new UnrolledParArrayCombiner[
-      T] {} // was: with EnvironmentPassingCombiner[T, ParArray[T]]
+  def apply[T](): UnrolledParArrayCombiner[T] = new UnrolledParArrayCombiner[
+    T] {} // was: with EnvironmentPassingCombiner[T, ParArray[T]]
 }

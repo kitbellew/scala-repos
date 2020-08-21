@@ -52,31 +52,28 @@ abstract class MongoRefListField[
   /*
    * get the referenced objects
    */
-  def objs =
-    synchronized {
-      if (!_calcedObjs) {
-        _calcedObjs = true
-        this._objs = findAll
-      }
-      _objs
+  def objs = synchronized {
+    if (!_calcedObjs) {
+      _calcedObjs = true
+      this._objs = findAll
     }
+    _objs
+  }
 
   def cached_? : Boolean = synchronized { _calcedObjs }
 
-  def primeObjs(objs: List[RefType]) =
-    synchronized {
-      _objs = objs
-      _calcedObjs = true
-    }
+  def primeObjs(objs: List[RefType]) = synchronized {
+    _objs = objs
+    _calcedObjs = true
+  }
 
   private var _objs: List[RefType] = Nil
   private var _calcedObjs = false
 
-  override def setBox(in: Box[MyType]): Box[MyType] =
-    synchronized {
-      _calcedObjs = false // invalidate the cache
-      super.setBox(in)
-    }
+  override def setBox(in: Box[MyType]): Box[MyType] = synchronized {
+    _calcedObjs = false // invalidate the cache
+    super.setBox(in)
+  }
 }
 
 class ObjectIdRefListField[

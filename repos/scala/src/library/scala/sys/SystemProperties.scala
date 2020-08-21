@@ -34,16 +34,14 @@ class SystemProperties
   override def empty = mutable.Map[String, String]()
   override def default(key: String): String = null
 
-  def iterator: Iterator[(String, String)] =
-    wrapAccess {
-      val ps = System.getProperties()
-      names map (k => (k, ps getProperty k)) filter (_._2 ne null)
-    } getOrElse Iterator.empty
+  def iterator: Iterator[(String, String)] = wrapAccess {
+    val ps = System.getProperties()
+    names map (k => (k, ps getProperty k)) filter (_._2 ne null)
+  } getOrElse Iterator.empty
 
-  def names: Iterator[String] =
-    wrapAccess(
-      System.getProperties().stringPropertyNames().asScala.iterator
-    ) getOrElse Iterator.empty
+  def names: Iterator[String] = wrapAccess(
+    System.getProperties().stringPropertyNames().asScala.iterator
+  ) getOrElse Iterator.empty
 
   def get(key: String) =
     wrapAccess(Option(System.getProperty(key))) flatMap (x => x)
@@ -83,15 +81,14 @@ object SystemProperties {
   private final val PreferIPv6AddressesKey = "java.net.preferIPv6Addresses"
   private final val NoTraceSuppressionKey = "scala.control.noTraceSuppression"
 
-  def help(key: String): String =
-    key match {
-      case HeadlessKey            => "system should not utilize a display device"
-      case PreferIPv4StackKey     => "system should prefer IPv4 sockets"
-      case PreferIPv6AddressesKey => "system should prefer IPv6 addresses"
-      case NoTraceSuppressionKey =>
-        "scala should not suppress any stack trace creation"
-      case _ => ""
-    }
+  def help(key: String): String = key match {
+    case HeadlessKey            => "system should not utilize a display device"
+    case PreferIPv4StackKey     => "system should prefer IPv4 sockets"
+    case PreferIPv6AddressesKey => "system should prefer IPv6 addresses"
+    case NoTraceSuppressionKey =>
+      "scala should not suppress any stack trace creation"
+    case _ => ""
+  }
 
   lazy val headless: BooleanProp = BooleanProp.keyExists(HeadlessKey)
   lazy val preferIPv4Stack: BooleanProp =

@@ -57,11 +57,10 @@ class SerialServerDispatcherTest extends FunSuite with MockitoSugar {
     val mockCert = mock[X509Certificate]
     when(trans.peerCertificate).thenReturn(Some(mockCert))
     val service = new Service[String, String] {
-      override def apply(request: String): Future[String] =
-        Future.value {
-          if (Contexts.local.get(Transport.peerCertCtx) == Some(mockCert)) "ok"
-          else "not ok"
-        }
+      override def apply(request: String): Future[String] = Future.value {
+        if (Contexts.local.get(Transport.peerCertCtx) == Some(mockCert)) "ok"
+        else "not ok"
+      }
     }
 
     val disp = new SerialServerDispatcher(trans, service)
@@ -74,12 +73,11 @@ class SerialServerDispatcherTest extends FunSuite with MockitoSugar {
     val mockAddr = mock[SocketAddress]
     when(trans.remoteAddress).thenReturn(mockAddr)
     val service = new Service[String, String] {
-      override def apply(request: String): Future[String] =
-        Future.value {
-          if (Contexts.local.get(RemoteInfo.Upstream.AddressCtx) == Some(
-              mockAddr)) "ok"
-          else "not ok"
-        }
+      override def apply(request: String): Future[String] = Future.value {
+        if (Contexts.local.get(RemoteInfo.Upstream.AddressCtx) == Some(
+            mockAddr)) "ok"
+        else "not ok"
+      }
     }
 
     val disp = new SerialServerDispatcher(trans, service)

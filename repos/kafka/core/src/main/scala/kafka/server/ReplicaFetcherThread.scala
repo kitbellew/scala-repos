@@ -404,16 +404,15 @@ object ReplicaFetcherThread {
 
     def errorCode: Short = underlying.errorCode
 
-    def toByteBufferMessageSet: ByteBufferMessageSet =
-      new ByteBufferMessageSet(underlying.recordSet)
+    def toByteBufferMessageSet: ByteBufferMessageSet = new ByteBufferMessageSet(
+      underlying.recordSet)
 
     def highWatermark: Long = underlying.highWatermark
 
-    def exception: Option[Throwable] =
-      Errors.forCode(errorCode) match {
-        case Errors.NONE => None
-        case e           => Some(e.exception)
-      }
+    def exception: Option[Throwable] = Errors.forCode(errorCode) match {
+      case Errors.NONE => None
+      case e           => Some(e.exception)
+    }
 
   }
 

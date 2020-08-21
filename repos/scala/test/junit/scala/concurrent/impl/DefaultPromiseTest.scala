@@ -89,11 +89,10 @@ class DefaultPromiseTest {
         fireCounts = fireCounts.updated(key, newCount)
       }
 
-      def assertIllegalResult =
-        result match {
-          case Failure(e: IllegalStateException) => ()
-          case _                                 => fail(s"Expected IllegalStateException: $result")
-        }
+      def assertIllegalResult = result match {
+        case Failure(e: IllegalStateException) => ()
+        case _                                 => fail(s"Expected IllegalStateException: $result")
+      }
 
       expected match {
         case NoEffect =>

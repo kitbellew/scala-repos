@@ -42,11 +42,10 @@ class BaseGlobifier(
   def format(rd: RichDate) = rd.format(pattern)(tz)
 
   // Generate a lazy list of all children
-  final def children: Stream[BaseGlobifier] =
-    child match {
-      case Some(c) => Stream.cons(c, c.children)
-      case None    => Stream.empty
-    }
+  final def children: Stream[BaseGlobifier] = child match {
+    case Some(c) => Stream.cons(c, c.children)
+    case None    => Stream.empty
+  }
 
   final def asteriskChildren(rd: RichDate): String = {
     val childStarPattern = children.foldLeft(pattern) { (this_pat, child) =>

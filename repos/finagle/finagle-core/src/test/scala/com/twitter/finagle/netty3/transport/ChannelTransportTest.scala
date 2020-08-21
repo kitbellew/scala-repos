@@ -47,23 +47,21 @@ class ChannelTransportTest
     handler.handleUpstream(ctx, e)
   }
 
-  def sendUpstreamMessage[T <: Object](msg: T) =
-    sendUpstream({
-      val e = mock[MessageEvent]
-      when(e.getMessage).thenReturn(msg)
-      e
-    })
+  def sendUpstreamMessage[T <: Object](msg: T) = sendUpstream({
+    val e = mock[MessageEvent]
+    when(e.getMessage).thenReturn(msg)
+    e
+  })
 
-  def newProxyCtx() =
-    new {
-      val f = trans.write("one")
-      assert(!f.isDefined)
-      val captor = ArgumentCaptor.forClass(classOf[ChannelEvent])
-      verify(sink, times(1)).eventSunk(Matchers.eq(pipeline), captor.capture)
-      assert(captor.getValue.getClass == classOf[DownstreamMessageEvent])
-      val dsme = captor.getValue.asInstanceOf[DownstreamMessageEvent]
-      assert(dsme.getMessage == "one")
-    }
+  def newProxyCtx() = new {
+    val f = trans.write("one")
+    assert(!f.isDefined)
+    val captor = ArgumentCaptor.forClass(classOf[ChannelEvent])
+    verify(sink, times(1)).eventSunk(Matchers.eq(pipeline), captor.capture)
+    assert(captor.getValue.getClass == classOf[DownstreamMessageEvent])
+    val dsme = captor.getValue.asInstanceOf[DownstreamMessageEvent]
+    assert(dsme.getMessage == "one")
+  }
 
   test(
     "write to the underlying channel, proxying the underlying ChannelFuture (ok)") {

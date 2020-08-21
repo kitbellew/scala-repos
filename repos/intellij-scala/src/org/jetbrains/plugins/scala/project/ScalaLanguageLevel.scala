@@ -50,8 +50,8 @@ object ScalaLanguageLevel {
 
   private val ProxyToLevel = LevelToProxy.map(_.swap)
 
-  def from(proxy: ScalaLanguageLevelProxy): ScalaLanguageLevel =
-    ProxyToLevel(proxy)
+  def from(proxy: ScalaLanguageLevelProxy): ScalaLanguageLevel = ProxyToLevel(
+    proxy)
 
   def from(version: Version): Option[ScalaLanguageLevel] =
     ScalaLanguageLevel.Values.find(it => version.number.startsWith(it.version))

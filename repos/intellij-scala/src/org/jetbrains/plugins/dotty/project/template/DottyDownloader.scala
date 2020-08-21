@@ -23,18 +23,17 @@ object DottyDownloader extends Downloader {
     download(version, listener)
 
   private def collectDependencies(pomFileUrl: String): Seq[Dependency] = {
-    def toDependency(content: Content): Option[Dependency] =
-      content match {
-        case e: Element if e.getName == "dependency" =>
-          Try(
-            Dependency(
-              e.getChild("groupId").getText,
-              e.getChild("artifactId").getText,
-              e.getChild("version").getText,
-              Option(e.getChild("scope")).map(_.getText)
-            )).toOption
-        case _ => None
-      }
+    def toDependency(content: Content): Option[Dependency] = content match {
+      case e: Element if e.getName == "dependency" =>
+        Try(
+          Dependency(
+            e.getChild("groupId").getText,
+            e.getChild("artifactId").getText,
+            e.getChild("version").getText,
+            Option(e.getChild("scope")).map(_.getText)
+          )).toOption
+      case _ => None
+    }
     val element =
       Try(HttpConfigurable.getInstance().openHttpConnection(pomFileUrl)).map {
         connection =>
@@ -54,11 +53,10 @@ object DottyDownloader extends Downloader {
       .toVector
   }
 
-  override protected def sbtCommandsFor(version: String) =
-    Seq(
-      s"""set resolvers := Seq("JFrog OSS Snapshots" at "$RepositoryUrl")""",
-      s"""set libraryDependencies := Seq("$GroupId" % "$ArtifactId" % "$version")"""
-    ) ++ super.sbtCommandsFor(version)
+  override protected def sbtCommandsFor(version: String) = Seq(
+    s"""set resolvers := Seq("JFrog OSS Snapshots" at "$RepositoryUrl")""",
+    s"""set libraryDependencies := Seq("$GroupId" % "$ArtifactId" % "$version")"""
+  ) ++ super.sbtCommandsFor(version)
 }
 
 private case class Dependency(

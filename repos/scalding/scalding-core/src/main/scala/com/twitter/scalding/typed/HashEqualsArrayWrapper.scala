@@ -305,100 +305,91 @@ object HashEqualsArrayWrapper {
 final class HashEqualsLongArrayWrapper(override val wrapped: Array[Long])
     extends HashEqualsArrayWrapper[Long] {
   override def hashCode(): Int = util.Arrays.hashCode(wrapped)
-  override def equals(obj: scala.Any): Boolean =
-    obj match {
-      case other: HashEqualsLongArrayWrapper =>
-        util.Arrays.equals(wrapped, other.wrapped)
-      case _ => false
-    }
+  override def equals(obj: scala.Any): Boolean = obj match {
+    case other: HashEqualsLongArrayWrapper =>
+      util.Arrays.equals(wrapped, other.wrapped)
+    case _ => false
+  }
 }
 
 final class HashEqualsIntArrayWrapper(override val wrapped: Array[Int])
     extends HashEqualsArrayWrapper[Int] {
   override def hashCode(): Int = util.Arrays.hashCode(wrapped)
-  override def equals(obj: scala.Any): Boolean =
-    obj match {
-      case other: HashEqualsIntArrayWrapper =>
-        util.Arrays.equals(wrapped, other.wrapped)
-      case _ => false
-    }
+  override def equals(obj: scala.Any): Boolean = obj match {
+    case other: HashEqualsIntArrayWrapper =>
+      util.Arrays.equals(wrapped, other.wrapped)
+    case _ => false
+  }
 }
 
 final class HashEqualsShortArrayWrapper(override val wrapped: Array[Short])
     extends HashEqualsArrayWrapper[Short] {
   override def hashCode(): Int = util.Arrays.hashCode(wrapped)
-  override def equals(obj: scala.Any): Boolean =
-    obj match {
-      case other: HashEqualsShortArrayWrapper =>
-        util.Arrays.equals(wrapped, other.wrapped)
-      case _ => false
-    }
+  override def equals(obj: scala.Any): Boolean = obj match {
+    case other: HashEqualsShortArrayWrapper =>
+      util.Arrays.equals(wrapped, other.wrapped)
+    case _ => false
+  }
 }
 
 final class HashEqualsCharArrayWrapper(override val wrapped: Array[Char])
     extends HashEqualsArrayWrapper[Char] {
   override def hashCode(): Int = util.Arrays.hashCode(wrapped)
-  override def equals(obj: scala.Any): Boolean =
-    obj match {
-      case other: HashEqualsCharArrayWrapper =>
-        util.Arrays.equals(wrapped, other.wrapped)
-      case _ => false
-    }
+  override def equals(obj: scala.Any): Boolean = obj match {
+    case other: HashEqualsCharArrayWrapper =>
+      util.Arrays.equals(wrapped, other.wrapped)
+    case _ => false
+  }
 }
 
 final class HashEqualsByteArrayWrapper(override val wrapped: Array[Byte])
     extends HashEqualsArrayWrapper[Byte] {
   override def hashCode(): Int = util.Arrays.hashCode(wrapped)
-  override def equals(obj: scala.Any): Boolean =
-    obj match {
-      case other: HashEqualsByteArrayWrapper =>
-        util.Arrays.equals(wrapped, other.wrapped)
-      case _ => false
-    }
+  override def equals(obj: scala.Any): Boolean = obj match {
+    case other: HashEqualsByteArrayWrapper =>
+      util.Arrays.equals(wrapped, other.wrapped)
+    case _ => false
+  }
 }
 
 final class HashEqualsBooleanArrayWrapper(override val wrapped: Array[Boolean])
     extends HashEqualsArrayWrapper[Boolean] {
   override def hashCode(): Int = util.Arrays.hashCode(wrapped)
-  override def equals(obj: scala.Any): Boolean =
-    obj match {
-      case other: HashEqualsBooleanArrayWrapper =>
-        util.Arrays.equals(wrapped, other.wrapped)
-      case _ => false
-    }
+  override def equals(obj: scala.Any): Boolean = obj match {
+    case other: HashEqualsBooleanArrayWrapper =>
+      util.Arrays.equals(wrapped, other.wrapped)
+    case _ => false
+  }
 }
 
 final class HashEqualsFloatArrayWrapper(override val wrapped: Array[Float])
     extends HashEqualsArrayWrapper[Float] {
   override def hashCode(): Int = util.Arrays.hashCode(wrapped)
-  override def equals(obj: scala.Any): Boolean =
-    obj match {
-      case other: HashEqualsFloatArrayWrapper =>
-        util.Arrays.equals(wrapped, other.wrapped)
-      case _ => false
-    }
+  override def equals(obj: scala.Any): Boolean = obj match {
+    case other: HashEqualsFloatArrayWrapper =>
+      util.Arrays.equals(wrapped, other.wrapped)
+    case _ => false
+  }
 }
 
 final class HashEqualsDoubleArrayWrapper(override val wrapped: Array[Double])
     extends HashEqualsArrayWrapper[Double] {
   override def hashCode(): Int = util.Arrays.hashCode(wrapped)
 
-  override def equals(obj: scala.Any): Boolean =
-    obj match {
-      case other: HashEqualsDoubleArrayWrapper =>
-        util.Arrays.equals(wrapped, other.wrapped)
-      case _ => false
-    }
+  override def equals(obj: scala.Any): Boolean = obj match {
+    case other: HashEqualsDoubleArrayWrapper =>
+      util.Arrays.equals(wrapped, other.wrapped)
+    case _ => false
+  }
 }
 
 final class HashEqualsObjectArrayWrapper[T](override val wrapped: Array[T])
     extends HashEqualsArrayWrapper[T] {
   private val wrappedInternal = wrapped.toSeq
   override def hashCode(): Int = wrappedInternal.hashCode()
-  override def equals(obj: scala.Any): Boolean =
-    obj match {
-      case other: HashEqualsObjectArrayWrapper[T] =>
-        wrappedInternal.equals(other.wrappedInternal)
-      case _ => false
-    }
+  override def equals(obj: scala.Any): Boolean = obj match {
+    case other: HashEqualsObjectArrayWrapper[T] =>
+      wrappedInternal.equals(other.wrappedInternal)
+    case _ => false
+  }
 }

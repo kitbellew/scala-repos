@@ -116,11 +116,10 @@ trait Scanners extends ScannersCommon {
     private var openComments = 0
     protected def putCommentChar(): Unit = nextChar()
 
-    @tailrec private def skipLineComment(): Unit =
-      ch match {
-        case SU | CR | LF =>
-        case _            => nextChar(); skipLineComment()
-      }
+    @tailrec private def skipLineComment(): Unit = ch match {
+      case SU | CR | LF =>
+      case _            => nextChar(); skipLineComment()
+    }
     private def maybeOpen(): Unit = {
       putCommentChar()
       if (ch == '*') {
@@ -136,13 +135,12 @@ trait Scanners extends ScannersCommon {
         openComments == 0
       }
     }
-    @tailrec final def skipNestedComments(): Unit =
-      ch match {
-        case '/' => maybeOpen(); skipNestedComments()
-        case '*' => if (!maybeClose()) skipNestedComments()
-        case SU  => incompleteInputError("unclosed comment")
-        case _   => putCommentChar(); skipNestedComments()
-      }
+    @tailrec final def skipNestedComments(): Unit = ch match {
+      case '/' => maybeOpen(); skipNestedComments()
+      case '*' => if (!maybeClose()) skipNestedComments()
+      case SU  => incompleteInputError("unclosed comment")
+      case _   => putCommentChar(); skipNestedComments()
+    }
     def skipDocComment(): Unit = skipNestedComments()
     def skipBlockComment(): Unit = skipNestedComments()
 
@@ -165,11 +163,10 @@ trait Scanners extends ScannersCommon {
     /** @pre ch == '/'
       *  Returns true if a comment was skipped.
       */
-    def skipComment(): Boolean =
-      ch match {
-        case '/' | '*' => skipToCommentEnd(isLineComment = ch == '/'); true
-        case _         => false
-      }
+    def skipComment(): Boolean = ch match {
+      case '/' | '*' => skipToCommentEnd(isLineComment = ch == '/'); true
+      case _         => false
+    }
     def flushDoc(): DocComment = null
 
     /** To prevent doc comments attached to expressions from leaking out of scope
@@ -595,28 +592,26 @@ trait Scanners extends ScannersCommon {
     }
 
     /** Can token start a statement? */
-    def inFirstOfStat(token: Token) =
-      token match {
-        case EOF | CATCH | ELSE | EXTENDS | FINALLY | FORSOME | MATCH | WITH |
-            YIELD | COMMA | SEMI | NEWLINE | NEWLINES | DOT | COLON | EQUALS |
-            ARROW | LARROW | SUBTYPE | VIEWBOUND | SUPERTYPE | HASH | RPAREN |
-            RBRACKET | RBRACE | LBRACKET =>
-          false
-        case _ =>
-          true
-      }
+    def inFirstOfStat(token: Token) = token match {
+      case EOF | CATCH | ELSE | EXTENDS | FINALLY | FORSOME | MATCH | WITH |
+          YIELD | COMMA | SEMI | NEWLINE | NEWLINES | DOT | COLON | EQUALS |
+          ARROW | LARROW | SUBTYPE | VIEWBOUND | SUPERTYPE | HASH | RPAREN |
+          RBRACKET | RBRACE | LBRACKET =>
+        false
+      case _ =>
+        true
+    }
 
     /** Can token end a statement? */
-    def inLastOfStat(token: Token) =
-      token match {
-        case CHARLIT | INTLIT | LONGLIT | FLOATLIT | DOUBLELIT | STRINGLIT |
-            SYMBOLLIT | IDENTIFIER | BACKQUOTED_IDENT | THIS | NULL | TRUE |
-            FALSE | RETURN | USCORE | TYPE | XMLSTART | RPAREN | RBRACKET |
-            RBRACE =>
-          true
-        case _ =>
-          false
-      }
+    def inLastOfStat(token: Token) = token match {
+      case CHARLIT | INTLIT | LONGLIT | FLOATLIT | DOUBLELIT | STRINGLIT |
+          SYMBOLLIT | IDENTIFIER | BACKQUOTED_IDENT | THIS | NULL | TRUE |
+          FALSE | RETURN | USCORE | TYPE | XMLSTART | RPAREN | RBRACKET |
+          RBRACE =>
+        true
+      case _ =>
+        false
+    }
 
 // Identifiers ---------------------------------------------------------------
 
@@ -630,46 +625,44 @@ trait Scanners extends ScannersCommon {
       } else syntaxError("unclosed quoted identifier")
     }
 
-    private def getIdentRest(): Unit =
-      (ch: @switch) match {
-        case 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' |
-            'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' |
-            'W' | 'X' | 'Y' | 'Z' | '$' | 'a' | 'b' | 'c' | 'd' | 'e' | 'f' |
-            'g' | 'h' | 'i' | 'j' | 'k' | 'l' | 'm' | 'n' | 'o' | 'p' | 'q' |
-            'r' | 's' | 't' | 'u' | 'v' | 'w' | 'x' | 'y' | 'z' | '0' | '1' |
-            '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' =>
+    private def getIdentRest(): Unit = (ch: @switch) match {
+      case 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' |
+          'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' |
+          'W' | 'X' | 'Y' | 'Z' | '$' | 'a' | 'b' | 'c' | 'd' | 'e' | 'f' |
+          'g' | 'h' | 'i' | 'j' | 'k' | 'l' | 'm' | 'n' | 'o' | 'p' | 'q' |
+          'r' | 's' | 't' | 'u' | 'v' | 'w' | 'x' | 'y' | 'z' | '0' | '1' |
+          '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' =>
+        putChar(ch)
+        nextChar()
+        getIdentRest()
+      case '_' =>
+        putChar(ch)
+        nextChar()
+        getIdentOrOperatorRest()
+      case SU => // strangely enough, Character.isUnicodeIdentifierPart(SU) returns true!
+        finishNamed()
+      case _ =>
+        if (Character.isUnicodeIdentifierPart(ch)) {
           putChar(ch)
           nextChar()
           getIdentRest()
-        case '_' =>
-          putChar(ch)
-          nextChar()
-          getIdentOrOperatorRest()
-        case SU => // strangely enough, Character.isUnicodeIdentifierPart(SU) returns true!
+        } else {
           finishNamed()
-        case _ =>
-          if (Character.isUnicodeIdentifierPart(ch)) {
-            putChar(ch)
-            nextChar()
-            getIdentRest()
-          } else {
-            finishNamed()
-          }
-      }
+        }
+    }
 
-    private def getOperatorRest(): Unit =
-      (ch: @switch) match {
-        case '~' | '!' | '@' | '#' | '%' | '^' | '*' | '+' | '-' | '<' | '>' |
-            '?' | ':' | '=' | '&' | '|' | '\\' =>
-          putChar(ch); nextChar(); getOperatorRest()
-        case '/' =>
-          nextChar()
-          if (skipComment()) finishNamed()
-          else { putChar('/'); getOperatorRest() }
-        case _ =>
-          if (isSpecial(ch)) { putChar(ch); nextChar(); getOperatorRest() }
-          else finishNamed()
-      }
+    private def getOperatorRest(): Unit = (ch: @switch) match {
+      case '~' | '!' | '@' | '#' | '%' | '^' | '*' | '+' | '-' | '<' | '>' |
+          '?' | ':' | '=' | '&' | '|' | '\\' =>
+        putChar(ch); nextChar(); getOperatorRest()
+      case '/' =>
+        nextChar()
+        if (skipComment()) finishNamed()
+        else { putChar('/'); getOperatorRest() }
+      case _ =>
+        if (isSpecial(ch)) { putChar(ch); nextChar(); getOperatorRest() }
+        else finishNamed()
+    }
 
     private def getIdentOrOperatorRest(): Unit = {
       if (isIdentifierPart(ch))
@@ -696,8 +689,8 @@ trait Scanners extends ScannersCommon {
       } else unclosedStringLit()
     }
 
-    private def unclosedStringLit(): Unit =
-      syntaxError("unclosed string literal")
+    private def unclosedStringLit(): Unit = syntaxError(
+      "unclosed string literal")
 
     @tailrec private def getRawStringLit(): Unit = {
       if (ch == '\"') {
@@ -1056,37 +1049,36 @@ trait Scanners extends ScannersCommon {
       token = EOF
     }
 
-    override def toString() =
-      token match {
-        case IDENTIFIER | BACKQUOTED_IDENT =>
-          "id(" + name + ")"
-        case CHARLIT =>
-          "char(" + intVal + ")"
-        case INTLIT =>
-          "int(" + intVal + ")"
-        case LONGLIT =>
-          "long(" + intVal + ")"
-        case FLOATLIT =>
-          "float(" + floatVal + ")"
-        case DOUBLELIT =>
-          "double(" + floatVal + ")"
-        case STRINGLIT =>
-          "string(" + strVal + ")"
-        case STRINGPART =>
-          "stringpart(" + strVal + ")"
-        case INTERPOLATIONID =>
-          "interpolationid(" + name + ")"
-        case SEMI =>
-          ";"
-        case NEWLINE =>
-          ";"
-        case NEWLINES =>
-          ";;"
-        case COMMA =>
-          ","
-        case _ =>
-          token2string(token)
-      }
+    override def toString() = token match {
+      case IDENTIFIER | BACKQUOTED_IDENT =>
+        "id(" + name + ")"
+      case CHARLIT =>
+        "char(" + intVal + ")"
+      case INTLIT =>
+        "int(" + intVal + ")"
+      case LONGLIT =>
+        "long(" + intVal + ")"
+      case FLOATLIT =>
+        "float(" + floatVal + ")"
+      case DOUBLELIT =>
+        "double(" + floatVal + ")"
+      case STRINGLIT =>
+        "string(" + strVal + ")"
+      case STRINGPART =>
+        "stringpart(" + strVal + ")"
+      case INTERPOLATIONID =>
+        "interpolationid(" + name + ")"
+      case SEMI =>
+        ";"
+      case NEWLINE =>
+        ";"
+      case NEWLINES =>
+        ";;"
+      case COMMA =>
+        ","
+      case _ =>
+        token2string(token)
+    }
 
     // ------------- brace counting and healing ------------------------------
 
@@ -1179,37 +1171,36 @@ trait Scanners extends ScannersCommon {
 // Token representation ----------------------------------------------------
 
   /** Returns the string representation of given token. */
-  def token2string(token: Token): String =
-    (token: @switch) match {
-      case IDENTIFIER | BACKQUOTED_IDENT            => "identifier"
-      case CHARLIT                                  => "character literal"
-      case INTLIT                                   => "integer literal"
-      case LONGLIT                                  => "long literal"
-      case FLOATLIT                                 => "float literal"
-      case DOUBLELIT                                => "double literal"
-      case STRINGLIT | STRINGPART | INTERPOLATIONID => "string literal"
-      case SYMBOLLIT                                => "symbol literal"
-      case LPAREN                                   => "'('"
-      case RPAREN                                   => "')'"
-      case LBRACE                                   => "'{'"
-      case RBRACE                                   => "'}'"
-      case LBRACKET                                 => "'['"
-      case RBRACKET                                 => "']'"
-      case EOF                                      => "eof"
-      case ERROR                                    => "something"
-      case SEMI                                     => "';'"
-      case NEWLINE                                  => "';'"
-      case NEWLINES                                 => "';'"
-      case COMMA                                    => "','"
-      case CASECLASS                                => "case class"
-      case CASEOBJECT                               => "case object"
-      case XMLSTART                                 => "$XMLSTART$<"
-      case _ =>
-        (token2name get token) match {
-          case Some(name) => "'" + name + "'"
-          case _          => "'<" + token + ">'"
-        }
-    }
+  def token2string(token: Token): String = (token: @switch) match {
+    case IDENTIFIER | BACKQUOTED_IDENT            => "identifier"
+    case CHARLIT                                  => "character literal"
+    case INTLIT                                   => "integer literal"
+    case LONGLIT                                  => "long literal"
+    case FLOATLIT                                 => "float literal"
+    case DOUBLELIT                                => "double literal"
+    case STRINGLIT | STRINGPART | INTERPOLATIONID => "string literal"
+    case SYMBOLLIT                                => "symbol literal"
+    case LPAREN                                   => "'('"
+    case RPAREN                                   => "')'"
+    case LBRACE                                   => "'{'"
+    case RBRACE                                   => "'}'"
+    case LBRACKET                                 => "'['"
+    case RBRACKET                                 => "']'"
+    case EOF                                      => "eof"
+    case ERROR                                    => "something"
+    case SEMI                                     => "';'"
+    case NEWLINE                                  => "';'"
+    case NEWLINES                                 => "';'"
+    case COMMA                                    => "','"
+    case CASECLASS                                => "case class"
+    case CASEOBJECT                               => "case object"
+    case XMLSTART                                 => "$XMLSTART$<"
+    case _ =>
+      (token2name get token) match {
+        case Some(name) => "'" + name + "'"
+        case _          => "'<" + token + ">'"
+      }
+  }
 
   class MalformedInput(val offset: Offset, val msg: String) extends Exception
 
@@ -1424,57 +1415,53 @@ trait Scanners extends ScannersCommon {
 
     def insertPatch(
         patches: List[BracePatch],
-        patch: BracePatch): List[BracePatch] =
-      patches match {
-        case List() => List(patch)
-        case bp :: bps =>
-          if (patch.off < bp.off) patch :: patches
-          else bp :: insertPatch(bps, patch)
-      }
+        patch: BracePatch): List[BracePatch] = patches match {
+      case List() => List(patch)
+      case bp :: bps =>
+        if (patch.off < bp.off) patch :: patches
+        else bp :: insertPatch(bps, patch)
+    }
 
     def insertRBrace(): List[BracePatch] = {
-      def insert(bps: List[BracePair]): List[BracePatch] =
-        bps match {
-          case List() => patches
-          case (bp @ BracePair(loff, lindent, roff, rindent, nested)) :: bps1 =>
-            if (lindent <= rindent) insert(bps1)
-            else {
+      def insert(bps: List[BracePair]): List[BracePatch] = bps match {
+        case List() => patches
+        case (bp @ BracePair(loff, lindent, roff, rindent, nested)) :: bps1 =>
+          if (lindent <= rindent) insert(bps1)
+          else {
 //           println("patch inside "+bp+"/"+line(loff)+"/"+lineStart(line(loff))+"/"+lindent"/"+rindent)//DEBUG
-              val patches1 = insert(nested)
-              if (patches1 ne patches) patches1
-              else {
-                var lin = line(loff) + 1
-                while (lin < lineStart.length && column(
-                    lineStart(lin)) > lindent)
-                  lin += 1
-                if (lin < lineStart.length) {
-                  val patches1 = insertPatch(
-                    patches,
-                    BracePatch(lineStart(lin), inserted = true))
-                  //println("patch for "+bp+"/"+imbalanceMeasure+"/"+new ParensAnalyzer(unit, patches1).imbalanceMeasure)
-                  /*if (improves(patches1))*/
-                  patches1
-                  /*else insert(bps1)*/
-                  // (this test did not seem to work very well in practice)
-                } else patches
-              }
+            val patches1 = insert(nested)
+            if (patches1 ne patches) patches1
+            else {
+              var lin = line(loff) + 1
+              while (lin < lineStart.length && column(lineStart(lin)) > lindent)
+                lin += 1
+              if (lin < lineStart.length) {
+                val patches1 = insertPatch(
+                  patches,
+                  BracePatch(lineStart(lin), inserted = true))
+                //println("patch for "+bp+"/"+imbalanceMeasure+"/"+new ParensAnalyzer(unit, patches1).imbalanceMeasure)
+                /*if (improves(patches1))*/
+                patches1
+                /*else insert(bps1)*/
+                // (this test did not seem to work very well in practice)
+              } else patches
             }
-        }
+          }
+      }
       insert(bracePairs)
     }
 
     def deleteRBrace(): List[BracePatch] = {
-      def delete(bps: List[BracePair]): List[BracePatch] =
-        bps match {
-          case List() => patches
-          case BracePair(loff, lindent, roff, rindent, nested) :: bps1 =>
-            if (lindent >= rindent) delete(bps1)
-            else {
-              val patches1 = delete(nested)
-              if (patches1 ne patches) patches1
-              else insertPatch(patches, BracePatch(roff, inserted = false))
-            }
-        }
+      def delete(bps: List[BracePair]): List[BracePatch] = bps match {
+        case List() => patches
+        case BracePair(loff, lindent, roff, rindent, nested) :: bps1 =>
+          if (lindent >= rindent) delete(bps1)
+          else {
+            val patches1 = delete(nested)
+            if (patches1 ne patches) patches1
+            else insertPatch(patches, BracePatch(roff, inserted = false))
+          }
+      }
       delete(bracePairs)
     }
 

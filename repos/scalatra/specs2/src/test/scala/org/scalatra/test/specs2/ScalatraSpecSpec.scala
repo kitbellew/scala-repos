@@ -21,8 +21,7 @@ get / should
     },
     "/*")
 
-  def e1 =
-    get("/") {
-      body must_== "Hello, world."
-    }
+  def e1 = get("/") {
+    body must_== "Hello, world."
+  }
 }

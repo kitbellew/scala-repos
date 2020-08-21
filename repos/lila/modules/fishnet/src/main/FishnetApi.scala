@@ -41,32 +41,30 @@ final class FishnetApi(
     case failure => fuccess(failure)
   }
 
-  def acquire(client: Client): Fu[Option[JsonApi.Work]] =
-    (client.skill match {
-      case Skill.Move     => acquireMove(client)
-      case Skill.Analysis => acquireAnalysis(client)
-      case Skill.All      => acquireMove(client) orElse acquireAnalysis(client)
-    }).chronometer
-      .mon(_.fishnet.acquire time client.skill.key)
-      .logIfSlow(100, logger)(_ => s"acquire ${client.skill}")
-      .result
-      .withTimeout(1 second, AcquireTimeout)
-      .recover {
-        case e: FutureSequencer.Timeout =>
-          logger.warn(s"[${client.skill}] Fishnet.acquire ${e.getMessage}")
-          none
-        case AcquireTimeout =>
-          logger.warn(s"[${client.skill}] Fishnet.acquire timed out")
-          none
-      } >>- monitor.acquire(client)
+  def acquire(client: Client): Fu[Option[JsonApi.Work]] = (client.skill match {
+    case Skill.Move     => acquireMove(client)
+    case Skill.Analysis => acquireAnalysis(client)
+    case Skill.All      => acquireMove(client) orElse acquireAnalysis(client)
+  }).chronometer
+    .mon(_.fishnet.acquire time client.skill.key)
+    .logIfSlow(100, logger)(_ => s"acquire ${client.skill}")
+    .result
+    .withTimeout(1 second, AcquireTimeout)
+    .recover {
+      case e: FutureSequencer.Timeout =>
+        logger.warn(s"[${client.skill}] Fishnet.acquire ${e.getMessage}")
+        none
+      case AcquireTimeout =>
+        logger.warn(s"[${client.skill}] Fishnet.acquire timed out")
+        none
+    } >>- monitor.acquire(client)
 
-  private def acquireMove(client: Client): Fu[Option[JsonApi.Work]] =
-    fuccess {
-      moveDb.oldestNonAcquired.map(_ assignTo client) map { found =>
-        moveDb update found
-        JsonApi fromWork found
-      }
+  private def acquireMove(client: Client): Fu[Option[JsonApi.Work]] = fuccess {
+    moveDb.oldestNonAcquired.map(_ assignTo client) map { found =>
+      moveDb update found
+      JsonApi fromWork found
     }
+  }
 
   private def acquireAnalysis(client: Client): Fu[Option[JsonApi.Work]] =
     sequencer {
@@ -91,82 +89,78 @@ final class FishnetApi(
   def postMove(
       workId: Work.Id,
       client: Client,
-      data: JsonApi.Request.PostMove): Funit =
-    fuccess {
-      moveDb.get(workId).filter(_ isAcquiredBy client) match {
-        case None => monitor.notFound(Client.Skill.Move, client)
-        case Some(work) if work isAcquiredBy client =>
-          data.move.uci match {
-            case Some(uci) =>
-              moveDb delete work
-              monitor.move(work, client)
-              hub.actor.roundMap ! hubApi.map.Tell(
-                work.game.id,
-                hubApi.round.FishnetPlay(uci, work.currentFen))
-            case _ =>
-              moveDb updateOrGiveUp work.invalid
-              monitor.failure(work, client)
-          }
-        case Some(work) => monitor.notAcquired(work, client)
-      }
-    }.chronometer
-      .mon(_.fishnet.move.post)
-      .logIfSlow(100, logger)(_ => "post move")
-      .result
+      data: JsonApi.Request.PostMove): Funit = fuccess {
+    moveDb.get(workId).filter(_ isAcquiredBy client) match {
+      case None => monitor.notFound(Client.Skill.Move, client)
+      case Some(work) if work isAcquiredBy client =>
+        data.move.uci match {
+          case Some(uci) =>
+            moveDb delete work
+            monitor.move(work, client)
+            hub.actor.roundMap ! hubApi.map.Tell(
+              work.game.id,
+              hubApi.round.FishnetPlay(uci, work.currentFen))
+          case _ =>
+            moveDb updateOrGiveUp work.invalid
+            monitor.failure(work, client)
+        }
+      case Some(work) => monitor.notAcquired(work, client)
+    }
+  }.chronometer
+    .mon(_.fishnet.move.post)
+    .logIfSlow(100, logger)(_ => "post move")
+    .result
 
   def postAnalysis(
       workId: Work.Id,
       client: Client,
-      data: JsonApi.Request.PostAnalysis): Funit =
-    sequencer {
-      repo.getAnalysis(workId) flatMap {
-        case None =>
-          monitor.notFound(Client.Skill.Analysis, client)
-          fuccess(none)
-        case Some(work) if work isAcquiredBy client =>
-          AnalysisBuilder(client, work, data) flatMap { analysis =>
+      data: JsonApi.Request.PostAnalysis): Funit = sequencer {
+    repo.getAnalysis(workId) flatMap {
+      case None =>
+        monitor.notFound(Client.Skill.Analysis, client)
+        fuccess(none)
+      case Some(work) if work isAcquiredBy client =>
+        AnalysisBuilder(client, work, data) flatMap { analysis =>
+          monitor.analysis(work, client, data)
+          repo.deleteAnalysis(work) inject analysis.some
+        } recoverWith {
+          case e: AnalysisBuilder.GameIsGone =>
+            logger.warn(
+              s"Game ${work.game.id} was deleted by ${work.sender} before analysis completes")
             monitor.analysis(work, client, data)
-            repo.deleteAnalysis(work) inject analysis.some
-          } recoverWith {
-            case e: AnalysisBuilder.GameIsGone =>
-              logger.warn(
-                s"Game ${work.game.id} was deleted by ${work.sender} before analysis completes")
-              monitor.analysis(work, client, data)
-              repo.deleteAnalysis(work) inject none
-            case e: Exception =>
-              monitor.failure(work, client)
-              repo.updateOrGiveUpAnalysis(work.invalid) inject none
-          }
-        case Some(work) =>
-          monitor.notAcquired(work, client)
-          fuccess(none)
-      }
-    }.chronometer
-      .mon(_.fishnet.analysis.post)
-      .logIfSlow(200, logger) { res =>
-        s"post analysis for ${res.??(_.id)}"
-      }
-      .result
-      .flatMap { _ ?? saveAnalysis }
-
-  def abort(workId: Work.Id, client: Client): Funit =
-    sequencer {
-      repo.getAnalysis(workId).map(_.filter(_ isAcquiredBy client)) flatMap {
-        _ ?? { work =>
-          monitor.abort(work, client)
-          repo.updateAnalysis(work.abort)
+            repo.deleteAnalysis(work) inject none
+          case e: Exception =>
+            monitor.failure(work, client)
+            repo.updateOrGiveUpAnalysis(work.invalid) inject none
         }
+      case Some(work) =>
+        monitor.notAcquired(work, client)
+        fuccess(none)
+    }
+  }.chronometer
+    .mon(_.fishnet.analysis.post)
+    .logIfSlow(200, logger) { res =>
+      s"post analysis for ${res.??(_.id)}"
+    }
+    .result
+    .flatMap { _ ?? saveAnalysis }
+
+  def abort(workId: Work.Id, client: Client): Funit = sequencer {
+    repo.getAnalysis(workId).map(_.filter(_ isAcquiredBy client)) flatMap {
+      _ ?? { work =>
+        monitor.abort(work, client)
+        repo.updateAnalysis(work.abort)
       }
     }
+  }
 
-  def prioritaryAnalysisExists(gameId: String): Fu[Boolean] =
-    analysisColl
-      .count(
-        BSONDocument(
-          "game.id" -> gameId,
-          "sender.system" -> false
-        ).some)
-      .map(0 !=)
+  def prioritaryAnalysisExists(gameId: String): Fu[Boolean] = analysisColl
+    .count(
+      BSONDocument(
+        "game.id" -> gameId,
+        "sender.system" -> false
+      ).some)
+    .map(0 !=)
 
   private[fishnet] def createClient(
       userId: Client.UserId,

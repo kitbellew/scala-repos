@@ -92,8 +92,8 @@ trait RelationalProfile
       val q: Query[T, U, Seq] with TableQuery[T]) {
 
     /** Get the schema description (DDL) for this table. */
-    def schema: SchemaDescription =
-      buildTableSchemaDescription(q.shaped.value.asInstanceOf[Table[_]])
+    def schema: SchemaDescription = buildTableSchemaDescription(
+      q.shaped.value.asInstanceOf[Table[_]])
 
     /** Create a `Compiled` query which selects all rows where the specified
       * key matches the parameter value.
@@ -125,15 +125,14 @@ trait RelationalProfile
     def fastPath(fpf: (
         TypeMappingResultConverter[M, T, _] => SimpleFastPathResultConverter[
           M,
-          T])): MappedProjection[T, P] =
-      mp.genericFastPath {
-        case tm @ TypeMappingResultConverter(
-              _: ProductResultConverter[_, _],
-              _,
-              _) =>
-          fpf(tm.asInstanceOf[TypeMappingResultConverter[M, T, _]])
-        case tm => tm
-      }
+          T])): MappedProjection[T, P] = mp.genericFastPath {
+      case tm @ TypeMappingResultConverter(
+            _: ProductResultConverter[_, _],
+            _,
+            _) =>
+        fpf(tm.asInstanceOf[TypeMappingResultConverter[M, T, _]])
+      case tm => tm
+    }
   }
 }
 
@@ -207,11 +206,10 @@ trait RelationalTableComponent { self: RelationalProfile =>
               case _         => tableNode
             }),
             FieldSymbol(n)(options, tt)) :@ tt
-        override def toString =
-          (tableTag match {
-            case r: RefTag => "(" + _tableName + " " + r.path + ")"
-            case _         => _tableName
-          }) + "." + n
+        override def toString = (tableTag match {
+          case r: RefTag => "(" + _tableName + " " + r.path + ")"
+          case _         => _tableName
+        }) + "." + n
       }
     }
   }

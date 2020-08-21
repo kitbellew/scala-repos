@@ -100,12 +100,11 @@ private[changeSignature] trait MethodUsageInfo {
   def expr: ScExpression
   def argsInfo: OldArgsInfo
   def ref: ScReferenceElement
-  def method: PsiNamedElement =
-    ref.resolve() match {
-      case e: PsiNamedElement => e
-      case _ =>
-        throw new IllegalArgumentException("Found reference does not resolve")
-    }
+  def method: PsiNamedElement = ref.resolve() match {
+    case e: PsiNamedElement => e
+    case _ =>
+      throw new IllegalArgumentException("Found reference does not resolve")
+  }
 }
 
 private[changeSignature] case class MethodCallUsageInfo(
@@ -214,13 +213,12 @@ private[changeSignature] case class InfixPatternUsageInfo(
 
 private[changeSignature] object UsageUtil {
 
-  def scalaUsage(usage: UsageInfo): Boolean =
-    usage match {
-      case ScalaNamedElementUsageInfo(_) | _: ParameterUsageInfo |
-          _: MethodUsageInfo | _: AnonFunUsageInfo | _: ImportUsageInfo =>
-        true
-      case _ => false
-    }
+  def scalaUsage(usage: UsageInfo): Boolean = usage match {
+    case ScalaNamedElementUsageInfo(_) | _: ParameterUsageInfo |
+        _: MethodUsageInfo | _: AnonFunUsageInfo | _: ImportUsageInfo =>
+      true
+    case _ => false
+  }
 
   def substitutor(usage: ScalaNamedElementUsageInfo): ScSubstitutor =
     usage match {

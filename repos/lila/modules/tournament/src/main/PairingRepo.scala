@@ -149,34 +149,31 @@ object PairingRepo {
       .cursor[Pairing]()
       .collect[List]()
 
-  def insert(pairing: Pairing) =
-    coll.insert {
-      pairingHandler.write(pairing) ++ BSONDocument("d" -> DateTime.now)
-    }.void
+  def insert(pairing: Pairing) = coll.insert {
+    pairingHandler.write(pairing) ++ BSONDocument("d" -> DateTime.now)
+  }.void
 
-  def finish(g: lila.game.Game) =
+  def finish(g: lila.game.Game) = coll
+    .update(
+      selectId(g.id),
+      BSONDocument(
+        "$set" -> BSONDocument(
+          "s" -> g.status.id,
+          "w" -> g.winnerColor.map(_.white),
+          "t" -> g.turns)))
+    .void
+
+  def setBerserk(pairing: Pairing, userId: String, value: Int) = (userId match {
+    case uid if pairing.user1 == uid => "b1".some
+    case uid if pairing.user2 == uid => "b2".some
+    case _                           => none
+  }) ?? { field =>
     coll
       .update(
-        selectId(g.id),
-        BSONDocument(
-          "$set" -> BSONDocument(
-            "s" -> g.status.id,
-            "w" -> g.winnerColor.map(_.white),
-            "t" -> g.turns)))
+        selectId(pairing.id),
+        BSONDocument("$set" -> BSONDocument(field -> value)))
       .void
-
-  def setBerserk(pairing: Pairing, userId: String, value: Int) =
-    (userId match {
-      case uid if pairing.user1 == uid => "b1".some
-      case uid if pairing.user2 == uid => "b2".some
-      case _                           => none
-    }) ?? { field =>
-      coll
-        .update(
-          selectId(pairing.id),
-          BSONDocument("$set" -> BSONDocument(field -> value)))
-        .void
-    }
+  }
 
   import reactivemongo.api.collections.bson.BSONBatchCommands.AggregationFramework,
   AggregationFramework.{AddToSet, Group, Match, Project, Push, Unwind}

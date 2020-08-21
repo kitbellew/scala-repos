@@ -18,13 +18,13 @@ object JavaArrayOps {
 
   def dmCToArray2(data: DenseMatrix[Complex]): Array[Array[Complex]] =
     dmToArray2(data)
-  def dmDToArray2(data: DenseMatrix[Double]): Array[Array[Double]] =
-    dmToArray2(data)
-  def dmFToArray2(data: DenseMatrix[Float]): Array[Array[Float]] =
-    dmToArray2(data)
+  def dmDToArray2(data: DenseMatrix[Double]): Array[Array[Double]] = dmToArray2(
+    data)
+  def dmFToArray2(data: DenseMatrix[Float]): Array[Array[Float]] = dmToArray2(
+    data)
   def dmIToArray2(data: DenseMatrix[Int]): Array[Array[Int]] = dmToArray2(data)
-  def dmLToArray2(data: DenseMatrix[Long]): Array[Array[Long]] =
-    dmToArray2(data)
+  def dmLToArray2(data: DenseMatrix[Long]): Array[Array[Long]] = dmToArray2(
+    data)
 
   def arrayCToDv(array: Array[Complex]): DenseVector[Complex] = arrayToDv(array)
   def arrayDToDv(array: Array[Double]): DenseVector[Double] = arrayToDv(array)
@@ -36,12 +36,12 @@ object JavaArrayOps {
     array2ToDm(array)
   def array2DToDm(array: Array[Array[Double]]): DenseMatrix[Double] =
     array2ToDm(array)
-  def array2FToDm(array: Array[Array[Float]]): DenseMatrix[Float] =
-    array2ToDm(array)
-  def array2IToDm(array: Array[Array[Int]]): DenseMatrix[Int] =
-    array2ToDm(array)
-  def array2LToDm(array: Array[Array[Long]]): DenseMatrix[Long] =
-    array2ToDm(array)
+  def array2FToDm(array: Array[Array[Float]]): DenseMatrix[Float] = array2ToDm(
+    array)
+  def array2IToDm(array: Array[Array[Int]]): DenseMatrix[Int] = array2ToDm(
+    array)
+  def array2LToDm(array: Array[Array[Long]]): DenseMatrix[Long] = array2ToDm(
+    array)
 
   // <editor-fold defaultstate="collapsed" desc=" implementations ">
 

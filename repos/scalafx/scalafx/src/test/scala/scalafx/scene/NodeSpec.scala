@@ -43,8 +43,8 @@ class NodeSpec
       classOf[jfxs.Node],
       classOf[Node]) {
 
-  override protected def getScalaClassInstance =
-    new Node(getJavaClassInstance) {}
+  override protected def getScalaClassInstance = new Node(
+    getJavaClassInstance) {}
 
   override protected def getJavaClassInstance = new jfxs.Group
 

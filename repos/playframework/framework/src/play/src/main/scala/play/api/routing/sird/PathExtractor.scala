@@ -26,8 +26,8 @@ import scala.util.matching.Regex
   */
 class PathExtractor(regex: Regex, partDescriptors: Seq[PathPart.Value]) {
   def unapplySeq(path: String): Option[List[String]] = extract(path)
-  def unapplySeq(request: RequestHeader): Option[List[String]] =
-    extract(request.path)
+  def unapplySeq(request: RequestHeader): Option[List[String]] = extract(
+    request.path)
   def unapplySeq(url: URL): Option[List[String]] =
     Option(url.getPath).flatMap(extract)
   def unapplySeq(uri: URI): Option[List[String]] =

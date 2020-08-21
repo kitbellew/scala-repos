@@ -38,17 +38,15 @@ trait Lens[S, A] extends LPLens[S, A] { outer =>
   def set(s: S)(a: A): S
   def modify(s: S)(f: A => A): S = set(s)(f(get(s)))
 
-  def compose[T](g: Lens[T, S]) =
-    new Lens[T, A] {
-      def get(t: T): A = outer.get(g.get(t))
-      def set(t: T)(a: A): T = g.modify(t)(outer.set(_)(a))
-    }
+  def compose[T](g: Lens[T, S]) = new Lens[T, A] {
+    def get(t: T): A = outer.get(g.get(t))
+    def set(t: T)(a: A): T = g.modify(t)(outer.set(_)(a))
+  }
 
-  def compose[T](g: Prism[T, S]) =
-    new Prism[T, A] {
-      def get(t: T): Option[A] = g.get(t).map(outer.get)
-      def set(t: T)(a: A): T = g.modify(t)(outer.set(_)(a))
-    }
+  def compose[T](g: Prism[T, S]) = new Prism[T, A] {
+    def get(t: T): Option[A] = g.get(t).map(outer.get)
+    def set(t: T)(a: A): T = g.modify(t)(outer.set(_)(a))
+  }
 
   def >>(n: Nat)(implicit
       mkLens: MkNthFieldLens[A, n.N]): Lens[S, mkLens.Elem] =
@@ -66,17 +64,15 @@ trait Lens[S, A] extends LPLens[S, A] { outer =>
 
   def unapply(s: S): Option[A] = Some(get(s))
 
-  def ~[B](other: Lens[S, B]) =
-    new ProductLensBuilder[S, (A, B)] {
-      def get(s: S): (A, B) = (outer.get(s), other.get(s))
-      def set(s: S)(ab: (A, B)) = other.set(outer.set(s)(ab._1))(ab._2)
-    }
+  def ~[B](other: Lens[S, B]) = new ProductLensBuilder[S, (A, B)] {
+    def get(s: S): (A, B) = (outer.get(s), other.get(s))
+    def set(s: S)(ab: (A, B)) = other.set(outer.set(s)(ab._1))(ab._2)
+  }
 
-  def ~[B](other: Prism[S, B]) =
-    new ProductPrismBuilder[S, (A, B)] {
-      def get(s: S): Option[(A, B)] = other.get(s).map((outer.get(s), _))
-      def set(s: S)(ab: (A, B)) = other.set(outer.set(s)(ab._1))(ab._2)
-    }
+  def ~[B](other: Prism[S, B]) = new ProductPrismBuilder[S, (A, B)] {
+    def get(s: S): Option[(A, B)] = other.get(s).map((outer.get(s), _))
+    def set(s: S)(ab: (A, B)) = other.set(outer.set(s)(ab._1))(ab._2)
+  }
 }
 
 trait LPLens[S, A] extends Dynamic with Serializable { self: Lens[S, A] =>
@@ -91,17 +87,15 @@ trait Prism[S, A] extends LPPrism[S, A] { outer =>
   def modify(s: S)(f: A => A): S =
     get(s).map(f).map(a => set(s)(a)).getOrElse(s)
 
-  def compose[T](g: Lens[T, S]) =
-    new Prism[T, A] {
-      def get(t: T): Option[A] = outer.get(g.get(t))
-      def set(t: T)(a: A): T = g.modify(t)(outer.set(_)(a))
-    }
+  def compose[T](g: Lens[T, S]) = new Prism[T, A] {
+    def get(t: T): Option[A] = outer.get(g.get(t))
+    def set(t: T)(a: A): T = g.modify(t)(outer.set(_)(a))
+  }
 
-  def compose[T](g: Prism[T, S]) =
-    new Prism[T, A] {
-      def get(t: T): Option[A] = g.get(t).flatMap(outer.get)
-      def set(t: T)(a: A): T = g.modify(t)(outer.set(_)(a))
-    }
+  def compose[T](g: Prism[T, S]) = new Prism[T, A] {
+    def get(t: T): Option[A] = g.get(t).flatMap(outer.get)
+    def set(t: T)(a: A): T = g.modify(t)(outer.set(_)(a))
+  }
 
   def selectDynamic(k: String)(implicit
       mkPrism: MkSelectDynamicOptic[Prism[S, A], A, Symbol @@ k.type, Nothing])
@@ -112,23 +106,21 @@ trait Prism[S, A] extends LPPrism[S, A] { outer =>
 
   def unapply(s: S): Option[A] = get(s)
 
-  def ~[B](other: Lens[S, B]) =
-    new ProductPrismBuilder[S, (A, B)] {
-      def get(s: S): Option[(A, B)] = outer.get(s).map((_, other.get(s)))
+  def ~[B](other: Lens[S, B]) = new ProductPrismBuilder[S, (A, B)] {
+    def get(s: S): Option[(A, B)] = outer.get(s).map((_, other.get(s)))
 
-      def set(s: S)(ab: (A, B)) = other.set(outer.set(s)(ab._1))(ab._2)
-    }
+    def set(s: S)(ab: (A, B)) = other.set(outer.set(s)(ab._1))(ab._2)
+  }
 
-  def ~[B](other: Prism[S, B]) =
-    new ProductPrismBuilder[S, (A, B)] {
-      def get(s: S): Option[(A, B)] =
-        for {
-          fst <- outer.get(s)
-          snd <- other.get(s)
-        } yield (fst, snd)
+  def ~[B](other: Prism[S, B]) = new ProductPrismBuilder[S, (A, B)] {
+    def get(s: S): Option[(A, B)] =
+      for {
+        fst <- outer.get(s)
+        snd <- other.get(s)
+      } yield (fst, snd)
 
-      def set(s: S)(ab: (A, B)) = other.set(outer.set(s)(ab._1))(ab._2)
-    }
+    def set(s: S)(ab: (A, B)) = other.set(outer.set(s)(ab._1))(ab._2)
+  }
 }
 
 trait LPPrism[S, A] extends Dynamic with Serializable { self: Prism[S, A] =>
@@ -208,11 +200,10 @@ object OpticDefns {
   def mapLens[K, V](k: K) =
     new Lens[Map[K, V], Option[V]] {
       def get(m: Map[K, V]): Option[V] = m get k
-      def set(m: Map[K, V])(ov: Option[V]): Map[K, V] =
-        ov match {
-          case Some(v) => m + (k -> v)
-          case None    => m - k
-        }
+      def set(m: Map[K, V])(ov: Option[V]): Map[K, V] = ov match {
+        case Some(v) => m + (k -> v)
+        case None    => m - k
+      }
     }
 
   def mapPrism[K, V](k: K) =

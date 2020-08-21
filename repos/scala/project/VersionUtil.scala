@@ -49,12 +49,11 @@ object VersionUtil {
     override def toString =
       s"Canonical: $canonicalVersion, Maven: $mavenVersion, OSGi: $osgiVersion, github: $githubTree"
 
-    def toMap: Map[String, String] =
-      Map(
-        "version.number" -> canonicalVersion,
-        "maven.version.number" -> mavenVersion,
-        "osgi.version.number" -> osgiVersion
-      )
+    def toMap: Map[String, String] = Map(
+      "version.number" -> canonicalVersion,
+      "maven.version.number" -> mavenVersion,
+      "osgi.version.number" -> osgiVersion
+    )
   }
 
   /** Compute the canonical, Maven and OSGi version number from `baseVersion` and `baseVersionSuffix`.

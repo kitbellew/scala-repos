@@ -313,8 +313,8 @@ abstract class Message extends HttpMessageProxy {
   def userAgent_=(value: String) { headers.set(Fields.UserAgent, value) }
 
   /** Get WWW-Authenticate header */
-  def wwwAuthenticate: Option[String] =
-    Option(headers.get(Fields.WwwAuthenticate))
+  def wwwAuthenticate: Option[String] = Option(
+    headers.get(Fields.WwwAuthenticate))
 
   /** Set WWW-Authenticate header */
   def wwwAuthenticate_=(value: String) {

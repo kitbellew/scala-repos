@@ -52,12 +52,10 @@ object TestActor {
   }
   final case class RealMessage(msg: AnyRef, sender: ActorRef) extends Message
   case object NullMessage extends Message {
-    override def msg: AnyRef =
-      throw new IllegalActorStateException(
-        "last receive did not dequeue a message")
-    override def sender: ActorRef =
-      throw new IllegalActorStateException(
-        "last receive did not dequeue a message")
+    override def msg: AnyRef = throw new IllegalActorStateException(
+      "last receive did not dequeue a message")
+    override def sender: ActorRef = throw new IllegalActorStateException(
+      "last receive did not dequeue a message")
   }
 
   val FALSE = (x: Any) ⇒ false
@@ -206,41 +204,38 @@ trait TestKitBase {
     * block or missing that it returns the properly dilated default for this
     * case from settings (key "akka.test.single-expect-default").
     */
-  def remainingOrDefault =
-    remainingOr(testKitSettings.SingleExpectDefaultTimeout.dilated)
+  def remainingOrDefault = remainingOr(
+    testKitSettings.SingleExpectDefaultTimeout.dilated)
 
   /**
     * Obtain time remaining for execution of the innermost enclosing `within`
     * block or throw an [[AssertionError]] if no `within` block surrounds this
     * call.
     */
-  def remaining: FiniteDuration =
-    end match {
-      case f: FiniteDuration ⇒ f - now
-      case _ ⇒
-        throw new AssertionError(
-          "`remaining` may not be called outside of `within`")
-    }
+  def remaining: FiniteDuration = end match {
+    case f: FiniteDuration ⇒ f - now
+    case _ ⇒
+      throw new AssertionError(
+        "`remaining` may not be called outside of `within`")
+  }
 
   /**
     * Obtain time remaining for execution of the innermost enclosing `within`
     * block or missing that it returns the given duration.
     */
-  def remainingOr(duration: FiniteDuration): FiniteDuration =
-    end match {
-      case x if x eq Duration.Undefined ⇒ duration
-      case x if !x.isFinite ⇒
-        throw new IllegalArgumentException("`end` cannot be infinite")
-      case f: FiniteDuration ⇒ f - now
-    }
+  def remainingOr(duration: FiniteDuration): FiniteDuration = end match {
+    case x if x eq Duration.Undefined ⇒ duration
+    case x if !x.isFinite ⇒
+      throw new IllegalArgumentException("`end` cannot be infinite")
+    case f: FiniteDuration ⇒ f - now
+  }
 
-  private def remainingOrDilated(max: Duration): FiniteDuration =
-    max match {
-      case x if x eq Duration.Undefined ⇒ remainingOrDefault
-      case x if !x.isFinite ⇒
-        throw new IllegalArgumentException("max duration cannot be infinite")
-      case f: FiniteDuration ⇒ f.dilated
-    }
+  private def remainingOrDilated(max: Duration): FiniteDuration = max match {
+    case x if x eq Duration.Undefined ⇒ remainingOrDefault
+    case x if !x.isFinite ⇒
+      throw new IllegalArgumentException("max duration cannot be infinite")
+    case f: FiniteDuration ⇒ f.dilated
+  }
 
   /**
     * Query queue status.
@@ -462,10 +457,9 @@ trait TestKitBase {
   /**
     * Same as `expectMsgType[T](remainingOrDefault)`, but correctly treating the timeFactor.
     */
-  def expectMsgType[T](implicit t: ClassTag[T]): T =
-    expectMsgClass_internal(
-      remainingOrDefault,
-      t.runtimeClass.asInstanceOf[Class[T]])
+  def expectMsgType[T](implicit t: ClassTag[T]): T = expectMsgClass_internal(
+    remainingOrDefault,
+    t.runtimeClass.asInstanceOf[Class[T]])
 
   /**
     * Receive one message from the test actor and assert that it conforms to the
@@ -996,8 +990,7 @@ private[testkit] abstract class CachingPartialFunction[A, B <: AnyRef]
   def `match`(x: A): B
 
   var cache: B = _
-  final def isDefinedAt(x: A): Boolean =
-    try { cache = `match`(x); true }
-    catch { case NoMatch ⇒ cache = null.asInstanceOf[B]; false }
+  final def isDefinedAt(x: A): Boolean = try { cache = `match`(x); true }
+  catch { case NoMatch ⇒ cache = null.asInstanceOf[B]; false }
   final override def apply(x: A): B = cache
 }

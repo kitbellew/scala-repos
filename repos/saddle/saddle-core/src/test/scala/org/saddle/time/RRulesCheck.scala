@@ -25,26 +25,25 @@ import org.scalacheck.Prop._
 class RRulesCheck extends Specification with ScalaCheck {
   import RRules._
 
-  private def genDate: Gen[DateTime] =
-    for {
-      year <- Gen.choose(1990, 2020)
-      offset <- Gen.choose(-366, 366)
-    } yield new DateTime(year, 1, 1, 0, 0, 0, 0).plusDays(offset)
+  private def genDate: Gen[DateTime] = for {
+    year <- Gen.choose(1990, 2020)
+    offset <- Gen.choose(-366, 366)
+  } yield new DateTime(year, 1, 1, 0, 0, 0, 0).plusDays(offset)
 
-  private def toWeekday(i: Int) =
-    i match {
-      case 1 => MO // ISO standard; joda conforms
-      case 2 => TU
-      case 3 => WE
-      case 4 => TH
-      case 5 => FR
-      case 6 => SA
-      case 7 => SU
-      case _ => throw new IllegalArgumentException("Bad weekday %d" format i)
-    }
+  private def toWeekday(i: Int) = i match {
+    case 1 => MO // ISO standard; joda conforms
+    case 2 => TU
+    case 3 => WE
+    case 4 => TH
+    case 5 => FR
+    case 6 => SA
+    case 7 => SU
+    case _ => throw new IllegalArgumentException("Bad weekday %d" format i)
+  }
 
-  private def genWeekday: Gen[Weekday] =
-    for { i <- Gen.choose(1, 7) } yield toWeekday(i)
+  private def genWeekday: Gen[Weekday] = for {
+    i <- Gen.choose(1, 7)
+  } yield toWeekday(i)
 
   private def isNotWeekend(dt: DateTime) = {
     dt.dayOfWeek().get() must_!= DateTimeConstants.SUNDAY

@@ -38,22 +38,20 @@ class MessageSerializer(val system: ExtendedActorSystem)
 
   private val MetricsGossipEnvelopeManifest = "a"
 
-  override def manifest(obj: AnyRef): String =
-    obj match {
-      case _: MetricsGossipEnvelope ⇒ MetricsGossipEnvelopeManifest
-      case _ ⇒
-        throw new IllegalArgumentException(
-          s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
-    }
+  override def manifest(obj: AnyRef): String = obj match {
+    case _: MetricsGossipEnvelope ⇒ MetricsGossipEnvelopeManifest
+    case _ ⇒
+      throw new IllegalArgumentException(
+        s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
+  }
 
-  override def toBinary(obj: AnyRef): Array[Byte] =
-    obj match {
-      case m: MetricsGossipEnvelope ⇒
-        compress(metricsGossipEnvelopeToProto(m))
-      case _ ⇒
-        throw new IllegalArgumentException(
-          s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
-    }
+  override def toBinary(obj: AnyRef): Array[Byte] = obj match {
+    case m: MetricsGossipEnvelope ⇒
+      compress(metricsGossipEnvelopeToProto(m))
+    case _ ⇒
+      throw new IllegalArgumentException(
+        s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
+  }
 
   def compress(msg: MessageLite): Array[Byte] = {
     val bos = new ByteArrayOutputStream(BufferSize)
@@ -68,13 +66,12 @@ class MessageSerializer(val system: ExtendedActorSystem)
     val out = new ByteArrayOutputStream()
     val buffer = new Array[Byte](BufferSize)
 
-    @tailrec def readChunk(): Unit =
-      in.read(buffer) match {
-        case -1 ⇒ ()
-        case n ⇒
-          out.write(buffer, 0, n)
-          readChunk()
-      }
+    @tailrec def readChunk(): Unit = in.read(buffer) match {
+      case -1 ⇒ ()
+      case n ⇒
+        out.write(buffer, 0, n)
+        readChunk()
+    }
 
     try readChunk()
     finally in.close()
@@ -139,13 +136,12 @@ class MessageSerializer(val system: ExtendedActorSystem)
   private def mapWithErrorMessage[T](
       map: Map[T, Int],
       value: T,
-      unknown: String): Int =
-    map.get(value) match {
-      case Some(x) ⇒ x
-      case _ ⇒
-        throw new IllegalArgumentException(
-          s"Unknown $unknown [$value] in cluster message")
-    }
+      unknown: String): Int = map.get(value) match {
+    case Some(x) ⇒ x
+    case _ ⇒
+      throw new IllegalArgumentException(
+        s"Unknown $unknown [$value] in cluster message")
+  }
 
   private def metricsGossipEnvelopeToProto(
       envelope: MetricsGossipEnvelope): cm.MetricsGossipEnvelope = {

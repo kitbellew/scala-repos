@@ -62,16 +62,15 @@ case class GroupUpdate(
       versionInfo = AppDefinition.VersionInfo.OnlyVersion(version))
   }
 
-  def toGroup(gid: PathId, version: Timestamp): Group =
-    Group(
-      gid,
-      apps.getOrElse(Set.empty).map(toApp(gid, _, version)),
-      groups
-        .getOrElse(Set.empty)
-        .map(sub => sub.toGroup(sub.groupId.canonicalPath(gid), version)),
-      dependencies.fold(Set.empty[PathId])(_.map(_.canonicalPath(gid))),
-      version
-    )
+  def toGroup(gid: PathId, version: Timestamp): Group = Group(
+    gid,
+    apps.getOrElse(Set.empty).map(toApp(gid, _, version)),
+    groups
+      .getOrElse(Set.empty)
+      .map(sub => sub.toGroup(sub.groupId.canonicalPath(gid), version)),
+    dependencies.fold(Set.empty[PathId])(_.map(_.canonicalPath(gid))),
+    version
+  )
 }
 
 object GroupUpdate {

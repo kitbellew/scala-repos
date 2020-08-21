@@ -109,25 +109,24 @@ class CodeWriter(writer: Writer) {
 
   def print(value: Double): CodeWriter = print(String.valueOf(value))
 
-  def print(value: String): CodeWriter =
-    try {
-      if (align) {
-        var i = 0
-        while (i < level) {
-          writer.write(step)
-          i += 1
-        }
+  def print(value: String): CodeWriter = try {
+    if (align) {
+      var i = 0
+      while (i < level) {
+        writer.write(step)
+        i += 1
       }
-      if (space)
-        writer.write(" ")
-      writer.write(value)
-      align = false
-      space = false
-      line = false
-      this
-    } catch {
-      case e: Throwable => sys.error("IO error")
     }
+    if (space)
+      writer.write(" ")
+    writer.write(value)
+    align = false
+    space = false
+    line = false
+    this
+  } catch {
+    case e: Throwable => sys.error("IO error")
+  }
 
   override def toString(): String = writer.toString()
 }

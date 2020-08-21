@@ -8,22 +8,21 @@ import com.intellij.codeInsight.unwrap.UnwrapDescriptorBase
   * 2014-06-26
   */
 class ScalaUnwrapDescriptor extends UnwrapDescriptorBase {
-  override def createUnwrappers() =
-    Array(
-      new ScalaInfixUnwrapper,
-      new ScalaMethodCallArgUnwrapper,
-      new ScalaTupleUnwrapper,
-      new ScalaWhileUnwrapper,
-      new ScalaMatchUnwrapper,
-      new ScalaCaseClauseRemover,
-      new ScalaTryOrFinallyUnwrapper,
-      new ScalaTryWithFinallyUnwrapper,
-      new ScalaCatchOrFinallyRemover,
-      new ScalaForStmtUnwrapper,
-      new ScalaIfUnwrapper,
-      new ScalaElseUnwrapper,
-      new ScalaElseRemover,
-      new ScalaBracesUnwrapper,
-      new ScalaInterpolatedStringUnwrapper
-    )
+  override def createUnwrappers() = Array(
+    new ScalaInfixUnwrapper,
+    new ScalaMethodCallArgUnwrapper,
+    new ScalaTupleUnwrapper,
+    new ScalaWhileUnwrapper,
+    new ScalaMatchUnwrapper,
+    new ScalaCaseClauseRemover,
+    new ScalaTryOrFinallyUnwrapper,
+    new ScalaTryWithFinallyUnwrapper,
+    new ScalaCatchOrFinallyRemover,
+    new ScalaForStmtUnwrapper,
+    new ScalaIfUnwrapper,
+    new ScalaElseUnwrapper,
+    new ScalaElseRemover,
+    new ScalaBracesUnwrapper,
+    new ScalaInterpolatedStringUnwrapper
+  )
 }

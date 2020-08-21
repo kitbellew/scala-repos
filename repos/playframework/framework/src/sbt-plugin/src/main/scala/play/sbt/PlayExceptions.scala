@@ -37,10 +37,9 @@ object PlayExceptions {
         filterAnnoyingErrorMessages(problem.message)) {
     def line =
       problem.position.line.map(m => m.asInstanceOf[java.lang.Integer]).orNull
-    def position =
-      problem.position.pointer
-        .map(m => m.asInstanceOf[java.lang.Integer])
-        .orNull
+    def position = problem.position.pointer
+      .map(m => m.asInstanceOf[java.lang.Integer])
+      .orNull
     def input = problem.position.sourceFile.map(IO.read(_)).orNull
     def sourceName = problem.position.sourceFile.map(_.getAbsolutePath).orNull
   }

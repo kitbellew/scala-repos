@@ -193,15 +193,14 @@ class LiftServlet extends Loggable {
     }
   }
 
-  private def flatten(in: List[Any]): List[Any] =
-    in match {
-      case Nil                      => Nil
-      case Some(x: AnyRef) :: xs    => x :: flatten(xs)
-      case Full(x: AnyRef) :: xs    => x :: flatten(xs)
-      case (lst: Iterable[_]) :: xs => lst.toList ::: flatten(xs)
-      case (x: AnyRef) :: xs        => x :: flatten(xs)
-      case x :: xs                  => flatten(xs)
-    }
+  private def flatten(in: List[Any]): List[Any] = in match {
+    case Nil                      => Nil
+    case Some(x: AnyRef) :: xs    => x :: flatten(xs)
+    case Full(x: AnyRef) :: xs    => x :: flatten(xs)
+    case (lst: Iterable[_]) :: xs => lst.toList ::: flatten(xs)
+    case (x: AnyRef) :: xs        => x :: flatten(xs)
+    case x :: xs                  => flatten(xs)
+  }
 
   private def authPassed_?(req: Req): Boolean = {
 
@@ -232,10 +231,9 @@ class LiftServlet extends Loggable {
       recent(id) = next
     }
 
-  private def recentlyChecked(id: Box[String]): Int =
-    synchronized {
-      id.flatMap(recent.get).openOr(0)
-    }
+  private def recentlyChecked(id: Box[String]): Int = synchronized {
+    id.flatMap(recent.get).openOr(0)
+  }
 
   trait ProcessingStep {
     def process(req: Req): Box[LiftResponse]
@@ -1003,41 +1001,39 @@ class LiftServlet extends Loggable {
     }
   }
 
-  private def extractRenderVersion(in: List[String]): Box[String] =
-    in match {
-      case _ :: _ :: _ :: rv :: _ => Full(rv)
-      case _                      => Empty
-    }
+  private def extractRenderVersion(in: List[String]): Box[String] = in match {
+    case _ :: _ :: _ :: rv :: _ => Full(rv)
+    case _                      => Empty
+  }
 
   private def handleNonContinuationComet(
       request: Req,
       session: LiftSession,
       actors: List[(LiftCometActor, Long)],
-      originalRequest: Req): () => Box[LiftResponse] =
-    () => {
-      val f = new LAFuture[List[AnswerRender]]
-      val cont = new ContinuationActor(
-        request,
-        session,
-        actors,
-        answers => f.satisfy(answers))
+      originalRequest: Req): () => Box[LiftResponse] = () => {
+    val f = new LAFuture[List[AnswerRender]]
+    val cont = new ContinuationActor(
+      request,
+      session,
+      actors,
+      answers => f.satisfy(answers))
 
-      try {
-        cont ! BeginContinuation
+    try {
+      cont ! BeginContinuation
 
-        session.enterComet(cont -> request)
+      session.enterComet(cont -> request)
 
-        LAPinger.schedule(cont, BreakOut(), TimeSpan(cometTimeout))
+      LAPinger.schedule(cont, BreakOut(), TimeSpan(cometTimeout))
 
-        val ret2 = f.get(cometTimeout) openOr Nil
+      val ret2 = f.get(cometTimeout) openOr Nil
 
-        Full(S.init(Box !! originalRequest, session) {
-          convertAnswersToCometResponse(session, ret2, actors)
-        })
-      } finally {
-        session.exitComet(cont)
-      }
+      Full(S.init(Box !! originalRequest, session) {
+        convertAnswersToCometResponse(session, ret2, actors)
+      })
+    } finally {
+      session.exitComet(cont)
     }
+  }
 
   val dumpRequestResponse = Props.getBool("dump.request.response", false)
 
@@ -1065,22 +1061,21 @@ class LiftServlet extends Loggable {
       liftResp: LiftResponse,
       response: HTTPResponse,
       request: Req) {
-    def fixHeaders(headers: List[(String, String)]) =
-      headers map ((v) =>
-        v match {
-          case ("Location", uri) =>
-            val u = request
+    def fixHeaders(headers: List[(String, String)]) = headers map ((v) =>
+      v match {
+        case ("Location", uri) =>
+          val u = request
+          (
+            v._1,
             (
-              v._1,
-              (
-                (for (updated <- Full(
-                    (if (!LiftRules.excludePathFromContextPathRewriting.vend(
-                         uri)) u.contextPath
-                     else "") + uri).filter(ignore => uri.startsWith("/"));
-                  rwf <- URLRewriter.rewriteFunc) yield rwf(updated)) openOr uri
-              ))
-          case _ => v
-        })
+              (for (updated <- Full(
+                  (if (!LiftRules.excludePathFromContextPathRewriting.vend(uri))
+                     u.contextPath
+                   else "") + uri).filter(ignore => uri.startsWith("/"));
+                rwf <- URLRewriter.rewriteFunc) yield rwf(updated)) openOr uri
+            ))
+        case _ => v
+      })
 
     def pairFromRequest(req: Req): (Box[Req], Box[String]) = {
       val acceptHeader =

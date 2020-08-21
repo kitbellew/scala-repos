@@ -86,40 +86,37 @@ class StringOrderedSerialization extends OrderedSerialization[String] {
   import StringOrderedSerialization._
   override def hash(s: String) = s.hashCode
   override def compare(a: String, b: String) = a.compareTo(b)
-  override def read(in: InputStream) =
-    try {
-      val byteString = new Array[Byte](in.readPosVarInt)
-      in.readFully(byteString)
-      Success(new String(byteString, "UTF-8"))
-    } catch { case NonFatal(e) => Failure(e) }
+  override def read(in: InputStream) = try {
+    val byteString = new Array[Byte](in.readPosVarInt)
+    in.readFully(byteString)
+    Success(new String(byteString, "UTF-8"))
+  } catch { case NonFatal(e) => Failure(e) }
 
-  override def write(b: OutputStream, s: String) =
-    try {
-      val bytes = s.getBytes("UTF-8")
-      b.writePosVarInt(bytes.length)
-      b.writeBytes(bytes)
-      Serialization.successUnit
-    } catch { case NonFatal(e) => Failure(e) }
+  override def write(b: OutputStream, s: String) = try {
+    val bytes = s.getBytes("UTF-8")
+    b.writePosVarInt(bytes.length)
+    b.writeBytes(bytes)
+    Serialization.successUnit
+  } catch { case NonFatal(e) => Failure(e) }
 
-  override def compareBinary(lhs: InputStream, rhs: InputStream) =
-    try {
-      val leftSize = lhs.readPosVarInt
-      val rightSize = rhs.readPosVarInt
+  override def compareBinary(lhs: InputStream, rhs: InputStream) = try {
+    val leftSize = lhs.readPosVarInt
+    val rightSize = rhs.readPosVarInt
 
-      val seekingLeft = PositionInputStream(lhs)
-      val seekingRight = PositionInputStream(rhs)
+    val seekingLeft = PositionInputStream(lhs)
+    val seekingRight = PositionInputStream(rhs)
 
-      val leftStart = seekingLeft.position
-      val rightStart = seekingRight.position
+    val leftStart = seekingLeft.position
+    val rightStart = seekingRight.position
 
-      val res = OrderedSerialization.resultFrom(
-        binaryIntCompare(leftSize, seekingLeft, rightSize, seekingRight))
-      seekingLeft.seekToPosition(leftStart + leftSize)
-      seekingRight.seekToPosition(rightStart + rightSize)
-      res
-    } catch {
-      case NonFatal(e) => OrderedSerialization.CompareFailure(e)
-    }
+    val res = OrderedSerialization.resultFrom(
+      binaryIntCompare(leftSize, seekingLeft, rightSize, seekingRight))
+    seekingLeft.seekToPosition(leftStart + leftSize)
+    seekingRight.seekToPosition(rightStart + rightSize)
+    res
+  } catch {
+    case NonFatal(e) => OrderedSerialization.CompareFailure(e)
+  }
 
   /**
     * generally there is no way to see how big a utf-8 string is without serializing.

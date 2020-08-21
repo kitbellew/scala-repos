@@ -20,10 +20,9 @@ import scala.concurrent.Future
   */
 class ObjectMapperModule extends Module {
 
-  def bindings(environment: Environment, configuration: Configuration) =
-    Seq(
-      bind[ObjectMapper].toProvider[ObjectMapperProvider].eagerly()
-    )
+  def bindings(environment: Environment, configuration: Configuration) = Seq(
+    bind[ObjectMapper].toProvider[ObjectMapperProvider].eagerly()
+  )
 }
 
 @Singleton

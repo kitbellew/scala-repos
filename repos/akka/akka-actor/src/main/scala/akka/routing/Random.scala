@@ -80,8 +80,8 @@ final case class RandomPool(
     */
   def this(nr: Int) = this(nrOfInstances = nr)
 
-  override def createRouter(system: ActorSystem): Router =
-    new Router(RandomRoutingLogic())
+  override def createRouter(system: ActorSystem): Router = new Router(
+    RandomRoutingLogic())
 
   override def nrOfInstances(sys: ActorSystem) = this.nrOfInstances
 
@@ -146,8 +146,8 @@ final case class RandomGroup(
   override def paths(system: ActorSystem): immutable.Iterable[String] =
     this.paths
 
-  override def createRouter(system: ActorSystem): Router =
-    new Router(RandomRoutingLogic())
+  override def createRouter(system: ActorSystem): Router = new Router(
+    RandomRoutingLogic())
 
   /**
     * Setting the dispatcher to be used for the router head actor, which handles

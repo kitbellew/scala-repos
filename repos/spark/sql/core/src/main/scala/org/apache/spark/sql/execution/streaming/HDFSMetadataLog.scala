@@ -64,13 +64,12 @@ class HDFSMetadataLog[T: ClassTag](sqlContext: SQLContext, path: String)
     * A `PathFilter` to filter only batch files
     */
   private val batchFilesFilter = new PathFilter {
-    override def accept(path: Path): Boolean =
-      try {
-        path.getName.toLong
-        true
-      } catch {
-        case _: NumberFormatException => false
-      }
+    override def accept(path: Path): Boolean = try {
+      path.getName.toLong
+      true
+    } catch {
+      case _: NumberFormatException => false
+    }
   }
 
   private val serializer =

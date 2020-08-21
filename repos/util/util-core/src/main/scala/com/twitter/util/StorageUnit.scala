@@ -44,17 +44,16 @@ object StorageUnit {
     * Note, this can cause overflows of the Long used to represent the
     * number of bytes.
     */
-  def parse(s: String): StorageUnit =
-    s.split("\\.") match {
-      case Array(v, u) =>
-        val vv = v.toLong
-        val uu = factor(u)
-        new StorageUnit(vv * uu)
+  def parse(s: String): StorageUnit = s.split("\\.") match {
+    case Array(v, u) =>
+      val vv = v.toLong
+      val uu = factor(u)
+      new StorageUnit(vv * uu)
 
-      case _ =>
-        throw new NumberFormatException(
-          "invalid storage unit string: %s".format(s))
-    }
+    case _ =>
+      throw new NumberFormatException(
+        "invalid storage unit string: %s".format(s))
+  }
 }
 
 /**
@@ -75,12 +74,12 @@ class StorageUnit(val bytes: Long) extends Ordered[StorageUnit] {
   def inPetabytes = bytes / (1024L * 1024 * 1024 * 1024 * 1024)
   def inExabytes = bytes / (1024L * 1024 * 1024 * 1024 * 1024 * 1024)
 
-  def +(that: StorageUnit): StorageUnit =
-    new StorageUnit(this.bytes + that.bytes)
-  def -(that: StorageUnit): StorageUnit =
-    new StorageUnit(this.bytes - that.bytes)
-  def *(scalar: Double): StorageUnit =
-    new StorageUnit((this.bytes.toDouble * scalar).toLong)
+  def +(that: StorageUnit): StorageUnit = new StorageUnit(
+    this.bytes + that.bytes)
+  def -(that: StorageUnit): StorageUnit = new StorageUnit(
+    this.bytes - that.bytes)
+  def *(scalar: Double): StorageUnit = new StorageUnit(
+    (this.bytes.toDouble * scalar).toLong)
   def *(scalar: Long): StorageUnit = new StorageUnit(this.bytes * scalar)
   def /(scalar: Long): StorageUnit = new StorageUnit(this.bytes / scalar)
 

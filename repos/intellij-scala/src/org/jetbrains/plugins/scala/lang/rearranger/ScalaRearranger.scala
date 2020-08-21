@@ -179,8 +179,8 @@ class ScalaRearranger
     throw new IllegalArgumentException(
       "Can't build a matcher for condition " + condition)
 
-  override def getMutexes =
-    seqAsJavaList(immutable.List(scalaAccessModifiersValues, scalaTypesValues))
+  override def getMutexes = seqAsJavaList(
+    immutable.List(scalaAccessModifiersValues, scalaTypesValues))
 
   private def setupUtilityMethods(
       info: ScalaArrangementParseInfo,

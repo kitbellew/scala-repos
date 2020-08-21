@@ -24,10 +24,10 @@ abstract case class Timestamp private (private val utcDateTime: DateTime)
     FiniteDuration(millis, TimeUnit.MILLISECONDS)
   }
 
-  def +(duration: FiniteDuration): Timestamp =
-    Timestamp(utcDateTime.getMillis + duration.toMillis)
-  def -(duration: FiniteDuration): Timestamp =
-    Timestamp(utcDateTime.getMillis - duration.toMillis)
+  def +(duration: FiniteDuration): Timestamp = Timestamp(
+    utcDateTime.getMillis + duration.toMillis)
+  def -(duration: FiniteDuration): Timestamp = Timestamp(
+    utcDateTime.getMillis - duration.toMillis)
 }
 
 object Timestamp {
@@ -36,8 +36,8 @@ object Timestamp {
     * Returns a new Timestamp representing the instant that is the supplied
     * dateTime converted to UTC.
     */
-  def apply(dateTime: DateTime): Timestamp =
-    new Timestamp(dateTime.toDateTime(DateTimeZone.UTC)) {}
+  def apply(dateTime: DateTime): Timestamp = new Timestamp(
+    dateTime.toDateTime(DateTimeZone.UTC)) {}
 
   /**
     * Returns a new Timestamp representing the instant that is the supplied

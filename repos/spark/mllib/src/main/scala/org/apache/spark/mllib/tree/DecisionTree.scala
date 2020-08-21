@@ -651,20 +651,19 @@ object DecisionTree extends Serializable with Logging {
       */
     def getNodeToFeatures(
         treeToNodeToIndexInfo: Map[Int, Map[Int, NodeIndexInfo]])
-        : Option[Map[Int, Array[Int]]] =
-      if (!metadata.subsamplingFeatures) {
-        None
-      } else {
-        val mutableNodeToFeatures = new mutable.HashMap[Int, Array[Int]]()
-        treeToNodeToIndexInfo.values.foreach { nodeIdToNodeInfo =>
-          nodeIdToNodeInfo.values.foreach { nodeIndexInfo =>
-            assert(nodeIndexInfo.featureSubset.isDefined)
-            mutableNodeToFeatures(nodeIndexInfo.nodeIndexInGroup) =
-              nodeIndexInfo.featureSubset.get
-          }
+        : Option[Map[Int, Array[Int]]] = if (!metadata.subsamplingFeatures) {
+      None
+    } else {
+      val mutableNodeToFeatures = new mutable.HashMap[Int, Array[Int]]()
+      treeToNodeToIndexInfo.values.foreach { nodeIdToNodeInfo =>
+        nodeIdToNodeInfo.values.foreach { nodeIndexInfo =>
+          assert(nodeIndexInfo.featureSubset.isDefined)
+          mutableNodeToFeatures(nodeIndexInfo.nodeIndexInGroup) =
+            nodeIndexInfo.featureSubset.get
         }
-        Some(mutableNodeToFeatures.toMap)
       }
+      Some(mutableNodeToFeatures.toMap)
+    }
 
     // array of nodes to train indexed by node index in group
     val nodes = new Array[Node](numNodes)

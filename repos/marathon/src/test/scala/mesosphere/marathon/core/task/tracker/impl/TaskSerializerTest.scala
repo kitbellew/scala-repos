@@ -271,78 +271,71 @@ class TaskSerializerTest
         Task.Status(stagedAt, Some(startedAt), Some(mesosStatus))
       private[this] val hostPorts = Task.HostPorts(Seq(1, 2, 3))
 
-      def reservedProto =
-        MarathonTask
+      def reservedProto = MarathonTask
+        .newBuilder()
+        .setId(taskId.idString)
+        .setHost(host)
+        .setSlaveId(MesosProtos.SlaveID.newBuilder().setValue(agentId))
+        .addAllAttributes(attributes.asJava)
+        .setReservation(MarathonTask.Reservation
           .newBuilder()
-          .setId(taskId.idString)
-          .setHost(host)
-          .setSlaveId(MesosProtos.SlaveID.newBuilder().setValue(agentId))
-          .addAllAttributes(attributes.asJava)
-          .setReservation(
-            MarathonTask.Reservation
+          .addAllLocalVolumeIds(localVolumeIds.map(_.idString).asJava)
+          .setState(MarathonTask.Reservation.State
+            .newBuilder()
+            .setType(MarathonTask.Reservation.State.Type.New)
+            .setTimeout(MarathonTask.Reservation.State.Timeout
               .newBuilder()
-              .addAllLocalVolumeIds(localVolumeIds.map(_.idString).asJava)
-              .setState(
-                MarathonTask.Reservation.State
-                  .newBuilder()
-                  .setType(MarathonTask.Reservation.State.Type.New)
-                  .setTimeout(MarathonTask.Reservation.State.Timeout
-                    .newBuilder()
-                    .setInitiated(now.toDateTime.getMillis)
-                    .setDeadline((now + 1.minute).toDateTime.getMillis)
-                    .setReason(
-                      MarathonTask.Reservation.State.Timeout.Reason.ReservationTimeout))))
-          .build()
+              .setInitiated(now.toDateTime.getMillis)
+              .setDeadline((now + 1.minute).toDateTime.getMillis)
+              .setReason(
+                MarathonTask.Reservation.State.Timeout.Reason.ReservationTimeout))))
+        .build()
 
-      def reservedState =
-        Task.Reserved(
-          Task.Id(taskId.idString),
-          Task.AgentInfo(host = host, agentId = Some(agentId), attributes),
-          reservation = Task.Reservation(
-            localVolumeIds,
-            Task.Reservation.State.New(
-              Some(
-                Task.Reservation.Timeout(
-                  initiated = now,
-                  deadline = now + 1.minute,
-                  reason = Task.Reservation.Timeout.Reason.ReservationTimeout)))
-          )
+      def reservedState = Task.Reserved(
+        Task.Id(taskId.idString),
+        Task.AgentInfo(host = host, agentId = Some(agentId), attributes),
+        reservation = Task.Reservation(
+          localVolumeIds,
+          Task.Reservation.State.New(
+            Some(
+              Task.Reservation.Timeout(
+                initiated = now,
+                deadline = now + 1.minute,
+                reason = Task.Reservation.Timeout.Reason.ReservationTimeout)))
         )
+      )
 
-      def launchedEphemeralProto =
-        MarathonTask
-          .newBuilder()
-          .setId(taskId.idString)
-          .setHost(host)
-          .setSlaveId(MesosProtos.SlaveID.newBuilder().setValue(agentId))
-          .addAllAttributes(attributes.asJava)
-          .setVersion(appVersion.toString)
-          .setStagedAt(stagedAt.toDateTime.getMillis)
-          .setStartedAt(startedAt.toDateTime.getMillis)
-          .setStatus(mesosStatus)
-          .addAllPorts(hostPorts.ports.view.map(Integer.valueOf(_)).asJava)
-          .build()
+      def launchedEphemeralProto = MarathonTask
+        .newBuilder()
+        .setId(taskId.idString)
+        .setHost(host)
+        .setSlaveId(MesosProtos.SlaveID.newBuilder().setValue(agentId))
+        .addAllAttributes(attributes.asJava)
+        .setVersion(appVersion.toString)
+        .setStagedAt(stagedAt.toDateTime.getMillis)
+        .setStartedAt(startedAt.toDateTime.getMillis)
+        .setStatus(mesosStatus)
+        .addAllPorts(hostPorts.ports.view.map(Integer.valueOf(_)).asJava)
+        .build()
 
-      def launchedOnReservationProto =
-        launchedEphemeralProto.toBuilder
-          .setReservation(
-            MarathonTask.Reservation
+      def launchedOnReservationProto = launchedEphemeralProto.toBuilder
+        .setReservation(
+          MarathonTask.Reservation
+            .newBuilder()
+            .addAllLocalVolumeIds(localVolumeIds.map(_.idString).asJava)
+            .setState(MarathonTask.Reservation.State
               .newBuilder()
-              .addAllLocalVolumeIds(localVolumeIds.map(_.idString).asJava)
-              .setState(MarathonTask.Reservation.State
-                .newBuilder()
-                .setType(MarathonTask.Reservation.State.Type.Launched)))
-          .build()
+              .setType(MarathonTask.Reservation.State.Type.Launched)))
+        .build()
 
-      def launchedOnReservationState =
-        Task.LaunchedOnReservation(
-          taskId,
-          Task.AgentInfo(host = host, agentId = Some(agentId), attributes),
-          appVersion,
-          status,
-          hostPorts,
-          Task.Reservation(localVolumeIds, Task.Reservation.State.Launched)
-        )
+      def launchedOnReservationState = Task.LaunchedOnReservation(
+        taskId,
+        Task.AgentInfo(host = host, agentId = Some(agentId), attributes),
+        appVersion,
+        status,
+        hostPorts,
+        Task.Reservation(localVolumeIds, Task.Reservation.State.Launched)
+      )
 
       def reservedProtoWithoutReservation =
         reservedProto.toBuilder.clearReservation().build()

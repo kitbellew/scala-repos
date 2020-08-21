@@ -148,8 +148,8 @@ private[akka] object FanOut {
       }
     }
 
-    def unmarkCancelledOutputs(enabled: Boolean): Unit =
-      unmarkCancelled = enabled
+    def unmarkCancelledOutputs(enabled: Boolean): Unit = unmarkCancelled =
+      enabled
 
     def idToEnqueue(): Int = {
       var id = preferredId
@@ -200,18 +200,16 @@ private[akka] object FanOut {
 
     def onCancel(output: Int): Unit = ()
 
-    def demandAvailableFor(id: Int) =
-      new TransferState {
-        override def isCompleted: Boolean =
-          cancelled(id) || completed(id) || errored(id)
-        override def isReady: Boolean = pending(id)
-      }
+    def demandAvailableFor(id: Int) = new TransferState {
+      override def isCompleted: Boolean =
+        cancelled(id) || completed(id) || errored(id)
+      override def isReady: Boolean = pending(id)
+    }
 
-    def demandOrCancelAvailableFor(id: Int) =
-      new TransferState {
-        override def isCompleted: Boolean = false
-        override def isReady: Boolean = pending(id) || cancelled(id)
-      }
+    def demandOrCancelAvailableFor(id: Int) = new TransferState {
+      override def isCompleted: Boolean = false
+      override def isReady: Boolean = pending(id) || cancelled(id)
+    }
 
     /**
       * Will only transfer an element when all marked outputs
@@ -235,34 +233,33 @@ private[akka] object FanOut {
     }
 
     // FIXME: Eliminate re-wraps
-    def subreceive: SubReceive =
-      new SubReceive({
-        case ExposedPublishers(publishers) ⇒
-          publishers.zip(outputs) foreach { case (pub, output) ⇒
-            output.subreceive(ExposedPublisher(pub))
-          }
+    def subreceive: SubReceive = new SubReceive({
+      case ExposedPublishers(publishers) ⇒
+        publishers.zip(outputs) foreach { case (pub, output) ⇒
+          output.subreceive(ExposedPublisher(pub))
+        }
 
-        case SubstreamRequestMore(id, demand) ⇒
-          if (demand < 1) // According to Reactive Streams Spec 3.9, with non-positive demand must yield onError
-            error(
-              id,
-              ReactiveStreamsCompliance.numberOfElementsInRequestMustBePositiveException)
-          else {
-            if (marked(id) && !pending(id)) markedPending += 1
-            pending(id) = true
-            outputs(id).subreceive(RequestMore(null, demand))
-          }
-        case SubstreamCancel(id) ⇒
-          if (unmarkCancelled) {
-            unmarkOutput(id)
-          }
-          if (marked(id) && !cancelled(id)) markedCancelled += 1
-          cancelled(id) = true
-          onCancel(id)
-          outputs(id).subreceive(Cancel(null))
-        case SubstreamSubscribePending(id) ⇒
-          outputs(id).subreceive(SubscribePending)
-      })
+      case SubstreamRequestMore(id, demand) ⇒
+        if (demand < 1) // According to Reactive Streams Spec 3.9, with non-positive demand must yield onError
+          error(
+            id,
+            ReactiveStreamsCompliance.numberOfElementsInRequestMustBePositiveException)
+        else {
+          if (marked(id) && !pending(id)) markedPending += 1
+          pending(id) = true
+          outputs(id).subreceive(RequestMore(null, demand))
+        }
+      case SubstreamCancel(id) ⇒
+        if (unmarkCancelled) {
+          unmarkOutput(id)
+        }
+        if (marked(id) && !cancelled(id)) markedCancelled += 1
+        cancelled(id) = true
+        onCancel(id)
+        outputs(id).subreceive(Cancel(null))
+      case SubstreamSubscribePending(id) ⇒
+        outputs(id).subreceive(SubscribePending)
+    })
 
   }
 

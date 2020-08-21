@@ -784,15 +784,10 @@ class SparkContext(config: SparkConf)
     */
   def parallelize[T: ClassTag](
       seq: Seq[T],
-      numSlices: Int = defaultParallelism): RDD[T] =
-    withScope {
-      assertNotStopped()
-      new ParallelCollectionRDD[T](
-        this,
-        seq,
-        numSlices,
-        Map[Int, Seq[String]]())
-    }
+      numSlices: Int = defaultParallelism): RDD[T] = withScope {
+    assertNotStopped()
+    new ParallelCollectionRDD[T](this, seq, numSlices, Map[Int, Seq[String]]())
+  }
 
   /**
     * Creates a new RDD[Long] containing elements from `start` to `end`(exclusive), increased by
@@ -810,64 +805,61 @@ class SparkContext(config: SparkConf)
       start: Long,
       end: Long,
       step: Long = 1,
-      numSlices: Int = defaultParallelism): RDD[Long] =
-    withScope {
-      assertNotStopped()
-      // when step is 0, range will run infinitely
-      require(step != 0, "step cannot be 0")
-      val numElements: BigInt = {
-        val safeStart = BigInt(start)
-        val safeEnd = BigInt(end)
-        if ((safeEnd - safeStart) % step == 0 || (safeEnd > safeStart) != (step > 0)) {
-          (safeEnd - safeStart) / step
+      numSlices: Int = defaultParallelism): RDD[Long] = withScope {
+    assertNotStopped()
+    // when step is 0, range will run infinitely
+    require(step != 0, "step cannot be 0")
+    val numElements: BigInt = {
+      val safeStart = BigInt(start)
+      val safeEnd = BigInt(end)
+      if ((safeEnd - safeStart) % step == 0 || (safeEnd > safeStart) != (step > 0)) {
+        (safeEnd - safeStart) / step
+      } else {
+        // the remainder has the same sign with range, could add 1 more
+        (safeEnd - safeStart) / step + 1
+      }
+    }
+    parallelize(0 until numSlices, numSlices).mapPartitionsWithIndex((i, _) => {
+      val partitionStart = (i * numElements) / numSlices * step + start
+      val partitionEnd = (((i + 1) * numElements) / numSlices) * step + start
+      def getSafeMargin(bi: BigInt): Long =
+        if (bi.isValidLong) {
+          bi.toLong
+        } else if (bi > 0) {
+          Long.MaxValue
         } else {
-          // the remainder has the same sign with range, could add 1 more
-          (safeEnd - safeStart) / step + 1
+          Long.MinValue
+        }
+      val safePartitionStart = getSafeMargin(partitionStart)
+      val safePartitionEnd = getSafeMargin(partitionEnd)
+
+      new Iterator[Long] {
+        private[this] var number: Long = safePartitionStart
+        private[this] var overflow: Boolean = false
+
+        override def hasNext =
+          if (!overflow) {
+            if (step > 0) {
+              number < safePartitionEnd
+            } else {
+              number > safePartitionEnd
+            }
+          } else false
+
+        override def next() = {
+          val ret = number
+          number += step
+          if (number < ret ^ step < 0) {
+            // we have Long.MaxValue + Long.MaxValue < Long.MaxValue
+            // and Long.MinValue + Long.MinValue > Long.MinValue, so iff the step causes a step
+            // back, we are pretty sure that we have an overflow.
+            overflow = true
+          }
+          ret
         }
       }
-      parallelize(0 until numSlices, numSlices).mapPartitionsWithIndex(
-        (i, _) => {
-          val partitionStart = (i * numElements) / numSlices * step + start
-          val partitionEnd =
-            (((i + 1) * numElements) / numSlices) * step + start
-          def getSafeMargin(bi: BigInt): Long =
-            if (bi.isValidLong) {
-              bi.toLong
-            } else if (bi > 0) {
-              Long.MaxValue
-            } else {
-              Long.MinValue
-            }
-          val safePartitionStart = getSafeMargin(partitionStart)
-          val safePartitionEnd = getSafeMargin(partitionEnd)
-
-          new Iterator[Long] {
-            private[this] var number: Long = safePartitionStart
-            private[this] var overflow: Boolean = false
-
-            override def hasNext =
-              if (!overflow) {
-                if (step > 0) {
-                  number < safePartitionEnd
-                } else {
-                  number > safePartitionEnd
-                }
-              } else false
-
-            override def next() = {
-              val ret = number
-              number += step
-              if (number < ret ^ step < 0) {
-                // we have Long.MaxValue + Long.MaxValue < Long.MaxValue
-                // and Long.MinValue + Long.MinValue > Long.MinValue, so iff the step causes a step
-                // back, we are pretty sure that we have an overflow.
-                overflow = true
-              }
-              ret
-            }
-          }
-        })
-    }
+    })
+  }
 
   /** Distribute a local Scala collection to form an RDD.
     *
@@ -875,21 +867,19 @@ class SparkContext(config: SparkConf)
     */
   def makeRDD[T: ClassTag](
       seq: Seq[T],
-      numSlices: Int = defaultParallelism): RDD[T] =
-    withScope {
-      parallelize(seq, numSlices)
-    }
+      numSlices: Int = defaultParallelism): RDD[T] = withScope {
+    parallelize(seq, numSlices)
+  }
 
   /** Distribute a local Scala collection to form an RDD, with one or more
     * location preferences (hostnames of Spark nodes) for each object.
     * Create a new partition for each collection item.
     */
-  def makeRDD[T: ClassTag](seq: Seq[(T, Seq[String])]): RDD[T] =
-    withScope {
-      assertNotStopped()
-      val indexToPrefs = seq.zipWithIndex.map(t => (t._2, t._1._2)).toMap
-      new ParallelCollectionRDD[T](this, seq.map(_._1), seq.size, indexToPrefs)
-    }
+  def makeRDD[T: ClassTag](seq: Seq[(T, Seq[String])]): RDD[T] = withScope {
+    assertNotStopped()
+    val indexToPrefs = seq.zipWithIndex.map(t => (t._2, t._1._2)).toMap
+    new ParallelCollectionRDD[T](this, seq.map(_._1), seq.size, indexToPrefs)
+  }
 
   /**
     * Read a text file from HDFS, a local file system (available on all nodes), or any
@@ -897,16 +887,15 @@ class SparkContext(config: SparkConf)
     */
   def textFile(
       path: String,
-      minPartitions: Int = defaultMinPartitions): RDD[String] =
-    withScope {
-      assertNotStopped()
-      hadoopFile(
-        path,
-        classOf[TextInputFormat],
-        classOf[LongWritable],
-        classOf[Text],
-        minPartitions).map(pair => pair._2.toString).setName(path)
-    }
+      minPartitions: Int = defaultMinPartitions): RDD[String] = withScope {
+    assertNotStopped()
+    hadoopFile(
+      path,
+      classOf[TextInputFormat],
+      classOf[LongWritable],
+      classOf[Text],
+      minPartitions).map(pair => pair._2.toString).setName(path)
+  }
 
   /**
     * Read a directory of text files from HDFS, a local file system (available on all nodes), or any
@@ -992,22 +981,21 @@ class SparkContext(config: SparkConf)
     * @param minPartitions A suggestion value of the minimal splitting number for input data.
     */
   def binaryFiles(path: String, minPartitions: Int = defaultMinPartitions)
-      : RDD[(String, PortableDataStream)] =
-    withScope {
-      assertNotStopped()
-      val job = NewHadoopJob.getInstance(hadoopConfiguration)
-      // Use setInputPaths so that binaryFiles aligns with hadoopFile/textFile in taking
-      // comma separated files as input. (see SPARK-7155)
-      NewFileInputFormat.setInputPaths(job, path)
-      val updateConf = job.getConfiguration
-      new BinaryFileRDD(
-        this,
-        classOf[StreamInputFormat],
-        classOf[String],
-        classOf[PortableDataStream],
-        updateConf,
-        minPartitions).setName(path)
-    }
+      : RDD[(String, PortableDataStream)] = withScope {
+    assertNotStopped()
+    val job = NewHadoopJob.getInstance(hadoopConfiguration)
+    // Use setInputPaths so that binaryFiles aligns with hadoopFile/textFile in taking
+    // comma separated files as input. (see SPARK-7155)
+    NewFileInputFormat.setInputPaths(job, path)
+    val updateConf = job.getConfiguration
+    new BinaryFileRDD(
+      this,
+      classOf[StreamInputFormat],
+      classOf[String],
+      classOf[PortableDataStream],
+      updateConf,
+      minPartitions).setName(path)
+  }
 
   /**
     * Load data from a flat binary file, assuming the length of each record is constant.
@@ -1025,30 +1013,29 @@ class SparkContext(config: SparkConf)
   def binaryRecords(
       path: String,
       recordLength: Int,
-      conf: Configuration = hadoopConfiguration): RDD[Array[Byte]] =
-    withScope {
-      assertNotStopped()
-      conf.setInt(
-        FixedLengthBinaryInputFormat.RECORD_LENGTH_PROPERTY,
-        recordLength)
-      val br = newAPIHadoopFile[
-        LongWritable,
-        BytesWritable,
-        FixedLengthBinaryInputFormat](
-        path,
-        classOf[FixedLengthBinaryInputFormat],
-        classOf[LongWritable],
-        classOf[BytesWritable],
-        conf = conf)
-      val data = br.map { case (k, v) =>
-        val bytes = v.getBytes
-        assert(
-          bytes.length == recordLength,
-          "Byte array does not have correct length")
-        bytes
-      }
-      data
+      conf: Configuration = hadoopConfiguration): RDD[Array[Byte]] = withScope {
+    assertNotStopped()
+    conf.setInt(
+      FixedLengthBinaryInputFormat.RECORD_LENGTH_PROPERTY,
+      recordLength)
+    val br = newAPIHadoopFile[
+      LongWritable,
+      BytesWritable,
+      FixedLengthBinaryInputFormat](
+      path,
+      classOf[FixedLengthBinaryInputFormat],
+      classOf[LongWritable],
+      classOf[BytesWritable],
+      conf = conf)
+    val data = br.map { case (k, v) =>
+      val bytes = v.getBytes
+      assert(
+        bytes.length == recordLength,
+        "Byte array does not have correct length")
+      bytes
     }
+    data
+  }
 
   /**
     * Get an RDD for a Hadoop-readable dataset from a Hadoop JobConf given its InputFormat and other
@@ -1075,19 +1062,18 @@ class SparkContext(config: SparkConf)
       inputFormatClass: Class[_ <: InputFormat[K, V]],
       keyClass: Class[K],
       valueClass: Class[V],
-      minPartitions: Int = defaultMinPartitions): RDD[(K, V)] =
-    withScope {
-      assertNotStopped()
-      // Add necessary security credentials to the JobConf before broadcasting it.
-      SparkHadoopUtil.get.addCredentials(conf)
-      new HadoopRDD(
-        this,
-        conf,
-        inputFormatClass,
-        keyClass,
-        valueClass,
-        minPartitions)
-    }
+      minPartitions: Int = defaultMinPartitions): RDD[(K, V)] = withScope {
+    assertNotStopped()
+    // Add necessary security credentials to the JobConf before broadcasting it.
+    SparkHadoopUtil.get.addCredentials(conf)
+    new HadoopRDD(
+      this,
+      conf,
+      inputFormatClass,
+      keyClass,
+      valueClass,
+      minPartitions)
+  }
 
   /** Get an RDD for a Hadoop file with an arbitrary InputFormat
     *
@@ -1102,23 +1088,22 @@ class SparkContext(config: SparkConf)
       inputFormatClass: Class[_ <: InputFormat[K, V]],
       keyClass: Class[K],
       valueClass: Class[V],
-      minPartitions: Int = defaultMinPartitions): RDD[(K, V)] =
-    withScope {
-      assertNotStopped()
-      // A Hadoop configuration can be about 10 KB, which is pretty big, so broadcast it.
-      val confBroadcast =
-        broadcast(new SerializableConfiguration(hadoopConfiguration))
-      val setInputPathsFunc =
-        (jobConf: JobConf) => FileInputFormat.setInputPaths(jobConf, path)
-      new HadoopRDD(
-        this,
-        confBroadcast,
-        Some(setInputPathsFunc),
-        inputFormatClass,
-        keyClass,
-        valueClass,
-        minPartitions).setName(path)
-    }
+      minPartitions: Int = defaultMinPartitions): RDD[(K, V)] = withScope {
+    assertNotStopped()
+    // A Hadoop configuration can be about 10 KB, which is pretty big, so broadcast it.
+    val confBroadcast =
+      broadcast(new SerializableConfiguration(hadoopConfiguration))
+    val setInputPathsFunc =
+      (jobConf: JobConf) => FileInputFormat.setInputPaths(jobConf, path)
+    new HadoopRDD(
+      this,
+      confBroadcast,
+      Some(setInputPathsFunc),
+      inputFormatClass,
+      keyClass,
+      valueClass,
+      minPartitions).setName(path)
+  }
 
   /**
     * Smarter version of hadoopFile() that uses class tags to figure out the classes of keys,
@@ -1139,15 +1124,14 @@ class SparkContext(config: SparkConf)
       minPartitions: Int)(implicit
       km: ClassTag[K],
       vm: ClassTag[V],
-      fm: ClassTag[F]): RDD[(K, V)] =
-    withScope {
-      hadoopFile(
-        path,
-        fm.runtimeClass.asInstanceOf[Class[F]],
-        km.runtimeClass.asInstanceOf[Class[K]],
-        vm.runtimeClass.asInstanceOf[Class[V]],
-        minPartitions)
-    }
+      fm: ClassTag[F]): RDD[(K, V)] = withScope {
+    hadoopFile(
+      path,
+      fm.runtimeClass.asInstanceOf[Class[F]],
+      km.runtimeClass.asInstanceOf[Class[K]],
+      vm.runtimeClass.asInstanceOf[Class[V]],
+      minPartitions)
+  }
 
   /**
     * Smarter version of hadoopFile() that uses class tags to figure out the classes of keys,
@@ -1166,23 +1150,21 @@ class SparkContext(config: SparkConf)
   def hadoopFile[K, V, F <: InputFormat[K, V]](path: String)(implicit
       km: ClassTag[K],
       vm: ClassTag[V],
-      fm: ClassTag[F]): RDD[(K, V)] =
-    withScope {
-      hadoopFile[K, V, F](path, defaultMinPartitions)
-    }
+      fm: ClassTag[F]): RDD[(K, V)] = withScope {
+    hadoopFile[K, V, F](path, defaultMinPartitions)
+  }
 
   /** Get an RDD for a Hadoop file with an arbitrary new API InputFormat. */
   def newAPIHadoopFile[K, V, F <: NewInputFormat[K, V]](path: String)(implicit
       km: ClassTag[K],
       vm: ClassTag[V],
-      fm: ClassTag[F]): RDD[(K, V)] =
-    withScope {
-      newAPIHadoopFile(
-        path,
-        fm.runtimeClass.asInstanceOf[Class[F]],
-        km.runtimeClass.asInstanceOf[Class[K]],
-        vm.runtimeClass.asInstanceOf[Class[V]])
-    }
+      fm: ClassTag[F]): RDD[(K, V)] = withScope {
+    newAPIHadoopFile(
+      path,
+      fm.runtimeClass.asInstanceOf[Class[F]],
+      km.runtimeClass.asInstanceOf[Class[K]],
+      vm.runtimeClass.asInstanceOf[Class[V]])
+  }
 
   /**
     * Get an RDD for a given Hadoop file with an arbitrary new API InputFormat
@@ -1199,18 +1181,17 @@ class SparkContext(config: SparkConf)
       fClass: Class[F],
       kClass: Class[K],
       vClass: Class[V],
-      conf: Configuration = hadoopConfiguration): RDD[(K, V)] =
-    withScope {
-      assertNotStopped()
-      // The call to NewHadoopJob automatically adds security credentials to conf,
-      // so we don't need to explicitly add them ourselves
-      val job = NewHadoopJob.getInstance(conf)
-      // Use setInputPaths so that newAPIHadoopFile aligns with hadoopFile/textFile in taking
-      // comma separated files as input. (see SPARK-7155)
-      NewFileInputFormat.setInputPaths(job, path)
-      val updatedConf = job.getConfiguration
-      new NewHadoopRDD(this, fClass, kClass, vClass, updatedConf).setName(path)
-    }
+      conf: Configuration = hadoopConfiguration): RDD[(K, V)] = withScope {
+    assertNotStopped()
+    // The call to NewHadoopJob automatically adds security credentials to conf,
+    // so we don't need to explicitly add them ourselves
+    val job = NewHadoopJob.getInstance(conf)
+    // Use setInputPaths so that newAPIHadoopFile aligns with hadoopFile/textFile in taking
+    // comma separated files as input. (see SPARK-7155)
+    NewFileInputFormat.setInputPaths(job, path)
+    val updatedConf = job.getConfiguration
+    new NewHadoopRDD(this, fClass, kClass, vClass, updatedConf).setName(path)
+  }
 
   /**
     * Get an RDD for a given Hadoop file with an arbitrary new API InputFormat
@@ -1234,14 +1215,13 @@ class SparkContext(config: SparkConf)
       conf: Configuration = hadoopConfiguration,
       fClass: Class[F],
       kClass: Class[K],
-      vClass: Class[V]): RDD[(K, V)] =
-    withScope {
-      assertNotStopped()
-      // Add necessary security credentials to the JobConf. Required to access secure HDFS.
-      val jconf = new JobConf(conf)
-      SparkHadoopUtil.get.addCredentials(jconf)
-      new NewHadoopRDD(this, fClass, kClass, vClass, jconf)
-    }
+      vClass: Class[V]): RDD[(K, V)] = withScope {
+    assertNotStopped()
+    // Add necessary security credentials to the JobConf. Required to access secure HDFS.
+    val jconf = new JobConf(conf)
+    SparkHadoopUtil.get.addCredentials(jconf)
+    new NewHadoopRDD(this, fClass, kClass, vClass, jconf)
+  }
 
   /** Get an RDD for a Hadoop SequenceFile with given key and value types.
     *
@@ -1255,12 +1235,11 @@ class SparkContext(config: SparkConf)
       path: String,
       keyClass: Class[K],
       valueClass: Class[V],
-      minPartitions: Int): RDD[(K, V)] =
-    withScope {
-      assertNotStopped()
-      val inputFormatClass = classOf[SequenceFileInputFormat[K, V]]
-      hadoopFile(path, inputFormatClass, keyClass, valueClass, minPartitions)
-    }
+      minPartitions: Int): RDD[(K, V)] = withScope {
+    assertNotStopped()
+    val inputFormatClass = classOf[SequenceFileInputFormat[K, V]]
+    hadoopFile(path, inputFormatClass, keyClass, valueClass, minPartitions)
+  }
 
   /** Get an RDD for a Hadoop SequenceFile with given key and value types.
     *
@@ -1273,11 +1252,10 @@ class SparkContext(config: SparkConf)
   def sequenceFile[K, V](
       path: String,
       keyClass: Class[K],
-      valueClass: Class[V]): RDD[(K, V)] =
-    withScope {
-      assertNotStopped()
-      sequenceFile(path, keyClass, valueClass, defaultMinPartitions)
-    }
+      valueClass: Class[V]): RDD[(K, V)] = withScope {
+    assertNotStopped()
+    sequenceFile(path, keyClass, valueClass, defaultMinPartitions)
+  }
 
   /**
     * Version of sequenceFile() for types implicitly convertible to Writables through a
@@ -1333,19 +1311,18 @@ class SparkContext(config: SparkConf)
     */
   def objectFile[T: ClassTag](
       path: String,
-      minPartitions: Int = defaultMinPartitions): RDD[T] =
-    withScope {
-      assertNotStopped()
-      sequenceFile(
-        path,
-        classOf[NullWritable],
-        classOf[BytesWritable],
-        minPartitions)
-        .flatMap(x =>
-          Utils.deserialize[Array[T]](
-            x._2.getBytes,
-            Utils.getContextOrSparkClassLoader))
-    }
+      minPartitions: Int = defaultMinPartitions): RDD[T] = withScope {
+    assertNotStopped()
+    sequenceFile(
+      path,
+      classOf[NullWritable],
+      classOf[BytesWritable],
+      minPartitions)
+      .flatMap(x =>
+        Utils.deserialize[Array[T]](
+          x._2.getBytes,
+          Utils.getContextOrSparkClassLoader))
+  }
 
   protected[spark] def checkpointFile[T: ClassTag](path: String): RDD[T] =
     withScope {
@@ -1353,21 +1330,19 @@ class SparkContext(config: SparkConf)
     }
 
   /** Build the union of a list of RDDs. */
-  def union[T: ClassTag](rdds: Seq[RDD[T]]): RDD[T] =
-    withScope {
-      val partitioners = rdds.flatMap(_.partitioner).toSet
-      if (rdds.forall(_.partitioner.isDefined) && partitioners.size == 1) {
-        new PartitionerAwareUnionRDD(this, rdds)
-      } else {
-        new UnionRDD(this, rdds)
-      }
+  def union[T: ClassTag](rdds: Seq[RDD[T]]): RDD[T] = withScope {
+    val partitioners = rdds.flatMap(_.partitioner).toSet
+    if (rdds.forall(_.partitioner.isDefined) && partitioners.size == 1) {
+      new PartitionerAwareUnionRDD(this, rdds)
+    } else {
+      new UnionRDD(this, rdds)
     }
+  }
 
   /** Build the union of a list of RDDs passed as variable-length arguments. */
-  def union[T: ClassTag](first: RDD[T], rest: RDD[T]*): RDD[T] =
-    withScope {
-      union(Seq(first) ++ rest)
-    }
+  def union[T: ClassTag](first: RDD[T], rest: RDD[T]*): RDD[T] = withScope {
+    union(Seq(first) ++ rest)
+  }
 
   /** Get an RDD that has no partitions or elements. */
   def emptyRDD[T: ClassTag]: RDD[T] = new EmptyRDD[T](this)

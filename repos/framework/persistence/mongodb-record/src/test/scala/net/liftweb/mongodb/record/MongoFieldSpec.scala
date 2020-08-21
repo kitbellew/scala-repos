@@ -55,8 +55,9 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
   lazy val session = new LiftSession("", randomString(20), Empty)
 
   // One of these is for specs2 2.x, the other for specs2 1.x
-  protected def around[T: AsResult](t: => T) =
-    S.initIfUninitted(session) { AsResult(t) }
+  protected def around[T: AsResult](t: => T) = S.initIfUninitted(session) {
+    AsResult(t)
+  }
   protected def around[T <% org.specs2.execute.Result](t: => T) =
     S.initIfUninitted(session) { t }
 

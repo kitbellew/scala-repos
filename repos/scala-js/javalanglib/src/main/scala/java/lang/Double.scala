@@ -19,15 +19,14 @@ final class Double private () extends Number with Comparable[Double] {
   @inline def longValue(): scala.Long = doubleValue.toLong
   @inline def floatValue(): scala.Float = doubleValue.toFloat
 
-  override def equals(that: Any): scala.Boolean =
-    that match {
-      case that: Double =>
-        val a = doubleValue
-        val b = that.doubleValue
-        (a == b) || (Double.isNaN(a) && Double.isNaN(b))
-      case _ =>
-        false
-    }
+  override def equals(that: Any): scala.Boolean = that match {
+    case that: Double =>
+      val a = doubleValue
+      val b = that.doubleValue
+      (a == b) || (Double.isNaN(a) && Double.isNaN(b))
+    case _ =>
+      false
+  }
 
   @inline override def hashCode(): Int =
     scala.scalajs.runtime.Bits.numberHashCode(doubleValue)

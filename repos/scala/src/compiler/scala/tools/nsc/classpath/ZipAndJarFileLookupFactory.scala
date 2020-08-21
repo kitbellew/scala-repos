@@ -31,15 +31,14 @@ sealed trait ZipAndJarFileLookupFactory {
 
   private def createUsingCache(
       zipFile: AbstractFile,
-      settings: Settings): FlatClassPath =
-    cache.synchronized {
-      def newClassPathInstance = {
-        if (settings.verbose || settings.Ylogcp)
-          println(s"$zipFile is not yet in the classpath cache")
-        createForZipFile(zipFile)
-      }
-      cache.getOrElseUpdate(zipFile, newClassPathInstance)
+      settings: Settings): FlatClassPath = cache.synchronized {
+    def newClassPathInstance = {
+      if (settings.verbose || settings.Ylogcp)
+        println(s"$zipFile is not yet in the classpath cache")
+      createForZipFile(zipFile)
     }
+    cache.getOrElseUpdate(zipFile, newClassPathInstance)
+  }
 }
 
 /**
@@ -62,8 +61,8 @@ object ZipAndJarFlatClassPathFactory extends ZipAndJarFileLookupFactory {
       files(inPackage)
 
     override protected def createFileEntry(
-        file: FileZipArchive#Entry): ClassFileEntryImpl =
-      ClassFileEntryImpl(file)
+        file: FileZipArchive#Entry): ClassFileEntryImpl = ClassFileEntryImpl(
+      file)
     override protected def isRequiredFileType(file: AbstractFile): Boolean =
       file.isClass
   }
@@ -202,13 +201,13 @@ object ZipAndJarFlatSourcePathFactory extends ZipAndJarFileLookupFactory {
       files(inPackage)
 
     override protected def createFileEntry(
-        file: FileZipArchive#Entry): SourceFileEntryImpl =
-      SourceFileEntryImpl(file)
+        file: FileZipArchive#Entry): SourceFileEntryImpl = SourceFileEntryImpl(
+      file)
     override protected def isRequiredFileType(file: AbstractFile): Boolean =
       file.isScalaOrJavaSource
   }
 
   override protected def createForZipFile(
-      zipFile: AbstractFile): FlatClassPath =
-    ZipArchiveFlatSourcePath(zipFile.file)
+      zipFile: AbstractFile): FlatClassPath = ZipArchiveFlatSourcePath(
+    zipFile.file)
 }

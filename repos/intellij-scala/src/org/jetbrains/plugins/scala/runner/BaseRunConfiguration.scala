@@ -36,8 +36,8 @@ abstract class BaseRunConfiguration(
     if (s == null || s.isEmpty) useJavaCp else s
   private var myConsoleArgs = ""
   def consoleArgs = ensureUsesJavaCpByDefault(this.myConsoleArgs)
-  def consoleArgs_=(s: String) =
-    this.myConsoleArgs = ensureUsesJavaCpByDefault(s)
+  def consoleArgs_=(s: String) = this.myConsoleArgs = ensureUsesJavaCpByDefault(
+    s)
   var javaOptions = defaultJavaOptions
   var workingDirectory =
     Option(getProject.getBaseDir) map (_.getPath) getOrElse ""

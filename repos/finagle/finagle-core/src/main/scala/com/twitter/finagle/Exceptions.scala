@@ -38,16 +38,15 @@ trait SourcedException extends Exception with HasRemoteInfo {
 object SourcedException {
   val UnspecifiedServiceName = "unspecified"
 
-  def unapply(t: Throwable): Option[String] =
-    t match {
-      case sourced: SourcedException
-          if sourced.serviceName != SourcedException.UnspecifiedServiceName =>
-        Some(sourced.serviceName)
-      case sourced: Failure =>
-        sourced.getSource(Failure.Source.Service).map(_.toString)
-      case _ =>
-        None
-    }
+  def unapply(t: Throwable): Option[String] = t match {
+    case sourced: SourcedException
+        if sourced.serviceName != SourcedException.UnspecifiedServiceName =>
+      Some(sourced.serviceName)
+    case sourced: Failure =>
+      sourced.getSource(Failure.Source.Service).map(_.toString)
+    case _ =>
+      None
+  }
 }
 
 /**
@@ -353,11 +352,10 @@ object WriteException {
   def apply(underlying: Throwable): WriteException =
     ChannelWriteException(underlying)
 
-  def unapply(t: Throwable): Option[Throwable] =
-    t match {
-      case we: WriteException => Some(we.getCause)
-      case _                  => None
-    }
+  def unapply(t: Throwable): Option[Throwable] = t match {
+    case we: WriteException => Some(we.getCause)
+    case _                  => None
+  }
 }
 
 /**

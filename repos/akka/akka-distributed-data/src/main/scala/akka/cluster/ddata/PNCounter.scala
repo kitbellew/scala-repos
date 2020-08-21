@@ -125,12 +125,11 @@ final class PNCounter private[akka] (
 
   override def toString: String = s"PNCounter($value)"
 
-  override def equals(o: Any): Boolean =
-    o match {
-      case other: PNCounter ⇒
-        increments == other.increments && decrements == other.decrements
-      case _ ⇒ false
-    }
+  override def equals(o: Any): Boolean = o match {
+    case other: PNCounter ⇒
+      increments == other.increments && decrements == other.decrements
+    case _ ⇒ false
+  }
 
   override def hashCode: Int = {
     var result = HashCode.SEED

@@ -262,21 +262,20 @@ final class AnonFunction13[
       arg10: T10,
       arg11: T11,
       arg12: T12,
-      arg13: T13): R =
-    f(
-      arg1,
-      arg2,
-      arg3,
-      arg4,
-      arg5,
-      arg6,
-      arg7,
-      arg8,
-      arg9,
-      arg10,
-      arg11,
-      arg12,
-      arg13)
+      arg13: T13): R = f(
+    arg1,
+    arg2,
+    arg3,
+    arg4,
+    arg5,
+    arg6,
+    arg7,
+    arg8,
+    arg9,
+    arg10,
+    arg11,
+    arg12,
+    arg13)
 }
 
 @inline
@@ -342,22 +341,21 @@ final class AnonFunction14[
       arg11: T11,
       arg12: T12,
       arg13: T13,
-      arg14: T14): R =
-    f(
-      arg1,
-      arg2,
-      arg3,
-      arg4,
-      arg5,
-      arg6,
-      arg7,
-      arg8,
-      arg9,
-      arg10,
-      arg11,
-      arg12,
-      arg13,
-      arg14)
+      arg14: T14): R = f(
+    arg1,
+    arg2,
+    arg3,
+    arg4,
+    arg5,
+    arg6,
+    arg7,
+    arg8,
+    arg9,
+    arg10,
+    arg11,
+    arg12,
+    arg13,
+    arg14)
 }
 
 @inline
@@ -427,23 +425,22 @@ final class AnonFunction15[
       arg12: T12,
       arg13: T13,
       arg14: T14,
-      arg15: T15): R =
-    f(
-      arg1,
-      arg2,
-      arg3,
-      arg4,
-      arg5,
-      arg6,
-      arg7,
-      arg8,
-      arg9,
-      arg10,
-      arg11,
-      arg12,
-      arg13,
-      arg14,
-      arg15)
+      arg15: T15): R = f(
+    arg1,
+    arg2,
+    arg3,
+    arg4,
+    arg5,
+    arg6,
+    arg7,
+    arg8,
+    arg9,
+    arg10,
+    arg11,
+    arg12,
+    arg13,
+    arg14,
+    arg15)
 }
 
 @inline
@@ -517,24 +514,23 @@ final class AnonFunction16[
       arg13: T13,
       arg14: T14,
       arg15: T15,
-      arg16: T16): R =
-    f(
-      arg1,
-      arg2,
-      arg3,
-      arg4,
-      arg5,
-      arg6,
-      arg7,
-      arg8,
-      arg9,
-      arg10,
-      arg11,
-      arg12,
-      arg13,
-      arg14,
-      arg15,
-      arg16)
+      arg16: T16): R = f(
+    arg1,
+    arg2,
+    arg3,
+    arg4,
+    arg5,
+    arg6,
+    arg7,
+    arg8,
+    arg9,
+    arg10,
+    arg11,
+    arg12,
+    arg13,
+    arg14,
+    arg15,
+    arg16)
 }
 
 @inline
@@ -612,25 +608,24 @@ final class AnonFunction17[
       arg14: T14,
       arg15: T15,
       arg16: T16,
-      arg17: T17): R =
-    f(
-      arg1,
-      arg2,
-      arg3,
-      arg4,
-      arg5,
-      arg6,
-      arg7,
-      arg8,
-      arg9,
-      arg10,
-      arg11,
-      arg12,
-      arg13,
-      arg14,
-      arg15,
-      arg16,
-      arg17)
+      arg17: T17): R = f(
+    arg1,
+    arg2,
+    arg3,
+    arg4,
+    arg5,
+    arg6,
+    arg7,
+    arg8,
+    arg9,
+    arg10,
+    arg11,
+    arg12,
+    arg13,
+    arg14,
+    arg15,
+    arg16,
+    arg17)
 }
 
 @inline
@@ -712,26 +707,25 @@ final class AnonFunction18[
       arg15: T15,
       arg16: T16,
       arg17: T17,
-      arg18: T18): R =
-    f(
-      arg1,
-      arg2,
-      arg3,
-      arg4,
-      arg5,
-      arg6,
-      arg7,
-      arg8,
-      arg9,
-      arg10,
-      arg11,
-      arg12,
-      arg13,
-      arg14,
-      arg15,
-      arg16,
-      arg17,
-      arg18)
+      arg18: T18): R = f(
+    arg1,
+    arg2,
+    arg3,
+    arg4,
+    arg5,
+    arg6,
+    arg7,
+    arg8,
+    arg9,
+    arg10,
+    arg11,
+    arg12,
+    arg13,
+    arg14,
+    arg15,
+    arg16,
+    arg17,
+    arg18)
 }
 
 @inline
@@ -817,27 +811,26 @@ final class AnonFunction19[
       arg16: T16,
       arg17: T17,
       arg18: T18,
-      arg19: T19): R =
-    f(
-      arg1,
-      arg2,
-      arg3,
-      arg4,
-      arg5,
-      arg6,
-      arg7,
-      arg8,
-      arg9,
-      arg10,
-      arg11,
-      arg12,
-      arg13,
-      arg14,
-      arg15,
-      arg16,
-      arg17,
-      arg18,
-      arg19)
+      arg19: T19): R = f(
+    arg1,
+    arg2,
+    arg3,
+    arg4,
+    arg5,
+    arg6,
+    arg7,
+    arg8,
+    arg9,
+    arg10,
+    arg11,
+    arg12,
+    arg13,
+    arg14,
+    arg15,
+    arg16,
+    arg17,
+    arg18,
+    arg19)
 }
 
 @inline
@@ -927,28 +920,27 @@ final class AnonFunction20[
       arg17: T17,
       arg18: T18,
       arg19: T19,
-      arg20: T20): R =
-    f(
-      arg1,
-      arg2,
-      arg3,
-      arg4,
-      arg5,
-      arg6,
-      arg7,
-      arg8,
-      arg9,
-      arg10,
-      arg11,
-      arg12,
-      arg13,
-      arg14,
-      arg15,
-      arg16,
-      arg17,
-      arg18,
-      arg19,
-      arg20)
+      arg20: T20): R = f(
+    arg1,
+    arg2,
+    arg3,
+    arg4,
+    arg5,
+    arg6,
+    arg7,
+    arg8,
+    arg9,
+    arg10,
+    arg11,
+    arg12,
+    arg13,
+    arg14,
+    arg15,
+    arg16,
+    arg17,
+    arg18,
+    arg19,
+    arg20)
 }
 
 @inline
@@ -1042,29 +1034,28 @@ final class AnonFunction21[
       arg18: T18,
       arg19: T19,
       arg20: T20,
-      arg21: T21): R =
-    f(
-      arg1,
-      arg2,
-      arg3,
-      arg4,
-      arg5,
-      arg6,
-      arg7,
-      arg8,
-      arg9,
-      arg10,
-      arg11,
-      arg12,
-      arg13,
-      arg14,
-      arg15,
-      arg16,
-      arg17,
-      arg18,
-      arg19,
-      arg20,
-      arg21)
+      arg21: T21): R = f(
+    arg1,
+    arg2,
+    arg3,
+    arg4,
+    arg5,
+    arg6,
+    arg7,
+    arg8,
+    arg9,
+    arg10,
+    arg11,
+    arg12,
+    arg13,
+    arg14,
+    arg15,
+    arg16,
+    arg17,
+    arg18,
+    arg19,
+    arg20,
+    arg21)
 }
 
 @inline
@@ -1162,30 +1153,29 @@ final class AnonFunction22[
       arg19: T19,
       arg20: T20,
       arg21: T21,
-      arg22: T22): R =
-    f(
-      arg1,
-      arg2,
-      arg3,
-      arg4,
-      arg5,
-      arg6,
-      arg7,
-      arg8,
-      arg9,
-      arg10,
-      arg11,
-      arg12,
-      arg13,
-      arg14,
-      arg15,
-      arg16,
-      arg17,
-      arg18,
-      arg19,
-      arg20,
-      arg21,
-      arg22)
+      arg22: T22): R = f(
+    arg1,
+    arg2,
+    arg3,
+    arg4,
+    arg5,
+    arg6,
+    arg7,
+    arg8,
+    arg9,
+    arg10,
+    arg11,
+    arg12,
+    arg13,
+    arg14,
+    arg15,
+    arg16,
+    arg17,
+    arg18,
+    arg19,
+    arg20,
+    arg21,
+    arg22)
 }
 
 // scalastyle:on line.size.limit

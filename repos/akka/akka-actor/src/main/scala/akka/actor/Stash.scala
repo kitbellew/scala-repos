@@ -88,9 +88,8 @@ trait UnrestrictedStash extends Actor with StashSupport {
     *  Must be called when overriding this method, otherwise stashed messages won't be propagated to DeadLetters
     *  when actor stops.
     */
-  override def postStop(): Unit =
-    try unstashAll()
-    finally super.postStop()
+  override def postStop(): Unit = try unstashAll()
+  finally super.postStop()
 }
 
 /**
@@ -103,11 +102,10 @@ trait UnrestrictedStash extends Actor with StashSupport {
 private[akka] trait StashFactory { this: Actor ⇒
   private[akka] def createStash()(implicit
       ctx: ActorContext,
-      ref: ActorRef): StashSupport =
-    new StashSupport {
-      def context: ActorContext = ctx
-      def self: ActorRef = ref
-    }
+      ref: ActorRef): StashSupport = new StashSupport {
+    def context: ActorContext = ctx
+    def self: ActorRef = ref
+  }
 }
 
 /**
@@ -204,12 +202,11 @@ private[akka] trait StashSupport {
     *  The unstashed message is guaranteed to be removed from the stash regardless
     *  if the `unstash()` call successfully returns or throws an exception.
     */
-  private[akka] def unstash(): Unit =
-    if (theStash.nonEmpty) try {
-      enqueueFirst(theStash.head)
-    } finally {
-      theStash = theStash.tail
-    }
+  private[akka] def unstash(): Unit = if (theStash.nonEmpty) try {
+    enqueueFirst(theStash.head)
+  } finally {
+    theStash = theStash.tail
+  }
 
   /**
     *  Prepends all messages in the stash to the mailbox, and then clears the stash.

@@ -139,8 +139,9 @@ object Comet extends DispatchSnippet with LazyLoggable {
 
 abstract class CometFailureException(msg: String)
     extends SnippetFailureException(msg) {
-  override def buildStackTrace: NodeSeq =
-    <div>{msg}</div> ++ super.buildStackTrace
+  override def buildStackTrace: NodeSeq = <div>{
+    msg
+  }</div> ++ super.buildStackTrace
 }
 object NoCometTypeException
     extends CometFailureException(

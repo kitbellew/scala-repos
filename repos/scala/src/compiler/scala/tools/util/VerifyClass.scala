@@ -25,11 +25,10 @@ object VerifyClass {
       checkClass(x.getName.stripSuffix(".class").replace('/', '.'), cl)
     } toMap
 
-  def checkClassesInDir(name: String, cl: ClassLoader) =
-    (for {
-      file <- Path(name).walk
-      if file.name endsWith ".class"
-    } yield checkClass(name, cl)) toMap
+  def checkClassesInDir(name: String, cl: ClassLoader) = (for {
+    file <- Path(name).walk
+    if file.name endsWith ".class"
+  } yield checkClass(name, cl)) toMap
 
   def checkClasses(name: String, cl: ClassLoader) =
     if (name endsWith ".jar") checkClassesInJar(name, cl)

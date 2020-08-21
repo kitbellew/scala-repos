@@ -152,8 +152,8 @@ final class DecisionTreeClassifier @Since("1.4.0") (
   }
 
   @Since("1.4.1")
-  override def copy(extra: ParamMap): DecisionTreeClassifier =
-    defaultCopy(extra)
+  override def copy(extra: ParamMap): DecisionTreeClassifier = defaultCopy(
+    extra)
 }
 
 @Since("1.4.0")

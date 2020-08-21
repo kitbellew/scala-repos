@@ -34,8 +34,8 @@ object LiftIO {
 
   implicit def optionTLiftIO[F[_]: LiftIO] =
     new LiftIO[OptionT[F, ?]] {
-      def liftIO[A](ioa: IO[A]) =
-        OptionT(LiftIO[F].liftIO(ioa.map(Some(_): Option[A])))
+      def liftIO[A](ioa: IO[A]) = OptionT(
+        LiftIO[F].liftIO(ioa.map(Some(_): Option[A])))
     }
 
   implicit def eitherTLiftIO[F[_]: LiftIO, E] =
@@ -45,8 +45,8 @@ object LiftIO {
 
   implicit def streamTLiftIO[F[_]: LiftIO: Applicative] =
     new LiftIO[StreamT[F, ?]] {
-      def liftIO[A](ioa: IO[A]) =
-        StreamT(LiftIO[F].liftIO(ioa.map(StreamT.Yield(_, StreamT.empty))))
+      def liftIO[A](ioa: IO[A]) = StreamT(
+        LiftIO[F].liftIO(ioa.map(StreamT.Yield(_, StreamT.empty))))
     }
 
   implicit def kleisliLiftIO[F[_]: LiftIO, E] =
@@ -56,8 +56,8 @@ object LiftIO {
 
   implicit def writerTLiftIO[F[_]: LiftIO, W: Monoid] =
     new LiftIO[WriterT[F, W, ?]] {
-      def liftIO[A](ioa: IO[A]) =
-        WriterT(LiftIO[F].liftIO(ioa.map((Monoid[W].zero, _))))
+      def liftIO[A](ioa: IO[A]) = WriterT(
+        LiftIO[F].liftIO(ioa.map((Monoid[W].zero, _))))
     }
 
   implicit def stateTLiftIO[F[_]: LiftIO, S](implicit F: Monad[F]) =

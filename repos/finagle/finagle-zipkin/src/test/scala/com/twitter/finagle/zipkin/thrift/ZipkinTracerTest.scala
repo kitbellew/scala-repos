@@ -82,15 +82,14 @@ private[twitter] object ZipkinTracerTest {
       yield BinaryAnnotation("k", v)
   )
 
-  def genEvent(etype: events.Event.Type): Gen[events.Event] =
-    for {
-      ann <- genAnnotation
-      tid <- arbitrary[Long]
-      sid <- arbitrary[Long]
-    } yield events.Event(
-      etype,
-      Time.now,
-      objectVal = ann,
-      traceIdVal = tid,
-      spanIdVal = sid)
+  def genEvent(etype: events.Event.Type): Gen[events.Event] = for {
+    ann <- genAnnotation
+    tid <- arbitrary[Long]
+    sid <- arbitrary[Long]
+  } yield events.Event(
+    etype,
+    Time.now,
+    objectVal = ann,
+    traceIdVal = tid,
+    spanIdVal = sid)
 }

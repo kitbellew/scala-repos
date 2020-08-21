@@ -154,8 +154,8 @@ object REPL {
     }
   }
 
-  def toSourceFile(name: String) =
-    new BatchSourceFile(new PlainFile(new java.io.File(name)))
+  def toSourceFile(name: String) = new BatchSourceFile(
+    new PlainFile(new java.io.File(name)))
 
   def using[T, U](svar: Response[T])(op: T => U): Option[U] = {
     val res = svar.get match {

@@ -62,24 +62,21 @@ object RecoverJson {
       bufferIndex: Int,
       offset: Int,
       stack: Stack[Balanced]) {
-    def increment(balanced: Balanced) =
-      BalancedStackState(
-        bufferIndex,
-        offset + 1,
-        stack push balanced
-      )
-    def decrement =
-      BalancedStackState(
-        bufferIndex,
-        offset + 1,
-        stack pop
-      )
-    def skip =
-      BalancedStackState(
-        bufferIndex,
-        offset + 1,
-        stack
-      )
+    def increment(balanced: Balanced) = BalancedStackState(
+      bufferIndex,
+      offset + 1,
+      stack push balanced
+    )
+    def decrement = BalancedStackState(
+      bufferIndex,
+      offset + 1,
+      stack pop
+    )
+    def skip = BalancedStackState(
+      bufferIndex,
+      offset + 1,
+      stack
+    )
   }
 
   private def balancedStack(buffers: Vector[CharBuffer]) = {
@@ -158,16 +155,15 @@ object RecoverJson {
   def getJsonCloserBuffer(buffers: Vector[CharBuffer]) = {
     val BlankElement = "null"
 
-    def balancedToString(b: Balanced): String =
-      b match {
-        case Brace      => "}"
-        case Bracket    => "]"
-        case Colon(v)   => ":" + balancedToString(v)
-        case Key(v)     => "\"null\"" + balancedToString(v)
-        case Quote      => "\""
-        case EscapeChar => "\\"
-        case NullValue  => "null"
-      }
+    def balancedToString(b: Balanced): String = b match {
+      case Brace      => "}"
+      case Bracket    => "]"
+      case Colon(v)   => ":" + balancedToString(v)
+      case Key(v)     => "\"null\"" + balancedToString(v)
+      case Quote      => "\""
+      case EscapeChar => "\\"
+      case NullValue  => "null"
+    }
 
     val stringStack = balancedStack(buffers).map(balancedToString)
     // "}] <- stringStack

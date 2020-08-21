@@ -122,8 +122,8 @@ class BinaryClassificationMetrics @Since("1.3.0") (
     * @see http://en.wikipedia.org/wiki/F1_score
     */
   @Since("1.0.0")
-  def fMeasureByThreshold(beta: Double): RDD[(Double, Double)] =
-    createCurve(FMeasure(beta))
+  def fMeasureByThreshold(beta: Double): RDD[(Double, Double)] = createCurve(
+    FMeasure(beta))
 
   /**
     * Returns the (threshold, F-Measure) curve with beta = 1.0.

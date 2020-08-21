@@ -64,10 +64,9 @@ trait CValueGenerators {
     }
   }
 
-  def genCType: Gen[CType] =
-    frequency(
-      7 -> genCValueType(),
-      3 -> Gen.oneOf(CNull, CEmptyObject, CEmptyArray))
+  def genCType: Gen[CType] = frequency(
+    7 -> genCValueType(),
+    3 -> Gen.oneOf(CNull, CEmptyObject, CEmptyArray))
 
   def genValueForCValueType[A](cType: CValueType[A]): Gen[CWrappedValue[A]] =
     cType match {
@@ -91,12 +90,11 @@ trait CValueGenerators {
         }
     }
 
-  def genCValue(tpe: CType): Gen[CValue] =
-    tpe match {
-      case tpe: CValueType[_] => genValueForCValueType(tpe)
-      case CNull              => Gen.value(CNull)
-      case CEmptyObject       => Gen.value(CEmptyObject)
-      case CEmptyArray        => Gen.value(CEmptyArray)
-      case invalid            => sys.error("No values for type " + invalid)
-    }
+  def genCValue(tpe: CType): Gen[CValue] = tpe match {
+    case tpe: CValueType[_] => genValueForCValueType(tpe)
+    case CNull              => Gen.value(CNull)
+    case CEmptyObject       => Gen.value(CEmptyObject)
+    case CEmptyArray        => Gen.value(CEmptyArray)
+    case invalid            => sys.error("No values for type " + invalid)
+  }
 }

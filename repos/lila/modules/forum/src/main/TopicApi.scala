@@ -86,19 +86,18 @@ private[forum] final class TopicApi(
   def paginator(
       categ: Categ,
       page: Int,
-      troll: Boolean): Fu[Paginator[TopicView]] =
-    Paginator(
-      adapter = new Adapter[Topic](
-        selector = TopicRepo(troll) byCategQuery categ,
-        sort = Seq($sort.updatedDesc)
-      ) mapFuture { topic =>
-        $find.byId[Post](topic lastPostId troll) map { post =>
-          TopicView(categ, topic, post, env.postApi lastPageOf topic, troll)
-        }
-      },
-      currentPage = page,
-      maxPerPage = maxPerPage
-    )
+      troll: Boolean): Fu[Paginator[TopicView]] = Paginator(
+    adapter = new Adapter[Topic](
+      selector = TopicRepo(troll) byCategQuery categ,
+      sort = Seq($sort.updatedDesc)
+    ) mapFuture { topic =>
+      $find.byId[Post](topic lastPostId troll) map { post =>
+        TopicView(categ, topic, post, env.postApi lastPageOf topic, troll)
+      }
+    },
+    currentPage = page,
+    maxPerPage = maxPerPage
+  )
 
   def delete(categ: Categ, topic: Topic): Funit =
     PostRepo.idsByTopicId(topic.id) flatMap { postIds =>
@@ -126,25 +125,23 @@ private[forum] final class TopicApi(
       } >> env.recent.invalidate
     }
 
-  def denormalize(topic: Topic): Funit =
-    for {
-      nbPosts ← PostRepo countByTopics List(topic)
-      lastPost ← PostRepo lastByTopics List(topic)
-      nbPostsTroll ← PostRepoTroll countByTopics List(topic)
-      lastPostTroll ← PostRepoTroll lastByTopics List(topic)
-      _ ← $update(
-        topic.copy(
-          nbPosts = nbPosts,
-          lastPostId = lastPost ?? (_.id),
-          updatedAt = lastPost.fold(topic.updatedAt)(_.createdAt),
-          nbPostsTroll = nbPostsTroll,
-          lastPostIdTroll = lastPostTroll ?? (_.id),
-          updatedAtTroll = lastPostTroll.fold(topic.updatedAtTroll)(_.createdAt)
-        ))
-    } yield ()
+  def denormalize(topic: Topic): Funit = for {
+    nbPosts ← PostRepo countByTopics List(topic)
+    lastPost ← PostRepo lastByTopics List(topic)
+    nbPostsTroll ← PostRepoTroll countByTopics List(topic)
+    lastPostTroll ← PostRepoTroll lastByTopics List(topic)
+    _ ← $update(
+      topic.copy(
+        nbPosts = nbPosts,
+        lastPostId = lastPost ?? (_.id),
+        updatedAt = lastPost.fold(topic.updatedAt)(_.createdAt),
+        nbPostsTroll = nbPostsTroll,
+        lastPostIdTroll = lastPostTroll ?? (_.id),
+        updatedAtTroll = lastPostTroll.fold(topic.updatedAtTroll)(_.createdAt)
+      ))
+  } yield ()
 
-  def denormalize: Funit =
-    $find.all[Topic] flatMap { topics =>
-      topics.map(denormalize).sequenceFu
-    } void
+  def denormalize: Funit = $find.all[Topic] flatMap { topics =>
+    topics.map(denormalize).sequenceFu
+  } void
 }

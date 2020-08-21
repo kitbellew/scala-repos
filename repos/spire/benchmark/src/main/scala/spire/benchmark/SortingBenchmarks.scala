@@ -75,82 +75,77 @@ class SortingBenchmarks extends MyBenchmark with BenchmarkData {
     cs2 = if (typ == "complex") cs.map(complexToFake) else null
   }
 
-  def timeJavaSort(reps: Int) =
-    run(reps) {
-      if (typ == "int") {
-        val arr = is.clone; java.util.Arrays.sort(arr); arr.length
-      } else if (typ == "long") {
-        val arr = js.clone; java.util.Arrays.sort(arr); arr.length
-      } else if (typ == "float") {
-        val arr = fs.clone; java.util.Arrays.sort(arr); arr.length
-      } else if (typ == "double") {
-        val arr = ds.clone; java.util.Arrays.sort(arr); arr.length
-      } else if (typ == "complex") {
-        val arr = cs2.clone.asInstanceOf[Array[Object]];
-        java.util.Arrays.sort(arr); arr.length
-      }
+  def timeJavaSort(reps: Int) = run(reps) {
+    if (typ == "int") {
+      val arr = is.clone; java.util.Arrays.sort(arr); arr.length
+    } else if (typ == "long") {
+      val arr = js.clone; java.util.Arrays.sort(arr); arr.length
+    } else if (typ == "float") {
+      val arr = fs.clone; java.util.Arrays.sort(arr); arr.length
+    } else if (typ == "double") {
+      val arr = ds.clone; java.util.Arrays.sort(arr); arr.length
+    } else if (typ == "complex") {
+      val arr = cs2.clone.asInstanceOf[Array[Object]];
+      java.util.Arrays.sort(arr); arr.length
     }
+  }
 
-  def timeScalaQuicksort(reps: Int) =
-    run(reps) {
-      if (typ == "int") {
-        val arr = is.clone; scala.util.Sorting.quickSort(arr); arr.length
-      } else if (typ == "long") {
-        val arr = js.clone; scala.util.Sorting.quickSort(arr); arr.length
-      } else if (typ == "float") {
-        val arr = fs.clone; scala.util.Sorting.quickSort(arr); arr.length
-      } else if (typ == "double") {
-        val arr = ds.clone; scala.util.Sorting.quickSort(arr); arr.length
-      } else if (typ == "complex") {
-        implicit val ordering = Order.ordering(lexicographic)
-        val arr = cs.clone; scala.util.Sorting.quickSort(arr); arr.length
-      }
+  def timeScalaQuicksort(reps: Int) = run(reps) {
+    if (typ == "int") {
+      val arr = is.clone; scala.util.Sorting.quickSort(arr); arr.length
+    } else if (typ == "long") {
+      val arr = js.clone; scala.util.Sorting.quickSort(arr); arr.length
+    } else if (typ == "float") {
+      val arr = fs.clone; scala.util.Sorting.quickSort(arr); arr.length
+    } else if (typ == "double") {
+      val arr = ds.clone; scala.util.Sorting.quickSort(arr); arr.length
+    } else if (typ == "complex") {
+      implicit val ordering = Order.ordering(lexicographic)
+      val arr = cs.clone; scala.util.Sorting.quickSort(arr); arr.length
     }
+  }
 
-  def timeSpireInsertionSort(reps: Int): Unit =
-    run(reps) {
-      val n = if (pow > 13) 2 else spire.math.pow(2, pow).toInt
+  def timeSpireInsertionSort(reps: Int): Unit = run(reps) {
+    val n = if (pow > 13) 2 else spire.math.pow(2, pow).toInt
 
-      if (typ == "int") {
-        val arr = is.clone; spire.math.InsertionSort.sort(arr, 0, n); arr.length
-      } else if (typ == "long") {
-        val arr = js.clone; spire.math.InsertionSort.sort(arr, 0, n); arr.length
-      } else if (typ == "float") {
-        val arr = fs.clone; spire.math.InsertionSort.sort(arr, 0, n); arr.length
-      } else if (typ == "double") {
-        val arr = ds.clone; spire.math.InsertionSort.sort(arr, 0, n); arr.length
-      } else if (typ == "complex") {
-        val arr = cs.clone; spire.math.InsertionSort.sort(arr, 0, n); arr.length
-      }
+    if (typ == "int") {
+      val arr = is.clone; spire.math.InsertionSort.sort(arr, 0, n); arr.length
+    } else if (typ == "long") {
+      val arr = js.clone; spire.math.InsertionSort.sort(arr, 0, n); arr.length
+    } else if (typ == "float") {
+      val arr = fs.clone; spire.math.InsertionSort.sort(arr, 0, n); arr.length
+    } else if (typ == "double") {
+      val arr = ds.clone; spire.math.InsertionSort.sort(arr, 0, n); arr.length
+    } else if (typ == "complex") {
+      val arr = cs.clone; spire.math.InsertionSort.sort(arr, 0, n); arr.length
     }
+  }
 
-  def timeSpireMergeSort(reps: Int) =
-    run(reps) {
-      if (typ == "int") {
-        val arr = is.clone; spire.math.Sorting.mergeSort(arr); arr.length
-      } else if (typ == "long") {
-        val arr = js.clone; spire.math.Sorting.mergeSort(arr); arr.length
-      } else if (typ == "float") {
-        val arr = fs.clone; spire.math.Sorting.mergeSort(arr); arr.length
-      } else if (typ == "double") {
-        val arr = ds.clone; spire.math.Sorting.mergeSort(arr); arr.length
-      } else if (typ == "complex") {
-        val arr = cs.clone; spire.math.Sorting.mergeSort(arr); arr.length
-      }
+  def timeSpireMergeSort(reps: Int) = run(reps) {
+    if (typ == "int") {
+      val arr = is.clone; spire.math.Sorting.mergeSort(arr); arr.length
+    } else if (typ == "long") {
+      val arr = js.clone; spire.math.Sorting.mergeSort(arr); arr.length
+    } else if (typ == "float") {
+      val arr = fs.clone; spire.math.Sorting.mergeSort(arr); arr.length
+    } else if (typ == "double") {
+      val arr = ds.clone; spire.math.Sorting.mergeSort(arr); arr.length
+    } else if (typ == "complex") {
+      val arr = cs.clone; spire.math.Sorting.mergeSort(arr); arr.length
     }
+  }
 
-  def timeSpireQuickSort(reps: Int) =
-    run(reps) {
-      if (typ == "int") {
-        val arr = is.clone; spire.math.Sorting.quickSort(arr); arr.length
-      } else if (typ == "long") {
-        val arr = js.clone; spire.math.Sorting.quickSort(arr); arr.length
-      } else if (typ == "float") {
-        val arr = fs.clone; spire.math.Sorting.quickSort(arr); arr.length
-      } else if (typ == "double") {
-        val arr = ds.clone; spire.math.Sorting.quickSort(arr); arr.length
-      } else if (typ == "complex") {
-        val arr = cs.clone; spire.math.Sorting.quickSort(arr); arr.length
-      }
+  def timeSpireQuickSort(reps: Int) = run(reps) {
+    if (typ == "int") {
+      val arr = is.clone; spire.math.Sorting.quickSort(arr); arr.length
+    } else if (typ == "long") {
+      val arr = js.clone; spire.math.Sorting.quickSort(arr); arr.length
+    } else if (typ == "float") {
+      val arr = fs.clone; spire.math.Sorting.quickSort(arr); arr.length
+    } else if (typ == "double") {
+      val arr = ds.clone; spire.math.Sorting.quickSort(arr); arr.length
+    } else if (typ == "complex") {
+      val arr = cs.clone; spire.math.Sorting.quickSort(arr); arr.length
     }
+  }
 }

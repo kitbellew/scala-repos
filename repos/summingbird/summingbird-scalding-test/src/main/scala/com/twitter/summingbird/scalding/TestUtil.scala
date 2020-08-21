@@ -28,8 +28,8 @@ import org.scalacheck.Prop._
 import org.scalacheck.Properties
 
 object TestUtil {
-  def simpleTimeExtractor[T <: (Long, _)]: TimeExtractor[T] =
-    TimeExtractor(_._1)
+  def simpleTimeExtractor[T <: (Long, _)]: TimeExtractor[T] = TimeExtractor(
+    _._1)
 
   def compareMaps[K, V: Group](
       original: Iterable[Any],
@@ -111,13 +111,12 @@ object TestUtil {
       else if (d.milliSinceEpoch >= 0L) BatchID(1)
       else BatchID(0)
 
-    def earliestTimeOf(batch: BatchID) =
-      batch.id match {
-        case 0L => Timestamp.Min
-        case 1L => Timestamp(0)
-        case 2L => Timestamp.Max
-        case 3L => Timestamp.Max
-      }
+    def earliestTimeOf(batch: BatchID) = batch.id match {
+      case 0L => Timestamp.Min
+      case 1L => Timestamp(0)
+      case 2L => Timestamp.Max
+      case 3L => Timestamp.Max
+    }
     // this is just for testing, it covers everything with batch 1
     override def cover(interval: Interval[Timestamp]): Interval[BatchID] =
       Interval.leftClosedRightOpen(BatchID(1), BatchID(2))

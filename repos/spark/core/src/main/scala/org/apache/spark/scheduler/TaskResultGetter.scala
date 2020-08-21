@@ -55,12 +55,10 @@ private[spark] class TaskResultGetter(
       tid: Long,
       serializedData: ByteBuffer): Unit = {
     getTaskResultExecutor.execute(new Runnable {
-      override def run(): Unit =
-        Utils.logUncaughtExceptions {
-          try {
-            val (result, size) = serializer
-              .get()
-              .deserialize[TaskResult[_]](serializedData) match {
+      override def run(): Unit = Utils.logUncaughtExceptions {
+        try {
+          val (result, size) =
+            serializer.get().deserialize[TaskResult[_]](serializedData) match {
               case directResult: DirectTaskResult[_] =>
                 if (!taskSetManager.canFetchMoreResults(
                     serializedData.limit())) {
@@ -100,32 +98,32 @@ private[spark] class TaskResultGetter(
                 (deserializedResult, size)
             }
 
-            // Set the task result size in the accumulator updates received from the executors.
-            // We need to do this here on the driver because if we did this on the executors then
-            // we would have to serialize the result again after updating the size.
-            result.accumUpdates = result.accumUpdates.map { a =>
-              if (a.name == Some(InternalAccumulator.RESULT_SIZE)) {
-                assert(
-                  a.update == Some(0L),
-                  "task result size should not have been set on the executors")
-                a.copy(update = Some(size.toLong))
-              } else {
-                a
-              }
+          // Set the task result size in the accumulator updates received from the executors.
+          // We need to do this here on the driver because if we did this on the executors then
+          // we would have to serialize the result again after updating the size.
+          result.accumUpdates = result.accumUpdates.map { a =>
+            if (a.name == Some(InternalAccumulator.RESULT_SIZE)) {
+              assert(
+                a.update == Some(0L),
+                "task result size should not have been set on the executors")
+              a.copy(update = Some(size.toLong))
+            } else {
+              a
             }
-
-            scheduler.handleSuccessfulTask(taskSetManager, tid, result)
-          } catch {
-            case cnf: ClassNotFoundException =>
-              val loader = Thread.currentThread.getContextClassLoader
-              taskSetManager.abort("ClassNotFound with classloader: " + loader)
-            // Matching NonFatal so we don't catch the ControlThrowable from the "return" above.
-            case NonFatal(ex) =>
-              logError("Exception while getting task result", ex)
-              taskSetManager.abort(
-                "Exception while getting task result: %s".format(ex))
           }
+
+          scheduler.handleSuccessfulTask(taskSetManager, tid, result)
+        } catch {
+          case cnf: ClassNotFoundException =>
+            val loader = Thread.currentThread.getContextClassLoader
+            taskSetManager.abort("ClassNotFound with classloader: " + loader)
+          // Matching NonFatal so we don't catch the ControlThrowable from the "return" above.
+          case NonFatal(ex) =>
+            logError("Exception while getting task result", ex)
+            taskSetManager.abort(
+              "Exception while getting task result: %s".format(ex))
         }
+      }
     })
   }
 
@@ -137,25 +135,24 @@ private[spark] class TaskResultGetter(
     var reason: TaskEndReason = UnknownReason
     try {
       getTaskResultExecutor.execute(new Runnable {
-        override def run(): Unit =
-          Utils.logUncaughtExceptions {
-            val loader = Utils.getContextOrSparkClassLoader
-            try {
-              if (serializedData != null && serializedData.limit() > 0) {
-                reason = serializer
-                  .get()
-                  .deserialize[TaskEndReason](serializedData, loader)
-              }
-            } catch {
-              case cnd: ClassNotFoundException =>
-                // Log an error but keep going here -- the task failed, so not catastrophic
-                // if we can't deserialize the reason.
-                logError(
-                  "Could not deserialize TaskEndReason: ClassNotFound with classloader " + loader)
-              case ex: Exception => {}
+        override def run(): Unit = Utils.logUncaughtExceptions {
+          val loader = Utils.getContextOrSparkClassLoader
+          try {
+            if (serializedData != null && serializedData.limit() > 0) {
+              reason = serializer
+                .get()
+                .deserialize[TaskEndReason](serializedData, loader)
             }
-            scheduler.handleFailedTask(taskSetManager, tid, taskState, reason)
+          } catch {
+            case cnd: ClassNotFoundException =>
+              // Log an error but keep going here -- the task failed, so not catastrophic
+              // if we can't deserialize the reason.
+              logError(
+                "Could not deserialize TaskEndReason: ClassNotFound with classloader " + loader)
+            case ex: Exception => {}
           }
+          scheduler.handleFailedTask(taskSetManager, tid, taskState, reason)
+        }
       })
     } catch {
       case e: RejectedExecutionException if sparkEnv.isStopped =>

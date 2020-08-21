@@ -33,12 +33,11 @@ sealed abstract class IO[A] {
     * Interleaves the steps of this IO action with the steps of another,
     * consuming the results of both with the given function.
     */
-  def unsafeZipWith[B, C](iob: IO[B], f: (A, B) => C): IO[C] =
-    (for {
-      a <- unsafeInterleaveIO()
-      b <- iob.unsafeInterleaveIO()
-      c <- io(rw => a.zipWith(b)((x, y) => (rw -> f(x, y))))
-    } yield c)
+  def unsafeZipWith[B, C](iob: IO[B], f: (A, B) => C): IO[C] = (for {
+    a <- unsafeInterleaveIO()
+    b <- iob.unsafeInterleaveIO()
+    c <- io(rw => a.zipWith(b)((x, y) => (rw -> f(x, y))))
+  } yield c)
 
   /**
     * Interleaves the steps of this IO action with the steps of another,
@@ -53,18 +52,16 @@ sealed abstract class IO[A] {
   def unsafeZip_[B](iob: IO[B]): IO[B] = unsafeZipWith(iob, (a: A, b: B) => b)
 
   /** Continues this action with the given function. */
-  def map[B](f: A => B): IO[B] =
-    io(rw =>
-      apply(rw) map { case (nw, a) =>
-        (nw, f(a))
-      })
+  def map[B](f: A => B): IO[B] = io(rw =>
+    apply(rw) map { case (nw, a) =>
+      (nw, f(a))
+    })
 
   /** Continues this action with the given action. */
-  def flatMap[B](f: A => IO[B]): IO[B] =
-    io(rw =>
-      apply(rw) flatMap { case (nw, a) =>
-        f(a)(nw)
-      })
+  def flatMap[B](f: A => IO[B]): IO[B] = io(rw =>
+    apply(rw) flatMap { case (nw, a) =>
+      f(a)(nw)
+    })
 
   /** Lift this action to a given IO-like monad. */
   def liftIO[M[_]](implicit m: MonadIO[M]): M[A] =
@@ -99,41 +96,37 @@ sealed abstract class IO[A] {
     catchLeft map (_.leftMap(e => p(e).getOrElse(throw e)))
 
   /** Like "finally", but only performs the final action if there was an exception. */
-  def onException[B](action: IO[B]): IO[A] =
-    this except (e =>
-      for {
-        _ <- action
-        a <- (throw e): IO[A]
-      } yield a)
+  def onException[B](action: IO[B]): IO[A] = this except (e =>
+    for {
+      _ <- action
+      a <- (throw e): IO[A]
+    } yield a)
 
   /**
     * Applies the "during" action, calling "after" regardless of whether there was an exception.
     * All exceptions are rethrown. Generalizes try/finally.
     */
-  def bracket[B, C](after: A => IO[B])(during: A => IO[C]): IO[C] =
-    for {
-      a <- this
-      r <- during(a) onException after(a)
-      _ <- after(a)
-    } yield r
+  def bracket[B, C](after: A => IO[B])(during: A => IO[C]): IO[C] = for {
+    a <- this
+    r <- during(a) onException after(a)
+    _ <- after(a)
+  } yield r
 
   /** Like "bracket", but takes only a computation to run afterward. Generalizes "finally". */
-  def ensuring[B](sequel: IO[B]): IO[A] =
-    for {
-      r <- onException(sequel)
-      _ <- sequel
-    } yield r
+  def ensuring[B](sequel: IO[B]): IO[A] = for {
+    r <- onException(sequel)
+    _ <- sequel
+  } yield r
 
   /** A variant of "bracket" where the return value of this computation is not needed. */
   def bracket_[B, C](after: IO[B])(during: IO[C]): IO[C] =
     bracket(_ => after)(_ => during)
 
   /** A variant of "bracket" that performs the final action only if there was an error. */
-  def bracketOnError[B, C](after: A => IO[B])(during: A => IO[C]): IO[C] =
-    for {
-      a <- this
-      r <- during(a) onException after(a)
-    } yield r
+  def bracketOnError[B, C](after: A => IO[B])(during: A => IO[C]): IO[C] = for {
+    a <- this
+    r <- during(a) onException after(a)
+  } yield r
 
   def bracketIO[M[_], B](after: A => IO[Unit])(during: A => M[B])(implicit
       m: MonadControlIO[M]): M[B] =
@@ -199,28 +192,25 @@ object IO extends IOInstances {
   def getChar: IO[Char] = IO(readChar())
 
   /** Writes a character to standard output. */
-  def putChar(c: Char): IO[Unit] =
-    io(rw =>
-      return_(rw -> {
-        print(c)
-        ()
-      }))
+  def putChar(c: Char): IO[Unit] = io(rw =>
+    return_(rw -> {
+      print(c)
+      ()
+    }))
 
   /** Writes a string to standard output. */
-  def putStr(s: String): IO[Unit] =
-    io(rw =>
-      return_(rw -> {
-        print(s)
-        ()
-      }))
+  def putStr(s: String): IO[Unit] = io(rw =>
+    return_(rw -> {
+      print(s)
+      ()
+    }))
 
   /** Writes a string to standard output, followed by a newline. */
-  def putStrLn(s: String): IO[Unit] =
-    io(rw =>
-      return_(rw -> {
-        println(s)
-        ()
-      }))
+  def putStrLn(s: String): IO[Unit] = io(rw =>
+    return_(rw -> {
+      println(s)
+      ()
+    }))
 
   /** Reads a line of standard input. */
   def readLn: IO[String] = IO(readLine())
@@ -287,16 +277,15 @@ object IO extends IOInstances {
     * The Forall quantifier prevents resources from being returned by this function.
     */
   def runRegionT[P[_]: MonadControlIO, A](r: Forall[RegionT[?, P, A]]): P[A] = {
-    def after(hsIORef: IORef[List[RefCountedFinalizer]]) =
-      for {
-        hs <- hsIORef.read
-        _ <- hs.foldRight[IO[Unit]](IO.ioUnit) { case (r, o) =>
-          for {
-            refCnt <- r.refcount.mod(_ - 1)
-            _ <- if (refCnt == 0) r.finalizer else IO.ioUnit
-          } yield ()
-        }
-      } yield ()
+    def after(hsIORef: IORef[List[RefCountedFinalizer]]) = for {
+      hs <- hsIORef.read
+      _ <- hs.foldRight[IO[Unit]](IO.ioUnit) { case (r, o) =>
+        for {
+          refCnt <- r.refcount.mod(_ - 1)
+          _ <- if (refCnt == 0) r.finalizer else IO.ioUnit
+        } yield ()
+      }
+    } yield ()
     newIORef(List[RefCountedFinalizer]()).bracketIO(after)(s =>
       r.apply.value.run(s))
   }

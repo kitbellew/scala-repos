@@ -43,8 +43,8 @@ class IndexInt(keys: Vec[Int]) extends Index[Int] {
   // get the key at the position specified
   def raw(idx: Int): Int = keys(idx)
 
-  def take(locs: Array[Int]): Index[Int] =
-    Index(array.take(keys, locs, IndexImpl.sentinelErr))
+  def take(locs: Array[Int]): Index[Int] = Index(
+    array.take(keys, locs, IndexImpl.sentinelErr))
 
   def without(locs: Array[Int]): Index[Int] = Index(array.remove(keys, locs))
 

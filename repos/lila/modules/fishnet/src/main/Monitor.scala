@@ -22,10 +22,9 @@ private final class Monitor(
       depth: Int,
       pvSize: Int)
 
-  private def sumOf[A](ints: List[A])(f: A => Option[Int]) =
-    ints.foldLeft(0) { case (acc, a) =>
-      acc + f(a).getOrElse(0)
-    }
+  private def sumOf[A](ints: List[A])(f: A => Option[Int]) = ints.foldLeft(0) {
+    case (acc, a) => acc + f(a).getOrElse(0)
+  }
 
   private[fishnet] def analysis(
       work: Work.Analysis,
@@ -116,32 +115,31 @@ private final class Monitor(
       .notAcquired()
   }
 
-  private def monitorClients: Unit =
-    repo.allRecentClients map { clients =>
-      import lila.mon.fishnet.client._
+  private def monitorClients: Unit = repo.allRecentClients map { clients =>
+    import lila.mon.fishnet.client._
 
-      status enabled clients.count(_.enabled)
-      status disabled clients.count(_.disabled)
+    status enabled clients.count(_.enabled)
+    status disabled clients.count(_.disabled)
 
-      Client.Skill.all foreach { s =>
-        skill(s.key)(clients.count(_.skill == s))
-      }
+    Client.Skill.all foreach { s =>
+      skill(s.key)(clients.count(_.skill == s))
+    }
 
-      clients
-        .flatMap(_.instance)
-        .map(_.version.value)
-        .groupBy(identity)
-        .mapValues(_.size) foreach { case (v, nb) =>
-        version(v)(nb)
-      }
-      clients
-        .flatMap(_.instance)
-        .map(_.engine.name)
-        .groupBy(identity)
-        .mapValues(_.size) foreach { case (s, nb) =>
-        engine(s)(nb)
-      }
-    } andThenAnyway scheduleClients
+    clients
+      .flatMap(_.instance)
+      .map(_.version.value)
+      .groupBy(identity)
+      .mapValues(_.size) foreach { case (v, nb) =>
+      version(v)(nb)
+    }
+    clients
+      .flatMap(_.instance)
+      .map(_.engine.name)
+      .groupBy(identity)
+      .mapValues(_.size) foreach { case (s, nb) =>
+      engine(s)(nb)
+    }
+  } andThenAnyway scheduleClients
 
   private def monitorWork: Unit = {
 

@@ -168,15 +168,14 @@ class AkkaGraphiteReporter(
     sendNumericOrIgnore(key + ".avg-gauge", gauge.getValue, now)
   }
 
-  override def stop(): Unit =
-    try {
-      super.stop()
-      graphite.close()
-    } catch {
-      case ex: Exception ⇒
-        System.err.println(
-          "Was unable to close Graphite connection: " + ex.getMessage)
-    }
+  override def stop(): Unit = try {
+    super.stop()
+    graphite.close()
+  } catch {
+    case ex: Exception ⇒
+      System.err.println(
+        "Was unable to close Graphite connection: " + ex.getMessage)
+  }
 
   private def sendNumericOrIgnore(key: String, value: Any, now: Long) {
     // seriously nothing better than this? (without Any => String => Num)

@@ -113,31 +113,30 @@ trait ProtoUser {
     /**
       * Get a nice name for the user
       */
-    def niceName: String =
-      (getFirstName, getLastName, getEmail) match {
-        case (f, l, e) if f.length > 1 && l.length > 1 =>
-          f + " " + l + " (" + e + ")"
-        case (f, _, e) if f.length > 1 => f + " (" + e + ")"
-        case (_, l, e) if l.length > 1 => l + " (" + e + ")"
-        case (_, _, e)                 => e
-      }
+    def niceName: String = (getFirstName, getLastName, getEmail) match {
+      case (f, l, e) if f.length > 1 && l.length > 1 =>
+        f + " " + l + " (" + e + ")"
+      case (f, _, e) if f.length > 1 => f + " (" + e + ")"
+      case (_, l, e) if l.length > 1 => l + " (" + e + ")"
+      case (_, _, e)                 => e
+    }
 
     /**
       * Get a short name for the user
       */
-    def shortName: String =
-      (getFirstName, getLastName) match {
-        case (f, l) if f.length > 1 && l.length > 1 => f + " " + l
-        case (f, _) if f.length > 1                 => f
-        case (_, l) if l.length > 1                 => l
-        case _                                      => getEmail
-      }
+    def shortName: String = (getFirstName, getLastName) match {
+      case (f, l) if f.length > 1 && l.length > 1 => f + " " + l
+      case (f, _) if f.length > 1                 => f
+      case (_, l) if l.length > 1                 => l
+      case _                                      => getEmail
+    }
 
     /**
       * Get an email link
       */
-    def niceNameWEmailLink =
-      <a href={"mailto:" + urlEncode(getEmail)}>{niceName}</a>
+    def niceNameWEmailLink = <a href={"mailto:" + urlEncode(getEmail)}>{
+      niceName
+    }</a>
 
   }
 
@@ -343,18 +342,17 @@ trait ProtoUser {
     * A Menu.LocParam for testing if the user is logged in and if they're not,
     * redirect them to the login page
     */
-  def loginFirst =
-    If(
-      loggedIn_? _,
-      () => {
-        import net.liftweb.http.{RedirectWithState, RedirectState}
-        val uri = S.uriAndQueryString
-        RedirectWithState(
-          loginPageURL,
-          RedirectState(() => { loginRedirect.set(uri) })
-        )
-      }
-    )
+  def loginFirst = If(
+    loggedIn_? _,
+    () => {
+      import net.liftweb.http.{RedirectWithState, RedirectState}
+      val uri = S.uriAndQueryString
+      RedirectWithState(
+        loginPageURL,
+        RedirectState(() => { loginRedirect.set(uri) })
+      )
+    }
+  )
 
   /**
     * Is there a user logged in and are they a superUser?
@@ -582,12 +580,11 @@ trait ProtoUser {
   /**
     * The SiteMap mutator function
     */
-  def sitemapMutator: SiteMap => SiteMap =
-    SiteMap.sitemapMutator {
-      case AfterUnapply(menu) => menu :: sitemap
-      case HereUnapply(_)     => sitemap
-      case UnderUnapply(menu) => List(menu.rebuild(_ ::: sitemap))
-    }(SiteMap.addMenusAtEndMutator(sitemap))
+  def sitemapMutator: SiteMap => SiteMap = SiteMap.sitemapMutator {
+    case AfterUnapply(menu) => menu :: sitemap
+    case HereUnapply(_)     => sitemap
+    case UnderUnapply(menu) => List(menu.rebuild(_ ::: sitemap))
+  }(SiteMap.addMenusAtEndMutator(sitemap))
 
   lazy val sitemap: List[Menu] =
     List(
@@ -765,8 +762,8 @@ trait ProtoUser {
     */
   protected def generateValidationEmailBodies(
       user: TheUserType,
-      resetLink: String): List[MailBodyType] =
-    List(xmlToMailBodyType(signupMailBody(user, resetLink)))
+      resetLink: String): List[MailBodyType] = List(
+    xmlToMailBodyType(signupMailBody(user, resetLink)))
 
   protected object signupFunc extends RequestVar[Box[() => NodeSeq]](Empty) {
     override lazy val __nameSalt = Helpers.nextFuncName
@@ -851,19 +848,18 @@ trait ProtoUser {
       case _                                   => false
     }
 
-  def validateUser(id: String): NodeSeq =
-    findUserByUniqueId(id) match {
-      case Full(user) if !user.validated_? =>
-        user.setValidated(true).resetUniqueId().save
-        logUserIn(
-          user,
-          () => {
-            S.notice(S.?("account.validated"))
-            S.redirectTo(homePage)
-          })
+  def validateUser(id: String): NodeSeq = findUserByUniqueId(id) match {
+    case Full(user) if !user.validated_? =>
+      user.setValidated(true).resetUniqueId().save
+      logUserIn(
+        user,
+        () => {
+          S.notice(S.?("account.validated"))
+          S.redirectTo(homePage)
+        })
 
-      case _ => S.error(S.?("invalid.validation.link")); S.redirectTo(homePage)
-    }
+    case _ => S.error(S.?("invalid.validation.link")); S.redirectTo(homePage)
+  }
 
   /**
     * How do we prompt the user for the username.  By default,
@@ -1233,10 +1229,9 @@ trait ProtoUser {
 
   protected def wrapIt(in: NodeSeq): NodeSeq =
     screenWrap.map(new RuleTransformer(new RewriteRule {
-      override def transform(n: Node) =
-        n match {
-          case e: Elem if "bind" == e.label && "lift" == e.prefix => in
-          case _                                                  => n
-        }
+      override def transform(n: Node) = n match {
+        case e: Elem if "bind" == e.label && "lift" == e.prefix => in
+        case _                                                  => n
+      }
     })) openOr in
 }

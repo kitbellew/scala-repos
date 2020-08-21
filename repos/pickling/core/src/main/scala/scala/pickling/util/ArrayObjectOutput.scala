@@ -72,19 +72,18 @@ case class GenObjectOutput(
     val anyRefArrBuf: ArrayBuffer[Any] = new ArrayBuffer[Any],
     val stringArrBuf: ArrayBuffer[String] = new ArrayBuffer[String]
 ) extends ObjectOutput {
-  def toInput: ObjectInput =
-    new GenObjectInput(
-      booleanArrBuf.iterator,
-      byteArrBuf.iterator,
-      charArrBuf.iterator,
-      doubleArrBuf.iterator,
-      floatArrBuf.iterator,
-      intArrBuf.iterator,
-      longArrBuf.iterator,
-      shortArrBuf.iterator,
-      arrByteArrBuf.iterator,
-      anyRefArrBuf.iterator,
-      stringArrBuf.iterator)
+  def toInput: ObjectInput = new GenObjectInput(
+    booleanArrBuf.iterator,
+    byteArrBuf.iterator,
+    charArrBuf.iterator,
+    doubleArrBuf.iterator,
+    floatArrBuf.iterator,
+    intArrBuf.iterator,
+    longArrBuf.iterator,
+    shortArrBuf.iterator,
+    arrByteArrBuf.iterator,
+    anyRefArrBuf.iterator,
+    stringArrBuf.iterator)
 
   // Members declared in java.io.DataOutput
   def writeBoolean(x: Boolean): Unit = { booleanArrBuf += x }

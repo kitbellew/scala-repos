@@ -287,10 +287,9 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
     val filterAddedHeaderVal = "custom header val"
 
     object CustomHeaderFilter extends EssentialFilter {
-      def apply(next: EssentialAction) =
-        EssentialAction { request =>
-          next(request.copy(headers = addCustomHeader(request.headers)))
-        }
+      def apply(next: EssentialAction) = EssentialAction { request =>
+        next(request.copy(headers = addCustomHeader(request.headers)))
+      }
       def addCustomHeader(originalHeaders: Headers): Headers = {
         FakeHeaders(
           originalHeaders.headers :+ (filterAddedHeaderKey -> filterAddedHeaderVal))
@@ -322,17 +321,16 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
   }
 
   object ErrorHandlingFilter extends EssentialFilter {
-    def apply(next: EssentialAction) =
-      EssentialAction { request =>
-        try {
-          next(request).recover { case t: Throwable =>
-            Results.InternalServerError(t.getMessage)
-          }(play.api.libs.concurrent.Execution.Implicits.defaultContext)
-        } catch {
-          case t: Throwable =>
-            Accumulator.done(Results.InternalServerError(t.getMessage))
-        }
+    def apply(next: EssentialAction) = EssentialAction { request =>
+      try {
+        next(request).recover { case t: Throwable =>
+          Results.InternalServerError(t.getMessage)
+        }(play.api.libs.concurrent.Execution.Implicits.defaultContext)
+      } catch {
+        case t: Throwable =>
+          Accumulator.done(Results.InternalServerError(t.getMessage))
       }
+    }
   }
 
   object JavaErrorHandlingFilter extends play.mvc.EssentialFilter {
@@ -344,52 +342,48 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
       Results.internalServerError(Option(t.getCause).getOrElse(t).getMessage)
     }
 
-    def apply(next: EssentialAction) =
-      new EssentialAction {
-        override def apply(request: Http.RequestHeader) = {
-          try {
-            next
-              .apply(request)
-              .recover(
-                new java.util.function.Function[Throwable, Result]() {
-                  def apply(t: Throwable) = getResult(t)
-                },
-                play.core.Execution.internalContext)
-          } catch {
-            case t: Throwable => Accumulator.done(getResult(t))
-          }
+    def apply(next: EssentialAction) = new EssentialAction {
+      override def apply(request: Http.RequestHeader) = {
+        try {
+          next
+            .apply(request)
+            .recover(
+              new java.util.function.Function[Throwable, Result]() {
+                def apply(t: Throwable) = getResult(t)
+              },
+              play.core.Execution.internalContext)
+        } catch {
+          case t: Throwable => Accumulator.done(getResult(t))
         }
       }
+    }
   }
 
   object SkipNextFilter extends EssentialFilter {
     val expectedText = "This filter does not call next"
 
-    def apply(next: EssentialAction) =
-      EssentialAction { request =>
-        Accumulator.done(Results.Ok(expectedText))
-      }
+    def apply(next: EssentialAction) = EssentialAction { request =>
+      Accumulator.done(Results.Ok(expectedText))
+    }
   }
 
   object SkipNextWithErrorFilter extends EssentialFilter {
     val expectedText = "This filter does not call next and throws an exception"
 
-    def apply(next: EssentialAction) =
-      EssentialAction { request =>
-        Accumulator.done(Future.failed(new RuntimeException(expectedText)))
-      }
+    def apply(next: EssentialAction) = EssentialAction { request =>
+      Accumulator.done(Future.failed(new RuntimeException(expectedText)))
+    }
   }
 
   object ThrowExceptionFilter extends EssentialFilter {
     val expectedText =
       "This filter calls next and throws an exception afterwords"
 
-    def apply(next: EssentialAction) =
-      EssentialAction { request =>
-        next(request).map { _ =>
-          throw new RuntimeException(expectedText)
-        }(ec)
-      }
+    def apply(next: EssentialAction) = EssentialAction { request =>
+      next(request).map { _ =>
+        throw new RuntimeException(expectedText)
+      }(ec)
+    }
   }
 
   val expectedOkText = "Hello World"

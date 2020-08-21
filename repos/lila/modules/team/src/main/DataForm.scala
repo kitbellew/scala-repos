@@ -34,13 +34,12 @@ private[team] final class DataForm(val captcher: akka.actor.ActorSelection)
         d => !teamExists(d).awaitSeconds(2))
       .verifying(captchaFailMessage, validateCaptcha _))
 
-  def edit(team: Team) =
-    Form(
-      mapping(Fields.location, Fields.description, Fields.open)(TeamEdit.apply)(
-        TeamEdit.unapply)) fill TeamEdit(
-      location = team.location,
-      description = team.description,
-      open = team.open.fold(1, 0))
+  def edit(team: Team) = Form(
+    mapping(Fields.location, Fields.description, Fields.open)(TeamEdit.apply)(
+      TeamEdit.unapply)) fill TeamEdit(
+    location = team.location,
+    description = team.description,
+    open = team.open.fold(1, 0))
 
   val request = Form(
     mapping(
@@ -80,11 +79,10 @@ private[team] case class TeamSetup(
 
   def isOpen = open == 1
 
-  def trim =
-    copy(
-      name = name.trim,
-      location = location map (_.trim) filter (_.nonEmpty),
-      description = description.trim)
+  def trim = copy(
+    name = name.trim,
+    location = location map (_.trim) filter (_.nonEmpty),
+    description = description.trim)
 }
 
 private[team] case class TeamEdit(
@@ -94,10 +92,9 @@ private[team] case class TeamEdit(
 
   def isOpen = open == 1
 
-  def trim =
-    copy(
-      location = location map (_.trim) filter (_.nonEmpty),
-      description = description.trim)
+  def trim = copy(
+    location = location map (_.trim) filter (_.nonEmpty),
+    description = description.trim)
 }
 
 private[team] case class RequestSetup(

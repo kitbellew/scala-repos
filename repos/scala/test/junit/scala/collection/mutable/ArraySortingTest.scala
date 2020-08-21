@@ -9,8 +9,8 @@ import org.junit.Test
 class ArraySortingTest {
 
   class CantSortMe(val i: Int) {
-    override def equals(a: Any) =
-      throw new IllegalArgumentException("I cannot be equalled!")
+    override def equals(a: Any) = throw new IllegalArgumentException(
+      "I cannot be equalled!")
   }
 
   object CanOrder extends Ordering[CantSortMe] {

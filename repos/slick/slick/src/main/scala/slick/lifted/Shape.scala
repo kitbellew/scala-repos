@@ -205,15 +205,14 @@ abstract class ProductNodeShape[Level <: ShapeLevel, C, M <: C, U <: C, P <: C]
     }
     buildValue(elems.toIndexedSeq)
   }
-  def toNode(value: Mixed): Node =
-    ProductNode(
-      ConstArray.from(
-        shapes.iterator
-          .zip(getIterator(value))
-          .map { case (p, f) =>
-            p.toNode(f.asInstanceOf[p.Mixed])
-          }
-          .toIterable))
+  def toNode(value: Mixed): Node = ProductNode(
+    ConstArray.from(
+      shapes.iterator
+        .zip(getIterator(value))
+        .map { case (p, f) =>
+          p.toNode(f.asInstanceOf[p.Mixed])
+        }
+        .toIterable))
 }
 
 /** Base class for ProductNodeShapes with a type mapping */
@@ -224,15 +223,14 @@ abstract class MappedProductShape[
     U <: C,
     P <: C]
     extends ProductNodeShape[Level, C, M, U, P] {
-  override def toNode(value: Mixed) =
-    TypeMapping(
-      super.toNode(value),
-      MappedScalaType.Mapper(toBase, toMapped, None),
-      classTag)
-  def toBase(v: Any) =
-    new ProductWrapper(getIterator(v.asInstanceOf[C]).toIndexedSeq)
-  def toMapped(v: Any) =
-    buildValue(TupleSupport.buildIndexedSeq(v.asInstanceOf[Product]))
+  override def toNode(value: Mixed) = TypeMapping(
+    super.toNode(value),
+    MappedScalaType.Mapper(toBase, toMapped, None),
+    classTag)
+  def toBase(v: Any) = new ProductWrapper(
+    getIterator(v.asInstanceOf[C]).toIndexedSeq)
+  def toMapped(v: Any) = buildValue(
+    TupleSupport.buildIndexedSeq(v.asInstanceOf[Product]))
   def classTag: ClassTag[U]
 }
 
@@ -258,8 +256,8 @@ final class TupleShape[
   override def getIterator(value: Product) = value.productIterator
   def getElement(value: Product, idx: Int) = value.productElement(idx)
   def buildValue(elems: IndexedSeq[Any]) = TupleSupport.buildTuple(elems)
-  def copy(shapes: Seq[Shape[_ <: ShapeLevel, _, _, _]]) =
-    new TupleShape(shapes: _*)
+  def copy(shapes: Seq[Shape[_ <: ShapeLevel, _, _, _]]) = new TupleShape(
+    shapes: _*)
 }
 
 /** A generic case class shape that can be used to lift a case class of
@@ -293,8 +291,8 @@ class CaseClassShape[
       LiftedCaseClass] {
   val shapes = columnShapes.asInstanceOf[TupleShape[_, _, _, _]].shapes
   override def toMapped(v: Any) = mapPlain(v.asInstanceOf[PlainTuple])
-  def buildValue(elems: IndexedSeq[Any]) =
-    mapLifted(TupleSupport.buildTuple(elems).asInstanceOf[LiftedTuple])
+  def buildValue(elems: IndexedSeq[Any]) = mapLifted(
+    TupleSupport.buildTuple(elems).asInstanceOf[LiftedTuple])
   def copy(s: Seq[Shape[_ <: ShapeLevel, _, _, _]]) =
     new CaseClassShape(mapLifted, mapPlain) { override val shapes = s }
 }
@@ -340,8 +338,8 @@ class ProductClassShape[E <: Product, C <: Product](
       E,
       C
     ] {
-  override def toMapped(v: Any) =
-    mapPlain(v.asInstanceOf[Product].productIterator.toSeq)
+  override def toMapped(v: Any) = mapPlain(
+    v.asInstanceOf[Product].productIterator.toSeq)
   def buildValue(elems: IndexedSeq[Any]) = mapLifted(elems)
   def copy(s: Seq[Shape[_ <: ShapeLevel, _, _, _]]) =
     new ProductClassShape(s, mapLifted, mapPlain)
@@ -378,14 +376,12 @@ case class ShapedValue[T, U](
   }
   def toNode = shape.toNode(value)
   def packedValue[R](implicit
-      ev: Shape[_ <: FlatShapeLevel, T, _, R]): ShapedValue[R, U] =
-    ShapedValue(
-      shape.pack(value).asInstanceOf[R],
-      shape.packedShape.asInstanceOf[Shape[FlatShapeLevel, R, U, _]])
-  def zip[T2, U2](s2: ShapedValue[T2, U2]) =
-    new ShapedValue[(T, T2), (U, U2)](
-      (value, s2.value),
-      Shape.tuple2Shape(shape, s2.shape))
+      ev: Shape[_ <: FlatShapeLevel, T, _, R]): ShapedValue[R, U] = ShapedValue(
+    shape.pack(value).asInstanceOf[R],
+    shape.packedShape.asInstanceOf[Shape[FlatShapeLevel, R, U, _]])
+  def zip[T2, U2](s2: ShapedValue[T2, U2]) = new ShapedValue[(T, T2), (U, U2)](
+    (value, s2.value),
+    Shape.tuple2Shape(shape, s2.shape))
   def <>[R: ClassTag](f: (U => R), g: (R => Option[U])) =
     new MappedProjection[R, U](
       shape.toNode(value),

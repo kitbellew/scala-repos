@@ -111,13 +111,12 @@ private[akka] object MultiStreamOutputProcessor {
 
     private def closeSubscriber(
         s: Subscriber[Any],
-        withState: CompletedState): Unit =
-      withState match {
-        case Completed ⇒ tryOnComplete(s)
-        case Cancelled ⇒ // nothing to do
-        case Failed(e: SpecViolation) ⇒ // nothing to do
-        case Failed(e) ⇒ tryOnError(s, e)
-      }
+        withState: CompletedState): Unit = withState match {
+      case Completed ⇒ tryOnComplete(s)
+      case Cancelled ⇒ // nothing to do
+      case Failed(e: SpecViolation) ⇒ // nothing to do
+      case Failed(e) ⇒ tryOnError(s, e)
+    }
 
     override def subscribe(s: Subscriber[_ >: Any]): Unit = {
       requireNonNullSubscriber(s)
@@ -231,13 +230,12 @@ private[akka] trait MultiStreamOutputProcessorLike
 
   override protected def handleSubscriptionTimeout(
       target: Publisher[_],
-      cause: Exception) =
-    target match {
-      case s: SubstreamOutput ⇒
-        s.error(cause)
-        s.attachSubscriber(CancelingSubscriber)
-      case _ ⇒ // ignore
-    }
+      cause: Exception) = target match {
+    case s: SubstreamOutput ⇒
+      s.error(cause)
+      s.attachSubscriber(CancelingSubscriber)
+    case _ ⇒ // ignore
+  }
 }
 
 /**

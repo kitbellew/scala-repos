@@ -324,13 +324,12 @@ private final case class PostPageFunctions(
   /**
     * Create a new instance based on the last seen time
     */
-  def updateLastSeen =
-    new PostPageFunctions(
-      renderVersion,
-      functionCount,
-      longLife,
-      Helpers.millis,
-      functions)
+  def updateLastSeen = new PostPageFunctions(
+    renderVersion,
+    functionCount,
+    longLife,
+    Helpers.millis,
+    functions)
 
 }
 
@@ -534,10 +533,9 @@ class LiftSession(
       cometList = cometList :+ what
     }
 
-  private[http] def exitComet(what: LiftActor): Unit =
-    asyncSync.synchronized {
-      cometList = cometList.filterNot(_._1 eq what)
-    }
+  private[http] def exitComet(what: LiftActor): Unit = asyncSync.synchronized {
+    cometList = cometList.filterNot(_._1 eq what)
+  }
 
   private case class RunnerHolder(
       name: String,
@@ -598,17 +596,16 @@ class LiftSession(
         }
     }
 
-    def buildFunc(i: RunnerHolder): () => Any =
-      i.func match {
-        case bfh if bfh.supportsFileParams_? =>
-          () => state.uploadedFiles.filter(_.name == i.name).map(v => bfh(v))
-        case normal =>
-          () =>
-            normal(
-              state.params.getOrElse(
-                i.name,
-                state.uploadedFiles.filter(_.name == i.name).map(_.fileName)))
-      }
+    def buildFunc(i: RunnerHolder): () => Any = i.func match {
+      case bfh if bfh.supportsFileParams_? =>
+        () => state.uploadedFiles.filter(_.name == i.name).map(v => bfh(v))
+      case normal =>
+        () =>
+          normal(
+            state.params.getOrElse(
+              i.name,
+              state.uploadedFiles.filter(_.name == i.name).map(_.fileName)))
+    }
 
     val ret = toRun.map(_.owner).distinct.flatMap { w =>
       val f = toRun.filter(_.owner == w)
@@ -701,21 +698,20 @@ class LiftSession(
     sessionRewriter = HashMap.empty
   }
 
-  def fixSessionTime(): Unit =
-    synchronized {
-      for (httpSession <- this.httpSession) {
-        lastServiceTime = millis // DO NOT REMOVE THIS LINE!!!!!
-        val diff = lastServiceTime - httpSession.lastAccessedTime
-        val maxInactive = httpSession.maxInactiveInterval.toInt
-        val togo: Int = maxInactive - (diff / 1000L).toInt
-        // if we're within 2 minutes of session timeout and
-        // the Servlet session doesn't seem to have been updated,
-        // extends the lifespan of the HttpSession
-        if (diff > 1000L && togo < 120) {
-          httpSession.setMaxInactiveInterval(maxInactive + 120)
-        }
+  def fixSessionTime(): Unit = synchronized {
+    for (httpSession <- this.httpSession) {
+      lastServiceTime = millis // DO NOT REMOVE THIS LINE!!!!!
+      val diff = lastServiceTime - httpSession.lastAccessedTime
+      val maxInactive = httpSession.maxInactiveInterval.toInt
+      val togo: Int = maxInactive - (diff / 1000L).toInt
+      // if we're within 2 minutes of session timeout and
+      // the Servlet session doesn't seem to have been updated,
+      // extends the lifespan of the HttpSession
+      if (diff > 1000L && togo < 120) {
+        httpSession.setMaxInactiveInterval(maxInactive + 120)
       }
     }
+  }
 
   def doCometActorCleanup(): Unit = {
     import scala.collection.JavaConversions._
@@ -726,10 +722,9 @@ class LiftSession(
   /**
     * Adds a cleanup function that will be executed when session is terminated
     */
-  def addSessionCleanup(f: LiftSession => Unit): Unit =
-    synchronized {
-      onSessionEnd = f :: onSessionEnd
-    }
+  def addSessionCleanup(f: LiftSession => Unit): Unit = synchronized {
+    onSessionEnd = f :: onSessionEnd
+  }
 
   /**
     * Destroy this session and the underlying container session.
@@ -1362,12 +1357,11 @@ class LiftSession(
     retFunc _
   }
 
-  private def fixScriptableObject(in: Any): Any =
-    in match {
-      case UniqueTag.NOT_FOUND  => Empty
-      case UniqueTag.NULL_VALUE => Empty
-      case x                    => x
-    }
+  private def fixScriptableObject(in: Any): Any = in match {
+    case UniqueTag.NOT_FOUND  => Empty
+    case UniqueTag.NULL_VALUE => Empty
+    case x                    => x
+  }
 
   def findField(name: List[String], cur: Any): Any =
     name.foldLeft(cur) {
@@ -1846,43 +1840,39 @@ class LiftSession(
 
                       import java.lang.reflect.{Type, ParameterizedType}
 
-                      def isFunc1(tpe: Type): Boolean =
-                        tpe match {
-                          case null => false
-                          case c: Class[_] =>
-                            classOf[Function1[_, _]] isAssignableFrom c
-                          case _ => false
-                        }
+                      def isFunc1(tpe: Type): Boolean = tpe match {
+                        case null => false
+                        case c: Class[_] =>
+                          classOf[Function1[_, _]] isAssignableFrom c
+                        case _ => false
+                      }
 
-                      def isNodeSeq(tpe: Type): Boolean =
-                        tpe match {
-                          case null => false
-                          case c: Class[_] =>
-                            classOf[NodeSeq] isAssignableFrom c
-                          case _ => false
-                        }
+                      def isNodeSeq(tpe: Type): Boolean = tpe match {
+                        case null        => false
+                        case c: Class[_] => classOf[NodeSeq] isAssignableFrom c
+                        case _           => false
+                      }
 
-                      def testGeneric(tpe: Type): Boolean =
-                        tpe match {
-                          case null => false
-                          case pt: ParameterizedType =>
-                            if (isFunc1(pt.getRawType) &&
-                              pt.getActualTypeArguments.length == 2 &&
-                              isNodeSeq(pt.getActualTypeArguments()(0)) &&
-                              isNodeSeq(pt.getActualTypeArguments()(1)))
-                              true
-                            else testGeneric(pt.getRawType)
+                      def testGeneric(tpe: Type): Boolean = tpe match {
+                        case null => false
+                        case pt: ParameterizedType =>
+                          if (isFunc1(pt.getRawType) &&
+                            pt.getActualTypeArguments.length == 2 &&
+                            isNodeSeq(pt.getActualTypeArguments()(0)) &&
+                            isNodeSeq(pt.getActualTypeArguments()(1)))
+                            true
+                          else testGeneric(pt.getRawType)
 
-                          case clz: Class[_] =>
-                            if (clz == classOf[Object]) false
-                            else
-                              clz.getGenericInterfaces.find(testGeneric) match {
-                                case Some(_) => true
-                                case _       => testGeneric(clz.getSuperclass)
-                              }
+                        case clz: Class[_] =>
+                          if (clz == classOf[Object]) false
+                          else
+                            clz.getGenericInterfaces.find(testGeneric) match {
+                              case Some(_) => true
+                              case _       => testGeneric(clz.getSuperclass)
+                            }
 
-                          case _ => false
-                        }
+                        case _ => false
+                      }
 
                       def isFuncNodeSeq(meth: Method): Boolean = {
                         (classOf[

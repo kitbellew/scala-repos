@@ -20,11 +20,11 @@ class AggregateFileRepository(repos: Seq[FileRepository])
   private def fromFirstRepo[A](load: FileRepository => Option[A]) =
     repos.collectFirst(Function.unlift(load))
 
-  def loadFile[A](path: String)(loader: (InputStream) => A) =
-    fromFirstRepo(_.loadFile(path)(loader))
+  def loadFile[A](path: String)(loader: (InputStream) => A) = fromFirstRepo(
+    _.loadFile(path)(loader))
 
-  def handleFile[A](path: String)(handler: (FileHandle) => A) =
-    fromFirstRepo(_.handleFile(path)(handler))
+  def handleFile[A](path: String)(handler: (FileHandle) => A) = fromFirstRepo(
+    _.handleFile(path)(handler))
 
   def findFileWithName(name: String) = fromFirstRepo(_.findFileWithName(name))
 }

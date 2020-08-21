@@ -10,6 +10,6 @@ import scala.language.implicitConversions
   */
 package object templates {
   implicit def toExpandedCondition[T](
-      condition: Condition[T]): ExpandedCondition[T] =
-    new ExpandedCondition(condition)
+      condition: Condition[T]): ExpandedCondition[T] = new ExpandedCondition(
+    condition)
 }

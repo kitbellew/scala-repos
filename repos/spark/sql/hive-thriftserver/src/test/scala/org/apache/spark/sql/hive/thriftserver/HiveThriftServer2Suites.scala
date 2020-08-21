@@ -638,16 +638,15 @@ object ServerMode extends Enumeration {
 abstract class HiveThriftJdbcTest extends HiveThriftServer2Test {
   Utils.classForName(classOf[HiveDriver].getCanonicalName)
 
-  private def jdbcUri =
-    if (mode == ServerMode.http) {
-      s"""jdbc:hive2://localhost:$serverPort/
+  private def jdbcUri = if (mode == ServerMode.http) {
+    s"""jdbc:hive2://localhost:$serverPort/
        |default?
        |hive.server2.transport.mode=http;
        |hive.server2.thrift.http.path=cliservice
      """.stripMargin.split("\n").mkString.trim
-    } else {
-      s"jdbc:hive2://localhost:$serverPort/"
-    }
+  } else {
+    s"jdbc:hive2://localhost:$serverPort/"
+  }
 
   def withMultipleConnectionJdbcStatement(fs: (Statement => Unit)*) {
     val user = System.getProperty("user.name")

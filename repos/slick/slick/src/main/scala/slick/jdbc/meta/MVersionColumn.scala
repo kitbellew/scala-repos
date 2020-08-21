@@ -17,10 +17,9 @@ case class MVersionColumn(
 }
 
 object MVersionColumn {
-  def getVersionColumns(table: MQName) =
-    ResultSetAction[MVersionColumn](
-      _.metaData
-        .getVersionColumns(table.catalog_?, table.schema_?, table.name)) { r =>
+  def getVersionColumns(table: MQName) = ResultSetAction[MVersionColumn](
+    _.metaData.getVersionColumns(table.catalog_?, table.schema_?, table.name)) {
+    r =>
       MVersionColumn(
         r.skip.<<,
         r.<<,
@@ -34,5 +33,5 @@ object MVersionColumn {
           case _                                       => None
         }
       )
-    }
+  }
 }

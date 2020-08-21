@@ -216,9 +216,8 @@ private final case class BackoffOptionsImpl(
   def withManualReset = copy(reset = Some(ManualReset))
   def withSupervisorStrategy(supervisorStrategy: OneForOneStrategy) =
     copy(supervisorStrategy = supervisorStrategy)
-  def withDefaultStoppingStrategy =
-    copy(supervisorStrategy =
-      OneForOneStrategy()(SupervisorStrategy.stoppingStrategy.decider))
+  def withDefaultStoppingStrategy = copy(supervisorStrategy =
+    OneForOneStrategy()(SupervisorStrategy.stoppingStrategy.decider))
 
   def props = {
     require(minBackoff > Duration.Zero, "minBackoff must be > 0")

@@ -31,13 +31,12 @@ final class Env(
 
   private val socketHub = system.actorOf(
     Props(new lila.socket.SocketHubActor.Default[Socket] {
-      def mkActor(challengeId: String) =
-        new Socket(
-          challengeId = challengeId,
-          history = new lila.socket.History(ttl = HistoryMessageTtl),
-          getChallenge = repo.byId,
-          uidTimeout = UidTimeout,
-          socketTimeout = SocketTimeout)
+      def mkActor(challengeId: String) = new Socket(
+        challengeId = challengeId,
+        history = new lila.socket.History(ttl = HistoryMessageTtl),
+        getChallenge = repo.byId,
+        uidTimeout = UidTimeout,
+        socketTimeout = SocketTimeout)
     }),
     name = SocketName
   )

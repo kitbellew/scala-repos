@@ -77,21 +77,20 @@ trait OutputFormatter {
     *
     * @return
     */
-  def convertToText(topNode: Element): String =
-    topNode match {
-      case null => ""
-      case node => {
-        (
-          node
-            .children()
-            .map((e: Element) => {
-              StringEscapeUtils.unescapeHtml(e.text).trim
-            }))
-          .toList
-          .mkString("\n\n")
-      }
-
+  def convertToText(topNode: Element): String = topNode match {
+    case null => ""
+    case node => {
+      (
+        node
+          .children()
+          .map((e: Element) => {
+            StringEscapeUtils.unescapeHtml(e.text).trim
+          }))
+        .toList
+        .mkString("\n\n")
     }
+
+  }
 
   /**
     * cleans up and converts any nodes that should be considered text into text
@@ -117,12 +116,11 @@ trait OutputFormatter {
     * give em the boot
     */
   private def removeNodesWithNegativeScores(topNode: Element) {
-    def tryInt(text: String): Int =
-      try {
-        Integer.parseInt(text)
-      } catch {
-        case _: Exception => 0
-      }
+    def tryInt(text: String): Int = try {
+      Integer.parseInt(text)
+    } catch {
+      case _: Exception => 0
+    }
 
     val gravityItems = selectElements("*[gravityScore]", topNode)
     for (item <- gravityItems) {

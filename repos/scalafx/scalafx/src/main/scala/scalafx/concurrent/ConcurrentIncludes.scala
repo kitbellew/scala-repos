@@ -68,9 +68,9 @@ trait ConcurrentIncludes {
     * @return $SFX $SSER
     */
   implicit def jfxScheduledService2sfxScheduledService[T](
-      s: jfxc.ScheduledService[T]): ScheduledService[T] =
-    if (s != null) new ScheduledService[T](s) {}
-    else null
+      s: jfxc.ScheduledService[T]): ScheduledService[T] = if (s != null)
+    new ScheduledService[T](s) {}
+  else null
 
   /**
     * $START$TSK.html $TSK$END
@@ -78,9 +78,9 @@ trait ConcurrentIncludes {
     * @param t $JFX $TSK
     * @return $SFX $TSK
     */
-  implicit def jfxTask2sfxTask[T](t: jfxc.Task[T]): Task[T] =
-    if (t != null) new Task[T](t) {}
-    else null
+  implicit def jfxTask2sfxTask[T](t: jfxc.Task[T]): Task[T] = if (t != null)
+    new Task[T](t) {}
+  else null
 
   /**
     * $START$WRK.html $WRK$END

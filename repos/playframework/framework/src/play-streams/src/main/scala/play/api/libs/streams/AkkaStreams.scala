@@ -86,21 +86,20 @@ object AkkaStreams {
   /**
     * A flow that will ignore upstream finishes.
     */
-  def ignoreAfterFinish[T]: Flow[T, T, _] =
-    Flow[T].transform(() =>
-      new PushPullStage[T, T] {
-        override def onPush(elem: T, ctx: Context[T]) = ctx.push(elem)
-        override def onUpstreamFinish(ctx: Context[T]) = ctx.absorbTermination()
-        override def onUpstreamFailure(cause: Throwable, ctx: Context[T]) =
-          ctx.absorbTermination()
-        override def onPull(ctx: Context[T]) = {
-          if (!ctx.isFinishing) {
-            ctx.pull()
-          } else {
-            null
-          }
+  def ignoreAfterFinish[T]: Flow[T, T, _] = Flow[T].transform(() =>
+    new PushPullStage[T, T] {
+      override def onPush(elem: T, ctx: Context[T]) = ctx.push(elem)
+      override def onUpstreamFinish(ctx: Context[T]) = ctx.absorbTermination()
+      override def onUpstreamFailure(cause: Throwable, ctx: Context[T]) =
+        ctx.absorbTermination()
+      override def onPull(ctx: Context[T]) = {
+        if (!ctx.isFinishing) {
+          ctx.pull()
+        } else {
+          null
         }
-      })
+      }
+    })
 
   /**
     * A flow that will ignore downstream cancellation, and instead will continue receiving and ignoring the stream.

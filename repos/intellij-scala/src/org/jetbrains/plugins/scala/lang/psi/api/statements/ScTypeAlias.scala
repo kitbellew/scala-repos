@@ -40,11 +40,10 @@ trait ScTypeAlias
 
   override protected def isSimilarMemberForNavigation(
       m: ScMember,
-      isStrict: Boolean) =
-    m match {
-      case t: ScTypeAlias => t.name == name
-      case _              => false
-    }
+      isStrict: Boolean) = m match {
+    case t: ScTypeAlias => t.name == name
+    case _              => false
+  }
 
   def isExistentialTypeAlias: Boolean = {
     getContext match {

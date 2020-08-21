@@ -30,11 +30,10 @@ trait TypeConverterSupport {
 object TypeConverterSupport extends TypeConverterSupport
 
 trait LowestPriorityImplicitConversions extends TypeConverterSupport {
-  implicit def lowestPriorityAny2T[T: Manifest]: TypeConverter[Any, T] =
-    safe {
-      case a if manifest[T].erasure.isAssignableFrom(a.getClass) =>
-        a.asInstanceOf[T]
-    }
+  implicit def lowestPriorityAny2T[T: Manifest]: TypeConverter[Any, T] = safe {
+    case a if manifest[T].erasure.isAssignableFrom(a.getClass) =>
+      a.asInstanceOf[T]
+  }
 }
 
 trait LowPriorityImplicitConversions extends LowestPriorityImplicitConversions {
@@ -198,11 +197,11 @@ object Conversions extends DefaultImplicitConversions {
 
   }
 
-  implicit def stringToValTypeConversion(source: String) =
-    new ValConversion(source)
+  implicit def stringToValTypeConversion(source: String) = new ValConversion(
+    source)
 
-  implicit def stringToDateConversion(source: String) =
-    new DateConversion(source)
+  implicit def stringToDateConversion(source: String) = new DateConversion(
+    source)
 
   implicit def stringToSeqConversion(source: String) = new SeqConversion(source)
 }

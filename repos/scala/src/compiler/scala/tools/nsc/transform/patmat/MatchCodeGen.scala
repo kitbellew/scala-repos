@@ -96,10 +96,9 @@ trait MatchCodeGen extends Interface {
       // for name-based matching, but this was an expedient route for the basics.
       def drop(tgt: Tree)(n: Int): Tree = {
         def callDirect = fn(tgt, nme.drop, LIT(n))
-        def callRuntime =
-          Apply(
-            REF(currentRun.runDefinitions.traversableDropMethod),
-            tgt :: LIT(n) :: Nil)
+        def callRuntime = Apply(
+          REF(currentRun.runDefinitions.traversableDropMethod),
+          tgt :: LIT(n) :: Nil)
         def needsRuntime =
           (tgt.tpe ne null) && (typeOfMemberNamedDrop(tgt.tpe) == NoType)
 
@@ -111,27 +110,24 @@ trait MatchCodeGen extends Interface {
         checker MEMBER_== REF(binder)
 
       // the force is needed mainly to deal with the GADT typing hack (we can't detect it otherwise as tp nor pt need contain an abstract type, we're just casting wildly)
-      def _asInstanceOf(b: Symbol, tp: Type): Tree =
-        if (b.info <:< tp) REF(b)
-        else gen.mkCastPreservingAnnotations(REF(b), tp)
-      def _isInstanceOf(b: Symbol, tp: Type): Tree =
-        gen.mkIsInstanceOf(
-          REF(b),
-          tp.withoutAnnotations,
-          any = true,
-          wrapInApply = false)
+      def _asInstanceOf(b: Symbol, tp: Type): Tree = if (b.info <:< tp) REF(b)
+      else gen.mkCastPreservingAnnotations(REF(b), tp)
+      def _isInstanceOf(b: Symbol, tp: Type): Tree = gen.mkIsInstanceOf(
+        REF(b),
+        tp.withoutAnnotations,
+        any = true,
+        wrapInApply = false)
 
-      def mkZero(tp: Type): Tree =
-        gen.mkConstantZero(tp) match {
-          case Constant(null) =>
-            gen.mkAsInstanceOf(
-              Literal(Constant(null)),
-              tp,
-              any = true,
-              wrapInApply = false
-            ) // the magic incantation is true/false here
-          case const => Literal(const)
-        }
+      def mkZero(tp: Type): Tree = gen.mkConstantZero(tp) match {
+        case Constant(null) =>
+          gen.mkAsInstanceOf(
+            Literal(Constant(null)),
+            tp,
+            any = true,
+            wrapInApply = false
+          ) // the magic incantation is true/false here
+        case const => Literal(const)
+      }
     }
   }
 
@@ -142,8 +138,8 @@ trait MatchCodeGen extends Interface {
 
     // TODO: error message
     private lazy val oneType = typer.typedOperator(_match(vpmName.one)).tpe
-    override def pureType(tp: Type): Type =
-      firstParamType(appliedType(oneType, tp :: Nil))
+    override def pureType(tp: Type): Type = firstParamType(
+      appliedType(oneType, tp :: Nil))
   }
 
   trait PureCodegen extends CodegenCore with PureMatchMonadInterface {
@@ -183,12 +179,11 @@ trait MatchCodeGen extends Interface {
           nextBinder: Symbol,
           next: Tree): Tree = flatMap(guard(cond, res), nextBinder, next)
       //  __match.guard(`guardTree`, ()).flatMap((_: P[Unit]) => `next`)
-      def flatMapGuard(guardTree: Tree, next: Tree): Tree =
-        flatMapCond(
-          guardTree,
-          CODE.UNIT,
-          freshSym(guardTree.pos, pureType(UnitTpe)),
-          next)
+      def flatMapGuard(guardTree: Tree, next: Tree): Tree = flatMapCond(
+        guardTree,
+        CODE.UNIT,
+        freshSym(guardTree.pos, pureType(UnitTpe)),
+        next)
     }
   }
 

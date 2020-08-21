@@ -23,13 +23,12 @@ object FrameArbitraries {
   // Generates frame of size of up to 20x10
   //  with 90% of entries between -1e3/+1e3 and 10% NA
 
-  def frameDoubleWithNA: Gen[Frame[Int, Int, Double]] =
-    for {
-      n <- Gen.choose(0, 20)
-      m <- Gen.choose(0, 10)
-      lst <- Gen.listOfN(
-        n * m,
-        Gen.frequency((9, Gen.chooseNum(-1e3, 1e3)), (1, na.to[Double])))
-    } yield Frame(Mat(n, m, lst.toArray))
+  def frameDoubleWithNA: Gen[Frame[Int, Int, Double]] = for {
+    n <- Gen.choose(0, 20)
+    m <- Gen.choose(0, 10)
+    lst <- Gen.listOfN(
+      n * m,
+      Gen.frequency((9, Gen.chooseNum(-1e3, 1e3)), (1, na.to[Double])))
+  } yield Frame(Mat(n, m, lst.toArray))
 
 }

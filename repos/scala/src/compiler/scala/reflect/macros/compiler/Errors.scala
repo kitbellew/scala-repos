@@ -29,28 +29,25 @@ trait Errors extends Traces {
     abort(culprit.pos, message)
   }
 
-  def MacroImplAmbiguousError() =
-    implRefError(
-      "macro implementation reference is ambiguous: makes sense both as\n" +
-        "a macro bundle method reference and a vanilla object method reference")
+  def MacroImplAmbiguousError() = implRefError(
+    "macro implementation reference is ambiguous: makes sense both as\n" +
+      "a macro bundle method reference and a vanilla object method reference")
 
-  def MacroBundleNonStaticError() =
-    bundleRefError("macro bundles must be static")
+  def MacroBundleNonStaticError() = bundleRefError(
+    "macro bundles must be static")
 
-  def MacroBundleWrongShapeError() =
-    bundleRefError(
-      "macro bundles must be concrete monomorphic classes having a single constructor with a `val c: Context` parameter")
+  def MacroBundleWrongShapeError() = bundleRefError(
+    "macro bundles must be concrete monomorphic classes having a single constructor with a `val c: Context` parameter")
 
   trait Error {
     self: MacroImplRefCompiler =>
 
     // sanity check errors
 
-    def MacroImplReferenceWrongShapeError() =
-      implRefError(
-        "macro implementation reference has wrong shape. required:\n" +
-          "macro [<static object>].<method name>[[<type args>]] or\n" +
-          "macro [<macro bundle>].<method name>[[<type args>]]")
+    def MacroImplReferenceWrongShapeError() = implRefError(
+      "macro implementation reference has wrong shape. required:\n" +
+        "macro [<static object>].<method name>[[<type args>]] or\n" +
+        "macro [<macro bundle>].<method name>[[<type args>]]")
 
     def MacroImplWrongNumberOfTypeArgumentsError() = {
       val diagnostic =
@@ -66,15 +63,14 @@ trait Errors extends Traces {
       if (isImplBundle) "bundle implementation"
       else "macro implementation"
 
-    def MacroImplNotPublicError() =
-      implRefError(s"${macroImplementationWording} must be public")
+    def MacroImplNotPublicError() = implRefError(
+      s"${macroImplementationWording} must be public")
 
-    def MacroImplOverloadedError() =
-      implRefError(s"${macroImplementationWording} cannot be overloaded")
+    def MacroImplOverloadedError() = implRefError(
+      s"${macroImplementationWording} cannot be overloaded")
 
-    def MacroImplNonTagImplicitParameters(params: List[Symbol]) =
-      implRefError(
-        s"${macroImplementationWording}s cannot have implicit parameters other than WeakTypeTag evidences")
+    def MacroImplNonTagImplicitParameters(params: List[Symbol]) = implRefError(
+      s"${macroImplementationWording}s cannot have implicit parameters other than WeakTypeTag evidences")
 
     // compatibility errors
 
@@ -167,20 +163,19 @@ trait Errors extends Traces {
           untype = false) +
           "\n" + message)
 
-    def MacroImplParamssMismatchError() =
-      compatibilityError("number of parameter sections differ")
+    def MacroImplParamssMismatchError() = compatibilityError(
+      "number of parameter sections differ")
 
     def MacroImplExtraParamsError(
         aparams: List[Symbol],
-        rparams: List[Symbol]) =
-      compatibilityError(lengthMsg("value", "found", aparams(rparams.length)))
+        rparams: List[Symbol]) = compatibilityError(
+      lengthMsg("value", "found", aparams(rparams.length)))
 
     def MacroImplMissingParamsError(
         aparams: List[Symbol],
-        rparams: List[Symbol]) =
-      compatibilityError(
-        abbreviateCoreAliases(
-          lengthMsg("value", "required", rparams(aparams.length))))
+        rparams: List[Symbol]) = compatibilityError(
+      abbreviateCoreAliases(
+        lengthMsg("value", "required", rparams(aparams.length))))
 
     def checkMacroImplParamTypeMismatch(atpe: Type, rparam: Symbol) =
       checkConforms("parameter " + rparam.name, rparam.tpe, atpe)
@@ -193,9 +188,8 @@ trait Errors extends Traces {
         "parameter names differ: " + rparam.name + " != " + aparam.name)
 
     def MacroImplVarargMismatchError(aparam: Symbol, rparam: Symbol) = {
-      def fail(paramName: Name) =
-        compatibilityError(
-          "types incompatible for parameter " + paramName + ": corresponding is not a vararg parameter")
+      def fail(paramName: Name) = compatibilityError(
+        "types incompatible for parameter " + paramName + ": corresponding is not a vararg parameter")
       if (isRepeated(rparam) && !isRepeated(aparam)) fail(rparam.name)
       if (!isRepeated(rparam) && isRepeated(aparam)) fail(aparam.name)
     }

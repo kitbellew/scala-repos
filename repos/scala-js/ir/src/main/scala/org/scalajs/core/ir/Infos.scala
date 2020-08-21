@@ -246,11 +246,10 @@ object Infos {
       this
     }
 
-    private def baseNameOf(tpe: ReferenceType): String =
-      tpe match {
-        case ClassType(name)    => name
-        case ArrayType(base, _) => base
-      }
+    private def baseNameOf(tpe: ReferenceType): String = tpe match {
+      case ClassType(name)    => name
+      case ArrayType(base, _) => base
+    }
 
     def result(): MethodInfo = {
       MethodInfo(

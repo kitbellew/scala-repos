@@ -84,12 +84,11 @@ object GitSpecUtil {
       walk.addTree(revCommit.getTree)
       walk.setRecursive(true)
       @scala.annotation.tailrec
-      def _getPathObjectId: ObjectId =
-        walk.next match {
-          case true if (walk.getPathString == path) => walk.getObjectId(0)
-          case true                                 => _getPathObjectId
-          case false                                => throw new Exception(s"not found ${branch} / ${path}")
-        }
+      def _getPathObjectId: ObjectId = walk.next match {
+        case true if (walk.getPathString == path) => walk.getObjectId(0)
+        case true                                 => _getPathObjectId
+        case false                                => throw new Exception(s"not found ${branch} / ${path}")
+      }
       _getPathObjectId
     }
     JGitUtil.getContentInfo(git, path, objectId)

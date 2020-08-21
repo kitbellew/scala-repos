@@ -36,44 +36,42 @@ private[api] final class GameApi(
       withMoveTimes: Boolean,
       token: Option[String],
       nb: Option[Int],
-      page: Option[Int]): Fu[JsObject] =
-    Paginator(
-      adapter = new CachedAdapter(
-        adapter = new BSONAdapter[Game](
-          collection = gameTube.coll,
-          selector = BSONDocument(
-            G.playerUids -> user.id,
-            G.status -> BSONDocument("$gte" -> chess.Status.Mate.id),
-            G.rated -> rated.map(
-              _.fold[BSONValue](
-                BSONBoolean(true),
-                BSONDocument("$exists" -> false))),
-            G.analysed -> analysed.map(
-              _.fold[BSONValue](
-                BSONBoolean(true),
-                BSONDocument("$exists" -> false)))
-          ),
-          projection = BSONDocument(),
-          sort = BSONDocument(G.createdAt -> -1)
+      page: Option[Int]): Fu[JsObject] = Paginator(
+    adapter = new CachedAdapter(
+      adapter = new BSONAdapter[Game](
+        collection = gameTube.coll,
+        selector = BSONDocument(
+          G.playerUids -> user.id,
+          G.status -> BSONDocument("$gte" -> chess.Status.Mate.id),
+          G.rated -> rated.map(
+            _.fold[BSONValue](
+              BSONBoolean(true),
+              BSONDocument("$exists" -> false))),
+          G.analysed -> analysed.map(
+            _.fold[BSONValue](
+              BSONBoolean(true),
+              BSONDocument("$exists" -> false)))
         ),
-        nbResults = fuccess {
-          rated.fold(user.count.game)(
-            _.fold(user.count.rated, user.count.casual))
-        }
+        projection = BSONDocument(),
+        sort = BSONDocument(G.createdAt -> -1)
       ),
-      currentPage = math.max(0, page | 1),
-      maxPerPage = math.max(1, math.min(100, nb | 10))
-    ) flatMap { pag =>
-      gamesJson(
-        withAnalysis = withAnalysis,
-        withMoves = withMoves,
-        withOpening = withOpening,
-        withFens = false,
-        withMoveTimes = withMoveTimes,
-        token = token)(pag.currentPageResults) map { games =>
-        PaginatorJson(pag withCurrentPageResults games)
+      nbResults = fuccess {
+        rated.fold(user.count.game)(_.fold(user.count.rated, user.count.casual))
       }
+    ),
+    currentPage = math.max(0, page | 1),
+    maxPerPage = math.max(1, math.min(100, nb | 10))
+  ) flatMap { pag =>
+    gamesJson(
+      withAnalysis = withAnalysis,
+      withMoves = withMoves,
+      withOpening = withOpening,
+      withFens = false,
+      withMoveTimes = withMoveTimes,
+      token = token)(pag.currentPageResults) map { games =>
+      PaginatorJson(pag withCurrentPageResults games)
     }
+  }
 
   def one(
       id: String,
@@ -144,65 +142,63 @@ private[api] final class GameApi(
       withFens: Boolean,
       withBlurs: Boolean = false,
       withHold: Boolean = false,
-      withMoveTimes: Boolean = false) =
-    Json
-      .obj(
-        "id" -> g.id,
-        "initialFen" -> initialFen,
-        "rated" -> g.rated,
-        "variant" -> g.variant.key,
-        "speed" -> g.speed.key,
-        "perf" -> PerfPicker.key(g),
-        "timestamp" -> g.createdAt.getDate,
-        "turns" -> g.turns,
-        "status" -> g.status.name,
-        "clock" -> g.clock.map { clock =>
-          Json.obj(
-            "initial" -> clock.limit,
-            "increment" -> clock.increment,
-            "totalTime" -> clock.estimateTotalTime
+      withMoveTimes: Boolean = false) = Json
+    .obj(
+      "id" -> g.id,
+      "initialFen" -> initialFen,
+      "rated" -> g.rated,
+      "variant" -> g.variant.key,
+      "speed" -> g.speed.key,
+      "perf" -> PerfPicker.key(g),
+      "timestamp" -> g.createdAt.getDate,
+      "turns" -> g.turns,
+      "status" -> g.status.name,
+      "clock" -> g.clock.map { clock =>
+        Json.obj(
+          "initial" -> clock.limit,
+          "increment" -> clock.increment,
+          "totalTime" -> clock.estimateTotalTime
+        )
+      },
+      "daysPerTurn" -> g.daysPerTurn,
+      "players" -> JsObject(g.players.zipWithIndex map { case (p, i) =>
+        p.color.name -> Json
+          .obj(
+            "userId" -> p.userId,
+            "name" -> p.name,
+            "rating" -> p.rating,
+            "ratingDiff" -> p.ratingDiff,
+            "provisional" -> p.provisional.option(true),
+            "moveTimes" -> withMoveTimes.fold(
+              g.moveTimes.zipWithIndex.filter(_._2 % 2 == i).map(_._1),
+              JsNull),
+            "blurs" -> withBlurs.option(p.blurs),
+            "hold" -> p.holdAlert.ifTrue(withHold).fold[JsValue](JsNull) { h =>
+              Json.obj(
+                "ply" -> h.ply,
+                "mean" -> h.mean,
+                "sd" -> h.sd
+              )
+            },
+            "analysis" -> analysisOption.flatMap(analysisApi.player(p.color))
           )
-        },
-        "daysPerTurn" -> g.daysPerTurn,
-        "players" -> JsObject(g.players.zipWithIndex map { case (p, i) =>
-          p.color.name -> Json
-            .obj(
-              "userId" -> p.userId,
-              "name" -> p.name,
-              "rating" -> p.rating,
-              "ratingDiff" -> p.ratingDiff,
-              "provisional" -> p.provisional.option(true),
-              "moveTimes" -> withMoveTimes.fold(
-                g.moveTimes.zipWithIndex.filter(_._2 % 2 == i).map(_._1),
-                JsNull),
-              "blurs" -> withBlurs.option(p.blurs),
-              "hold" -> p.holdAlert.ifTrue(withHold).fold[JsValue](JsNull) {
-                h =>
-                  Json.obj(
-                    "ply" -> h.ply,
-                    "mean" -> h.mean,
-                    "sd" -> h.sd
-                  )
-              },
-              "analysis" -> analysisOption.flatMap(analysisApi.player(p.color))
-            )
-            .noNull
-        }),
-        "analysis" -> analysisOption
-          .ifTrue(withAnalysis)
-          .|@|(pgnOption)
-          .apply(analysisApi.game),
-        "moves" -> withMoves.option(g.pgnMoves mkString " "),
-        "opening" -> withOpening.??(g.opening),
-        "fens" -> withFens ?? {
-          chess.Replay.boards(g.pgnMoves, initialFen, g.variant).toOption map {
-            boards =>
-              JsArray(
-                boards map chess.format.Forsyth.exportBoard map JsString.apply)
-          }
-        },
-        "winner" -> g.winnerColor.map(_.name),
-        "url" -> url
-      )
-      .noNull
+          .noNull
+      }),
+      "analysis" -> analysisOption
+        .ifTrue(withAnalysis)
+        .|@|(pgnOption)
+        .apply(analysisApi.game),
+      "moves" -> withMoves.option(g.pgnMoves mkString " "),
+      "opening" -> withOpening.??(g.opening),
+      "fens" -> withFens ?? {
+        chess.Replay.boards(g.pgnMoves, initialFen, g.variant).toOption map {
+          boards =>
+            JsArray(
+              boards map chess.format.Forsyth.exportBoard map JsString.apply)
+        }
+      },
+      "winner" -> g.winnerColor.map(_.name),
+      "url" -> url
+    )
+    .noNull
 }

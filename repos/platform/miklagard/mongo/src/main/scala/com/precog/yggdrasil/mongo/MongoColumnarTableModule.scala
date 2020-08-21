@@ -94,32 +94,31 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
 
     private def jTypeToProperties(
         tpe: JType,
-        current: Set[String]): Set[String] =
-      tpe match {
-        case JArrayFixedT(elements) if current.nonEmpty =>
-          elements
-            .map { case (index, childType) =>
-              val newPaths = current.map { s => s + "[" + index + "]" }
-              jTypeToProperties(childType, newPaths)
-            }
-            .toSet
-            .flatten
+        current: Set[String]): Set[String] = tpe match {
+      case JArrayFixedT(elements) if current.nonEmpty =>
+        elements
+          .map { case (index, childType) =>
+            val newPaths = current.map { s => s + "[" + index + "]" }
+            jTypeToProperties(childType, newPaths)
+          }
+          .toSet
+          .flatten
 
-        case JObjectFixedT(fields) =>
-          fields
-            .map { case (name, childType) =>
-              val newPaths = if (current.nonEmpty) {
-                current.map { s => s + "." + name }
-              } else {
-                Set(name)
-              }
-              jTypeToProperties(childType, newPaths)
+      case JObjectFixedT(fields) =>
+        fields
+          .map { case (name, childType) =>
+            val newPaths = if (current.nonEmpty) {
+              current.map { s => s + "." + name }
+            } else {
+              Set(name)
             }
-            .toSet
-            .flatten
+            jTypeToProperties(childType, newPaths)
+          }
+          .toSet
+          .flatten
 
-        case _ => current
-      }
+      case _ => current
+    }
 
     sealed trait LoadState
     case class InitialLoad(paths: List[Path]) extends LoadState
@@ -129,15 +128,14 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
         remainingPaths: List[Path])
         extends LoadState
 
-    def safeOp[A](nullMessage: String)(v: => A): Option[A] =
-      try {
-        Option(v) orElse { logger.error(nullMessage); None }
-      } catch {
-        case t: Throwable =>
-          logger.error(
-            "Failure during Mongo query: %s(%s)"
-              .format(t.getClass, t.getMessage)); None
-      }
+    def safeOp[A](nullMessage: String)(v: => A): Option[A] = try {
+      Option(v) orElse { logger.error(nullMessage); None }
+    } catch {
+      case t: Throwable =>
+        logger.error(
+          "Failure during Mongo query: %s(%s)"
+            .format(t.getClass, t.getMessage)); None
+    }
 
     def load(table: Table, apiKey: APIKey, tpe: JType): Future[Table] = {
       for {

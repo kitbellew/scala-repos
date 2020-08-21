@@ -17,19 +17,17 @@ case class AnaDests(variant: Variant, fen: String, path: String) {
         case (orig, dests) => s"${orig.piotr}${dests.map(_.piotr).mkString}"
       } mkString " "
 
-  def opening =
-    Variant.openingSensibleVariants(variant) ?? {
-      FullOpeningDB findByFen fen
-    }
+  def opening = Variant.openingSensibleVariants(variant) ?? {
+    FullOpeningDB findByFen fen
+  }
 }
 
 object AnaDests {
 
-  def parse(o: JsObject) =
-    for {
-      d ← o obj "d"
-      variant = chess.variant.Variant orDefault ~d.str("variant")
-      fen ← d str "fen"
-      path ← d str "path"
-    } yield AnaDests(variant = variant, fen = fen, path = path)
+  def parse(o: JsObject) = for {
+    d ← o obj "d"
+    variant = chess.variant.Variant orDefault ~d.str("variant")
+    fen ← d str "fen"
+    path ← d str "path"
+  } yield AnaDests(variant = variant, fen = fen, path = path)
 }

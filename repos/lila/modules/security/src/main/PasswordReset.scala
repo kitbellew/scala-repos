@@ -13,8 +13,8 @@ final class PasswordReset(
     baseUrl: String,
     secret: String) {
 
-  def send(user: User, email: String): Funit =
-    tokener make user flatMap { token =>
+  def send(user: User, email: String): Funit = tokener make user flatMap {
+    token =>
       lila.mon.email.resetPassword()
       val url = s"$baseUrl/password/reset/confirm/$token"
       WS.url(s"$apiUrl/messages")
@@ -35,7 +35,7 @@ Please do not reply to this message; it was sent from an unmonitored email addre
 """)
         ))
         .void
-    }
+  }
 
   def confirm(token: String): Fu[Option[User]] = tokener read token
 
@@ -51,13 +51,12 @@ Please do not reply to this message; it was sent from an unmonitored email addre
     private def makePayload(userId: String, passwd: String) =
       s"$userId$separator$passwd"
 
-    def make(user: User) =
-      getPasswd(user.id) map { passwd =>
-        val payload = makePayload(user.id, passwd)
-        val hash = makeHash(payload)
-        val token = s"$payload$separator$hash"
-        base64 encode token
-      }
+    def make(user: User) = getPasswd(user.id) map { passwd =>
+      val payload = makePayload(user.id, passwd)
+      val hash = makeHash(payload)
+      val token = s"$payload$separator$hash"
+      base64 encode token
+    }
 
     def read(token: String): Fu[Option[User]] =
       base64 decode token split separator match {

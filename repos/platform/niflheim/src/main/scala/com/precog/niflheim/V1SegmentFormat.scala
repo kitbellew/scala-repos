@@ -41,13 +41,12 @@ object V1SegmentFormat extends SegmentFormat {
   private val checksum = true
 
   object reader extends SegmentReader {
-    private def wrapException[A](f: => A): Validation[IOException, A] =
-      try {
-        Success(f)
-      } catch {
-        case e: Exception =>
-          Failure(new IOException(e))
-      }
+    private def wrapException[A](f: => A): Validation[IOException, A] = try {
+      Success(f)
+    } catch {
+      case e: Exception =>
+        Failure(new IOException(e))
+    }
 
     def readSegmentId(
         channel: ReadableByteChannel): Validation[IOException, SegmentId] =
@@ -84,15 +83,14 @@ object V1SegmentFormat extends SegmentFormat {
           (defined, length)
         }
 
-      def readBoolean(): Validation[IOException, (BitSet, Int, BitSet)] =
-        for {
-          buffer <- readChunk(channel)
-        } yield {
-          val length = buffer.getInt()
-          val defined = Codec.BitSetCodec.read(buffer)
-          val values = Codec.BitSetCodec.read(buffer)
-          (defined, length, values)
-        }
+      def readBoolean(): Validation[IOException, (BitSet, Int, BitSet)] = for {
+        buffer <- readChunk(channel)
+      } yield {
+        val length = buffer.getInt()
+        val defined = Codec.BitSetCodec.read(buffer)
+        val values = Codec.BitSetCodec.read(buffer)
+        (defined, length, values)
+      }
 
       for {
         header <- readSegmentId(channel)
@@ -237,18 +235,16 @@ object V1SegmentFormat extends SegmentFormat {
     }
   }
 
-  private def getCodecFor[A](ctype: CValueType[A]): Codec[A] =
-    ctype match {
-      case CPeriod =>
-        Codec.LongCodec
-          .as[Period](_.toStandardDuration.getMillis, new Period(_))
-      case CBoolean => Codec.BooleanCodec
-      case CString  => Codec.Utf8Codec
-      case CLong    => Codec.PackedLongCodec
-      case CDouble  => Codec.DoubleCodec
-      case CNum     => Codec.BigDecimalCodec
-      case CDate    => Codec.DateCodec
-      case CArrayType(elemType) =>
-        Codec.ArrayCodec(getCodecFor(elemType))(elemType.manifest)
-    }
+  private def getCodecFor[A](ctype: CValueType[A]): Codec[A] = ctype match {
+    case CPeriod =>
+      Codec.LongCodec.as[Period](_.toStandardDuration.getMillis, new Period(_))
+    case CBoolean => Codec.BooleanCodec
+    case CString  => Codec.Utf8Codec
+    case CLong    => Codec.PackedLongCodec
+    case CDouble  => Codec.DoubleCodec
+    case CNum     => Codec.BigDecimalCodec
+    case CDate    => Codec.DateCodec
+    case CArrayType(elemType) =>
+      Codec.ArrayCodec(getCodecFor(elemType))(elemType.manifest)
+  }
 }

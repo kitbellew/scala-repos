@@ -12,11 +12,10 @@ import org.scalacheck.{Arbitrary, Prop}
 import org.scalacheck.Prop._
 
 object LogicLaws {
-  def apply[A: Eq: Arbitrary] =
-    new LogicLaws[A] {
-      def Equ = Eq[A]
-      def Arb = implicitly[Arbitrary[A]]
-    }
+  def apply[A: Eq: Arbitrary] = new LogicLaws[A] {
+    def Equ = Eq[A]
+    def Arb = implicitly[Arbitrary[A]]
+  }
 }
 
 trait LogicLaws[A] extends Laws {

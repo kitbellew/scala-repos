@@ -125,11 +125,10 @@ object Coproduct extends Dynamic {
     (0 until length).foldLeft[Coproduct](Inl(value))((accum, _) => Inr(accum))
 
   @tailrec
-  def unsafeGet(c: Coproduct): Any =
-    c match {
-      case Inl(h) => h
-      case Inr(c) => unsafeGet(c)
-    }
+  def unsafeGet(c: Coproduct): Any = c match {
+    case Inl(h) => h
+    case Inr(c) => unsafeGet(c)
+  }
 
   /**
     * Allows to specify a `Coproduct` type with a syntax similar to `Record` and `Union`, as follows,

@@ -66,16 +66,16 @@ trait Foldable1[F[_]] extends Foldable[F] { self =>
     foldRight1(fa)((a, b) => f(a)(b))
   override def foldMapRight1Opt[A, B](fa: F[A])(z: A => B)(
       f: (A, => B) => B): Option[B] = Some(foldMapRight1(fa)(z)(f))
-  override def foldr1Opt[A](fa: F[A])(f: A => (=> A) => A): Option[A] =
-    Some(foldr1(fa)(f))
+  override def foldr1Opt[A](fa: F[A])(f: A => (=> A) => A): Option[A] = Some(
+    foldr1(fa)(f))
 
   /** Curried `foldLeft1`. */
   final def foldl1[A](fa: F[A])(f: A => A => A): A =
     foldLeft1(fa)((b, a) => f(b)(a))
   override def foldMapLeft1Opt[A, B](fa: F[A])(z: A => B)(
       f: (B, A) => B): Option[B] = Some(foldMapLeft1(fa)(z)(f))
-  override def foldl1Opt[A](fa: F[A])(f: A => A => A): Option[A] =
-    Some(foldl1(fa)(f))
+  override def foldl1Opt[A](fa: F[A])(f: A => A => A): Option[A] = Some(
+    foldl1(fa)(f))
 
   def fold1[M: Semigroup](t: F[M]): M = foldMap1[M, M](t)(identity)
 
@@ -106,15 +106,15 @@ trait Foldable1[F[_]] extends Foldable[F] { self =>
     (minimumOf1(fa)(a => (a, f(a)))(Order.orderBy[(A, B), B](_._2)))._1
 
   override def maximum[A: Order](fa: F[A]): Option[A] = Some(maximum1(fa))
-  override def maximumOf[A, B: Order](fa: F[A])(f: A => B): Option[B] =
-    Some(maximumOf1(fa)(f))
-  override def maximumBy[A, B: Order](fa: F[A])(f: A => B): Option[A] =
-    Some(maximumBy1(fa)(f))
+  override def maximumOf[A, B: Order](fa: F[A])(f: A => B): Option[B] = Some(
+    maximumOf1(fa)(f))
+  override def maximumBy[A, B: Order](fa: F[A])(f: A => B): Option[A] = Some(
+    maximumBy1(fa)(f))
   override def minimum[A: Order](fa: F[A]): Option[A] = Some(minimum1(fa))
-  override def minimumOf[A, B: Order](fa: F[A])(f: A => B): Option[B] =
-    Some(minimumOf1(fa)(f))
-  override def minimumBy[A, B: Order](fa: F[A])(f: A => B): Option[A] =
-    Some(minimumBy1(fa)(f))
+  override def minimumOf[A, B: Order](fa: F[A])(f: A => B): Option[B] = Some(
+    minimumOf1(fa)(f))
+  override def minimumBy[A, B: Order](fa: F[A])(f: A => B): Option[A] = Some(
+    minimumBy1(fa)(f))
 
   /** ``O(n log n)`` complexity */
   def distinct1[A](fa: F[A])(implicit A: Order[A]): NonEmptyList[A] =

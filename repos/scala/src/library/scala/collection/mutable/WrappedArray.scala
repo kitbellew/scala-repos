@@ -44,9 +44,8 @@ abstract class WrappedArray[T]
   def elemTag: ClassTag[T]
 
   @deprecated("use elemTag instead", "2.10.0")
-  def elemManifest: ClassManifest[T] =
-    ClassManifest.fromClass[T](
-      arrayElementClass(elemTag).asInstanceOf[Class[T]])
+  def elemManifest: ClassManifest[T] = ClassManifest.fromClass[T](
+    arrayElementClass(elemTag).asInstanceOf[Class[T]])
 
   /** The length of the array */
   def length: Int
@@ -98,20 +97,19 @@ object WrappedArray {
   // contract all empty ones must be equal, so discriminating based on the reference
   // equality of an empty array should not come up) but we may as well be
   // conservative since wrapRefArray contributes most of the unnecessary allocations.
-  def make[T](x: AnyRef): WrappedArray[T] =
-    (x match {
-      case null              => null
-      case x: Array[AnyRef]  => new ofRef[AnyRef](x)
-      case x: Array[Int]     => new ofInt(x)
-      case x: Array[Double]  => new ofDouble(x)
-      case x: Array[Long]    => new ofLong(x)
-      case x: Array[Float]   => new ofFloat(x)
-      case x: Array[Char]    => new ofChar(x)
-      case x: Array[Byte]    => new ofByte(x)
-      case x: Array[Short]   => new ofShort(x)
-      case x: Array[Boolean] => new ofBoolean(x)
-      case x: Array[Unit]    => new ofUnit(x)
-    }).asInstanceOf[WrappedArray[T]]
+  def make[T](x: AnyRef): WrappedArray[T] = (x match {
+    case null              => null
+    case x: Array[AnyRef]  => new ofRef[AnyRef](x)
+    case x: Array[Int]     => new ofInt(x)
+    case x: Array[Double]  => new ofDouble(x)
+    case x: Array[Long]    => new ofLong(x)
+    case x: Array[Float]   => new ofFloat(x)
+    case x: Array[Char]    => new ofChar(x)
+    case x: Array[Byte]    => new ofByte(x)
+    case x: Array[Short]   => new ofShort(x)
+    case x: Array[Boolean] => new ofBoolean(x)
+    case x: Array[Unit]    => new ofUnit(x)
+  }).asInstanceOf[WrappedArray[T]]
 
   implicit def canBuildFrom[T](implicit
       m: ClassTag[T]): CanBuildFrom[WrappedArray[_], T, WrappedArray[T]] =

@@ -150,12 +150,11 @@ class SyslogFormatter(
       useFullPackageNames = false,
       prefix = "") {
 
-  override def dateFormat =
-    if (useIsoDateFormat) {
-      SyslogHandler.ISO_DATE_FORMAT
-    } else {
-      SyslogHandler.OLD_SYSLOG_DATE_FORMAT
-    }
+  override def dateFormat = if (useIsoDateFormat) {
+    SyslogHandler.ISO_DATE_FORMAT
+  } else {
+    SyslogHandler.OLD_SYSLOG_DATE_FORMAT
+  }
 
   override def lineTerminator = ""
 
@@ -186,10 +185,9 @@ object SyslogFuture {
     new NamedPoolThreadFactory("TWITTER-UTIL-SYSLOG", true /*daemon*/ ))
   private val noop = new Runnable { def run() {} }
 
-  def apply(action: => Unit) =
-    executor.submit(new Runnable {
-      def run() { action }
-    })
+  def apply(action: => Unit) = executor.submit(new Runnable {
+    def run() { action }
+  })
 
   def sync() {
     val f = executor.submit(noop)

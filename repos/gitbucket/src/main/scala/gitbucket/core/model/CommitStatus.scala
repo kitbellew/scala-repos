@@ -22,19 +22,18 @@ trait CommitStatusComponent extends TemplateComponent { self: Profile =>
     val creator = column[String]("CREATOR")
     val registeredDate = column[java.util.Date]("REGISTERED_DATE")
     val updatedDate = column[java.util.Date]("UPDATED_DATE")
-    def * =
-      (
-        commitStatusId,
-        userName,
-        repositoryName,
-        commitId,
-        context,
-        state,
-        targetUrl,
-        description,
-        creator,
-        registeredDate,
-        updatedDate) <> ((CommitStatus.apply _).tupled, CommitStatus.unapply)
+    def * = (
+      commitStatusId,
+      userName,
+      repositoryName,
+      commitId,
+      context,
+      state,
+      targetUrl,
+      description,
+      creator,
+      registeredDate,
+      updatedDate) <> ((CommitStatus.apply _).tupled, CommitStatus.unapply)
     def byPrimaryKey(id: Int) = commitStatusId === id.bind
   }
 }

@@ -156,16 +156,14 @@ class ScSubstitutor(
     }
   }
 
-  def subst(t: ScType): ScType =
-    try {
-      if (follower != null) follower.subst(substInternal(t))
-      else substInternal(t)
-    } catch {
-      case s: StackOverflowError =>
-        throw new RuntimeException(
-          "StackOverFlow during ScSubstitutor.subst(" + t + ") this = " + this,
-          s)
-    }
+  def subst(t: ScType): ScType = try {
+    if (follower != null) follower.subst(substInternal(t)) else substInternal(t)
+  } catch {
+    case s: StackOverflowError =>
+      throw new RuntimeException(
+        "StackOverFlow during ScSubstitutor.subst(" + t + ") this = " + this,
+        s)
+  }
 
   private def extractTpt(tpt: ScTypeParameterType, t: ScType): ScType = {
     if (tpt.args.isEmpty) t

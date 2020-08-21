@@ -55,12 +55,11 @@ object Service {
   *     way to create new instances.
   */
 abstract class Service[-Req, +Rep] extends (Req => Future[Rep]) with Closable {
-  def map[Req1](f: Req1 => Req) =
-    new Service[Req1, Rep] {
-      def apply(req1: Req1): Future[Rep] = Service.this.apply(f(req1))
-      override def close(deadline: Time): Future[Unit] =
-        Service.this.close(deadline)
-    }
+  def map[Req1](f: Req1 => Req) = new Service[Req1, Rep] {
+    def apply(req1: Req1): Future[Rep] = Service.this.apply(f(req1))
+    override def close(deadline: Time): Future[Unit] =
+      Service.this.close(deadline)
+  }
 
   /**
     * This is the method to override/implement to create your own Service.

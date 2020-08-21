@@ -62,72 +62,70 @@ case class Arguments(
 object Arguments {
   private val Delimiter = "\n"
 
-  def from(strings: Seq[String]): Arguments =
-    strings match {
-      case Seq(
-            PathToFile(interfaceJar),
-            PathToFile(sourceJar),
-            PathToFile(interfacesHome),
-            javaClassVersion,
-            StringToOption(compilerJarPaths),
-            StringToOption(javaHomePath),
-            PathsToFiles(sources),
-            PathsToFiles(classpath),
-            PathToFile(output),
-            StringToSequence(scalaOptions),
-            StringToSequence(javaOptions),
-            order,
-            PathToFile(cacheFile),
-            PathsToFiles(outputs),
-            PathsToFiles(caches),
-            incrementalTypeName,
-            PathsToFiles(sourceRoots),
-            PathsToFiles(outputDirs),
-            StringToSequence(worksheetClass),
-            sbtIncOptionsString) =>
-        val sbtData =
-          SbtData(interfaceJar, sourceJar, interfacesHome, javaClassVersion)
+  def from(strings: Seq[String]): Arguments = strings match {
+    case Seq(
+          PathToFile(interfaceJar),
+          PathToFile(sourceJar),
+          PathToFile(interfacesHome),
+          javaClassVersion,
+          StringToOption(compilerJarPaths),
+          StringToOption(javaHomePath),
+          PathsToFiles(sources),
+          PathsToFiles(classpath),
+          PathToFile(output),
+          StringToSequence(scalaOptions),
+          StringToSequence(javaOptions),
+          order,
+          PathToFile(cacheFile),
+          PathsToFiles(outputs),
+          PathsToFiles(caches),
+          incrementalTypeName,
+          PathsToFiles(sourceRoots),
+          PathsToFiles(outputDirs),
+          StringToSequence(worksheetClass),
+          sbtIncOptionsString) =>
+      val sbtData =
+        SbtData(interfaceJar, sourceJar, interfacesHome, javaClassVersion)
 
-        val compilerJars = compilerJarPaths.map {
-          case PathsToFiles(Seq(libraryJar, compilerJar, extraJars @ _*)) =>
-            CompilerJars(libraryJar, compilerJar, extraJars)
-        }
+      val compilerJars = compilerJarPaths.map {
+        case PathsToFiles(Seq(libraryJar, compilerJar, extraJars @ _*)) =>
+          CompilerJars(libraryJar, compilerJar, extraJars)
+      }
 
-        val javaHome = javaHomePath.map { case PathToFile(file) =>
-          file
-        }
+      val javaHome = javaHomePath.map { case PathToFile(file) =>
+        file
+      }
 
-        val incrementalType = IncrementalityType.valueOf(incrementalTypeName)
+      val incrementalType = IncrementalityType.valueOf(incrementalTypeName)
 
-        val compilerData = CompilerData(compilerJars, javaHome, incrementalType)
+      val compilerData = CompilerData(compilerJars, javaHome, incrementalType)
 
-        val outputToCacheMap = outputs.zip(caches).toMap
+      val outputToCacheMap = outputs.zip(caches).toMap
 
-        val outputGroups = sourceRoots zip outputDirs
+      val outputGroups = sourceRoots zip outputDirs
 
-        val sbtIncOptions =
-          SbtIncrementalOptions.fromString(sbtIncOptionsString)
+      val sbtIncOptions = SbtIncrementalOptions.fromString(sbtIncOptionsString)
 
-        val compilationData = CompilationData(
-          sources,
-          classpath,
-          output,
-          scalaOptions,
-          javaOptions,
-          CompileOrder.valueOf(order),
-          cacheFile,
-          outputToCacheMap,
-          outputGroups,
-          sbtIncOptions)
+      val compilationData = CompilationData(
+        sources,
+        classpath,
+        output,
+        scalaOptions,
+        javaOptions,
+        CompileOrder.valueOf(order),
+        cacheFile,
+        outputToCacheMap,
+        outputGroups,
+        sbtIncOptions)
 
-        Arguments(sbtData, compilerData, compilationData, worksheetClass)
-    }
+      Arguments(sbtData, compilerData, compilationData, worksheetClass)
+  }
 
   private def fileToPath(file: File): String =
     FileUtil.toCanonicalPath(file.getPath)
 
-  private def filesToPaths(files: Iterable[File]): String =
-    sequenceToString(files.map(fileToPath))
+  private def filesToPaths(files: Iterable[File]): String = sequenceToString(
+    files.map(fileToPath))
 
   private def optionToString(s: Option[String]): String = s.getOrElse("")
 

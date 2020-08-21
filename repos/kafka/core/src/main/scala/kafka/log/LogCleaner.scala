@@ -185,10 +185,9 @@ class LogCleaner(
       part: Int,
       offset: Long,
       maxWaitMs: Long = 60000L): Boolean = {
-    def isCleaned =
-      cleanerManager.allCleanerCheckpoints
-        .get(TopicAndPartition(topic, part))
-        .fold(false)(_ >= offset)
+    def isCleaned = cleanerManager.allCleanerCheckpoints
+      .get(TopicAndPartition(topic, part))
+      .fold(false)(_ >= offset)
     var remainingWaitMs = maxWaitMs
     while (!isCleaned && remainingWaitMs > 0) {
       val sleepTime = math.min(100, remainingWaitMs)

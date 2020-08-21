@@ -59,15 +59,14 @@ class InputFormatInfo(
 
   // Since we are not doing canonicalization of path, this can be wrong : like relative vs
   // absolute path .. which is fine, this is best case effort to remove duplicates - right ?
-  override def equals(other: Any): Boolean =
-    other match {
-      case that: InputFormatInfo => {
-        // not checking config - that should be fine, right ?
-        this.inputFormatClazz == that.inputFormatClazz &&
-        this.path == that.path
-      }
-      case _ => false
+  override def equals(other: Any): Boolean = other match {
+    case that: InputFormatInfo => {
+      // not checking config - that should be fine, right ?
+      this.inputFormatClazz == that.inputFormatClazz &&
+      this.path == that.path
     }
+    case _ => false
+  }
 
   private def validate() {
     logDebug(

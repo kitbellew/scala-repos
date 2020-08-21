@@ -301,8 +301,9 @@ object CacheIvy {
     )
   // For some reason sbinary seems to detect unserialized instance Set[ModuleID] to be not equal. #1620
   implicit def moduleSetIC: InputCache[Set[ModuleID]] = {
-    implicit def toSeq(ms: Set[ModuleID]): Seq[ModuleID] =
-      ms.toSeq.sortBy { _.toString }
+    implicit def toSeq(ms: Set[ModuleID]): Seq[ModuleID] = ms.toSeq.sortBy {
+      _.toString
+    }
     wrapIn
   }
 
@@ -316,9 +317,8 @@ object CacheIvy {
   }
 
   object L5 {
-    implicit def inlineIvyToHL =
-      (i: InlineIvyConfiguration) =>
-        i.paths :+: i.resolvers :+: i.otherResolvers :+: i.moduleConfigurations :+: i.localOnly :+: i.checksums :+: HNil
+    implicit def inlineIvyToHL = (i: InlineIvyConfiguration) =>
+      i.paths :+: i.resolvers :+: i.otherResolvers :+: i.moduleConfigurations :+: i.localOnly :+: i.checksums :+: HNil
   }
   import L5._
 
@@ -339,13 +339,11 @@ object CacheIvy {
         c.module :+: c.dependencies :+: c.ivyXML :+: c.configurations :+: c.defaultConfiguration
           .map(_.name) :+:
           c.ivyScala :+: c.validate :+: c.overrides :+: c.excludes :+: HNil
-    implicit def moduleConfToHL =
-      (m: ModuleConfiguration) =>
-        m.organization :+: m.name :+: m.revision :+: m.resolver :+: HNil
-    implicit def inlineToHL =
-      (c: InlineConfiguration) =>
-        c.module :+: c.dependencies :+: c.ivyXML :+: c.configurations :+: c.defaultConfiguration
-          .map(_.name) :+: c.ivyScala :+: c.validate :+: c.overrides :+: HNil
+    implicit def moduleConfToHL = (m: ModuleConfiguration) =>
+      m.organization :+: m.name :+: m.revision :+: m.resolver :+: HNil
+    implicit def inlineToHL = (c: InlineConfiguration) =>
+      c.module :+: c.dependencies :+: c.ivyXML :+: c.configurations :+: c.defaultConfiguration
+        .map(_.name) :+: c.ivyScala :+: c.validate :+: c.overrides :+: HNil
   }
   import L4._
 
@@ -355,24 +353,22 @@ object CacheIvy {
   implicit def moduleConfIC: InputCache[ModuleConfiguration] = wrapIn
 
   object L3 {
-    implicit def mavenCacheToHL =
-      (m: MavenCache) => m.name :+: m.rootFile.getAbsolutePath :+: HNil
+    implicit def mavenCacheToHL = (m: MavenCache) =>
+      m.name :+: m.rootFile.getAbsolutePath :+: HNil
     implicit def mavenRToHL = (m: MavenRepository) => m.name :+: m.root :+: HNil
-    implicit def fileRToHL =
-      (r: FileRepository) => r.name :+: r.configuration :+: r.patterns :+: HNil
+    implicit def fileRToHL = (r: FileRepository) =>
+      r.name :+: r.configuration :+: r.patterns :+: HNil
     implicit def urlRToHL = (u: URLRepository) => u.name :+: u.patterns :+: HNil
-    implicit def sshRToHL =
-      (s: SshRepository) =>
-        s.name :+: s.connection :+: s.patterns :+: s.publishPermissions :+: HNil
-    implicit def sftpRToHL =
-      (s: SftpRepository) => s.name :+: s.connection :+: s.patterns :+: HNil
-    implicit def rawRToHL =
-      (r: RawRepository) => r.name :+: r.resolver.getClass.getName :+: HNil
-    implicit def chainRToHL =
-      (c: ChainedResolver) => c.name :+: c.resolvers :+: HNil
-    implicit def moduleToHL =
-      (m: ModuleID) =>
-        m.organization :+: m.name :+: m.revision :+: m.configurations :+: m.isChanging :+: m.isTransitive :+: m.explicitArtifacts :+: m.exclusions :+: m.inclusions :+: m.extraAttributes :+: m.crossVersion :+: HNil
+    implicit def sshRToHL = (s: SshRepository) =>
+      s.name :+: s.connection :+: s.patterns :+: s.publishPermissions :+: HNil
+    implicit def sftpRToHL = (s: SftpRepository) =>
+      s.name :+: s.connection :+: s.patterns :+: HNil
+    implicit def rawRToHL = (r: RawRepository) =>
+      r.name :+: r.resolver.getClass.getName :+: HNil
+    implicit def chainRToHL = (c: ChainedResolver) =>
+      c.name :+: c.resolvers :+: HNil
+    implicit def moduleToHL = (m: ModuleID) =>
+      m.organization :+: m.name :+: m.revision :+: m.configurations :+: m.isChanging :+: m.isTransitive :+: m.explicitArtifacts :+: m.exclusions :+: m.inclusions :+: m.extraAttributes :+: m.crossVersion :+: HNil
   }
   import L3._
 
@@ -386,27 +382,22 @@ object CacheIvy {
   implicitly[InputCache[Seq[Configuration]]]
 
   object L2 {
-    implicit def updateConfToHL =
-      (u: UpdateConfiguration) => u.retrieve :+: u.missingOk :+: HNil
-    implicit def pomConfigurationHL =
-      (c: PomConfiguration) =>
-        hash(c.file) :+: c.ivyScala :+: c.validate :+: HNil
-    implicit def ivyFileConfigurationHL =
-      (c: IvyFileConfiguration) =>
-        hash(c.file) :+: c.ivyScala :+: c.validate :+: HNil
-    implicit def sshConnectionToHL =
-      (s: SshConnection) => s.authentication :+: s.hostname :+: s.port :+: HNil
+    implicit def updateConfToHL = (u: UpdateConfiguration) =>
+      u.retrieve :+: u.missingOk :+: HNil
+    implicit def pomConfigurationHL = (c: PomConfiguration) =>
+      hash(c.file) :+: c.ivyScala :+: c.validate :+: HNil
+    implicit def ivyFileConfigurationHL = (c: IvyFileConfiguration) =>
+      hash(c.file) :+: c.ivyScala :+: c.validate :+: HNil
+    implicit def sshConnectionToHL = (s: SshConnection) =>
+      s.authentication :+: s.hostname :+: s.port :+: HNil
 
-    implicit def artifactToHL =
-      (a: Artifact) =>
-        a.name :+: a.`type` :+: a.extension :+: a.classifier :+: names(
-          a.configurations) :+: a.url :+: a.extraAttributes :+: HNil
-    implicit def inclExclToHL =
-      (e: InclExclRule) =>
-        e.organization :+: e.name :+: e.artifact :+: e.configurations :+: HNil
-    implicit def sbtExclusionToHL =
-      (e: SbtExclusionRule) =>
-        e.organization :+: e.name :+: e.artifact :+: e.configurations :+: e.crossVersion :+: HNil
+    implicit def artifactToHL = (a: Artifact) =>
+      a.name :+: a.`type` :+: a.extension :+: a.classifier :+: names(
+        a.configurations) :+: a.url :+: a.extraAttributes :+: HNil
+    implicit def inclExclToHL = (e: InclExclRule) =>
+      e.organization :+: e.name :+: e.artifact :+: e.configurations :+: HNil
+    implicit def sbtExclusionToHL = (e: SbtExclusionRule) =>
+      e.organization :+: e.name :+: e.artifact :+: e.configurations :+: e.crossVersion :+: HNil
     implicit def crossToHL = (c: CrossVersion) => crossToInt(c) :+: HNil
 
     /*		implicit def deliverConfToHL = (p: DeliverConfiguration) => p.deliverIvyPattern :+: p.status :+: p.configurations :+: HNil
@@ -426,37 +417,29 @@ object CacheIvy {
 	implicit def deliverConfIC: InputCache[DeliverConfiguration] = wrapIn*/
 
   object L1 {
-    implicit def retrieveToHL =
-      (r: RetrieveConfiguration) =>
-        exists(r.retrieveDirectory) :+: r.outputPattern :+: HNil
-    implicit def ivyPathsToHL =
-      (p: IvyPaths) =>
-        exists(p.baseDirectory) :+: p.ivyHome.map(exists.apply) :+: HNil
-    implicit def ivyScalaHL =
-      (i: IvyScala) =>
-        i.scalaFullVersion :+: i.scalaBinaryVersion :+: names(
-          i.configurations) :+: i.checkExplicit :+: i.filterImplicit :+: HNil
-    implicit def configurationToHL =
-      (c: Configuration) =>
-        c.name :+: c.description :+: c.isPublic :+: names(
-          c.extendsConfigs) :+: c.transitive :+: HNil
+    implicit def retrieveToHL = (r: RetrieveConfiguration) =>
+      exists(r.retrieveDirectory) :+: r.outputPattern :+: HNil
+    implicit def ivyPathsToHL = (p: IvyPaths) =>
+      exists(p.baseDirectory) :+: p.ivyHome.map(exists.apply) :+: HNil
+    implicit def ivyScalaHL = (i: IvyScala) =>
+      i.scalaFullVersion :+: i.scalaBinaryVersion :+: names(
+        i.configurations) :+: i.checkExplicit :+: i.filterImplicit :+: HNil
+    implicit def configurationToHL = (c: Configuration) =>
+      c.name :+: c.description :+: c.isPublic :+: names(
+        c.extendsConfigs) :+: c.transitive :+: HNil
 
-    implicit def passwordToHL =
-      (s: PasswordAuthentication) =>
-        Hash(s.user) :+: password(s.password) :+: HNil
-    implicit def keyFileToHL =
-      (s: KeyFileAuthentication) =>
-        Hash(s.user) :+: hash(s.keyfile) :+: password(s.password) :+: HNil
+    implicit def passwordToHL = (s: PasswordAuthentication) =>
+      Hash(s.user) :+: password(s.password) :+: HNil
+    implicit def keyFileToHL = (s: KeyFileAuthentication) =>
+      Hash(s.user) :+: hash(s.keyfile) :+: password(s.password) :+: HNil
 
-    implicit def patternsToHL =
-      (p: Patterns) =>
-        p.ivyPatterns :+: p.artifactPatterns :+: p.isMavenCompatible :+: HNil
-    implicit def fileConfToHL =
-      (f: FileConfiguration) => f.isLocal :+: f.isTransactional :+: HNil
+    implicit def patternsToHL = (p: Patterns) =>
+      p.ivyPatterns :+: p.artifactPatterns :+: p.isMavenCompatible :+: HNil
+    implicit def fileConfToHL = (f: FileConfiguration) =>
+      f.isLocal :+: f.isTransactional :+: HNil
 
-    implicit def externalIvyConfigurationToHL =
-      (e: ExternalIvyConfiguration) =>
-        exists(e.baseDirectory) :+: Hash.contentsIfLocal(e.uri) :+: HNil
+    implicit def externalIvyConfigurationToHL = (e: ExternalIvyConfiguration) =>
+      exists(e.baseDirectory) :+: Hash.contentsIfLocal(e.uri) :+: HNil
   }
   import L1._
 

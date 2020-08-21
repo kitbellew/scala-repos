@@ -36,11 +36,10 @@ object Example extends Specification {
   }
 
   "Parse Person with Address" in {
-    implicit def addrJSON: JSONR[Address] =
-      new JSONR[Address] {
-        def read(json: JValue) =
-          Address.applyJSON(field("street"), field("zip"))(json)
-      }
+    implicit def addrJSON: JSONR[Address] = new JSONR[Address] {
+      def read(json: JValue) =
+        Address.applyJSON(field("street"), field("zip"))(json)
+    }
 
     val p = parse(
       """ {"name":"joe","age":34,"address":{"street": "Manhattan 2", "zip": "00223" }} """)
@@ -50,13 +49,11 @@ object Example extends Specification {
   }
 
   "Format Person with Address" in {
-    implicit def addrJSON: JSONW[Address] =
-      new JSONW[Address] {
-        def write(a: Address) =
-          makeObj(
-            ("street" -> toJSON(a.street)) :: ("zip" -> toJSON(
-              a.zipCode)) :: Nil)
-      }
+    implicit def addrJSON: JSONW[Address] = new JSONW[Address] {
+      def write(a: Address) =
+        makeObj(
+          ("street" -> toJSON(a.street)) :: ("zip" -> toJSON(a.zipCode)) :: Nil)
+    }
 
     val p = Person("joe", 34, Address("Manhattan 2", "00223"))
     val json = makeObj(

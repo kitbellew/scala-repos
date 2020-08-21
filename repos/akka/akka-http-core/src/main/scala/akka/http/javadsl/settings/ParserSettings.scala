@@ -96,8 +96,8 @@ object ParserSettings extends SettingsCompanion[ParserSettings] {
   trait CookieParsingMode
   trait ErrorLoggingVerbosity
 
-  override def create(config: Config): ParserSettings =
-    ParserSettingsImpl(config)
+  override def create(config: Config): ParserSettings = ParserSettingsImpl(
+    config)
   override def create(configOverrides: String): ParserSettings =
     ParserSettingsImpl(configOverrides)
 }

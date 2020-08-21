@@ -328,8 +328,8 @@ class DenseOptimizationSpaceTest_Double
     }
   }
 
-  def genScalar: Arbitrary[Double] =
-    Arbitrary(Arbitrary.arbitrary[Double].map { _ % 1e10 })
+  def genScalar: Arbitrary[Double] = Arbitrary(
+    Arbitrary.arbitrary[Double].map { _ % 1e10 })
 }
 
 class SparseOptimizationSpaceTest_Double
@@ -347,8 +347,8 @@ class SparseOptimizationSpaceTest_Double
   val N = 30
   val M = 30
 
-  def genScalar: Arbitrary[Double] =
-    Arbitrary(Arbitrary.arbitrary[Double].map { _ % 1e10 })
+  def genScalar: Arbitrary[Double] = Arbitrary(
+    Arbitrary.arbitrary[Double].map { _ % 1e10 })
 
   val arbColIndex = Arbitrary(Gen.choose[Int](0, N - 1))
   val arbRowIndex = Arbitrary(Gen.choose[Int](0, M - 1))

@@ -21,16 +21,15 @@ class SchedulerActor(scheduler: Scheduler) extends Actor with Stash {
 
   def receive: Receive = waitForDriver
 
-  def waitForDriver: Receive =
-    LoggingReceive.withLabel("waitForDriver") {
-      case driver: SchedulerDriver =>
-        log.info("received driver")
-        driverOpt = Some(driver)
-        context.become(handleCmds(driver))
-        unstashAll()
+  def waitForDriver: Receive = LoggingReceive.withLabel("waitForDriver") {
+    case driver: SchedulerDriver =>
+      log.info("received driver")
+      driverOpt = Some(driver)
+      context.become(handleCmds(driver))
+      unstashAll()
 
-      case _ => stash()
-    }
+    case _ => stash()
+  }
 
   def handleCmds(driver: SchedulerDriver): Receive =
     LoggingReceive.withLabel("handleCmds") {

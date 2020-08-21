@@ -77,9 +77,8 @@ class CoronerSpec extends WordSpec with Matchers {
         val proceed = new Semaphore(0)
         val t = new Thread(
           new Runnable {
-            def run =
-              try recursiveLock(initialLocks)
-              catch { case _: InterruptedException ⇒ () }
+            def run = try recursiveLock(initialLocks)
+            catch { case _: InterruptedException ⇒ () }
 
             def recursiveLock(locks: List[ReentrantLock]) {
               locks match {

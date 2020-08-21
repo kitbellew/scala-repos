@@ -128,8 +128,8 @@ final case class ScatterGatherFirstCompletedPool(
   def this(nr: Int, within: FiniteDuration) =
     this(nrOfInstances = nr, within = within)
 
-  override def createRouter(system: ActorSystem): Router =
-    new Router(ScatterGatherFirstCompletedRoutingLogic(within))
+  override def createRouter(system: ActorSystem): Router = new Router(
+    ScatterGatherFirstCompletedRoutingLogic(within))
 
   override def nrOfInstances(sys: ActorSystem) = this.nrOfInstances
 
@@ -204,8 +204,8 @@ final case class ScatterGatherFirstCompletedGroup(
   override def paths(system: ActorSystem): immutable.Iterable[String] =
     this.paths
 
-  override def createRouter(system: ActorSystem): Router =
-    new Router(ScatterGatherFirstCompletedRoutingLogic(within))
+  override def createRouter(system: ActorSystem): Router = new Router(
+    ScatterGatherFirstCompletedRoutingLogic(within))
 
   /**
     * Setting the dispatcher to be used for the router head actor, which handles

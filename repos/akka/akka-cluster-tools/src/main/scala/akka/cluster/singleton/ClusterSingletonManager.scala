@@ -51,8 +51,8 @@ object ClusterSingletonManagerSettings {
     * Java API: Create settings from the default configuration
     * `akka.cluster.singleton`.
     */
-  def create(system: ActorSystem): ClusterSingletonManagerSettings =
-    apply(system)
+  def create(system: ActorSystem): ClusterSingletonManagerSettings = apply(
+    system)
 
   /**
     * Java API: Create settings from a configuration with the same layout as
@@ -274,11 +274,10 @@ object ClusterSingletonManager {
       }
       override def postStop(): Unit = cluster.unsubscribe(self)
 
-      def matchingRole(member: Member): Boolean =
-        role match {
-          case None ⇒ true
-          case Some(r) ⇒ member.hasRole(r)
-        }
+      def matchingRole(member: Member): Boolean = role match {
+        case None ⇒ true
+        case Some(r) ⇒ member.hasRole(r)
+      }
 
       def trackChange(block: () ⇒ Unit): Unit = {
         val before = membersByAge.headOption

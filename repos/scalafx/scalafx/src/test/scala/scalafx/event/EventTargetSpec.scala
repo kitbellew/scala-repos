@@ -47,8 +47,7 @@ class EventTargetSpec
   override protected def getScalaClassInstance: EventTarget =
     getJavaClassInstance
 
-  override protected def getJavaClassInstance =
-    new jfxe.EventTarget() {
-      override def buildEventDispatchChain(tail: jfxe.EventDispatchChain) = ???
-    }
+  override protected def getJavaClassInstance = new jfxe.EventTarget() {
+    override def buildEventDispatchChain(tail: jfxe.EventDispatchChain) = ???
+  }
 }

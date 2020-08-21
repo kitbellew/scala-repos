@@ -42,14 +42,11 @@ class ScValueDeclarationImpl private (
 
   def declaredElements = getIdList.fieldIds
 
-  override def getType(ctx: TypingContext) =
-    typeElement match {
-      case None =>
-        Failure(
-          ScalaBundle.message("no.type.element.found", getText),
-          Some(this))
-      case Some(te) => te.getType(ctx)
-    }
+  override def getType(ctx: TypingContext) = typeElement match {
+    case None =>
+      Failure(ScalaBundle.message("no.type.element.found", getText), Some(this))
+    case Some(te) => te.getType(ctx)
+  }
 
   def typeElement: Option[ScTypeElement] = {
     val stub = getStub

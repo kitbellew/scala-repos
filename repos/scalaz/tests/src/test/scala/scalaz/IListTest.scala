@@ -55,12 +55,11 @@ object IListTest extends SpecLite {
   }
 
   "intersperse vs benchmark" ! forAll { (a: IList[Int], b: Int) =>
-    def intersperse[A](value: IList[A], a: A): IList[A] =
-      value match {
-        case INil()           => INil()
-        case ICons(x, INil()) => x :: INil()
-        case ICons(h, t)      => h :: a :: intersperse(t, a)
-      }
+    def intersperse[A](value: IList[A], a: A): IList[A] = value match {
+      case INil()           => INil()
+      case ICons(x, INil()) => x :: INil()
+      case ICons(h, t)      => h :: a :: intersperse(t, a)
+    }
     a.intersperse(b) must_=== intersperse(a, b)
   }
 

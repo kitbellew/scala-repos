@@ -43,11 +43,8 @@ final class NIHDBProjection(
 
   val length = readers.map(_.length.toLong).sum
 
-  override def toString =
-    "NIHDBProjection(id = %d, len = %d, authorities = %s)".format(
-      projectionId,
-      length,
-      authorities)
+  override def toString = "NIHDBProjection(id = %d, len = %d, authorities = %s)"
+    .format(projectionId, length, authorities)
 
   def structure(implicit M: Monad[Future]) =
     M.point(readers.flatMap(_.structure)(collection.breakOut): Set[ColumnRef])
@@ -99,8 +96,8 @@ final class NIHDBProjection(
 }
 
 object NIHDBProjection {
-  def wrap(nihdb: NIHDB): Future[NIHDBProjection] =
-    nihdb.getSnapshot map { snap =>
+  def wrap(nihdb: NIHDB): Future[NIHDBProjection] = nihdb.getSnapshot map {
+    snap =>
       new NIHDBProjection(snap, nihdb.authorities, nihdb.projectionId)
-    }
+  }
 }

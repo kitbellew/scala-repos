@@ -70,8 +70,8 @@ case class FlatMapNode[P <: Platform[P]](
   def add(node: Producer[P, _]): Node[P] =
     if (members.contains(node)) this else this.copy(members = node :: members)
   def reverse = this.copy(members.reverse)
-  override def shortName(sanitize: String => String) =
-    NodeIdentifier("FlatMap" + collapseNamedNodes(sanitize))
+  override def shortName(sanitize: String => String) = NodeIdentifier(
+    "FlatMap" + collapseNamedNodes(sanitize))
 }
 
 case class SummerNode[P <: Platform[P]](
@@ -80,8 +80,8 @@ case class SummerNode[P <: Platform[P]](
   def add(node: Producer[P, _]): Node[P] =
     if (members.contains(node)) this else this.copy(members = node :: members)
   def reverse = this.copy(members.reverse)
-  override def shortName(sanitize: String => String) =
-    NodeIdentifier("Summer" + collapseNamedNodes(sanitize))
+  override def shortName(sanitize: String => String) = NodeIdentifier(
+    "Summer" + collapseNamedNodes(sanitize))
 }
 
 case class SourceNode[P <: Platform[P]](
@@ -90,8 +90,8 @@ case class SourceNode[P <: Platform[P]](
   def add(node: Producer[P, _]): Node[P] =
     if (members.contains(node)) this else this.copy(members = node :: members)
   def reverse = this.copy(members.reverse)
-  override def shortName(sanitize: String => String) =
-    NodeIdentifier("Source" + collapseNamedNodes(sanitize))
+  override def shortName(sanitize: String => String) = NodeIdentifier(
+    "Source" + collapseNamedNodes(sanitize))
 }
 
 case class Dag[P <: Platform[P]](
@@ -136,10 +136,9 @@ case class Dag[P <: Platform[P]](
   }
 
   def locateOpt(p: Producer[P, _]): Option[Node[P]] = producerToNode.get(p)
-  def locate(p: Producer[P, _]): Node[P] =
-    locateOpt(p).getOrElse {
-      sys.error("Unexpected node missing when looking for %s".format(p))
-    }
+  def locate(p: Producer[P, _]): Node[P] = locateOpt(p).getOrElse {
+    sys.error("Unexpected node missing when looking for %s".format(p))
+  }
   def connect(src: Producer[P, _], dest: Producer[P, _]): Dag[P] =
     connect(locate(src), locate(dest))
 
@@ -175,13 +174,12 @@ object Dag {
       originalTail: TailProducer[P, Any],
       producerToPriorityNames: Map[Producer[P, Any], List[String]],
       tail: TailProducer[P, Any],
-      registry: List[Node[P]]): Dag[P] =
-    apply[P, T](
-      originalTail,
-      producerToPriorityNames,
-      tail,
-      registry,
-      { (s: String) => s.replaceAll("""[\[\]]|\-""", "|") })
+      registry: List[Node[P]]): Dag[P] = apply[P, T](
+    originalTail,
+    producerToPriorityNames,
+    tail,
+    registry,
+    { (s: String) => s.replaceAll("""[\[\]]|\-""", "|") })
 
   def apply[P <: Platform[P], T](
       originalTail: TailProducer[P, Any],

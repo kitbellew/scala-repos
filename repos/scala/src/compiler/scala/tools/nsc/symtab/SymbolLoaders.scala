@@ -136,9 +136,8 @@ abstract class SymbolLoaders {
     if (!clazz.isAnonymousClass) {
       // Diagnostic for SI-7147
       def msg: String = {
-        def symLocation(sym: Symbol) =
-          if (sym == null) "null"
-          else s"${clazz.fullLocationString} (from ${clazz.associatedFile})"
+        def symLocation(sym: Symbol) = if (sym == null) "null"
+        else s"${clazz.fullLocationString} (from ${clazz.associatedFile})"
         sm"""Inconsistent class/module symbol pair for `$name` loaded from ${symLocation(
           root)}.
             |clazz = ${symLocation(clazz)}; clazz.companionModule = ${clazz.companionModule}

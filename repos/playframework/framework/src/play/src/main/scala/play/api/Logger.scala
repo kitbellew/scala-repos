@@ -183,7 +183,7 @@ object Logger extends LoggerLike {
     * @param clazz a class whose name will be used as logger name
     * @return a logger
     */
-  def apply[T](clazz: Class[T]): Logger =
-    new Logger(LoggerFactory.getLogger(clazz.getName.stripSuffix("$")))
+  def apply[T](clazz: Class[T]): Logger = new Logger(
+    LoggerFactory.getLogger(clazz.getName.stripSuffix("$")))
 
 }

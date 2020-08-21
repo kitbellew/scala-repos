@@ -472,63 +472,62 @@ abstract class TailCalls extends Transform {
     private val runDefinitions = currentRun.runDefinitions
     import runDefinitions.{Boolean_or, Boolean_and}
 
-    override def traverse(tree: Tree) =
-      tree match {
-        // we're looking for label(x){x} in tail position, since that means `a` is in tail position in a call `label(a)`
-        case LabelDef(_, List(arg), body @ Ident(_))
-            if arg.symbol == body.symbol =>
-          if (maybeTail) tailLabels += tree.symbol
+    override def traverse(tree: Tree) = tree match {
+      // we're looking for label(x){x} in tail position, since that means `a` is in tail position in a call `label(a)`
+      case LabelDef(_, List(arg), body @ Ident(_))
+          if arg.symbol == body.symbol =>
+        if (maybeTail) tailLabels += tree.symbol
 
-        // jumps to matchEnd are transparent; need this case for nested matches
-        // (and the translated match case below does things in reverse for this case's sake)
-        case Apply(fun, arg :: Nil)
-            if hasSynthCaseSymbol(fun) && tailLabels(fun.symbol) =>
-          traverse(arg)
+      // jumps to matchEnd are transparent; need this case for nested matches
+      // (and the translated match case below does things in reverse for this case's sake)
+      case Apply(fun, arg :: Nil)
+          if hasSynthCaseSymbol(fun) && tailLabels(fun.symbol) =>
+        traverse(arg)
 
-        case Apply(fun, args)
-            if (fun.symbol == Boolean_or || fun.symbol == Boolean_and) =>
-          traverseTrees(args)
+      case Apply(fun, args)
+          if (fun.symbol == Boolean_or || fun.symbol == Boolean_and) =>
+        traverseTrees(args)
 
-        // a translated casedef
-        case LabelDef(_, _, body) if hasSynthCaseSymbol(tree) =>
-          traverse(body)
+      // a translated casedef
+      case LabelDef(_, _, body) if hasSynthCaseSymbol(tree) =>
+        traverse(body)
 
-        // a translated match
-        case Block(stats, expr) if stats forall hasSynthCaseSymbol =>
-          // the assumption is once we encounter a case, the remainder of the block will consist of cases
-          // the prologue may be empty, usually it is the valdef that stores the scrut
-          val (prologue, cases) = stats span (s => !s.isInstanceOf[LabelDef])
-          traverse(expr)
-          traverseTrees(
-            cases.reverse
-          ) // reverse so that we enter the matchEnd LabelDef before we see jumps to it
-          traverseTreesNoTail(prologue) // selector (may be absent)
+      // a translated match
+      case Block(stats, expr) if stats forall hasSynthCaseSymbol =>
+        // the assumption is once we encounter a case, the remainder of the block will consist of cases
+        // the prologue may be empty, usually it is the valdef that stores the scrut
+        val (prologue, cases) = stats span (s => !s.isInstanceOf[LabelDef])
+        traverse(expr)
+        traverseTrees(
+          cases.reverse
+        ) // reverse so that we enter the matchEnd LabelDef before we see jumps to it
+        traverseTreesNoTail(prologue) // selector (may be absent)
 
-        case CaseDef(pat, guard, body) =>
-          traverse(body)
+      case CaseDef(pat, guard, body) =>
+        traverse(body)
 
-        case Match(selector, cases) =>
-          traverseNoTail(selector)
-          traverseTrees(cases)
+      case Match(selector, cases) =>
+        traverseNoTail(selector)
+        traverseTrees(cases)
 
-        case dd @ DefDef(_, _, _, _, _, _) => // we are run per-method
+      case dd @ DefDef(_, _, _, _, _, _) => // we are run per-method
 
-        case Block(stats, expr) =>
-          traverseTreesNoTail(stats)
-          traverse(expr)
+      case Block(stats, expr) =>
+        traverseTreesNoTail(stats)
+        traverse(expr)
 
-        case If(cond, thenp, elsep) =>
-          traverse(thenp)
-          traverse(elsep)
+      case If(cond, thenp, elsep) =>
+        traverse(thenp)
+        traverse(elsep)
 
-        case Try(block, catches, finalizer) =>
-          traverseNoTail(block)
-          traverseTreesNoTail(catches)
-          traverseNoTail(finalizer)
+      case Try(block, catches, finalizer) =>
+        traverseNoTail(block)
+        traverseTreesNoTail(catches)
+        traverseNoTail(finalizer)
 
-        case Apply(_, _) | EmptyTree | Super(_, _) | This(_) | Select(_, _) |
-            Ident(_) | Literal(_) | Function(_, _) | TypeTree() =>
-        case _ => super.traverse(tree)
-      }
+      case Apply(_, _) | EmptyTree | Super(_, _) | This(_) | Select(_, _) |
+          Ident(_) | Literal(_) | Function(_, _) | TypeTree() =>
+      case _ => super.traverse(tree)
+    }
   }
 }

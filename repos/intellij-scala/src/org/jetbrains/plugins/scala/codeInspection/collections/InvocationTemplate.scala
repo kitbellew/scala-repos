@@ -13,8 +13,8 @@ import scala.util.Try
 class InvocationTemplate(nameCondition: String => Boolean) {
 
   private class Condition[T](f: T => Boolean) {
-    def and(other: T => Boolean): Condition[T] =
-      new Condition[T](x => f(x) && other(x))
+    def and(other: T => Boolean): Condition[T] = new Condition[T](x =>
+      f(x) && other(x))
 
     def apply(t: T) = f(t)
   }

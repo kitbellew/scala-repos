@@ -46,16 +46,15 @@ private[akka] class FileSubscriber(
 
   private var bytesWritten: Long = 0
 
-  override def preStart(): Unit =
-    try {
-      chan = FileChannel.open(f.toPath, openOptions.asJava)
+  override def preStart(): Unit = try {
+    chan = FileChannel.open(f.toPath, openOptions.asJava)
 
-      super.preStart()
-    } catch {
-      case ex: Exception ⇒
-        closeAndComplete(IOResult(bytesWritten, Failure(ex)))
-        cancel()
-    }
+    super.preStart()
+  } catch {
+    case ex: Exception ⇒
+      closeAndComplete(IOResult(bytesWritten, Failure(ex)))
+      cancel()
+  }
 
   def receive = {
     case ActorSubscriberMessage.OnNext(bytes: ByteString) ⇒

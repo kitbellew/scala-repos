@@ -125,11 +125,10 @@ final class Tuple3Zipped[El1, Repr1, El2, Repr2, El3, Repr3](
     }
   }
 
-  override def toString: String =
-    "(%s, %s, %s).zipped".format(
-      colls._1.toString,
-      colls._2.toString,
-      colls._3.toString)
+  override def toString: String = "(%s, %s, %s).zipped".format(
+    colls._1.toString,
+    colls._2.toString,
+    colls._3.toString)
 }
 
 object Tuple3Zipped {
@@ -163,7 +162,7 @@ object Tuple3Zipped {
         w1: T1 => TraversableLike[El1, Repr1],
         w2: T2 => IterableLike[El2, Repr2],
         w3: T3 => IterableLike[El3, Repr3])
-        : Tuple3Zipped[El1, Repr1, El2, Repr2, El3, Repr3] =
-      new Tuple3Zipped((x._1, x._2, x._3))
+        : Tuple3Zipped[El1, Repr1, El2, Repr2, El3, Repr3] = new Tuple3Zipped(
+      (x._1, x._2, x._3))
   }
 }

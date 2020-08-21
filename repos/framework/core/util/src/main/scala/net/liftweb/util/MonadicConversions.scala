@@ -23,17 +23,15 @@ package util
 object MonadicConversions {
   import scala.language.implicitConversions
 
-  implicit def bool2Monadic(cond: Boolean) =
-    cond match {
-      case true => True
-      case _    => False(Nil)
-    }
+  implicit def bool2Monadic(cond: Boolean) = cond match {
+    case true => True
+    case _    => False(Nil)
+  }
 
-  implicit def monadic2Bool(cond: MonadicCondition): Boolean =
-    cond match {
-      case True => true
-      case _    => false
-    }
+  implicit def monadic2Bool(cond: MonadicCondition): Boolean = cond match {
+    case True => true
+    case _    => false
+  }
 
 }
 
@@ -65,19 +63,17 @@ trait MonadicCondition {
 }
 
 case object True extends MonadicCondition {
-  def &&(cond: MonadicCondition): MonadicCondition =
-    cond match {
-      case f @ False(m) => f
-      case _            => this
-    }
+  def &&(cond: MonadicCondition): MonadicCondition = cond match {
+    case f @ False(m) => f
+    case _            => this
+  }
   def ~(msg: String): MonadicCondition = this
 }
 
 case class False(msgs: List[String]) extends MonadicCondition {
-  def &&(cond: MonadicCondition): MonadicCondition =
-    cond match {
-      case False(m) => False(m ::: msgs)
-      case _        => this
-    }
+  def &&(cond: MonadicCondition): MonadicCondition = cond match {
+    case False(m) => False(m ::: msgs)
+    case _        => this
+  }
   def ~(msg: String): MonadicCondition = False(msg :: msgs)
 }

@@ -20,8 +20,8 @@ object ORMap {
   /**
     * Extract the [[ORMap#entries]].
     */
-  def unapply[A <: ReplicatedData](m: ORMap[A]): Option[Map[String, A]] =
-    Some(m.entries)
+  def unapply[A <: ReplicatedData](m: ORMap[A]): Option[Map[String, A]] = Some(
+    m.entries)
 
 }
 
@@ -226,11 +226,10 @@ final class ORMap[A <: ReplicatedData] private[akka] (
 
   override def toString: String = s"OR$entries"
 
-  override def equals(o: Any): Boolean =
-    o match {
-      case other: ORMap[_] ⇒ keys == other.keys && values == other.values
-      case _ ⇒ false
-    }
+  override def equals(o: Any): Boolean = o match {
+    case other: ORMap[_] ⇒ keys == other.keys && values == other.values
+    case _ ⇒ false
+  }
 
   override def hashCode: Int = {
     var result = HashCode.SEED

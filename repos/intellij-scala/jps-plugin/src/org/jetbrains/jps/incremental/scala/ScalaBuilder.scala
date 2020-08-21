@@ -142,10 +142,10 @@ object ScalaBuilder {
   }
 
   // Invokation of these methods can take a long time on large projects (like IDEA's one)
-  def isScalaProject(project: JpsProject): Boolean =
-    hasScalaSdks(project.getModules)
-  def hasScalaModules(chunk: ModuleChunk): Boolean =
-    hasScalaSdks(chunk.getModules)
+  def isScalaProject(project: JpsProject): Boolean = hasScalaSdks(
+    project.getModules)
+  def hasScalaModules(chunk: ModuleChunk): Boolean = hasScalaSdks(
+    chunk.getModules)
   private def hasScalaSdks(modules: util.Collection[JpsModule]): Boolean = {
     import _root_.scala.collection.JavaConversions._
     modules.exists(SettingsManager.hasScalaSdk)

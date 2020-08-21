@@ -32,8 +32,8 @@ object Statistics {
   // ups all values by 5 (0.5s)
   // as to avoid very high variation on bullet games
   // where all move times are low (http://en.lichess.org/@/AlisaP?mod)
-  def moveTimeCoefVariation(a: NonEmptyList[Int]): Double =
-    coefVariation(a.map(5 +))
+  def moveTimeCoefVariation(a: NonEmptyList[Int]): Double = coefVariation(
+    a.map(5 +))
 
   def moveTimeCoefVariation(pov: lila.game.Pov): Option[Double] =
     pov.game.moveTimes(pov.color).toNel.map(moveTimeCoefVariation)
@@ -55,19 +55,17 @@ object Statistics {
   def confInterval[T](x: T, avg: T, sd: T)(implicit n: Numeric[T]): Double =
     1 - cdf(n.abs(x), avg, sd) + cdf(n.times(n.fromInt(-1), n.abs(x)), avg, sd)
 
-  def listAverage[T](x: List[T])(implicit n: Numeric[T]): Double =
-    x match {
-      case Nil      => 0
-      case a :: Nil => n.toDouble(a)
-      case a :: b   => average(NonEmptyList.nel(a, b))
-    }
+  def listAverage[T](x: List[T])(implicit n: Numeric[T]): Double = x match {
+    case Nil      => 0
+    case a :: Nil => n.toDouble(a)
+    case a :: b   => average(NonEmptyList.nel(a, b))
+  }
 
-  def listDeviation[T](x: List[T])(implicit n: Numeric[T]): Double =
-    x match {
-      case Nil      => 0
-      case _ :: Nil => 0
-      case a :: b   => deviation(NonEmptyList.nel(a, b))
-    }
+  def listDeviation[T](x: List[T])(implicit n: Numeric[T]): Double = x match {
+    case Nil      => 0
+    case _ :: Nil => 0
+    case a :: b   => deviation(NonEmptyList.nel(a, b))
+  }
 }
 
 object Erf {

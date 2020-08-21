@@ -35,14 +35,13 @@ object StreamLayout {
       doPrint: Boolean = false,
       idMap: ju.Map[AnyRef, Integer] = new ju.HashMap): Unit = {
     val ids = Iterator from 1
-    def id(obj: AnyRef) =
-      idMap get obj match {
-        case null ⇒
-          val x = ids.next()
-          idMap.put(obj, x)
-          x
-        case x ⇒ x
-      }
+    def id(obj: AnyRef) = idMap get obj match {
+      case null ⇒
+        val x = ids.next()
+        idMap.put(obj, x)
+        x
+      case x ⇒ x
+    }
     def in(i: InPort) = s"${i.toString}@${id(i)}"
     def out(o: OutPort) = s"${o.toString}@${id(o)}"
     def ins(i: Iterable[InPort]) = i.map(in).mkString("In[", ",", "]")
@@ -170,9 +169,8 @@ object StreamLayout {
     override def toString: String = s"Combine($dep1,$dep2)"
   }
   case class Atomic(module: Module) extends MaterializedValueNode {
-    override def toString: String =
-      f"Atomic(${module.attributes.nameOrDefault(
-        module.getClass.getName)}[${System.identityHashCode(module)}%08x])"
+    override def toString: String = f"Atomic(${module.attributes.nameOrDefault(
+      module.getClass.getName)}[${System.identityHashCode(module)}%08x])"
   }
   case class Transform(f: Any ⇒ Any, dep: MaterializedValueNode)
       extends MaterializedValueNode {
@@ -505,14 +503,13 @@ object StreamLayout {
   }
 
   object CompositeModule {
-    def apply(m: Module, s: Shape): CompositeModule =
-      CompositeModule(
-        Set(m),
-        s,
-        Map.empty,
-        Map.empty,
-        Atomic(m),
-        Attributes.none)
+    def apply(m: Module, s: Shape): CompositeModule = CompositeModule(
+      Set(m),
+      s,
+      Map.empty,
+      Map.empty,
+      Atomic(m),
+      Attributes.none)
   }
 
   final case class FusedModule(

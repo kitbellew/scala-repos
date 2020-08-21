@@ -247,8 +247,8 @@ object AdminClient {
 
   def create(props: Properties): AdminClient = create(props.asScala.toMap)
 
-  def create(props: Map[String, _]): AdminClient =
-    create(new AdminConfig(props))
+  def create(props: Map[String, _]): AdminClient = create(
+    new AdminConfig(props))
 
   def create(config: AdminConfig): AdminClient = {
     val time = new SystemTime

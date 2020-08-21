@@ -62,8 +62,9 @@ private[mesos] class MesosSubmitRequestServlet(
   private val DEFAULT_CORES = 1.0
 
   private val nextDriverNumber = new AtomicLong(0)
-  private def createDateFormat =
-    new SimpleDateFormat("yyyyMMddHHmmss") // For application IDs
+  private def createDateFormat = new SimpleDateFormat(
+    "yyyyMMddHHmmss"
+  ) // For application IDs
   private def newDriverId(submitDate: Date): String = {
     "driver-%s-%04d".format(
       createDateFormat.format(submitDate),

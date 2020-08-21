@@ -72,11 +72,10 @@ private class OpqueueZkReader(
 
   @volatile var opq: immutable.Queue[ZkOp] = immutable.Queue.empty
 
-  private def enqueue(op: ZkOp): Future[op.Res] =
-    synchronized {
-      opq = opq enqueue op
-      op.res
-    }
+  private def enqueue(op: ZkOp): Future[op.Res] = synchronized {
+    opq = opq enqueue op
+    op.res
+  }
 
   def exists(path: String) = enqueue(Exists(path))
   def existsWatch(path: String) = enqueue(ExistsWatch(path))

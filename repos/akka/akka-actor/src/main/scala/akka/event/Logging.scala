@@ -53,24 +53,23 @@ trait LoggingBus extends ActorEventBus {
     * will not participate in the automatic management of log level
     * subscriptions!
     */
-  def setLogLevel(level: LogLevel): Unit =
-    guard.withGuard {
-      val logLvl =
-        _logLevel // saves (2 * AllLogLevel.size - 1) volatile reads (because of the loops below)
-      for {
-        l ← AllLogLevels
-        // subscribe if previously ignored and now requested
-        if l > logLvl && l <= level
-        log ← loggers
-      } subscribe(log, classFor(l))
-      for {
-        l ← AllLogLevels
-        // unsubscribe if previously registered and now ignored
-        if l <= logLvl && l > level
-        log ← loggers
-      } unsubscribe(log, classFor(l))
-      _logLevel = level
-    }
+  def setLogLevel(level: LogLevel): Unit = guard.withGuard {
+    val logLvl =
+      _logLevel // saves (2 * AllLogLevel.size - 1) volatile reads (because of the loops below)
+    for {
+      l ← AllLogLevels
+      // subscribe if previously ignored and now requested
+      if l > logLvl && l <= level
+      log ← loggers
+    } subscribe(log, classFor(l))
+    for {
+      l ← AllLogLevels
+      // unsubscribe if previously registered and now ignored
+      if l <= logLvl && l > level
+      log ← loggers
+    } unsubscribe(log, classFor(l))
+    _logLevel = level
+  }
 
   private def setUpStdoutLogger(config: Settings) {
     val level = levelFor(config.StdoutLogLevel) getOrElse {
@@ -327,14 +326,13 @@ object LogSource {
 
   implicit val fromActorRef: LogSource[ActorRef] = new LogSource[ActorRef] {
     def genString(a: ActorRef) = a.path.toString
-    override def genString(a: ActorRef, system: ActorSystem) =
-      try {
-        a.path.toStringWithAddress(
-          system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress)
-      } catch {
-        // it can fail if the ActorSystem (remoting) is not completely started yet
-        case NonFatal(_) ⇒ a.path.toString
-      }
+    override def genString(a: ActorRef, system: ActorSystem) = try {
+      a.path.toStringWithAddress(
+        system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress)
+    } catch {
+      // it can fail if the ActorSystem (remoting) is not completely started yet
+      case NonFatal(_) ⇒ a.path.toString
+    }
   }
 
   // this one unfortunately does not work as implicit, because existential types have some weird behavior
@@ -494,15 +492,14 @@ object Logging {
     * valid inputs are upper or lowercase (not mixed) versions of:
     * "error", "warning", "info" and "debug"
     */
-  def levelFor(s: String): Option[LogLevel] =
-    s.toLowerCase(Locale.ROOT) match {
-      case "off" ⇒ Some(OffLevel)
-      case "error" ⇒ Some(ErrorLevel)
-      case "warning" ⇒ Some(WarningLevel)
-      case "info" ⇒ Some(InfoLevel)
-      case "debug" ⇒ Some(DebugLevel)
-      case unknown ⇒ None
-    }
+  def levelFor(s: String): Option[LogLevel] = s.toLowerCase(Locale.ROOT) match {
+    case "off" ⇒ Some(OffLevel)
+    case "error" ⇒ Some(ErrorLevel)
+    case "warning" ⇒ Some(WarningLevel)
+    case "info" ⇒ Some(InfoLevel)
+    case "debug" ⇒ Some(DebugLevel)
+    case unknown ⇒ None
+  }
 
   /**
     * Returns the LogLevel associated with the given event class.
@@ -519,13 +516,12 @@ object Logging {
   /**
     * Returns the event class associated with the given LogLevel
     */
-  def classFor(level: LogLevel): Class[_ <: LogEvent] =
-    level match {
-      case ErrorLevel ⇒ classOf[Error]
-      case WarningLevel ⇒ classOf[Warning]
-      case InfoLevel ⇒ classOf[Info]
-      case DebugLevel ⇒ classOf[Debug]
-    }
+  def classFor(level: LogLevel): Class[_ <: LogEvent] = level match {
+    case ErrorLevel ⇒ classOf[Error]
+    case WarningLevel ⇒ classOf[Warning]
+    case InfoLevel ⇒ classOf[Info]
+    case DebugLevel ⇒ classOf[Debug]
+  }
 
   // these type ascriptions/casts are necessary to avoid CCEs during construction while retaining correct type
   val AllLogLevels: immutable.Seq[LogLevel] =
@@ -854,25 +850,23 @@ object Logging {
     private val infoFormat = "[INFO] [%s] [%s] [%s] %s"
     private val debugFormat = "[DEBUG] [%s] [%s] [%s] %s"
 
-    def timestamp(event: LogEvent): String =
-      synchronized {
-        date.setTime(event.timestamp)
-        dateFormat.format(date)
-      } // SDF isn't threadsafe
+    def timestamp(event: LogEvent): String = synchronized {
+      date.setTime(event.timestamp)
+      dateFormat.format(date)
+    } // SDF isn't threadsafe
 
-    def print(event: Any): Unit =
-      event match {
-        case e: Error ⇒ error(e)
-        case e: Warning ⇒ warning(e)
-        case e: Info ⇒ info(e)
-        case e: Debug ⇒ debug(e)
-        case e ⇒
-          warning(
-            Warning(
-              simpleName(this),
-              this.getClass,
-              "received unexpected event of class " + e.getClass + ": " + e))
-      }
+    def print(event: Any): Unit = event match {
+      case e: Error ⇒ error(e)
+      case e: Warning ⇒ warning(e)
+      case e: Info ⇒ info(e)
+      case e: Debug ⇒ debug(e)
+      case e ⇒
+        warning(
+          Warning(
+            simpleName(this),
+            this.getClass,
+            "received unexpected event of class " + e.getClass + ": " + e))
+    }
 
     def error(event: Error): Unit = {
       val f =
@@ -922,9 +916,8 @@ object Logging {
   class StandardOutLogger extends MinimalActorRef with StdOutLogger {
     val path: ActorPath =
       new RootActorPath(Address("akka", "all-systems"), "/StandardOutLogger")
-    def provider: ActorRefProvider =
-      throw new UnsupportedOperationException(
-        "StandardOutLogger does not provide")
+    def provider: ActorRefProvider = throw new UnsupportedOperationException(
+      "StandardOutLogger does not provide")
     override val toString = "StandardOutLogger"
     override def !(message: Any)(implicit
         sender: ActorRef = Actor.noSender): Unit =
@@ -966,17 +959,16 @@ object Logging {
   /**
     * Returns the StackTrace for the given Throwable as a String
     */
-  def stackTraceFor(e: Throwable): String =
-    e match {
-      case null | Error.NoCause ⇒ ""
-      case _: NoStackTrace ⇒ " (" + e.getClass.getName + ")"
-      case other ⇒
-        val sw = new java.io.StringWriter
-        val pw = new java.io.PrintWriter(sw)
-        pw.append('\n')
-        other.printStackTrace(pw)
-        sw.toString
-    }
+  def stackTraceFor(e: Throwable): String = e match {
+    case null | Error.NoCause ⇒ ""
+    case _: NoStackTrace ⇒ " (" + e.getClass.getName + ")"
+    case other ⇒
+      val sw = new java.io.StringWriter
+      val pw = new java.io.PrintWriter(sw)
+      pw.append('\n')
+      other.printStackTrace(pw)
+      sw.toString
+  }
 
   type MDC = Map[String, Any]
 
@@ -1314,13 +1306,12 @@ trait LoggingAdapter {
   /**
     * @return true if the specified log level is enabled
     */
-  final def isEnabled(level: Logging.LogLevel): Boolean =
-    level match {
-      case Logging.ErrorLevel ⇒ isErrorEnabled
-      case Logging.WarningLevel ⇒ isWarningEnabled
-      case Logging.InfoLevel ⇒ isInfoEnabled
-      case Logging.DebugLevel ⇒ isDebugEnabled
-    }
+  final def isEnabled(level: Logging.LogLevel): Boolean = level match {
+    case Logging.ErrorLevel ⇒ isErrorEnabled
+    case Logging.WarningLevel ⇒ isWarningEnabled
+    case Logging.InfoLevel ⇒ isInfoEnabled
+    case Logging.DebugLevel ⇒ isDebugEnabled
+  }
 
   final def notifyLog(level: Logging.LogLevel, message: String): Unit =
     level match {
@@ -1330,13 +1321,12 @@ trait LoggingAdapter {
       case Logging.DebugLevel ⇒ if (isDebugEnabled) notifyDebug(message)
     }
 
-  private def format1(t: String, arg: Any): String =
-    arg match {
-      case a: Array[_] if !a.getClass.getComponentType.isPrimitive ⇒
-        format(t, a: _*)
-      case a: Array[_] ⇒ format(t, (a map (_.asInstanceOf[AnyRef]): _*))
-      case x ⇒ format(t, x)
-    }
+  private def format1(t: String, arg: Any): String = arg match {
+    case a: Array[_] if !a.getClass.getComponentType.isPrimitive ⇒
+      format(t, a: _*)
+    case a: Array[_] ⇒ format(t, (a map (_.asInstanceOf[AnyRef]): _*))
+    case x ⇒ format(t, x)
+  }
 
   def format(t: String, arg: Any*): String = {
     val sb = new java.lang.StringBuilder(64)
@@ -1385,8 +1375,8 @@ trait LoggingFilter {
 class DefaultLoggingFilter(logLevel: () ⇒ Logging.LogLevel)
     extends LoggingFilter {
 
-  def this(settings: Settings, eventStream: EventStream) =
-    this(() ⇒ eventStream.logLevel)
+  def this(settings: Settings, eventStream: EventStream) = this(() ⇒
+    eventStream.logLevel)
 
   import Logging._
   def isErrorEnabled(logClass: Class[_], logSource: String) =
@@ -1457,8 +1447,8 @@ trait DiagnosticLoggingAdapter extends LoggingAdapter {
     * These values can be used in PatternLayout when `akka.event.slf4j.Slf4jLogger` is configured.
     * Visit <a href="http://logback.qos.ch/manual/mdc.html">Logback Docs: MDC</a> for more information.
     */
-  def setMDC(jMdc: java.util.Map[String, Any]): Unit =
-    mdc(if (jMdc != null) jMdc.asScala.toMap else emptyMDC)
+  def setMDC(jMdc: java.util.Map[String, Any]): Unit = mdc(
+    if (jMdc != null) jMdc.asScala.toMap else emptyMDC)
 
   /**
     * Clear all entries in the MDC

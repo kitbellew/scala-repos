@@ -140,8 +140,8 @@ final class PersistencePluginProxy(config: Config)
   private val selfAddress: Address =
     context.system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
 
-  private def timeoutException() =
-    new TimeoutException(s"Target ${pluginType.qualifier} not initialized. " +
+  private def timeoutException() = new TimeoutException(
+    s"Target ${pluginType.qualifier} not initialized. " +
       s"Use `PersistencePluginProxy.setTargetLocation` or set `target-${pluginType.qualifier}-address`")
 
   def receive = init
@@ -175,19 +175,18 @@ final class PersistencePluginProxy(config: Config)
     sel ! Identify(targetPluginId)
   }
 
-  def identifying(address: Address): Receive =
-    ({
-      case ActorIdentity(`targetPluginId`, Some(target)) ⇒
-        log.info("Found target {} at [{}]", pluginType.qualifier, address)
-        context.setReceiveTimeout(Duration.Undefined)
-        context.watch(target)
-        unstashAll()
-        context.become(active(target, address == selfAddress))
-      case _: ActorIdentity ⇒ // will retry after ReceiveTimeout
-      case Terminated(_) ⇒
-      case ReceiveTimeout ⇒
-        sendIdentify(address)
-    }: Receive).orElse(init)
+  def identifying(address: Address): Receive = ({
+    case ActorIdentity(`targetPluginId`, Some(target)) ⇒
+      log.info("Found target {} at [{}]", pluginType.qualifier, address)
+      context.setReceiveTimeout(Duration.Undefined)
+      context.watch(target)
+      unstashAll()
+      context.become(active(target, address == selfAddress))
+    case _: ActorIdentity ⇒ // will retry after ReceiveTimeout
+    case Terminated(_) ⇒
+    case ReceiveTimeout ⇒
+      sendIdentify(address)
+  }: Receive).orElse(init)
 
   def active(targetJournal: ActorRef, targetAtThisNode: Boolean): Receive = {
     case TargetLocation(address) ⇒

@@ -212,14 +212,13 @@ class ScReferenceExpressionImpl(node: ASTNode)
       })
   }
 
-  def getSameNameVariants: Array[ResolveResult] =
-    doResolve(
+  def getSameNameVariants: Array[ResolveResult] = doResolve(
+    this,
+    new CompletionProcessor(
+      getKinds(incomplete = true),
       this,
-      new CompletionProcessor(
-        getKinds(incomplete = true),
-        this,
-        true,
-        Some(refName)))
+      true,
+      Some(refName)))
 
   def getKinds(incomplete: Boolean, completion: Boolean = false) = {
     getContext match {

@@ -23,15 +23,14 @@ object Sample {
 
   final val akkaOrganization = "com.typesafe.akka"
 
-  def buildTransformer =
-    (ti: BuildLoader.TransformInfo) =>
-      ti.base.name match {
-        case s if s.startsWith("akka-sample") =>
-          ti.unit.copy(
-            loadedDefinitions = ti.unit.definitions.copy(
-              projects = libraryToProjectDeps(ti.unit.definitions.projects)))
-        case _ => ti.unit
-      }
+  def buildTransformer = (ti: BuildLoader.TransformInfo) =>
+    ti.base.name match {
+      case s if s.startsWith("akka-sample") =>
+        ti.unit.copy(
+          loadedDefinitions = ti.unit.definitions.copy(
+            projects = libraryToProjectDeps(ti.unit.definitions.projects)))
+      case _ => ti.unit
+    }
 
   def project(name: String) =
     ProjectRef(file(s"akka-samples/$name"), name)

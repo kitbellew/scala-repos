@@ -35,24 +35,22 @@ private[streaming] class FileBasedWriteAheadLogRandomReader(
   private var closed =
     (instream == null) // the file may be deleted as we're opening the stream
 
-  def read(segment: FileBasedWriteAheadLogSegment): ByteBuffer =
-    synchronized {
-      assertOpen()
-      instream.seek(segment.offset)
-      val nextLength = instream.readInt()
-      HdfsUtils.checkState(
-        nextLength == segment.length,
-        s"Expected message length to be ${segment.length}, but was $nextLength")
-      val buffer = new Array[Byte](nextLength)
-      instream.readFully(buffer)
-      ByteBuffer.wrap(buffer)
-    }
+  def read(segment: FileBasedWriteAheadLogSegment): ByteBuffer = synchronized {
+    assertOpen()
+    instream.seek(segment.offset)
+    val nextLength = instream.readInt()
+    HdfsUtils.checkState(
+      nextLength == segment.length,
+      s"Expected message length to be ${segment.length}, but was $nextLength")
+    val buffer = new Array[Byte](nextLength)
+    instream.readFully(buffer)
+    ByteBuffer.wrap(buffer)
+  }
 
-  override def close(): Unit =
-    synchronized {
-      closed = true
-      instream.close()
-    }
+  override def close(): Unit = synchronized {
+    closed = true
+    instream.close()
+  }
 
   private def assertOpen() {
     HdfsUtils.checkState(

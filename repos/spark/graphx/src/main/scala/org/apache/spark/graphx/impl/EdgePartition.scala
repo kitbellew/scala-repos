@@ -128,11 +128,11 @@ private[graphx] class EdgePartition[
       activeSet)
   }
 
-  @inline private def srcIds(pos: Int): VertexId =
-    local2global(localSrcIds(pos))
+  @inline private def srcIds(pos: Int): VertexId = local2global(
+    localSrcIds(pos))
 
-  @inline private def dstIds(pos: Int): VertexId =
-    local2global(localDstIds(pos))
+  @inline private def dstIds(pos: Int): VertexId = local2global(
+    localDstIds(pos))
 
   @inline private def attrs(pos: Int): ED = data(pos)
 
@@ -380,21 +380,20 @@ private[graphx] class EdgePartition[
     *
     * @return an iterator over edges in the partition
     */
-  def iterator: Iterator[Edge[ED]] =
-    new Iterator[Edge[ED]] {
-      private[this] val edge = new Edge[ED]
-      private[this] var pos = 0
+  def iterator: Iterator[Edge[ED]] = new Iterator[Edge[ED]] {
+    private[this] val edge = new Edge[ED]
+    private[this] var pos = 0
 
-      override def hasNext: Boolean = pos < EdgePartition.this.size
+    override def hasNext: Boolean = pos < EdgePartition.this.size
 
-      override def next(): Edge[ED] = {
-        edge.srcId = srcIds(pos)
-        edge.dstId = dstIds(pos)
-        edge.attr = data(pos)
-        pos += 1
-        edge
-      }
+    override def next(): Edge[ED] = {
+      edge.srcId = srcIds(pos)
+      edge.dstId = dstIds(pos)
+      edge.attr = data(pos)
+      pos += 1
+      edge
     }
+  }
 
   /**
     * Get an iterator over the edge triplets in this partition.

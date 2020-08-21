@@ -161,11 +161,10 @@ object MutablizingAdaptor {
 //        override def apply(dw: I): Wrapper = wrap(u.z(dw))
 //      }
 
-        implicit def copy: CanCopy[Wrapper] =
-          new CanCopy[Wrapper] {
-            // Should not inherit from Form=>To because the compiler will try to use it to coerce types.
-            def apply(from: Wrapper): Wrapper = from
-          }
+        implicit def copy: CanCopy[Wrapper] = new CanCopy[Wrapper] {
+          // Should not inherit from Form=>To because the compiler will try to use it to coerce types.
+          def apply(from: Wrapper): Wrapper = from
+        }
 
         def liftUpdate[Op <: OpType](implicit
             op: UFunc.UImpl2[Op, V, S, V]): UFunc.InPlaceImpl2[Op, Wrapper, S] =
@@ -202,8 +201,8 @@ object MutablizingAdaptor {
         implicit def mulIntoVS: OpMulScalar.InPlaceImpl2[Wrapper, S] =
           liftUpdate(u.mulVS)
 
-        implicit def divIntoVS: OpDiv.InPlaceImpl2[Wrapper, S] =
-          liftUpdate(u.divVS)
+        implicit def divIntoVS: OpDiv.InPlaceImpl2[Wrapper, S] = liftUpdate(
+          u.divVS)
 
         implicit def addIntoVV: OpAdd.InPlaceImpl2[Wrapper, Wrapper] =
           liftUpdateV(u.addVV)
@@ -232,16 +231,16 @@ object MutablizingAdaptor {
           }
         }
 
-        implicit def mulVS: OpMulScalar.Impl2[Wrapper, S, Wrapper] =
-          liftOp(u.mulVS)
+        implicit def mulVS: OpMulScalar.Impl2[Wrapper, S, Wrapper] = liftOp(
+          u.mulVS)
 
         implicit def divVS: OpDiv.Impl2[Wrapper, S, Wrapper] = liftOp(u.divVS)
 
-        implicit def addVV: OpAdd.Impl2[Wrapper, Wrapper, Wrapper] =
-          liftOpV(u.addVV)
+        implicit def addVV: OpAdd.Impl2[Wrapper, Wrapper, Wrapper] = liftOpV(
+          u.addVV)
 
-        implicit def subVV: OpSub.Impl2[Wrapper, Wrapper, Wrapper] =
-          liftOpV(u.subVV)
+        implicit def subVV: OpSub.Impl2[Wrapper, Wrapper, Wrapper] = liftOpV(
+          u.subVV)
 
         def close(a: Wrapper, b: Wrapper, tolerance: Double): Boolean =
           u.close(a.value, b.value, tolerance)
@@ -279,11 +278,10 @@ object MutablizingAdaptor {
 //        override def apply(d: I): Wrapper = wrap(u.zero(d))
 //      }
 
-        implicit def copy: CanCopy[Wrapper] =
-          new CanCopy[Wrapper] {
-            // Should not inherit from Form=>To because the compiler will try to use it to coerce types.
-            def apply(from: Wrapper): Wrapper = from
-          }
+        implicit def copy: CanCopy[Wrapper] = new CanCopy[Wrapper] {
+          // Should not inherit from Form=>To because the compiler will try to use it to coerce types.
+          def apply(from: Wrapper): Wrapper = from
+        }
 
 //      implicit def normImplDouble: norm.Impl2[Wrapper, Double, Double] = new norm.Impl2[Wrapper, Double, Double] {
 //        def apply(v1: Wrapper, v2: Double): Double = u.normImplDouble(v1.value, v2)
@@ -352,8 +350,8 @@ object MutablizingAdaptor {
         implicit def mulIntoVS: OpMulScalar.InPlaceImpl2[Wrapper, S] =
           liftUpdate(u.mulVS)
 
-        implicit def divIntoVS: OpDiv.InPlaceImpl2[Wrapper, S] =
-          liftUpdate(u.divVS)
+        implicit def divIntoVS: OpDiv.InPlaceImpl2[Wrapper, S] = liftUpdate(
+          u.divVS)
 
         implicit def addIntoVV: OpAdd.InPlaceImpl2[Wrapper, Wrapper] =
           liftUpdateV(u.addVV)
@@ -374,16 +372,16 @@ object MutablizingAdaptor {
           }
         }
 
-        implicit def mulVS: OpMulScalar.Impl2[Wrapper, S, Wrapper] =
-          liftOp(u.mulVS)
+        implicit def mulVS: OpMulScalar.Impl2[Wrapper, S, Wrapper] = liftOp(
+          u.mulVS)
 
         implicit def divVS: OpDiv.Impl2[Wrapper, S, Wrapper] = liftOp(u.divVS)
 
-        implicit def addVV: OpAdd.Impl2[Wrapper, Wrapper, Wrapper] =
-          liftOpV(u.addVV)
+        implicit def addVV: OpAdd.Impl2[Wrapper, Wrapper, Wrapper] = liftOpV(
+          u.addVV)
 
-        implicit def subVV: OpSub.Impl2[Wrapper, Wrapper, Wrapper] =
-          liftOpV(u.subVV)
+        implicit def subVV: OpSub.Impl2[Wrapper, Wrapper, Wrapper] = liftOpV(
+          u.subVV)
 
 //      override implicit def addVS: OpAdd.Impl2[Wrapper, S, Wrapper] = liftOp(u.addVS)
 //
@@ -431,11 +429,10 @@ object MutablizingAdaptor {
               from.map(underlying.zeroLike apply)
           }
 
-        implicit def copy: CanCopy[Wrapper] =
-          new CanCopy[Wrapper] {
-            // Should not inherit from Form=>To because the compiler will try to use it to coerce types.
-            def apply(from: Wrapper): Wrapper = from
-          }
+        implicit def copy: CanCopy[Wrapper] = new CanCopy[Wrapper] {
+          // Should not inherit from Form=>To because the compiler will try to use it to coerce types.
+          def apply(from: Wrapper): Wrapper = from
+        }
 
 //      implicit def normImplDouble: norm.Impl2[Wrapper, Double, Double] = new norm.Impl2[Wrapper, Double, Double] {
 //        def apply(v1: Wrapper, v2: Double): Double = u.normImplDouble(v1.value, v2)
@@ -511,8 +508,8 @@ object MutablizingAdaptor {
         implicit def mulIntoVS: OpMulScalar.InPlaceImpl2[Wrapper, S] =
           liftUpdate(u.mulVS)
 
-        implicit def divIntoVS: OpDiv.InPlaceImpl2[Wrapper, S] =
-          liftUpdate(u.divVS)
+        implicit def divIntoVS: OpDiv.InPlaceImpl2[Wrapper, S] = liftUpdate(
+          u.divVS)
 
         implicit def addIntoVV: OpAdd.InPlaceImpl2[Wrapper, Wrapper] =
           liftUpdateV(u.addVV)
@@ -546,8 +543,8 @@ object MutablizingAdaptor {
 //
 //      implicit def addVS: OpAdd.Impl2[Wrapper, S, Wrapper] = liftOp(u.addVS)
 
-        implicit def divVV: OpDiv.Impl2[Wrapper, Wrapper, Wrapper] =
-          liftOpV(u.divVV)
+        implicit def divVV: OpDiv.Impl2[Wrapper, Wrapper, Wrapper] = liftOpV(
+          u.divVV)
 
         implicit def divIntoVV: OpDiv.InPlaceImpl2[Wrapper, Wrapper] =
           liftUpdateV(u.divVV)
@@ -558,16 +555,16 @@ object MutablizingAdaptor {
           }
         }
 
-        implicit def mulVS: OpMulScalar.Impl2[Wrapper, S, Wrapper] =
-          liftOp(u.mulVS)
+        implicit def mulVS: OpMulScalar.Impl2[Wrapper, S, Wrapper] = liftOp(
+          u.mulVS)
 
         implicit def divVS: OpDiv.Impl2[Wrapper, S, Wrapper] = liftOp(u.divVS)
 
-        implicit def addVV: OpAdd.Impl2[Wrapper, Wrapper, Wrapper] =
-          liftOpV(u.addVV)
+        implicit def addVV: OpAdd.Impl2[Wrapper, Wrapper, Wrapper] = liftOpV(
+          u.addVV)
 
-        implicit def subVV: OpSub.Impl2[Wrapper, Wrapper, Wrapper] =
-          liftOpV(u.subVV)
+        implicit def subVV: OpSub.Impl2[Wrapper, Wrapper, Wrapper] = liftOpV(
+          u.subVV)
 
         override def close(a: Wrapper, b: Wrapper, tolerance: Double): Boolean =
           u.close(a.value, b.value, tolerance)
@@ -617,11 +614,10 @@ object MutablizingAdaptor {
               from.map(underlying.zeroLike apply)
           }
 
-        implicit def copy: CanCopy[Wrapper] =
-          new CanCopy[Wrapper] {
-            // Should not inherit from Form=>To because the compiler will try to use it to coerce types.
-            def apply(from: Wrapper): Wrapper = from
-          }
+        implicit def copy: CanCopy[Wrapper] = new CanCopy[Wrapper] {
+          // Should not inherit from Form=>To because the compiler will try to use it to coerce types.
+          def apply(from: Wrapper): Wrapper = from
+        }
 
 //      implicit def normImplDouble: norm.Impl2[Wrapper, Double, Double] = new norm.Impl2[Wrapper, Double, Double] {
 //        def apply(v1: Wrapper, v2: Double): Double = u.normImplDouble(v1.value, v2)
@@ -730,14 +726,14 @@ object MutablizingAdaptor {
           }
         }
 
-        implicit def mulVS: OpMulScalar.Impl2[Wrapper, S, Wrapper] =
-          liftOp(u.mulVS)
+        implicit def mulVS: OpMulScalar.Impl2[Wrapper, S, Wrapper] = liftOp(
+          u.mulVS)
 
-        implicit def addVV: OpAdd.Impl2[Wrapper, Wrapper, Wrapper] =
-          liftOpV(u.addVV)
+        implicit def addVV: OpAdd.Impl2[Wrapper, Wrapper, Wrapper] = liftOpV(
+          u.addVV)
 
-        implicit def subVV: OpSub.Impl2[Wrapper, Wrapper, Wrapper] =
-          liftOpV(u.subVV)
+        implicit def subVV: OpSub.Impl2[Wrapper, Wrapper, Wrapper] = liftOpV(
+          u.subVV)
 
         override def close(a: Wrapper, b: Wrapper, tolerance: Double): Boolean =
           u.close(a.value, b.value, tolerance)
@@ -788,11 +784,10 @@ object MutablizingAdaptor {
               from.map(underlying.zeroLike apply)
           }
 
-        implicit def copy: CanCopy[Wrapper] =
-          new CanCopy[Wrapper] {
-            // Should not inherit from Form=>To because the compiler will try to use it to coerce types.
-            def apply(from: Wrapper): Wrapper = from
-          }
+        implicit def copy: CanCopy[Wrapper] = new CanCopy[Wrapper] {
+          // Should not inherit from Form=>To because the compiler will try to use it to coerce types.
+          def apply(from: Wrapper): Wrapper = from
+        }
 
 //      implicit def normImplDouble: norm.Impl2[Wrapper, Double, Double] = new norm.Impl2[Wrapper, Double, Double] {
 //        def apply(v1: Wrapper, v2: Double): Double = u.normImplDouble(v1.value, v2)
@@ -892,14 +887,14 @@ object MutablizingAdaptor {
           }
         }
 
-        implicit def mulVS: OpMulScalar.Impl2[Wrapper, S, Wrapper] =
-          liftOp(u.mulVS)
+        implicit def mulVS: OpMulScalar.Impl2[Wrapper, S, Wrapper] = liftOp(
+          u.mulVS)
 
-        implicit def addVV: OpAdd.Impl2[Wrapper, Wrapper, Wrapper] =
-          liftOpV(u.addVV)
+        implicit def addVV: OpAdd.Impl2[Wrapper, Wrapper, Wrapper] = liftOpV(
+          u.addVV)
 
-        implicit def subVV: OpSub.Impl2[Wrapper, Wrapper, Wrapper] =
-          liftOpV(u.subVV)
+        implicit def subVV: OpSub.Impl2[Wrapper, Wrapper, Wrapper] = liftOpV(
+          u.subVV)
 
         override def close(a: Wrapper, b: Wrapper, tolerance: Double): Boolean =
           u.close(a.value, b.value, tolerance)
@@ -932,8 +927,8 @@ object MutablizingAdaptor {
         override implicit def divIntoVS: OpDiv.InPlaceImpl2[Wrapper, S] =
           liftUpdate(underlying.divVS)
 
-        override implicit def divVS: OpDiv.Impl2[Wrapper, S, Wrapper] =
-          liftOp(underlying.divVS)
+        override implicit def divVS: OpDiv.Impl2[Wrapper, S, Wrapper] = liftOp(
+          underlying.divVS)
       }
   }
 

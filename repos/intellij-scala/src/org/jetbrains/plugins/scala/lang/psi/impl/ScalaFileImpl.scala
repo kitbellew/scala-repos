@@ -336,19 +336,18 @@ class ScalaFileImpl(
     }
   }
 
-  override def getStub: ScFileStub =
-    super[PsiFileBase].getStub match {
-      case null          => null
-      case s: ScFileStub => s
-      case _ =>
-        val faultyContainer: VirtualFile = PsiUtilCore.getVirtualFile(this)
-        ScalaFileImpl.LOG.error(
-          "Scala File has wrong stub file: " + faultyContainer)
-        if (faultyContainer != null && faultyContainer.isValid) {
-          FileBasedIndex.getInstance.requestReindex(faultyContainer)
-        }
-        null
-    }
+  override def getStub: ScFileStub = super[PsiFileBase].getStub match {
+    case null          => null
+    case s: ScFileStub => s
+    case _ =>
+      val faultyContainer: VirtualFile = PsiUtilCore.getVirtualFile(this)
+      ScalaFileImpl.LOG.error(
+        "Scala File has wrong stub file: " + faultyContainer)
+      if (faultyContainer != null && faultyContainer.isValid) {
+        FileBasedIndex.getInstance.requestReindex(faultyContainer)
+      }
+      null
+  }
 
   def getPackagings: Array[ScPackaging] = {
     val stub = getStub
@@ -439,9 +438,8 @@ class ScalaFileImpl(
       typeDefinitions.head.qualifiedName)
   }
 
-  def isScalaPredefinedClassInner =
-    typeDefinitions.length == 1 &&
-      Set("scala", "scala.Predef").contains(typeDefinitions.head.qualifiedName)
+  def isScalaPredefinedClassInner = typeDefinitions.length == 1 &&
+    Set("scala", "scala.Predef").contains(typeDefinitions.head.qualifiedName)
 
   override def findReferenceAt(offset: Int): PsiReference =
     super.findReferenceAt(offset)

@@ -271,8 +271,8 @@ final case class ScriptedTest(group: String, name: String) extends NotNull {
   override def toString = group + "/" + name
 }
 private[test] object ListTests {
-  def list(directory: File, filter: java.io.FileFilter) =
-    wrapNull(directory.listFiles(filter))
+  def list(directory: File, filter: java.io.FileFilter) = wrapNull(
+    directory.listFiles(filter))
 }
 import ListTests._
 private[test] final class ListTests(

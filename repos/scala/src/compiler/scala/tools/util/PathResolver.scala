@@ -52,12 +52,11 @@ object PathResolver {
   }
 
   /** pretty print class path */
-  def ppcp(s: String) =
-    split(s) match {
-      case Nil    => ""
-      case Seq(x) => x
-      case xs     => xs.mkString(EOL, EOL, "")
-    }
+  def ppcp(s: String) = split(s) match {
+    case Nil    => ""
+    case Seq(x) => x
+    case xs     => xs.mkString(EOL, EOL, "")
+  }
 
   /** Values found solely by inspecting environment or property variables.
     */
@@ -240,15 +239,14 @@ abstract class PathResolverBase[
     }) getOrElse alt
   }
 
-  private def commandLineFor(s: String): Option[String] =
-    condOpt(s) {
-      case "javabootclasspath" => settings.javabootclasspath.value
-      case "javaextdirs"       => settings.javaextdirs.value
-      case "bootclasspath"     => settings.bootclasspath.value
-      case "extdirs"           => settings.extdirs.value
-      case "classpath" | "cp"  => settings.classpath.value
-      case "sourcepath"        => settings.sourcepath.value
-    }
+  private def commandLineFor(s: String): Option[String] = condOpt(s) {
+    case "javabootclasspath" => settings.javabootclasspath.value
+    case "javaextdirs"       => settings.javaextdirs.value
+    case "bootclasspath"     => settings.bootclasspath.value
+    case "extdirs"           => settings.extdirs.value
+    case "classpath" | "cp"  => settings.classpath.value
+    case "sourcepath"        => settings.sourcepath.value
+  }
 
   /** Calculated values based on any given command line options, falling back on
     *  those in Defaults.
@@ -275,10 +273,9 @@ abstract class PathResolverBase[
       * <root>.reflect package created by the bootstrapping. Thus, no bootstrapping for scaladoc!
       * TODO: we should refactor this as a separate -bootstrap option to have a clean implementation, no?
       */
-    def sourcePath =
-      if (!settings.isScaladoc)
-        cmdLineOrElse("sourcepath", Defaults.scalaSourcePath)
-      else ""
+    def sourcePath = if (!settings.isScaladoc)
+      cmdLineOrElse("sourcepath", Defaults.scalaSourcePath)
+    else ""
 
     def userClassPath =
       settings.classpath.value // default is specified by settings and can be overridden there
@@ -286,23 +283,20 @@ abstract class PathResolverBase[
     import classPathFactory._
 
     // Assemble the elements!
-    def basis =
-      List[Traversable[BaseClassPathType]](
-        classesInPath(javaBootClassPath), // 1. The Java bootstrap class path.
-        contentsOfDirsInPath(javaExtDirs), // 2. The Java extension class path.
-        classesInExpandedPath(
-          javaUserClassPath
-        ), // 3. The Java application class path.
-        classesInPath(scalaBootClassPath), // 4. The Scala boot class path.
-        contentsOfDirsInPath(
-          scalaExtDirs
-        ), // 5. The Scala extension class path.
-        classesInExpandedPath(
-          userClassPath
-        ), // 6. The Scala application class path.
-        classesInManifest(useManifestClassPath), // 8. The Manifest class path.
-        sourcesInPath(sourcePath) // 7. The Scala source path.
-      )
+    def basis = List[Traversable[BaseClassPathType]](
+      classesInPath(javaBootClassPath), // 1. The Java bootstrap class path.
+      contentsOfDirsInPath(javaExtDirs), // 2. The Java extension class path.
+      classesInExpandedPath(
+        javaUserClassPath
+      ), // 3. The Java application class path.
+      classesInPath(scalaBootClassPath), // 4. The Scala boot class path.
+      contentsOfDirsInPath(scalaExtDirs), // 5. The Scala extension class path.
+      classesInExpandedPath(
+        userClassPath
+      ), // 6. The Scala application class path.
+      classesInManifest(useManifestClassPath), // 8. The Manifest class path.
+      sourcesInPath(sourcePath) // 7. The Scala source path.
+    )
 
     lazy val containers = basis.flatten.distinct
 

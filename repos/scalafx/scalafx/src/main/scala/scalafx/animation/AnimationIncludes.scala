@@ -121,9 +121,9 @@ trait AnimationIncludes {
   /**
     * $GENERATE `Animation` $FROM
     */
-  implicit def jfxAnimation2sfx(v: jfxa.Animation): Animation =
-    if (v != null) new Animation(v) {}
-    else null
+  implicit def jfxAnimation2sfx(v: jfxa.Animation): Animation = if (v != null)
+    new Animation(v) {}
+  else null
 
   /**
     * $GENERATE `Animation.Status` $FROM

@@ -71,37 +71,36 @@ object Sensible {
   ) ++ inConfig(Test)(testSettings) ++ scalariformSettings
 
   // TODO: scalariformSettingsWithIt generalised
-  def testSettings =
-    Seq(
-      parallelExecution := true,
-      // one JVM per test suite
-      fork := true,
-      testForkedParallel := true,
-      testGrouping <<= (
-        definedTests,
-        baseDirectory,
-        javaOptions,
-        outputStrategy,
-        envVars,
-        javaHome,
-        connectInput
-      ).map { (tests, base, options, strategy, env, javaHomeDir, connectIn) =>
-        val opts = ForkOptions(
-          bootJars = Nil,
-          javaHome = javaHomeDir,
-          connectInput = connectIn,
-          outputStrategy = strategy,
-          runJVMOptions = options,
-          workingDirectory = Some(base),
-          envVars = env
-        )
-        tests.map { test =>
-          Tests.Group(test.name, Seq(test), Tests.SubProcess(opts))
-        }
-      },
-      testOptions ++= noColorIfEmacs,
-      testFrameworks := Seq(TestFrameworks.ScalaTest, TestFrameworks.JUnit)
-    )
+  def testSettings = Seq(
+    parallelExecution := true,
+    // one JVM per test suite
+    fork := true,
+    testForkedParallel := true,
+    testGrouping <<= (
+      definedTests,
+      baseDirectory,
+      javaOptions,
+      outputStrategy,
+      envVars,
+      javaHome,
+      connectInput
+    ).map { (tests, base, options, strategy, env, javaHomeDir, connectIn) =>
+      val opts = ForkOptions(
+        bootJars = Nil,
+        javaHome = javaHomeDir,
+        connectInput = connectIn,
+        outputStrategy = strategy,
+        runJVMOptions = options,
+        workingDirectory = Some(base),
+        envVars = env
+      )
+      tests.map { test =>
+        Tests.Group(test.name, Seq(test), Tests.SubProcess(opts))
+      }
+    },
+    testOptions ++= noColorIfEmacs,
+    testFrameworks := Seq(TestFrameworks.ScalaTest, TestFrameworks.JUnit)
+  )
 
   val scalaModulesVersion = "1.0.4"
   val akkaVersion = "2.3.14"
@@ -131,14 +130,13 @@ object Sensible {
   )
 
   // TODO: automate testLibs as part of the testSettings
-  def testLibs(config: String = "test") =
-    Seq(
-      "org.scalatest" %% "scalatest" % scalatestVersion % config,
-      "org.scalamock" %% "scalamock-scalatest-support" % "3.2.2" % config,
-      "org.scalacheck" %% "scalacheck" % "1.12.5" % config,
-      "com.typesafe.akka" %% "akka-testkit" % akkaVersion % config,
-      "com.typesafe.akka" %% "akka-slf4j" % akkaVersion % config
-    ) ++ logback.map(_ % config)
+  def testLibs(config: String = "test") = Seq(
+    "org.scalatest" %% "scalatest" % scalatestVersion % config,
+    "org.scalamock" %% "scalamock-scalatest-support" % "3.2.2" % config,
+    "org.scalacheck" %% "scalacheck" % "1.12.5" % config,
+    "com.typesafe.akka" %% "akka-testkit" % akkaVersion % config,
+    "com.typesafe.akka" %% "akka-slf4j" % akkaVersion % config
+  ) ++ logback.map(_ % config)
 
   // e.g. YOURKIT_AGENT=/opt/yourkit/bin/linux-x86-64/libyjpagent.so
   val yourkitAgent = Properties

@@ -22,13 +22,13 @@ trait InteractiveReader {
   def completion: Completion
   def redrawLine(): Unit
 
-  def readYesOrNo(prompt: String, alt: => Boolean): Boolean =
-    readOneKey(prompt) match {
-      case 'y' => true
-      case 'n' => false
-      case -1  => false // EOF
-      case _   => alt
-    }
+  def readYesOrNo(prompt: String, alt: => Boolean): Boolean = readOneKey(
+    prompt) match {
+    case 'y' => true
+    case 'n' => false
+    case -1  => false // EOF
+    case _   => alt
+  }
 
   protected def readOneLine(prompt: String): String
   protected def readOneKey(prompt: String): Int

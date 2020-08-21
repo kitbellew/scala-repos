@@ -148,12 +148,11 @@ private[spark] class GiniCalculator(stats: Array[Double])
   /**
     * Prediction which should be made based on the sufficient statistics.
     */
-  def predict: Double =
-    if (count == 0) {
-      0
-    } else {
-      indexOfLargestArrayElement(stats)
-    }
+  def predict: Double = if (count == 0) {
+    0
+  } else {
+    indexOfLargestArrayElement(stats)
+  }
 
   /**
     * Probability of the label given by [[predict]].

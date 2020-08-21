@@ -63,11 +63,10 @@ object NettyFutureBridge {
   def apply(nettyFuture: ChannelFuture): Future[Channel] = {
     val p = Promise[Channel]()
     nettyFuture.addListener(new ChannelFutureListener {
-      def operationComplete(future: ChannelFuture): Unit =
-        p complete Try(
-          if (future.isSuccess) future.getChannel
-          else if (future.isCancelled) throw new CancellationException
-          else throw future.getCause)
+      def operationComplete(future: ChannelFuture): Unit = p complete Try(
+        if (future.isSuccess) future.getChannel
+        else if (future.isCancelled) throw new CancellationException
+        else throw future.getCause)
     })
     p.future
   }
@@ -76,15 +75,14 @@ object NettyFutureBridge {
     import scala.collection.JavaConverters._
     val p = Promise[ChannelGroup]
     nettyFuture.addListener(new ChannelGroupFutureListener {
-      def operationComplete(future: ChannelGroupFuture): Unit =
-        p complete Try(
-          if (future.isCompleteSuccess) future.getGroup
-          else
-            throw future.iterator.asScala.collectFirst {
-              case f if f.isCancelled ⇒ new CancellationException
-              case f if !f.isSuccess ⇒ f.getCause
-            } getOrElse new IllegalStateException(
-              "Error reported in ChannelGroupFuture, but no error found in individual futures."))
+      def operationComplete(future: ChannelGroupFuture): Unit = p complete Try(
+        if (future.isCompleteSuccess) future.getGroup
+        else
+          throw future.iterator.asScala.collectFirst {
+            case f if f.isCancelled ⇒ new CancellationException
+            case f if !f.isSuccess ⇒ f.getCause
+          } getOrElse new IllegalStateException(
+            "Error reported in ChannelGroupFuture, but no error found in individual futures."))
     })
     p.future
   }
@@ -118,14 +116,14 @@ class NettyTransportSettings(config: Config) {
     case dispatcher ⇒ Some(dispatcher)
   }
 
-  private[this] def optionSize(s: String): Option[Int] =
-    getBytes(s).toInt match {
-      case 0 ⇒ None
-      case x if x < 0 ⇒
-        throw new ConfigurationException(
-          s"Setting '$s' must be 0 or positive (and fit in an Int)")
-      case other ⇒ Some(other)
-    }
+  private[this] def optionSize(s: String): Option[Int] = getBytes(
+    s).toInt match {
+    case 0 ⇒ None
+    case x if x < 0 ⇒
+      throw new ConfigurationException(
+        s"Setting '$s' must be 0 or positive (and fit in an Int)")
+    case other ⇒ Some(other)
+  }
 
   val ConnectionTimeout: FiniteDuration =
     config.getMillisDuration("connection-timeout")
@@ -308,8 +306,9 @@ private[transport] object NettyTransport {
   // 4 bytes will be used to represent the frame length. Used by netty LengthFieldPrepender downstream handler.
   val FrameLengthFieldLength = 4
   def gracefulClose(channel: Channel)(implicit ec: ExecutionContext): Unit = {
-    def always(c: ChannelFuture) =
-      NettyFutureBridge(c) recover { case _ ⇒ c.getChannel }
+    def always(c: ChannelFuture) = NettyFutureBridge(c) recover { case _ ⇒
+      c.getChannel
+    }
     for {
       _ ← always {
         channel.write(ChannelBuffers.buffer(0))
@@ -325,17 +324,16 @@ private[transport] object NettyTransport {
       schemeIdentifier: String,
       systemName: String,
       hostName: Option[String],
-      port: Option[Int]): Option[Address] =
-    addr match {
-      case sa: InetSocketAddress ⇒
-        Some(
-          Address(
-            schemeIdentifier,
-            systemName,
-            hostName.getOrElse(sa.getHostString),
-            port.getOrElse(sa.getPort)))
-      case _ ⇒ None
-    }
+      port: Option[Int]): Option[Address] = addr match {
+    case sa: InetSocketAddress ⇒
+      Some(
+        Address(
+          schemeIdentifier,
+          systemName,
+          hostName.getOrElse(sa.getHostString),
+          port.getOrElse(sa.getPort)))
+    case _ ⇒ None
+  }
 
   // Need to do like this for binary compatibility reasons
   def addressFromSocketAddress(

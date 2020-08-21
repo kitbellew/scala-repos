@@ -40,17 +40,16 @@ trait ScModificationTrackerOwner
 
   private def getModificationCountImpl: Long = {
     @tailrec
-    def calc(place: PsiElement, sum: Long): Long =
-      place match {
-        case null =>
-          sum + ScalaPsiManager.instance(getProject).getModificationCount
-        case file: ScalaFile =>
-          sum + ScalaPsiManager.instance(getProject).getModificationCount
-        case owner: ScModificationTrackerOwner
-            if owner.isValidModificationTrackerOwner() =>
-          calc(owner.getContext, sum + owner.rawModificationCount)
-        case _ => calc(place.getContext, sum)
-      }
+    def calc(place: PsiElement, sum: Long): Long = place match {
+      case null =>
+        sum + ScalaPsiManager.instance(getProject).getModificationCount
+      case file: ScalaFile =>
+        sum + ScalaPsiManager.instance(getProject).getModificationCount
+      case owner: ScModificationTrackerOwner
+          if owner.isValidModificationTrackerOwner() =>
+        calc(owner.getContext, sum + owner.rawModificationCount)
+      case _ => calc(place.getContext, sum)
+    }
 
     calc(this, 0L)
   }

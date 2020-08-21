@@ -462,9 +462,8 @@ final class ClusterClientReceptionist(system: ExtendedActorSystem)
     * Returns true if this member is not tagged with the role configured for the
     * receptionist.
     */
-  def isTerminated: Boolean =
-    Cluster(system).isTerminated || !role.forall(
-      Cluster(system).selfRoles.contains)
+  def isTerminated: Boolean = Cluster(system).isTerminated || !role.forall(
+    Cluster(system).selfRoles.contains)
 
   /**
     * Register the actors that should be reachable for the clients in this [[DistributedPubSubMediator]].
@@ -707,15 +706,14 @@ final class ClusterReceptionist(
     s"This cluster member [${selfAddress}] doesn't have the role [$role]")
 
   var nodes: immutable.SortedSet[Address] = {
-    def hashFor(node: Address): Int =
-      node match {
-        // cluster node identifier is the host and port of the address; protocol and system is assumed to be the same
-        case Address(_, _, Some(host), Some(port)) ⇒
-          MurmurHash.stringHash(s"${host}:${port}")
-        case _ ⇒
-          throw new IllegalStateException(
-            s"Unexpected address without host/port: [$node]")
-      }
+    def hashFor(node: Address): Int = node match {
+      // cluster node identifier is the host and port of the address; protocol and system is assumed to be the same
+      case Address(_, _, Some(host), Some(port)) ⇒
+        MurmurHash.stringHash(s"${host}:${port}")
+      case _ ⇒
+        throw new IllegalStateException(
+          s"Unexpected address without host/port: [$node]")
+    }
     implicit val ringOrdering: Ordering[Address] =
       Ordering.fromLessThan[Address] { (a, b) ⇒
         val ha = hashFor(a)

@@ -353,39 +353,36 @@ object helpers
     }
   }
 
-  def pre(value: Html): Html =
-    Html(
-      s"<pre>${value.body.trim.split("\n").map(_.trim).mkString("\n")}</pre>")
+  def pre(value: Html): Html = Html(
+    s"<pre>${value.body.trim.split("\n").map(_.trim).mkString("\n")}</pre>")
 
   /**
     * Implicit conversion to add mkHtml() to Seq[Html].
     */
   implicit class RichHtmlSeq(seq: Seq[Html]) {
     def mkHtml(separator: String) = Html(seq.mkString(separator))
-    def mkHtml(separator: scala.xml.Elem) =
-      Html(seq.mkString(separator.toString))
+    def mkHtml(separator: scala.xml.Elem) = Html(
+      seq.mkString(separator.toString))
   }
 
-  def commitStateIcon(state: CommitState) =
-    Html(state match {
-      case CommitState.PENDING =>
-        """<i style="color:inherit;width:inherit;height:inherit" class="octicon octicon-primitive-dot"></i>"""
-      case CommitState.SUCCESS =>
-        """<i style="color:inherit;width:inherit;height:inherit" class="octicon octicon-check"></i>"""
-      case CommitState.ERROR =>
-        """<i style="color:inherit;width:inherit;height:inherit" class="octicon octicon-x"></i>"""
-      case CommitState.FAILURE =>
-        """<i style="color:inherit;width:inherit;height:inherit" class="octicon octicon-x"></i>"""
-    })
+  def commitStateIcon(state: CommitState) = Html(state match {
+    case CommitState.PENDING =>
+      """<i style="color:inherit;width:inherit;height:inherit" class="octicon octicon-primitive-dot"></i>"""
+    case CommitState.SUCCESS =>
+      """<i style="color:inherit;width:inherit;height:inherit" class="octicon octicon-check"></i>"""
+    case CommitState.ERROR =>
+      """<i style="color:inherit;width:inherit;height:inherit" class="octicon octicon-x"></i>"""
+    case CommitState.FAILURE =>
+      """<i style="color:inherit;width:inherit;height:inherit" class="octicon octicon-x"></i>"""
+  })
 
-  def commitStateText(state: CommitState, commitId: String) =
-    state match {
-      case CommitState.PENDING =>
-        "Waiting to hear about " + commitId.substring(0, 8)
-      case CommitState.SUCCESS => "All is well"
-      case CommitState.ERROR   => "Failed"
-      case CommitState.FAILURE => "Failed"
-    }
+  def commitStateText(state: CommitState, commitId: String) = state match {
+    case CommitState.PENDING =>
+      "Waiting to hear about " + commitId.substring(0, 8)
+    case CommitState.SUCCESS => "All is well"
+    case CommitState.ERROR   => "Failed"
+    case CommitState.FAILURE => "Failed"
+  }
 
   // This pattern comes from: http://stackoverflow.com/a/4390768/1771641 (extract-url-from-string)
   private[this] val detectAndRenderLinksRegex =

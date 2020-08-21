@@ -94,62 +94,59 @@ object VersionLog {
     val completedFile = new File(baseDir, completedLogName)
   }
 
-  def open(baseDir: File): IO[Validation[Error, VersionLog]] =
-    IO {
-      if (!baseDir.isDirectory) {
-        if (!baseDir.mkdirs)
-          throw new IllegalStateException(
-            baseDir + " cannot be created as a directory.")
-      }
-
-      val logFiles = new LogFiles(baseDir)
-      import logFiles._
-
-      // Read in the list of versions as well as the current version
-      val currentVersion: Validation[Error, Option[VersionEntry]] =
-        if (headFile.exists) {
-          for {
-            jv <- JParser.parseFromFile(headFile).leftMap(Error.thrown)
-            version <- jv match {
-              case JString(`unsetSentinel`) => Success(None)
-              case other                    => other.validated[VersionEntry].map(Some(_))
-            }
-          } yield version
-        } else {
-          Success(None)
-        }
-
-      val allVersions: Validation[Error, List[VersionEntry]] =
-        if (logFile.exists) {
-          for {
-            jvs <- JParser.parseManyFromFile(logFile).leftMap(Error.thrown)
-            versions <-
-              jvs.toList.traverse[
-                ({ type λ[α] = Validation[Error, α] })#λ,
-                VersionEntry](_.validated[VersionEntry])
-          } yield versions
-        } else {
-          Success(Nil)
-        }
-
-      val completedVersions: Validation[Error, Set[UUID]] =
-        if (completedFile.exists) {
-          for {
-            jvs <-
-              JParser.parseManyFromFile(completedFile).leftMap(Error.thrown)
-            versions <-
-              jvs.toList
-                .traverse[({ type λ[α] = Validation[Error, α] })#λ, UUID](
-                  _.validated[UUID])
-          } yield versions.toSet
-        } else {
-          Success(Set.empty)
-        }
-
-      (currentVersion |@| allVersions |@| completedVersions) {
-        new VersionLog(logFiles, _, _, _)
-      }
+  def open(baseDir: File): IO[Validation[Error, VersionLog]] = IO {
+    if (!baseDir.isDirectory) {
+      if (!baseDir.mkdirs)
+        throw new IllegalStateException(
+          baseDir + " cannot be created as a directory.")
     }
+
+    val logFiles = new LogFiles(baseDir)
+    import logFiles._
+
+    // Read in the list of versions as well as the current version
+    val currentVersion: Validation[Error, Option[VersionEntry]] =
+      if (headFile.exists) {
+        for {
+          jv <- JParser.parseFromFile(headFile).leftMap(Error.thrown)
+          version <- jv match {
+            case JString(`unsetSentinel`) => Success(None)
+            case other                    => other.validated[VersionEntry].map(Some(_))
+          }
+        } yield version
+      } else {
+        Success(None)
+      }
+
+    val allVersions: Validation[Error, List[VersionEntry]] =
+      if (logFile.exists) {
+        for {
+          jvs <- JParser.parseManyFromFile(logFile).leftMap(Error.thrown)
+          versions <-
+            jvs.toList
+              .traverse[({ type λ[α] = Validation[Error, α] })#λ, VersionEntry](
+                _.validated[VersionEntry])
+        } yield versions
+      } else {
+        Success(Nil)
+      }
+
+    val completedVersions: Validation[Error, Set[UUID]] =
+      if (completedFile.exists) {
+        for {
+          jvs <- JParser.parseManyFromFile(completedFile).leftMap(Error.thrown)
+          versions <-
+            jvs.toList.traverse[({ type λ[α] = Validation[Error, α] })#λ, UUID](
+              _.validated[UUID])
+        } yield versions.toSet
+      } else {
+        Success(Set.empty)
+      }
+
+    (currentVersion |@| allVersions |@| completedVersions) {
+      new VersionLog(logFiles, _, _, _)
+    }
+  }
 }
 
 /**
@@ -225,10 +222,9 @@ class VersionLog(
     } map { _ => PrecogUnit }
   }
 
-  def clearHead =
-    IOUtils.writeToFile(unsetSentinelJV, headFile).map { _ =>
-      currentVersion = None
-    }
+  def clearHead = IOUtils.writeToFile(unsetSentinelJV, headFile).map { _ =>
+    currentVersion = None
+  }
 }
 
 case class VersionEntry(

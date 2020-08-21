@@ -28,10 +28,9 @@ trait Iterable[+A]
     with IterableLike[A, Iterable[A]]
     with Parallelizable[A, ParIterable[A]] {
   override def companion: GenericCompanion[Iterable] = Iterable
-  protected[this] override def parCombiner =
-    ParIterable.newCombiner[
-      A
-    ] // if `immutable.IterableLike` gets introduced, please move this there!
+  protected[this] override def parCombiner = ParIterable.newCombiner[
+    A
+  ] // if `immutable.IterableLike` gets introduced, please move this there!
   override def seq: Iterable[A] = this
 }
 

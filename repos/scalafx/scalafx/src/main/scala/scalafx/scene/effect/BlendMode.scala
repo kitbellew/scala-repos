@@ -112,26 +112,25 @@ object BlendMode extends SFXEnumDelegateCompanion[jfxse.BlendMode, BlendMode] {
     "2.2.60")
   val SRC_OVER = SrcOver
 
-  protected override def unsortedValues: Array[BlendMode] =
-    Array(
-      SrcOver,
-      SrcAtop,
-      Add,
-      Multiply,
-      Screen,
-      Overlay,
-      Darken,
-      Lighten,
-      ColorDodge,
-      ColorBurn,
-      HardLight,
-      SoftLight,
-      Difference,
-      Exclusion,
-      Red,
-      Green,
-      Blue
-    )
+  protected override def unsortedValues: Array[BlendMode] = Array(
+    SrcOver,
+    SrcAtop,
+    Add,
+    Multiply,
+    Screen,
+    Overlay,
+    Darken,
+    Lighten,
+    ColorDodge,
+    ColorBurn,
+    HardLight,
+    SoftLight,
+    Difference,
+    Exclusion,
+    Red,
+    Green,
+    Blue
+  )
 }
 
 sealed case class BlendMode(override val delegate: jfxse.BlendMode)

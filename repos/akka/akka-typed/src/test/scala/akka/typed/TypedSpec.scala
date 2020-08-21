@@ -68,11 +68,10 @@ class TypedSpec(config: Config)
 
   // TODO remove after basing on ScalaTest 3 with async support
   def sync(f: Future[Status]): Unit = {
-    def unwrap(ex: Throwable): Throwable =
-      ex match {
-        case ActorInitializationException(_, _, ex) ⇒ ex
-        case other ⇒ other
-      }
+    def unwrap(ex: Throwable): Throwable = ex match {
+      case ActorInitializationException(_, _, ex) ⇒ ex
+      case other ⇒ other
+    }
 
     await(f) match {
       case Success ⇒ ()

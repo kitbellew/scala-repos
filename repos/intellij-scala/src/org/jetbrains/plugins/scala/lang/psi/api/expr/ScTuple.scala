@@ -10,6 +10,6 @@ package expr
   */
 
 trait ScTuple extends ScInfixArgumentExpression {
-  def exprs: Seq[ScExpression] =
-    findChildrenByClassScala(classOf[ScExpression]).toSeq
+  def exprs: Seq[ScExpression] = findChildrenByClassScala(
+    classOf[ScExpression]).toSeq
 }

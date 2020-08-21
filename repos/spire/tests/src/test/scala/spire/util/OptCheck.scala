@@ -95,12 +95,11 @@ class OptCheck extends FunSuite {
     assert(Opt.empty[Int].filter(_ % 2 == 0).isEmpty)
   }
 
-  def parseInt(str: String): Opt[Int] =
-    try {
-      Opt(java.lang.Integer.parseInt(str))
-    } catch {
-      case e: NumberFormatException => Opt.empty[Int]
-    }
+  def parseInt(str: String): Opt[Int] = try {
+    Opt(java.lang.Integer.parseInt(str))
+  } catch {
+    case e: NumberFormatException => Opt.empty[Int]
+  }
 
   test("Opt.map") {
     assertResult(Opt(2))(Opt(1).map(_ * 2))

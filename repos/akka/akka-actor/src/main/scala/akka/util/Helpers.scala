@@ -19,9 +19,8 @@ object Helpers {
     .toLowerCase(Locale.ROOT)
     .indexOf("win") >= 0
 
-  def makePattern(s: String): Pattern =
-    Pattern.compile(
-      "^\\Q" + s.replace("?", "\\E.\\Q").replace("*", "\\E.*\\Q") + "\\E$")
+  def makePattern(s: String): Pattern = Pattern.compile(
+    "^\\Q" + s.replace("?", "\\E.\\Q").replace("*", "\\E.*\\Q") + "\\E$")
 
   def compareIdentityHash(a: AnyRef, b: AnyRef): Int = {
     /*
@@ -44,11 +43,10 @@ object Helpers {
     */
   def identityHashComparator[T <: AnyRef](comp: Comparator[T]): Comparator[T] =
     new Comparator[T] {
-      def compare(a: T, b: T): Int =
-        compareIdentityHash(a, b) match {
-          case 0 if a != b ⇒ comp.compare(a, b)
-          case x ⇒ x
-        }
+      def compare(a: T, b: T): Int = compareIdentityHash(a, b) match {
+        case 0 if a != b ⇒ comp.compare(a, b)
+        case x ⇒ x
+      }
     }
 
   /**

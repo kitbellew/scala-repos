@@ -368,13 +368,12 @@ private[sql] class DynamicPartitionWriterContainer(
     spec.sortColumnNames.map(c => inputSchema.find(_.name == c).get)
   }
 
-  private def bucketIdExpression: Option[Expression] =
-    bucketSpec.map { spec =>
-      // Use `HashPartitioning.partitionIdExpression` as our bucket id expression, so that we can
-      // guarantee the data distribution is same between shuffle and bucketed data source, which
-      // enables us to only shuffle one side when join a bucketed table and a normal one.
-      HashPartitioning(bucketColumns, spec.numBuckets).partitionIdExpression
-    }
+  private def bucketIdExpression: Option[Expression] = bucketSpec.map { spec =>
+    // Use `HashPartitioning.partitionIdExpression` as our bucket id expression, so that we can
+    // guarantee the data distribution is same between shuffle and bucketed data source, which
+    // enables us to only shuffle one side when join a bucketed table and a normal one.
+    HashPartitioning(bucketColumns, spec.numBuckets).partitionIdExpression
+  }
 
   // Expressions that given a partition key build a string like: col1=val/col2=val/...
   private def partitionStringExpression: Seq[Expression] = {

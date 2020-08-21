@@ -827,8 +827,8 @@ class ScalaTestConfigurationProducer extends {
         else s
       }
     }
-    implicit def o2e(x: Option[String]): OptionExtension =
-      new OptionExtension(x)
+    implicit def o2e(x: Option[String]): OptionExtension = new OptionExtension(
+      x)
 
     import ScalaTestUtil._
     val oldResult = (

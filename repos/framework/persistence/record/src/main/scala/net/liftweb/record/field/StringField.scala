@@ -34,26 +34,23 @@ trait StringTypedField extends TypedField[String] with StringValidators {
 
   def maxLen = maxLength
 
-  def setFromAny(in: Any): Box[String] =
-    in match {
-      case seq: Seq[_] if !seq.isEmpty => setFromAny(seq.head)
-      case _                           => genericSetFromAny(in)
-    }
+  def setFromAny(in: Any): Box[String] = in match {
+    case seq: Seq[_] if !seq.isEmpty => setFromAny(seq.head)
+    case _                           => genericSetFromAny(in)
+  }
 
-  def setFromString(s: String): Box[String] =
-    s match {
-      case null | "" if optional_? => setBox(Empty)
-      case null | ""               => setBox(Failure(notOptionalErrorMessage))
-      case _                       => setBox(Full(s))
-    }
+  def setFromString(s: String): Box[String] = s match {
+    case null | "" if optional_? => setBox(Empty)
+    case null | ""               => setBox(Failure(notOptionalErrorMessage))
+    case _                       => setBox(Full(s))
+  }
 
-  private def elem =
-    S.fmapFunc(SFuncHolder(this.setFromAny(_))) { funcName =>
-      <input type={formInputType} maxlength={maxLength.toString}
+  private def elem = S.fmapFunc(SFuncHolder(this.setFromAny(_))) { funcName =>
+    <input type={formInputType} maxlength={maxLength.toString}
       name={funcName}
       value={valueBox openOr ""}
       tabindex={tabIndex.toString}/>
-    }
+  }
 
   def toForm: Box[NodeSeq] =
     uniqueFieldId match {
@@ -66,12 +63,11 @@ trait StringTypedField extends TypedField[String] with StringValidators {
   def asJs = valueBox.map(Str) openOr JsNull
 
   def asJValue: JValue = valueBox.map(v => JString(v)) openOr (JNothing: JValue)
-  def setFromJValue(jvalue: JValue): Box[MyType] =
-    jvalue match {
-      case JNothing | JNull if optional_? => setBox(Empty)
-      case JString(s)                     => setFromString(s)
-      case other                          => setBox(FieldHelpers.expectedA("JString", other))
-    }
+  def setFromJValue(jvalue: JValue): Box[MyType] = jvalue match {
+    case JNothing | JNull if optional_? => setBox(Empty)
+    case JString(s)                     => setFromString(s)
+    case other                          => setBox(FieldHelpers.expectedA("JString", other))
+  }
 }
 
 class StringField[OwnerType <: Record[OwnerType]](
@@ -93,8 +89,8 @@ class StringField[OwnerType <: Record[OwnerType]](
 
   def owner = rec
 
-  protected def valueTypeToBoxString(in: ValueType): Box[String] =
-    toBoxMyType(in)
+  protected def valueTypeToBoxString(in: ValueType): Box[String] = toBoxMyType(
+    in)
   protected def boxStrToValType(in: Box[String]): ValueType = toValueType(in)
 }
 
@@ -126,7 +122,7 @@ class OptionalStringField[OwnerType <: Record[OwnerType]](
 
   def owner = rec
 
-  protected def valueTypeToBoxString(in: ValueType): Box[String] =
-    toBoxMyType(in)
+  protected def valueTypeToBoxString(in: ValueType): Box[String] = toBoxMyType(
+    in)
   protected def boxStrToValType(in: Box[String]): ValueType = toValueType(in)
 }

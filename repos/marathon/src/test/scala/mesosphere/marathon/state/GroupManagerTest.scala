@@ -51,14 +51,13 @@ class GroupManagerTest
     lazy val capMetrics =
       new CapConcurrentExecutionsMetrics(metrics, classOf[GroupManager])
 
-    def serializeExecutions() =
-      CapConcurrentExecutions(
-        capMetrics,
-        system,
-        s"serializeGroupUpdates${actorId.incrementAndGet()}",
-        maxParallel = 1,
-        maxQueued = 10
-      )
+    def serializeExecutions() = CapConcurrentExecutions(
+      capMetrics,
+      system,
+      s"serializeGroupUpdates${actorId.incrementAndGet()}",
+      maxParallel = 1,
+      maxQueued = 10
+    )
 
     lazy val manager = new GroupManager(
       serializeUpdates = serializeExecutions(),

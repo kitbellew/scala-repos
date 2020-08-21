@@ -48,8 +48,8 @@ class CurrencyStringConverterSpec
       classOf[CurrencyStringConverter],
       classOf[Number]) {
 
-  override protected def getConverterForExample =
-    new CurrencyStringConverter(Locale.US)
+  override protected def getConverterForExample = new CurrencyStringConverter(
+    Locale.US)
 
   val examples = List(
     (new java.lang.Long(123), "$123.00"),

@@ -37,36 +37,35 @@ object PerfDelta {
 
   def apply(
       baseline: Option[Statistics],
-      stats: Option[Statistics]): PerfDelta =
-    (baseline, stats) match {
-      case (Some(baseline), Some(stats)) =>
-        val q1 = baseline.variance / baseline.count
-        val q2 = stats.variance / stats.count
-        val qsum = q1 + q2
-        val t = math.abs((baseline.mean - stats.mean) / math.sqrt(qsum))
+      stats: Option[Statistics]): PerfDelta = (baseline, stats) match {
+    case (Some(baseline), Some(stats)) =>
+      val q1 = baseline.variance / baseline.count
+      val q2 = stats.variance / stats.count
+      val qsum = q1 + q2
+      val t = math.abs((baseline.mean - stats.mean) / math.sqrt(qsum))
 
-        // TODO Calculate DoF and use table lookup.
-        // val df = (qsum * qsum) / ((q1 * q1) / (baseline.count - 1) + (q2 * q2) / (stats.count - 1))
+      // TODO Calculate DoF and use table lookup.
+      // val df = (qsum * qsum) / ((q1 * q1) / (baseline.count - 1) + (q2 * q2) / (stats.count - 1))
 
-        if (t > 2.0) {
-          if (stats.mean > baseline.mean) {
-            Slower(baseline, stats)
-          } else {
-            Faster(baseline, stats)
-          }
+      if (t > 2.0) {
+        if (stats.mean > baseline.mean) {
+          Slower(baseline, stats)
         } else {
-          NoChange(baseline, stats)
+          Faster(baseline, stats)
         }
+      } else {
+        NoChange(baseline, stats)
+      }
 
-      case (Some(baseline), None) =>
-        MissingStats(baseline)
+    case (Some(baseline), None) =>
+      MissingStats(baseline)
 
-      case (None, Some(stats)) =>
-        MissingBaseline(stats)
+    case (None, Some(stats)) =>
+      MissingBaseline(stats)
 
-      case (None, None) =>
-        Missing
-    }
+    case (None, None) =>
+      Missing
+  }
 }
 
 /**
@@ -163,15 +162,14 @@ trait BaselineComparisons {
 
   def createBaseline(result: Tree[(PerfTest, Option[Statistics])]): JValue = {
 
-    def statsJson(stats: Statistics): List[JField] =
-      List(
-        JField("mean", JNum(stats.mean)),
-        JField("variance", JNum(stats.variance)),
-        JField("stdDev", JNum(stats.stdDev)),
-        JField("min", JNum(stats.min)),
-        JField("max", JNum(stats.max)),
-        JField("count", JNum(stats.count))
-      )
+    def statsJson(stats: Statistics): List[JField] = List(
+      JField("mean", JNum(stats.mean)),
+      JField("variance", JNum(stats.variance)),
+      JField("stdDev", JNum(stats.stdDev)),
+      JField("min", JNum(stats.min)),
+      JField("max", JNum(stats.max)),
+      JField("count", JNum(stats.count))
+    )
 
     def values(
         path: List[JString],

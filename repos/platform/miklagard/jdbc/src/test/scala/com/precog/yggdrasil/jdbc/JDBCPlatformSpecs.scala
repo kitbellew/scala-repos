@@ -50,16 +50,15 @@ import scalaz._
 object JDBCPlatformSpecEngine extends Logging {
   Class.forName("org.h2.Driver")
 
-  def jvToSQL(jv: JValue): (String, String) =
-    jv match {
-      case JBool(v)      => ("BOOL", v.toString)
-      case JNumLong(v)   => ("BIGINT", v.toString)
-      case JNumDouble(v) => ("DOUBLE", v.toString)
-      case JNumBigDec(v) => ("DECIMAL", v.toString)
-      case JNumStr(v)    => ("DECIMAL", v)
-      case JString(v)    => ("VARCHAR", "'" + v.replaceAll("'", "\\'") + "'")
-      case _             => sys.error("SQL conversion doesn't support: " + jv)
-    }
+  def jvToSQL(jv: JValue): (String, String) = jv match {
+    case JBool(v)      => ("BOOL", v.toString)
+    case JNumLong(v)   => ("BIGINT", v.toString)
+    case JNumDouble(v) => ("DOUBLE", v.toString)
+    case JNumBigDec(v) => ("DECIMAL", v.toString)
+    case JNumStr(v)    => ("DECIMAL", v)
+    case JString(v)    => ("VARCHAR", "'" + v.replaceAll("'", "\\'") + "'")
+    case _             => sys.error("SQL conversion doesn't support: " + jv)
+  }
 
   private[this] val lock = new Object
 
@@ -76,41 +75,38 @@ object JDBCPlatformSpecEngine extends Logging {
     stmt.execute("SHUTDOWN")
   }
 
-  def acquire =
-    lock.synchronized {
-      refcount += 1
+  def acquire = lock.synchronized {
+    refcount += 1
 
-      if (refcount == 1) {
-        logger.debug("Initializing fresh DB instance")
-        runLoads()
-        logger.debug("DB initialized")
-      }
-
-      logger.debug("DB acquired, refcount = " + refcount)
+    if (refcount == 1) {
+      logger.debug("Initializing fresh DB instance")
+      runLoads()
+      logger.debug("DB initialized")
     }
 
-  def release: Unit =
-    lock.synchronized {
-      refcount -= 1
+    logger.debug("DB acquired, refcount = " + refcount)
+  }
 
-      if (refcount == 0) {
-        scheduler.schedule(checkUnused, 5, TimeUnit.SECONDS)
-      }
+  def release: Unit = lock.synchronized {
+    refcount -= 1
 
-      logger.debug("DB released, refcount = " + refcount)
+    if (refcount == 0) {
+      scheduler.schedule(checkUnused, 5, TimeUnit.SECONDS)
     }
+
+    logger.debug("DB released, refcount = " + refcount)
+  }
 
   val checkUnused = new Runnable {
-    def run =
-      lock.synchronized {
-        logger.debug(
-          "Checking for unused JDBCPlatformSpecEngine. Count = " + refcount)
-        if (refcount == 0) {
-          logger.debug("Shutting down DB after final release")
-          shutdown()
-          logger.debug("DB shutdown complete")
-        }
+    def run = lock.synchronized {
+      logger.debug(
+        "Checking for unused JDBCPlatformSpecEngine. Count = " + refcount)
+      if (refcount == 0) {
+        logger.debug("Shutting down DB after final release")
+        shutdown()
+        logger.debug("DB shutdown complete")
       }
+    }
   }
 
   def runLoads(): Unit = {
@@ -235,11 +231,10 @@ trait JDBCPlatformSpecs
 
   object yggConfig extends YggConfig
 
-  override def controlTimeout =
-    Duration(
-      10,
-      "minutes"
-    ) // it's just unreasonable to run tests longer than this
+  override def controlTimeout = Duration(
+    10,
+    "minutes"
+  ) // it's just unreasonable to run tests longer than this
 
   implicit val M: Monad[Future] with Comonad[Future] =
     new blueeyes.bkka.UnsafeFutureComonad(
@@ -296,8 +291,9 @@ trait JDBCPlatformSpecs
     JDBCPlatformSpecEngine.release
   }
 
-  override def map(fs: => Fragments): Fragments =
-    Step { startup() } ^ fs ^ Step { shutdown() }
+  override def map(fs: => Fragments): Fragments = Step {
+    startup()
+  } ^ fs ^ Step { shutdown() }
 
   def Evaluator[N[+_]](
       N0: Monad[N])(implicit mn: Future ~> N, nm: N ~> Future) =

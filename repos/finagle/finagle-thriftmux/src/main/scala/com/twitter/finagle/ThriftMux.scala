@@ -92,15 +92,14 @@ object ThriftMux
     ThriftMuxUtil.protocolRecorder +:
       Mux.server.stack.replace(StackServer.Role.preparer, Server.ExnHandler)
 
-  private[this] def recordRpc(buffer: Array[Byte]): Unit =
-    try {
-      val inputTransport = new TMemoryInputTransport(buffer)
-      val iprot = protocolFactory.getProtocol(inputTransport)
-      val msg = iprot.readMessageBegin()
-      Trace.recordRpc(msg.name)
-    } catch {
-      case NonFatal(_) =>
-    }
+  private[this] def recordRpc(buffer: Array[Byte]): Unit = try {
+    val inputTransport = new TMemoryInputTransport(buffer)
+    val iprot = protocolFactory.getProtocol(inputTransport)
+    val msg = iprot.readMessageBegin()
+    Trace.recordRpc(msg.name)
+  } catch {
+    case NonFatal(_) =>
+  }
 
   private object ClientRpcTracing extends Mux.ClientProtoTracing {
     private[this] val rpcTracer = new SimpleFilter[mux.Request, mux.Response] {

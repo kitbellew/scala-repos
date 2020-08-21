@@ -34,33 +34,30 @@ sealed abstract class AsyncStream[+A] {
   /**
     * Returns true if there are no elements in the stream.
     */
-  def isEmpty: Future[Boolean] =
-    this match {
-      case Empty      => Future.True
-      case Embed(fas) => fas.flatMap(_.isEmpty)
-      case _          => Future.False
-    }
+  def isEmpty: Future[Boolean] = this match {
+    case Empty      => Future.True
+    case Embed(fas) => fas.flatMap(_.isEmpty)
+    case _          => Future.False
+  }
 
   /**
     * Returns the head of this stream if not empty.
     */
-  def head: Future[Option[A]] =
-    this match {
-      case Empty          => Future.None
-      case FromFuture(fa) => fa.map(Some(_))
-      case Cons(fa, _)    => fa.map(Some(_))
-      case Embed(fas)     => fas.flatMap(_.head)
-    }
+  def head: Future[Option[A]] = this match {
+    case Empty          => Future.None
+    case FromFuture(fa) => fa.map(Some(_))
+    case Cons(fa, _)    => fa.map(Some(_))
+    case Embed(fas)     => fas.flatMap(_.head)
+  }
 
   /**
     * Note: forces the first element of the tail.
     */
-  def tail: Future[Option[AsyncStream[A]]] =
-    this match {
-      case Empty | FromFuture(_) => Future.None
-      case Cons(_, more)         => Future.value(Some(more()))
-      case Embed(fas)            => fas.flatMap(_.tail)
-    }
+  def tail: Future[Option[AsyncStream[A]]] = this match {
+    case Empty | FromFuture(_) => Future.None
+    case Cons(_, more)         => Future.value(Some(more()))
+    case Embed(fas)            => fas.flatMap(_.tail)
+  }
 
   /**
     * The head and tail of this stream, if not empty. Note the tail thunk which
@@ -71,13 +68,12 @@ sealed abstract class AsyncStream[+A] {
     * (a +:: m).uncons == Future.value(Some(a, () => m))
     * }}}
     */
-  def uncons: Future[Option[(A, () => AsyncStream[A])]] =
-    this match {
-      case Empty          => Future.None
-      case FromFuture(fa) => fa.map(a => Some((a, () => empty)))
-      case Cons(fa, more) => fa.map(a => Some((a, more)))
-      case Embed(fas)     => fas.flatMap(_.uncons)
-    }
+  def uncons: Future[Option[(A, () => AsyncStream[A])]] = this match {
+    case Empty          => Future.None
+    case FromFuture(fa) => fa.map(a => Some((a, () => empty)))
+    case Cons(fa, more) => fa.map(a => Some((a, more)))
+    case Embed(fas)     => fas.flatMap(_.uncons)
+  }
 
   /**
     * Note: forces the stream. For infinite streams, the future never resolves.
@@ -406,13 +402,12 @@ sealed abstract class AsyncStream[+A] {
     * @param z the starting value.
     * @param f a binary operator applied to elements of this stream.
     */
-  def foldLeft[B](z: B)(f: (B, A) => B): Future[B] =
-    this match {
-      case Empty          => Future.value(z)
-      case FromFuture(fa) => fa.map(f(z, _))
-      case Cons(fa, more) => fa.map(f(z, _)).flatMap(more().foldLeft(_)(f))
-      case Embed(fas)     => fas.flatMap(_.foldLeft(z)(f))
-    }
+  def foldLeft[B](z: B)(f: (B, A) => B): Future[B] = this match {
+    case Empty          => Future.value(z)
+    case FromFuture(fa) => fa.map(f(z, _))
+    case Cons(fa, more) => fa.map(f(z, _)).flatMap(more().foldLeft(_)(f))
+    case Embed(fas)     => fas.flatMap(_.foldLeft(z)(f))
+  }
 
   /**
     * Like `foldLeft`, except that its result is encapsulated in a Future.
@@ -685,12 +680,11 @@ object AsyncStream {
   /**
     * Transformation (or lift) from [[Seq]] into `AsyncStream`.
     */
-  def fromSeq[A](seq: Seq[A]): AsyncStream[A] =
-    seq match {
-      case Nil                                          => empty
-      case _ if seq.hasDefiniteSize && seq.tail.isEmpty => of(seq.head)
-      case _                                            => seq.head +:: fromSeq(seq.tail)
-    }
+  def fromSeq[A](seq: Seq[A]): AsyncStream[A] = seq match {
+    case Nil                                          => empty
+    case _ if seq.hasDefiniteSize && seq.tail.isEmpty => of(seq.head)
+    case _                                            => seq.head +:: fromSeq(seq.tail)
+  }
 
   /**
     * Transformation (or lift) from [[Future]] into `AsyncStream`.

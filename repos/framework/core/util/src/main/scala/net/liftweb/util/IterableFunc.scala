@@ -24,11 +24,10 @@ object IterableFunc {
 
   implicit def itStringFuncPromotable(it: NodeSeq => String): IterableFunc =
     new IterableFunc {
-      def apply(in: NodeSeq): Seq[NodeSeq] =
-        it(in) match {
-          case null => List(NodeSeq.Empty)
-          case str  => List(Text(str))
-        }
+      def apply(in: NodeSeq): Seq[NodeSeq] = it(in) match {
+        case null => List(NodeSeq.Empty)
+        case str  => List(Text(str))
+      }
     }
 
   implicit def itStringPromotable(it: NodeSeq => Seq[String]): IterableFunc =

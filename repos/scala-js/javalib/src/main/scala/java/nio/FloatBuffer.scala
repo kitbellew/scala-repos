@@ -84,11 +84,10 @@ abstract class FloatBuffer private[nio] (
   override def hashCode(): Int =
     GenBuffer(this).generic_hashCode(FloatBuffer.HashSeed)
 
-  override def equals(that: Any): Boolean =
-    that match {
-      case that: FloatBuffer => compareTo(that) == 0
-      case _                 => false
-    }
+  override def equals(that: Any): Boolean = that match {
+    case that: FloatBuffer => compareTo(that) == 0
+    case _                 => false
+  }
 
   @noinline
   def compareTo(that: FloatBuffer): Int =

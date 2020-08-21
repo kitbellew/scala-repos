@@ -92,14 +92,13 @@ private[opening] final class OpeningApi(
   }
 
   object identify {
-    def apply(fen: String, max: Int): Fu[List[String]] =
-      nameColl
-        .find(
-          BSONDocument("_id" -> fen),
-          BSONDocument("_id" -> false)
-        )
-        .one[BSONDocument] map { obj =>
-        ~obj.??(_.getAs[List[String]]("names"))
-      }
+    def apply(fen: String, max: Int): Fu[List[String]] = nameColl
+      .find(
+        BSONDocument("_id" -> fen),
+        BSONDocument("_id" -> false)
+      )
+      .one[BSONDocument] map { obj =>
+      ~obj.??(_.getAs[List[String]]("names"))
+    }
   }
 }

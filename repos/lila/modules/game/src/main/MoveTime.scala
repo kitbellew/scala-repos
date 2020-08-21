@@ -6,10 +6,9 @@ private[game] object MoveTime {
 
   def encode(mt: Int): Char = encodeHash get mt getOrElse lastChar
 
-  def decode(str: String): List[Int] =
-    str.toList map { mt =>
-      decodeHash get mt getOrElse lastInt
-    }
+  def decode(str: String): List[Int] = str.toList map { mt =>
+    decodeHash get mt getOrElse lastInt
+  }
 
   private val chars: List[Char] =
     "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toList

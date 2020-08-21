@@ -368,9 +368,8 @@ private[akka] class ResizablePoolActor(supervisorStrategy: SupervisorStrategy)
         "Resizable router actor can only be used when resizer is defined, not in " + context.getClass)
   }
 
-  override def receive =
-    ({ case Resize ⇒
-      resizerCell.resize(initial = false)
-    }: Actor.Receive) orElse super.receive
+  override def receive = ({ case Resize ⇒
+    resizerCell.resize(initial = false)
+  }: Actor.Receive) orElse super.receive
 
 }

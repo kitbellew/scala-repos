@@ -165,16 +165,15 @@ object WebSocket {
       */
     implicit val jsonMessageFlowTransformer
         : MessageFlowTransformer[JsValue, JsValue] = {
-      def closeOnException[T](block: => T) =
-        try {
-          Left(block)
-        } catch {
-          case NonFatal(e) =>
-            Right(
-              CloseMessage(
-                Some(CloseCodes.Unacceptable),
-                "Unable to parse json message"))
-        }
+      def closeOnException[T](block: => T) = try {
+        Left(block)
+      } catch {
+        case NonFatal(e) =>
+          Right(
+            CloseMessage(
+              Some(CloseCodes.Unacceptable),
+              "Unable to parse json message"))
+      }
 
       new MessageFlowTransformer[JsValue, JsValue] {
         def transform(flow: Flow[JsValue, JsValue, _]) = {
@@ -375,24 +374,21 @@ object WebSocket {
     */
   private def onEOF[E](
       enumerator: Enumerator[E],
-      action: () => Unit): Enumerator[E] =
-    new Enumerator[E] {
-      def apply[A](i: Iteratee[E, A]) = enumerator(wrap(i))
+      action: () => Unit): Enumerator[E] = new Enumerator[E] {
+    def apply[A](i: Iteratee[E, A]) = enumerator(wrap(i))
 
-      def wrap[A](i: Iteratee[E, A]): Iteratee[E, A] =
-        new Iteratee[E, A] {
-          def fold[B](folder: (Step[E, A]) => Future[B])(implicit
-              ec: ExecutionContext) =
-            i.fold {
-              case Step.Cont(k) =>
-                folder(Step.Cont {
-                  case eof @ Input.EOF =>
-                    action()
-                    wrap(k(eof))
-                  case other => wrap(k(other))
-                })
-              case other => folder(other)
-            }(ec)
-        }
+    def wrap[A](i: Iteratee[E, A]): Iteratee[E, A] = new Iteratee[E, A] {
+      def fold[B](folder: (Step[E, A]) => Future[B])(implicit
+          ec: ExecutionContext) = i.fold {
+        case Step.Cont(k) =>
+          folder(Step.Cont {
+            case eof @ Input.EOF =>
+              action()
+              wrap(k(eof))
+            case other => wrap(k(other))
+          })
+        case other => folder(other)
+      }(ec)
     }
+  }
 }

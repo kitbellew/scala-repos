@@ -216,8 +216,8 @@ class JavaStreamingContext(val ssc: StreamingContext) extends Closeable {
       port: Int,
       converter: JFunction[InputStream, java.lang.Iterable[T]],
       storageLevel: StorageLevel): JavaReceiverInputDStream[T] = {
-    def fn: (InputStream) => Iterator[T] =
-      (x: InputStream) => converter.call(x).iterator().asScala
+    def fn: (InputStream) => Iterator[T] = (x: InputStream) =>
+      converter.call(x).iterator().asScala
     implicit val cmt: ClassTag[T] =
       implicitly[ClassTag[AnyRef]].asInstanceOf[ClassTag[T]]
     ssc.socketStream(hostname, port, fn, storageLevel)

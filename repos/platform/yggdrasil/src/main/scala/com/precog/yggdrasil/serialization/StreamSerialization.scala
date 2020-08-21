@@ -28,10 +28,10 @@ trait StreamSerialization {
 }
 
 trait ZippedStreamSerialization extends StreamSerialization {
-  def iStream(file: File) =
-    new DataInputStream(new GZIPInputStream(new FileInputStream(file)))
-  def oStream(file: File) =
-    new DataOutputStream(new GZIPOutputStream(new FileOutputStream(file)))
+  def iStream(file: File) = new DataInputStream(
+    new GZIPInputStream(new FileInputStream(file)))
+  def oStream(file: File) = new DataOutputStream(
+    new GZIPOutputStream(new FileOutputStream(file)))
 }
 
 // vim: set ts=4 sw=4 et:

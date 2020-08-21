@@ -34,8 +34,8 @@ object Merge {
     */
   def create[T](
       clazz: Class[T],
-      inputPorts: Int): Graph[UniformFanInShape[T, T], NotUsed] =
-    create(inputPorts)
+      inputPorts: Int): Graph[UniformFanInShape[T, T], NotUsed] = create(
+    inputPorts)
 
   /**
     * Create a new `Merge` stage with the specified output type.
@@ -87,8 +87,8 @@ object MergePreferred {
     * Create a new `MergePreferred` stage with the specified output type.
     */
   def create[T](clazz: Class[T], secondaryPorts: Int)
-      : Graph[scaladsl.MergePreferred.MergePreferredShape[T], NotUsed] =
-    create(secondaryPorts)
+      : Graph[scaladsl.MergePreferred.MergePreferredShape[T], NotUsed] = create(
+    secondaryPorts)
 
   /**
     * Create a new `MergePreferred` stage with the specified output type.
@@ -152,8 +152,8 @@ object Broadcast {
     */
   def create[T](
       clazz: Class[T],
-      outputCount: Int): Graph[UniformFanOutShape[T, T], NotUsed] =
-    create(outputCount)
+      outputCount: Int): Graph[UniformFanOutShape[T, T], NotUsed] = create(
+    outputCount)
 
 }
 
@@ -389,18 +389,18 @@ object GraphDSL extends GraphCreate {
     def from[T](out: Outlet[T]): ForwardOps[T] = new ForwardOps(out)
     def from[T](src: SourceShape[T]): ForwardOps[T] = new ForwardOps(src.out)
     def from[I, O](f: FlowShape[I, O]): ForwardOps[O] = new ForwardOps(f.out)
-    def from[I, O](j: UniformFanInShape[I, O]): ForwardOps[O] =
-      new ForwardOps(j.out)
-    def from[I, O](j: UniformFanOutShape[I, O]): ForwardOps[O] =
-      new ForwardOps(findOut(delegate, j, 0))
+    def from[I, O](j: UniformFanInShape[I, O]): ForwardOps[O] = new ForwardOps(
+      j.out)
+    def from[I, O](j: UniformFanOutShape[I, O]): ForwardOps[O] = new ForwardOps(
+      findOut(delegate, j, 0))
 
     def to[T](in: Inlet[T]): ReverseOps[T] = new ReverseOps(in)
     def to[T](dst: SinkShape[T]): ReverseOps[T] = new ReverseOps(dst.in)
     def to[I, O](f: FlowShape[I, O]): ReverseOps[I] = new ReverseOps(f.in)
-    def to[I, O](j: UniformFanInShape[I, O]): ReverseOps[I] =
-      new ReverseOps(findIn(delegate, j, 0))
-    def to[I, O](j: UniformFanOutShape[I, O]): ReverseOps[I] =
-      new ReverseOps(j.in)
+    def to[I, O](j: UniformFanInShape[I, O]): ReverseOps[I] = new ReverseOps(
+      findIn(delegate, j, 0))
+    def to[I, O](j: UniformFanOutShape[I, O]): ReverseOps[I] = new ReverseOps(
+      j.in)
 
     final class ForwardOps[T](out: Outlet[T]) {
       def toInlet(in: Inlet[_ >: T]): Builder[Mat] = { out ~> in; self }
@@ -411,12 +411,12 @@ object GraphDSL extends GraphCreate {
       def toFanOut[U](j: UniformFanOutShape[_ >: T, U]): Builder[Mat] = {
         out ~> j; self
       }
-      def via[U](f: FlowShape[_ >: T, U]): ForwardOps[U] =
-        from((out ~> f).outlet)
-      def viaFanIn[U](j: UniformFanInShape[_ >: T, U]): ForwardOps[U] =
-        from((out ~> j).outlet)
-      def viaFanOut[U](j: UniformFanOutShape[_ >: T, U]): ForwardOps[U] =
-        from((out ~> j).outlet)
+      def via[U](f: FlowShape[_ >: T, U]): ForwardOps[U] = from(
+        (out ~> f).outlet)
+      def viaFanIn[U](j: UniformFanInShape[_ >: T, U]): ForwardOps[U] = from(
+        (out ~> j).outlet)
+      def viaFanOut[U](j: UniformFanOutShape[_ >: T, U]): ForwardOps[U] = from(
+        (out ~> j).outlet)
       def out(): Outlet[T] = out
     }
 
@@ -430,10 +430,10 @@ object GraphDSL extends GraphCreate {
         out <~ j; self
       }
       def via[U](f: FlowShape[U, _ <: T]): ReverseOps[U] = to((out <~ f).inlet)
-      def viaFanIn[U](j: UniformFanInShape[U, _ <: T]): ReverseOps[U] =
-        to((out <~ j).inlet)
-      def viaFanOut[U](j: UniformFanOutShape[U, _ <: T]): ReverseOps[U] =
-        to((out <~ j).inlet)
+      def viaFanIn[U](j: UniformFanInShape[U, _ <: T]): ReverseOps[U] = to(
+        (out <~ j).inlet)
+      def viaFanOut[U](j: UniformFanOutShape[U, _ <: T]): ReverseOps[U] = to(
+        (out <~ j).inlet)
     }
   }
 }

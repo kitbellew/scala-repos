@@ -141,11 +141,11 @@ final class RemoteSettings(val config: Config) {
   val Adapters: Map[String, String] = configToMap(
     getConfig("akka.remote.adapters"))
 
-  private def transportNames: immutable.Seq[String] =
-    immutableSeq(getStringList("akka.remote.enabled-transports"))
+  private def transportNames: immutable.Seq[String] = immutableSeq(
+    getStringList("akka.remote.enabled-transports"))
 
-  private def transportConfigFor(transportName: String): Config =
-    getConfig(transportName)
+  private def transportConfigFor(transportName: String): Config = getConfig(
+    transportName)
 
   private def configToMap(cfg: Config): Map[String, String] =
     cfg.root.unwrapped.asScala.toMap.map { case (k, v) ⇒ (k, v.toString) }

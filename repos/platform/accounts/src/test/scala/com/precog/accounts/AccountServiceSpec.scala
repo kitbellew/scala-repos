@@ -99,8 +99,8 @@ trait TestAccountService
   val accountManager = new InMemoryAccountManager()(M)
   def AccountManager(config: Configuration) = (accountManager, Stoppable.Noop)
   val apiKeyManager = new InMemoryAPIKeyManager(blueeyes.util.Clock.System)(M)
-  def APIKeyFinder(config: Configuration) =
-    new DirectAPIKeyFinder(apiKeyManager)
+  def APIKeyFinder(config: Configuration) = new DirectAPIKeyFinder(
+    apiKeyManager)
   def RootKey(config: Configuration) = M.copoint(apiKeyManager.rootAPIKey)
   def Emailer(config: Configuration) = {
     // Empty properties to force use of javamail-mock
@@ -119,23 +119,21 @@ trait TestAccountService
   val rootUser = "root@precog.com"
   val rootPass = "root"
 
-  override def map(fs: => Fragments) =
-    Step {
-      accountManager.setAccount(
-        "0000000001",
-        rootUser,
-        rootPass,
-        new DateTime,
-        AccountPlan.Root,
-        None)
-    } ^ super.map(fs)
+  override def map(fs: => Fragments) = Step {
+    accountManager.setAccount(
+      "0000000001",
+      rootUser,
+      rootPass,
+      new DateTime,
+      AccountPlan.Root,
+      None)
+  } ^ super.map(fs)
 }
 
 class AccountServiceSpec extends TestAccountService with Tags {
-  def accounts =
-    client
-      .contentType[JValue](application / (MimeTypes.json))
-      .path("/accounts/v1/accounts/")
+  def accounts = client
+    .contentType[JValue](application / (MimeTypes.json))
+    .path("/accounts/v1/accounts/")
 
   def auth(user: String, pass: String): HttpHeader = {
     val raw = (user + ":" + pass).getBytes("utf-8")

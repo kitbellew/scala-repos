@@ -18,14 +18,13 @@ class ReaderTest
   def arr(i: Int, j: Int) = Array.range(i, j).map(_.toByte)
   def buf(i: Int, j: Int) = Buf.ByteArray.Owned(arr(i, j))
 
-  def toSeq(b: Option[Buf]) =
-    b match {
-      case None => fail("Expected full buffer")
-      case Some(buf) =>
-        val a = new Array[Byte](buf.length)
-        buf.write(a, 0)
-        a.toSeq
-    }
+  def toSeq(b: Option[Buf]) = b match {
+    case None => fail("Expected full buffer")
+    case Some(buf) =>
+      val a = new Array[Byte](buf.length)
+      buf.write(a, 0)
+      a.toSeq
+  }
 
   def assertRead(r: Reader, i: Int, j: Int) {
     val n = j - i

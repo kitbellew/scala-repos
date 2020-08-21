@@ -62,34 +62,33 @@ private[spark] class LiveListenerBus extends SparkListenerBus {
 
   private val listenerThread = new Thread(name) {
     setDaemon(true)
-    override def run(): Unit =
-      Utils.tryOrStopSparkContext(sparkContext) {
-        LiveListenerBus.withinListenerThread.withValue(true) {
-          while (true) {
-            eventLock.acquire()
-            self.synchronized {
-              processingEvent = true
+    override def run(): Unit = Utils.tryOrStopSparkContext(sparkContext) {
+      LiveListenerBus.withinListenerThread.withValue(true) {
+        while (true) {
+          eventLock.acquire()
+          self.synchronized {
+            processingEvent = true
+          }
+          try {
+            val event = eventQueue.poll
+            if (event == null) {
+              // Get out of the while loop and shutdown the daemon thread
+              if (!stopped.get) {
+                throw new IllegalStateException(
+                  "Polling `null` from eventQueue means" +
+                    " the listener bus has been stopped. So `stopped` must be true")
+              }
+              return
             }
-            try {
-              val event = eventQueue.poll
-              if (event == null) {
-                // Get out of the while loop and shutdown the daemon thread
-                if (!stopped.get) {
-                  throw new IllegalStateException(
-                    "Polling `null` from eventQueue means" +
-                      " the listener bus has been stopped. So `stopped` must be true")
-                }
-                return
-              }
-              postToAll(event)
-            } finally {
-              self.synchronized {
-                processingEvent = false
-              }
+            postToAll(event)
+          } finally {
+            self.synchronized {
+              processingEvent = false
             }
           }
         }
       }
+    }
   }
 
   /**
@@ -156,8 +155,9 @@ private[spark] class LiveListenerBus extends SparkListenerBus {
     * The use of synchronized here guarantees that all events that once belonged to this queue
     * have already been processed by all attached listeners, if this returns true.
     */
-  private def queueIsEmpty: Boolean =
-    synchronized { eventQueue.isEmpty && !processingEvent }
+  private def queueIsEmpty: Boolean = synchronized {
+    eventQueue.isEmpty && !processingEvent
+  }
 
   /**
     * Stop the listener bus. It will wait until the queued events have been processed, but drop the

@@ -125,8 +125,8 @@ package object js {
     *  }
     *  }}}
     */
-  def native: Nothing =
-    sys.error("A method defined in a JavaScript raw " +
+  def native: Nothing = sys.error(
+    "A method defined in a JavaScript raw " +
       "type of a Scala.js library has been called. This is most likely " +
       "because you tried to run Scala.js binaries on the JVM. Make sure you " +
       "are using the JVM version of the libraries.")

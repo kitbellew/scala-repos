@@ -30,8 +30,8 @@ trait BigDecimalInstances {
     new Monoid[BigDecimal @@ Multiplication] {
       def append(
           f1: BigDecimal @@ Multiplication,
-          f2: => BigDecimal @@ Multiplication) =
-        Multiplication(Tag.unwrap(f1) * Tag.unwrap(f2))
+          f2: => BigDecimal @@ Multiplication) = Multiplication(
+        Tag.unwrap(f1) * Tag.unwrap(f2))
 
       def zero = Multiplication(1)
     }

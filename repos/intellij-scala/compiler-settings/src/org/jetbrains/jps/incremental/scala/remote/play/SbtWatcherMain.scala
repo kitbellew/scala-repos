@@ -43,11 +43,11 @@ object SbtWatcherMain {
           .getBytes)
     }
 
-    def createConsumer(delegate: MessageConsumer) =
-      new CachingMessageConsumer(delegate) {
-        override protected def needFlush(msg: String, msgCount: Int): Boolean =
-          msg.trim.endsWith(IT_COMPLETED_MESSAGE) || msgCount > MESSAGE_LIMIT
-      }
+    def createConsumer(delegate: MessageConsumer) = new CachingMessageConsumer(
+      delegate) {
+      override protected def needFlush(msg: String, msgCount: Int): Boolean =
+        msg.trim.endsWith(IT_COMPLETED_MESSAGE) || msgCount > MESSAGE_LIMIT
+    }
 
     val decoded = arguments map Base64Converter.decode
 
@@ -56,34 +56,33 @@ object SbtWatcherMain {
         val port = Integer.parseInt(decoded.tail.head)
         val argsTail = decoded.tail.tail
 
-        def delegate =
-          if (cm == START) new MessageConsumer {
-            override def consume(message: String) {
-              try {
-                val sc = new Socket(InetAddress.getByName(null), port)
-                val writer = new BufferedWriter(
-                  new OutputStreamWriter(sc.getOutputStream))
-                writer.write(message)
-                writer.flush()
-                writer.close()
-              } catch {
-                case ex: Exception =>
-              }
+        def delegate = if (cm == START) new MessageConsumer {
+          override def consume(message: String) {
+            try {
+              val sc = new Socket(InetAddress.getByName(null), port)
+              val writer = new BufferedWriter(
+                new OutputStreamWriter(sc.getOutputStream))
+              writer.write(message)
+              writer.flush()
+              writer.close()
+            } catch {
+              case ex: Exception =>
             }
           }
-          else
-            new MessageConsumer {
-              override def consume(message: String) {
-                val encoded = Base64Converter.encode(
-                  MessageEvent(
-                    BuildMessage.Kind.INFO,
-                    message,
-                    None,
-                    None,
-                    None).toBytes)
-                out write encoded.getBytes
-              }
+        }
+        else
+          new MessageConsumer {
+            override def consume(message: String) {
+              val encoded = Base64Converter.encode(
+                MessageEvent(
+                  BuildMessage.Kind.INFO,
+                  message,
+                  None,
+                  None,
+                  None).toBytes)
+              out write encoded.getBytes
             }
+          }
 
         def run() {
           val watcher = new LocalSbtWatcherExec

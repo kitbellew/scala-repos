@@ -209,10 +209,9 @@ class ExceptionReporter extends ReporterFactory {
   private[this] val client =
     Reporter.makeClient(host().getHostName, host().getPort)
 
-  def apply(name: String, addr: Option[SocketAddress]): Reporter =
-    addr match {
-      case Some(a: InetSocketAddress) =>
-        new Reporter(client, name).withClient(a.getAddress)
-      case _ => new Reporter(client, name)
-    }
+  def apply(name: String, addr: Option[SocketAddress]): Reporter = addr match {
+    case Some(a: InetSocketAddress) =>
+      new Reporter(client, name).withClient(a.getAddress)
+    case _ => new Reporter(client, name)
+  }
 }

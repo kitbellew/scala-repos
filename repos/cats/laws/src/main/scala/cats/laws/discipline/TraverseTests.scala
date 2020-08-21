@@ -27,26 +27,22 @@ trait TraverseTests[F[_]] extends FunctorTests[F] with FoldableTests[F] {
       EqXFB: Eq[X[F[B]]],
       EqYFB: Eq[Y[F[B]]]
   ): RuleSet = {
-    implicit def EqXFBYFB: Eq[(X[F[B]], Y[F[B]])] =
-      new Eq[(X[F[B]], Y[F[B]])] {
-        override def eqv(
-            x: (X[F[B]], Y[F[B]]),
-            y: (X[F[B]], Y[F[B]])): Boolean =
-          EqXFB.eqv(x._1, y._1) && EqYFB.eqv(x._2, y._2)
-      }
+    implicit def EqXFBYFB: Eq[(X[F[B]], Y[F[B]])] = new Eq[(X[F[B]], Y[F[B]])] {
+      override def eqv(x: (X[F[B]], Y[F[B]]), y: (X[F[B]], Y[F[B]])): Boolean =
+        EqXFB.eqv(x._1, y._1) && EqYFB.eqv(x._2, y._2)
+    }
     new RuleSet {
       def name: String = "traverse"
       def bases: Seq[(String, RuleSet)] = Nil
       def parents: Seq[RuleSet] = Seq(functor[A, B, C], foldable[A, M])
-      def props: Seq[(String, Prop)] =
-        Seq(
-          "traverse identity" -> forAll(laws.traverseIdentity[A, C] _),
-          "traverse sequential composition" -> forAll(
-            laws.traverseSequentialComposition[A, B, C, X, Y] _),
-          "traverse parallel composition" -> forAll(
-            laws.traverseParallelComposition[A, B, X, Y] _),
-          "traverse derive foldMap" -> forAll(laws.foldMapDerived[A, M] _)
-        )
+      def props: Seq[(String, Prop)] = Seq(
+        "traverse identity" -> forAll(laws.traverseIdentity[A, C] _),
+        "traverse sequential composition" -> forAll(
+          laws.traverseSequentialComposition[A, B, C, X, Y] _),
+        "traverse parallel composition" -> forAll(
+          laws.traverseParallelComposition[A, B, X, Y] _),
+        "traverse derive foldMap" -> forAll(laws.foldMapDerived[A, M] _)
+      )
     }
   }
 }

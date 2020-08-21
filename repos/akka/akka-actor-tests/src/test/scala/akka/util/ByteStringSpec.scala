@@ -25,13 +25,12 @@ import scala.collection.mutable.Builder
 
 class ByteStringSpec extends WordSpec with Matchers with Checkers {
 
-  def genSimpleByteString(min: Int, max: Int) =
-    for {
-      n ← Gen.choose(min, max)
-      b ← Gen.containerOfN[Array, Byte](n, arbitrary[Byte])
-      from ← Gen.choose(0, b.length)
-      until ← Gen.choose(from, b.length)
-    } yield ByteString(b).slice(from, until)
+  def genSimpleByteString(min: Int, max: Int) = for {
+    n ← Gen.choose(min, max)
+    b ← Gen.containerOfN[Array, Byte](n, arbitrary[Byte])
+    from ← Gen.choose(0, b.length)
+    until ← Gen.choose(from, b.length)
+  } yield ByteString(b).slice(from, until)
 
   implicit val arbitraryByteString: Arbitrary[ByteString] = Arbitrary {
     Gen.sized { s ⇒

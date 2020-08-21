@@ -82,14 +82,13 @@ object HandlerInvokerFactory {
   import com.fasterxml.jackson.databind.JsonNode
 
   private[routing] def handlerTags(
-      handlerDef: HandlerDef): Map[String, String] =
-    Map(
-      play.api.routing.Router.Tags.RoutePattern -> handlerDef.path,
-      play.api.routing.Router.Tags.RouteVerb -> handlerDef.verb,
-      play.api.routing.Router.Tags.RouteController -> handlerDef.controller,
-      play.api.routing.Router.Tags.RouteActionMethod -> handlerDef.method,
-      play.api.routing.Router.Tags.RouteComments -> handlerDef.comments
-    )
+      handlerDef: HandlerDef): Map[String, String] = Map(
+    play.api.routing.Router.Tags.RoutePattern -> handlerDef.path,
+    play.api.routing.Router.Tags.RouteVerb -> handlerDef.verb,
+    play.api.routing.Router.Tags.RouteController -> handlerDef.controller,
+    play.api.routing.Router.Tags.RouteActionMethod -> handlerDef.method,
+    play.api.routing.Router.Tags.RouteComments -> handlerDef.comments
+  )
 
   private[routing] def taggedRequest(
       rh: RequestHeader,
@@ -137,40 +136,37 @@ object HandlerInvokerFactory {
       extends HandlerInvokerFactory[A] {
     def createInvoker(
         fakeCall: => A,
-        handlerDef: HandlerDef): HandlerInvoker[A] =
-      new HandlerInvoker[A] {
-        val cachedHandlerTags = handlerTags(handlerDef)
-        val cachedAnnotations = {
-          val controller = loadJavaControllerClass(handlerDef)
-          val method = MethodUtils.getMatchingAccessibleMethod(
-            controller,
-            handlerDef.method,
-            handlerDef.parameterTypes: _*)
-          new JavaActionAnnotations(controller, method)
-        }
-        def call(call: => A): Handler =
-          new JavaHandler {
-            def withComponents(components: JavaHandlerComponents) =
-              new play.core.j.JavaAction(components)
-                with RequestTaggingHandler {
-                val annotations = cachedAnnotations
-                val parser = {
-                  val javaParser =
-                    components.getBodyParser(cachedAnnotations.parser)
-                  javaBodyParserToScala(javaParser)
-                }
-                def invocation: CompletionStage[JResult] = resultCall(call)
-                def tagRequest(rh: RequestHeader) =
-                  taggedRequest(rh, cachedHandlerTags)
-              }
+        handlerDef: HandlerDef): HandlerInvoker[A] = new HandlerInvoker[A] {
+      val cachedHandlerTags = handlerTags(handlerDef)
+      val cachedAnnotations = {
+        val controller = loadJavaControllerClass(handlerDef)
+        val method = MethodUtils.getMatchingAccessibleMethod(
+          controller,
+          handlerDef.method,
+          handlerDef.parameterTypes: _*)
+        new JavaActionAnnotations(controller, method)
+      }
+      def call(call: => A): Handler = new JavaHandler {
+        def withComponents(components: JavaHandlerComponents) =
+          new play.core.j.JavaAction(components) with RequestTaggingHandler {
+            val annotations = cachedAnnotations
+            val parser = {
+              val javaParser =
+                components.getBodyParser(cachedAnnotations.parser)
+              javaBodyParserToScala(javaParser)
+            }
+            def invocation: CompletionStage[JResult] = resultCall(call)
+            def tagRequest(rh: RequestHeader) =
+              taggedRequest(rh, cachedHandlerTags)
           }
       }
+    }
     def resultCall(call: => A): CompletionStage[JResult]
   }
 
   private[play] def javaBodyParserToScala(
-      parser: play.mvc.BodyParser[_]): BodyParser[RequestBody] =
-    BodyParser { request =>
+      parser: play.mvc.BodyParser[_]): BodyParser[RequestBody] = BodyParser {
+    request =>
       val accumulator =
         parser.apply(new play.core.j.RequestHeaderImpl(request)).asScala()
       import play.api.libs.iteratee.Execution.Implicits.trampoline
@@ -181,7 +177,7 @@ object HandlerInvokerFactory {
           Right(new RequestBody(javaEither.right.get()))
         }
       }
-    }
+  }
 
   implicit def wrapJava: HandlerInvokerFactory[JResult] =
     new JavaActionInvokerFactory[JResult] {
@@ -201,11 +197,10 @@ object HandlerInvokerFactory {
     def webSocketCall(call: => A): WebSocket
     def createInvoker(
         fakeCall: => A,
-        handlerDef: HandlerDef): HandlerInvoker[A] =
-      new HandlerInvoker[A] {
-        val cachedHandlerTags = handlerTags(handlerDef)
-        def call(call: => A): WebSocket = webSocketCall(call)
-      }
+        handlerDef: HandlerDef): HandlerInvoker[A] = new HandlerInvoker[A] {
+      val cachedHandlerTags = handlerTags(handlerDef)
+      def call(call: => A): WebSocket = webSocketCall(call)
+    }
   }
 
   implicit def javaBytesWebSocket

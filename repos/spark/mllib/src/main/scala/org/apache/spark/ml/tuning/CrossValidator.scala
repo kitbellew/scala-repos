@@ -238,15 +238,14 @@ object CrossValidator extends MLReadable[CrossValidator] {
       * This does not check [[CrossValidator.estimatorParamMaps]].
       */
     def validateParams(instance: ValidatorParams): Unit = {
-      def checkElement(elem: Params, name: String): Unit =
-        elem match {
-          case stage: MLWritable => // good
-          case other =>
-            throw new UnsupportedOperationException(
-              "CrossValidator write will fail " +
-                s" because it contains $name which does not implement Writable." +
-                s" Non-Writable $name: ${other.uid} of type ${other.getClass}")
-        }
+      def checkElement(elem: Params, name: String): Unit = elem match {
+        case stage: MLWritable => // good
+        case other =>
+          throw new UnsupportedOperationException(
+            "CrossValidator write will fail " +
+              s" because it contains $name which does not implement Writable." +
+              s" Non-Writable $name: ${other.uid} of type ${other.getClass}")
+      }
       checkElement(instance.getEvaluator, "evaluator")
       checkElement(instance.getEstimator, "estimator")
       // Check to make sure all Params apply to this estimator.  Throw an error if any do not.

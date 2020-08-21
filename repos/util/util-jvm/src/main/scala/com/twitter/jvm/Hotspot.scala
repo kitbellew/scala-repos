@@ -45,23 +45,22 @@ class Hotspot extends Jvm {
     fld.get(null).asInstanceOf[VMManagement]
   }
 
-  private[this] def opt(name: String) =
-    try Some {
-      val o = ManagementFactory
-        .getPlatformMBeanServer()
-        .invoke(
-          DiagnosticBean,
-          "getVMOption",
-          Array(name),
-          Array("java.lang.String"))
-      o.asInstanceOf[CompositeDataSupport].get("value").asInstanceOf[String]
-    } catch {
-      case _: IllegalArgumentException =>
-        None
-      case rbe: RuntimeMBeanException
-          if rbe.getCause.isInstanceOf[IllegalArgumentException] =>
-        None
-    }
+  private[this] def opt(name: String) = try Some {
+    val o = ManagementFactory
+      .getPlatformMBeanServer()
+      .invoke(
+        DiagnosticBean,
+        "getVMOption",
+        Array(name),
+        Array("java.lang.String"))
+    o.asInstanceOf[CompositeDataSupport].get("value").asInstanceOf[String]
+  } catch {
+    case _: IllegalArgumentException =>
+      None
+    case rbe: RuntimeMBeanException
+        if rbe.getCause.isInstanceOf[IllegalArgumentException] =>
+      None
+  }
 
   private[this] def long(c: Counter) = c.getValue().asInstanceOf[Long]
 

@@ -47,10 +47,9 @@ akka.persistence.snapshot-store.plugin = "akka.persistence.no-snapshot-store"
     def receiveRecover = { case x ⇒
       monitor ! x
     }
-    def receiveCommand =
-      behavior orElse { case m: Multi ⇒
-        m.cmd.foreach(behavior)
-      }
+    def receiveCommand = behavior orElse { case m: Multi ⇒
+      m.cmd.foreach(behavior)
+    }
 
     val behavior: Receive = {
       case p: Persist ⇒ P(p)

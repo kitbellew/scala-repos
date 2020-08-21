@@ -1003,9 +1003,8 @@ class ClientBuilder[
   @deprecated("Used for ABI compat", "5.0.1")
   def buildFactory(
       THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ClientBuilder_DOCUMENTATION: ThisConfig =:= FullySpecifiedConfig
-  ): ServiceFactory[Req, Rep] =
-    buildFactory()(
-      new ClientConfigEvidence[HasCluster, HasCodec, HasHostConnectionLimit] {})
+  ): ServiceFactory[Req, Rep] = buildFactory()(
+    new ClientConfigEvidence[HasCluster, HasCodec, HasHostConnectionLimit] {})
 
   /**
     * Construct a Service.
@@ -1024,9 +1023,8 @@ class ClientBuilder[
   @deprecated("Used for ABI compat", "5.0.1")
   def build(
       THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ClientBuilder_DOCUMENTATION: ThisConfig =:= FullySpecifiedConfig
-  ): Service[Req, Rep] =
-    build()(
-      new ClientConfigEvidence[HasCluster, HasCodec, HasHostConnectionLimit] {})
+  ): Service[Req, Rep] = build()(
+    new ClientConfigEvidence[HasCluster, HasCodec, HasHostConnectionLimit] {})
 
   private[this] def validated = {
     if (!params.contains[DestName])
@@ -1061,8 +1059,8 @@ private case class ClientBuilderClient[Req, Rep](
   def params = client.params
   def withParams(ps: Stack.Params) = copy(client.withParams(ps))
   def stack = client.stack
-  def withStack(stack: Stack[ServiceFactory[Req, Rep]]) =
-    copy(client.withStack(stack))
+  def withStack(stack: Stack[ServiceFactory[Req, Rep]]) = copy(
+    client.withStack(stack))
 
   def newClient(dest: Name, label: String) =
     ClientBuilderClient.newClient(client, dest, label)

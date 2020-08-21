@@ -205,29 +205,28 @@ trait ShardQueryExecutorPlatform[M[+_]]
         table: N[Table]): N[Table] = {
       import trans._
 
-      def sort(table: N[Table]): N[Table] =
-        if (!opts.sortOn.isEmpty) {
-          val sortKey = InnerArrayConcat(opts.sortOn map { cpath =>
-            WrapArray(
-              cpath.nodes.foldLeft(constants.SourceValue.Single: TransSpec1) {
-                case (inner, f @ CPathField(_)) =>
-                  DerefObjectStatic(inner, f)
-                case (inner, i @ CPathIndex(_)) =>
-                  DerefArrayStatic(inner, i)
-              })
-          }: _*)
+      def sort(table: N[Table]): N[Table] = if (!opts.sortOn.isEmpty) {
+        val sortKey = InnerArrayConcat(opts.sortOn map { cpath =>
+          WrapArray(
+            cpath.nodes.foldLeft(constants.SourceValue.Single: TransSpec1) {
+              case (inner, f @ CPathField(_)) =>
+                DerefObjectStatic(inner, f)
+              case (inner, i @ CPathIndex(_)) =>
+                DerefArrayStatic(inner, i)
+            })
+        }: _*)
 
-          table flatMap { tbl =>
-            mn(tbl.sort(sortKey, opts.sortOrder))
-          }
-        } else {
-          table
+        table flatMap { tbl =>
+          mn(tbl.sort(sortKey, opts.sortOrder))
         }
+      } else {
+        table
+      }
 
-      def page(table: N[Table]): N[Table] =
-        opts.page map { case (offset, limit) =>
+      def page(table: N[Table]): N[Table] = opts.page map {
+        case (offset, limit) =>
           table map { _.takeRange(offset, limit) }
-        } getOrElse table
+      } getOrElse table
 
       page(sort(table map (_.compact(constants.SourceValue.Single))))
     }

@@ -68,8 +68,9 @@ private[deploy] class DriverRunner(
 
   private var clock: Clock = new SystemClock()
   private var sleeper = new Sleeper {
-    def sleep(seconds: Int): Unit =
-      (0 until seconds).takeWhile(f => { Thread.sleep(1000); !killed })
+    def sleep(seconds: Int): Unit = (0 until seconds).takeWhile(f => {
+      Thread.sleep(1000); !killed
+    })
   }
 
   /** Starts a thread to run and manage the driver. */
@@ -80,12 +81,11 @@ private[deploy] class DriverRunner(
           val driverDir = createWorkingDirectory()
           val localJarFilename = downloadUserJar(driverDir)
 
-          def substituteVariables(argument: String): String =
-            argument match {
-              case "{{WORKER_URL}}" => workerUrl
-              case "{{USER_JAR}}"   => localJarFilename
-              case other            => other
-            }
+          def substituteVariables(argument: String): String = argument match {
+            case "{{WORKER_URL}}" => workerUrl
+            case "{{USER_JAR}}"   => localJarFilename
+            case other            => other
+          }
 
           // TODO: If we add ability to submit multiple jars they should also be added here
           val builder = CommandUtils.buildProcessBuilder(

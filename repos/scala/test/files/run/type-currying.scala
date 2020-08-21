@@ -14,19 +14,16 @@ object Partial {
     def apply[K](implicit cbf: CanBuildFrom[_, (K, V), CC[K, V]]): CC[K, V]
   }
 
-  def apply[CC[K, V] <: collection.Map[K, V]]: KnownContainer[CC] =
-    new {
-      def values[V]: KnownValues[CC, V] =
-        new {
-          def apply[K](implicit cbf: CanBuildFrom[_, (K, V), CC[K, V]]) =
-            cbf().result
-        }
-      def apply[K] =
-        new {
-          def apply[V](implicit cbf: CanBuildFrom[_, (K, V), CC[K, V]]) =
-            cbf().result
-        }
+  def apply[CC[K, V] <: collection.Map[K, V]]: KnownContainer[CC] = new {
+    def values[V]: KnownValues[CC, V] = new {
+      def apply[K](implicit cbf: CanBuildFrom[_, (K, V), CC[K, V]]) =
+        cbf().result
     }
+    def apply[K] = new {
+      def apply[V](implicit cbf: CanBuildFrom[_, (K, V), CC[K, V]]) =
+        cbf().result
+    }
+  }
 }
 
 object Test {

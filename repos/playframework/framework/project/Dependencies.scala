@@ -143,12 +143,11 @@ object Dependencies {
     "com.typesafe.akka" %% "akka-http-core" % akkaVersion
   )
 
-  def routesCompilerDependencies(scalaVersion: String) =
-    Seq(
-      "commons-io" % "commons-io" % "2.4",
-      specsMatcherExtra % Test
-    ) ++ specsBuild.map(_ % Test) ++ logback.map(
-      _ % Test) ++ scalaParserCombinators(scalaVersion)
+  def routesCompilerDependencies(scalaVersion: String) = Seq(
+    "commons-io" % "commons-io" % "2.4",
+    specsMatcherExtra % Test
+  ) ++ specsBuild.map(_ % Test) ++ logback.map(
+    _ % Test) ++ scalaParserCombinators(scalaVersion)
 
   private def sbtPluginDep(
       sbtVersion: String,
@@ -160,10 +159,9 @@ object Dependencies {
     )
   }
 
-  def runSupportDependencies(sbtVersion: String, scalaVersion: String) =
-    Seq(
-      sbtIO(sbtVersion, scalaVersion)
-    ) ++ specsBuild.map(_ % Test) ++ logback.map(_ % Test)
+  def runSupportDependencies(sbtVersion: String, scalaVersion: String) = Seq(
+    sbtIO(sbtVersion, scalaVersion)
+  ) ++ specsBuild.map(_ % Test) ++ logback.map(_ % Test)
 
   // use partial version so that non-standard scala binary versions from dbuild also work
   def sbtIO(sbtVersion: String, scalaVersion: String): ModuleID =
@@ -178,10 +176,9 @@ object Dependencies {
   val sbtRcVersion = "0.3.1"
   val sbtCoreNextVersion = "0.1.1"
 
-  def forkRunProtocolDependencies(scalaBinaryVersion: String) =
-    Seq(
-      sbtRcClient(scalaBinaryVersion)
-    ) ++ specsBuild.map(_ % "test") ++ logback.map(_ % Test)
+  def forkRunProtocolDependencies(scalaBinaryVersion: String) = Seq(
+    sbtRcClient(scalaBinaryVersion)
+  ) ++ specsBuild.map(_ % "test") ++ logback.map(_ % Test)
 
   // use partial version so that non-standard scala binary versions from dbuild also work
   def sbtRcClient(scalaBinaryVersion: String): ModuleID =
@@ -191,11 +188,10 @@ object Dependencies {
       case _             => sys.error(s"Unsupported scala version: $scalaBinaryVersion")
     }
 
-  def forkRunDependencies(scalaBinaryVersion: String) =
-    Seq(
-      sbtRcActorClient(scalaBinaryVersion),
-      jnotify
-    )
+  def forkRunDependencies(scalaBinaryVersion: String) = Seq(
+    sbtRcActorClient(scalaBinaryVersion),
+    jnotify
+  )
 
   // use partial version so that non-standard scala binary versions from dbuild also work
   def sbtRcActorClient(scalaBinaryVersion: String): ModuleID =
@@ -253,13 +249,12 @@ object Dependencies {
     scalaJava8Compat
   ) ++ specsBuild.map(_ % "test") ++ logback.map(_ % Test) ++ javaTestDeps
 
-  def jsonDependencies(scalaVersion: String) =
-    Seq(
-      jodatime,
-      jodaConvert,
-      "org.scala-lang" % "scala-reflect" % scalaVersion) ++
-      jacksons ++
-      specsBuild.map(_ % Test) ++ logback.map(_ % Test)
+  def jsonDependencies(scalaVersion: String) = Seq(
+    jodatime,
+    jodaConvert,
+    "org.scala-lang" % "scala-reflect" % scalaVersion) ++
+    jacksons ++
+    specsBuild.map(_ % Test) ++ logback.map(_ % Test)
 
   val scalacheckDependencies = Seq(
     "org.specs2" %% "specs2-scalacheck" % specsVersion % Test,

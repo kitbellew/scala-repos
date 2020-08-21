@@ -105,11 +105,10 @@ object GlobalRegistry {
     * If it's call inside of a `withRegistry` context then it's a temporary
     * registry, useful for writing isolated tests.
     */
-  def get: Registry =
-    localRegistry() match {
-      case None        => registry
-      case Some(local) => local
-    }
+  def get: Registry = localRegistry() match {
+    case None        => registry
+    case Some(local) => local
+  }
 
   /**
     * Note, this should only ever be updated by methods used for testing.

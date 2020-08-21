@@ -184,12 +184,11 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
   lazy val srBoxesRuntimeUnboxToMethods: Map[BType, MethodNameAndType] =
     srBoxesRuntimeMethods((primitive, boxed) => "unboxTo" + primitive)
 
-  def singleParamOfClass(cls: Symbol) =
-    (s: Symbol) =>
-      s.paramss match {
-        case List(List(param)) => param.info.typeSymbol == cls
-        case _                 => false
-      }
+  def singleParamOfClass(cls: Symbol) = (s: Symbol) =>
+    s.paramss match {
+      case List(List(param)) => param.info.typeSymbol == cls
+      case _                 => false
+    }
 
   // java/lang/Boolean -> MethodNameAndType(valueOf,(Z)Ljava/lang/Boolean;)
   lazy val javaBoxMethods: Map[InternalName, MethodNameAndType] = {

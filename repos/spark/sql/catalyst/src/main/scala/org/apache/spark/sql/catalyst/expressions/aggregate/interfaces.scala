@@ -351,7 +351,7 @@ abstract class DeclarativeAggregate
     def left: AttributeReference = a
 
     /** Represents this attribute at the input buffer side (the data value is read-only). */
-    def right: AttributeReference =
-      inputAggBufferAttributes(aggBufferAttributes.indexOf(a))
+    def right: AttributeReference = inputAggBufferAttributes(
+      aggBufferAttributes.indexOf(a))
   }
 }

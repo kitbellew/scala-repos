@@ -175,48 +175,45 @@ trait RealisticEventMessage extends ArbitraryEventMessage {
   def genStablePath: Gen[String] = oneOf(paths)
   def genStableJPath: Gen[JPath] = oneOf(jpaths)
 
-  def genIngestData: Gen[JValue] =
-    for {
-      paths <- containerOfN[Set, JPath](10, genStableJPath)
-      values <- containerOfN[Set, JValue](10, genSimpleNotNull)
-    } yield {
-      (paths zip values).foldLeft[JValue](JObject(Nil)) {
-        case (obj, (path, value)) => obj.set(path, value)
-      }
+  def genIngestData: Gen[JValue] = for {
+    paths <- containerOfN[Set, JPath](10, genStableJPath)
+    values <- containerOfN[Set, JValue](10, genSimpleNotNull)
+  } yield {
+    (paths zip values).foldLeft[JValue](JObject(Nil)) {
+      case (obj, (path, value)) => obj.set(path, value)
     }
+  }
 
-  def genIngest: Gen[Ingest] =
-    for {
-      path <- genStablePath
-      ingestData <-
-        containerOf[List, JValue](genIngestData).map(l => Vector(l: _*))
-      streamRef <- genStreamRef
-    } yield Ingest(
-      ingestAPIKey,
-      Path(path),
-      Some(ingestOwnerAccountId),
-      ingestData,
-      None,
-      new Instant(),
-      streamRef)
+  def genIngest: Gen[Ingest] = for {
+    path <- genStablePath
+    ingestData <-
+      containerOf[List, JValue](genIngestData).map(l => Vector(l: _*))
+    streamRef <- genStreamRef
+  } yield Ingest(
+    ingestAPIKey,
+    Path(path),
+    Some(ingestOwnerAccountId),
+    ingestData,
+    None,
+    new Instant(),
+    streamRef)
 
-  def genIngestMessage: Gen[IngestMessage] =
-    for {
-      producerId <- choose(0, producers - 1)
-      ingest <- genIngest
-    } yield {
-      val records = ingest.data map { jv =>
-        IngestRecord(
-          EventId(producerId, eventIds(producerId).getAndIncrement),
-          jv)
-      }
-      IngestMessage(
-        ingest.apiKey,
-        ingest.path,
-        ingest.writeAs.get,
-        records,
-        ingest.jobId,
-        ingest.timestamp,
-        ingest.streamRef)
+  def genIngestMessage: Gen[IngestMessage] = for {
+    producerId <- choose(0, producers - 1)
+    ingest <- genIngest
+  } yield {
+    val records = ingest.data map { jv =>
+      IngestRecord(
+        EventId(producerId, eventIds(producerId).getAndIncrement),
+        jv)
     }
+    IngestMessage(
+      ingest.apiKey,
+      ingest.path,
+      ingest.writeAs.get,
+      records,
+      ingest.jobId,
+      ingest.timestamp,
+      ingest.streamRef)
+  }
 }

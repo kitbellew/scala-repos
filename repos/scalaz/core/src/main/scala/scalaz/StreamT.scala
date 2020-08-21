@@ -40,22 +40,20 @@ sealed class StreamT[M[_], A](val step: M[StreamT.Step[A, StreamT[M, A]]]) {
             skip = as => Skip(as trans t),
             done = Done))))
 
-  def filter(p: A => Boolean)(implicit m: Functor[M]): StreamT[M, A] =
-    stepMap {
-      _(
-        yieldd =
-          (a, as) => if (p(a)) Yield(a, as filter p) else Skip(as filter p),
-        skip = as => Skip(as filter p),
-        done = Done)
-    }
+  def filter(p: A => Boolean)(implicit m: Functor[M]): StreamT[M, A] = stepMap {
+    _(
+      yieldd =
+        (a, as) => if (p(a)) Yield(a, as filter p) else Skip(as filter p),
+      skip = as => Skip(as filter p),
+      done = Done)
+  }
 
-  def drop(n: Int)(implicit M: Functor[M]): StreamT[M, A] =
-    stepMap {
-      _(
-        yieldd = (a, as) => if (n > 0) Skip(as drop (n - 1)) else Yield(a, as),
-        skip = as => Skip(as drop n),
-        done = Done)
-    }
+  def drop(n: Int)(implicit M: Functor[M]): StreamT[M, A] = stepMap {
+    _(
+      yieldd = (a, as) => if (n > 0) Skip(as drop (n - 1)) else Yield(a, as),
+      skip = as => Skip(as drop n),
+      done = Done)
+  }
 
   def dropWhile(p: A => Boolean)(implicit m: Functor[M]): StreamT[M, A] =
     stepMap {
@@ -65,13 +63,12 @@ sealed class StreamT[M[_], A](val step: M[StreamT.Step[A, StreamT[M, A]]]) {
         done = Done)
     }
 
-  def take(n: Int)(implicit M: Functor[M]): StreamT[M, A] =
-    stepMap {
-      _(
-        yieldd = (a, as) => if (n <= 0) Done else Yield(a, as take (n - 1)),
-        skip = as => Skip(as take n),
-        done = Done)
-    }
+  def take(n: Int)(implicit M: Functor[M]): StreamT[M, A] = stepMap {
+    _(
+      yieldd = (a, as) => if (n <= 0) Done else Yield(a, as take (n - 1)),
+      skip = as => Skip(as take n),
+      done = Done)
+  }
 
   def takeWhile(p: A => Boolean)(implicit m: Functor[M]): StreamT[M, A] =
     stepMap {
@@ -97,31 +94,28 @@ sealed class StreamT[M[_], A](val step: M[StreamT.Step[A, StreamT[M, A]]]) {
         done = Done)
     }
 
-  def map[B](f: A => B)(implicit m: Functor[M]): StreamT[M, B] =
-    stepMap {
-      _(
-        yieldd = (a, s) => Yield(f(a), s map f),
-        skip = s => Skip(s map f),
-        done = Done)
-    }
+  def map[B](f: A => B)(implicit m: Functor[M]): StreamT[M, B] = stepMap {
+    _(
+      yieldd = (a, s) => Yield(f(a), s map f),
+      skip = s => Skip(s map f),
+      done = Done)
+  }
 
   /** @since 7.0.1 */
-  def mapM[B](f: A => M[B])(implicit m: Monad[M]): StreamT[M, B] =
-    stepBind {
-      _(
-        yieldd = (a, s) => m.map(f(a)) { Yield(_, s mapM f) },
-        skip = s => m.point(Skip(s mapM f)),
-        done = m.point(Done))
-    }
+  def mapM[B](f: A => M[B])(implicit m: Monad[M]): StreamT[M, B] = stepBind {
+    _(
+      yieldd = (a, s) => m.map(f(a)) { Yield(_, s mapM f) },
+      skip = s => m.point(Skip(s mapM f)),
+      done = m.point(Done))
+  }
 
   /** Don't use iteratively! */
-  def tail(implicit m: Functor[M]): StreamT[M, A] =
-    stepMap {
-      _(
-        yieldd = (a, s) => Skip(s),
-        skip = s => Skip(s.tail),
-        done = sys.error("tail: empty StreamT"))
-    }
+  def tail(implicit m: Functor[M]): StreamT[M, A] = stepMap {
+    _(
+      yieldd = (a, s) => Skip(s),
+      skip = s => Skip(s.tail),
+      done = sys.error("tail: empty StreamT"))
+  }
 
   def foldLeft[B](z: => B)(f: (=> B, => A) => B)(implicit M: Monad[M]): M[B] =
     M.bind(step) {
@@ -148,11 +142,10 @@ sealed class StreamT[M[_], A](val step: M[StreamT.Step[A, StreamT[M, A]]]) {
   def asStream(implicit
       ev: M[Step[A, StreamT[M, A]]] =:= Id[Step[A, StreamT[Id, A]]])
       : Stream[A] = {
-    def go(s: StreamT[Id, A]): Stream[A] =
-      s.uncons match {
-        case None          => Stream.empty[A]
-        case Some((a, s1)) => Stream.cons(a, go(s1))
-      }
+    def go(s: StreamT[Id, A]): Stream[A] = s.uncons match {
+      case None          => Stream.empty[A]
+      case Some((a, s1)) => Stream.cons(a, go(s1))
+    }
 
     go(StreamT(ev(step)))
   }
@@ -175,12 +168,11 @@ sealed class StreamT[M[_], A](val step: M[StreamT.Step[A, StreamT[M, A]]]) {
     foldLeft(0)(addOne _)
   }
 
-  def foreach(f: A => M[Unit])(implicit M: Monad[M]): M[Unit] =
-    M.bind(step) {
-      case Yield(a, s) => M.bind(f(a))(_ => s().foreach(f))
-      case Skip(s)     => s().foreach(f)
-      case Done        => M.pure(())
-    }
+  def foreach(f: A => M[Unit])(implicit M: Monad[M]): M[Unit] = M.bind(step) {
+    case Yield(a, s) => M.bind(f(a))(_ => s().foreach(f))
+    case Skip(s)     => s().foreach(f)
+    case Done        => M.pure(())
+  }
 
   private def stepMap[B](f: Step[A, StreamT[M, A]] => Step[B, StreamT[M, B]])(
       implicit M: Functor[M]): StreamT[M, B] = StreamT(M.map(step)(f))
@@ -255,11 +247,10 @@ object StreamT extends StreamTInstances {
 
   def fromStream[M[_], A](mas: M[Stream[A]])(implicit
       M: Applicative[M]): StreamT[M, A] = {
-    def loop(as: Stream[A]): Step[A, StreamT[M, A]] =
-      as match {
-        case head #:: tail => Yield(head, apply(M.point(loop(tail))))
-        case _             => Done
-      }
+    def loop(as: Stream[A]): Step[A, StreamT[M, A]] = as match {
+      case head #:: tail => Yield(head, apply(M.point(loop(tail))))
+      case _             => Done
+    }
 
     apply[M, A](M.map(mas)(loop))
   }
@@ -382,13 +373,12 @@ private trait StreamTHoist extends Hoist[StreamT] {
   def hoist[M[_], N[_]](f: M ~> N)(implicit
       M: Monad[M]): StreamT[M, ?] ~> StreamT[N, ?] =
     new (StreamT[M, ?] ~> StreamT[N, ?]) {
-      def apply[A](a: StreamT[M, A]): StreamT[N, A] =
-        StreamT[N, A](
-          f(
-            M.map(a.step)(
-              _(
-                yieldd = (a, as) => Yield(a, hoist(f) apply as),
-                skip = as => Skip(hoist(f) apply as),
-                done = Done))))
+      def apply[A](a: StreamT[M, A]): StreamT[N, A] = StreamT[N, A](
+        f(
+          M.map(a.step)(
+            _(
+              yieldd = (a, as) => Yield(a, hoist(f) apply as),
+              skip = as => Skip(hoist(f) apply as),
+              done = Done))))
     }
 }

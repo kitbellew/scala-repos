@@ -12,14 +12,13 @@ trait RetryPolicy {
 
 /** Matcher for connection-related KeeperExceptions. */
 object KeeperConnectionException {
-  def unapply(e: KeeperException) =
-    e match {
-      case e: KeeperException.ConnectionLossException   => Some(e)
-      case e: KeeperException.SessionExpiredException   => Some(e)
-      case e: KeeperException.SessionMovedException     => Some(e)
-      case e: KeeperException.OperationTimeoutException => Some(e)
-      case e                                            => None
-    }
+  def unapply(e: KeeperException) = e match {
+    case e: KeeperException.ConnectionLossException   => Some(e)
+    case e: KeeperException.SessionExpiredException   => Some(e)
+    case e: KeeperException.SessionMovedException     => Some(e)
+    case e: KeeperException.OperationTimeoutException => Some(e)
+    case e                                            => None
+  }
 }
 
 object RetryPolicy {

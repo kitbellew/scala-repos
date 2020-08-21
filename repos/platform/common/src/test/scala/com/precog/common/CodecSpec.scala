@@ -41,8 +41,8 @@ class CodecSpec extends Specification with ScalaCheck {
     Gen.chooseNum(Double.MinValue / 2, Double.MaxValue / 2) map (BigDecimal(_)))
 
   //implicit def arbBitSet = Arbitrary(Gen.listOf(Gen.choose(0, 500)) map (BitSet(_: _*)))
-  implicit def arbBitSet =
-    Arbitrary(Gen.listOf(Gen.choose(0, 500)) map BitSetUtil.create)
+  implicit def arbBitSet = Arbitrary(
+    Gen.listOf(Gen.choose(0, 500)) map BitSetUtil.create)
 
   implicit def arbSparseBitSet: Arbitrary[(Codec[BitSet], BitSet)] = {
     Arbitrary(Gen.chooseNum(0, 500) flatMap { size =>
@@ -78,13 +78,12 @@ class CodecSpec extends Specification with ScalaCheck {
       a: Arbitrary[A]): Arbitrary[IndexedSeq[A]] =
     Arbitrary(Gen.listOf(a.arbitrary) map (Vector(_: _*)))
 
-  implicit def arbArray[A: Manifest: Gen]: Arbitrary[Array[A]] =
-    Arbitrary(for {
-      values <- Gen.listOf(implicitly[Gen[A]])
-    } yield {
-      val array: Array[A] = values.toArray
-      array
-    })
+  implicit def arbArray[A: Manifest: Gen]: Arbitrary[Array[A]] = Arbitrary(for {
+    values <- Gen.listOf(implicitly[Gen[A]])
+  } yield {
+    val array: Array[A] = values.toArray
+    array
+  })
 
   val pool = new ByteBufferPool()
   val smallPool = new ByteBufferPool(capacity = 10)

@@ -19,14 +19,13 @@ class LocalDeathWatchSpec
     with DeathWatchSpec
 
 object DeathWatchSpec {
-  def props(target: ActorRef, testActor: ActorRef) =
-    Props(new Actor {
-      context.watch(target)
-      def receive = {
-        case t: Terminated ⇒ testActor forward WrappedTerminated(t)
-        case x ⇒ testActor forward x
-      }
-    })
+  def props(target: ActorRef, testActor: ActorRef) = Props(new Actor {
+    context.watch(target)
+    def receive = {
+      case t: Terminated ⇒ testActor forward WrappedTerminated(t)
+      case x ⇒ testActor forward x
+    }
+  })
 
   /**
     * Forwarding `Terminated` to non-watching testActor is not possible,
@@ -50,18 +49,16 @@ trait DeathWatchSpec { this: AkkaSpec with ImplicitSender with DefaultTimeout �
     Props(new Supervisor(SupervisorStrategy.defaultStrategy)),
     "watchers")
 
-  def startWatching(target: ActorRef) =
-    Await.result(
-      (supervisor ? props(target, testActor)).mapTo[ActorRef],
-      3 seconds)
+  def startWatching(target: ActorRef) = Await.result(
+    (supervisor ? props(target, testActor)).mapTo[ActorRef],
+    3 seconds)
 
   "The Death Watch" must {
-    def expectTerminationOf(actorRef: ActorRef) =
-      expectMsgPF(
-        5 seconds,
-        actorRef + ": Stopped or Already terminated when linking") {
-        case WrappedTerminated(Terminated(`actorRef`)) ⇒ true
-      }
+    def expectTerminationOf(actorRef: ActorRef) = expectMsgPF(
+      5 seconds,
+      actorRef + ": Stopped or Already terminated when linking") {
+      case WrappedTerminated(Terminated(`actorRef`)) ⇒ true
+    }
 
     "notify with one Terminated message when an Actor is stopped" in {
       val terminal = system.actorOf(Props.empty)

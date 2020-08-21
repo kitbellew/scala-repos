@@ -103,11 +103,10 @@ trait AbstractScreen extends Factory with Loggable {
 
   implicit def boxOfScreen[T <: AbstractScreen](in: T): Box[T] = Box !! in
 
-  def validate: List[FieldError] =
-    screenFields
-      .filter(_.shouldDisplay_?)
-      .filter(_.show_?)
-      .flatMap(_.validate) ++ screenValidate
+  def validate: List[FieldError] = screenFields
+    .filter(_.shouldDisplay_?)
+    .filter(_.show_?)
+    .flatMap(_.validate) ++ screenValidate
 
   def validations: List[() => List[FieldError]] = Nil
 
@@ -216,10 +215,9 @@ trait AbstractScreen extends Factory with Loggable {
     protected def otherFuncVendors(what: Manifest[ValueType])
         : Box[(ValueType, ValueType => Any) => NodeSeq] = Empty
 
-    def validate: List[FieldError] =
-      currentField.doWith(this) {
-        validations.flatMap(_.apply(is))
-      }
+    def validate: List[FieldError] = currentField.doWith(this) {
+      validations.flatMap(_.apply(is))
+    }
 
     def validations: List[ValueType => List[FieldError]] = Nil
 
@@ -251,15 +249,14 @@ trait AbstractScreen extends Factory with Loggable {
     /**
       * Set the Help HTML
       */
-    def help(h: NodeSeq): FieldBuilder[T] =
-      new FieldBuilder[T](
-        name,
-        default,
-        manifest,
-        Full(h),
-        validations,
-        filters,
-        stuff)
+    def help(h: NodeSeq): FieldBuilder[T] = new FieldBuilder[T](
+      name,
+      default,
+      manifest,
+      Full(h),
+      validations,
+      filters,
+      stuff)
 
     /**
       * Add a filter field (the wacky symbols are supposed to look like a filter symbol)
@@ -417,8 +414,8 @@ trait AbstractScreen extends Factory with Loggable {
         a: (String, String)): FilterOrValidate[Nothing] = FormParam(a)
 
     implicit def promoteFieldBinding(
-        binding: FieldBinding): FilterOrValidate[Nothing] =
-      AFieldBinding(binding)
+        binding: FieldBinding): FilterOrValidate[Nothing] = AFieldBinding(
+      binding)
   }
 
   sealed protected trait FilterOrValidate[+T]
@@ -535,15 +532,13 @@ trait AbstractScreen extends Factory with Loggable {
 
       override def validate = underlying.validate ::: super.validate
 
-      override def validations =
-        stuff.collect { case AVal(f) =>
-          f.asInstanceOf[ValueType => List[FieldError]]
-        }.toList
+      override def validations = stuff.collect { case AVal(f) =>
+        f.asInstanceOf[ValueType => List[FieldError]]
+      }.toList
 
-      override def setFilter =
-        stuff.collect { case AFilter(f) =>
-          f.asInstanceOf[ValueType => ValueType]
-        }.toList
+      override def setFilter = stuff.collect { case AFilter(f) =>
+        f.asInstanceOf[ValueType => ValueType]
+      }.toList
 
       override def is = underlying.get
 
@@ -612,10 +607,9 @@ trait AbstractScreen extends Factory with Loggable {
       override def onConfirm_? : Boolean =
         confirmInfo getOrElse super.onConfirm_?
 
-      override def toForm: Box[NodeSeq] =
-        underlying
-          .flatMap(_.toForm)
-          .map(ns => SHtml.ElemAttr.applyToAllElems(ns, formElemAttrs))
+      override def toForm: Box[NodeSeq] = underlying
+        .flatMap(_.toForm)
+        .map(ns => SHtml.ElemAttr.applyToAllElems(ns, formElemAttrs))
 
       /**
         * Given the current state of things, should this field be shown
@@ -652,24 +646,21 @@ trait AbstractScreen extends Factory with Loggable {
       override def validate =
         underlying.toList.flatMap(_.validate) ::: super.validate
 
-      override def validations =
-        stuff.collect { case AVal(f) =>
-          f.asInstanceOf[ValueType => List[FieldError]]
-        }.toList
+      override def validations = stuff.collect { case AVal(f) =>
+        f.asInstanceOf[ValueType => List[FieldError]]
+      }.toList
 
-      override def setFilter =
-        stuff.collect { case AFilter(f) =>
-          f.asInstanceOf[ValueType => ValueType]
-        }.toList
+      override def setFilter = stuff.collect { case AFilter(f) =>
+        f.asInstanceOf[ValueType => ValueType]
+      }.toList
 
       override def is = underlying.openOrThrowException("Legacy code").get
 
       override def get = underlying.openOrThrowException("Legacy code").get
 
-      override def set(v: T) =
-        underlying
-          .openOrThrowException("Legacy code")
-          .set(setFilter.foldLeft(v)((v, f) => f(v)))
+      override def set(v: T) = underlying
+        .openOrThrowException("Legacy code")
+        .set(setFilter.foldLeft(v)((v, f) => f(v)))
 
       override def uniqueFieldId: Box[String] =
         paramFieldId or underlying.flatMap(
@@ -1258,10 +1249,9 @@ trait ScreenWizardRendered extends Loggable {
         } yield (bindingInfo, field)).toList
       )
 
-    def templateFields: List[CssBindFunc] =
-      List(
-        sel(_.fieldContainer, ".%s") #> (fieldsWithStyle(Template, true) map (
-          field => bindField(field))))
+    def templateFields: List[CssBindFunc] = List(
+      sel(_.fieldContainer, ".%s") #> (fieldsWithStyle(Template, true) map (
+        field => bindField(field))))
 
     def selfFields: List[CssBindFunc] =
       for ((bindingInfo, field) <- bindingInfoWithFields(Self))
@@ -1390,17 +1380,15 @@ trait ScreenWizardRendered extends Loggable {
 
     val savAdditionalFormBindings = additionalFormBindings
 
-    def bindErrors: CssBindFunc =
-      notices.filter(_._3.isEmpty) match {
-        case Nil => remove(_.globalErrors)
-        case xs =>
-          replaceChildren(_.globalErrors) #> xs.map {
-            case (noticeType, msg, _) =>
-              val metaData: MetaData =
-                noticeTypeToAttr(theScreen).map(_(noticeType)) openOr Null
-              nsSetChildren(_.error, msg) & update(_.error, metaData)
-          }
-      }
+    def bindErrors: CssBindFunc = notices.filter(_._3.isEmpty) match {
+      case Nil => remove(_.globalErrors)
+      case xs =>
+        replaceChildren(_.globalErrors) #> xs.map { case (noticeType, msg, _) =>
+          val metaData: MetaData =
+            noticeTypeToAttr(theScreen).map(_(noticeType)) openOr Null
+          nsSetChildren(_.error, msg) & update(_.error, metaData)
+        }
+    }
 
     def bindFieldsWithAdditional(xhtml: NodeSeq) =
       (savAdditionalFormBindings map (bindFields & _) openOr (bindFields))(
@@ -1466,14 +1454,13 @@ trait ScreenWizardRendered extends Loggable {
       }
     }
 
-    def bindScreenInfo: CssBindFunc =
-      (currentScreenNumber, screenCount) match {
-        case (Full(num), Full(cnt)) =>
-          replaceChildren(_.screenInfo) #> (nsSetChildren(
-            _.screenNumber,
-            num) & nsSetChildren(_.totalScreens, cnt))
-        case _ => remove(_.screenInfo)
-      }
+    def bindScreenInfo: CssBindFunc = (currentScreenNumber, screenCount) match {
+      case (Full(num), Full(cnt)) =>
+        replaceChildren(_.screenInfo) #> (nsSetChildren(
+          _.screenNumber,
+          num) & nsSetChildren(_.totalScreens, cnt))
+      case _ => remove(_.screenInfo)
+    }
 
     logger.trace("Preparing to bind", fields)
 
@@ -2008,11 +1995,11 @@ trait IntField extends FieldIdentifier {
 
   lazy val manifest = buildIt[Int]
 
-  def minVal(len: Int, msg: => String): Int => List[FieldError] =
-    s => if (s < len) List(FieldError(this, Text(msg))) else Nil
+  def minVal(len: Int, msg: => String): Int => List[FieldError] = s =>
+    if (s < len) List(FieldError(this, Text(msg))) else Nil
 
-  def maxVal(len: Int, msg: => String): Int => List[FieldError] =
-    s => if (s > len) List(FieldError(this, Text(msg))) else Nil
+  def maxVal(len: Int, msg: => String): Int => List[FieldError] = s =>
+    if (s > len) List(FieldError(this, Text(msg))) else Nil
 }
 
 trait BooleanField extends FieldIdentifier {

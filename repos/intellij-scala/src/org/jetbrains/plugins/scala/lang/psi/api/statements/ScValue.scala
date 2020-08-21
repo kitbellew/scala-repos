@@ -58,16 +58,15 @@ trait ScValue
 
   override protected def isSimilarMemberForNavigation(
       m: ScMember,
-      isStrict: Boolean): Boolean =
-    m match {
-      case other: ScValue =>
-        for (elem <- self.declaredElements) {
-          if (other.declaredElements.exists(_.name == elem.name))
-            return true
-        }
-        false
-      case _ => false
-    }
+      isStrict: Boolean): Boolean = m match {
+    case other: ScValue =>
+      for (elem <- self.declaredElements) {
+        if (other.declaredElements.exists(_.name == elem.name))
+          return true
+      }
+      false
+    case _ => false
+  }
 
   override def getIcon(flags: Int): Icon = {
     var parent = getParent
@@ -83,10 +82,9 @@ trait ScValue
 
   def getValToken: PsiElement = findFirstChildByType(ScalaTokenTypes.kVAL)
 
-  override def isDeprecated =
-    hasAnnotation("scala.deprecated") != None || hasAnnotation(
-      "java.lang.Deprecated") != None
+  override def isDeprecated = hasAnnotation(
+    "scala.deprecated") != None || hasAnnotation("java.lang.Deprecated") != None
 
-  override def modifiableReturnType: Option[ScType] =
-    getType(TypingContext.empty).toOption
+  override def modifiableReturnType: Option[ScType] = getType(
+    TypingContext.empty).toOption
 }

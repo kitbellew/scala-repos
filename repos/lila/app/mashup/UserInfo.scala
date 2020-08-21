@@ -38,19 +38,18 @@ case class UserInfo(
 
   def percentRated: Int = math.round(nbRated / user.count.game.toFloat * 100)
 
-  def allTrophies =
-    List(
-      donor option Trophy(
-        _id = "",
-        user = user.id,
-        kind = Trophy.Kind.Donor,
-        date = org.joda.time.DateTime.now),
-      isStreamer option Trophy(
-        _id = "",
-        user = user.id,
-        kind = Trophy.Kind.Streamer,
-        date = org.joda.time.DateTime.now)
-    ).flatten ::: trophies
+  def allTrophies = List(
+    donor option Trophy(
+      _id = "",
+      user = user.id,
+      kind = Trophy.Kind.Donor,
+      date = org.joda.time.DateTime.now),
+    isStreamer option Trophy(
+      _id = "",
+      user = user.id,
+      kind = Trophy.Kind.Streamer,
+      date = org.joda.time.DateTime.now)
+  ).flatten ::: trophies
 }
 
 object UserInfo {

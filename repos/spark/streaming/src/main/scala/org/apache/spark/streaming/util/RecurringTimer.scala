@@ -59,13 +59,12 @@ private[streaming] class RecurringTimer(
   /**
     * Start at the given start time.
     */
-  def start(startTime: Long): Long =
-    synchronized {
-      nextTime = startTime
-      thread.start()
-      logInfo("Started timer for " + name + " at time " + nextTime)
-      nextTime
-    }
+  def start(startTime: Long): Long = synchronized {
+    nextTime = startTime
+    thread.start()
+    logInfo("Started timer for " + name + " at time " + nextTime)
+    nextTime
+  }
 
   /**
     * Start at the earliest time it can start based on the period.
@@ -81,18 +80,17 @@ private[streaming] class RecurringTimer(
     *                       give correct time in this case). False guarantees that there will be at
     *                       least one callback after `stop` has been called.
     */
-  def stop(interruptTimer: Boolean): Long =
-    synchronized {
-      if (!stopped) {
-        stopped = true
-        if (interruptTimer) {
-          thread.interrupt()
-        }
-        thread.join()
-        logInfo("Stopped timer for " + name + " after time " + prevTime)
+  def stop(interruptTimer: Boolean): Long = synchronized {
+    if (!stopped) {
+      stopped = true
+      if (interruptTimer) {
+        thread.interrupt()
       }
-      prevTime
+      thread.join()
+      logInfo("Stopped timer for " + name + " after time " + prevTime)
     }
+    prevTime
+  }
 
   private def triggerActionForNextInterval(): Unit = {
     clock.waitTillTime(nextTime)

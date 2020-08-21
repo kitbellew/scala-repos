@@ -28,19 +28,17 @@ case class Analysis(
   lazy val advices: List[Advice] = infoAdvices.map(_._2).flatten
 
   // ply -> UCI
-  def bestMoves: Map[Int, String] =
-    (infos map { i =>
-      i.best map { b => i.ply -> b.keys }
-    }).flatten.toMap
+  def bestMoves: Map[Int, String] = (infos map { i =>
+    i.best map { b => i.ply -> b.keys }
+  }).flatten.toMap
 
-  def summary: List[(Color, List[(Nag, Int)])] =
-    Color.all map { color =>
-      color -> (Nag.badOnes map { nag =>
-        nag -> (advices count { adv =>
-          adv.color == color && adv.nag == nag
-        })
+  def summary: List[(Color, List[(Nag, Int)])] = Color.all map { color =>
+    color -> (Nag.badOnes map { nag =>
+      nag -> (advices count { adv =>
+        adv.color == color && adv.nag == nag
       })
-    }
+    })
+  }
 
   def valid = infos.nonEmpty
 
@@ -67,14 +65,13 @@ object Analysis {
         by = r strO "by",
         date = r date "date")
     }
-    def writes(w: BSON.Writer, o: Analysis) =
-      BSONDocument(
-        "_id" -> o.id,
-        "data" -> Info.encodeList(o.infos),
-        "ply" -> w.intO(o.startPly),
-        "uid" -> o.uid,
-        "by" -> o.by,
-        "date" -> w.date(o.date))
+    def writes(w: BSON.Writer, o: Analysis) = BSONDocument(
+      "_id" -> o.id,
+      "data" -> Info.encodeList(o.infos),
+      "ply" -> w.intO(o.startPly),
+      "uid" -> o.uid,
+      "by" -> o.by,
+      "date" -> w.date(o.date))
   }
 
   private[analyse] lazy val tube = lila.db.BsTube(analysisBSONHandler)

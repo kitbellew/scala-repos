@@ -298,8 +298,8 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
     /**
       * Java API: combines the given number of write commands into one atomic `WriteCommand`.
       */
-    def create(writes: JIterable[WriteCommand]): WriteCommand =
-      apply(writes.asScala)
+    def create(writes: JIterable[WriteCommand]): WriteCommand = apply(
+      writes.asScala)
   }
 
   /**
@@ -683,13 +683,12 @@ object TcpMessage {
       localAddress: InetSocketAddress,
       options: JIterable[SocketOption],
       timeout: FiniteDuration,
-      pullMode: Boolean): Command =
-    Connect(
-      remoteAddress,
-      Option(localAddress),
-      options,
-      Option(timeout),
-      pullMode)
+      pullMode: Boolean): Command = Connect(
+    remoteAddress,
+    Option(localAddress),
+    options,
+    Option(timeout),
+    pullMode)
 
   /**
     * Connect to the given `remoteAddress` without binding to a local address and without

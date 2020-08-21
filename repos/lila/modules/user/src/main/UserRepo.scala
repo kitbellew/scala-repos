@@ -59,8 +59,8 @@ object UserRepo {
 
   def byOrderedIds(ids: Seq[ID]): Fu[List[User]] = $find byOrderedIds ids
 
-  def enabledByIds(ids: Iterable[ID]): Fu[List[User]] =
-    $find(enabledSelect ++ $select.byIds(ids))
+  def enabledByIds(ids: Iterable[ID]): Fu[List[User]] = $find(
+    enabledSelect ++ $select.byIds(ids))
 
   def enabledById(id: ID): Fu[Option[User]] =
     $find.one(enabledSelect ++ $select.byId(id))
@@ -161,23 +161,21 @@ object UserRepo {
     )
   }
 
-  def setPerf(userId: String, perfName: String, perf: Perf) =
-    $update(
-      $select(userId),
-      $setBson(
-        s"${F.perfs}.$perfName" -> Perf.perfBSONHandler.write(perf)
-      ))
+  def setPerf(userId: String, perfName: String, perf: Perf) = $update(
+    $select(userId),
+    $setBson(
+      s"${F.perfs}.$perfName" -> Perf.perfBSONHandler.write(perf)
+    ))
 
   def setProfile(id: ID, profile: Profile): Funit =
     $update(
       $select(id),
       $setBson(F.profile -> Profile.profileBSONHandler.write(profile)))
 
-  def setTitle(id: ID, title: Option[String]): Funit =
-    title match {
-      case Some(t) => $update.field(id, F.title, t)
-      case None    => $update($select(id), $unset(F.title))
-    }
+  def setTitle(id: ID, title: Option[String]): Funit = title match {
+    case Some(t) => $update.field(id, F.title, t)
+    case None    => $update($select(id), $unset(F.title))
+  }
 
   def setPlayTime(u: User, playTime: User.PlayTime): Funit =
     $update(
@@ -191,10 +189,9 @@ object UserRepo {
     Json.obj(F.troll -> v.fold(JsBoolean(true), $ne(true)))
   def boosterSelect(v: Boolean) =
     Json.obj(F.booster -> v.fold(JsBoolean(true), $ne(true)))
-  def stablePerfSelect(perf: String) =
-    Json.obj(
-      s"perfs.$perf.nb" -> $gte(30),
-      s"perfs.$perf.gl.d" -> $lt(lila.rating.Glicko.provisionalDeviation))
+  def stablePerfSelect(perf: String) = Json.obj(
+    s"perfs.$perf.nb" -> $gte(30),
+    s"perfs.$perf.gl.d" -> $lt(lila.rating.Glicko.provisionalDeviation))
   val goodLadSelect =
     enabledSelect ++ engineSelect(false) ++ boosterSelect(false)
   val goodLadSelectBson = BSONDocument(
@@ -322,17 +319,17 @@ object UserRepo {
     )(_.asOpt[String])
   }
 
-  def toggleEngine(id: ID): Funit =
-    $update.docBson[ID, User](id) { u =>
-      $setBson("engine" -> BSONBoolean(!u.engine))
-    }
+  def toggleEngine(id: ID): Funit = $update.docBson[ID, User](id) { u =>
+    $setBson("engine" -> BSONBoolean(!u.engine))
+  }
 
   def setEngine(id: ID, v: Boolean): Funit = $update.field(id, "engine", v)
 
   def setBooster(id: ID, v: Boolean): Funit = $update.field(id, "booster", v)
 
-  def toggleIpBan(id: ID) =
-    $update.doc[ID, User](id) { u => $set("ipBan" -> !u.ipBan) }
+  def toggleIpBan(id: ID) = $update.doc[ID, User](id) { u =>
+    $set("ipBan" -> !u.ipBan)
+  }
 
   def toggleKid(user: User) = $update.field(user.id, "kid", !user.kid)
 
@@ -348,15 +345,14 @@ object UserRepo {
 
   def enable(id: ID) = $update.field(id, "enabled", true)
 
-  def disable(user: User) =
-    $update(
-      $select(user.id),
-      BSONDocument("$set" -> BSONDocument("enabled" -> false)) ++
-        user.lameOrTroll.fold(
-          BSONDocument(),
-          BSONDocument("$unset" -> BSONDocument("email" -> true))
-        )
-    )
+  def disable(user: User) = $update(
+    $select(user.id),
+    BSONDocument("$set" -> BSONDocument("enabled" -> false)) ++
+      user.lameOrTroll.fold(
+        BSONDocument(),
+        BSONDocument("$unset" -> BSONDocument("email" -> true))
+      )
+  )
 
   def passwd(id: ID, password: String): Funit =
     $primitive.one($select(id), "salt")(_.asOpt[String]) flatMap { saltOption =>
@@ -374,17 +370,16 @@ object UserRepo {
 
   def hasEmail(id: ID): Fu[Boolean] = email(id).map(_.isDefined)
 
-  def perfOf(id: ID, perfType: PerfType): Fu[Option[Perf]] =
-    coll
-      .find(
-        BSONDocument("_id" -> id),
-        BSONDocument(s"${F.perfs}.${perfType.key}" -> true)
-      )
-      .one[BSONDocument]
-      .map {
-        _.flatMap(_.getAs[BSONDocument](F.perfs))
-          .flatMap(_.getAs[Perf](perfType.key))
-      }
+  def perfOf(id: ID, perfType: PerfType): Fu[Option[Perf]] = coll
+    .find(
+      BSONDocument("_id" -> id),
+      BSONDocument(s"${F.perfs}.${perfType.key}" -> true)
+    )
+    .one[BSONDocument]
+    .map {
+      _.flatMap(_.getAs[BSONDocument](F.perfs))
+        .flatMap(_.getAs[Perf](perfType.key))
+    }
 
   def setSeenAt(id: ID) {
     $update.fieldUnchecked(id, "seenAt", $date(DateTime.now))
@@ -427,10 +422,9 @@ object UserRepo {
   def mustConfirmEmail(id: String): Fu[Boolean] =
     $count.exists($select(id) ++ Json.obj(F.mustConfirmEmail -> $exists(true)))
 
-  def setEmailConfirmed(id: String): Funit =
-    $update(
-      $select(id),
-      BSONDocument("$unset" -> BSONDocument(F.mustConfirmEmail -> true)))
+  def setEmailConfirmed(id: String): Funit = $update(
+    $select(id),
+    BSONDocument("$unset" -> BSONDocument(F.mustConfirmEmail -> true)))
 
   private def newUser(
       username: String,

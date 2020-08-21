@@ -194,12 +194,10 @@ class DataMap(
 
   override def hashCode: Int = 41 + fields.hashCode
 
-  override def equals(other: Any): Boolean =
-    other match {
-      case that: DataMap =>
-        that.canEqual(this) && this.fields.equals(that.fields)
-      case _ => false
-    }
+  override def equals(other: Any): Boolean = other match {
+    case that: DataMap => that.canEqual(this) && this.fields.equals(that.fields)
+    case _             => false
+  }
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[DataMap]
 }

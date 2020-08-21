@@ -25,8 +25,8 @@ object RunQueueSpec extends Specification with ExecutionSpecification {
   }
 
   class NaiveQueueTester extends QueueTester {
-    def schedule(body: => Future[Unit])(implicit ec: ExecutionContext) =
-      Future(body)
+    def schedule(body: => Future[Unit])(implicit ec: ExecutionContext) = Future(
+      body)
   }
 
   def countOrderingErrors(runs: Int, queueTester: QueueTester)(implicit

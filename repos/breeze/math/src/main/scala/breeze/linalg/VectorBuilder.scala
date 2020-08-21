@@ -331,15 +331,14 @@ object VectorBuilder extends VectorBuilderOps {
       size: Int,
       initialNonzero: Int = 16) = new VectorBuilder(size, initialNonzero)
   def apply[@spec(Double, Int, Float, Long) V: Semiring: Zero](
-      values: Array[V]) =
-    new VectorBuilder(
-      Array.range(0, values.length),
-      values,
-      values.length,
-      values.length)
+      values: Array[V]) = new VectorBuilder(
+    Array.range(0, values.length),
+    values,
+    values.length,
+    values.length)
 
-  def apply[V: ClassTag: Semiring: Zero](values: V*): VectorBuilder[V] =
-    apply(values.toArray)
+  def apply[V: ClassTag: Semiring: Zero](values: V*): VectorBuilder[V] = apply(
+    values.toArray)
   def fill[@spec(Double, Int, Float, Long) V: ClassTag: Semiring: Zero](
       size: Int)(v: => V): VectorBuilder[V] = apply(Array.fill(size)(v))
   def tabulate[@spec(Double, Int, Float, Long) V: ClassTag: Semiring: Zero](

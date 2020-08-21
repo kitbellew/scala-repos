@@ -23,8 +23,8 @@ class ScalaFunExprSmartStepTarget(
 
 object ScalaFunExprSmartStepTarget {
   def unapply(target: ScalaFunExprSmartStepTarget)
-      : Some[(ScExpression, Seq[ScBlockStatement])] =
-    Some((target.funExpr, target.stmts))
+      : Some[(ScExpression, Seq[ScBlockStatement])] = Some(
+    (target.funExpr, target.stmts))
 }
 
 object FunExpressionTarget {

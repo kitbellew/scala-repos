@@ -30,20 +30,19 @@ object Donation {
       userId: Option[String],
       gross: Int,
       fee: Int,
-      message: String) =
-    Donation(
-      _id = ornicar.scalalib.Random nextStringUppercase 8,
-      payPalTnx = payPalTnx,
-      payPalSub = payPalSub,
-      email = email,
-      name = name,
-      userId = userId,
-      date = DateTime.now,
-      gross = gross,
-      fee = fee,
-      net = gross - fee,
-      message = message,
-      public = true,
-      publicAmount = false
-    )
+      message: String) = Donation(
+    _id = ornicar.scalalib.Random nextStringUppercase 8,
+    payPalTnx = payPalTnx,
+    payPalSub = payPalSub,
+    email = email,
+    name = name,
+    userId = userId,
+    date = DateTime.now,
+    gross = gross,
+    fee = fee,
+    net = gross - fee,
+    message = message,
+    public = true,
+    publicAmount = false
+  )
 }

@@ -170,20 +170,18 @@ $ShowCommand <task>
 """
 
   def SessionCommand = "session"
-  def sessionBrief =
-    (
-      SessionCommand,
-      "Manipulates session settings.  For details, run 'help " + SessionCommand + "'.")
+  def sessionBrief = (
+    SessionCommand,
+    "Manipulates session settings.  For details, run 'help " + SessionCommand + "'.")
 
   def settingsPreamble = commonPreamble("settings")
   def tasksPreamble = commonPreamble("tasks") + """
 Tasks produce values.  Use the 'show' command to run the task and print the resulting value."""
 
-  def commonPreamble(label: String) =
-    """
+  def commonPreamble(label: String) = """
 This is a list of %s defined for the current project.
 It does not list the scopes the %<s are defined in; use the 'inspect' command for that."""
-      .format(label)
+    .format(label)
 
   def settingsBrief(label: String) =
     (label, "Lists the " + label + " defined for the current project.")
@@ -215,10 +213,9 @@ Syntax summary
   def aboutBrief = "Displays basic information about sbt and the build."
   def aboutDetailed = aboutBrief
 
-  def projectBrief =
-    (
-      ProjectCommand,
-      "Displays the current project or changes to the provided `project`.")
+  def projectBrief = (
+    ProjectCommand,
+    "Displays the current project or changes to the provided `project`.")
   def projectDetailed =
     ProjectCommand +
       """
@@ -283,13 +280,11 @@ Syntax summary
 
   def LoadProjectImpl = "loadp"
   def LoadProject = "reload"
-  def LoadProjectBrief =
-    (
-      LoadProject,
-      "(Re)loads the current project or changes to plugins project or returns from it.")
-  def LoadProjectDetailed =
-    LoadProject +
-      s"""
+  def LoadProjectBrief = (
+    LoadProject,
+    "(Re)loads the current project or changes to plugins project or returns from it.")
+  def LoadProjectDetailed = LoadProject +
+    s"""
 
 \t(Re)loads the project in the current directory.
 

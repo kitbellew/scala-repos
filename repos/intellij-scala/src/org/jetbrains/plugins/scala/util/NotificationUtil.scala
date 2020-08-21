@@ -34,13 +34,12 @@ object NotificationUtil {
     }
     def setHandler(handler: Handler) = { this.handler = handler; this }
 
-    def notification =
-      new Notification(
-        group,
-        title,
-        message,
-        notificationType,
-        new HyperlinkListener(handler))
+    def notification = new Notification(
+      group,
+      title,
+      message,
+      notificationType,
+      new HyperlinkListener(handler))
     def show() = Notifications.Bus.notify(notification, project)
     def show(notification: Notification) =
       Notifications.Bus.notify(notification, project)

@@ -157,23 +157,22 @@ object PersistentActorSpec {
 
   class SnapshottingPersistentActor(name: String, probe: ActorRef)
       extends ExamplePersistentActor(name) {
-    override def receiveRecover =
-      super.receiveRecover orElse { case SnapshotOffer(_, events: List[_]) ⇒
+    override def receiveRecover = super.receiveRecover orElse {
+      case SnapshotOffer(_, events: List[_]) ⇒
         probe ! "offered"
         this.events = events
-      }
+    }
 
     private def handleCmd(cmd: Cmd): Unit = {
       persistAll(Seq(Evt(s"${cmd.data}-41"), Evt(s"${cmd.data}-42")))(
         updateState)
     }
 
-    def receiveCommand: Receive =
-      commonBehavior orElse {
-        case c: Cmd ⇒ handleCmd(c)
-        case SaveSnapshotSuccess(_) ⇒ probe ! "saved"
-        case "snap" ⇒ saveSnapshot(events)
-      }
+    def receiveCommand: Receive = commonBehavior orElse {
+      case c: Cmd ⇒ handleCmd(c)
+      case SaveSnapshotSuccess(_) ⇒ probe ! "saved"
+      case "snap" ⇒ saveSnapshot(events)
+    }
   }
 
   class SnapshottingBecomingPersistentActor(name: String, probe: ActorRef)
@@ -378,10 +377,9 @@ object PersistentActorSpec {
 
     override def receiveRecover = sendingRecover.orElse(super.receiveRecover)
 
-    override def receiveCommand: Receive =
-      super.receiveCommand orElse { case s: String ⇒
-        probe ! s
-      }
+    override def receiveCommand: Receive = super.receiveCommand orElse {
+      case s: String ⇒ probe ! s
+    }
 
   }
   class DeferringWithPersistActor(name: String)

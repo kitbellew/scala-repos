@@ -16,10 +16,10 @@ trait PsiElementExtTrait {
 
   def firstChild: Option[PsiElement] = Option(repr.getFirstChild)
   def lastChild: Option[PsiElement] = Option(repr.getLastChild)
-  def elementAt(offset: Int): Option[PsiElement] =
-    Option(repr.findElementAt(offset))
-  def referenceAt(offset: Int): Option[PsiReference] =
-    Option(repr.findReferenceAt(offset))
+  def elementAt(offset: Int): Option[PsiElement] = Option(
+    repr.findElementAt(offset))
+  def referenceAt(offset: Int): Option[PsiReference] = Option(
+    repr.findReferenceAt(offset))
   def parent: Option[PsiElement] = Option(repr.getParent)
   def parents: Iterator[PsiElement] = new ParentsIterator(repr)
   def containingFile: Option[PsiFile] = Option(repr.getContainingFile)
@@ -109,9 +109,8 @@ trait PsiElementExtTrait {
 
   def scopes: Iterator[PsiElement] = contexts.filter(ScalaPsiUtil.isScope)
 
-  def containingScalaFile: Option[ScalaFile] =
-    repr.getContainingFile match {
-      case sf: ScalaFile => Some(sf)
-      case _             => None
-    }
+  def containingScalaFile: Option[ScalaFile] = repr.getContainingFile match {
+    case sf: ScalaFile => Some(sf)
+    case _             => None
+  }
 }

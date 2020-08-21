@@ -15,8 +15,8 @@ import org.jetbrains.plugins.scala.lang.resolve.ScalaResolveResult
   */
 trait ScSimpleTypeElement extends ScTypeElement with ImplicitParametersOwner {
 
-  def reference: Option[ScStableCodeReferenceElement] =
-    findChild(classOf[ScStableCodeReferenceElement])
+  def reference: Option[ScStableCodeReferenceElement] = findChild(
+    classOf[ScStableCodeReferenceElement])
   def pathElement: ScPathElement = findChildByClassScala(classOf[ScPathElement])
 
   def singleton: Boolean

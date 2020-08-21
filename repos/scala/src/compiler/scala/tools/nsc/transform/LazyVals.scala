@@ -133,10 +133,9 @@ abstract class LazyVals
             } else if (sym.hasAllFlags(MODULE | METHOD) && !sym.owner.isTrait) {
               rhs match {
                 case b @ Block((assign @ Assign(moduleRef, _)) :: Nil, expr) =>
-                  def cond =
-                    Apply(
-                      Select(moduleRef, Object_eq),
-                      List(Literal(Constant(null))))
+                  def cond = Apply(
+                    Select(moduleRef, Object_eq),
+                    List(Literal(Constant(null))))
                   val (fastPath, slowPath) = mkFastPathBody(
                     sym.owner.enclClass,
                     moduleRef.symbol,
@@ -244,11 +243,10 @@ abstract class LazyVals
       *  at the very beginning of the method.
       */
     private def addBitmapDefs(methSym: Symbol, rhs: Tree): Tree = {
-      def prependStats(stats: List[Tree], tree: Tree): Block =
-        tree match {
-          case Block(stats1, res) => Block(stats ::: stats1, res)
-          case _                  => Block(stats, tree)
-        }
+      def prependStats(stats: List[Tree], tree: Tree): Block = tree match {
+        case Block(stats1, res) => Block(stats ::: stats1, res)
+        case _                  => Block(stats, tree)
+      }
 
       val bmps = bitmaps(methSym) map (ValDef(_, ZERO))
 

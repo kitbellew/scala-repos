@@ -253,8 +253,8 @@ object WorksheetFileHook {
   }
 
   private def getAndRemovePanel(
-      file: VirtualFile): Option[WeakReference[MyPanel]] =
-    Option(file2panel.remove(file))
+      file: VirtualFile): Option[WeakReference[MyPanel]] = Option(
+    file2panel.remove(file))
 
   private def getPanel(file: VirtualFile): Option[WeakReference[MyPanel]] =
     Option(file2panel get file)

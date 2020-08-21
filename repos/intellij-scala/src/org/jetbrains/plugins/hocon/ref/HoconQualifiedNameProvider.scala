@@ -12,19 +12,18 @@ import org.jetbrains.plugins.hocon.psi.HKey
 class HoconQualifiedNameProvider extends QualifiedNameProvider {
   def adjustElementToCopy(element: PsiElement): PsiElement = element
 
-  def getQualifiedName(element: PsiElement): String =
-    element match {
-      case key: HKey =>
-        key.forParent(
-          path =>
-            path.allKeys.map(_.iterator.map(_.getText).mkString(".")).orNull,
-          field =>
-            field.keysInAllPaths
-              .map(_.iterator.map(_.getText).mkString("."))
-              .orNull
-        )
-      case _ => null
-    }
+  def getQualifiedName(element: PsiElement): String = element match {
+    case key: HKey =>
+      key.forParent(
+        path =>
+          path.allKeys.map(_.iterator.map(_.getText).mkString(".")).orNull,
+        field =>
+          field.keysInAllPaths
+            .map(_.iterator.map(_.getText).mkString("."))
+            .orNull
+      )
+    case _ => null
+  }
 
   def insertQualifiedName(
       fqn: String,

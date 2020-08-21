@@ -18,11 +18,10 @@ final class Adapter[A: TubeInColl](
 
   def nbResults: Fu[Int] = $count(selector)
 
-  def slice(offset: Int, length: Int): Fu[Seq[A]] =
-    $find(
-      pimpQB($query(selector)).sort(sort: _*) skip offset,
-      length,
-      readPreference = readPreference)
+  def slice(offset: Int, length: Int): Fu[Seq[A]] = $find(
+    pimpQB($query(selector)).sort(sort: _*) skip offset,
+    length,
+    readPreference = readPreference)
 }
 
 final class CachedAdapter[A](adapter: AdapterLike[A], val nbResults: Fu[Int])

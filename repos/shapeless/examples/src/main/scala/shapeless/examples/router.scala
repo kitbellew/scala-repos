@@ -28,38 +28,34 @@ object RouterExample extends App {
   trait Router[A] { self =>
     def apply(path: String): Option[A]
 
-    def map[B](f: A => B): Router[B] =
-      new Router[B] {
-        def apply(path: String): Option[B] = self(path).map(f)
+    def map[B](f: A => B): Router[B] = new Router[B] {
+      def apply(path: String): Option[B] = self(path).map(f)
 
-        override def toString = self.toString
-      }
+      override def toString = self.toString
+    }
 
-    def orElse[B >: A](that: Router[B]): Router[B] =
-      new Router[B] {
-        def apply(path: String): Option[B] = self(path).orElse(that(path))
+    def orElse[B >: A](that: Router[B]): Router[B] = new Router[B] {
+      def apply(path: String): Option[B] = self(path).orElse(that(path))
 
-        override def toString = s"(${self.toString}|${that.toString})"
-      }
+      override def toString = s"(${self.toString}|${that.toString})"
+    }
 
     def :+:[B](that: Router[B])(implicit
         adjoin: Adjoin[B :+: A :+: CNil]): Router[adjoin.Out] =
       new Router[adjoin.Out] {
-        def apply(path: String) =
-          that(path)
-            .map(b => adjoin(Inl(b)))
-            .orElse(
-              self(path).map(a => adjoin(Inr(Inl(a))))
-            )
+        def apply(path: String) = that(path)
+          .map(b => adjoin(Inl(b)))
+          .orElse(
+            self(path).map(a => adjoin(Inr(Inl(a))))
+          )
       }
   }
 
-  def matchString(s: String): Router[String] =
-    new Router[String] {
-      def apply(path: String): Option[String] = if (path == s) Some(s) else None
+  def matchString(s: String): Router[String] = new Router[String] {
+    def apply(path: String): Option[String] = if (path == s) Some(s) else None
 
-      override def toString = s
-    }
+    override def toString = s
+  }
 
   val fooRouter: Router[Int] = matchString("foo").map(_ => 1)
   val barRouter: Router[Symbol] = matchString("bar").map(_ => 'x)

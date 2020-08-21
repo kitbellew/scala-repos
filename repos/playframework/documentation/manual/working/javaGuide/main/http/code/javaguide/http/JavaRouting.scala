@@ -69,9 +69,8 @@ object JavaRouting extends Specification {
           "Location",
           call(
             new MockJavaAction {
-              override def invocation =
-                F.Promise.pure(
-                  new javaguide.http.routing.controllers.Application().index())
+              override def invocation = F.Promise.pure(
+                new javaguide.http.routing.controllers.Application().index())
             },
             FakeRequest())) must beSome("/hello/Bob")
       }
@@ -96,10 +95,9 @@ package routing.query.controllers {
   import play.api.mvc.{Controller, Action}
 
   class Application extends Controller {
-    def show(page: String) =
-      Action {
-        Ok("showing page " + page)
-      }
+    def show(page: String) = Action {
+      Ok("showing page " + page)
+    }
   }
 }
 
@@ -108,10 +106,9 @@ package routing.fixed.controllers {
   import play.api.mvc.{Controller, Action}
 
   class Application extends Controller {
-    def show(page: String) =
-      Action {
-        Ok("showing page " + page)
-      }
+    def show(page: String) = Action {
+      Ok("showing page " + page)
+    }
   }
 }
 
@@ -120,9 +117,8 @@ package routing.defaultvalue.controllers {
   import play.api.mvc.{Controller, Action}
 
   class Clients extends Controller {
-    def list(page: Int) =
-      Action {
-        Ok("clients page " + page)
-      }
+    def list(page: Int) = Action {
+      Ok("clients page " + page)
+    }
   }
 }

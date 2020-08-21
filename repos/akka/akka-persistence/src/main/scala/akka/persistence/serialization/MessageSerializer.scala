@@ -49,17 +49,16 @@ class MessageSerializer(val system: ExtendedActorSystem)
     * Serializes persistent messages. Delegates serialization of a persistent
     * message's payload to a matching `akka.serialization.Serializer`.
     */
-  def toBinary(o: AnyRef): Array[Byte] =
-    o match {
-      case p: PersistentRepr ⇒ persistentMessageBuilder(p).build().toByteArray
-      case a: AtomicWrite ⇒ atomicWriteBuilder(a).build().toByteArray
-      case a: AtLeastOnceDeliverySnapshot ⇒
-        atLeastOnceDeliverySnapshotBuilder(a).build.toByteArray
-      case s: StateChangeEvent ⇒ stateChangeBuilder(s).build.toByteArray
-      case _ ⇒
-        throw new IllegalArgumentException(
-          s"Can't serialize object of type ${o.getClass}")
-    }
+  def toBinary(o: AnyRef): Array[Byte] = o match {
+    case p: PersistentRepr ⇒ persistentMessageBuilder(p).build().toByteArray
+    case a: AtomicWrite ⇒ atomicWriteBuilder(a).build().toByteArray
+    case a: AtLeastOnceDeliverySnapshot ⇒
+      atLeastOnceDeliverySnapshotBuilder(a).build.toByteArray
+    case s: StateChangeEvent ⇒ stateChangeBuilder(s).build.toByteArray
+    case _ ⇒
+      throw new IllegalArgumentException(
+        s"Can't serialize object of type ${o.getClass}")
+  }
 
   /**
     * Deserializes persistent messages. Delegates deserialization of a persistent

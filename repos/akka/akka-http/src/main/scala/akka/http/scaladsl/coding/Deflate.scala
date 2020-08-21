@@ -19,8 +19,8 @@ class Deflate(val messageFilter: HttpMessage ⇒ Boolean)
     with StreamDecoder {
   val encoding = HttpEncodings.deflate
   def newCompressor = new DeflateCompressor
-  def newDecompressorStage(maxBytesPerChunk: Int) =
-    () ⇒ new DeflateDecompressor(maxBytesPerChunk)
+  def newDecompressorStage(maxBytesPerChunk: Int) = () ⇒
+    new DeflateDecompressor(maxBytesPerChunk)
 }
 object Deflate extends Deflate(Encoder.DefaultFilter)
 
@@ -100,22 +100,21 @@ class DeflateDecompressor(
     maxBytesPerChunk: Int = Decoder.MaxBytesPerChunkDefault)
     extends DeflateDecompressorBase(maxBytesPerChunk) {
 
-  override def createLogic(attr: Attributes) =
-    new DecompressorParsingLogic {
-      override val inflater: Inflater = new Inflater()
+  override def createLogic(attr: Attributes) = new DecompressorParsingLogic {
+    override val inflater: Inflater = new Inflater()
 
-      override val inflateState = new Inflate(true) {
-        override def onTruncation(): Unit = completeStage()
-      }
-
-      override def afterInflate = inflateState
-      override def afterBytesRead(
-          buffer: Array[Byte],
-          offset: Int,
-          length: Int): Unit = {}
-
-      startWith(inflateState)
+    override val inflateState = new Inflate(true) {
+      override def onTruncation(): Unit = completeStage()
     }
+
+    override def afterInflate = inflateState
+    override def afterBytesRead(
+        buffer: Array[Byte],
+        offset: Int,
+        length: Int): Unit = {}
+
+    startWith(inflateState)
+  }
 }
 
 abstract class DeflateDecompressorBase(

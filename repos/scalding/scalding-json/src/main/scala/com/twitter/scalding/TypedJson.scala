@@ -27,12 +27,11 @@ object TypedJson {
   private implicit val formats = native.Serialization.formats(NoTypeHints)
   private def caseClass2Json[A <: AnyRef](implicit
       tt: Manifest[A],
-      fmt: Formats): Injection[A, String] =
-    new AbstractInjection[A, String] {
-      override def apply(a: A): String = write(a)
+      fmt: Formats): Injection[A, String] = new AbstractInjection[A, String] {
+    override def apply(a: A): String = write(a)
 
-      override def invert(b: String): Try[A] = attempt(b)(read[A])
-    }
+    override def invert(b: String): Try[A] = attempt(b)(read[A])
+  }
 
   def apply[T <: AnyRef: Manifest](p: String) = new TypedJson(p)
 }
@@ -73,7 +72,6 @@ class TypedJson[T <: AnyRef: Manifest](p: String)
 
 case class TypedJsonLzo[T <: AnyRef: Manifest](p: String)
     extends TypedJson[T](p) {
-  override def hdfsScheme =
-    HadoopSchemeInstance(
-      new LzoTextLine().asInstanceOf[cascading.scheme.Scheme[_, _, _, _, _]])
+  override def hdfsScheme = HadoopSchemeInstance(
+    new LzoTextLine().asInstanceOf[cascading.scheme.Scheme[_, _, _, _, _]])
 }

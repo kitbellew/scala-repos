@@ -39,17 +39,16 @@ object Balancers {
   def p2c(
       maxEffort: Int = MaxEffort,
       rng: Rng = Rng.threadLocal
-  ): LoadBalancerFactory =
-    new LoadBalancerFactory {
-      def newBalancer[Req, Rep](
-          endpoints: Activity[Set[ServiceFactory[Req, Rep]]],
-          sr: StatsReceiver,
-          exc: NoBrokersAvailableException
-      ): ServiceFactory[Req, Rep] =
-        new P2CBalancer(endpoints, maxEffort, rng, sr, exc) {
-          private[this] val gauge = sr.addGauge("p2c")(1)
-        }
-    }
+  ): LoadBalancerFactory = new LoadBalancerFactory {
+    def newBalancer[Req, Rep](
+        endpoints: Activity[Set[ServiceFactory[Req, Rep]]],
+        sr: StatsReceiver,
+        exc: NoBrokersAvailableException
+    ): ServiceFactory[Req, Rep] =
+      new P2CBalancer(endpoints, maxEffort, rng, sr, exc) {
+        private[this] val gauge = sr.addGauge("p2c")(1)
+      }
+  }
 
   /**
     * Like [[p2c]] but using the Peak EWMA load metric.
@@ -78,21 +77,20 @@ object Balancers {
       decayTime: Duration = 10.seconds,
       maxEffort: Int = MaxEffort,
       rng: Rng = Rng.threadLocal
-  ): LoadBalancerFactory =
-    new LoadBalancerFactory {
-      def newBalancer[Req, Rep](
-          endpoints: Activity[Set[ServiceFactory[Req, Rep]]],
-          sr: StatsReceiver,
-          exc: NoBrokersAvailableException
-      ): ServiceFactory[Req, Rep] =
-        new P2CBalancerPeakEwma(endpoints, decayTime, maxEffort, rng, sr, exc) {
-          private[this] val gauge = sr.addGauge("p2cPeakEwma")(1)
-          override def close(when: Time): Future[Unit] = {
-            gauge.remove()
-            super.close(when)
-          }
+  ): LoadBalancerFactory = new LoadBalancerFactory {
+    def newBalancer[Req, Rep](
+        endpoints: Activity[Set[ServiceFactory[Req, Rep]]],
+        sr: StatsReceiver,
+        exc: NoBrokersAvailableException
+    ): ServiceFactory[Req, Rep] =
+      new P2CBalancerPeakEwma(endpoints, decayTime, maxEffort, rng, sr, exc) {
+        private[this] val gauge = sr.addGauge("p2cPeakEwma")(1)
+        override def close(when: Time): Future[Unit] = {
+          gauge.remove()
+          super.close(when)
         }
-    }
+      }
+  }
 
   /**
     * An efficient strictly least-loaded balancer that maintains
@@ -143,30 +141,29 @@ object Balancers {
       timer: Timer = DefaultTimer.twitter,
       maxEffort: Int = MaxEffort,
       rng: Rng = Rng.threadLocal
-  ): LoadBalancerFactory =
-    new LoadBalancerFactory {
-      def newBalancer[Req, Rep](
-          endpoints: Activity[Set[ServiceFactory[Req, Rep]]],
-          sr: StatsReceiver,
-          exc: NoBrokersAvailableException
-      ): ServiceFactory[Req, Rep] = {
-        new ApertureLoadBandBalancer(
-          endpoints,
-          smoothWin,
-          lowLoad,
-          highLoad,
-          minAperture,
-          maxEffort,
-          rng,
-          timer,
-          sr,
-          exc) {
-          private[this] val gauge = sr.addGauge("aperture")(1)
-          override def close(when: Time): Future[Unit] = {
-            gauge.remove()
-            super.close(when)
-          }
+  ): LoadBalancerFactory = new LoadBalancerFactory {
+    def newBalancer[Req, Rep](
+        endpoints: Activity[Set[ServiceFactory[Req, Rep]]],
+        sr: StatsReceiver,
+        exc: NoBrokersAvailableException
+    ): ServiceFactory[Req, Rep] = {
+      new ApertureLoadBandBalancer(
+        endpoints,
+        smoothWin,
+        lowLoad,
+        highLoad,
+        minAperture,
+        maxEffort,
+        rng,
+        timer,
+        sr,
+        exc) {
+        private[this] val gauge = sr.addGauge("aperture")(1)
+        override def close(when: Time): Future[Unit] = {
+          gauge.remove()
+          super.close(when)
         }
       }
     }
+  }
 }

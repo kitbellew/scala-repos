@@ -48,10 +48,9 @@ trait Settable extends ValueHolder {
     * Perform an atomic operation on the Settable. By default
     * synchronizes the instance, but it could use other mechanisms
     */
-  def performAtomicOperation[T](f: => T): T =
-    synchronized {
-      f
-    }
+  def performAtomicOperation[T](f: => T): T = synchronized {
+    f
+  }
 }
 
 trait SettableValueHolder extends Settable
@@ -61,14 +60,16 @@ trait PValueHolder[T] extends ValueHolder {
 }
 
 object PValueHolder {
-  implicit def tToVHT[T](in: T): PValueHolder[T] =
-    new PValueHolder[T] { def get = in; def is = get }
+  implicit def tToVHT[T](in: T): PValueHolder[T] = new PValueHolder[T] {
+    def get = in; def is = get
+  }
   def apply[T](in: T) = tToVHT(in)
 }
 
 object ValueHolder {
-  implicit def tToVHT[T](in: T): ValueHolder =
-    new PValueHolder[T] { def get = in; def is = get }
+  implicit def tToVHT[T](in: T): ValueHolder = new PValueHolder[T] {
+    def get = in; def is = get
+  }
   def apply[T](in: T) = tToVHT(in)
 }
 

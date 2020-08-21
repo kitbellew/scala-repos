@@ -639,11 +639,10 @@ private[transport] class ProtocolStateActor(
     }
   }
 
-  private def safeClassName(obj: AnyRef): String =
-    obj match {
-      case null ⇒ "null"
-      case _ ⇒ obj.getClass.getName
-    }
+  private def safeClassName(obj: AnyRef): String = obj match {
+    case null ⇒ "null"
+    case _ ⇒ obj.getClass.getName
+  }
 
   override def postStop(): Unit = {
     cancelTimer("heartbeat-timer")
@@ -773,14 +772,13 @@ private[transport] class ProtocolStateActor(
     readHandlerPromise.future
   }
 
-  private def decodePdu(pdu: ByteString): AkkaPdu =
-    try codec.decodePdu(pdu)
-    catch {
-      case NonFatal(e) ⇒
-        throw new AkkaProtocolException(
-          "Error while decoding incoming Akka PDU of length: " + pdu.length,
-          e)
-    }
+  private def decodePdu(pdu: ByteString): AkkaPdu = try codec.decodePdu(pdu)
+  catch {
+    case NonFatal(e) ⇒
+      throw new AkkaProtocolException(
+        "Error while decoding incoming Akka PDU of length: " + pdu.length,
+        e)
+  }
 
   // Neither heartbeats neither disassociate cares about backing off if write fails:
   //  - Missing heartbeats are not critical
@@ -807,13 +805,10 @@ private[transport] class ProtocolStateActor(
 
   private def sendAssociate(
       wrappedHandle: AssociationHandle,
-      info: HandshakeInfo): Boolean =
-    try {
-      wrappedHandle.write(codec.constructAssociate(info))
-    } catch {
-      case NonFatal(e) ⇒
-        throw new AkkaProtocolException(
-          "Error writing ASSOCIATE to transport",
-          e)
-    }
+      info: HandshakeInfo): Boolean = try {
+    wrappedHandle.write(codec.constructAssociate(info))
+  } catch {
+    case NonFatal(e) ⇒
+      throw new AkkaProtocolException("Error writing ASSOCIATE to transport", e)
+  }
 }

@@ -38,8 +38,8 @@ case class ScriptTransformation(
     child: LogicalPlan,
     ioschema: ScriptInputOutputSchema)
     extends UnaryNode {
-  override def references: AttributeSet =
-    AttributeSet(input.flatMap(_.references))
+  override def references: AttributeSet = AttributeSet(
+    input.flatMap(_.references))
 }
 
 /**

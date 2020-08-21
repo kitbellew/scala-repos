@@ -57,55 +57,53 @@ private[pref] final class DataForm {
       confirmResign: Int,
       captured: Int) {
 
-    def apply(pref: Pref) =
-      pref.copy(
-        autoQueen = autoQueen,
-        autoThreefold = autoThreefold,
-        takeback = takeback,
-        clockTenths = clockTenths,
-        clockBar = clockBar == 1,
-        clockSound = clockSound == 1,
-        follow = follow == 1,
-        highlight = highlight == 1,
-        destination = destination == 1,
-        coords = coords,
-        replay = replay,
-        blindfold = blindfold,
-        challenge = challenge,
-        message = message,
-        premove = premove == 1,
-        animation = animation,
-        submitMove = submitMove,
-        insightShare = insightShare,
-        confirmResign = confirmResign,
-        captured = captured == 1
-      )
+    def apply(pref: Pref) = pref.copy(
+      autoQueen = autoQueen,
+      autoThreefold = autoThreefold,
+      takeback = takeback,
+      clockTenths = clockTenths,
+      clockBar = clockBar == 1,
+      clockSound = clockSound == 1,
+      follow = follow == 1,
+      highlight = highlight == 1,
+      destination = destination == 1,
+      coords = coords,
+      replay = replay,
+      blindfold = blindfold,
+      challenge = challenge,
+      message = message,
+      premove = premove == 1,
+      animation = animation,
+      submitMove = submitMove,
+      insightShare = insightShare,
+      confirmResign = confirmResign,
+      captured = captured == 1
+    )
   }
 
   object PrefData {
-    def apply(pref: Pref): PrefData =
-      PrefData(
-        autoQueen = pref.autoQueen,
-        autoThreefold = pref.autoThreefold,
-        takeback = pref.takeback,
-        clockTenths = pref.clockTenths,
-        clockBar = pref.clockBar.fold(1, 0),
-        clockSound = pref.clockSound.fold(1, 0),
-        follow = pref.follow.fold(1, 0),
-        highlight = pref.highlight.fold(1, 0),
-        destination = pref.destination.fold(1, 0),
-        coords = pref.coords,
-        replay = pref.replay,
-        blindfold = pref.blindfold,
-        challenge = pref.challenge,
-        message = pref.message,
-        premove = pref.premove.fold(1, 0),
-        animation = pref.animation,
-        submitMove = pref.submitMove,
-        insightShare = pref.insightShare,
-        confirmResign = pref.confirmResign,
-        captured = pref.captured.fold(1, 0)
-      )
+    def apply(pref: Pref): PrefData = PrefData(
+      autoQueen = pref.autoQueen,
+      autoThreefold = pref.autoThreefold,
+      takeback = pref.takeback,
+      clockTenths = pref.clockTenths,
+      clockBar = pref.clockBar.fold(1, 0),
+      clockSound = pref.clockSound.fold(1, 0),
+      follow = pref.follow.fold(1, 0),
+      highlight = pref.highlight.fold(1, 0),
+      destination = pref.destination.fold(1, 0),
+      coords = pref.coords,
+      replay = pref.replay,
+      blindfold = pref.blindfold,
+      challenge = pref.challenge,
+      message = pref.message,
+      premove = pref.premove.fold(1, 0),
+      animation = pref.animation,
+      submitMove = pref.submitMove,
+      insightShare = pref.insightShare,
+      confirmResign = pref.confirmResign,
+      captured = pref.captured.fold(1, 0)
+    )
   }
 
   def prefOf(p: Pref): Form[PrefData] = pref fill PrefData(p)
@@ -124,21 +122,19 @@ private[pref] final class DataForm {
       blindfold: Int,
       clockTenths: Int,
       submitMove: Int) {
-    def apply(pref: Pref) =
-      pref.copy(
-        autoQueen = autoQueen,
-        blindfold = blindfold,
-        clockTenths = clockTenths,
-        submitMove = submitMove)
+    def apply(pref: Pref) = pref.copy(
+      autoQueen = autoQueen,
+      blindfold = blindfold,
+      clockTenths = clockTenths,
+      submitMove = submitMove)
   }
 
   object MiniPrefData {
-    def apply(pref: Pref): MiniPrefData =
-      MiniPrefData(
-        autoQueen = pref.autoQueen,
-        blindfold = pref.blindfold,
-        clockTenths = pref.clockTenths,
-        submitMove = pref.submitMove)
+    def apply(pref: Pref): MiniPrefData = MiniPrefData(
+      autoQueen = pref.autoQueen,
+      blindfold = pref.blindfold,
+      clockTenths = pref.clockTenths,
+      submitMove = pref.submitMove)
   }
 
   def miniPrefOf(p: Pref): Form[MiniPrefData] = miniPref fill MiniPrefData(p)

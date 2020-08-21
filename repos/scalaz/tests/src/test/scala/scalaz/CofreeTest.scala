@@ -31,18 +31,17 @@ object CofreeTest extends SpecLite {
 
   //needed to prevent SOE for testing with equality
   implicit def cofreeOptEquals[A](implicit
-      e: Equal[A]): Equal[CofreeOption[A]] =
-    new Equal[CofreeOption[A]] {
-      override def equal(a: CofreeOption[A], b: CofreeOption[A]): Boolean = {
-        def tr(a: CofreeOption[A], b: CofreeOption[A]): Boolean =
-          (a.tail, b.tail) match {
-            case (Some(at), Some(bt)) if (e.equal(a.head, b.head)) => tr(at, bt)
-            case (None, None) if (e.equal(a.head, b.head))         => true
-            case _                                                 => false
-          }
-        tr(a, b)
-      }
+      e: Equal[A]): Equal[CofreeOption[A]] = new Equal[CofreeOption[A]] {
+    override def equal(a: CofreeOption[A], b: CofreeOption[A]): Boolean = {
+      def tr(a: CofreeOption[A], b: CofreeOption[A]): Boolean =
+        (a.tail, b.tail) match {
+          case (Some(at), Some(bt)) if (e.equal(a.head, b.head)) => tr(at, bt)
+          case (None, None) if (e.equal(a.head, b.head))         => true
+          case _                                                 => false
+        }
+      tr(a, b)
     }
+  }
 
   val oneAndListNat: OneAndList ~> CofreeOption =
     new (OneAndList ~> CofreeOption) {

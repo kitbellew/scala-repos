@@ -51,29 +51,28 @@ trait APIKeyFinder[M[+_]] extends AccessControl[M] with Logging { self =>
 
   def addGrant(accountKey: APIKey, grantId: GrantId): M[Boolean]
 
-  def withM[N[+_]](implicit t: M ~> N) =
-    new APIKeyFinder[N] {
-      def findAPIKey(apiKey: APIKey, rootKey: Option[APIKey]) =
-        t(self.findAPIKey(apiKey, rootKey))
+  def withM[N[+_]](implicit t: M ~> N) = new APIKeyFinder[N] {
+    def findAPIKey(apiKey: APIKey, rootKey: Option[APIKey]) =
+      t(self.findAPIKey(apiKey, rootKey))
 
-      def findAllAPIKeys(fromRoot: APIKey) =
-        t(self.findAllAPIKeys(fromRoot))
+    def findAllAPIKeys(fromRoot: APIKey) =
+      t(self.findAllAPIKeys(fromRoot))
 
-      def createAPIKey(
-          accountId: AccountId,
-          keyName: Option[String] = None,
-          keyDesc: Option[String] = None) =
-        t(self.createAPIKey(accountId, keyName, keyDesc))
+    def createAPIKey(
+        accountId: AccountId,
+        keyName: Option[String] = None,
+        keyDesc: Option[String] = None) =
+      t(self.createAPIKey(accountId, keyName, keyDesc))
 
-      def addGrant(accountKey: APIKey, grantId: GrantId) =
-        t(self.addGrant(accountKey, grantId))
+    def addGrant(accountKey: APIKey, grantId: GrantId) =
+      t(self.addGrant(accountKey, grantId))
 
-      def hasCapability(
-          apiKey: APIKey,
-          perms: Set[Permission],
-          at: Option[DateTime]) =
-        t(self.hasCapability(apiKey, perms, at))
-    }
+    def hasCapability(
+        apiKey: APIKey,
+        perms: Set[Permission],
+        at: Option[DateTime]) =
+      t(self.hasCapability(apiKey, perms, at))
+  }
 }
 
 class DirectAPIKeyFinder[M[+_]](underlying: APIKeyManager[M])(implicit

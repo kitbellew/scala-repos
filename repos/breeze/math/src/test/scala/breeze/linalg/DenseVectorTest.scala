@@ -516,10 +516,9 @@ class DenseVectorTest extends FunSuite with Checkers {
     assert(fy === DenseVector(4.0, 3.0, 2.0, 1.0))
   }
 
-  implicit def genTriple: Arbitrary[DenseVector[Double]] =
-    Arbitrary {
-      Arbitrary.arbitrary[Double].map(DenseVector.rand[Double](30) * _)
-    }
+  implicit def genTriple: Arbitrary[DenseVector[Double]] = Arbitrary {
+    Arbitrary.arbitrary[Double].map(DenseVector.rand[Double](30) * _)
+  }
 
   test("isClose") {
     check((a: DenseVector[Double]) => isClose(a, a))
@@ -576,8 +575,8 @@ class DenseVectorOps_DoubleTest
     }
   }
 
-  def genScalar: Arbitrary[Double] =
-    Arbitrary(Arbitrary.arbitrary[Double].map { _ % 1e10 })
+  def genScalar: Arbitrary[Double] = Arbitrary(
+    Arbitrary.arbitrary[Double].map { _ % 1e10 })
 }
 
 @RunWith(classOf[JUnitRunner])
@@ -603,8 +602,8 @@ class DenseVectorOps_IntTest
     }
   }
 
-  def genScalar: Arbitrary[Int] =
-    Arbitrary(Arbitrary.arbitrary[Int].map { _ % 1000 })
+  def genScalar: Arbitrary[Int] = Arbitrary(
+    Arbitrary.arbitrary[Int].map { _ % 1000 })
 }
 
 @RunWith(classOf[JUnitRunner])
@@ -630,11 +629,10 @@ class DenseVectorOps_ComplexTest
     }
   }
 
-  implicit def genScalar: Arbitrary[Complex] =
-    Arbitrary {
-      for (r <- Arbitrary.arbitrary[Double]; i <- Arbitrary.arbitrary[Double])
-        yield Complex(r % 100, i % 100)
-    }
+  implicit def genScalar: Arbitrary[Complex] = Arbitrary {
+    for (r <- Arbitrary.arbitrary[Double]; i <- Arbitrary.arbitrary[Double])
+      yield Complex(r % 100, i % 100)
+  }
 }
 
 @RunWith(classOf[JUnitRunner])
@@ -670,6 +668,6 @@ class DenseVectorOps_FloatTest
     }
   }
 
-  def genScalar: Arbitrary[Float] =
-    Arbitrary(Arbitrary.arbitrary[Float].map { _ % 1000 })
+  def genScalar: Arbitrary[Float] = Arbitrary(
+    Arbitrary.arbitrary[Float].map { _ % 1000 })
 }

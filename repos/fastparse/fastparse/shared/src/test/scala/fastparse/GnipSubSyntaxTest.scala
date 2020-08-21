@@ -28,11 +28,10 @@ object GnipSubSyntaxTest extends TestSuite {
     private val keywordGroup = P(orClause | keywordGroupWithoutOrClause)
 
     private def keywordsInParentheses = P("(" ~ gnipKeywordPhrase ~ ")")
-    private def orClause =
-      P(!(("-" ~~ keywordGroupWithoutOrClause.rep(min =
-        1)) ~ "OR") ~ keywordGroupWithoutOrClause ~ ("OR" !) ~ gnipKeywordPhrase)
-    private def gnipKeywordPhrase: Parser[String] =
-      P(keywordGroup.rep(min = 1)) !
+    private def orClause = P(!(("-" ~~ keywordGroupWithoutOrClause.rep(min =
+      1)) ~ "OR") ~ keywordGroupWithoutOrClause ~ ("OR" !) ~ gnipKeywordPhrase)
+    private def gnipKeywordPhrase: Parser[String] = P(
+      keywordGroup.rep(min = 1)) !
 
     def parse(rule: String) = P(Start ~ gnipKeywordPhrase ~ End).parse(rule)
   }
@@ -41,11 +40,10 @@ object GnipSubSyntaxTest extends TestSuite {
     import fastparse.core.Parsed._
     import fastparse.core.ParseError
 
-    def apply(rule: String) =
-      (new GnipRuleParser).parse(rule) match {
-        case Success(matched, index)      => scala.util.Success(matched)
-        case f @ Failure(_, index, extra) => scala.util.Failure(ParseError(f))
-      }
+    def apply(rule: String) = (new GnipRuleParser).parse(rule) match {
+      case Success(matched, index)      => scala.util.Success(matched)
+      case f @ Failure(_, index, extra) => scala.util.Failure(ParseError(f))
+    }
   }
 
   val tests = TestSuite {

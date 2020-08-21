@@ -197,8 +197,8 @@ trait Index[@spec(Boolean, Int, Long, Double) T] extends Serializable {
     * @param ord Implicit ORD for instances of type T
     * @param tag Implicit ST for instances of type T
     */
-  def uniques(implicit ord: ORD[T], tag: ST[T]): Index[T] =
-    Index(Vec(locator.keys()))
+  def uniques(implicit ord: ORD[T], tag: ST[T]): Index[T] = Index(
+    Vec(locator.keys()))
 
   /**
     * Returns an array whose entries represent the number of times the corresponding
@@ -584,8 +584,8 @@ object Index {
     * @tparam I The type of the values input
     * @tparam O The type of the elements of the result index
     */
-  def make[I, O](values: I)(implicit ev: IndexMaker[I, O]): Index[O] =
-    ev(values)
+  def make[I, O](values: I)(implicit ev: IndexMaker[I, O]): Index[O] = ev(
+    values)
 
   /**
     * Factory method to create an Index from a recurrence rule between two

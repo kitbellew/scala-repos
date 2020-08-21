@@ -26,11 +26,11 @@ import com.precog.common._
 trait ClusteringSpecs extends EvalStackSpecs {
   import stack._
 
-  def clusterSchema(obj: Map[String, SValue]): List[String] =
-    obj("cluster1") match {
-      case SObject(ctr) => ctr.keys.toList.sorted
-      case _            => sys.error("malformed SObject")
-    }
+  def clusterSchema(obj: Map[String, SValue]): List[String] = obj(
+    "cluster1") match {
+    case SObject(ctr) => ctr.keys.toList.sorted
+    case _            => sys.error("malformed SObject")
+  }
 
   def testmodel(model: Map[String, SValue], validClusters: Set[String]) = {
     model.keys mustEqual Set("clusterId", "clusterCenter")

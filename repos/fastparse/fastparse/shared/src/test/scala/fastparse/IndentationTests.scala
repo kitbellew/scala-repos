@@ -7,13 +7,12 @@ import all._
   * Same as MathTests, but demonstrating the use of whitespace
   */
 object IndentationTests extends TestSuite {
-  def eval(tree: (String, Seq[Int])) =
-    tree match {
-      case ("+", nums) => nums.reduceLeft(_ + _)
-      case ("-", nums) => nums.reduceLeft(_ - _)
-      case ("*", nums) => nums.reduceLeft(_ * _)
-      case ("/", nums) => nums.reduceLeft(_ / _)
-    }
+  def eval(tree: (String, Seq[Int])) = tree match {
+    case ("+", nums) => nums.reduceLeft(_ + _)
+    case ("-", nums) => nums.reduceLeft(_ - _)
+    case ("*", nums) => nums.reduceLeft(_ * _)
+    case ("/", nums) => nums.reduceLeft(_ / _)
+  }
 
   /**
     * Parser for an indentation-based math syntax. Parens are no longer

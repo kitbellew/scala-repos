@@ -85,19 +85,18 @@ class MatBool(r: Int, c: Int, values: Array[Boolean]) extends Mat[Boolean] {
   }
 
   /** Row-by-row equality check of all values. */
-  override def equals(o: Any): Boolean =
-    o match {
-      case rv: Mat[_] =>
-        (this eq rv) || this.numRows == rv.numRows && this.numCols == rv.numCols && {
-          var i = 0
-          var eq = true
-          while (eq && i < length) {
-            eq &&= (apply(i) == rv(i) || this.scalarTag.isMissing(
-              apply(i)) && rv.scalarTag.isMissing(rv(i)))
-            i += 1
-          }
-          eq
+  override def equals(o: Any): Boolean = o match {
+    case rv: Mat[_] =>
+      (this eq rv) || this.numRows == rv.numRows && this.numCols == rv.numCols && {
+        var i = 0
+        var eq = true
+        while (eq && i < length) {
+          eq &&= (apply(i) == rv(i) || this.scalarTag.isMissing(
+            apply(i)) && rv.scalarTag.isMissing(rv(i)))
+          i += 1
         }
-      case _ => super.equals(o)
-    }
+        eq
+      }
+    case _ => super.equals(o)
+  }
 }

@@ -15,8 +15,8 @@ trait CapturedVariables { self: SymbolTable =>
   /** Mark given identifier as a reference to a captured variable itself
     *  suppressing dereferencing with the `elem` field.
     */
-  def referenceCapturedVariable(vble: Symbol): Tree =
-    ReferenceToBoxed(Ident(vble))
+  def referenceCapturedVariable(vble: Symbol): Tree = ReferenceToBoxed(
+    Ident(vble))
 
   /** Convert type of a captured variable to *Ref type.
     */

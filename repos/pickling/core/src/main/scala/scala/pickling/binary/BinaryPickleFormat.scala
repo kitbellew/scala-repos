@@ -7,8 +7,8 @@ import scala.reflect.runtime.universe.Mirror
 
 trait BinaryFormats {
   implicit val pickleFormat = new BinaryPickleFormat
-  implicit def toBinaryPickle(value: Array[Byte]): BinaryPickle =
-    BinaryPickle(value)
+  implicit def toBinaryPickle(value: Array[Byte]): BinaryPickle = BinaryPickle(
+    value)
   implicit def binaryPickleToUnpickleOps(value: Array[Byte]): UnpickleOps =
     new UnpickleOps(BinaryPickle(value))
 }
@@ -23,10 +23,10 @@ class BinaryPickleFormat extends PickleFormat with Constants {
   def createBuilder(): BinaryPBuilder = new BinaryPickleBuilder(this, null)
   def createBuilder(out: BinaryOutput): BinaryPBuilder =
     new BinaryPickleBuilder(this, out)
-  def createBuilder(out: java.nio.ByteBuffer): BinaryPBuilder =
-    createBuilder(new ByteBufferOutput(out))
-  def createBuilder(out: java.io.OutputStream): BinaryPBuilder =
-    createBuilder(new StreamOutput(out))
+  def createBuilder(out: java.nio.ByteBuffer): BinaryPBuilder = createBuilder(
+    new ByteBufferOutput(out))
+  def createBuilder(out: java.io.OutputStream): BinaryPBuilder = createBuilder(
+    new StreamOutput(out))
   def createReader(pickle: PickleType) = pickle.createReader(this)
 }
 

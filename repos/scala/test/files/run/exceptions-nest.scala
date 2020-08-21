@@ -152,14 +152,13 @@ object Test extends App {
   class E2 extends Exception
   class E3 extends Exception
 
-  def test12_impl(op: => Int) =
-    try {
-      op
-    } catch {
-      case e: E1 => 2
-      case e: E2 => 3
-      case e: E3 => 4
-    }
+  def test12_impl(op: => Int) = try {
+    op
+  } catch {
+    case e: E1 => 2
+    case e: E2 => 3
+    case e: E3 => 4
+  }
   def test12 =
     test12_impl(1) +
       test12_impl(throw new E1) +

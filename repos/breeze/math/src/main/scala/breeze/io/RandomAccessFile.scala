@@ -370,8 +370,8 @@ class RandomAccessFile(file: File, arg0: String = "r")(implicit
   /** Alias, in java style, for [[breeze.io.RandomAccessFile.writeUInt16]], but reads as Int.
     */
   @throws(classOf[IOException])
-  final def writeUnsignedShort(value: Array[Int]): Unit =
-    writeUInt16(value.map(_.toChar))
+  final def writeUnsignedShort(value: Array[Int]): Unit = writeUInt16(
+    value.map(_.toChar))
 
   /** Alias, in java style, for [[breeze.io.RandomAccessFile.writeUInt16]]
     */

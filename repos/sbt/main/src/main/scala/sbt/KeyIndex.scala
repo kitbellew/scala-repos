@@ -33,29 +33,28 @@ object KeyIndex {
     new KeyIndex0(new BuildIndex(data.toMap))
   }
 
-  def combine(indices: Seq[KeyIndex]): KeyIndex =
-    new KeyIndex {
-      def buildURIs = concat(_.buildURIs)
-      def projects(uri: URI) = concat(_.projects(uri))
-      def exists(project: Option[ResolvedReference]): Boolean =
-        indices.exists(_ exists project)
-      def configs(proj: Option[ResolvedReference]) = concat(_.configs(proj))
-      def tasks(proj: Option[ResolvedReference], conf: Option[String]) =
-        concat(_.tasks(proj, conf))
-      def tasks(
-          proj: Option[ResolvedReference],
-          conf: Option[String],
-          key: String) = concat(_.tasks(proj, conf, key))
-      def keys(proj: Option[ResolvedReference]) = concat(_.keys(proj))
-      def keys(proj: Option[ResolvedReference], conf: Option[String]) =
-        concat(_.keys(proj, conf))
-      def keys(
-          proj: Option[ResolvedReference],
-          conf: Option[String],
-          task: Option[AttributeKey[_]]) = concat(_.keys(proj, conf, task))
-      def concat[T](f: KeyIndex => Set[T]): Set[T] =
-        (Set.empty[T] /: indices)((s, k) => s ++ f(k))
-    }
+  def combine(indices: Seq[KeyIndex]): KeyIndex = new KeyIndex {
+    def buildURIs = concat(_.buildURIs)
+    def projects(uri: URI) = concat(_.projects(uri))
+    def exists(project: Option[ResolvedReference]): Boolean =
+      indices.exists(_ exists project)
+    def configs(proj: Option[ResolvedReference]) = concat(_.configs(proj))
+    def tasks(proj: Option[ResolvedReference], conf: Option[String]) = concat(
+      _.tasks(proj, conf))
+    def tasks(
+        proj: Option[ResolvedReference],
+        conf: Option[String],
+        key: String) = concat(_.tasks(proj, conf, key))
+    def keys(proj: Option[ResolvedReference]) = concat(_.keys(proj))
+    def keys(proj: Option[ResolvedReference], conf: Option[String]) = concat(
+      _.keys(proj, conf))
+    def keys(
+        proj: Option[ResolvedReference],
+        conf: Option[String],
+        task: Option[AttributeKey[_]]) = concat(_.keys(proj, conf, task))
+    def concat[T](f: KeyIndex => Set[T]): Set[T] =
+      (Set.empty[T] /: indices)((s, k) => s ++ f(k))
+  }
   private[sbt] def getOr[A, B](m: Map[A, B], key: A, or: B): B =
     m.getOrElse(key, or)
   private[sbt] def keySet[A, B](m: Map[Option[A], B]): Set[A] =
@@ -151,8 +150,8 @@ private final class KeyIndex0(val data: BuildIndex) extends ExtendableKeyIndex {
     val (build, project) = parts(proj)
     data.data.get(build).flatMap(_.data.get(project)).isDefined
   }
-  def configs(project: Option[ResolvedReference]): Set[String] =
-    confIndex(project).configs
+  def configs(project: Option[ResolvedReference]): Set[String] = confIndex(
+    project).configs
   def tasks(
       proj: Option[ResolvedReference],
       conf: Option[String]): Set[AttributeKey[_]] = keyIndex(proj, conf).tasks

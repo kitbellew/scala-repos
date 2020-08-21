@@ -447,10 +447,9 @@ class LowLevelOutgoingConnectionSpec
               limit: Int,
               actualSize: Option[Long] = None) =
             inside(response) { case HttpResponse(_, _, entity: T, _) ⇒
-              def gatherBytes =
-                entity.dataBytes
-                  .runFold(ByteString.empty)(_ ++ _)
-                  .awaitResult(100.millis)
+              def gatherBytes = entity.dataBytes
+                .runFold(ByteString.empty)(_ ++ _)
+                .awaitResult(100.millis)
               (the[Exception] thrownBy gatherBytes).getCause shouldEqual EntityStreamSizeException(
                 limit,
                 actualSize)
@@ -862,8 +861,8 @@ class LowLevelOutgoingConnectionSpec
     requestsSub.expectRequest(16)
     netInSub.expectRequest(16)
 
-    def sendWireData(data: String): Unit =
-      sendWireData(ByteString(data.stripMarginWithNewline("\r\n"), "ASCII"))
+    def sendWireData(data: String): Unit = sendWireData(
+      ByteString(data.stripMarginWithNewline("\r\n"), "ASCII"))
     def sendWireData(data: ByteString): Unit = netInSub.sendNext(data)
 
     def expectWireData(s: String) = {

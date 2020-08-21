@@ -79,8 +79,8 @@ package object util {
     ps.close()
     bs.toString()
   }
-  def stackTraceString(ex: Throwable): String =
-    stringFromWriter(ex printStackTrace _)
+  def stackTraceString(ex: Throwable): String = stringFromWriter(
+    ex printStackTrace _)
 
   /** A one line string which contains the class of the exception, the
     *  message if any, and the first non-Predef location in the stack trace

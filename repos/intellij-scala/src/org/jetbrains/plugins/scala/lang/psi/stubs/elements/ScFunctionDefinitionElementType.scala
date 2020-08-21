@@ -16,8 +16,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.ScFunction
 
 class ScFunctionDefinitionElementType
     extends ScFunctionElementType[ScFunction]("function definition") {
-  def createElement(node: ASTNode): PsiElement =
-    new ScFunctionDefinitionImpl(node)
+  def createElement(node: ASTNode): PsiElement = new ScFunctionDefinitionImpl(
+    node)
 
   def createPsi(stub: ScFunctionStub) = new ScFunctionDefinitionImpl(stub)
 }

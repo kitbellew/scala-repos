@@ -74,12 +74,11 @@ trait DB2Profile extends JdbcProfile {
 
   override def defaultSqlTypeName(
       tmd: JdbcType[_],
-      sym: Option[FieldSymbol]): String =
-    tmd.sqlType match {
-      case java.sql.Types.TINYINT =>
-        "SMALLINT" // DB2 has no smaller binary integer type
-      case _ => super.defaultSqlTypeName(tmd, sym)
-    }
+      sym: Option[FieldSymbol]): String = tmd.sqlType match {
+    case java.sql.Types.TINYINT =>
+      "SMALLINT" // DB2 has no smaller binary integer type
+    case _ => super.defaultSqlTypeName(tmd, sym)
+  }
 
   override val scalarFrom = Some("sysibm.sysdummy1")
 
@@ -90,24 +89,23 @@ trait DB2Profile extends JdbcProfile {
     override protected val hasRadDegConversion = false
     override protected val pi = "decfloat(3.1415926535897932384626433832)"
 
-    override def expr(c: Node, skipParens: Boolean = false): Unit =
-      c match {
-        case RowNumber(by) =>
-          b += "row_number() over("
-          if (!by.isEmpty) buildOrderByClause(by)
-          b += ")"
-        case Library.IfNull(l, r) =>
-          /* DB2 does not support IFNULL so we use COALESCE instead */
-          b += "coalesce("; expr(l, true); b += ","; expr(r, true); b += ")"
-        case Library.NextValue(SequenceNode(name)) =>
-          b += "(next value for " += quoteIdentifier(name) += ")"
-        case Library.CurrentValue(SequenceNode(name)) =>
-          b += "(prevval for " += quoteIdentifier(name) += ")"
-        case Library.User()                   => b += "current user"
-        case Library.Database()               => b += "current server"
-        case Library.CountAll(LiteralNode(1)) => b"count(*)"
-        case _                                => super.expr(c, skipParens)
-      }
+    override def expr(c: Node, skipParens: Boolean = false): Unit = c match {
+      case RowNumber(by) =>
+        b += "row_number() over("
+        if (!by.isEmpty) buildOrderByClause(by)
+        b += ")"
+      case Library.IfNull(l, r) =>
+        /* DB2 does not support IFNULL so we use COALESCE instead */
+        b += "coalesce("; expr(l, true); b += ","; expr(r, true); b += ")"
+      case Library.NextValue(SequenceNode(name)) =>
+        b += "(next value for " += quoteIdentifier(name) += ")"
+      case Library.CurrentValue(SequenceNode(name)) =>
+        b += "(prevval for " += quoteIdentifier(name) += ")"
+      case Library.User()                   => b += "current user"
+      case Library.Database()               => b += "current server"
+      case Library.CountAll(LiteralNode(1)) => b"count(*)"
+      case _                                => super.expr(c, skipParens)
+    }
 
     override protected def buildOrdering(n: Node, o: Ordering) {
       /* DB2 does not have explicit NULLS FIST/LAST clauses. Nulls are

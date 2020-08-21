@@ -43,17 +43,16 @@ trait BigIntegerIsNRoot extends NRoot[BigInteger] {
       throw new ArithmeticException(
         "Cannot find %d-root of negative number." format k)
     } else {
-      def findNroot(b: BigInteger, i: Int): BigInteger =
-        if (i < 0) {
-          b
-        } else {
-          val c = b setBit i
+      def findNroot(b: BigInteger, i: Int): BigInteger = if (i < 0) {
+        b
+      } else {
+        val c = b setBit i
 
-          if (((c pow k) compareTo a) <= 0)
-            findNroot(c, i - 1)
-          else
-            findNroot(b, i - 1)
-        }
+        if (((c pow k) compareTo a) <= 0)
+          findNroot(c, i - 1)
+        else
+          findNroot(b, i - 1)
+      }
 
       findNroot(BigInteger.ZERO, a.bitLength - 1)
     }

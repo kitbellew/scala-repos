@@ -71,19 +71,17 @@ object SlickBuild extends Build {
     crossScalaVersions := scalaVersions
   )
 
-  def localScalaSettings(path: String): Seq[Setting[_]] =
-    Seq(
-      scalaVersion := "2.10.0-unknown",
-      scalaBinaryVersion := "2.10.0-unknown",
-      crossVersion := CrossVersion.Disabled,
-      scalaHome := Some(file(path)),
-      autoScalaLibrary := false,
-      unmanagedJars <<= scalaInstance.map(_.jars.classpath),
-      unmanagedJars in config("compile") <<= scalaInstance.map(
-        _.jars.classpath),
-      unmanagedJars in config("test") <<= scalaInstance.map(_.jars.classpath),
-      unmanagedJars in config("macro") <<= scalaInstance.map(_.jars.classpath)
-    )
+  def localScalaSettings(path: String): Seq[Setting[_]] = Seq(
+    scalaVersion := "2.10.0-unknown",
+    scalaBinaryVersion := "2.10.0-unknown",
+    crossVersion := CrossVersion.Disabled,
+    scalaHome := Some(file(path)),
+    autoScalaLibrary := false,
+    unmanagedJars <<= scalaInstance.map(_.jars.classpath),
+    unmanagedJars in config("compile") <<= scalaInstance.map(_.jars.classpath),
+    unmanagedJars in config("test") <<= scalaInstance.map(_.jars.classpath),
+    unmanagedJars in config("macro") <<= scalaInstance.map(_.jars.classpath)
+  )
 
   val scalaSettings = {
     sys.props("scala.home.local") match {
@@ -171,12 +169,11 @@ object SlickBuild extends Build {
         </scm>
   ) ++ scalaSettings
 
-  def commonSdlcSettings =
-    Seq(
-      sdlcBase := (projectID.value.name + "-api/").replaceFirst("^slick-", ""),
-      sdlcCheckDir := (target in (slickProject, com.typesafe.sbt.SbtSite.SiteKeys.makeSite)).value,
-      sdlc <<= sdlc dependsOn (doc in Compile, com.typesafe.sbt.SbtSite.SiteKeys.makeSite in slickProject)
-    )
+  def commonSdlcSettings = Seq(
+    sdlcBase := (projectID.value.name + "-api/").replaceFirst("^slick-", ""),
+    sdlcCheckDir := (target in (slickProject, com.typesafe.sbt.SbtSite.SiteKeys.makeSite)).value,
+    sdlc <<= sdlc dependsOn (doc in Compile, com.typesafe.sbt.SbtSite.SiteKeys.makeSite in slickProject)
+  )
 
   def runTasksSequentially(tasks: List[TaskKey[_]])(state: State): State =
     tasks match {
@@ -190,20 +187,19 @@ object SlickBuild extends Build {
     }
 
   /* A command that runs all tests sequentially */
-  def testAll =
-    Command.command("testAll")(
-      runTasksSequentially(
-        List(
-          test in (slickTestkitProject, Test),
-          test in (slickTestkitProject, DocTest),
-          test in (osgiTestProject, Test),
-          test in (reactiveStreamsTestProject, Test),
-          packageDoc in Compile in slickProject,
-          packageDoc in Compile in slickCodegenProject,
-          packageDoc in Compile in slickHikariCPProject,
-          packageDoc in Compile in slickTestkitProject,
-          sdlc in aRootProject
-        )))
+  def testAll = Command.command("testAll")(
+    runTasksSequentially(
+      List(
+        test in (slickTestkitProject, Test),
+        test in (slickTestkitProject, DocTest),
+        test in (osgiTestProject, Test),
+        test in (reactiveStreamsTestProject, Test),
+        packageDoc in Compile in slickProject,
+        packageDoc in Compile in slickCodegenProject,
+        packageDoc in Compile in slickHikariCPProject,
+        packageDoc in Compile in slickTestkitProject,
+        sdlc in aRootProject
+      )))
 
   /* Project Definitions */
   lazy val aRootProject: Project = Project(

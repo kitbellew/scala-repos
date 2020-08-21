@@ -26,21 +26,19 @@ class EdgeDirection private (private val name: String) extends Serializable {
     * Reverse the direction of an edge.  An in becomes out,
     * out becomes in and both and either remain the same.
     */
-  def reverse: EdgeDirection =
-    this match {
-      case EdgeDirection.In     => EdgeDirection.Out
-      case EdgeDirection.Out    => EdgeDirection.In
-      case EdgeDirection.Either => EdgeDirection.Either
-      case EdgeDirection.Both   => EdgeDirection.Both
-    }
+  def reverse: EdgeDirection = this match {
+    case EdgeDirection.In     => EdgeDirection.Out
+    case EdgeDirection.Out    => EdgeDirection.In
+    case EdgeDirection.Either => EdgeDirection.Either
+    case EdgeDirection.Both   => EdgeDirection.Both
+  }
 
   override def toString: String = "EdgeDirection." + name
 
-  override def equals(o: Any): Boolean =
-    o match {
-      case other: EdgeDirection => other.name == name
-      case _                    => false
-    }
+  override def equals(o: Any): Boolean = o match {
+    case other: EdgeDirection => other.name == name
+    case _                    => false
+  }
 
   override def hashCode: Int = name.hashCode
 }

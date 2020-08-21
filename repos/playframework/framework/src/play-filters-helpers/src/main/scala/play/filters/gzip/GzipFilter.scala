@@ -53,16 +53,15 @@ class GzipFilter @Inject() (config: GzipFilterConfig)(implicit
       mat: Materializer) =
     this(GzipFilterConfig(bufferSize, chunkedThreshold, shouldGzip))
 
-  def apply(next: EssentialAction) =
-    new EssentialAction {
-      def apply(request: RequestHeader) = {
-        if (mayCompress(request)) {
-          next(request).mapFuture(result => handleResult(request, result))
-        } else {
-          next(request)
-        }
+  def apply(next: EssentialAction) = new EssentialAction {
+    def apply(request: RequestHeader) = {
+      if (mayCompress(request)) {
+        next(request).mapFuture(result => handleResult(request, result))
+      } else {
+        next(request)
       }
     }
+  }
 
   private def handleResult(
       request: RequestHeader,
@@ -151,8 +150,9 @@ class GzipFilter @Inject() (config: GzipFilterConfig)(implicit
 
   private def gzipIsAcceptedAndPreferredBy(request: RequestHeader) = {
     val codings = acceptHeader(request.headers, ACCEPT_ENCODING)
-    def explicitQValue(coding: String) =
-      codings collectFirst { case (q, c) if c equalsIgnoreCase coding => q }
+    def explicitQValue(coding: String) = codings collectFirst {
+      case (q, c) if c equalsIgnoreCase coding => q
+    }
     def defaultQValue(coding: String) = if (coding == "identity") 0.001d else 0d
     def qvalue(coding: String) =
       explicitQValue(coding) orElse explicitQValue("*") getOrElse defaultQValue(
@@ -268,11 +268,10 @@ class GzipFilterConfigProvider @Inject() (config: Configuration)
   * The gzip filter module.
   */
 class GzipFilterModule extends Module {
-  def bindings(environment: Environment, configuration: Configuration) =
-    Seq(
-      bind[GzipFilterConfig].toProvider[GzipFilterConfigProvider],
-      bind[GzipFilter].toSelf
-    )
+  def bindings(environment: Environment, configuration: Configuration) = Seq(
+    bind[GzipFilterConfig].toProvider[GzipFilterConfigProvider],
+    bind[GzipFilter].toSelf
+  )
 }
 
 /**

@@ -7,8 +7,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.ScExpression
   * @author Nikolay.Tropin
   */
 class ZeroIndexToHeadInspection extends OperationOnCollectionInspection {
-  override def possibleSimplificationTypes: Array[SimplificationType] =
-    Array(ZeroIndexToHead)
+  override def possibleSimplificationTypes: Array[SimplificationType] = Array(
+    ZeroIndexToHead)
 }
 
 object ZeroIndexToHead extends SimplificationType() {

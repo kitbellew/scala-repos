@@ -32,25 +32,24 @@ private[v2] object InfoEmbedResolver {
   def resolveApp(embed: Set[String]): Set[AppInfo.Embed] = {
     def mapEmbedStrings(
         prefix: String,
-        withoutPrefix: String): Set[AppInfo.Embed] =
-      withoutPrefix match {
-        case EmbedTasks =>
-          Set(AppInfo.Embed.Tasks, /* deprecated */ AppInfo.Embed.Deployments)
-        case EmbedTasksAndFailures =>
-          log.warn(s"Using deprecated embed=s$prefix$withoutPrefix. " +
-            s"Use ${prefix}tasks, ${prefix}lastTaskFailure, ${prefix}deployments instead.")
-          Set(
-            AppInfo.Embed.Tasks,
-            AppInfo.Embed.LastTaskFailure,
-            AppInfo.Embed.Deployments)
-        case EmbedDeployments     => Set(AppInfo.Embed.Deployments)
-        case EmbedLastTaskFailure => Set(AppInfo.Embed.LastTaskFailure)
-        case EmbedCounts          => Set(AppInfo.Embed.Counts)
-        case EmbedTaskStats       => Set(AppInfo.Embed.TaskStats)
-        case unknown: String =>
-          log.warn(s"unknown app embed argument: $prefix$unknown")
-          Set.empty
-      }
+        withoutPrefix: String): Set[AppInfo.Embed] = withoutPrefix match {
+      case EmbedTasks =>
+        Set(AppInfo.Embed.Tasks, /* deprecated */ AppInfo.Embed.Deployments)
+      case EmbedTasksAndFailures =>
+        log.warn(s"Using deprecated embed=s$prefix$withoutPrefix. " +
+          s"Use ${prefix}tasks, ${prefix}lastTaskFailure, ${prefix}deployments instead.")
+        Set(
+          AppInfo.Embed.Tasks,
+          AppInfo.Embed.LastTaskFailure,
+          AppInfo.Embed.Deployments)
+      case EmbedDeployments     => Set(AppInfo.Embed.Deployments)
+      case EmbedLastTaskFailure => Set(AppInfo.Embed.LastTaskFailure)
+      case EmbedCounts          => Set(AppInfo.Embed.Counts)
+      case EmbedTaskStats       => Set(AppInfo.Embed.TaskStats)
+      case unknown: String =>
+        log.warn(s"unknown app embed argument: $prefix$unknown")
+        Set.empty
+    }
 
     def separatePrefix(embedMe: String): (String, String) = {
       val removablePrefix =

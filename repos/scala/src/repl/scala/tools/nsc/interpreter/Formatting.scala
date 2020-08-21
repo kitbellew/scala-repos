@@ -24,15 +24,14 @@ class Formatting(indent: Int) {
   /** Indent some code by the width of the scala> prompt.
     *  This way, compiler error messages read better.
     */
-  def indentCode(code: String) =
-    stringFromWriter(str =>
-      for (line <- code.lines) {
-        if (indenting(code)) str print indentation
-        str println line
-        str.flush()
-      })
+  def indentCode(code: String) = stringFromWriter(str =>
+    for (line <- code.lines) {
+      if (indenting(code)) str print indentation
+      str println line
+      str.flush()
+    })
 }
 object Formatting {
-  def forPrompt(prompt: String) =
-    new Formatting(prompt.lines.toList.last.length)
+  def forPrompt(prompt: String) = new Formatting(
+    prompt.lines.toList.last.length)
 }

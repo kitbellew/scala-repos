@@ -51,9 +51,9 @@ class ScInterpolatedStringLiteralImpl(node: ASTNode)
 
   override def isString: Boolean = true
 
-  override def getValue: AnyRef =
-    findChildByClassScala(classOf[ScLiteralImpl]) match {
-      case literal: ScLiteralImpl => literal.getValue
-      case _                      => ""
-    }
+  override def getValue: AnyRef = findChildByClassScala(
+    classOf[ScLiteralImpl]) match {
+    case literal: ScLiteralImpl => literal.getValue
+    case _                      => ""
+  }
 }

@@ -158,15 +158,14 @@ class Ticket1978AES256CounterInetRNGSpec
     with InetRNGSpec
 
 trait InetRNGSpec { this: Ticket1978CommunicationSpec ⇒
-  override def preCondition =
-    try {
-      (new RandomDotOrgSeedGenerator).generateSeed(128)
-      true
-    } catch {
-      case NonFatal(e) ⇒
-        log.warning("random.org not available: {}", e.getMessage())
-        false
-    }
+  override def preCondition = try {
+    (new RandomDotOrgSeedGenerator).generateSeed(128)
+    true
+  } catch {
+    case NonFatal(e) ⇒
+      log.warning("random.org not available: {}", e.getMessage())
+      false
+  }
 
   override implicit val timeout: Timeout = Timeout(90.seconds)
 }

@@ -25,8 +25,7 @@ object B extends Build {
       Nil
 
   def incSample = sample <<= sample in newConfig apply (_ + 1)
-  def checkTask(expected: Int) =
-    check <<= sample in newConfig map (i =>
-      assert(i == expected, "Expected " + expected + ", got " + i))
+  def checkTask(expected: Int) = check <<= sample in newConfig map (i =>
+    assert(i == expected, "Expected " + expected + ", got " + i))
 
 }

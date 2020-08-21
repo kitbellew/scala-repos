@@ -36,8 +36,8 @@ private[akka] abstract class SourceModule[+Out, +Mat](
   protected def newInstance(
       shape: SourceShape[Out] @uncheckedVariance): SourceModule[Out, Mat]
 
-  override def carbonCopy: AtomicModule =
-    newInstance(SourceShape(shape.out.carbonCopy()))
+  override def carbonCopy: AtomicModule = newInstance(
+    SourceShape(shape.out.carbonCopy()))
 
   protected def amendShape(attr: Attributes): SourceShape[Out] = {
     val thisN = attributes.nameOrDefault(null)

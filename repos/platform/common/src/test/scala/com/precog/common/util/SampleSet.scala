@@ -189,162 +189,151 @@ object AdSamples {
 
   def defaultSample = adCampaignSample
 
-  def adCampaignSample =
-    for {
-      gender <- oneOf(genders)
-      plat <- exponentialIndex(platforms.size).map { platforms(_) }
-      camp <- gaussianIndex(campaigns.size).map { campaigns(_) }
-      cpm <- chooseNum(1, 100)
-      ageRange <- gaussianIndex(ageRangeArrays.size).map { ageRangeArrays(_) }
-    } yield {
-      JObject(
-        Map(
-          "gender" -> JString(gender),
-          "platform" -> JString(plat),
-          "campaign" -> JString(camp),
-          "cpm" -> JNum(cpm),
-          "ageRange" -> ageRange
-        )
+  def adCampaignSample = for {
+    gender <- oneOf(genders)
+    plat <- exponentialIndex(platforms.size).map { platforms(_) }
+    camp <- gaussianIndex(campaigns.size).map { campaigns(_) }
+    cpm <- chooseNum(1, 100)
+    ageRange <- gaussianIndex(ageRangeArrays.size).map { ageRangeArrays(_) }
+  } yield {
+    JObject(
+      Map(
+        "gender" -> JString(gender),
+        "platform" -> JString(plat),
+        "campaign" -> JString(camp),
+        "cpm" -> JNum(cpm),
+        "ageRange" -> ageRange
       )
-    }
+    )
+  }
 
-  def adOrganizationSample =
-    for {
-      emps <- oneOf(employees)
-      rev <- oneOf(revenue)
-      cat <- oneOf(category)
-      camp <- gaussianIndex(campaigns.size).map { campaigns(_) }
-    } yield {
-      JObject(
-        Map(
-          "employees" -> JString(emps),
-          "revenue" -> JString(rev),
-          "category" -> JString(cat),
-          "campaign" -> JString(camp)
-        )
+  def adOrganizationSample = for {
+    emps <- oneOf(employees)
+    rev <- oneOf(revenue)
+    cat <- oneOf(category)
+    camp <- gaussianIndex(campaigns.size).map { campaigns(_) }
+  } yield {
+    JObject(
+      Map(
+        "employees" -> JString(emps),
+        "revenue" -> JString(rev),
+        "category" -> JString(cat),
+        "campaign" -> JString(camp)
       )
-    }
+    )
+  }
 
-  def interactionSample =
-    for {
-      time <- earlierTimeFrame
-      tz <- oneOf(timeZone)
-      ts <- ISO8601(time, tz)
-      pid <- oneOf(pageId)
-      uid <- oneOf(userId)
-    } yield {
-      JObject(
-        Map(
-          "time" -> JNum(time),
-          "timeZone" -> JString(tz),
-          "timeString" -> JString(toISO8601(time, tz)),
-          "pageId" -> JString(pid),
-          "userId" -> JString(uid)
-        )
+  def interactionSample = for {
+    time <- earlierTimeFrame
+    tz <- oneOf(timeZone)
+    ts <- ISO8601(time, tz)
+    pid <- oneOf(pageId)
+    uid <- oneOf(userId)
+  } yield {
+    JObject(
+      Map(
+        "time" -> JNum(time),
+        "timeZone" -> JString(tz),
+        "timeString" -> JString(toISO8601(time, tz)),
+        "pageId" -> JString(pid),
+        "userId" -> JString(uid)
       )
-    }
+    )
+  }
 
-  def interactionSample2 =
-    for {
-      time <- laterTimeFrame
-      tz <- oneOf(timeZone)
-      pid <- oneOf(pageId)
-      uid <- oneOf(userId)
-    } yield {
-      JObject(
-        Map(
-          "time" -> JNum(time),
-          "timeZone" -> JString(tz),
-          "pageId" -> JString(pid),
-          "userId" -> JString(uid)
-        )
+  def interactionSample2 = for {
+    time <- laterTimeFrame
+    tz <- oneOf(timeZone)
+    pid <- oneOf(pageId)
+    uid <- oneOf(userId)
+  } yield {
+    JObject(
+      Map(
+        "time" -> JNum(time),
+        "timeZone" -> JString(tz),
+        "pageId" -> JString(pid),
+        "userId" -> JString(uid)
       )
-    }
+    )
+  }
 
-  def eventsSample =
-    for {
-      time <- ISO8601(laterTimeFrame, oneOf(timeZone))
-      platform <- oneOf(platforms)
-      eventName <- oneOf(eventNames)
-    } yield {
-      JObject(
-        Map(
-          "time" -> JString(time),
-          "platform" -> JString(platform),
-          "eventName" -> JString(eventName)
-        )
+  def eventsSample = for {
+    time <- ISO8601(laterTimeFrame, oneOf(timeZone))
+    platform <- oneOf(platforms)
+    eventName <- oneOf(eventNames)
+  } yield {
+    JObject(
+      Map(
+        "time" -> JString(time),
+        "platform" -> JString(platform),
+        "eventName" -> JString(eventName)
       )
-    }
+    )
+  }
 
-  def usersSample =
-    for {
-      age <- chooseNum(18, 100)
-      income <- chooseNum(10, 250).map { _ * 1000 }
-      state <- oneOf(states)
-    } yield {
-      JObject(
-        Map(
-          "age" -> JNum(age),
-          "income" -> JNum(income),
-          "location" -> JObject(Map("state" -> JString(state)))
-        )
+  def usersSample = for {
+    age <- chooseNum(18, 100)
+    income <- chooseNum(10, 250).map { _ * 1000 }
+    state <- oneOf(states)
+  } yield {
+    JObject(
+      Map(
+        "age" -> JNum(age),
+        "income" -> JNum(income),
+        "location" -> JObject(Map("state" -> JString(state)))
       )
-    }
+    )
+  }
 
-  def ordersSample =
-    for {
-      userId <- chooseNum(12345, 12545)
-      taxRate <- chooseNum(70, 110).map { _.toDouble / 100 }
-      subTotal <- chooseNum(123, 11145).map { _.toDouble / 100 }
-      shipping <- oneOf(shippingRates)
-      handling <- oneOf(handlingCharges)
-      val total = subTotal * taxRate + shipping + handling
-    } yield {
-      JObject(
-        Map(
-          "userId" -> JNum(userId),
-          "total" -> JNum(total),
-          "taxRate" -> JNum(taxRate),
-          "subTotal" -> JNum(subTotal),
-          "shipping" -> JNum(shipping),
-          "handling" -> JNum(handling)
-        )
+  def ordersSample = for {
+    userId <- chooseNum(12345, 12545)
+    taxRate <- chooseNum(70, 110).map { _.toDouble / 100 }
+    subTotal <- chooseNum(123, 11145).map { _.toDouble / 100 }
+    shipping <- oneOf(shippingRates)
+    handling <- oneOf(handlingCharges)
+    val total = subTotal * taxRate + shipping + handling
+  } yield {
+    JObject(
+      Map(
+        "userId" -> JNum(userId),
+        "total" -> JNum(total),
+        "taxRate" -> JNum(taxRate),
+        "subTotal" -> JNum(subTotal),
+        "shipping" -> JNum(shipping),
+        "handling" -> JNum(handling)
       )
-    }
+    )
+  }
 
-  def recipientsSample =
-    listOfN(2, oneOf(departments)).map { list =>
-      JArray(list.map { JString(_) })
-    }
+  def recipientsSample = listOfN(2, oneOf(departments)).map { list =>
+    JArray(list.map { JString(_) })
+  }
 
-  def paymentsSample =
-    for {
-      date <- earlierTimeFrame
-      recipients <- recipientsSample
-      amount <- chooseNum(500, 5000).map(_.toDouble / 100)
-    } yield {
-      JObject(
-        Map(
-          "date" -> JNum(date),
-          "recipients" -> recipients,
-          "amount" -> JNum(amount)))
-    }
+  def paymentsSample = for {
+    date <- earlierTimeFrame
+    recipients <- recipientsSample
+    amount <- chooseNum(500, 5000).map(_.toDouble / 100)
+  } yield {
+    JObject(
+      Map(
+        "date" -> JNum(date),
+        "recipients" -> recipients,
+        "amount" -> JNum(amount)))
+  }
 
-  def pageViewsSample =
-    for {
-      duration <- chooseNum(1, 300)
-      userId <- chooseNum(12345, 12360)
-    } yield {
-      JObject(Map("duration" -> JNum(duration), "userId" -> JNum(userId)))
-    }
+  def pageViewsSample = for {
+    duration <- chooseNum(1, 300)
+    userId <- chooseNum(12345, 12360)
+  } yield {
+    JObject(Map("duration" -> JNum(duration), "userId" -> JNum(userId)))
+  }
 
-  def customersSample =
-    for {
-      userId <- chooseNum(12345, 12545)
-      income <- chooseNum(10, 250).map(_ * 1000)
-    } yield {
-      JObject(Map("userId" -> JNum(userId), "income" -> JNum(income)))
-    }
+  def customersSample = for {
+    userId <- chooseNum(12345, 12545)
+    income <- chooseNum(10, 250).map(_ * 1000)
+  } yield {
+    JObject(Map("userId" -> JNum(userId), "income" -> JNum(income)))
+  }
 
   def emptyObjectSample = JObject(List())
 
@@ -354,25 +343,22 @@ object AdSamples {
 
   val millisPerDay: Long = 24L * 60 * 60 * 1000
 
-  def earlierTimeFrame =
-    chooseNum(
-      System.currentTimeMillis - (20 * millisPerDay),
-      System.currentTimeMillis - (10 * millisPerDay))
-  def laterTimeFrame =
-    chooseNum(
-      System.currentTimeMillis - (10 * millisPerDay),
-      System.currentTimeMillis)
+  def earlierTimeFrame = chooseNum(
+    System.currentTimeMillis - (20 * millisPerDay),
+    System.currentTimeMillis - (10 * millisPerDay))
+  def laterTimeFrame = chooseNum(
+    System.currentTimeMillis - (10 * millisPerDay),
+    System.currentTimeMillis)
 
-  def ISO8601(timeGen: Gen[Long], timeZoneGen: Gen[String]) =
-    for {
-      time <- timeGen
-      tz <- timeZoneGen
-    } yield {
-      val format = ISODateTimeFormat.dateTime()
-      val timeZone = DateTimeZone.forID(tz.toString)
-      val dateTime = new DateTime(time, timeZone)
-      format.print(dateTime)
-    }
+  def ISO8601(timeGen: Gen[Long], timeZoneGen: Gen[String]) = for {
+    time <- timeGen
+    tz <- timeZoneGen
+  } yield {
+    val format = ISODateTimeFormat.dateTime()
+    val timeZone = DateTimeZone.forID(tz.toString)
+    val dateTime = new DateTime(time, timeZone)
+    format.print(dateTime)
+  }
 
   def toISO8601(time: Long, tz: String): String = {
     val format = ISODateTimeFormat.dateTime()

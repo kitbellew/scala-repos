@@ -68,11 +68,10 @@ object StatsFilter {
   def typeAgnostic(
       statsReceiver: StatsReceiver,
       exceptionStatsHandler: ExceptionStatsHandler
-  ): TypeAgnostic =
-    new TypeAgnostic {
-      override def toFilter[Req, Rep]: Filter[Req, Rep, Req, Rep] =
-        new StatsFilter[Req, Rep](statsReceiver, exceptionStatsHandler)
-    }
+  ): TypeAgnostic = new TypeAgnostic {
+    override def toFilter[Req, Rep]: Filter[Req, Rep, Req, Rep] =
+      new StatsFilter[Req, Rep](statsReceiver, exceptionStatsHandler)
+  }
 }
 
 /**
@@ -108,12 +107,11 @@ class StatsFilter[Req, Rep](
       statsReceiver: StatsReceiver,
       exceptionStatsHandler: ExceptionStatsHandler,
       timeUnit: TimeUnit
-  ) =
-    this(
-      statsReceiver,
-      ResponseClassifier.Default,
-      exceptionStatsHandler,
-      timeUnit)
+  ) = this(
+    statsReceiver,
+    ResponseClassifier.Default,
+    exceptionStatsHandler,
+    timeUnit)
 
   def this(
       statsReceiver: StatsReceiver,
@@ -144,21 +142,19 @@ class StatsFilter[Req, Rep](
   private[this] val outstandingRequestCountGauge =
     statsReceiver.addGauge("pending") { outstandingRequestCount.sum() }
 
-  private[this] def isBlackholeResponse(rep: Try[Rep]): Boolean =
-    rep match {
-      case Throw(BackupRequestLost) | Throw(
-            WriteException(BackupRequestLost)) =>
-        // We blackhole this request. It doesn't count for anything.
-        // After the Failure() patch, this should no longer need to
-        // be a special case.
-        //
-        // In theory, we should probably unwind the whole cause
-        // chain to look for a BackupRequestLost, but in practice it
-        // is wrapped only once.
-        true
-      case _ =>
-        false
-    }
+  private[this] def isBlackholeResponse(rep: Try[Rep]): Boolean = rep match {
+    case Throw(BackupRequestLost) | Throw(WriteException(BackupRequestLost)) =>
+      // We blackhole this request. It doesn't count for anything.
+      // After the Failure() patch, this should no longer need to
+      // be a special case.
+      //
+      // In theory, we should probably unwind the whole cause
+      // chain to look for a BackupRequestLost, but in practice it
+      // is wrapped only once.
+      true
+    case _ =>
+      false
+  }
 
   def apply(request: Req, service: Service[Req, Rep]): Future[Rep] = {
     val elapsed = Stopwatch.start()

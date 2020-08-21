@@ -45,12 +45,11 @@ private[spark] object JavaUtils {
 
     override def size: Int = underlying.size
 
-    override def get(key: AnyRef): B =
-      try {
-        underlying.getOrElse(key.asInstanceOf[A], null.asInstanceOf[B])
-      } catch {
-        case ex: ClassCastException => null.asInstanceOf[B]
-      }
+    override def get(key: AnyRef): B = try {
+      underlying.getOrElse(key.asInstanceOf[A], null.asInstanceOf[B])
+    } catch {
+      case ex: ClassCastException => null.asInstanceOf[B]
+    }
 
     override def entrySet: ju.Set[ju.Map.Entry[A, B]] =
       new ju.AbstractSet[ju.Map.Entry[A, B]] {
@@ -73,12 +72,10 @@ private[spark] object JavaUtils {
                 override def setValue(v1: B): B = self.put(k, v1)
                 override def hashCode: Int =
                   byteswap32(k.hashCode) + (byteswap32(v.hashCode) << 16)
-                override def equals(other: Any): Boolean =
-                  other match {
-                    case e: ju.Map.Entry[_, _] =>
-                      k == e.getKey && v == e.getValue
-                    case _ => false
-                  }
+                override def equals(other: Any): Boolean = other match {
+                  case e: ju.Map.Entry[_, _] => k == e.getKey && v == e.getValue
+                  case _                     => false
+                }
               }
             }
 

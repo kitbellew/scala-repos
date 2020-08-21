@@ -42,8 +42,8 @@ object NewInstanceInjector extends Injector {
   /**
     * Get an instance of the given class from the injector.
     */
-  def instanceOf[T](implicit ct: ClassTag[T]) =
-    instanceOf(ct.runtimeClass.asInstanceOf[Class[T]])
+  def instanceOf[T](implicit ct: ClassTag[T]) = instanceOf(
+    ct.runtimeClass.asInstanceOf[Class[T]])
 
   /**
     * Get an instance of the given class from the injector.
@@ -83,8 +83,8 @@ class SimpleInjector(
   /**
     * Get an instance of the given class from the injector.
     */
-  def instanceOf[T](implicit ct: ClassTag[T]) =
-    instanceOf(ct.runtimeClass.asInstanceOf[Class[T]])
+  def instanceOf[T](implicit ct: ClassTag[T]) = instanceOf(
+    ct.runtimeClass.asInstanceOf[Class[T]])
 
   /**
     * Get an instance of the given class from the injector.

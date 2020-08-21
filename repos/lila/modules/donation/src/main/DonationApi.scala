@@ -35,24 +35,22 @@ final class DonationApi(
   private val decentAmount = BSONDocument(
     "gross" -> BSONDocument("$gte" -> BSONInteger(minAmount)))
 
-  def list(nb: Int) =
-    coll
-      .find(decentAmount)
-      .sort(BSONDocument("date" -> -1))
-      .cursor[Donation]()
-      .collect[List](nb)
+  def list(nb: Int) = coll
+    .find(decentAmount)
+    .sort(BSONDocument("date" -> -1))
+    .cursor[Donation]()
+    .collect[List](nb)
 
-  def top(nb: Int): Fu[List[lila.user.User.ID]] =
-    coll
-      .aggregate(
-        Match(BSONDocument("userId" -> BSONDocument("$exists" -> true))),
-        List(
-          GroupField("userId")("total" -> SumField("net")),
-          Sort(Descending("total")),
-          Limit(nb)))
-      .map {
-        _.documents.flatMap { _.getAs[String]("_id") }
-      }
+  def top(nb: Int): Fu[List[lila.user.User.ID]] = coll
+    .aggregate(
+      Match(BSONDocument("userId" -> BSONDocument("$exists" -> true))),
+      List(
+        GroupField("userId")("total" -> SumField("net")),
+        Sort(Descending("total")),
+        Limit(nb)))
+    .map {
+      _.documents.flatMap { _.getAs[String]("_id") }
+    }
 
   def isDonor(userId: String) =
     if (serverDonors contains userId) fuccess(true)

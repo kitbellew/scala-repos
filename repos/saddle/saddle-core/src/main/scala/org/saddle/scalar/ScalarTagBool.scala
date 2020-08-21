@@ -55,8 +55,8 @@ object ScalarTagBool extends ScalarTag[Boolean] {
   def makeSorter(implicit ord: ORD[Boolean]): Sorter[Boolean] =
     Sorter.boolSorter
 
-  def concat(arrs: IndexedSeq[Vec[Boolean]]): Vec[Boolean] =
-    Vec(array.flatten(arrs.map(_.toArray)))
+  def concat(arrs: IndexedSeq[Vec[Boolean]]): Vec[Boolean] = Vec(
+    array.flatten(arrs.map(_.toArray)))
 
   override def toString = "ScalarTagBool"
 }

@@ -18,8 +18,8 @@ class SbtConfigurationType extends ConfigurationType {
 
   def getDisplayName: String = SbtBundle("sbt.runner.displayName")
 
-  def getConfigurationTypeDescription: String =
-    SbtBundle("sbt.runner.description")
+  def getConfigurationTypeDescription: String = SbtBundle(
+    "sbt.runner.description")
 
   def getConfigurationFactories: Array[ConfigurationFactory] =
     Array[ConfigurationFactory](confFactory)

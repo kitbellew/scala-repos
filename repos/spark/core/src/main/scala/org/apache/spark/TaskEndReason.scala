@@ -156,10 +156,9 @@ case class ExceptionFailure(
     this(e, accumUpdates, preserveCause = true)
   }
 
-  def exception: Option[Throwable] =
-    exceptionWrapper.flatMap { (w: ThrowableSerializationWrapper) =>
-      Option(w.exception)
-    }
+  def exception: Option[Throwable] = exceptionWrapper.flatMap {
+    (w: ThrowableSerializationWrapper) => Option(w.exception)
+  }
 
   override def toErrorString: String =
     if (fullStackTrace == null) {
@@ -234,9 +233,9 @@ case object TaskKilled extends TaskFailedReason {
 @DeveloperApi
 case class TaskCommitDenied(jobID: Int, partitionID: Int, attemptNumber: Int)
     extends TaskFailedReason {
-  override def toErrorString: String =
-    s"TaskCommitDenied (Driver denied task commit)" +
-      s" for job: $jobID, partition: $partitionID, attemptNumber: $attemptNumber"
+  override def toErrorString
+      : String = s"TaskCommitDenied (Driver denied task commit)" +
+    s" for job: $jobID, partition: $partitionID, attemptNumber: $attemptNumber"
 
   /**
     * If a task failed because its attempt to commit was denied, do not count this failure

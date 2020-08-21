@@ -41,8 +41,8 @@ object FloatProperty {
     * @param value the initial value
     * @return      the observable instance
     */
-  def apply(value: Float) =
-    new FloatProperty(new jfxbp.SimpleFloatProperty(value))
+  def apply(value: Float) = new FloatProperty(
+    new jfxbp.SimpleFloatProperty(value))
 }
 
 class FloatProperty(

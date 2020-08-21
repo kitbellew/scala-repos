@@ -25,16 +25,15 @@ object PlayApp {
   def withApp[A](op: Application => A): A =
     Play.maybeApplication map op err "Play application is not started!"
 
-  def system =
-    withApp { implicit app =>
-      play.api.libs.concurrent.Akka.system
-    }
+  def system = withApp { implicit app =>
+    play.api.libs.concurrent.Akka.system
+  }
 
   lazy val langs =
     loadConfig.getStringList("play.i18n.langs").toList map Lang.apply
 
-  protected def loadMessages(file: String): Map[String, String] =
-    withApp { app =>
+  protected def loadMessages(file: String): Map[String, String] = withApp {
+    app =>
       import scala.collection.JavaConverters._
       import play.utils.Resources
       app.classloader
@@ -49,7 +48,7 @@ object PlayApp {
             .fold(e => throw e, identity)
         }
         .foldLeft(Map.empty[String, String]) { _ ++ _ }
-    }
+  }
 
   lazy val messages: Map[String, Map[String, String]] =
     langs
@@ -64,14 +63,13 @@ object PlayApp {
   private def enableScheduler =
     !(loadConfig getBoolean "app.scheduler.disabled")
 
-  def scheduler =
-    new Scheduler(
-      system.scheduler,
-      enabled = enableScheduler && isServer,
-      debug = loadConfig getBoolean "app.scheduler.debug")
+  def scheduler = new Scheduler(
+    system.scheduler,
+    enabled = enableScheduler && isServer,
+    debug = loadConfig getBoolean "app.scheduler.debug")
 
-  def lifecycle =
-    withApp(_.injector.instanceOf[play.api.inject.ApplicationLifecycle])
+  def lifecycle = withApp(
+    _.injector.instanceOf[play.api.inject.ApplicationLifecycle])
 
   lazy val isDev = isMode(_.Dev)
   lazy val isTest = isMode(_.Test)

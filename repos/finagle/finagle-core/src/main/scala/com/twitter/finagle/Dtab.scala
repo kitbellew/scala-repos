@@ -107,15 +107,14 @@ case class Dtab(dentries0: IndexedSeq[Dentry]) extends IndexedSeq[Dentry] {
     * @todo dedup equivalent entries so that only the last entry is retained
     * @todo collapse entries with common prefixes
     */
-  def simplified: Dtab =
-    Dtab({
-      val simple = this map { case Dentry(prefix, dst) =>
-        Dentry(prefix, dst.simplified)
-      }
+  def simplified: Dtab = Dtab({
+    val simple = this map { case Dentry(prefix, dst) =>
+      Dentry(prefix, dst.simplified)
+    }
 
-      // Negative destinations are no-ops
-      simple.filter(_.dst != NameTree.Neg)
-    })
+    // Negative destinations are no-ops
+    simple.filter(_.dst != NameTree.Neg)
+  })
 
   def show: String = dentries0 map (_.show) mkString ";"
   override def toString = "Dtab(" + show + ")"
@@ -149,11 +148,10 @@ object Dentry {
   val nop: Dentry = Dentry(Path.Utf8("/"), NameTree.Neg)
 
   implicit val equiv: Equiv[Dentry] = new Equiv[Dentry] {
-    def equiv(d1: Dentry, d2: Dentry): Boolean =
-      (
-        d1.prefix == d2.prefix &&
-          d1.dst.simplified == d2.dst.simplified
-      )
+    def equiv(d1: Dentry, d2: Dentry): Boolean = (
+      d1.prefix == d2.prefix &&
+        d1.dst.simplified == d2.dst.simplified
+    )
   }
 }
 
@@ -162,11 +160,10 @@ object Dentry {
   */
 object Dtab {
   implicit val equiv: Equiv[Dtab] = new Equiv[Dtab] {
-    def equiv(d1: Dtab, d2: Dtab): Boolean =
-      (
-        d1.size == d2.size &&
-          d1.zip(d2).forall { case (de1, de2) => Equiv[Dentry].equiv(de1, de2) }
-      )
+    def equiv(d1: Dtab, d2: Dtab): Boolean = (
+      d1.size == d2.size &&
+        d1.zip(d2).forall { case (de1, de2) => Equiv[Dentry].equiv(de1, de2) }
+    )
   }
 
   /**
@@ -208,11 +205,10 @@ object Dtab {
     * defined for the entire request graph, so that a local dtab
     * defined here will apply to downstream services as well.
     */
-  def local: Dtab =
-    l() match {
-      case Some(dtab) => dtab
-      case None       => Dtab.empty
-    }
+  def local: Dtab = l() match {
+    case Some(dtab) => dtab
+    case None       => Dtab.empty
+  }
   def local_=(dtab: Dtab) { l() = dtab }
 
   /**

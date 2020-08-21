@@ -48,16 +48,14 @@ trait ListSteroids {
   import scala.util.{Try, Success}
 
   implicit final class LilaPimpedTryList[A](list: List[Try[A]]) {
-    def sequence: Try[List[A]] =
-      (Try(List[A]()) /: list) { (a, b) =>
-        a flatMap (c => b map (d => d :: c))
-      } map (_.reverse)
+    def sequence: Try[List[A]] = (Try(List[A]()) /: list) { (a, b) =>
+      a flatMap (c => b map (d => d :: c))
+    } map (_.reverse)
   }
   implicit final class LilaPimpedList[A](list: List[A]) {
-    def sortLike[B](other: List[B], f: A => B): List[A] =
-      list.sortWith { case (x, y) =>
-        other.indexOf(f(x)) < other.indexOf(f(y))
-      }
+    def sortLike[B](other: List[B], f: A => B): List[A] = list.sortWith {
+      case (x, y) => other.indexOf(f(x)) < other.indexOf(f(y))
+    }
   }
 }
 
@@ -91,11 +89,10 @@ trait OptionSteroids {
 
     import scalaz.std.{option => o}
 
-    def fold[X](some: A => X, none: => X): X =
-      self match {
-        case None    => none
-        case Some(a) => some(a)
-      }
+    def fold[X](some: A => X, none: => X): X = self match {
+      case None    => none
+      case Some(a) => some(a)
+    }
 
     def |(a: => A): A = self getOrElse a
 

@@ -77,8 +77,8 @@ class ScTypeProjectionImpl(node: ASTNode)
       }
   }
 
-  def bindToElement(p1: PsiElement) =
-    throw new IncorrectOperationException("NYI")
+  def bindToElement(p1: PsiElement) = throw new IncorrectOperationException(
+    "NYI")
   def nameId = findChildByType[PsiElement](ScalaTokenTypes.tIDENTIFIER)
   def qualifier = None
 
@@ -114,13 +114,12 @@ class ScTypeProjectionImpl(node: ASTNode)
     res
   }
 
-  def getSameNameVariants: Array[ResolveResult] =
-    doResolve(
-      new CompletionProcessor(
-        getKinds(incomplete = true),
-        this,
-        false,
-        Some(refName)))
+  def getSameNameVariants: Array[ResolveResult] = doResolve(
+    new CompletionProcessor(
+      getKinds(incomplete = true),
+      this,
+      false,
+      Some(refName)))
 
   override def accept(visitor: ScalaElementVisitor) {
     visitor.visitTypeProjection(this)

@@ -409,8 +409,8 @@ object Character {
   @inline private[this] def isLetterOrDigitImpl(tpe: Int): scala.Boolean =
     isDigitImpl(tpe) || isLetterImpl(tpe)
 
-  def isJavaLetter(ch: scala.Char): scala.Boolean =
-    isJavaLetterImpl(getType(ch))
+  def isJavaLetter(ch: scala.Char): scala.Boolean = isJavaLetterImpl(
+    getType(ch))
 
   @inline private[this] def isJavaLetterImpl(tpe: Int): scala.Boolean = {
     isLetterImpl(tpe) || tpe == LETTER_NUMBER || tpe == CURRENCY_SYMBOL ||

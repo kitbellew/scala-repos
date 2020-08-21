@@ -70,13 +70,12 @@ object PlayerRepo {
         selectTourUser(tourId, userId) ++ selectActive
       )) map (0 !=)
 
-  def unWithdraw(tourId: String) =
-    coll
-      .update(
-        selectTour(tourId) ++ selectWithdraw,
-        BSONDocument("$unset" -> BSONDocument("w" -> true)),
-        multi = true)
-      .void
+  def unWithdraw(tourId: String) = coll
+    .update(
+      selectTour(tourId) ++ selectWithdraw,
+      BSONDocument("$unset" -> BSONDocument("w" -> true)),
+      multi = true)
+    .void
 
   def find(tourId: String, userId: String): Fu[Option[Player]] =
     coll.find(selectTourUser(tourId, userId)).one[Player]
@@ -110,12 +109,11 @@ object PlayerRepo {
       case None    => coll.insert(Player.make(tourId, user, perfLens))
     } void
 
-  def withdraw(tourId: String, userId: String) =
-    coll
-      .update(
-        selectTourUser(tourId, userId),
-        BSONDocument("$set" -> BSONDocument("w" -> true)))
-      .void
+  def withdraw(tourId: String, userId: String) = coll
+    .update(
+      selectTourUser(tourId, userId),
+      BSONDocument("$set" -> BSONDocument("w" -> true)))
+    .void
 
   def withPoints(tourId: String): Fu[List[Player]] =
     coll

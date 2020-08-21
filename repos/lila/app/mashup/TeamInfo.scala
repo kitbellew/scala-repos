@@ -49,23 +49,22 @@ object TeamInfo {
       getForumNbPosts: String => Fu[Int],
       getForumPosts: String => Fu[List[MiniForumPost]])(
       team: Team,
-      me: Option[User]): Fu[TeamInfo] =
-    for {
-      requests ← (team.enabled && me.??(m =>
-          team.isCreator(m.id))) ?? api.requestsWithUsers(team)
-      mine = me.??(m => api.belongsTo(team.id, m.id))
-      requestedByMe ← !mine ?? me.??(m => RequestRepo.exists(team.id, m.id))
-      cachable <- cache(team.id)
-      forumNbPosts ← getForumNbPosts(team.id)
-      forumPosts ← getForumPosts(team.id)
-    } yield TeamInfo(
-      mine = mine,
-      createdByMe = ~me.map(m => team.isCreator(m.id)),
-      requestedByMe = requestedByMe,
-      requests = requests,
-      bestUserIds = cachable.bestUserIds,
-      toints = cachable.toints,
-      forumNbPosts = forumNbPosts,
-      forumPosts = forumPosts
-    )
+      me: Option[User]): Fu[TeamInfo] = for {
+    requests ← (team.enabled && me.??(m =>
+        team.isCreator(m.id))) ?? api.requestsWithUsers(team)
+    mine = me.??(m => api.belongsTo(team.id, m.id))
+    requestedByMe ← !mine ?? me.??(m => RequestRepo.exists(team.id, m.id))
+    cachable <- cache(team.id)
+    forumNbPosts ← getForumNbPosts(team.id)
+    forumPosts ← getForumPosts(team.id)
+  } yield TeamInfo(
+    mine = mine,
+    createdByMe = ~me.map(m => team.isCreator(m.id)),
+    requestedByMe = requestedByMe,
+    requests = requests,
+    bestUserIds = cachable.bestUserIds,
+    toints = cachable.toints,
+    forumNbPosts = forumNbPosts,
+    forumPosts = forumPosts
+  )
 }

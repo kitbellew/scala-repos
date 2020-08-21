@@ -41,16 +41,15 @@ trait FamilyFormats {
     // implement by matching on the implementations and passing off to wrap
     // def write(t: T): Sexp
 
-    final def read(sexp: Sexp): T =
-      sexp match {
-        case SexpList(List(hint @ SexpSymbol(_))) => read(hint, SexpNil)
-        case SexpData(map) if map.size == 1 =>
-          map.head match {
-            case (hint, value) => read(hint, value)
-          }
+    final def read(sexp: Sexp): T = sexp match {
+      case SexpList(List(hint @ SexpSymbol(_))) => read(hint, SexpNil)
+      case SexpData(map) if map.size == 1 =>
+        map.head match {
+          case (hint, value) => read(hint, value)
+        }
 
-        case x => deserializationError(x)
-      }
+      case x => deserializationError(x)
+    }
 
     // implement by matching on the hint and passing off to convertTo[Impl]
     protected def read(hint: SexpSymbol, value: Sexp): T

@@ -53,19 +53,16 @@ class FreeTests extends CatsSuite {
 
     def tb(i: Int): FTest[Int] = Free.liftF(TB(i))
 
-    def a(i: Int): FTest[Int] =
-      for {
-        j <- tb(i)
-        z <- if (j < 10000) a(j) else Free.pure[FTestApi, Int](j)
-      } yield z
+    def a(i: Int): FTest[Int] = for {
+      j <- tb(i)
+      z <- if (j < 10000) a(j) else Free.pure[FTestApi, Int](j)
+    } yield z
 
-    def runner: FTestApi ~> Id =
-      new (FTestApi ~> Id) {
-        def apply[A](fa: FTestApi[A]): Id[A] =
-          fa match {
-            case TB(i) => i + 1
-          }
+    def runner: FTestApi ~> Id = new (FTestApi ~> Id) {
+      def apply[A](fa: FTestApi[A]): Id[A] = fa match {
+        case TB(i) => i + 1
       }
+    }
 
     assert(10000 == a(0).foldMap(runner))
   }
@@ -95,14 +92,13 @@ sealed trait FreeTestsInstances {
 
     val nextDepth = Gen.chooseNum(1, maxDepth - 1)
 
-    def withGosub =
-      for {
-        fDepth <- nextDepth
-        freeDepth <- nextDepth
-        f <- arbFunction1[A, Free[F, A]](
-          Arbitrary(freeGen[F, A](fDepth))).arbitrary
-        freeFA <- freeGen[F, A](freeDepth)
-      } yield freeFA.flatMap(f)
+    def withGosub = for {
+      fDepth <- nextDepth
+      freeDepth <- nextDepth
+      f <-
+        arbFunction1[A, Free[F, A]](Arbitrary(freeGen[F, A](fDepth))).arbitrary
+      freeFA <- freeGen[F, A](freeDepth)
+    } yield freeFA.flatMap(f)
 
     if (maxDepth <= 1) noGosub
     else Gen.oneOf(noGosub, withGosub)

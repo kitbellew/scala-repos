@@ -203,15 +203,14 @@ class IngestServiceHandler(
       Success { (apiKey: APIKey, path: Path) =>
         {
           val timestamp = clock.now()
-          def createJob: EitherT[Future, String, JobId] =
-            jobManager
-              .createJob(
-                apiKey,
-                "ingest-" + path,
-                "ingest",
-                None,
-                Some(timestamp))
-              .map(_.id)
+          def createJob: EitherT[Future, String, JobId] = jobManager
+            .createJob(
+              apiKey,
+              "ingest-" + path,
+              "ingest",
+              None,
+              Some(timestamp))
+            .map(_.id)
 
           findRequestWriteAuthorities(
             request,

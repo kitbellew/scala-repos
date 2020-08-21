@@ -55,11 +55,10 @@ trait Rand[@specialized(Int, Double) +T] { outer =>
     * An infinitely long iterator that samples repeatedly from the Rand
     * @return an iterator that repeatedly samples
     */
-  def samples: Iterator[T] =
-    new Iterator[T] {
-      def hasNext = true
-      def next() = get()
-    }
+  def samples: Iterator[T] = new Iterator[T] {
+    def hasNext = true
+    def next() = get()
+  }
 
   /**
     * Return a vector of samples.
@@ -199,46 +198,43 @@ class RandBasis(val generator: RandomGenerator) {
   /**
     * Chooses an element from a collection.
     */
-  def choose[T](c: Iterable[T]): Rand[T] =
-    new Rand[T] {
-      def draw() = {
-        val sz = uniform.get * c.size
-        val elems = c.iterator
-        var i = 1
-        var e = elems.next()
-        while (i < sz) {
-          e = elems.next()
-          i += 1
-        }
-        e
+  def choose[T](c: Iterable[T]): Rand[T] = new Rand[T] {
+    def draw() = {
+      val sz = uniform.get * c.size
+      val elems = c.iterator
+      var i = 1
+      var e = elems.next()
+      while (i < sz) {
+        e = elems.next()
+        i += 1
       }
+      e
     }
+  }
 
   def choose[T](c: Seq[T]) = Rand.randInt(c.size).map(c(_))
 
   /**
     * The trivial random generator: always returns the argument
     */
-  def always[T](t: T): Rand[T] =
-    new Rand[T] {
-      def draw = t
-    }
+  def always[T](t: T): Rand[T] = new Rand[T] {
+    def draw = t
+  }
 
   /**
     * Simply reevaluate the body every time get is called
     */
-  def fromBody[T](f: => T): Rand[T] =
-    new Rand[T] {
-      def draw = f
-    }
+  def fromBody[T](f: => T): Rand[T] = new Rand[T] {
+    def draw = f
+  }
 
   /**
     * Convert a Collection of Rand[T] into a Rand[Collection[T]]
     */
   def promote[T, CC[X] <: Traversable[X] with TraversableLike[X, CC[X]]](
       col: CC[Rand[T]])(implicit
-      cbf: CanBuildFrom[CC[Rand[T]], T, CC[T]]): Rand[CC[T]] =
-    fromBody(col.map(_.get))
+      cbf: CanBuildFrom[CC[Rand[T]], T, CC[T]]): Rand[CC[T]] = fromBody(
+    col.map(_.get))
 
   /**
     * Convert an Seq of Rand[T] into a Rand[Seq[T]]
@@ -246,8 +242,8 @@ class RandBasis(val generator: RandomGenerator) {
   def promote[U](col: Seq[Rand[U]]) = fromBody(col.map(_.get))
 
   def promote[T1, T2](t: (Rand[T1], Rand[T2])) = fromBody((t._1.get, t._2.get))
-  def promote[T1, T2, T3](t: (Rand[T1], Rand[T2], Rand[T3])) =
-    fromBody((t._1.get, t._2.get, t._3.get))
+  def promote[T1, T2, T3](t: (Rand[T1], Rand[T2], Rand[T3])) = fromBody(
+    (t._1.get, t._2.get, t._3.get))
   def promote[T1, T2, T3, T4](t: (Rand[T1], Rand[T2], Rand[T3], Rand[T4])) =
     fromBody((t._1.get, t._2.get, t._3.get, t._4.get))
 
@@ -268,18 +264,16 @@ class RandBasis(val generator: RandomGenerator) {
   /**
     * Uniformly samples an integer in [0,n)
     */
-  def randInt(n: Int): Rand[Int] =
-    new Rand[Int] {
-      def draw = generator.nextInt(n)
-    }
+  def randInt(n: Int): Rand[Int] = new Rand[Int] {
+    def draw = generator.nextInt(n)
+  }
 
   /**
     * Uniformly samples an integer in [n,m)
     */
-  def randInt(n: Int, m: Int): Rand[Int] =
-    new Rand[Int] {
-      def draw = generator.nextInt(m - n) + n
-    }
+  def randInt(n: Int, m: Int): Rand[Int] = new Rand[Int] {
+    def draw = generator.nextInt(m - n) + n
+  }
 
   /**
     * Uniformly samples a long integer in [0,MAX_LONG]
@@ -291,24 +285,22 @@ class RandBasis(val generator: RandomGenerator) {
   /**
     * Uniformly samples a long integer in [0,n)
     */
-  def randLong(n: Long): Rand[Long] =
-    new Rand[Long] {
-      def draw = {
-        val value = generator.nextLong & Long.MaxValue
-        value % n
-      }
+  def randLong(n: Long): Rand[Long] = new Rand[Long] {
+    def draw = {
+      val value = generator.nextLong & Long.MaxValue
+      value % n
     }
+  }
 
   /**
     * Uniformly samples a long integer in [n,m)
     */
-  def randLong(n: Long, m: Long): Rand[Long] =
-    new Rand[Long] {
-      def draw = {
-        val value = generator.nextLong & Long.MaxValue
-        value % (m - n) + n
-      }
+  def randLong(n: Long, m: Long): Rand[Long] = new Rand[Long] {
+    def draw = {
+      val value = generator.nextLong & Long.MaxValue
+      value % (m - n) + n
     }
+  }
 
   /**
     * Samples a gaussian with 0 mean and 1 std
@@ -320,30 +312,28 @@ class RandBasis(val generator: RandomGenerator) {
   /**
     * Samples a gaussian with m mean and s std
     */
-  def gaussian(m: Double, s: Double): Rand[Double] =
-    new Rand[Double] {
-      def draw = m + s * gaussian.get
-    }
+  def gaussian(m: Double, s: Double): Rand[Double] = new Rand[Double] {
+    def draw = m + s * gaussian.get
+  }
 
   /**
     * Implements the Knuth shuffle of numbers from 0 to n.
     */
-  def permutation(n: Int): Rand[IndexedSeq[Int]] =
-    new Rand[IndexedSeq[Int]] {
-      def draw = {
-        val arr = new ArrayBuffer[Int]()
-        arr ++= (0 until n)
-        var i = n
-        while (i > 1) {
-          val k = generator.nextInt(i)
-          i -= 1
-          val tmp = arr(i)
-          arr(i) = arr(k)
-          arr(k) = tmp
-        }
-        arr
+  def permutation(n: Int): Rand[IndexedSeq[Int]] = new Rand[IndexedSeq[Int]] {
+    def draw = {
+      val arr = new ArrayBuffer[Int]()
+      arr ++= (0 until n)
+      var i = n
+      while (i > 1) {
+        val k = generator.nextInt(i)
+        i -= 1
+        val tmp = arr(i)
+        arr(i) = arr(k)
+        arr(k) = tmp
       }
+      arr
     }
+  }
 
   /**
     * Knuth shuffle of a subset of size n from a set

@@ -105,26 +105,24 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
   /** Table model builder factory. Override for customization.
     * @group Basic customization overrides
     */
-  def createTableBuilder(namer: TableNamer): DBIO[TableBuilder] =
-    for {
-      cs <- readColumns(namer.meta)
-      pks <- readPrimaryKeys(namer.meta)
-      fks <- readForeignKeys(namer.meta)
-      idxs <- readIndices(namer.meta)
-    } yield new TableBuilder(namer.meta, namer, cs, pks, fks, idxs)
+  def createTableBuilder(namer: TableNamer): DBIO[TableBuilder] = for {
+    cs <- readColumns(namer.meta)
+    pks <- readPrimaryKeys(namer.meta)
+    fks <- readForeignKeys(namer.meta)
+    idxs <- readIndices(namer.meta)
+  } yield new TableBuilder(namer.meta, namer, cs, pks, fks, idxs)
 
   /** Creates a Slick data model from jdbc meta data. Foreign keys pointing out of the given tables
     * are not included.
     */
-  def buildModel: DBIO[m.Model] =
-    for {
-      ts <- DBIO.sequence(tableNamers.map(createTableBuilder))
-      tablesByQName = ts.map(t => t.meta.name -> t).toMap
-      builders = createBuilders(tablesByQName)
-    } yield m.Model(ts.sortBy(_.meta.name.name).map(_.buildModel(builders)))
+  def buildModel: DBIO[m.Model] = for {
+    ts <- DBIO.sequence(tableNamers.map(createTableBuilder))
+    tablesByQName = ts.map(t => t.meta.name -> t).toMap
+    builders = createBuilders(tablesByQName)
+  } yield m.Model(ts.sortBy(_.meta.name.name).map(_.buildModel(builders)))
 
-  def createBuilders(tablesByQName: Map[MQName, TableBuilder]) =
-    new Builders(tablesByQName)
+  def createBuilders(tablesByQName: Map[MQName, TableBuilder]) = new Builders(
+    tablesByQName)
 
   class Builders(val tablesByQName: Map[MQName, TableBuilder])
 
@@ -202,13 +200,12 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
       val mIndices: Seq[Seq[MIndexInfo]]) { table =>
 
     // models
-    def buildModel(builders: Builders) =
-      m.Table(
-        namer.qualifiedName,
-        columns,
-        primaryKey,
-        buildForeignKeys(builders),
-        indices)
+    def buildModel(builders: Builders) = m.Table(
+      namer.qualifiedName,
+      columns,
+      primaryKey,
+      buildForeignKeys(builders),
+      indices)
 
     /** Column models in ordinal position order */
     final lazy val columns: Seq[m.Column] =
@@ -242,12 +239,10 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
     final val StringPattern = """^'(.*)'$""".r
 
     /** Scala type this column is mapped to */
-    def tpe =
-      jdbcTypeToScala(meta.sqlType, meta.typeName).toString match {
-        case "java.lang.String" =>
-          if (meta.size == Some(1)) "Char" else "String"
-        case t => t
-      }
+    def tpe = jdbcTypeToScala(meta.sqlType, meta.typeName).toString match {
+      case "java.lang.String" => if (meta.size == Some(1)) "Char" else "String"
+      case t                  => t
+    }
     def name = meta.name
 
     /** Indicates whether this is a nullable column */
@@ -291,33 +286,32 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
       * If `ignoreInvalidDefaults = true`, Slick catches scala.MatchError and java.lang.NumberFormatException thrown by
       * this method, logs the message and treats it as no default value for convenience.
       */
-    def default: Option[Option[Any]] =
-      rawDefault.map { v =>
-        if (v == "NULL") None
-        else {
-          // NOTE: When extending this list, please also extend the code generator accordingly
-          Some((v, tpe) match {
-            case (v, "Byte")   => v.toByte
-            case (v, "Short")  => v.toShort
-            case (v, "Int")    => v.toInt
-            case (v, "Long")   => v.toLong
-            case (v, "Double") => v.toDouble
-            case (v, "Float")  => v.toFloat
-            case (v, "Char") =>
-              v.length match {
-                case 1 => v(0)
-                case 3 => v(1) // quoted character
-              }
-            case (v, "String") if meta.typeName == "CHAR" =>
-              v.head // FIXME: check length
-            case (v, "scala.math.BigDecimal") =>
-              v // FIXME: probably we shouldn't use a string here
-            case (StringPattern(str), "String") => str
-            case ("TRUE", "Boolean")            => true
-            case ("FALSE", "Boolean")           => false
-          })
-        }
+    def default: Option[Option[Any]] = rawDefault.map { v =>
+      if (v == "NULL") None
+      else {
+        // NOTE: When extending this list, please also extend the code generator accordingly
+        Some((v, tpe) match {
+          case (v, "Byte")   => v.toByte
+          case (v, "Short")  => v.toShort
+          case (v, "Int")    => v.toInt
+          case (v, "Long")   => v.toLong
+          case (v, "Double") => v.toDouble
+          case (v, "Float")  => v.toFloat
+          case (v, "Char") =>
+            v.length match {
+              case 1 => v(0)
+              case 3 => v(1) // quoted character
+            }
+          case (v, "String") if meta.typeName == "CHAR" =>
+            v.head // FIXME: check length
+          case (v, "scala.math.BigDecimal") =>
+            v // FIXME: probably we shouldn't use a string here
+          case (StringPattern(str), "String") => str
+          case ("TRUE", "Boolean")            => true
+          case ("FALSE", "Boolean")           => false
+        })
       }
+    }
 
     private def formatDefault(v: Any) =
       s" default value $v for column ${tableBuilder.namer.qualifiedName.asString}.$name of type $tpe, meta data: " + meta.toString
@@ -368,22 +362,20 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
           } else throw new SlickException(msg, e)
       }
 
-    def model =
-      m.Column(
-        name = name,
-        table = tableBuilder.namer.qualifiedName,
-        tpe = tpe,
-        nullable = nullable,
-        options = Set() ++
-          dbType.map(SqlProfile.ColumnOption.SqlType) ++
-          (if (autoInc) Some(ColumnOption.AutoInc) else None) ++
-          (if (createPrimaryKeyColumnOption) Some(ColumnOption.PrimaryKey)
-           else None) ++
-          length.map(
-            RelationalProfile.ColumnOption.Length
-              .apply(_, varying = varying)) ++
-          (if (!autoInc) convenientDefault else None)
-      )
+    def model = m.Column(
+      name = name,
+      table = tableBuilder.namer.qualifiedName,
+      tpe = tpe,
+      nullable = nullable,
+      options = Set() ++
+        dbType.map(SqlProfile.ColumnOption.SqlType) ++
+        (if (autoInc) Some(ColumnOption.AutoInc) else None) ++
+        (if (createPrimaryKeyColumnOption) Some(ColumnOption.PrimaryKey)
+         else None) ++
+        length.map(
+          RelationalProfile.ColumnOption.Length.apply(_, varying = varying)) ++
+        (if (!autoInc) convenientDefault else None)
+    )
   }
 
   class PrimaryKeyBuilder(tableBuilder: TableBuilder, meta: Seq[MPrimaryKey]) {
@@ -395,15 +387,14 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
     def name: Option[String] = meta.head.pkName.filter(_ != "")
     def columns = meta.map(_.column)
     // single column primary keys excluded in favor of PrimaryKey column option
-    final def model: Option[m.PrimaryKey] =
-      if (!enabled) None
-      else
-        Some(
-          m.PrimaryKey(
-            name,
-            tableBuilder.namer.qualifiedName,
-            columns.map(tableBuilder.columnsByName))
-        )
+    final def model: Option[m.PrimaryKey] = if (!enabled) None
+    else
+      Some(
+        m.PrimaryKey(
+          name,
+          tableBuilder.namer.qualifiedName,
+          columns.map(tableBuilder.columnsByName))
+      )
   }
 
   class ForeignKeyBuilder(tableBuilder: TableBuilder, meta: Seq[MForeignKey]) {
@@ -449,20 +440,19 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
       * - non-unique indices matching foreign keys referencing columns
       * - indices matching foreign keys referenced columns
       */
-    def enabled =
-      (
-        idx.indexType != DatabaseMetaData.tableIndexStatistic &&
-          (tableBuilder.mPrimaryKeys.isEmpty || tableBuilder.mPrimaryKeys
-            .map(_.column)
-            .toSet != columns.toSet) &&
-          // preserve additional uniqueness constraints on (usually not unique) fk columns
-          (unique || tableBuilder.mForeignKeys.forall(
-            _.map(_.fkColumn).toSet != columns.toSet)) &&
-          // postgres may refer to column oid, skipping index for now. Maybe we should generate a column and include it
-          // instead. And maybe this should be moved into PostgresModelBuilder.
-          // TODO: This needs a test case!
-          columns.forall(tableBuilder.columnsByName.isDefinedAt)
-      )
+    def enabled = (
+      idx.indexType != DatabaseMetaData.tableIndexStatistic &&
+        (tableBuilder.mPrimaryKeys.isEmpty || tableBuilder.mPrimaryKeys
+          .map(_.column)
+          .toSet != columns.toSet) &&
+        // preserve additional uniqueness constraints on (usually not unique) fk columns
+        (unique || tableBuilder.mForeignKeys.forall(
+          _.map(_.fkColumn).toSet != columns.toSet)) &&
+        // postgres may refer to column oid, skipping index for now. Maybe we should generate a column and include it
+        // instead. And maybe this should be moved into PostgresModelBuilder.
+        // TODO: This needs a test case!
+        columns.forall(tableBuilder.columnsByName.isDefinedAt)
+    )
 
     def unique = !idx.nonUnique
     def columns = meta.flatMap(_.column)

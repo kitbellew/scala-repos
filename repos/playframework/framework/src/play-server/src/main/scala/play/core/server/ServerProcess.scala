@@ -24,8 +24,8 @@ trait ServerProcess {
   def properties: Properties
 
   /** Helper for getting properties */
-  final def prop(name: String): Option[String] =
-    Option(properties.getProperty(name))
+  final def prop(name: String): Option[String] = Option(
+    properties.getProperty(name))
 
   /** The process's id */
   def pid: Option[String]

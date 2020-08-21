@@ -17,16 +17,14 @@ import cats.functor.Contravariant
 object Show {
 
   /** creates an instance of [[Show]] using the provided function */
-  def show[A](f: A => String): Show[A] =
-    new Show[A] {
-      def show(a: A): String = f(a)
-    }
+  def show[A](f: A => String): Show[A] = new Show[A] {
+    def show(a: A): String = f(a)
+  }
 
   /** creates an instance of [[Show]] using object toString */
-  def fromToString[A]: Show[A] =
-    new Show[A] {
-      def show(a: A): String = a.toString
-    }
+  def fromToString[A]: Show[A] = new Show[A] {
+    def show(a: A): String = a.toString
+  }
 
   implicit val showContravariant: Contravariant[Show] =
     new Contravariant[Show] {

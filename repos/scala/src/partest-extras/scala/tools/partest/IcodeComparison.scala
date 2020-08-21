@@ -59,8 +59,8 @@ abstract class IcodeComparison extends DirectTest {
   }
 
   /** Collect icode at the default phase, `printIcodeAfterPhase`. */
-  def collectIcode(): List[String] =
-    collectIcode(s"-Xprint-icode:$printIcodeAfterPhase")
+  def collectIcode(): List[String] = collectIcode(
+    s"-Xprint-icode:$printIcodeAfterPhase")
 
   /** Default show is showComparison. May be overridden for showIcode or similar. */
   def show() = showComparison()

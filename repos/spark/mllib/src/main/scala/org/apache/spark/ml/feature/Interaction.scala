@@ -79,36 +79,35 @@ class Interaction @Since("1.6.0") (override val uid: String)
     val featureEncoders = getFeatureEncoders(inputFeatures)
     val featureAttrs = getFeatureAttrs(inputFeatures)
 
-    def interactFunc =
-      udf { row: Row =>
-        var indices = ArrayBuilder.make[Int]
-        var values = ArrayBuilder.make[Double]
-        var size = 1
-        indices += 0
-        values += 1.0
-        var featureIndex = row.length - 1
-        while (featureIndex >= 0) {
-          val prevIndices = indices.result()
-          val prevValues = values.result()
-          val prevSize = size
-          val currentEncoder = featureEncoders(featureIndex)
-          indices = ArrayBuilder.make[Int]
-          values = ArrayBuilder.make[Double]
-          size *= currentEncoder.outputSize
-          currentEncoder.foreachNonzeroOutput(
-            row(featureIndex),
-            (i, a) => {
-              var j = 0
-              while (j < prevIndices.length) {
-                indices += prevIndices(j) + i * prevSize
-                values += prevValues(j) * a
-                j += 1
-              }
-            })
-          featureIndex -= 1
-        }
-        Vectors.sparse(size, indices.result(), values.result()).compressed
+    def interactFunc = udf { row: Row =>
+      var indices = ArrayBuilder.make[Int]
+      var values = ArrayBuilder.make[Double]
+      var size = 1
+      indices += 0
+      values += 1.0
+      var featureIndex = row.length - 1
+      while (featureIndex >= 0) {
+        val prevIndices = indices.result()
+        val prevValues = values.result()
+        val prevSize = size
+        val currentEncoder = featureEncoders(featureIndex)
+        indices = ArrayBuilder.make[Int]
+        values = ArrayBuilder.make[Double]
+        size *= currentEncoder.outputSize
+        currentEncoder.foreachNonzeroOutput(
+          row(featureIndex),
+          (i, a) => {
+            var j = 0
+            while (j < prevIndices.length) {
+              indices += prevIndices(j) + i * prevSize
+              values += prevValues(j) * a
+              j += 1
+            }
+          })
+        featureIndex -= 1
       }
+      Vectors.sparse(size, indices.result(), values.result()).compressed
+    }
 
     val featureCols = inputFeatures.map { f =>
       f.dataType match {

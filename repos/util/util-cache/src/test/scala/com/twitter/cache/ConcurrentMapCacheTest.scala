@@ -9,9 +9,8 @@ import org.scalatest.junit.JUnitRunner
 class ConcurrentMapCacheTest extends AbstractFutureCacheTest {
   def name: String = "ConcurrentMapCache"
 
-  def mkCtx(): Ctx =
-    new Ctx {
-      val map = new ConcurrentHashMap[String, Future[String]]()
-      val cache = new ConcurrentMapCache[String, String](map)
-    }
+  def mkCtx(): Ctx = new Ctx {
+    val map = new ConcurrentHashMap[String, Future[String]]()
+    val cache = new ConcurrentMapCache[String, String](map)
+  }
 }

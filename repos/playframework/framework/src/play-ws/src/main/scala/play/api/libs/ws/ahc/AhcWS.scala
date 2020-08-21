@@ -51,21 +51,20 @@ case class AhcWSClient(config: AsyncHttpClientConfig)(implicit
 
   def close(): Unit = asyncHttpClient.close()
 
-  def url(url: String): WSRequest =
-    AhcWSRequest(
-      this,
-      url,
-      "GET",
-      EmptyBody,
-      Map(),
-      Map(),
-      None,
-      None,
-      None,
-      None,
-      None,
-      None,
-      None)
+  def url(url: String): WSRequest = AhcWSRequest(
+    this,
+    url,
+    "GET",
+    EmptyBody,
+    Map(),
+    Map(),
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None)
 }
 
 object AhcWSClient {

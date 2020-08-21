@@ -149,30 +149,31 @@ trait MetadataGenerators extends util.ArbitraryJValue {
   def genMetadataList: Gen[List[Metadata]] =
     for (cnt <- choose(0, 10); l <- listOfN(cnt, genMetadata)) yield { l }
 
-  def genMetadataMap: Gen[Map[MetadataType, Metadata]] =
-    genMetadataList map { l => Map(l.map(m => (m.metadataType, m)): _*) }
+  def genMetadataMap: Gen[Map[MetadataType, Metadata]] = genMetadataList map {
+    l => Map(l.map(m => (m.metadataType, m)): _*)
+  }
 
-  def genMetadata: Gen[Metadata] =
-    frequency(metadataGenerators.map { (1, _) }: _*)
+  def genMetadata: Gen[Metadata] = frequency(metadataGenerators.map {
+    (1, _)
+  }: _*)
 
   def genBooleanMetadata: Gen[BooleanValueStats] =
     for (count <- choose(0, 1000); trueCount <- choose(0, count))
       yield BooleanValueStats(count, trueCount)
-  def genLongMetadata: Gen[LongValueStats] =
-    for (count <- choose(0, 1000); a <- arbLong.arbitrary;
-      b <- arbLong.arbitrary) yield LongValueStats(count, a min b, a max b)
-  def genDoubleMetadata: Gen[DoubleValueStats] =
-    for (count <- choose(0, 1000); a <- arbDouble.arbitrary;
-      b <- arbDouble.arbitrary) yield DoubleValueStats(count, a min b, a max b)
+  def genLongMetadata: Gen[LongValueStats] = for (count <- choose(0, 1000);
+    a <- arbLong.arbitrary; b <- arbLong.arbitrary)
+    yield LongValueStats(count, a min b, a max b)
+  def genDoubleMetadata: Gen[DoubleValueStats] = for (count <- choose(0, 1000);
+    a <- arbDouble.arbitrary; b <- arbDouble.arbitrary)
+    yield DoubleValueStats(count, a min b, a max b)
   def genBigDecimalMetadata: Gen[BigDecimalValueStats] =
     for (count <- choose(0, 1000); a <- arbBigDecimal.arbitrary;
       b <- arbBigDecimal.arbitrary)
       yield BigDecimalValueStats(count, a min b, a max b)
-  def genStringMetadata: Gen[StringValueStats] =
-    for (count <- choose(0, 1000); a <- arbString.arbitrary;
-      b <- arbString.arbitrary)
-      yield StringValueStats(
-        count,
-        Order[String].min(a, b),
-        Order[String].max(a, b))
+  def genStringMetadata: Gen[StringValueStats] = for (count <- choose(0, 1000);
+    a <- arbString.arbitrary; b <- arbString.arbitrary)
+    yield StringValueStats(
+      count,
+      Order[String].min(a, b),
+      Order[String].max(a, b))
 }

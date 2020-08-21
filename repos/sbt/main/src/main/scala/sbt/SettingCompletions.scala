@@ -50,12 +50,11 @@ private[sbt] object SettingCompletions {
           implicitly[Show[ScopedKey[_]]]))
       .keys
     val projectScope = Load.projectScope(currentRef)
-    def resolve(s: Setting[_]): Seq[Setting[_]] =
-      Load.transformSettings(
-        projectScope,
-        currentRef.build,
-        rootProject,
-        s :: Nil)
+    def resolve(s: Setting[_]): Seq[Setting[_]] = Load.transformSettings(
+      projectScope,
+      currentRef.build,
+      rootProject,
+      s :: Nil)
     def rescope[T](setting: Setting[T]): Seq[Setting[_]] = {
       val akey = setting.key.key
       val global = ScopedKey(Global, akey)
@@ -250,11 +249,10 @@ private[sbt] object SettingCompletions {
         name: T => String,
         description: T => Option[String],
         label: String): Parser[ScopeAxis[T]] = {
-      def getChoice(s: Scope): Seq[(String, T)] =
-        axis(s) match {
-          case Select(t) => (name(t), t) :: Nil
-          case _         => Nil
-        }
+      def getChoice(s: Scope): Seq[(String, T)] = axis(s) match {
+        case Select(t) => (name(t), t) :: Nil
+        case _         => Nil
+      }
       def getChoices(scopes: Seq[Scope]): Map[String, T] =
         scopes.flatMap(getChoice).toMap
       val definedChoices: Set[String] =
@@ -470,13 +468,12 @@ private[sbt] object SettingCompletions {
   import Assign._
 
   /** Returns the description associated with the provided assignment method. */
-  def assignDescription(a: Assign.Value): String =
-    a match {
-      case AppendValue  => "append value"
-      case AppendValues => "append values"
-      case Define       => "define value, overwriting any existing value"
-      case Update       => "transform existing value"
-    }
+  def assignDescription(a: Assign.Value): String = a match {
+    case AppendValue  => "append value"
+    case AppendValues => "append values"
+    case Define       => "define value, overwriting any existing value"
+    case Update       => "transform existing value"
+  }
 
   /** The assignment methods except for the ones that append. */
   val assignNoAppend: Set[Assign.Value] = Set(Define, Update)

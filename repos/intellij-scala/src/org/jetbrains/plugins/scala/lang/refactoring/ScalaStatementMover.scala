@@ -139,12 +139,11 @@ class ScalaStatementMover extends LineMover {
 
     val span = start.to(end)
 
-    def firstLeafOf(seq: Seq[Int]) =
-      seq.view
-        .flatMap(file.getNode.findLeafElementAt(_).toOption.toSeq)
-        .filter(!_.getPsi.isInstanceOf[PsiWhiteSpace])
-        .map(_.getPsi)
-        .headOption
+    def firstLeafOf(seq: Seq[Int]) = seq.view
+      .flatMap(file.getNode.findLeafElementAt(_).toOption.toSeq)
+      .filter(!_.getPsi.isInstanceOf[PsiWhiteSpace])
+      .map(_.getPsi)
+      .headOption
 
     (firstLeafOf(span), firstLeafOf(span.reverse))
   }

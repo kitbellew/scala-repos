@@ -178,38 +178,35 @@ object Maybe extends MaybeInstances {
     std.option.cata(oa)(just, empty)
 
   def fromTryCatchThrowable[T, E <: Throwable](
-      a: => T)(implicit nn: NotNothing[E], ex: ClassTag[E]): Maybe[T] =
-    try {
-      just(a)
-    } catch {
-      case e if ex.runtimeClass.isInstance(e) => empty
-    }
+      a: => T)(implicit nn: NotNothing[E], ex: ClassTag[E]): Maybe[T] = try {
+    just(a)
+  } catch {
+    case e if ex.runtimeClass.isInstance(e) => empty
+  }
 
-  def fromTryCatchNonFatal[T](a: => T): Maybe[T] =
-    try {
-      just(a)
-    } catch {
-      case NonFatal(t) => empty
-    }
+  def fromTryCatchNonFatal[T](a: => T): Maybe[T] = try {
+    just(a)
+  } catch {
+    case NonFatal(t) => empty
+  }
 }
 
 sealed abstract class MaybeInstances {
   import Maybe._
 
-  implicit def maybeEqual[A: Equal]: Equal[Maybe[A]] =
-    new MaybeEqual[A] {
-      def A = implicitly
-    }
+  implicit def maybeEqual[A: Equal]: Equal[Maybe[A]] = new MaybeEqual[A] {
+    def A = implicitly
+  }
 
-  implicit def maybeOrder[A: Order]: Order[Maybe[A]] =
-    new Order[Maybe[A]] with MaybeEqual[A] {
-      def A = implicitly
+  implicit def maybeOrder[A: Order]: Order[Maybe[A]] = new Order[Maybe[A]]
+    with MaybeEqual[A] {
+    def A = implicitly
 
-      def order(fa1: Maybe[A], fa2: Maybe[A]) =
-        fa1.cata(
-          a1 => fa2.cata(a2 => Order[A].order(a1, a2), GT),
-          fa2.cata(_ => LT, EQ))
-    }
+    def order(fa1: Maybe[A], fa2: Maybe[A]) =
+      fa1.cata(
+        a1 => fa2.cata(a2 => Order[A].order(a1, a2), GT),
+        fa2.cata(_ => LT, EQ))
+  }
 
   implicit def maybeShow[A](implicit A: Show[A]): Show[Maybe[A]] =
     Show.show(_.cata(a => Cord("Just(", A.show(a), ")"), "Empty"))
@@ -245,8 +242,8 @@ sealed abstract class MaybeInstances {
     new Monoid[LastMaybe[A]] {
       val zero: LastMaybe[A] = Tag(empty)
 
-      def append(fa1: LastMaybe[A], fa2: => LastMaybe[A]): LastMaybe[A] =
-        Tag(Tag.unwrap(fa2).orElse(Tag.unwrap(fa1)))
+      def append(fa1: LastMaybe[A], fa2: => LastMaybe[A]): LastMaybe[A] = Tag(
+        Tag.unwrap(fa2).orElse(Tag.unwrap(fa1)))
     }
 
   implicit def maybeLastShow[A](implicit
@@ -258,18 +255,17 @@ sealed abstract class MaybeInstances {
   implicit def maybeLastMonad: Monad[LastMaybe] =
     Tags.Last.subst1[Monad, Maybe](Monad[Maybe])
 
-  implicit def maybeMin[A](implicit o: Order[A]) =
-    new Monoid[MinMaybe[A]] {
-      def zero: MinMaybe[A] = Tag(empty)
+  implicit def maybeMin[A](implicit o: Order[A]) = new Monoid[MinMaybe[A]] {
+    def zero: MinMaybe[A] = Tag(empty)
 
-      def append(f1: MinMaybe[A], f2: => MinMaybe[A]) =
-        Tag((Tag unwrap f1, Tag unwrap f2) match {
-          case (Just(v1), Just(v2))     => Just(Order[A].min(v1, v2))
-          case (_f1 @ Just(_), Empty()) => _f1
-          case (Empty(), _f2 @ Just(_)) => _f2
-          case (Empty(), Empty())       => empty
-        })
-    }
+    def append(f1: MinMaybe[A], f2: => MinMaybe[A]) = Tag(
+      (Tag unwrap f1, Tag unwrap f2) match {
+        case (Just(v1), Just(v2))     => Just(Order[A].min(v1, v2))
+        case (_f1 @ Just(_), Empty()) => _f1
+        case (Empty(), _f2 @ Just(_)) => _f2
+        case (Empty(), Empty())       => empty
+      })
+  }
 
   implicit def maybeMinShow[A: Show]: Show[MinMaybe[A]] =
     Tag.subst(Show[Maybe[A]])
@@ -280,18 +276,17 @@ sealed abstract class MaybeInstances {
   implicit def maybeMinMonad: Monad[MinMaybe] =
     Tags.Min.subst1[Monad, Maybe](Monad[Maybe])
 
-  implicit def maybeMax[A](implicit o: Order[A]) =
-    new Monoid[MaxMaybe[A]] {
-      def zero: MaxMaybe[A] = Tag(empty)
+  implicit def maybeMax[A](implicit o: Order[A]) = new Monoid[MaxMaybe[A]] {
+    def zero: MaxMaybe[A] = Tag(empty)
 
-      def append(f1: MaxMaybe[A], f2: => MaxMaybe[A]) =
-        Tag((Tag unwrap f1, Tag unwrap f2) match {
-          case (Just(v1), Just(v2))     => Just(Order[A].max(v1, v2))
-          case (_f1 @ Just(_), Empty()) => _f1
-          case (Empty(), _f2 @ Just(_)) => _f2
-          case (Empty(), Empty())       => Empty()
-        })
-    }
+    def append(f1: MaxMaybe[A], f2: => MaxMaybe[A]) = Tag(
+      (Tag unwrap f1, Tag unwrap f2) match {
+        case (Just(v1), Just(v2))     => Just(Order[A].max(v1, v2))
+        case (_f1 @ Just(_), Empty()) => _f1
+        case (Empty(), _f2 @ Just(_)) => _f2
+        case (Empty(), Empty())       => Empty()
+      })
+  }
 
   implicit def maybeMaxShow[A: Show]: Show[MaxMaybe[A]] =
     Tag.subst(Show[Maybe[A]])
@@ -359,11 +354,10 @@ sealed abstract class MaybeInstances {
       def unzip[A, B](a: Maybe[(A, B)]) =
         a.cata(ab => (just(ab._1), just(ab._2)), (empty, empty))
 
-      def alignWith[A, B, C](f: A \&/ B => C) =
-        (fa, fb) =>
-          fa.cata(
-            a => fb.cata(b => just(f(\&/.Both(a, b))), just(f(\&/.This(a)))),
-            fb.cata(b => just(f(\&/.That(b))), empty))
+      def alignWith[A, B, C](f: A \&/ B => C) = (fa, fb) =>
+        fa.cata(
+          a => fb.cata(b => just(f(\&/.Both(a, b))), just(f(\&/.This(a)))),
+          fb.cata(b => just(f(\&/.That(b))), empty))
 
       def cobind[A, B](fa: Maybe[A])(f: Maybe[A] => B) =
         fa.cobind(f)

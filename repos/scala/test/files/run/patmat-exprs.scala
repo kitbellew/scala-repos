@@ -51,10 +51,9 @@ trait Pattern {
 
   /** Allows for smart construction of EndoFunction from an ordinary function */
   object EndoFunction {
-    def apply[A](f: A => A): EndoFunction[A] =
-      new EndoFunction[A] {
-        def apply[B <: A](x: B): B = f(x).asInstanceOf[B]
-      }
+    def apply[A](f: A => A): EndoFunction[A] = new EndoFunction[A] {
+      def apply[B <: A](x: B): B = f(x).asInstanceOf[B]
+    }
   }
 
   trait NumericOps[T] extends Serializable {
@@ -526,8 +525,8 @@ trait Pattern {
       right: Expr[T],
       cmp: (T, T) => Boolean)(implicit num: NumericOps[T])
       extends Expr[Boolean] {
-    def derivative(v: Var[Boolean]) =
-      throw new IllegalStateException("Derivative of Boolean not allowed")
+    def derivative(v: Var[Boolean]) = throw new IllegalStateException(
+      "Derivative of Boolean not allowed")
     def eval(f: Any => Any) = cmp(left.eval(f), right.eval(f))
     val args = List(left, right)
   }

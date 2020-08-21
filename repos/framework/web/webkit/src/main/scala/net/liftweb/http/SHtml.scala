@@ -133,24 +133,22 @@ trait SHtml extends Loggable {
     * Invokes the Ajax request
     * @param in the JsExp that returns the request data
     */
-  def makeAjaxCall(in: JsExp): JsExp =
-    new JsExp {
-      def toJsCmd = "lift.ajax(" + in.toJsCmd + ", null, null, null)"
-    }
+  def makeAjaxCall(in: JsExp): JsExp = new JsExp {
+    def toJsCmd = "lift.ajax(" + in.toJsCmd + ", null, null, null)"
+  }
 
   /**
     * Invokes the Ajax request
     * @param in the JsExp that returns the request data
     * @param context defines the response callback functions and the response type (JavaScript or JSON)
     */
-  def makeAjaxCall(in: JsExp, context: AjaxContext): JsExp =
-    new JsExp {
-      def toJsCmd =
-        "lift.ajax(" + in.toJsCmd + ", " + (context.success openOr "null") +
-          ", " + (context.failure openOr "null") +
-          ", " + context.responseType.toString.encJs +
-          ")"
-    }
+  def makeAjaxCall(in: JsExp, context: AjaxContext): JsExp = new JsExp {
+    def toJsCmd =
+      "lift.ajax(" + in.toJsCmd + ", " + (context.success openOr "null") +
+        ", " + (context.failure openOr "null") +
+        ", " + context.responseType.toString.encJs +
+        ")"
+  }
 
   /**
     * Build a JavaScript function that will perform an AJAX call based on a value calculated in JavaScript
@@ -1333,16 +1331,15 @@ trait SHtml extends Loggable {
       attrs: ElemAttr*): Elem =
     text_*(value, func, Full(ajaxTest), attrs: _*)
 
-  private def buildOnBlur(bf: Box[String => JsCmd]): MetaData =
-    bf match {
-      case Full(func) =>
-        new UnprefixedAttribute(
-          "onblur",
-          Text(ajaxCall(JsRaw("this.value"), func)._2.toJsCmd),
-          Null)
+  private def buildOnBlur(bf: Box[String => JsCmd]): MetaData = bf match {
+    case Full(func) =>
+      new UnprefixedAttribute(
+        "onblur",
+        Text(ajaxCall(JsRaw("this.value"), func)._2.toJsCmd),
+        Null)
 
-      case _ => Null
-    }
+    case _ => Null
+  }
 
   def text_*(
       value: String,
@@ -2054,33 +2051,32 @@ trait SHtml extends Loggable {
     * Vend a function that will take all of the form elements and turns them
     * into Ajax forms
     */
-  def makeFormsAjax: NodeSeq => NodeSeq =
-    "form" #> ((ns: NodeSeq) =>
-      (ns match {
-        case e: Elem => {
-          val id: String = e.attribute("id").map(_.text) getOrElse
-            Helpers.nextFuncName
+  def makeFormsAjax: NodeSeq => NodeSeq = "form" #> ((ns: NodeSeq) =>
+    (ns match {
+      case e: Elem => {
+        val id: String = e.attribute("id").map(_.text) getOrElse
+          Helpers.nextFuncName
 
-          val newMeta = e.attributes.filter {
-            case up: UnprefixedAttribute =>
-              up.key match {
-                case "id"       => false
-                case "action"   => false
-                case "onsubmit" => false
-                case "method"   => false
-                case _          => true
-              }
-            case _ => true
-          }
-
-          e.copy(attributes = newMeta) % ("id" -> id) %
-            ("action" -> "javascript://") %
-            ("onsubmit" ->
-              (SHtml.makeAjaxCall(LiftRules.jsArtifacts.serialize(id)).toJsCmd +
-                "; return false;"))
+        val newMeta = e.attributes.filter {
+          case up: UnprefixedAttribute =>
+            up.key match {
+              case "id"       => false
+              case "action"   => false
+              case "onsubmit" => false
+              case "method"   => false
+              case _          => true
+            }
+          case _ => true
         }
-        case x => x
-      }): NodeSeq)
+
+        e.copy(attributes = newMeta) % ("id" -> id) %
+          ("action" -> "javascript://") %
+          ("onsubmit" ->
+            (SHtml.makeAjaxCall(LiftRules.jsArtifacts.serialize(id)).toJsCmd +
+              "; return false;"))
+      }
+      case x => x
+    }): NodeSeq)
 
   /**
     * Submits a form denominated by a formId and execute the func function
@@ -2725,11 +2721,10 @@ trait SHtml extends Loggable {
   private def checked(in: Boolean) =
     if (in) new UnprefixedAttribute("checked", "checked", Null) else Null
 
-  private def setId(in: Box[String]) =
-    in match {
-      case Full(id) => new UnprefixedAttribute("id", Text(id), Null);
-      case _        => Null
-    }
+  private def setId(in: Box[String]) = in match {
+    case Full(id) => new UnprefixedAttribute("id", Text(id), Null);
+    case _        => Null
+  }
 
   /**
     * Generate a ChoiceHolder of possible checkbox type inputs that calls back to the given function when the form is submitted.
@@ -2799,8 +2794,8 @@ trait SHtml extends Loggable {
       settable: Settable { type ValueType = Boolean },
       id: Box[String],
       attrs: ElemAttr*): NodeSeq = {
-    def from(f: Boolean => Any): List[String] => Boolean =
-      (in: List[String]) => {
+    def from(f: Boolean => Any): List[String] => Boolean = (in: List[String]) =>
+      {
         f(in.exists(toBoolean(_)))
         true
       }
@@ -2820,8 +2815,8 @@ trait SHtml extends Loggable {
       func: Boolean => Any,
       id: Box[String],
       attrs: ElemAttr*): NodeSeq = {
-    def from(f: Boolean => Any): List[String] => Boolean =
-      (in: List[String]) => {
+    def from(f: Boolean => Any): List[String] => Boolean = (in: List[String]) =>
+      {
         f(in.exists(toBoolean(_)))
         true
       }

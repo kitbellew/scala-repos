@@ -79,12 +79,11 @@ class RelationalGroupedDataset protected[sql] (
   // Wrap UnresolvedAttribute with UnresolvedAlias, as when we resolve UnresolvedAttribute, we
   // will remove intermediate Alias for ExtractValue chain, and we need to alias it again to
   // make it a NamedExpression.
-  private[this] def alias(expr: Expression): NamedExpression =
-    expr match {
-      case u: UnresolvedAttribute => UnresolvedAlias(u)
-      case expr: NamedExpression  => expr
-      case expr: Expression       => Alias(expr, usePrettyExpression(expr).sql)()
-    }
+  private[this] def alias(expr: Expression): NamedExpression = expr match {
+    case u: UnresolvedAttribute => UnresolvedAlias(u)
+    case expr: NamedExpression  => expr
+    case expr: Expression       => Alias(expr, usePrettyExpression(expr).sql)()
+  }
 
   private[this] def aggregateNumericColumns(colNames: String*)(
       f: Expression => AggregateFunction): DataFrame = {
@@ -228,8 +227,8 @@ class RelationalGroupedDataset protected[sql] (
     *
     * @since 1.3.0
     */
-  def count(): DataFrame =
-    toDF(Seq(Alias(Count(Literal(1)).toAggregateExpression(), "count")()))
+  def count(): DataFrame = toDF(
+    Seq(Alias(Count(Literal(1)).toAggregateExpression(), "count")()))
 
   /**
     * Compute the average value for each numeric columns for each group. This is an alias for `avg`.

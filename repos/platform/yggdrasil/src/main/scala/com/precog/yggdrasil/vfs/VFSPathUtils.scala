@@ -125,16 +125,15 @@ object VFSPathUtils extends Logging {
   def currentPathMetadata(
       baseDir: File,
       path: Path): EitherT[IO, ResourceError, PathMetadata] = {
-    def containsNonemptyChild(dirs: List[File]): IO[Boolean] =
-      dirs match {
-        case f :: xs =>
-          val childPath = unescapePath(path / Path(f.getName))
-          findChildren(baseDir, childPath) flatMap { children =>
-            if (children.nonEmpty) IO(true) else containsNonemptyChild(xs)
-          }
+    def containsNonemptyChild(dirs: List[File]): IO[Boolean] = dirs match {
+      case f :: xs =>
+        val childPath = unescapePath(path / Path(f.getName))
+        findChildren(baseDir, childPath) flatMap { children =>
+          if (children.nonEmpty) IO(true) else containsNonemptyChild(xs)
+        }
 
-        case Nil => IO(false)
-      }
+      case Nil => IO(false)
+    }
 
     val pathDir0 = pathDir(baseDir, path)
     EitherT {

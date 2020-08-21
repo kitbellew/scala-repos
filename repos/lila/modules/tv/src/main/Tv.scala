@@ -136,17 +136,16 @@ object Tv {
 
   private def rated = (g: Game) => g.rated
   private def speed(speed: chess.Speed) = (g: Game) => g.speed == speed
-  private def variant(variant: chess.variant.Variant) =
-    (g: Game) => g.variant == variant
+  private def variant(variant: chess.variant.Variant) = (g: Game) =>
+    g.variant == variant
   private val standard = variant(V.Standard)
-  private def fresh(seconds: Int) =
-    (g: Game) =>
-      {
-        g.isBeingPlayed && !g.olderThan(seconds)
-      } || {
-        g.finished && !g.olderThan(7)
-      } // rematch time
+  private def fresh(seconds: Int) = (g: Game) =>
+    {
+      g.isBeingPlayed && !g.olderThan(seconds)
+    } || {
+      g.finished && !g.olderThan(7)
+    } // rematch time
   private val freshBlitz = fresh(40)
-  private def computerFromInitialPosition =
-    (g: Game) => g.hasAi && !g.fromPosition
+  private def computerFromInitialPosition = (g: Game) =>
+    g.hasAi && !g.fromPosition
 }

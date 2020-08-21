@@ -71,11 +71,10 @@ trait FileUploadSupport extends ServletBase with HasMultipartConfig {
    * doesn't throw `IllegalStateException` or if it throws
    * `IllegalStateException` for some other reason.
    */
-  protected def isSizeConstraintException(e: Exception): Boolean =
-    e match {
-      case _: IllegalStateException => true
-      case _                        => false
-    }
+  protected def isSizeConstraintException(e: Exception): Boolean = e match {
+    case _: IllegalStateException => true
+    case _                        => false
+  }
 
   override def handle(
       req: HttpServletRequest,
@@ -169,10 +168,9 @@ trait FileUploadSupport extends ServletBase with HasMultipartConfig {
       req: HttpServletRequest,
       formMap: Map[String, Seq[String]]): HttpServletRequestWrapper = {
     val wrapped = new HttpServletRequestWrapper(req) {
-      override def getParameter(name: String): String =
-        formMap.get(name) map {
-          _.head
-        } getOrElse null
+      override def getParameter(name: String): String = formMap.get(name) map {
+        _.head
+      } getOrElse null
 
       override def getParameterNames: java.util.Enumeration[String] =
         formMap.keysIterator.asJavaEnumeration

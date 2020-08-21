@@ -443,41 +443,38 @@ class HttpClientDispatcherTest extends FunSuite {
 
     var ops = _ops
 
-    def read() =
-      ops match {
-        case Read(res) :: rest =>
-          ops = rest
-          res
-        case _ =>
-          fail(s"Expected ${ops.headOption}; got read()")
-      }
+    def read() = ops match {
+      case Read(res) :: rest =>
+        ops = rest
+        res
+      case _ =>
+        fail(s"Expected ${ops.headOption}; got read()")
+    }
 
-    def write(in: In) =
-      ops match {
-        case Write(accept, res) :: rest =>
-          if (!accept(in))
-            fail(s"Did not accept write $in")
+    def write(in: In) = ops match {
+      case Write(accept, res) :: rest =>
+        if (!accept(in))
+          fail(s"Did not accept write $in")
 
-          ops = rest
-          res
-        case _ =>
-          fail(s"Expected ${ops.headOption}; got write($in)")
-      }
+        ops = rest
+        res
+      case _ =>
+        fail(s"Expected ${ops.headOption}; got write($in)")
+    }
 
-    def close(deadline: Time) =
-      ops match {
-        case Close(res) :: rest =>
-          ops = rest
-          status = Status.Closed
-          res respond {
-            case Return(()) =>
-              onClose.setValue(new Exception("closed"))
-            case Throw(exc) =>
-              onClose.setValue(exc)
-          }
-        case _ =>
-          fail(s"Expected ${ops.headOption}; got close($deadline)")
-      }
+    def close(deadline: Time) = ops match {
+      case Close(res) :: rest =>
+        ops = rest
+        status = Status.Closed
+        res respond {
+          case Return(()) =>
+            onClose.setValue(new Exception("closed"))
+          case Throw(exc) =>
+            onClose.setValue(exc)
+        }
+      case _ =>
+        fail(s"Expected ${ops.headOption}; got close($deadline)")
+    }
 
     var status: Status = Status.Open
     val onClose = new Promise[Throwable]

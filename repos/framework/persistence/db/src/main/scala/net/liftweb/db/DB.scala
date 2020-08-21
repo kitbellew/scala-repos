@@ -122,8 +122,8 @@ trait DB extends Loggable {
   /**
     * can we get a JDBC connection from JNDI?
     */
-  def jndiJdbcConnAvailable_? : Boolean =
-    jndiConnection(DefaultConnectionIdentifier).isDefined
+  def jndiJdbcConnAvailable_? : Boolean = jndiConnection(
+    DefaultConnectionIdentifier).isDefined
 
   private val connectionManagers =
     new HashMap[ConnectionIdentifier, ConnectionManager]
@@ -197,20 +197,19 @@ trait DB extends Loggable {
         .newConnection(name)
         .map(c => new SuperConnection(c, () => cm.releaseConnection(c)))
 
-    def jndiSuperConnection: Box[SuperConnection] =
-      jndiConnection(name).map(c => {
-        val uniqueId =
-          if (logger.isDebugEnabled) Helpers.nextNum.toString else ""
-        logger.debug(
-          "Connection ID " + uniqueId + " for JNDI connection " + name.jndiName + " opened")
-        new SuperConnection(
-          c,
-          () => {
-            logger.debug(
-              "Connection ID " + uniqueId + " for JNDI connection " + name.jndiName + " closed");
-            c.close
-          })
-      })
+    def jndiSuperConnection
+        : Box[SuperConnection] = jndiConnection(name).map(c => {
+      val uniqueId = if (logger.isDebugEnabled) Helpers.nextNum.toString else ""
+      logger.debug(
+        "Connection ID " + uniqueId + " for JNDI connection " + name.jndiName + " opened")
+      new SuperConnection(
+        c,
+        () => {
+          logger.debug(
+            "Connection ID " + uniqueId + " for JNDI connection " + name.jndiName + " closed");
+          c.close
+        })
+    })
 
     val cmConn = for {
       connectionManager <-
@@ -234,11 +233,10 @@ trait DB extends Loggable {
       connections: List[ConnectionIdentifier]) {
     private var used: Set[ConnectionIdentifier] = Set()
 
-    def use(conn: ConnectionIdentifier): Int =
-      if (connections.contains(conn)) {
-        used += conn
-        1
-      } else 0
+    def use(conn: ConnectionIdentifier): Int = if (connections.contains(conn)) {
+      used += conn
+      1
+    } else 0
   }
 
   private object CurrentConnectionSet
@@ -275,39 +273,14 @@ trait DB extends Loggable {
     new LoanWrapper {
       private object DepthCnt extends DynoVar[Boolean]
 
-      def apply[T](f: => T): T =
-        if (DepthCnt.is == Full(true)) f
-        else
-          DepthCnt.run(true) {
+      def apply[T](f: => T): T = if (DepthCnt.is == Full(true)) f
+      else
+        DepthCnt.run(true) {
 
-            var success = false
-            if (eager) {
-              def recurseMe(lst: List[ConnectionIdentifier]): T =
-                lst match {
-                  case Nil =>
-                    try {
-                      try {
-                        val ret = f
-                        success = !S.exceptionThrown_?
-                        ret
-                      } catch {
-                        // this is the case when we want to commit the transaction
-                        // but continue to throw the exception
-                        case e: LiftFlowOfControlException => {
-                          success = !S.exceptionThrown_?
-                          throw e
-                        }
-                      }
-
-                    } finally {
-                      clearThread(success)
-                    }
-
-                  case x :: xs => DB.use(x) { ignore => recurseMe(xs) }
-                }
-              recurseMe(in)
-            } else {
-              CurrentConnectionSet.run(new ThreadBasedConnectionManager(in)) {
+          var success = false
+          if (eager) {
+            def recurseMe(lst: List[ConnectionIdentifier]): T = lst match {
+              case Nil =>
                 try {
                   try {
                     val ret = f
@@ -321,13 +294,36 @@ trait DB extends Loggable {
                       throw e
                     }
                   }
+
                 } finally {
                   clearThread(success)
                 }
+
+              case x :: xs => DB.use(x) { ignore => recurseMe(xs) }
+            }
+            recurseMe(in)
+          } else {
+            CurrentConnectionSet.run(new ThreadBasedConnectionManager(in)) {
+              try {
+                try {
+                  val ret = f
+                  success = !S.exceptionThrown_?
+                  ret
+                } catch {
+                  // this is the case when we want to commit the transaction
+                  // but continue to throw the exception
+                  case e: LiftFlowOfControlException => {
+                    success = !S.exceptionThrown_?
+                    throw e
+                  }
+                }
+              } finally {
+                clearThread(success)
               }
             }
-
           }
+
+        }
     }
 
   private def releaseConnection(conn: SuperConnection): Unit = conn.close
@@ -419,11 +415,10 @@ trait DB extends Loggable {
   def appendPostTransaction(func: Boolean => Unit): Unit =
     appendPostTransaction(DefaultConnectionIdentifier, func)
 
-  private def runLogger(logged: Statement, time: Long) =
-    logged match {
-      case st: DBLog => logFuncs.foreach(_(st, time))
-      case _         => // NOP
-    }
+  private def runLogger(logged: Statement, time: Long) = logged match {
+    case st: DBLog => logFuncs.foreach(_(st, time))
+    case _         => // NOP
+  }
 
   def statement[T](db: SuperConnection)(f: (Statement) => T): T = {
     Helpers.calcTime {
@@ -1347,32 +1342,30 @@ trait ProtoDBVendor extends ConnectionManager {
       }
     }
 
-  def releaseConnection(conn: Connection): Unit =
-    synchronized {
-      if (tempMaxSize > maxPoolSize) {
-        tryo { conn.close() }
-        tempMaxSize -= 1
-        poolSize -= 1
-      } else {
-        pool = conn :: pool
-      }
-      logger.debug("Released connection. poolSize=%d".format(poolSize))
-      notifyAll
+  def releaseConnection(conn: Connection): Unit = synchronized {
+    if (tempMaxSize > maxPoolSize) {
+      tryo { conn.close() }
+      tempMaxSize -= 1
+      poolSize -= 1
+    } else {
+      pool = conn :: pool
     }
+    logger.debug("Released connection. poolSize=%d".format(poolSize))
+    notifyAll
+  }
 
   def closeAllConnections_!(): Unit = _closeAllConnections_!(0)
 
-  private def _closeAllConnections_!(cnt: Int): Unit =
-    synchronized {
-      logger.info("Closing all connections")
-      if (poolSize <= 0 || cnt > 10) ()
-      else {
-        pool.foreach { c => tryo(c.close); poolSize -= 1 }
-        pool = Nil
+  private def _closeAllConnections_!(cnt: Int): Unit = synchronized {
+    logger.info("Closing all connections")
+    if (poolSize <= 0 || cnt > 10) ()
+    else {
+      pool.foreach { c => tryo(c.close); poolSize -= 1 }
+      pool = Nil
 
-        if (poolSize > 0) wait(250)
+      if (poolSize > 0) wait(250)
 
-        _closeAllConnections_!(cnt + 1)
-      }
+      _closeAllConnections_!(cnt + 1)
     }
+  }
 }

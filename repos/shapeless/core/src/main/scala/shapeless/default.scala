@@ -273,11 +273,9 @@ class DefaultMacros(val c: whitebox.Context) extends CaseClassMacros {
     // as multiple overloads can define the functions we look for below, possibly
     // with wrong types, making the compilation fail with the wrong error.
     // We do this check here to detect that beforehand.
-    def overloadsWithDefaultCount(tpe: Type): Int =
-      tpe.members.count { m =>
-        m.isMethod && m.name.toString == "apply" && methodHasDefaults(
-          m.asMethod)
-      }
+    def overloadsWithDefaultCount(tpe: Type): Int = tpe.members.count { m =>
+      m.isMethod && m.name.toString == "apply" && methodHasDefaults(m.asMethod)
+    }
 
     val mainOverloadsWithDefaultCount = overloadsWithDefaultCount(tpe.companion)
     val secondOverloadsWithDefaultCount = overloadsWithDefaultCount(

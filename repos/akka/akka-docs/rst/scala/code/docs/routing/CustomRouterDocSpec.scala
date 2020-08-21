@@ -83,10 +83,9 @@ final case class RedundancyGroup(
     nbrCopies: Int)
     extends Group {
 
-  def this(config: Config) =
-    this(
-      routeePaths = immutableSeq(config.getStringList("routees.paths")),
-      nbrCopies = config.getInt("nbr-copies"))
+  def this(config: Config) = this(
+    routeePaths = immutableSeq(config.getStringList("routees.paths")),
+    nbrCopies = config.getInt("nbr-copies"))
 
   override def paths(system: ActorSystem): immutable.Iterable[String] =
     routeePaths

@@ -41,8 +41,8 @@ class BackgroundSpec
       classOf[jfxsl.Background],
       classOf[Background]) {
 
-  override protected def getScalaClassInstance =
-    new Background(getJavaClassInstance) {}
+  override protected def getScalaClassInstance = new Background(
+    getJavaClassInstance) {}
 
   override protected def getJavaClassInstance = Background.EMPTY
 }

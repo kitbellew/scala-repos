@@ -59,8 +59,8 @@ class ScPrimaryConstructorImpl private (
 
   def getReturnTypeElement = null
 
-  def getHierarchicalMethodSignature =
-    new HierarchicalMethodSignatureImpl(getSignature(PsiSubstitutor.EMPTY))
+  def getHierarchicalMethodSignature = new HierarchicalMethodSignatureImpl(
+    getSignature(PsiSubstitutor.EMPTY))
 
   def findSuperMethods(parentClass: PsiClass) = PsiMethod.EMPTY_ARRAY
 

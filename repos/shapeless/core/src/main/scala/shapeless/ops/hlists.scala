@@ -71,11 +71,13 @@ object hlist {
 
     type Aux[L <: HList, F[_], Out0 <: HList] = Mapped[L, F] { type Out = Out0 }
 
-    implicit def hnilMapped[F[_]]: Aux[HNil, F, HNil] =
-      new Mapped[HNil, F] { type Out = HNil }
+    implicit def hnilMapped[F[_]]: Aux[HNil, F, HNil] = new Mapped[HNil, F] {
+      type Out = HNil
+    }
 
-    implicit def hlistIdMapped[L <: HList]: Aux[L, Id, L] =
-      new Mapped[L, Id] { type Out = L }
+    implicit def hlistIdMapped[L <: HList]: Aux[L, Id, L] = new Mapped[L, Id] {
+      type Out = L
+    }
 
     implicit def hlistMapped1[H, T <: HList, F[_], OutM <: HList](implicit
         mt: Mapped.Aux[T, F, OutM]): Aux[H :: T, F, F[H] :: OutM] =
@@ -128,10 +130,9 @@ object hlist {
     def apply[L1 <: HList, F1[_], L2 <: HList, F2[_]](implicit
         natTRel: NatTRel[L1, F1, L2, F2]) = natTRel
 
-    implicit def hnilNatTRel1[F1[_], F2[_]] =
-      new NatTRel[HNil, F1, HNil, F2] {
-        def map(f: F1 ~> F2, fa: HNil): HNil = HNil
-      }
+    implicit def hnilNatTRel1[F1[_], F2[_]] = new NatTRel[HNil, F1, HNil, F2] {
+      def map(f: F1 ~> F2, fa: HNil): HNil = HNil
+    }
 
     implicit def hnilNatTRel2[F1[_], H2] =
       new NatTRel[HNil, F1, HNil, Const[H2]#λ] {
@@ -235,11 +236,10 @@ object hlist {
   trait HKernelAux[L <: HList] extends DepFn0 { type Out <: HKernel }
 
   object HKernelAux {
-    implicit def mkHNilHKernel =
-      new HKernelAux[HNil] {
-        type Out = HNilHKernel
-        def apply() = HNilHKernel
-      }
+    implicit def mkHNilHKernel = new HKernelAux[HNil] {
+      type Out = HNilHKernel
+      def apply() = HNilHKernel
+    }
 
     implicit def mkHListHKernel[H, T <: HList](implicit ct: HKernelAux[T]) =
       new HKernelAux[H :: T] {
@@ -318,19 +318,17 @@ object hlist {
 
     import shapeless.nat._
     type Aux[L <: HList, N <: Nat] = Length[L] { type Out = N }
-    implicit def hnilLength[L <: HNil]: Aux[L, _0] =
-      new Length[L] {
-        type Out = _0
-        def apply(): Out = _0
-      }
+    implicit def hnilLength[L <: HNil]: Aux[L, _0] = new Length[L] {
+      type Out = _0
+      def apply(): Out = _0
+    }
 
     implicit def hlistLength[H, T <: HList, N <: Nat](implicit
         lt: Aux[T, N],
-        sn: Witness.Aux[Succ[N]]): Aux[H :: T, Succ[N]] =
-      new Length[H :: T] {
-        type Out = Succ[N]
-        def apply(): Out = sn.value
-      }
+        sn: Witness.Aux[Succ[N]]): Aux[H :: T, Succ[N]] = new Length[H :: T] {
+      type Out = Succ[N]
+      def apply(): Out = sn.value
+    }
   }
 
   /**
@@ -1138,14 +1136,13 @@ object hlist {
         LPrefix <: HList,
         LSuffix <: HList](implicit
         p: Aux[L, H, LPrefix, LSuffix]
-    ): Aux[H :: L, H, H :: LPrefix, LSuffix] =
-      new Partition[H :: L, H] {
-        type Prefix = H :: LPrefix
-        type Suffix = LSuffix
+    ): Aux[H :: L, H, H :: LPrefix, LSuffix] = new Partition[H :: L, H] {
+      type Prefix = H :: LPrefix
+      type Suffix = LSuffix
 
-        def filter(l: H :: L): Prefix = l.head :: p.filter(l.tail)
-        def filterNot(l: H :: L): Suffix = p.filterNot(l.tail)
-      }
+      def filter(l: H :: L): Prefix = l.head :: p.filter(l.tail)
+      def filterNot(l: H :: L): Suffix = p.filterNot(l.tail)
+    }
 
     implicit def hlistPartition2[
         H,
@@ -1155,14 +1152,13 @@ object hlist {
         LSuffix <: HList](implicit
         p: Aux[L, U, LPrefix, LSuffix],
         e: U =:!= H
-    ): Aux[H :: L, U, LPrefix, H :: LSuffix] =
-      new Partition[H :: L, U] {
-        type Prefix = LPrefix
-        type Suffix = H :: LSuffix
+    ): Aux[H :: L, U, LPrefix, H :: LSuffix] = new Partition[H :: L, U] {
+      type Prefix = LPrefix
+      type Suffix = H :: LSuffix
 
-        def filter(l: H :: L): Prefix = p.filter(l.tail)
-        def filterNot(l: H :: L): Suffix = l.head :: p.filterNot(l.tail)
-      }
+      def filter(l: H :: L): Prefix = p.filter(l.tail)
+      def filterNot(l: H :: L): Suffix = l.head :: p.filterNot(l.tail)
+    }
   }
 
   /**
@@ -1222,12 +1218,11 @@ object hlist {
         implicit
         len: ops.hlist.Length.Aux[L, A],
         lt: ops.nat.LT[A, N]
-    ): Aux[L, N, Step, HNil] =
-      new Grouper[L, N, Step] {
-        type Out = HNil
+    ): Aux[L, N, Step, HNil] = new Grouper[L, N, Step] {
+      type Out = HNil
 
-        def apply(l: L): Out = HNil
-      }
+      def apply(l: L): Out = HNil
+    }
   }
 
   /**
@@ -1297,13 +1292,12 @@ object hlist {
         mod: ops.nat.Mod.Aux[A, Step, B],
         eq: B =:= _0,
         grouper: Grouper[L, N, Step]
-    ): Aux[L, N, Step, Pad, grouper.Out] =
-      new PaddedGrouper[L, N, Step, Pad] {
+    ): Aux[L, N, Step, Pad, grouper.Out] = new PaddedGrouper[L, N, Step, Pad] {
 
-        type Out = grouper.Out
+      type Out = grouper.Out
 
-        def apply(l: L, pad: Pad): Out = grouper(l)
-      }
+      def apply(l: L, pad: Pad): Out = grouper(l)
+    }
 
   }
 
@@ -1324,12 +1318,11 @@ object hlist {
 
     implicit def hlistFilter[L <: HList, U, LPrefix <: HList, LSuffix <: HList](
         implicit partition: Partition.Aux[L, U, LPrefix, LSuffix]
-    ): Aux[L, U, LPrefix] =
-      new Filter[L, U] {
-        type Out = LPrefix
+    ): Aux[L, U, LPrefix] = new Filter[L, U] {
+      type Out = LPrefix
 
-        def apply(l: L): Out = partition.filter(l)
-      }
+      def apply(l: L): Out = partition.filter(l)
+    }
   }
 
   /**
@@ -1353,12 +1346,11 @@ object hlist {
         LPrefix <: HList,
         LSuffix <: HList](implicit
         partition: Partition.Aux[L, U, LPrefix, LSuffix]
-    ): Aux[L, U, LSuffix] =
-      new FilterNot[L, U] {
-        type Out = LSuffix
+    ): Aux[L, U, LSuffix] = new FilterNot[L, U] {
+      type Out = LSuffix
 
-        def apply(l: L): Out = partition.filterNot(l)
-      }
+      def apply(l: L): Out = partition.filterNot(l)
+    }
   }
 
   /**
@@ -2377,13 +2369,12 @@ object hlist {
 
     implicit def hlistAlign[L <: HList, MH, MT <: HList, R <: HList](implicit
         select: Remove.Aux[L, MH, (MH, R)],
-        alignTail: Align[R, MT]): Align[L, MH :: MT] =
-      new Align[L, MH :: MT] {
-        def apply(l: L): MH :: MT = {
-          val (h, t) = l.removeElem[MH]
-          h :: alignTail(t)
-        }
+        alignTail: Align[R, MT]): Align[L, MH :: MT] = new Align[L, MH :: MT] {
+      def apply(l: L): MH :: MT = {
+        val (h, t) = l.removeElem[MH]
+        h :: alignTail(t)
       }
+    }
   }
 
   /**
@@ -3054,16 +3045,15 @@ object hlist {
         mod: nat.Mod.Aux[N, Size, NModSize],
         split: Split.Aux[L, NModSize, Before, After],
         prepend: Prepend[After, Before]
-    ): RotateLeft.Aux[L, N, prepend.Out] =
-      new RotateLeft[L, N] {
-        type Out = prepend.Out
+    ): RotateLeft.Aux[L, N, prepend.Out] = new RotateLeft[L, N] {
+      type Out = prepend.Out
 
-        def apply(l: L): Out = {
-          val (before, after) = split(l)
+      def apply(l: L): Out = {
+        val (before, after) = split(l)
 
-          prepend(after, before)
-        }
+        prepend(after, before)
       }
+    }
 
     /** Binary compatibility stub */
     def noopRotateLeft[L <: HList, N <: Nat]: Aux[L, N, L] =
@@ -3088,11 +3078,10 @@ object hlist {
       rotateRight
 
     implicit def hnilRotateRight[L <: HNil, N <: Nat]
-        : RotateRight.Aux[L, N, L] =
-      new RotateRight[L, N] {
-        type Out = L
-        def apply(l: L) = l
-      }
+        : RotateRight.Aux[L, N, L] = new RotateRight[L, N] {
+      type Out = L
+      def apply(l: L) = l
+    }
   }
 
   trait LowPriorityRotateRight {
@@ -3111,12 +3100,11 @@ object hlist {
         mod: nat.Mod.Aux[N, Size, NModSize],
         diff: nat.Diff.Aux[Size, NModSize, Size_Diff_NModSize],
         rotateLeft: RotateLeft[L, Size_Diff_NModSize]
-    ): RotateRight.Aux[L, N, rotateLeft.Out] =
-      new RotateRight[L, N] {
-        type Out = rotateLeft.Out
+    ): RotateRight.Aux[L, N, rotateLeft.Out] = new RotateRight[L, N] {
+      type Out = rotateLeft.Out
 
-        def apply(l: L): Out = rotateLeft(l)
-      }
+      def apply(l: L): Out = rotateLeft(l)
+    }
 
     def noopRotateRight[L <: HList, N <: Nat]: Aux[L, N, L] =
       new RotateRight[L, N] {
@@ -3343,11 +3331,10 @@ object hlist {
     def apply[F[_]] = new Curried[F]
     def apply[F[_], In <: HList](implicit ev: LiftAll[F, In]) = ev
 
-    implicit def hnil[F[_]]: LiftAll.Aux[F, HNil, HNil] =
-      new LiftAll[F, HNil] {
-        type Out = HNil
-        def instances = HNil
-      }
+    implicit def hnil[F[_]]: LiftAll.Aux[F, HNil, HNil] = new LiftAll[F, HNil] {
+      type Out = HNil
+      def instances = HNil
+    }
 
     implicit def hcons[F[_], H, T <: HList](implicit
         headInstance: F[H],

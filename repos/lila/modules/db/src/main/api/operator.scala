@@ -13,27 +13,26 @@ trait $operator {
   def $set(pairs: (String, Json.JsValueWrapper)*) =
     Json.obj("$set" -> Json.obj(pairs: _*))
   def $set(pairs: JsObject) = Json.obj("$set" -> pairs)
-  def $setBson(pairs: (String, BSONValue)*) =
-    BSONDocument("$set" -> BSONDocument(pairs))
+  def $setBson(pairs: (String, BSONValue)*) = BSONDocument(
+    "$set" -> BSONDocument(pairs))
   def $setBson(pairs: BSONDocument) = BSONDocument("$set" -> pairs)
   def $unset(fields: String*) =
     Json.obj("$unset" -> Json.obj(wrap(fields map (_ -> true)): _*))
   def $inc[A: Writes](pairs: (String, A)*) =
     Json.obj("$inc" -> Json.obj(wrap(pairs): _*))
-  def $incBson(pairs: (String, Int)*) =
-    BSONDocument("$inc" -> BSONDocument(pairs map { case (k, v) =>
+  def $incBson(pairs: (String, Int)*) = BSONDocument(
+    "$inc" -> BSONDocument(pairs map { case (k, v) =>
       k -> BSONInteger(v)
     }))
   def $push[A: Writes](field: String, value: A) =
     Json.obj("$push" -> Json.obj(field -> value))
-  def $pushSlice[A: Writes](field: String, value: A, max: Int) =
-    Json.obj(
-      "$push" -> Json.obj(
-        field -> Json.obj(
-          "$each" -> List(value),
-          "$slice" -> max
-        )
-      ))
+  def $pushSlice[A: Writes](field: String, value: A, max: Int) = Json.obj(
+    "$push" -> Json.obj(
+      field -> Json.obj(
+        "$each" -> List(value),
+        "$slice" -> max
+      )
+    ))
   def $pull[A: Writes](field: String, value: A) =
     Json.obj("$pull" -> Json.obj(field -> value))
 
@@ -58,8 +57,7 @@ trait $operator {
   def $date(value: DateTime) = BSONFormats toJSON BSONDateTime(value.getMillis)
 
   private def wrap[K, V: Writes](
-      pairs: Seq[(K, V)]): Seq[(K, Json.JsValueWrapper)] =
-    pairs map { case (k, v) =>
-      k -> Json.toJsFieldJsValueWrapper(v)
-    }
+      pairs: Seq[(K, V)]): Seq[(K, Json.JsValueWrapper)] = pairs map {
+    case (k, v) => k -> Json.toJsFieldJsValueWrapper(v)
+  }
 }

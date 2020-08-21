@@ -77,21 +77,20 @@ class GraphStageTimersSpec extends AkkaSpec {
             cancelTimer("TestRepeatedTimer")
         }
 
-        private def onTestEvent(event: Any): Unit =
-          event match {
-            case TestSingleTimer ⇒
-              scheduleOnce("TestSingleTimer", 500.millis.dilated)
-            case TestSingleTimerResubmit ⇒
-              scheduleOnce("TestSingleTimerResubmit", 500.millis.dilated)
-            case TestCancelTimer ⇒
-              scheduleOnce("TestCancelTimer", 1.milli.dilated)
-              // Likely in mailbox but we cannot guarantee
-              cancelTimer("TestCancelTimer")
-              probe ! TestCancelTimerAck
-              scheduleOnce("TestCancelTimer", 500.milli.dilated)
-            case TestRepeatedTimer ⇒
-              schedulePeriodically("TestRepeatedTimer", 100.millis.dilated)
-          }
+        private def onTestEvent(event: Any): Unit = event match {
+          case TestSingleTimer ⇒
+            scheduleOnce("TestSingleTimer", 500.millis.dilated)
+          case TestSingleTimerResubmit ⇒
+            scheduleOnce("TestSingleTimerResubmit", 500.millis.dilated)
+          case TestCancelTimer ⇒
+            scheduleOnce("TestCancelTimer", 1.milli.dilated)
+            // Likely in mailbox but we cannot guarantee
+            cancelTimer("TestCancelTimer")
+            probe ! TestCancelTimerAck
+            scheduleOnce("TestCancelTimer", 500.milli.dilated)
+          case TestRepeatedTimer ⇒
+            schedulePeriodically("TestRepeatedTimer", 100.millis.dilated)
+        }
       }
   }
 

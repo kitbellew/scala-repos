@@ -45,12 +45,11 @@ abstract class SmartStepIntoTestBase extends ScalaDebuggerTestCase {
   protected val handler = new ScalaSmartStepIntoHandler
   protected var targets: Seq[SmartStepTarget] = null
 
-  def availableSmartStepTargets(): Seq[SmartStepTarget] =
-    managed {
-      inReadAction {
-        handler.findSmartStepTargets(currentSourcePosition).asScala
-      }
+  def availableSmartStepTargets(): Seq[SmartStepTarget] = managed {
+    inReadAction {
+      handler.findSmartStepTargets(currentSourcePosition).asScala
     }
+  }
 
   def checkSmartStepTargets(expected: String*): Unit = {
     targets = availableSmartStepTargets()

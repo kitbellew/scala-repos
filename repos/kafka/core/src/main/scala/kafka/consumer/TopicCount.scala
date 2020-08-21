@@ -177,8 +177,8 @@ private[kafka] class WildcardTopicCount(
       Map(wildcardTopics.map((_, numStreams)): _*))
   }
 
-  def getTopicCountMap =
-    Map(CoreUtils.JSONEscapeString(topicFilter.regex) -> numStreams)
+  def getTopicCountMap = Map(
+    CoreUtils.JSONEscapeString(topicFilter.regex) -> numStreams)
 
   def pattern: String = {
     topicFilter match {

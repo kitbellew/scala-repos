@@ -132,22 +132,19 @@ object FieldsProviderImpl {
     }
     case class OptionBuilder(of: FieldBuilder) extends FieldBuilder {
       // Options just use Object as the type, due to the way cascading works on number types
-      def columnTypes =
-        of.columnTypes.map(_ =>
-          q"""_root_.scala.Predef.classOf[_root_.java.lang.Object]""")
+      def columnTypes = of.columnTypes.map(_ =>
+        q"""_root_.scala.Predef.classOf[_root_.java.lang.Object]""")
       def names = of.names
     }
     case class CaseClassBuilder(prefix: String, members: Vector[FieldBuilder])
         extends FieldBuilder {
       def columnTypes = members.flatMap(_.columnTypes)
-      def names =
-        for {
-          member <- members
-          name <- member.names
-        } yield
-          if (namingScheme == NamedWithPrefix && prefix.nonEmpty)
-            s"$prefix.$name"
-          else name
+      def names = for {
+        member <- members
+        name <- member.names
+      } yield
+        if (namingScheme == NamedWithPrefix && prefix.nonEmpty) s"$prefix.$name"
+        else name
     }
 
     /**

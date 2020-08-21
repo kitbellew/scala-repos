@@ -57,12 +57,11 @@ class CSRFFilter(
     * @deprecated in 2.5.0. This constructor uses global state.
     */
   @Deprecated
-  def this()(implicit mat: Materializer) =
-    this(
-      CSRFConfig.global,
-      Crypto.crypto,
-      new ConfigTokenProvider(CSRFConfig.global, Crypto.crypto),
-      DefaultErrorHandler)
+  def this()(implicit mat: Materializer) = this(
+    CSRFConfig.global,
+    Crypto.crypto,
+    new ConfigTokenProvider(CSRFConfig.global, Crypto.crypto),
+    DefaultErrorHandler)
 
   def apply(next: EssentialAction): EssentialAction =
     new CSRFAction(next, config, tokenSigner, tokenProvider, errorHandler)

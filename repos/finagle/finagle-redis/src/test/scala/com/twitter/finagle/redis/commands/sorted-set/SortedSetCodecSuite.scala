@@ -168,16 +168,15 @@ final class SortedSetCodecSuite extends RedisRequestTest {
 
   private def verifyIU(cmd: String, k: String, n: Int)(
       f: (Seq[ChannelBuffer], Option[Weights], Option[Aggregate]) => Unit
-  ): PartialFunction[Command, Unit] =
-    cmd match {
-      case "ZINTERSTORE" => { case ZInterStore(k, n, keys, w, a) =>
-        f(keys, w, a)
-      }
-      case "ZUNIONSTORE" => { case ZUnionStore(k, n, keys, w, a) =>
-        f(keys, w, a)
-      }
-      case _ => throw new Exception("Unhandled type")
+  ): PartialFunction[Command, Unit] = cmd match {
+    case "ZINTERSTORE" => { case ZInterStore(k, n, keys, w, a) =>
+      f(keys, w, a)
     }
+    case "ZUNIONSTORE" => { case ZUnionStore(k, n, keys, w, a) =>
+      f(keys, w, a)
+    }
+    case _ => throw new Exception("Unhandled type")
+  }
 
   test("Correctly encode ZINTERSTORE and ZUNIONSTORE with two keys") {
     List("ZINTERSTORE", "ZUNIONSTORE").foreach { cmd =>
@@ -359,15 +358,14 @@ final class SortedSetCodecSuite extends RedisRequestTest {
       min: ZInterval,
       max: ZInterval)(
       f: (Option[CommandArgument], Option[Limit]) => Unit
-  ): PartialFunction[Command, Unit] =
-    cmd match {
-      case "ZRANGEBYSCORE" => { case ZRangeByScore(k, min, max, s, l) =>
-        f(s, l)
-      }
-      case "ZREVRANGEBYSCORE" => { case ZRevRangeByScore(k, min, max, s, l) =>
-        f(s, l)
-      }
+  ): PartialFunction[Command, Unit] = cmd match {
+    case "ZRANGEBYSCORE" => { case ZRangeByScore(k, min, max, s, l) =>
+      f(s, l)
     }
+    case "ZREVRANGEBYSCORE" => { case ZRevRangeByScore(k, min, max, s, l) =>
+      f(s, l)
+    }
+  }
 
   test(
     "Correctly encode ZRANGEBYSCORE and ZREVRANGEBYSCORE from -inf to +inf") {

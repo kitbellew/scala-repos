@@ -44,10 +44,9 @@ abstract class DirectTest {
 
   def newReporter(settings: Settings): Reporter = new ConsoleReporter(settings)
 
-  private def newSources(codes: String*) =
-    codes.toList.zipWithIndex map { case (src, idx) =>
-      new BatchSourceFile(s"newSource${idx + 1}.scala", src)
-    }
+  private def newSources(codes: String*) = codes.toList.zipWithIndex map {
+    case (src, idx) => new BatchSourceFile(s"newSource${idx + 1}.scala", src)
+  }
 
   def withRun[T](global: Global)(f: global.Run => T): T = {
     global.reporter.reset()

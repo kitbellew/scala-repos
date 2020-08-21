@@ -30,32 +30,30 @@ trait MetaProtoTag[ModelType <: ProtoTag[ModelType]]
   private val idCache = new LRU[Long, ModelType](cacheSize)
   private val tagCache = new LRU[String, ModelType](cacheSize)
 
-  def findOrCreate(ntag: String): ModelType =
-    synchronized {
-      val tag = capify(ntag)
-      if (tagCache.contains(tag)) tagCache(tag)
-      else {
-        find(By(name, tag)) match {
-          case Full(t) => tagCache(tag) = t; t
-          case _ =>
-            val ret: ModelType = (createInstance).name(tag).saveMe
-            tagCache(tag) = ret
-            ret
-        }
+  def findOrCreate(ntag: String): ModelType = synchronized {
+    val tag = capify(ntag)
+    if (tagCache.contains(tag)) tagCache(tag)
+    else {
+      find(By(name, tag)) match {
+        case Full(t) => tagCache(tag) = t; t
+        case _ =>
+          val ret: ModelType = (createInstance).name(tag).saveMe
+          tagCache(tag) = ret
+          ret
       }
     }
+  }
 
   override def findDbByKey(
       dbId: ConnectionIdentifier,
-      key: Long): Box[ModelType] =
-    synchronized {
-      if (idCache.contains(key)) Full(idCache(key))
-      else {
-        val ret = super.findDbByKey(dbId, key)
-        ret.foreach(v => idCache(key) = v)
-        ret
-      }
+      key: Long): Box[ModelType] = synchronized {
+    if (idCache.contains(key)) Full(idCache(key))
+    else {
+      val ret = super.findDbByKey(dbId, key)
+      ret.foreach(v => idCache(key) = v)
+      ret
     }
+  }
 
   /**
     * Split the String into tags

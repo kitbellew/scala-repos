@@ -28,10 +28,9 @@ class SingleItemInjection[T] extends Injection[T, JList[AnyRef]] {
     list
   }
 
-  override def invert(vin: JList[AnyRef]) =
-    Inversion.attempt(vin) { v =>
-      v.get(0).asInstanceOf[T]
-    }
+  override def invert(vin: JList[AnyRef]) = Inversion.attempt(vin) { v =>
+    v.get(0).asInstanceOf[T]
+  }
 }
 
 class KeyValueInjection[K, V] extends Injection[(K, V), JList[AnyRef]] {
@@ -44,10 +43,9 @@ class KeyValueInjection[K, V] extends Injection[(K, V), JList[AnyRef]] {
     list
   }
 
-  override def invert(vin: JList[AnyRef]) =
-    Inversion.attempt(vin) { v =>
-      val key = v.get(0).asInstanceOf[K]
-      val value = v.get(1).asInstanceOf[V]
-      (key, value)
-    }
+  override def invert(vin: JList[AnyRef]) = Inversion.attempt(vin) { v =>
+    val key = v.get(0).asInstanceOf[K]
+    val value = v.get(1).asInstanceOf[V]
+    (key, value)
+  }
 }

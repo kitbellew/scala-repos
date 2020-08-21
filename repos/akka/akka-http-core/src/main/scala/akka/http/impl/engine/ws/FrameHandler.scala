@@ -106,17 +106,14 @@ private[http] object FrameHandler {
 
     /** Returns a SyncDirective if it handled the message */
     private def validateHeader(header: FrameHeader)(implicit
-        ctx: Ctx): Option[SyncDirective] =
-      header match {
-        case h: FrameHeader if h.mask.isDefined && !server ⇒
-          Some(protocolError())
-        case h: FrameHeader if h.rsv1 || h.rsv2 || h.rsv3 ⇒
-          Some(protocolError())
-        case FrameHeader(op, _, length, fin, _, _, _)
-            if op.isControl && (length > 125 || !fin) ⇒
-          Some(protocolError())
-        case _ ⇒ None
-      }
+        ctx: Ctx): Option[SyncDirective] = header match {
+      case h: FrameHeader if h.mask.isDefined && !server ⇒ Some(protocolError())
+      case h: FrameHeader if h.rsv1 || h.rsv2 || h.rsv3 ⇒ Some(protocolError())
+      case FrameHeader(op, _, length, fin, _, _, _)
+          if op.isControl && (length > 125 || !fin) ⇒
+        Some(protocolError())
+      case _ ⇒ None
+    }
 
     private def handleControlFrame(
         opcode: Opcode,

@@ -57,10 +57,9 @@ abstract class ServerSettings private[akka] ()
   override def getTimeouts = timeouts
   override def getRawRequestUriHeader = rawRequestUriHeader
   override def getRemoteAddressHeader = remoteAddressHeader
-  override def getWebsocketRandomFactory =
-    new Supplier[Random] {
-      override def get(): Random = websocketRandomFactory()
-    }
+  override def getWebsocketRandomFactory = new Supplier[Random] {
+    override def get(): Random = websocketRandomFactory()
+  }
 
   // ---
 
@@ -120,8 +119,8 @@ object ServerSettings extends SettingsCompanion[ServerSettings] {
 
   implicit def timeoutsShortcut(s: ServerSettings): Timeouts = s.timeouts
 
-  override def apply(config: Config): ServerSettings =
-    ServerSettingsImpl(config)
+  override def apply(config: Config): ServerSettings = ServerSettingsImpl(
+    config)
   override def apply(configOverrides: String): ServerSettings =
     ServerSettingsImpl(configOverrides)
 }

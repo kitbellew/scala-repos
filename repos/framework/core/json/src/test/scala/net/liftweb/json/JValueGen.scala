@@ -24,13 +24,12 @@ import Arbitrary.arbitrary
 trait JValueGen {
   def genJValue: Gen[JValue] =
     frequency((5, genSimple), (1, wrap(genArray)), (1, wrap(genObject)))
-  def genSimple: Gen[JValue] =
-    oneOf(
-      const(JNull),
-      arbitrary[Int].map(JInt(_)),
-      arbitrary[Double].map(JDouble(_)),
-      arbitrary[Boolean].map(JBool(_)),
-      arbitrary[String].map(JString(_)))
+  def genSimple: Gen[JValue] = oneOf(
+    const(JNull),
+    arbitrary[Int].map(JInt(_)),
+    arbitrary[Double].map(JDouble(_)),
+    arbitrary[Boolean].map(JBool(_)),
+    arbitrary[String].map(JString(_)))
 
   def genArray: Gen[JValue] = for (l <- genList) yield JArray(l)
   def genObject: Gen[JObject] = for (l <- genFieldList) yield JObject(l)
@@ -41,17 +40,16 @@ trait JValueGen {
     for (name <- identifier; value <- genJValue; id <- choose(0, 1000000))
       yield JField(name + id, value)
 
-  def genJValueClass: Gen[Class[_ <: JValue]] =
-    oneOf(
-      JNull.getClass.asInstanceOf[Class[JValue]],
-      JNothing.getClass.asInstanceOf[Class[JValue]],
-      classOf[JInt],
-      classOf[JDouble],
-      classOf[JBool],
-      classOf[JString],
-      classOf[JArray],
-      classOf[JObject]
-    )
+  def genJValueClass: Gen[Class[_ <: JValue]] = oneOf(
+    JNull.getClass.asInstanceOf[Class[JValue]],
+    JNothing.getClass.asInstanceOf[Class[JValue]],
+    classOf[JInt],
+    classOf[JDouble],
+    classOf[JBool],
+    classOf[JString],
+    classOf[JArray],
+    classOf[JObject]
+  )
 
   def listSize = choose(0, 5).sample.get
 }
@@ -62,19 +60,17 @@ trait NodeGen {
 
   def genXml: Gen[Node] = frequency((2, wrap(genNode)), (3, genElem))
 
-  def genNode =
-    for {
-      name <- genName
-      node <- Gen.containerOfN[List, Node](children, genXml) map { seq =>
-        new XmlNode(name, seq)
-      }
-    } yield node
+  def genNode = for {
+    name <- genName
+    node <- Gen.containerOfN[List, Node](children, genXml) map { seq =>
+      new XmlNode(name, seq)
+    }
+  } yield node
 
-  def genElem =
-    for {
-      name <- genName
-      value <- arbitrary[String]
-    } yield new XmlElem(name, value)
+  def genElem = for {
+    name <- genName
+    value <- arbitrary[String]
+  } yield new XmlElem(name, value)
 
   def genName = frequency((2, identifier), (1, const("const")))
   private def children = choose(1, 3).sample.get

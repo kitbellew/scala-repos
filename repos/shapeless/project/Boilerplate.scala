@@ -53,12 +53,11 @@ object Boilerplate {
   )
 
   /** Returns a seq of the generated files.  As a side-effect, it actually generates them... */
-  def gen(dir: File) =
-    for (t <- templates) yield {
-      val tgtFile = dir / "shapeless" / t.filename
-      IO.write(tgtFile, t.body)
-      tgtFile
-    }
+  def gen(dir: File) = for (t <- templates) yield {
+    val tgtFile = dir / "shapeless" / t.filename
+    IO.write(tgtFile, t.body)
+    tgtFile
+  }
 
   val header = """
     |/*

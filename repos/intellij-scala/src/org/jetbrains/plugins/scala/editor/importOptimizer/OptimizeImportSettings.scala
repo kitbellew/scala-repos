@@ -33,6 +33,6 @@ case class OptimizeImportSettings(
 }
 
 object OptimizeImportSettings {
-  def apply(project: Project) =
-    new OptimizeImportSettings(ScalaCodeStyleSettings.getInstance(project))
+  def apply(project: Project) = new OptimizeImportSettings(
+    ScalaCodeStyleSettings.getInstance(project))
 }

@@ -16,10 +16,9 @@ object Spam {
     "chess.com/register?refId="
   )
 
-  def replace(text: String) =
-    replacements.foldLeft(text) { case (t, (regex, rep)) =>
-      regex.replaceAllIn(t, rep)
-    }
+  def replace(text: String) = replacements.foldLeft(text) {
+    case (t, (regex, rep)) => regex.replaceAllIn(t, rep)
+  }
 
   private val replacements = List(
     """velocitychess.com/ref/\w+""".r -> "velocitychess.com",

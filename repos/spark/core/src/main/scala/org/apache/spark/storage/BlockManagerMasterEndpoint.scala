@@ -477,8 +477,8 @@ private[spark] class BlockManagerInfo(
   // Cached blocks held by this BlockManager. This does not include broadcast blocks.
   private val _cachedBlocks = new mutable.HashSet[BlockId]
 
-  def getStatus(blockId: BlockId): Option[BlockStatus] =
-    Option(_blocks.get(blockId))
+  def getStatus(blockId: BlockId): Option[BlockStatus] = Option(
+    _blocks.get(blockId))
 
   def updateLastSeenMs() {
     _lastSeenMs = System.currentTimeMillis()

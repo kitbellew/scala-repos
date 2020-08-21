@@ -96,12 +96,11 @@ class ScalaCompilerSettings(state: ScalaCompilerSettingsState) {
     initFrom0(normalized(options))
   }
 
-  def sbtIncOptions =
-    SbtIncrementalOptions(
-      nameHashing,
-      recompileOnMacroDef,
-      transitiveStep,
-      recompileAllFraction)
+  def sbtIncOptions = SbtIncrementalOptions(
+    nameHashing,
+    recompileOnMacroDef,
+    transitiveStep,
+    recompileAllFraction)
 
   private def initFrom0(options: Seq[String]) {
     val optionToSetter = ToggleOptions.map(it => (it._1, it._3)).toMap
@@ -126,16 +125,15 @@ class ScalaCompilerSettings(state: ScalaCompilerSettingsState) {
     }
   }
 
-  private def normalized(options: Seq[String]): Seq[String] =
-    options.flatMap {
-      case "-language:macros" =>
-        Seq("-language:experimental.macros")
-      case option =>
-        if (option.startsWith("-language:"))
-          option.substring(10).split(",").map("-language:" + _)
-        else
-          Seq(option)
-    }
+  private def normalized(options: Seq[String]): Seq[String] = options.flatMap {
+    case "-language:macros" =>
+      Seq("-language:experimental.macros")
+    case option =>
+      if (option.startsWith("-language:"))
+        option.substring(10).split(",").map("-language:" + _)
+      else
+        Seq(option)
+  }
 
   def loadState(state: ScalaCompilerSettingsState) {
     compileOrder = state.compileOrder

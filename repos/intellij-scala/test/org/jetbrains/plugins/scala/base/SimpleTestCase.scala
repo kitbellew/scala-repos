@@ -47,12 +47,11 @@ abstract class SimpleTestCase extends UsefulTestCase {
   }
 
   implicit class Findable(val element: ScalaFile) {
-    def target: PsiElement =
-      element.depthFirst
-        .dropWhile(!_.isInstanceOf[PsiComment])
-        .drop(1)
-        .dropWhile(_.isInstanceOf[PsiWhiteSpace])
-        .next()
+    def target: PsiElement = element.depthFirst
+      .dropWhile(!_.isInstanceOf[PsiComment])
+      .drop(1)
+      .dropWhile(_.isInstanceOf[PsiWhiteSpace])
+      .next()
   }
 
   def assertNothing[T](actual: T) {

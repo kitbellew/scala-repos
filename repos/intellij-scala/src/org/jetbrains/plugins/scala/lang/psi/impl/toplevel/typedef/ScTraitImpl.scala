@@ -99,11 +99,10 @@ class ScTraitImpl private (
     getAllMethods.filter(_.containingClass == this)
   }
 
-  override def hasModifierProperty(name: String): Boolean =
-    name match {
-      case PsiModifier.ABSTRACT if isInterface => true
-      case _                                   => super.hasModifierProperty(name)
-    }
+  override def hasModifierProperty(name: String): Boolean = name match {
+    case PsiModifier.ABSTRACT if isInterface => true
+    case _                                   => super.hasModifierProperty(name)
+  }
 
   override def getAllMethods: Array[PsiMethod] = {
     val res = new ArrayBuffer[PsiMethod]()

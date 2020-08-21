@@ -32,24 +32,22 @@ private final class Indexer(storage: Storage, sequencer: ActorRef) {
       case _        => funit
     }
 
-  private def compute(user: User): Funit =
-    storage.fetchLast(user.id) flatMap {
-      case None    => fromScratch(user)
-      case Some(e) => computeFrom(user, e.date plusSeconds 1, e.number + 1)
-    }
+  private def compute(user: User): Funit = storage.fetchLast(user.id) flatMap {
+    case None    => fromScratch(user)
+    case Some(e) => computeFrom(user, e.date plusSeconds 1, e.number + 1)
+  }
 
   private def fromScratch(user: User): Funit =
     fetchFirstGame(user) flatMap {
       _.?? { g => computeFrom(user, g.createdAt, 1) }
     }
 
-  private def gameQuery(user: User) =
-    Query.user(user.id) ++
-      Query.rated ++
-      Query.finished ++
-      Query.turnsMoreThan(2) ++
-      Query.notFromPosition ++
-      Query.notHordeOrSincePawnsAreWhite
+  private def gameQuery(user: User) = Query.user(user.id) ++
+    Query.rated ++
+    Query.finished ++
+    Query.turnsMoreThan(2) ++
+    Query.notFromPosition ++
+    Query.notHordeOrSincePawnsAreWhite
 
   // private val maxGames = 1 * 10
   private val maxGames = 10 * 1000
@@ -71,16 +69,14 @@ private final class Indexer(storage: Storage, sequencer: ActorRef) {
       fromNumber: Int): Funit = {
     storage nbByPerf user.id flatMap { nbs =>
       var nbByPerf = nbs
-      def toEntry(game: Game): Fu[Option[Entry]] =
-        game.perfType ?? { pt =>
-          val nb = nbByPerf.getOrElse(pt, 0) + 1
-          nbByPerf = nbByPerf.updated(pt, nb)
-          PovToEntry(game, user.id, provisional = nb < 10).addFailureEffect {
-            e =>
-              println(e)
-              e.printStackTrace
-          } map (_.toOption)
-        }
+      def toEntry(game: Game): Fu[Option[Entry]] = game.perfType ?? { pt =>
+        val nb = nbByPerf.getOrElse(pt, 0) + 1
+        nbByPerf = nbByPerf.updated(pt, nb)
+        PovToEntry(game, user.id, provisional = nb < 10).addFailureEffect { e =>
+          println(e)
+          e.printStackTrace
+        } map (_.toOption)
+      }
       val query = $query(
         gameQuery(user) ++ Json.obj(
           Game.BSONFields.createdAt -> $gte($date(from))))

@@ -313,10 +313,9 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
 
   def logError(msg: String, t: Throwable): Unit = ()
 
-  override def shouldLogAtThisPhase =
-    settings.log.isSetByUser && (
-      (settings.log containsPhase globalPhase) || (settings.log containsPhase phase)
-    )
+  override def shouldLogAtThisPhase = settings.log.isSetByUser && (
+    (settings.log containsPhase globalPhase) || (settings.log containsPhase phase)
+  )
   // Over 200 closure objects are eliminated by inlining this.
   @inline final def log(msg: => AnyRef) {
     if (shouldLogAtThisPhase)
@@ -356,10 +355,9 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       }
 
     def loadReader(name: String): Option[SourceReader] = {
-      def ccon =
-        Class
-          .forName(name)
-          .getConstructor(classOf[CharsetDecoder], classOf[Reporter])
+      def ccon = Class
+        .forName(name)
+        .getConstructor(classOf[CharsetDecoder], classOf[Reporter])
 
       try Some(
         ccon
@@ -694,10 +692,10 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     "jvm" -> "generate JVM bytecode"
   ) withDefaultValue ""
 
-  protected def computePlatformPhases() =
-    platform.platformPhases foreach { sub =>
+  protected def computePlatformPhases() = platform.platformPhases foreach {
+    sub =>
       addToPhasesSet(sub, otherPhaseDescriptions(sub.phaseName))
-    }
+  }
 
   // sequences the phase assembly
   protected def computePhaseDescriptors: List[SubComponent] = {
@@ -746,12 +744,10 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   /** Summary of the per-phase values of nextFlags and newFlags, shown under -Xshow-phases -Ydebug. */
   def phaseFlagDescriptions: String = {
     def fmt(ph: SubComponent) = {
-      def fstr1 =
-        if (ph.phaseNewFlags == 0L) ""
-        else "[START] " + Flags.flagsToString(ph.phaseNewFlags)
-      def fstr2 =
-        if (ph.phaseNextFlags == 0L) ""
-        else "[END] " + Flags.flagsToString(ph.phaseNextFlags)
+      def fstr1 = if (ph.phaseNewFlags == 0L) ""
+      else "[START] " + Flags.flagsToString(ph.phaseNewFlags)
+      def fstr2 = if (ph.phaseNextFlags == 0L) ""
+      else "[END] " + Flags.flagsToString(ph.phaseNextFlags)
       if (ph.initial) Flags.flagsToString(Flags.InitialFlags)
       else if (ph.phaseNewFlags != 0L && ph.phaseNextFlags != 0L)
         fstr1 + " " + fstr2
@@ -787,42 +783,39 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
 
     // built-in string precision merely truncates
     import java.util.{Formattable, FormattableFlags, Formatter}
-    def dotfmt(s: String) =
-      new Formattable {
-        def elliptically(s: String, max: Int) =
-          (
-            if (max < 0 || s.length <= max) s
-            else if (max < 4) s.take(max)
-            else s.take(max - 3) + "..."
-          )
-        override def formatTo(
-            formatter: Formatter,
-            flags: Int,
-            width: Int,
-            precision: Int) {
-          val p = elliptically(s, precision)
-          val w = if (width > 0 && p.length < width) {
-            import FormattableFlags.LEFT_JUSTIFY
-            val leftly = (flags & LEFT_JUSTIFY) == LEFT_JUSTIFY
-            val sb = new StringBuilder
-            def pad() = 1 to width - p.length foreach (_ => sb.append(' '))
-            if (!leftly) pad()
-            sb.append(p)
-            if (leftly) pad()
-            sb.toString
-          } else p
-          formatter.out.append(w)
-        }
+    def dotfmt(s: String) = new Formattable {
+      def elliptically(s: String, max: Int) = (
+        if (max < 0 || s.length <= max) s
+        else if (max < 4) s.take(max)
+        else s.take(max - 3) + "..."
+      )
+      override def formatTo(
+          formatter: Formatter,
+          flags: Int,
+          width: Int,
+          precision: Int) {
+        val p = elliptically(s, precision)
+        val w = if (width > 0 && p.length < width) {
+          import FormattableFlags.LEFT_JUSTIFY
+          val leftly = (flags & LEFT_JUSTIFY) == LEFT_JUSTIFY
+          val sb = new StringBuilder
+          def pad() = 1 to width - p.length foreach (_ => sb.append(' '))
+          if (!leftly) pad()
+          sb.append(p)
+          if (leftly) pad()
+          sb.toString
+        } else p
+        formatter.out.append(w)
       }
+    }
 
     // phase id in run, or suitable icon
-    def idOf(p: SubComponent) =
-      (
-        if (settings.skip contains p.phaseName)
-          "oo" // (currentRun skipPhase p.phaseName)
-        else if (!p.enabled) "xx"
-        else p.ownPhase.id.toString
-      )
+    def idOf(p: SubComponent) = (
+      if (settings.skip contains p.phaseName)
+        "oo" // (currentRun skipPhase p.phaseName)
+      else if (!p.enabled) "xx"
+      else p.ownPhase.id.toString
+    )
     def mkText(p: SubComponent) = {
       val (name, text) =
         if (elliptically) (dotfmt(p.phaseName), dotfmt(describe(p)))
@@ -906,13 +899,12 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
             path: String): List[(PlatformClassPath, PlatformClassPath)] = {
           val dir = AbstractFile.getDirectory(path)
           val canonical = dir.canonicalPath
-          def matchesCanonical(e: ClassPath[_]) =
-            e.origin match {
-              case Some(opath) =>
-                AbstractFile.getDirectory(opath).canonicalPath == canonical
-              case None =>
-                false
-            }
+          def matchesCanonical(e: ClassPath[_]) = e.origin match {
+            case Some(opath) =>
+              AbstractFile.getDirectory(opath).canonicalPath == canonical
+            case None =>
+              false
+          }
           cp.entries find matchesCanonical match {
             case Some(oldEntry) =>
               List(oldEntry -> cp.context.newClassPath(dir))
@@ -1053,17 +1045,15 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     if (currentUnit.exists) currentUnit.source else lastSeenSourceFile
   def currentFreshNameCreator = currentUnit.fresh
 
-  def isGlobalInitialized =
-    (
-      definitions.isDefinitionsInitialized
-        && rootMirror.isMirrorInitialized
-    )
-  override def isPastTyper =
-    (
-      (curRun ne null)
-        && isGlobalInitialized // defense against init order issues
-        && (globalPhase.id > currentRun.typerPhase.id)
-    )
+  def isGlobalInitialized = (
+    definitions.isDefinitionsInitialized
+      && rootMirror.isMirrorInitialized
+  )
+  override def isPastTyper = (
+    (curRun ne null)
+      && isGlobalInitialized // defense against init order issues
+      && (globalPhase.id > currentRun.typerPhase.id)
+  )
 
   // TODO - trim these to the absolute minimum.
   @inline final def exitingErasure[T](op: => T): T =
@@ -1110,73 +1100,70 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     enteringPhase(currentRun.uncurryPhase)(op)
 
   // Owners which aren't package classes.
-  private def ownerChainString(sym: Symbol): String =
-    (
-      if (sym == null) ""
-      else sym.ownerChain takeWhile (!_.isPackageClass) mkString " -> "
-    )
+  private def ownerChainString(sym: Symbol): String = (
+    if (sym == null) ""
+    else sym.ownerChain takeWhile (!_.isPackageClass) mkString " -> "
+  )
 
-  private def formatExplain(pairs: (String, Any)*): String =
-    (
-      pairs.toList collect {
-        case (k, v) if v != null => "%20s: %s".format(k, v)
-      } mkString "\n"
-    )
+  private def formatExplain(pairs: (String, Any)*): String = (
+    pairs.toList collect {
+      case (k, v) if v != null => "%20s: %s".format(k, v)
+    } mkString "\n"
+  )
 
   /** Don't want to introduce new errors trying to report errors,
     *  so swallow exceptions.
     */
-  override def supplementTyperState(errorMessage: String): String =
-    try {
-      val tree = analyzer.lastTreeToTyper
-      val sym = tree.symbol
-      val tpe = tree.tpe
-      val site = lastSeenContext.enclClassOrMethod.owner
-      val pos_s =
-        if (tree.pos.isDefined)
-          s"line ${tree.pos.line} of ${tree.pos.source.file}"
-        else "<unknown>"
-      val context_s =
-        try {
-          // Taking 3 before, 3 after the fingered line.
-          val start = 0 max (tree.pos.line - 3)
-          val xs = scala.reflect.io
-            .File(tree.pos.source.file.file)
-            .lines drop start take 7
-          val strs = xs.zipWithIndex map { case (line, idx) =>
-            f"${start + idx}%6d $line"
-          }
-          strs.mkString(
-            "== Source file context for tree position ==\n\n",
-            "\n",
-            "")
-        } catch {
-          case t: Exception => devWarning("" + t); "<Cannot read source file>"
+  override def supplementTyperState(errorMessage: String): String = try {
+    val tree = analyzer.lastTreeToTyper
+    val sym = tree.symbol
+    val tpe = tree.tpe
+    val site = lastSeenContext.enclClassOrMethod.owner
+    val pos_s =
+      if (tree.pos.isDefined)
+        s"line ${tree.pos.line} of ${tree.pos.source.file}"
+      else "<unknown>"
+    val context_s =
+      try {
+        // Taking 3 before, 3 after the fingered line.
+        val start = 0 max (tree.pos.line - 3)
+        val xs = scala.reflect.io
+          .File(tree.pos.source.file.file)
+          .lines drop start take 7
+        val strs = xs.zipWithIndex map { case (line, idx) =>
+          f"${start + idx}%6d $line"
         }
+        strs.mkString(
+          "== Source file context for tree position ==\n\n",
+          "\n",
+          "")
+      } catch {
+        case t: Exception => devWarning("" + t); "<Cannot read source file>"
+      }
 
-      val info1 = formatExplain(
-        "while compiling" -> currentSource.path,
-        "during phase" -> (if (globalPhase eq phase) phase
-                           else
-                             "globalPhase=%s, enteringPhase=%s"
-                               .format(globalPhase, phase)),
-        "library version" -> scala.util.Properties.versionString,
-        "compiler version" -> Properties.versionString,
-        "reconstructed args" -> settings.recreateArgs.mkString(" ")
-      )
-      val info2 = formatExplain(
-        "last tree to typer" -> tree.summaryString,
-        "tree position" -> pos_s,
-        "tree tpe" -> tpe,
-        "symbol" -> Option(sym).fold("null")(_.debugLocationString),
-        "symbol definition" -> Option(sym).fold("null")(s =>
-          s.defString + s" (a ${s.shortSymbolClass})"),
-        "symbol package" -> sym.enclosingPackage.fullName,
-        "symbol owners" -> ownerChainString(sym),
-        "call site" -> (site.fullLocationString + " in " + site.enclosingPackage)
-      )
-      ("\n  " + errorMessage + "\n" + info1) :: info2 :: context_s :: Nil mkString "\n\n"
-    } catch { case _: Exception | _: TypeError => errorMessage }
+    val info1 = formatExplain(
+      "while compiling" -> currentSource.path,
+      "during phase" -> (if (globalPhase eq phase) phase
+                         else
+                           "globalPhase=%s, enteringPhase=%s"
+                             .format(globalPhase, phase)),
+      "library version" -> scala.util.Properties.versionString,
+      "compiler version" -> Properties.versionString,
+      "reconstructed args" -> settings.recreateArgs.mkString(" ")
+    )
+    val info2 = formatExplain(
+      "last tree to typer" -> tree.summaryString,
+      "tree position" -> pos_s,
+      "tree tpe" -> tpe,
+      "symbol" -> Option(sym).fold("null")(_.debugLocationString),
+      "symbol definition" -> Option(sym).fold("null")(s =>
+        s.defString + s" (a ${s.shortSymbolClass})"),
+      "symbol package" -> sym.enclosingPackage.fullName,
+      "symbol owners" -> ownerChainString(sym),
+      "call site" -> (site.fullLocationString + " in " + site.enclosingPackage)
+    )
+    ("\n  " + errorMessage + "\n" + info1) :: info2 :: context_s :: Nil mkString "\n\n"
+  } catch { case _: Exception | _: TypeError => errorMessage }
 
   /** The id of the currently active run
     */
@@ -1236,13 +1223,12 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         new collection.AbstractIterator[CompilationUnit] {
           private var used = 0
           def hasNext = self.synchronized { used < underlying.size }
-          def next =
-            self.synchronized {
-              if (!hasNext)
-                throw new NoSuchElementException("next on empty Iterator")
-              used += 1
-              underlying(used - 1)
-            }
+          def next = self.synchronized {
+            if (!hasNext)
+              throw new NoSuchElementException("next on empty Iterator")
+            used += 1
+            underlying(used - 1)
+          }
         }
       def toList: List[CompilationUnit] = synchronized { underlying.toList }
     }
@@ -1554,22 +1540,21 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       *  unless there is a problem already,
       *  such as a plugin was passed a bad option.
       */
-    def compileSources(sources: List[SourceFile]) =
-      if (!reporter.hasErrors) {
+    def compileSources(sources: List[SourceFile]) = if (!reporter.hasErrors) {
 
-        def checkDeprecations() = {
-          warnDeprecatedAndConflictingSettings(newCompilationUnit(""))
-          reporting.summarizeErrors()
-        }
-
-        val units = sources map scripted map (new CompilationUnit(_))
-
-        units match {
-          case Nil =>
-            checkDeprecations() // nothing to compile, report deprecated options
-          case _ => compileUnits(units, firstPhase)
-        }
+      def checkDeprecations() = {
+        warnDeprecatedAndConflictingSettings(newCompilationUnit(""))
+        reporting.summarizeErrors()
       }
+
+      val units = sources map scripted map (new CompilationUnit(_))
+
+      units match {
+        case Nil =>
+          checkDeprecations() // nothing to compile, report deprecated options
+        case _ => compileUnits(units, firstPhase)
+      }
+    }
 
     def compileUnits(units: List[CompilationUnit], fromPhase: Phase): Unit =
       compileUnitsInternal(units, fromPhase)
@@ -1673,12 +1658,11 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     }
 
     /** If this compilation is scripted, convert the source to a script source. */
-    private def scripted(s: SourceFile) =
-      s match {
-        case b: BatchSourceFile if settings.script.isSetByUser =>
-          ScriptSourceFile(b)
-        case _ => s
-      }
+    private def scripted(s: SourceFile) = s match {
+      case b: BatchSourceFile if settings.script.isSetByUser =>
+        ScriptSourceFile(b)
+      case _ => s
+    }
 
     /** Compile abstract file until `globalPhase`, but at least
       *  to phase "namer".
@@ -1730,11 +1714,11 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     def boringMember(sym: Symbol) = boringOwners(sym.owner)
     def symString(sym: Symbol) = if (sym.isTerm) sym.defString else sym.toString
 
-    def members(sym: Symbol) =
-      phased(sym.info.members filterNot boringMember map symString)
+    def members(sym: Symbol) = phased(
+      sym.info.members filterNot boringMember map symString)
     def decls(sym: Symbol) = phased(sym.info.decls.toList map symString)
-    def bases(sym: Symbol) =
-      phased(sym.info.baseClasses map (x => x.kindString + " " + x.fullName))
+    def bases(sym: Symbol) = phased(
+      sym.info.baseClasses map (x => x.kindString + " " + x.fullName))
 
     // make the type/term selections walking from the root.
     val syms = findMemberFromRoot(fullName) match {

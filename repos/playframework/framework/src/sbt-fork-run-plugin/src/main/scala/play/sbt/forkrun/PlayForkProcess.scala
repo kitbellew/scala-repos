@@ -106,18 +106,17 @@ object PlayForkProcess {
     } // thrown when already shutting down
   }
 
-  def timedWaitFor(process: JProcess, millis: Long): Option[Int] =
-    try {
-      // exitValue throws if process hasn't exited
-      Some(process.exitValue())
-    } catch {
-      case _: IllegalThreadStateException =>
-        Thread.sleep(100)
-        if (millis > 0)
-          timedWaitFor(process, millis - 100)
-        else
-          None
-    }
+  def timedWaitFor(process: JProcess, millis: Long): Option[Int] = try {
+    // exitValue throws if process hasn't exited
+    Some(process.exitValue())
+  } catch {
+    case _: IllegalThreadStateException =>
+      Thread.sleep(100)
+      if (millis > 0)
+        timedWaitFor(process, millis - 100)
+      else
+        None
+  }
 
   def makeOptions(
       jvmOptions: Seq[String],
@@ -164,6 +163,7 @@ object PlayForkProcess {
     thread
   }
 
-  def newThread(f: => Unit): Thread =
-    new Thread(new Runnable { def run(): Unit = f })
+  def newThread(f: => Unit): Thread = new Thread(new Runnable {
+    def run(): Unit = f
+  })
 }

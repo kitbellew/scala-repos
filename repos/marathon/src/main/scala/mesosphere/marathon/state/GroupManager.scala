@@ -240,19 +240,18 @@ class GroupManager @Singleton @Inject() (
       from.transitiveApps.flatMap(_.portNumbers) ++ to.transitiveApps.flatMap(
         _.portNumbers)
 
-    def nextGlobalFreePort: Int =
-      synchronized {
-        val port = portRange
-          .find(!taken.contains(_))
-          .getOrElse(
-            throw new PortRangeExhaustedException(
-              config.localPortMin(),
-              config.localPortMax()
-            ))
-        log.info(s"Take next configured free port: $port")
-        taken += port
-        port
-      }
+    def nextGlobalFreePort: Int = synchronized {
+      val port = portRange
+        .find(!taken.contains(_))
+        .getOrElse(
+          throw new PortRangeExhaustedException(
+            config.localPortMin(),
+            config.localPortMax()
+          ))
+      log.info(s"Take next configured free port: $port")
+      taken += port
+      port
+    }
 
     def mergeServicePortsAndPortDefinitions(
         portDefinitions: Seq[PortDefinition],

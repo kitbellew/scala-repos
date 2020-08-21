@@ -605,11 +605,10 @@ final class HListOps[L <: HList](l: L) extends Serializable {
     * Compute the length of this `HList` as a runtime Int value.
     */
   def runtimeLength: Int = {
-    @tailrec def loop(l: HList, acc: Int): Int =
-      l match {
-        case HNil     => acc
-        case hd :: tl => loop(tl, acc + 1)
-      }
+    @tailrec def loop(l: HList, acc: Int): Int = l match {
+      case HNil     => acc
+      case hd :: tl => loop(tl, acc + 1)
+    }
 
     loop(l, 0)
   }
@@ -620,13 +619,12 @@ final class HListOps[L <: HList](l: L) extends Serializable {
   def runtimeList: List[Any] = {
     val builder = List.newBuilder[Any]
 
-    @tailrec def loop(l: HList): Unit =
-      l match {
-        case HNil => ()
-        case hd :: tl =>
-          builder += hd
-          loop(tl)
-      }
+    @tailrec def loop(l: HList): Unit = l match {
+      case HNil => ()
+      case hd :: tl =>
+        builder += hd
+        loop(tl)
+    }
 
     loop(l)
 

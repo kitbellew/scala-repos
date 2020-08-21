@@ -134,15 +134,15 @@ final case class Cord(self: FingerTree[Int, String]) {
 object Cord {
   private def cord[A](v: FingerTree[Int, String]): Cord = new Cord(v)
 
-  implicit def stringToCord(s: String): Cord =
-    cord(FingerTree.single[Int, String](s))
+  implicit def stringToCord(s: String): Cord = cord(
+    FingerTree.single[Int, String](s))
 
   lazy val empty: Cord = apply()
 
   def apply(as: Cord*): Cord = as.foldLeft(cord(FingerTree.empty))(_ ++ _)
 
-  def fromStrings[A](as: Seq[String]): Cord =
-    cord(as.foldLeft(FingerTree.empty[Int, String](sizer))((x, y) => x :+ y))
+  def fromStrings[A](as: Seq[String]): Cord = cord(
+    as.foldLeft(FingerTree.empty[Int, String](sizer))((x, y) => x :+ y))
 
   implicit val sizer: Reducer[String, Int] =
     UnitReducer((a: String) => a.length)

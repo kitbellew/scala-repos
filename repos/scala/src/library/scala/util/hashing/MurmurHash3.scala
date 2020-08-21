@@ -218,11 +218,10 @@ object MurmurHash3 extends MurmurHash3 {
 
   /** To offer some potential for optimization.
     */
-  def seqHash(xs: scala.collection.Seq[_]): Int =
-    xs match {
-      case xs: List[_] => listHash(xs, seqSeed)
-      case xs          => orderedHash(xs, seqSeed)
-    }
+  def seqHash(xs: scala.collection.Seq[_]): Int = xs match {
+    case xs: List[_] => listHash(xs, seqSeed)
+    case xs          => orderedHash(xs, seqSeed)
+  }
 
   def mapHash(xs: scala.collection.Map[_, _]): Int = unorderedHash(xs, mapSeed)
   def setHash(xs: scala.collection.Set[_]): Int = unorderedHash(xs, setSeed)
@@ -233,30 +232,25 @@ object MurmurHash3 extends MurmurHash3 {
 
   def arrayHashing[@specialized T] = new ArrayHashing[T]
 
-  def bytesHashing =
-    new Hashing[Array[Byte]] {
-      def hash(data: Array[Byte]) = bytesHash(data)
-    }
+  def bytesHashing = new Hashing[Array[Byte]] {
+    def hash(data: Array[Byte]) = bytesHash(data)
+  }
 
-  def orderedHashing =
-    new Hashing[TraversableOnce[Any]] {
-      def hash(xs: TraversableOnce[Any]) = orderedHash(xs)
-    }
+  def orderedHashing = new Hashing[TraversableOnce[Any]] {
+    def hash(xs: TraversableOnce[Any]) = orderedHash(xs)
+  }
 
-  def productHashing =
-    new Hashing[Product] {
-      def hash(x: Product) = productHash(x)
-    }
+  def productHashing = new Hashing[Product] {
+    def hash(x: Product) = productHash(x)
+  }
 
-  def stringHashing =
-    new Hashing[String] {
-      def hash(x: String) = stringHash(x)
-    }
+  def stringHashing = new Hashing[String] {
+    def hash(x: String) = stringHash(x)
+  }
 
-  def unorderedHashing =
-    new Hashing[TraversableOnce[Any]] {
-      def hash(xs: TraversableOnce[Any]) = unorderedHash(xs)
-    }
+  def unorderedHashing = new Hashing[TraversableOnce[Any]] {
+    def hash(xs: TraversableOnce[Any]) = unorderedHash(xs)
+  }
 
   /** All this trouble and foreach still appears faster.
     *  Leaving in place in case someone would like to investigate further.

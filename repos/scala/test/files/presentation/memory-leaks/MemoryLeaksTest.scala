@@ -31,10 +31,11 @@ object Test extends InteractiveTest {
       extends interactive.InteractiveAnalyzer
       with doc.ScaladocAnalyzer {
     val global: Global
-    override def newTyper(context: Context) =
-      new Typer(context) with InteractiveTyper with ScaladocTyper {
-        override def canAdaptConstantTypeToLiteral = false
-      }
+    override def newTyper(context: Context) = new Typer(context)
+      with InteractiveTyper
+      with ScaladocTyper {
+      override def canAdaptConstantTypeToLiteral = false
+    }
   }
 
   private class ScaladocEnabledGlobal

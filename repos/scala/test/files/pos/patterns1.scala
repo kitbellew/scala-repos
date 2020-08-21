@@ -8,9 +8,8 @@ object test {
 
   def println(str: String): Unit = java.lang.System.out.println(str)
 
-  def print(opt: Option[String]) =
-    opt match {
-      case Some(x) => println(x)
-      case None    => println("nothing")
-    }
+  def print(opt: Option[String]) = opt match {
+    case Some(x) => println(x)
+    case None    => println("nothing")
+  }
 }

@@ -85,11 +85,10 @@ class HTTPRequestServlet(
 
   lazy val queryString: Box[String] = Box !! req.getQueryString
 
-  def param(name: String): List[String] =
-    req.getParameterValues(name) match {
-      case null => Nil
-      case x    => x.toList
-    }
+  def param(name: String): List[String] = req.getParameterValues(name) match {
+    case null => Nil
+    case x    => x.toList
+  }
 
   lazy val params: List[HTTPParam] = enumToList[String](
     req.getParameterNames.asInstanceOf[java.util.Enumeration[String]]).map(n =>
@@ -142,55 +141,53 @@ class HTTPRequestServlet(
       id <- Box !! httpSession.getId
     } yield id
 
-  def extractFiles: List[ParamHolder] =
-    (new Iterator[ParamHolder] {
-      val mimeUpload = (new ServletFileUpload)
-      mimeUpload.setProgressListener(new ProgressListener {
-        lazy val progList: (Long, Long, Int) => Unit = S.session.flatMap(
-          _.progressListener) openOr LiftRules.progressListener
+  def extractFiles: List[ParamHolder] = (new Iterator[ParamHolder] {
+    val mimeUpload = (new ServletFileUpload)
+    mimeUpload.setProgressListener(new ProgressListener {
+      lazy val progList: (Long, Long, Int) => Unit =
+        S.session.flatMap(_.progressListener) openOr LiftRules.progressListener
 
-        def update(a: Long, b: Long, c: Int) { progList(a, b, c) }
-      })
+      def update(a: Long, b: Long, c: Int) { progList(a, b, c) }
+    })
 
-      mimeUpload.setSizeMax(LiftRules.maxMimeSize)
-      mimeUpload.setFileSizeMax(LiftRules.maxMimeFileSize)
-      val what = mimeUpload.getItemIterator(req)
+    mimeUpload.setSizeMax(LiftRules.maxMimeSize)
+    mimeUpload.setFileSizeMax(LiftRules.maxMimeFileSize)
+    val what = mimeUpload.getItemIterator(req)
 
-      def hasNext = what.hasNext
+    def hasNext = what.hasNext
 
-      import scala.collection.JavaConversions._
+    import scala.collection.JavaConversions._
 
-      def next =
-        what.next match {
-          case f if (f.isFormField) =>
-            NormalParamHolder(
-              f.getFieldName,
-              new String(readWholeStream(f.openStream), "UTF-8"))
-          case f => {
-            val headers = f.getHeaders()
-            val names: List[String] =
-              if (headers eq null) Nil
-              else
-                headers
-                  .getHeaderNames()
-                  .asInstanceOf[java.util.Iterator[String]]
-                  .toList
-            val map: Map[String, List[String]] = Map(
-              names.map(n =>
-                n -> headers
-                  .getHeaders(n)
-                  .asInstanceOf[java.util.Iterator[String]]
-                  .toList): _*)
-            LiftRules.withMimeHeaders(map) {
-              LiftRules.handleMimeFile(
-                f.getFieldName,
-                f.getContentType,
-                f.getName,
-                f.openStream)
-            }
-          }
+    def next = what.next match {
+      case f if (f.isFormField) =>
+        NormalParamHolder(
+          f.getFieldName,
+          new String(readWholeStream(f.openStream), "UTF-8"))
+      case f => {
+        val headers = f.getHeaders()
+        val names: List[String] =
+          if (headers eq null) Nil
+          else
+            headers
+              .getHeaderNames()
+              .asInstanceOf[java.util.Iterator[String]]
+              .toList
+        val map: Map[String, List[String]] = Map(
+          names.map(n =>
+            n -> headers
+              .getHeaders(n)
+              .asInstanceOf[java.util.Iterator[String]]
+              .toList): _*)
+        LiftRules.withMimeHeaders(map) {
+          LiftRules.handleMimeFile(
+            f.getFieldName,
+            f.getContentType,
+            f.getName,
+            f.openStream)
         }
-    }).toList
+      }
+    }
+  }).toList
 
   def setCharacterEncoding(encoding: String) =
     req.setCharacterEncoding(encoding)
@@ -203,17 +200,15 @@ class HTTPRequestServlet(
   def resumeInfo: Option[(Req, LiftResponse)] =
     asyncProvider.flatMap(_.resumeInfo)
 
-  def suspend(timeout: Long): RetryState.Value =
-    asyncProvider
-      .openOrThrowException(
-        "open_! is bad, but presumably, the suspendResume support was checked")
-      .suspend(timeout)
+  def suspend(timeout: Long): RetryState.Value = asyncProvider
+    .openOrThrowException(
+      "open_! is bad, but presumably, the suspendResume support was checked")
+    .suspend(timeout)
 
-  def resume(what: (Req, LiftResponse)): Boolean =
-    asyncProvider
-      .openOrThrowException(
-        "open_! is bad, but presumably, the suspendResume support was checked")
-      .resume(what)
+  def resume(what: (Req, LiftResponse)): Boolean = asyncProvider
+    .openOrThrowException(
+      "open_! is bad, but presumably, the suspendResume support was checked")
+    .resume(what)
 
   lazy val suspendResumeSupport_? = {
     LiftRules.asyncProviderMeta.map(

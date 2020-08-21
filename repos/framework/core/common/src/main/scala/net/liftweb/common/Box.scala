@@ -135,11 +135,10 @@ sealed trait BoxTrait {
     * @return `Full` with the contents if the `Option` is `Some`
     *         and `Empty` otherwise.
     */
-  def apply[T](in: Option[T]) =
-    in match {
-      case Some(x) => Full(x)
-      case _       => Empty
-    }
+  def apply[T](in: Option[T]) = in match {
+    case Some(x) => Full(x)
+    case _       => Empty
+  }
 
   /**
     * Create a `Box` from the specified `Box`, checking for `null`.
@@ -147,12 +146,11 @@ sealed trait BoxTrait {
     * @return `Full(in)` if `in` is a `Full` box and its value is non-null,
     *         `Empty` otherwise.
     */
-  def apply[T](in: Box[T]) =
-    in match {
-      case Full(x)     => legacyNullTest(x)
-      case x: EmptyBox => x
-      case _           => Empty
-    }
+  def apply[T](in: Box[T]) = in match {
+    case Full(x)     => legacyNullTest(x)
+    case x: EmptyBox => x
+    case _           => Empty
+  }
 
   /**
     * Transform a `List` with zero or more elements to a `Box`, losing all but
@@ -161,11 +159,10 @@ sealed trait BoxTrait {
     * @return `Full(x)` with the head of the list if it contains at least one
     *         element and `Empty` otherwise.
     */
-  def apply[T](in: List[T]) =
-    in match {
-      case x :: _ => Full(x)
-      case _      => Empty
-    }
+  def apply[T](in: List[T]) = in match {
+    case x :: _ => Full(x)
+    case _      => Empty
+  }
 
   /**
     * Apply the specified `PartialFunction` to the specified `value` and return the result
@@ -230,11 +227,10 @@ sealed trait BoxTrait {
     *
     * @return `Full` if `in` is not null and `Empty` otherwise.
     */
-  def legacyNullTest[T](in: T): Box[T] =
-    in match {
-      case null => Empty
-      case _    => Full(in)
-    }
+  def legacyNullTest[T](in: T): Box[T] = in match {
+    case null => Empty
+    case _    => Full(in)
+  }
 
   /**
     * Alias for `[[legacyNullTest]]`.
@@ -708,22 +704,20 @@ sealed abstract class Box[+A] extends Product with Serializable {
     * Full("magic") != Failure("something's gone wrong")
     * }}}
     */
-  override def equals(other: Any): Boolean =
-    (this, other) match {
-      case (Full(x), Full(y)) => x == y
-      case (Full(x), y)       => x == y
-      case (x, y: AnyRef)     => x eq y
-      case _                  => false
-    }
+  override def equals(other: Any): Boolean = (this, other) match {
+    case (Full(x), Full(y)) => x == y
+    case (Full(x), y)       => x == y
+    case (x, y: AnyRef)     => x eq y
+    case _                  => false
+  }
 
   /**
     * Equivalent to `flatMap(f1).or(alternative)`.
     */
-  def choice[B](f1: A => Box[B])(alternative: => Box[B]): Box[B] =
-    this match {
-      case Full(x) => f1(x)
-      case _       => alternative
-    }
+  def choice[B](f1: A => Box[B])(alternative: => Box[B]): Box[B] = this match {
+    case Full(x) => f1(x)
+    case _       => alternative
+  }
 
   /**
     * Returns true if the value contained in this box is equal to the specified
@@ -836,18 +830,17 @@ final case class Full[+A](value: A) extends Box[A] {
 
   override def toLeft[B](right: => B): Either[A, B] = Left(value)
 
-  override def isA[B](clsOrg: Class[B]): Box[B] =
-    value match {
-      case value: AnyRef =>
-        val cls = Box.primitiveMap.get(clsOrg) match {
-          case Some(c) => c
-          case _       => clsOrg
-        }
+  override def isA[B](clsOrg: Class[B]): Box[B] = value match {
+    case value: AnyRef =>
+      val cls = Box.primitiveMap.get(clsOrg) match {
+        case Some(c) => c
+        case _       => clsOrg
+      }
 
-        if (cls.isAssignableFrom(value.getClass)) Full(value.asInstanceOf[B])
-        else Empty
-      case _ => Empty
-    }
+      if (cls.isAssignableFrom(value.getClass)) Full(value.asInstanceOf[B])
+      else Empty
+    case _ => Empty
+  }
 
   override def asA[B](implicit m: Manifest[B]): Box[B] =
     this.isA(m.runtimeClass).asInstanceOf[Box[B]]
@@ -925,11 +918,10 @@ sealed case class Failure(
 
   override def asA[B](implicit m: Manifest[B]): Box[B] = this
 
-  private def chainList: List[Failure] =
-    chain match {
-      case Full(f) => f :: f.chainList
-      case _       => Nil
-    }
+  private def chainList: List[Failure] = chain match {
+    case Full(f) => f :: f.chainList
+    case _       => Nil
+  }
 
   /**
     * Return a list of the exceptions that led to this `Failure`. First, unflattens
@@ -985,12 +977,11 @@ sealed case class Failure(
     */
   def messageChain: String = (this :: chainList).map(_.msg).mkString(" <- ")
 
-  override def equals(other: Any): Boolean =
-    (this, other) match {
-      case (Failure(x, y, z), Failure(x1, y1, z1)) => (x, y, z) == (x1, y1, z1)
-      case (x, y: AnyRef)                          => x eq y
-      case _                                       => false
-    }
+  override def equals(other: Any): Boolean = (this, other) match {
+    case (Failure(x, y, z), Failure(x1, y1, z1)) => (x, y, z) == (x1, y1, z1)
+    case (x, y: AnyRef)                          => x eq y
+    case _                                       => false
+  }
 
   override def ?~(msg: => String): Failure = this
 
@@ -1059,22 +1050,19 @@ final class ParamFailure[T](
     val param: T)
     extends Failure(msg, exception, chain)
     with Serializable {
-  override def toString(): String =
-    "ParamFailure(" + msg + ", " + exception +
-      ", " + chain + ", " + param + ")"
+  override def toString(): String = "ParamFailure(" + msg + ", " + exception +
+    ", " + chain + ", " + param + ")"
 
-  override def equals(that: Any): Boolean =
-    that match {
-      case ParamFailure(m, e, c, p) =>
-        m == msg && e == exception && c == chain && p == param
-      case _ => false
-    }
+  override def equals(that: Any): Boolean = that match {
+    case ParamFailure(m, e, c, p) =>
+      m == msg && e == exception && c == chain && p == param
+    case _ => false
+  }
 
-  override def hashCode(): Int =
-    super.hashCode() + (param match {
-      case null => 0
-      case x    => x.hashCode()
-    })
+  override def hashCode(): Int = super.hashCode() + (param match {
+    case null => 0
+    case x    => x.hashCode()
+  })
 
   override def ~>[T](errorCode: => T): ParamFailure[T] =
     ParamFailure(msg, exception, Full(this), errorCode)

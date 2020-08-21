@@ -159,9 +159,9 @@ trait StageIncludes {
     * @param w $JFX $WN
     * @return $SFX $WN
     */
-  implicit def jfxWindow2sfx(w: jfxs.Window): Window =
-    if (w != null) new Window(w) {}
-    else null
+  implicit def jfxWindow2sfx(w: jfxs.Window): Window = if (w != null)
+    new Window(w) {}
+  else null
 
   /**
     * $START$WE.html $WE$END

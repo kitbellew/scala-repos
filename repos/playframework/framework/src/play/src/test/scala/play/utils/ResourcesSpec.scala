@@ -53,8 +53,8 @@ object ResourcesSpec extends Specification {
   }
 
   class BundleStreamHandler extends URLStreamHandler {
-    def openConnection(u: URL): URLConnection =
-      throw new Exception("should never happen")
+    def openConnection(u: URL): URLConnection = throw new Exception(
+      "should never happen")
   }
 
   sequential
@@ -170,10 +170,9 @@ object ResourcesSpec extends Specification {
   }
 
   object EmptyURLStreamHandler extends URLStreamHandler {
-    def openConnection(u: URL) =
-      new URLConnection(u) {
-        def connect() {}
-      }
+    def openConnection(u: URL) = new URLConnection(u) {
+      def connect() {}
+    }
   }
 
   private def createJarUrl(jarFile: File, file: File) = {

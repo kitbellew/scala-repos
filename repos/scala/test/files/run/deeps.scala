@@ -54,12 +54,11 @@ object Test {
   }
 
   def testToString1 {
-    def sweep(s: String) =
-      (
-        s.replaceAll("D@[0-9a-fA-F]+", "D@0000000")
-          .replaceAll("Z@[0-9a-fA-F]+", "Z@0000000")
-          .replaceAll(";@[0-9a-fA-F]+", ";@0000000")
-        )
+    def sweep(s: String) = (
+      s.replaceAll("D@[0-9a-fA-F]+", "D@0000000")
+        .replaceAll("Z@[0-9a-fA-F]+", "Z@0000000")
+        .replaceAll(";@[0-9a-fA-F]+", ";@0000000")
+      )
     def test[T](a: Array[T]) {
       println(sweep(a.deep.toString))
       println(a.deep.toString)

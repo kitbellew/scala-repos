@@ -28,11 +28,11 @@ class ScalaMatchUnwrapper extends ScalaUnwrapper {
 
   override def collectAffectedElements(
       e: PsiElement,
-      toExtract: util.List[PsiElement]) =
-    forCaseClauseInMatch[PsiElement](e) { (cl, m) =>
+      toExtract: util.List[PsiElement]) = forCaseClauseInMatch[PsiElement](e) {
+    (cl, m) =>
       super.collectAffectedElements(e, toExtract)
       m
-    }(e)
+  }(e)
 
   override def getDescription(e: PsiElement) =
     ScalaBundle.message("unwrap.case.clause")

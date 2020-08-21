@@ -12,9 +12,8 @@ object TagsTest extends Properties("Tags") {
   def tagAndFrequency: Gen[(Tag, Int)] =
     for (t <- tag; count <- Arbitrary.arbitrary[Int]) yield (t, count)
   def tag: Gen[Tag] = for (s <- Gen.alphaStr if !s.isEmpty) yield Tag(s)
-  def size: Gen[Size] =
-    for (i <- Arbitrary.arbitrary[Int] if i != Int.MinValue)
-      yield Size(math.abs(i))
+  def size: Gen[Size] = for (i <- Arbitrary.arbitrary[Int] if i != Int.MinValue)
+    yield Size(math.abs(i))
 
   implicit def aTagMap = Arbitrary(tagMap)
   implicit def aTagAndFrequency = Arbitrary(tagAndFrequency)
@@ -43,7 +42,7 @@ object TagsTest extends Properties("Tags") {
       excl(etag)(tm)
   }
 
-  private[this] def excl(tag: Tag): TagMap => Boolean =
-    predicate(exclusive(tag) :: Nil)
+  private[this] def excl(tag: Tag): TagMap => Boolean = predicate(
+    exclusive(tag) :: Nil)
 
 }

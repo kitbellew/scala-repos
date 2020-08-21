@@ -55,8 +55,8 @@ object FileAndResourceRoute {
     new FileAndResourceRouteWithDefaultResolver(f) with FileAndResourceRoute {
       def withContentType(contentType: ContentType): Route =
         resolveContentTypeWith(StaticContentTypeResolver(contentType))
-      def resolveContentTypeWith(resolver: ContentTypeResolver): Route =
-        f(resolver)
+      def resolveContentTypeWith(resolver: ContentTypeResolver): Route = f(
+        resolver)
     }
 
   /**
@@ -68,8 +68,8 @@ object FileAndResourceRoute {
       f(resolver.resolve(fileName))) with FileAndResourceRoute {
       def withContentType(contentType: ContentType): Route =
         resolveContentTypeWith(StaticContentTypeResolver(contentType))
-      def resolveContentTypeWith(resolver: ContentTypeResolver): Route =
-        f(resolver.resolve(fileName))
+      def resolveContentTypeWith(resolver: ContentTypeResolver): Route = f(
+        resolver.resolve(fileName))
     }
 }
 
@@ -116,8 +116,8 @@ abstract class FileAndResourceDirectives extends ExecutionDirectives {
   /**
     * Completes GET requests with the content of the file at the path.
     */
-  def getFromFile(path: String): FileAndResourceRoute =
-    getFromFile(new File(path))
+  def getFromFile(path: String): FileAndResourceRoute = getFromFile(
+    new File(path))
 
   /**
     * Completes GET requests with the content from the file identified by the given

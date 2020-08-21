@@ -44,8 +44,8 @@ class BorderWidthsSpec
       classOf[jfxsl.BorderWidths],
       classOf[BorderWidths]) {
 
-  override protected def getScalaClassInstance =
-    new BorderWidths(getJavaClassInstance) {}
+  override protected def getScalaClassInstance = new BorderWidths(
+    getJavaClassInstance) {}
 
   override protected def getJavaClassInstance = new jfxsl.BorderWidths(1)
 

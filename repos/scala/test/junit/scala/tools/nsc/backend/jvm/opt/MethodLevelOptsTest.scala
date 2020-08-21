@@ -32,10 +32,9 @@ class MethodLevelOptsTest extends ClearAfterClass {
   def wrapInDefault(code: Instruction*) =
     List(Label(0), LineNumber(1, Label(0))) ::: code.toList ::: List(Label(1))
 
-  def locals(c: ClassNode, m: String) =
-    findAsmMethod(c, m).localVariables.asScala.toList
-      .map(l => (l.name, l.index))
-      .sortBy(_._2)
+  def locals(c: ClassNode, m: String) = findAsmMethod(
+    c,
+    m).localVariables.asScala.toList.map(l => (l.name, l.index)).sortBy(_._2)
 
   @Test
   def eliminateEmptyTry(): Unit = {

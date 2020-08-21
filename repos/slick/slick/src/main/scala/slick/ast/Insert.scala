@@ -23,9 +23,8 @@ final case class Insert(
     withChildren(ConstArray[Node](table2, lin2)) :@ (if (!hasType) lin2.nodeType
                                                      else nodeType)
   }
-  override def getDumpInfo =
-    super.getDumpInfo.copy(mainInfo =
-      allFields.mkString("allFields=[", ", ", "]"))
+  override def getDumpInfo = super.getDumpInfo.copy(mainInfo =
+    allFields.mkString("allFields=[", ", ", "]"))
 }
 
 /** A column in an Insert operation. */

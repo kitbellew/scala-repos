@@ -88,19 +88,18 @@ class SecurityServiceHandlers(
 
     protected def missingContentMessage: String
 
-    def service =
-      (request: HttpRequest[Future[JValue]]) =>
-        Success { (authAPIKey: APIKey) =>
-          for {
-            content <-
-              request.content
-                .toSuccess(badRequest(missingContentMessage))
-                .sequence[Future, JValue]
-            response <- content.map(create(authAPIKey, _)).sequence[Future, R]
-          } yield {
-            response.toEither.merge
-          }
+    def service = (request: HttpRequest[Future[JValue]]) =>
+      Success { (authAPIKey: APIKey) =>
+        for {
+          content <-
+            request.content
+              .toSuccess(badRequest(missingContentMessage))
+              .sequence[Future, JValue]
+          response <- content.map(create(authAPIKey, _)).sequence[Future, R]
+        } yield {
+          response.toEither.merge
         }
+      }
   }
 
   object CreateAPIKeyHandler extends CreateHandler {

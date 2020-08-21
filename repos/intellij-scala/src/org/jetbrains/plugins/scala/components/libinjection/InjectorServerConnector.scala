@@ -47,13 +47,11 @@ class InjectorServerConnector(
   @tailrec
   private def classfiles(
       dir: File,
-      namePrefix: String = ""): Array[(File, String)] =
-    dir.listFiles() match {
-      case Array(d) if d.isDirectory =>
-        classfiles(d, s"$namePrefix${d.getName}.")
-      case files =>
-        files.map(f => (f, s"$namePrefix${f.getName}".stripSuffix(".class")))
-    }
+      namePrefix: String = ""): Array[(File, String)] = dir.listFiles() match {
+    case Array(d) if d.isDirectory => classfiles(d, s"$namePrefix${d.getName}.")
+    case files =>
+      files.map(f => (f, s"$namePrefix${f.getName}".stripSuffix(".class")))
+  }
 
   def compile(): Either[Array[(File, String)], Seq[String]] = {
     val project = module.getProject

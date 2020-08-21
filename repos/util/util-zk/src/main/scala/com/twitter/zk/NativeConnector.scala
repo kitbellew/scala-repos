@@ -55,34 +55,32 @@ case class NativeConnector(
     * Get the connection if one already exists or obtain a new one.
     * If the connection is not received within connectTimeout, the connection is released.
     */
-  def apply() =
-    serialized {
-      connection getOrElse {
-        val c = mkConnection
-        c.sessionEvents foreach { event =>
-          sessionBroker.send(event()).sync()
-        }
-        connection = Some(c)
-        c
-      } apply ()
-    }.flatten
-      .rescue { case e: NativeConnector.ConnectTimeoutException =>
-        release() flatMap { _ => Future.exception(e) }
+  def apply() = serialized {
+    connection getOrElse {
+      val c = mkConnection
+      c.sessionEvents foreach { event =>
+        sessionBroker.send(event()).sync()
       }
+      connection = Some(c)
+      c
+    } apply ()
+  }.flatten
+    .rescue { case e: NativeConnector.ConnectTimeoutException =>
+      release() flatMap { _ => Future.exception(e) }
+    }
 
   /**
     * If there is a connection, release it.
     */
-  def release() =
-    serialized {
-      connection match {
-        case None => Future.Unit
-        case Some(c) => {
-          connection = None
-          c.release()
-        }
+  def release() = serialized {
+    connection match {
+      case None => Future.Unit
+      case Some(c) => {
+        connection = None
+        c.release()
       }
-    }.flatten
+    }
+  }.flatten
 }
 
 object NativeConnector {
@@ -187,14 +185,13 @@ object NativeConnector {
       new ZooKeeper(connectString, sessionTimeout.inMillis.toInt, sessionBroker)
     }
 
-    def release(): Future[Unit] =
-      Future {
-        zookeeper foreach { zk =>
-          log.debug("release")
-          zk.close()
-          zookeeper = None
-          releasePromise.setValue(Unit)
-        }
+    def release(): Future[Unit] = Future {
+      zookeeper foreach { zk =>
+        log.debug("release")
+        zk.close()
+        zookeeper = None
+        releasePromise.setValue(Unit)
       }
+    }
   }
 }

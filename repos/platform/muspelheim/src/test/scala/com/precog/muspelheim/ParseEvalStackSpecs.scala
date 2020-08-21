@@ -123,13 +123,12 @@ trait TestStackLike[M[+_]]
     "dummyAPIKey",
     Path.Root,
     AccountPlan.Free)
-  private def dummyEvaluationContext =
-    EvaluationContext(
-      "dummyAPIKey",
-      dummyAccount,
-      Path.Root,
-      Path.Root,
-      new DateTime)
+  private def dummyEvaluationContext = EvaluationContext(
+    "dummyAPIKey",
+    dummyAccount,
+    Path.Root,
+    Path.Root,
+    new DateTime)
 
   def eval(str: String, debug: Boolean = false): Set[SValue] =
     evalE(str, debug) map { _._2 }

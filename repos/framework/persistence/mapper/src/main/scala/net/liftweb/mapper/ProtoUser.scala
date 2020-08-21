@@ -164,22 +164,20 @@ trait ProtoUser[T <: ProtoUser[T]]
     override def defaultValue = false
   }
 
-  def niceName: String =
-    (firstName.get, lastName.get, email.get) match {
-      case (f, l, e) if f.length > 1 && l.length > 1 =>
-        f + " " + l + " (" + e + ")"
-      case (f, _, e) if f.length > 1 => f + " (" + e + ")"
-      case (_, l, e) if l.length > 1 => l + " (" + e + ")"
-      case (_, _, e)                 => e
-    }
+  def niceName: String = (firstName.get, lastName.get, email.get) match {
+    case (f, l, e) if f.length > 1 && l.length > 1 =>
+      f + " " + l + " (" + e + ")"
+    case (f, _, e) if f.length > 1 => f + " (" + e + ")"
+    case (_, l, e) if l.length > 1 => l + " (" + e + ")"
+    case (_, _, e)                 => e
+  }
 
-  def shortName: String =
-    (firstName.get, lastName.get) match {
-      case (f, l) if f.length > 1 && l.length > 1 => f + " " + l
-      case (f, _) if f.length > 1                 => f
-      case (_, l) if l.length > 1                 => l
-      case _                                      => email.get
-    }
+  def shortName: String = (firstName.get, lastName.get) match {
+    case (f, l) if f.length > 1 && l.length > 1 => f + " " + l
+    case (f, _) if f.length > 1                 => f
+    case (_, l) if l.length > 1                 => l
+    case _                                      => email.get
+  }
 
   def niceNameWEmailLink = <a href={"mailto:" + email.get}>{niceName}</a>
 }
@@ -216,11 +214,10 @@ trait MetaMegaProtoUser[ModelType <: MegaProtoUser[ModelType]]
     /**
       * Does this represent a pointer to a Password field
       */
-    def isPasswordField_? : Boolean =
-      from match {
-        case a: MappedPassword[_] => true
-        case _                    => false
-      }
+    def isPasswordField_? : Boolean = from match {
+      case a: MappedPassword[_] => true
+      case _                    => false
+    }
   }
 
   /**
@@ -312,8 +309,8 @@ trait MetaMegaProtoUser[ModelType <: MegaProtoUser[ModelType]]
     */
   protected def computeFieldFromPointer(
       instance: TheUserType,
-      pointer: FieldPointerType): Box[BaseField] =
-    Full(getActualField(instance, pointer))
+      pointer: FieldPointerType): Box[BaseField] = Full(
+    getActualField(instance, pointer))
 
   /**
     * Given an username (probably email address), find the user

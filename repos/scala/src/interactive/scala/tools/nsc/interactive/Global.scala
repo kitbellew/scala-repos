@@ -39,10 +39,10 @@ trait InteractiveAnalyzer extends Analyzer {
   val global: Global
   import global._
 
-  override def newTyper(context: Context): InteractiveTyper =
-    new Typer(context) with InteractiveTyper
-  override def newNamer(context: Context): InteractiveNamer =
-    new Namer(context) with InteractiveNamer
+  override def newTyper(context: Context): InteractiveTyper = new Typer(context)
+    with InteractiveTyper
+  override def newNamer(context: Context): InteractiveNamer = new Namer(context)
+    with InteractiveNamer
 
   trait InteractiveTyper extends Typer {
     override def canAdaptConstantTypeToLiteral = false
@@ -50,12 +50,11 @@ trait InteractiveAnalyzer extends Analyzer {
     override def missingSelectErrorTree(
         tree: Tree,
         qual: Tree,
-        name: Name): Tree =
-      tree match {
-        case Select(_, _) => treeCopy.Select(tree, qual, name)
-        case SelectFromTypeTree(_, _) =>
-          treeCopy.SelectFromTypeTree(tree, qual, name)
-      }
+        name: Name): Tree = tree match {
+      case Select(_, _) => treeCopy.Select(tree, qual, name)
+      case SelectFromTypeTree(_, _) =>
+        treeCopy.SelectFromTypeTree(tree, qual, name)
+    }
   }
 
   trait InteractiveNamer extends Namer {
@@ -382,11 +381,10 @@ with ContextTrees with RichCompilationUnits with Picklers {
   /** Called from typechecker every time a context is created.
     *  Registers the context in a context tree
     */
-  override def registerContext(c: Context) =
-    c.unit match {
-      case u: RichCompilationUnit => addContext(u.contexts, c)
-      case _                      =>
-    }
+  override def registerContext(c: Context) = c.unit match {
+    case u: RichCompilationUnit => addContext(u.contexts, c)
+    case _                      =>
+  }
 
   /** The top level classes and objects currently seen in the presentation compiler
     */
@@ -831,42 +829,42 @@ with ContextTrees with RichCompilationUnits with Picklers {
   }
 
   /** A fully attributed tree located at position `pos` */
-  private[scala] def typedTreeAt(pos: Position): Tree =
-    getUnit(pos.source) match {
-      case None =>
-        reloadSources(List(pos.source))
-        try typedTreeAt(pos)
-        finally afterRunRemoveUnitsOf(List(pos.source))
-      case Some(unit) =>
-        informIDE("typedTreeAt " + pos)
-        parseAndEnter(unit)
-        val tree = locateTree(pos)
-        debugLog(
-          "at pos " + pos + " was found: " + tree.getClass + " " + tree.pos.show)
-        tree match {
-          case Import(expr, _) =>
-            debugLog(
-              "import found" + expr.tpe + (if (expr.tpe == null) ""
-                                           else " " + expr.tpe.members))
-          case _ =>
-        }
-        if (stabilizedType(tree) ne null) {
-          debugLog("already attributed: " + tree.symbol + " " + tree.tpe)
-          tree
-        } else {
-          unit.targetPos = pos
-          try {
-            debugLog("starting targeted type check")
-            typeCheck(unit)
+  private[scala] def typedTreeAt(pos: Position): Tree = getUnit(
+    pos.source) match {
+    case None =>
+      reloadSources(List(pos.source))
+      try typedTreeAt(pos)
+      finally afterRunRemoveUnitsOf(List(pos.source))
+    case Some(unit) =>
+      informIDE("typedTreeAt " + pos)
+      parseAndEnter(unit)
+      val tree = locateTree(pos)
+      debugLog(
+        "at pos " + pos + " was found: " + tree.getClass + " " + tree.pos.show)
+      tree match {
+        case Import(expr, _) =>
+          debugLog(
+            "import found" + expr.tpe + (if (expr.tpe == null) ""
+                                         else " " + expr.tpe.members))
+        case _ =>
+      }
+      if (stabilizedType(tree) ne null) {
+        debugLog("already attributed: " + tree.symbol + " " + tree.tpe)
+        tree
+      } else {
+        unit.targetPos = pos
+        try {
+          debugLog("starting targeted type check")
+          typeCheck(unit)
 //          println("tree not found at "+pos)
-            EmptyTree
-          } catch {
-            case ex: TyperResult => new Locator(pos) locateIn ex.tree
-          } finally {
-            unit.targetPos = NoPosition
-          }
+          EmptyTree
+        } catch {
+          case ex: TyperResult => new Locator(pos) locateIn ex.tree
+        } finally {
+          unit.targetPos = NoPosition
         }
-    }
+      }
+  }
 
   /** A fully attributed tree corresponding to the entire compilation unit */
   private[interactive] def typedTree(
@@ -1026,27 +1024,25 @@ with ContextTrees with RichCompilationUnits with Picklers {
     newTyperRun()
   }
 
-  def stabilizedType(tree: Tree): Type =
-    tree match {
-      case Ident(_) if treeInfo.admitsTypeSelection(tree) =>
-        singleType(NoPrefix, tree.symbol)
-      case Select(qual, _) if treeInfo.admitsTypeSelection(tree) =>
-        singleType(qual.tpe, tree.symbol)
-      case Import(expr, selectors) =>
-        tree.symbol.info match {
-          case ImportType(expr) =>
-            expr match {
-              case s @ Select(qual, name)
-                  if treeInfo.admitsTypeSelection(expr) =>
-                singleType(qual.tpe, s.symbol)
-              case i: Ident => i.tpe
-              case _        => tree.tpe
-            }
-          case _ => tree.tpe
-        }
+  def stabilizedType(tree: Tree): Type = tree match {
+    case Ident(_) if treeInfo.admitsTypeSelection(tree) =>
+      singleType(NoPrefix, tree.symbol)
+    case Select(qual, _) if treeInfo.admitsTypeSelection(tree) =>
+      singleType(qual.tpe, tree.symbol)
+    case Import(expr, selectors) =>
+      tree.symbol.info match {
+        case ImportType(expr) =>
+          expr match {
+            case s @ Select(qual, name) if treeInfo.admitsTypeSelection(expr) =>
+              singleType(qual.tpe, s.symbol)
+            case i: Ident => i.tpe
+            case _        => tree.tpe
+          }
+        case _ => tree.tpe
+      }
 
-      case _ => tree.tpe
-    }
+    case _ => tree.tpe
+  }
 
   import analyzer.{SearchResult, ImplicitSearch}
 
@@ -1274,14 +1270,12 @@ with ContextTrees with RichCompilationUnits with Picklers {
       val matcher = nameMatcher(enteredName)
       results filter { (member: Member) =>
         val symbol = member.sym
-        def isStable =
-          member.tpe.isStable || member.sym.isStable || member.sym
-            .getterIn(member.sym.owner)
-            .isStable
-        def isJunk =
-          symbol.name.isEmpty || !isIdentifierStart(
-            member.sym.name.charAt(0)
-          ) // e.g. <byname>
+        def isStable = member.tpe.isStable || member.sym.isStable || member.sym
+          .getterIn(member.sym.owner)
+          .isStable
+        def isJunk = symbol.name.isEmpty || !isIdentifierStart(
+          member.sym.name.charAt(0)
+        ) // e.g. <byname>
         !isJunk && member.accessible && !symbol.isConstructor && (name.isEmpty || matcher(
           member.sym.name) && (symbol.name.isTermName == name.isTermName || name.isTypeName && isStable))
       }
@@ -1507,14 +1501,13 @@ with ContextTrees with RichCompilationUnits with Picklers {
   // OnTypeError should still catch TypeError because of cyclic references,
   // but DivergentImplicit shouldn't leak anymore here
   class OnTypeError[T](op: => T) {
-    def onTypeError(alt: => T) =
-      try {
-        op
-      } catch {
-        case ex: TypeError =>
-          debugLog("type error caught: " + ex)
-          alt
-      }
+    def onTypeError(alt: => T) = try {
+      op
+    } catch {
+      case ex: TypeError =>
+        debugLog("type error caught: " + ex)
+        alt
+    }
   }
 
   // We need to force a number of symbols that might be touched by a parser.

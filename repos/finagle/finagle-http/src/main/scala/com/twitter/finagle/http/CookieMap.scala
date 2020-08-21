@@ -71,11 +71,10 @@ class CookieMap(message: Message)
   /**
     * Returns an iterator that iterates over all cookies in this map.
     */
-  def iterator: Iterator[(String, Cookie)] =
-    for {
-      (name, cookies) <- underlying.iterator
-      cookie <- cookies
-    } yield (name, cookie)
+  def iterator: Iterator[(String, Cookie)] = for {
+    (name, cookies) <- underlying.iterator
+    cookie <- cookies
+  } yield (name, cookie)
 
   /**
     * Applies the given function ''f'' to each cookie in this map.

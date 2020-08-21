@@ -49,8 +49,8 @@ final case class ResolveArtifacts(
   * @param actions the actions of this step that maybe executed in parallel
   */
 final case class DeploymentStep(actions: Seq[DeploymentAction]) {
-  def +(step: DeploymentStep): DeploymentStep =
-    DeploymentStep(actions ++ step.actions)
+  def +(step: DeploymentStep): DeploymentStep = DeploymentStep(
+    actions ++ step.actions)
   def nonEmpty(): Boolean = actions.nonEmpty
 }
 
@@ -111,22 +111,20 @@ final case class DeploymentPlan(
 
       s"App(${app.id}$dockerImageString$cmdString$argsString))"
     }
-    def actionString(a: DeploymentAction): String =
-      a match {
-        case StartApplication(app, scale) =>
-          s"Start(${appString(app)}, instances=$scale)"
-        case StopApplication(app) => s"Stop(${appString(app)})"
-        case ScaleApplication(app, scale, toKill) =>
-          val killTasksString =
-            toKill
-              .filter(_.nonEmpty)
-              .map(", killTasks=" + _.map(_.taskId.idString).mkString(","))
-              .getOrElse("")
-          s"Scale(${appString(app)}, instances=$scale$killTasksString)"
-        case RestartApplication(app) => s"Restart(${appString(app)})"
-        case ResolveArtifacts(app, urls) =>
-          s"Resolve(${appString(app)}, $urls})"
-      }
+    def actionString(a: DeploymentAction): String = a match {
+      case StartApplication(app, scale) =>
+        s"Start(${appString(app)}, instances=$scale)"
+      case StopApplication(app) => s"Stop(${appString(app)})"
+      case ScaleApplication(app, scale, toKill) =>
+        val killTasksString =
+          toKill
+            .filter(_.nonEmpty)
+            .map(", killTasks=" + _.map(_.taskId.idString).mkString(","))
+            .getOrElse("")
+        s"Scale(${appString(app)}, instances=$scale$killTasksString)"
+      case RestartApplication(app)     => s"Restart(${appString(app)})"
+      case ResolveArtifacts(app, urls) => s"Resolve(${appString(app)}, $urls})"
+    }
     val stepString =
       if (steps.nonEmpty) {
         steps
@@ -144,12 +142,11 @@ final case class DeploymentPlan(
     mergeFromProto(Protos.DeploymentPlanDefinition.parseFrom(bytes))
 
   override def mergeFromProto(
-      msg: Protos.DeploymentPlanDefinition): DeploymentPlan =
-    DeploymentPlan(
-      original = Group.empty.mergeFromProto(msg.getOriginal),
-      target = Group.empty.mergeFromProto(msg.getTarget),
-      version = Timestamp(msg.getVersion)
-    ).copy(id = msg.getId)
+      msg: Protos.DeploymentPlanDefinition): DeploymentPlan = DeploymentPlan(
+    original = Group.empty.mergeFromProto(msg.getOriginal),
+    target = Group.empty.mergeFromProto(msg.getTarget),
+    version = Timestamp(msg.getVersion)
+  ).copy(id = msg.getId)
 
   override def toProto: Protos.DeploymentPlanDefinition =
     Protos.DeploymentPlanDefinition.newBuilder

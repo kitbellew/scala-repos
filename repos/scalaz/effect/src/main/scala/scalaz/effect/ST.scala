@@ -18,31 +18,28 @@ sealed abstract class STRef[S, A] {
   def read: ST[S, A] = returnST(value)
 
   /** Modifies the value at this reference with the given function. */
-  def mod[B](f: A => A): ST[S, STRef[S, A]] =
-    st((s: Tower[S]) => {
-      value = f(value);
-      (s, this)
-    })
+  def mod[B](f: A => A): ST[S, STRef[S, A]] = st((s: Tower[S]) => {
+    value = f(value);
+    (s, this)
+  })
 
   /** Associates this reference with the given value. */
-  def write(a: => A): ST[S, STRef[S, A]] =
-    st((s: Tower[S]) => {
-      value = a;
-      (s, this)
-    })
+  def write(a: => A): ST[S, STRef[S, A]] = st((s: Tower[S]) => {
+    value = a;
+    (s, this)
+  })
 
   /** Synonym for write */
   def |=(a: => A): ST[S, STRef[S, A]] =
     write(a)
 
   /** Swap the value at this reference with the value at another. */
-  def swap(that: STRef[S, A]): ST[S, Unit] =
-    for {
-      v1 <- this.read
-      v2 <- that.read
-      _ <- this write v2
-      _ <- that write v1
-    } yield ()
+  def swap(that: STRef[S, A]): ST[S, Unit] = for {
+    v1 <- this.read
+    v2 <- that.read
+    _ <- this write v2
+    _ <- that write v1
+  } yield ()
 }
 
 object STRef extends STRefInstances {
@@ -50,13 +47,11 @@ object STRef extends STRefInstances {
   def apply[S]: (Id ~> STRef[S, ?]) =
     stRef[S]
 
-  def stRef[S]: (Id ~> STRef[S, ?]) =
-    new (Id ~> STRef[S, ?]) {
-      def apply[A](a: A) =
-        new STRef[S, A] {
-          var value = a
-        }
+  def stRef[S]: (Id ~> STRef[S, ?]) = new (Id ~> STRef[S, ?]) {
+    def apply[A](a: A) = new STRef[S, A] {
+      var value = a
     }
+  }
 }
 
 sealed abstract class STRefInstances {
@@ -80,11 +75,10 @@ sealed abstract class STArray[S, A] {
   def read(i: Int): ST[S, A] = returnST(value(i))
 
   /** Writes the given value to the array, at the given offset. */
-  def write(i: Int, a: A): ST[S, STArray[S, A]] =
-    st(s => {
-      value(i) = a;
-      (s, this)
-    })
+  def write(i: Int, a: A): ST[S, STArray[S, A]] = st(s => {
+    value(i) = a;
+    (s, this)
+  })
 
   /** Turns a mutable array into an immutable one which is safe to return. */
   def freeze: ST[S, ImmutableArray[A]] =
@@ -102,11 +96,10 @@ sealed abstract class STArray[S, A] {
     }
 
   /** Combine the given value with the value at the given index, using the given function. */
-  def update[B](f: (A, B) => A, i: Int, v: B) =
-    for {
-      x <- read(i)
-      _ <- write(i, f(x, v))
-    } yield ()
+  def update[B](f: (A, B) => A, i: Int, v: B) = for {
+    x <- read(i)
+    _ <- write(i, f(x, v))
+  } yield ()
 }
 
 object STArray {
@@ -146,10 +139,9 @@ object ST extends STInstances {
   def apply[S, A](a: => A): ST[S, A] =
     returnST(a)
 
-  def st[S, A](f: Tower[S] => (Tower[S], A)): ST[S, A] =
-    new ST[S, A] {
-      private[effect] def apply(s: Tower[S]) = f(s)
-    }
+  def st[S, A](f: Tower[S] => (Tower[S], A)): ST[S, A] = new ST[S, A] {
+    private[effect] def apply(s: Tower[S]) = f(s)
+  }
 
   // Implicit conversions between IO and ST
   implicit def STToIO[A](st: ST[IvoryTower, A]): IO[A] =
@@ -174,12 +166,11 @@ object ST extends STInstances {
     returnST(stArray[S, A](size, z))
 
   /** Allows the result of a state transformer computation to be used lazily inside the computation. */
-  def fixST[S, A](k: (=> A) => ST[S, A]): ST[S, A] =
-    st(s => {
-      lazy val ans: (Tower[S], A) = k(r)(s)
-      lazy val (_, r) = ans
-      ans
-    })
+  def fixST[S, A](k: (=> A) => ST[S, A]): ST[S, A] = st(s => {
+    lazy val ans: (Tower[S], A) = k(r)(s)
+    lazy val (_, r) = ans
+    ans
+  })
 
   /** Accumulates an integer-associated list into an immutable array. */
   def accumArray[F[_], A: ClassTag, B](
@@ -190,15 +181,14 @@ object ST extends STInstances {
     import std.anyVal.unitInstance
     type STA[S] = ST[S, ImmutableArray[A]]
     runST(new Forall[STA] {
-      def apply[S] =
-        for {
-          a <- newArr(size, z)
-          _ <- {
-            F.foldMap(ivs)((x: (Int, B)) => a.update(f, x._1, x._2))(
-              stMonoid[S, Unit])
-          }
-          frozen <- a.freeze
-        } yield frozen
+      def apply[S] = for {
+        a <- newArr(size, z)
+        _ <- {
+          F.foldMap(ivs)((x: (Int, B)) => a.update(f, x._1, x._2))(
+            stMonoid[S, Unit])
+        }
+        frozen <- a.freeze
+      } yield frozen
     })
   }
 }

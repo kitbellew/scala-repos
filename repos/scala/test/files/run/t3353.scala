@@ -5,7 +5,7 @@ object Test extends App {
   }
 
   object Matcher {
-    def unapply(s: String)(implicit secondParam: Option[String] = None) =
-      Some("Got: " + s + " and " + secondParam)
+    def unapply(s: String)(implicit secondParam: Option[String] = None) = Some(
+      "Got: " + s + " and " + secondParam)
   }
 }

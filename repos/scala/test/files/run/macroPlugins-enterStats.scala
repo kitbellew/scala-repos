@@ -19,8 +19,8 @@ object Test extends DirectTest {
     val output = collection.mutable.ListBuffer[String]()
     def log(what: String) = output += what.replace(String.format("%n"), " ")
 
-    def logEnterStat(pluginName: String, stat: Tree): Unit =
-      log(s"$pluginName:enterStat($stat)")
+    def logEnterStat(pluginName: String, stat: Tree): Unit = log(
+      s"$pluginName:enterStat($stat)")
     def deriveStat(pluginName: String, typer: Typer, stat: Tree): List[Tree] =
       stat match {
         case DefDef(mods, name, Nil, Nil, TypeTree(), body) =>

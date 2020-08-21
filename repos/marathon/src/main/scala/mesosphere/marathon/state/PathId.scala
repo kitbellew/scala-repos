@@ -23,19 +23,17 @@ case class PathId(path: List[String], absolute: Boolean = true)
 
   def isRoot: Boolean = path.isEmpty
 
-  def parent: PathId =
-    path match {
-      case Nil          => this
-      case head :: Nil  => PathId(Nil, absolute)
-      case head :: rest => PathId(path.reverse.tail.reverse, absolute)
-    }
+  def parent: PathId = path match {
+    case Nil          => this
+    case head :: Nil  => PathId(Nil, absolute)
+    case head :: rest => PathId(path.reverse.tail.reverse, absolute)
+  }
 
-  def allParents: List[PathId] =
-    if (isRoot) Nil
-    else {
-      val p = parent
-      p :: p.allParents
-    }
+  def allParents: List[PathId] = if (isRoot) Nil
+  else {
+    val p = parent
+    p :: p.allParents
+  }
 
   def child: PathId = PathId(tail)
 
@@ -138,11 +136,11 @@ object PathId {
     * Validate path with regards to some parent path.
     * @param base Path of parent.
     */
-  def validPathWithBase(base: PathId): Validator[PathId] =
-    validator[PathId] { path =>
+  def validPathWithBase(base: PathId): Validator[PathId] = validator[PathId] {
+    path =>
       path is childOf(base)
       path is validPathChars
-    }
+  }
 
   private def childOf(parent: PathId): Validator[PathId] = {
     isTrue[PathId](

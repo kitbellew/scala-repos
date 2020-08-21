@@ -33,11 +33,10 @@ object HMapTests extends Properties("HMap") {
   implicit def valGen: Gen[Value[Int]] =
     Gen.choose(Int.MinValue, Int.MaxValue).map(Value(_))
 
-  def zip[T, U](g: Gen[T], h: Gen[U]): Gen[(T, U)] =
-    for {
-      a <- g
-      b <- h
-    } yield (a, b)
+  def zip[T, U](g: Gen[T], h: Gen[U]): Gen[(T, U)] = for {
+    a <- g
+    b <- h
+  } yield (a, b)
 
   implicit def hmapGen: Gen[HMap[Key, Value]] =
     Gen.listOf(zip(keyGen, valGen)).map { list =>

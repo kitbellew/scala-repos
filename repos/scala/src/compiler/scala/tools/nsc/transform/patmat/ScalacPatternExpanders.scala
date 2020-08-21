@@ -31,11 +31,10 @@ trait ScalacPatternExpanders {
     def NoPattern = EmptyTree
     def NoType = global.NoType
 
-    def newPatterns(patterns: List[Tree]): Patterns =
-      patterns match {
-        case init :+ last if isStar(last) => Patterns(init, last)
-        case _                            => Patterns(patterns, NoPattern)
-      }
+    def newPatterns(patterns: List[Tree]): Patterns = patterns match {
+      case init :+ last if isStar(last) => Patterns(init, last)
+      case _                            => Patterns(patterns, NoPattern)
+    }
     def elementTypeOf(tpe: Type) = {
       val seq = repeatedToSeq(tpe)
 
@@ -130,9 +129,8 @@ trait ScalacPatternExpanders {
 
       def err(msg: String) = context.error(tree.pos, msg)
       def warn(msg: String) = context.warning(tree.pos, msg)
-      def arityError(what: String) =
-        err(
-          s"$what patterns for $owner$offerString: expected $arityExpected, found $totalArity")
+      def arityError(what: String) = err(
+        s"$what patterns for $owner$offerString: expected $arityExpected, found $totalArity")
 
       if (isStar && !isSeq)
         err("Star pattern must correspond with varargs or unapplySeq")
@@ -180,9 +178,8 @@ trait ScalacPatternExpanders {
         *  it contains known good values.
         */
       def productArity = extractor.productArity
-      def acceptMessage =
-        if (extractor.isErroneous) ""
-        else s" to hold ${extractor.offeringString}"
+      def acceptMessage = if (extractor.isErroneous) ""
+      else s" to hold ${extractor.offeringString}"
       val requiresTupling =
         isUnapply && patterns.totalArity == 1 && productArity > 1
 
@@ -201,10 +198,9 @@ trait ScalacPatternExpanders {
       validateAligned(context, fn, Aligned(patterns, normalizedExtractor))
     }
 
-    def apply(context: Context, tree: Tree): Aligned =
-      tree match {
-        case Apply(fn, args)   => apply(context, fn, args)
-        case UnApply(fn, args) => apply(context, fn, args)
-      }
+    def apply(context: Context, tree: Tree): Aligned = tree match {
+      case Apply(fn, args)   => apply(context, fn, args)
+      case UnApply(fn, args) => apply(context, fn, args)
+    }
   }
 }

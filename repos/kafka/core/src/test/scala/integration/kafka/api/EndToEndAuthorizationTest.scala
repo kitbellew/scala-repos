@@ -96,94 +96,83 @@ trait EndToEndAuthorizationTest extends IntegrationTestHarness with SaslSetup {
   // 1- Provides read and write access to topic
   // 2- Provides only write access to topic
   // 3- Provides read access to consumer group
-  def clusterAclArgs: Array[String] =
-    Array(
-      "--authorizer-properties",
-      s"zookeeper.connect=$zkConnect",
-      s"--add",
-      s"--cluster",
-      s"--operation=ClusterAction",
-      s"--allow-principal=$kafkaPrincipalType:$kafkaPrincipal"
-    )
-  def topicBrokerReadAclArgs: Array[String] =
-    Array(
-      "--authorizer-properties",
-      s"zookeeper.connect=$zkConnect",
-      s"--add",
-      s"--topic=$topicWildcard",
-      s"--operation=Read",
-      s"--allow-principal=$kafkaPrincipalType:$kafkaPrincipal"
-    )
-  def produceAclArgs: Array[String] =
-    Array(
-      "--authorizer-properties",
-      s"zookeeper.connect=$zkConnect",
-      s"--add",
-      s"--topic=$topic",
-      s"--producer",
-      s"--allow-principal=$kafkaPrincipalType:$clientPrincipal"
-    )
-  def consumeAclArgs: Array[String] =
-    Array(
-      "--authorizer-properties",
-      s"zookeeper.connect=$zkConnect",
-      s"--add",
-      s"--topic=$topic",
-      s"--group=$group",
-      s"--consumer",
-      s"--allow-principal=$kafkaPrincipalType:$clientPrincipal"
-    )
-  def groupAclArgs: Array[String] =
-    Array(
-      "--authorizer-properties",
-      s"zookeeper.connect=$zkConnect",
-      s"--add",
-      s"--group=$group",
-      s"--operation=Read",
-      s"--allow-principal=$kafkaPrincipalType:$clientPrincipal"
-    )
-  def ClusterActionAcl =
-    Set(
-      new Acl(
-        new KafkaPrincipal(kafkaPrincipalType, kafkaPrincipal),
-        Allow,
-        Acl.WildCardHost,
-        ClusterAction))
-  def TopicBrokerReadAcl =
-    Set(
-      new Acl(
-        new KafkaPrincipal(kafkaPrincipalType, kafkaPrincipal),
-        Allow,
-        Acl.WildCardHost,
-        Read))
-  def GroupReadAcl =
-    Set(
-      new Acl(
-        new KafkaPrincipal(kafkaPrincipalType, clientPrincipal),
-        Allow,
-        Acl.WildCardHost,
-        Read))
-  def TopicReadAcl =
-    Set(
-      new Acl(
-        new KafkaPrincipal(kafkaPrincipalType, clientPrincipal),
-        Allow,
-        Acl.WildCardHost,
-        Read))
-  def TopicWriteAcl =
-    Set(
-      new Acl(
-        new KafkaPrincipal(kafkaPrincipalType, clientPrincipal),
-        Allow,
-        Acl.WildCardHost,
-        Write))
-  def TopicDescribeAcl =
-    Set(
-      new Acl(
-        new KafkaPrincipal(kafkaPrincipalType, clientPrincipal),
-        Allow,
-        Acl.WildCardHost,
-        Describe))
+  def clusterAclArgs: Array[String] = Array(
+    "--authorizer-properties",
+    s"zookeeper.connect=$zkConnect",
+    s"--add",
+    s"--cluster",
+    s"--operation=ClusterAction",
+    s"--allow-principal=$kafkaPrincipalType:$kafkaPrincipal"
+  )
+  def topicBrokerReadAclArgs: Array[String] = Array(
+    "--authorizer-properties",
+    s"zookeeper.connect=$zkConnect",
+    s"--add",
+    s"--topic=$topicWildcard",
+    s"--operation=Read",
+    s"--allow-principal=$kafkaPrincipalType:$kafkaPrincipal"
+  )
+  def produceAclArgs: Array[String] = Array(
+    "--authorizer-properties",
+    s"zookeeper.connect=$zkConnect",
+    s"--add",
+    s"--topic=$topic",
+    s"--producer",
+    s"--allow-principal=$kafkaPrincipalType:$clientPrincipal"
+  )
+  def consumeAclArgs: Array[String] = Array(
+    "--authorizer-properties",
+    s"zookeeper.connect=$zkConnect",
+    s"--add",
+    s"--topic=$topic",
+    s"--group=$group",
+    s"--consumer",
+    s"--allow-principal=$kafkaPrincipalType:$clientPrincipal"
+  )
+  def groupAclArgs: Array[String] = Array(
+    "--authorizer-properties",
+    s"zookeeper.connect=$zkConnect",
+    s"--add",
+    s"--group=$group",
+    s"--operation=Read",
+    s"--allow-principal=$kafkaPrincipalType:$clientPrincipal"
+  )
+  def ClusterActionAcl = Set(
+    new Acl(
+      new KafkaPrincipal(kafkaPrincipalType, kafkaPrincipal),
+      Allow,
+      Acl.WildCardHost,
+      ClusterAction))
+  def TopicBrokerReadAcl = Set(
+    new Acl(
+      new KafkaPrincipal(kafkaPrincipalType, kafkaPrincipal),
+      Allow,
+      Acl.WildCardHost,
+      Read))
+  def GroupReadAcl = Set(
+    new Acl(
+      new KafkaPrincipal(kafkaPrincipalType, clientPrincipal),
+      Allow,
+      Acl.WildCardHost,
+      Read))
+  def TopicReadAcl = Set(
+    new Acl(
+      new KafkaPrincipal(kafkaPrincipalType, clientPrincipal),
+      Allow,
+      Acl.WildCardHost,
+      Read))
+  def TopicWriteAcl = Set(
+    new Acl(
+      new KafkaPrincipal(kafkaPrincipalType, clientPrincipal),
+      Allow,
+      Acl.WildCardHost,
+      Write))
+  def TopicDescribeAcl = Set(
+    new Acl(
+      new KafkaPrincipal(kafkaPrincipalType, clientPrincipal),
+      Allow,
+      Acl.WildCardHost,
+      Describe))
   // The next two configuration parameters enable ZooKeeper secure ACLs
   // and sets the Kafka authorizer, both necessary to enable security.
   this.serverConfig.setProperty(KafkaConfig.ZkEnableSecureAclsProp, "true")

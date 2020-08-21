@@ -80,13 +80,12 @@ import org.apache.tools.ant.types.Mapper
 **                             Properties getters                             **
 \*============================================================================*/
 
-  private def getMapper: FileNameMapper =
-    mapperElement match {
-      case None =>
-        new IdentityMapper()
-      case Some(me) =>
-        me.getImplementation
-    }
+  private def getMapper: FileNameMapper = mapperElement match {
+    case None =>
+      new IdentityMapper()
+    case Some(me) =>
+      me.getImplementation
+  }
 
   /*============================================================================*\
 **                               Support methods                              **

@@ -3,10 +3,9 @@ case class T()
 
 object F {
   implicit def FtoT(f: F): T = T()
-  implicit def pimpTest(x: Test.type) =
-    new {
-      def test(x: F) {}
-    }
+  implicit def pimpTest(x: Test.type) = new {
+    def test(x: F) {}
+  }
 }
 
 object Test {

@@ -57,15 +57,14 @@ class LDA private (
     * Constructs a LDA instance with default parameters.
     */
   @Since("1.3.0")
-  def this() =
-    this(
-      k = 10,
-      maxIterations = 20,
-      docConcentration = Vectors.dense(-1),
-      topicConcentration = -1,
-      seed = Utils.random.nextLong(),
-      checkpointInterval = 10,
-      ldaOptimizer = new EMLDAOptimizer)
+  def this() = this(
+    k = 10,
+    maxIterations = 20,
+    docConcentration = Vectors.dense(-1),
+    topicConcentration = -1,
+    seed = Utils.random.nextLong(),
+    checkpointInterval = 10,
+    ldaOptimizer = new EMLDAOptimizer)
 
   /**
     * Number of topics to infer, i.e., the number of soft cluster centers.

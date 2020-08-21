@@ -77,20 +77,19 @@ trait ClassTag[T]
     * `SomeExtractor(...)` is turned into `ct(SomeExtractor(...))` if `T` in `SomeExtractor.unapply(x: T)`
     * is uncheckable, but we have an instance of `ClassTag[T]`.
     */
-  def unapply(x: Any): Option[T] =
-    x match {
-      case null       => None
-      case b: Byte    => unapply(b)
-      case s: Short   => unapply(s)
-      case c: Char    => unapply(c)
-      case i: Int     => unapply(i)
-      case l: Long    => unapply(l)
-      case f: Float   => unapply(f)
-      case d: Double  => unapply(d)
-      case b: Boolean => unapply(b)
-      case u: Unit    => unapply(u)
-      case a: Any     => unapplyImpl(a)
-    }
+  def unapply(x: Any): Option[T] = x match {
+    case null       => None
+    case b: Byte    => unapply(b)
+    case s: Short   => unapply(s)
+    case c: Char    => unapply(c)
+    case i: Int     => unapply(i)
+    case l: Long    => unapply(l)
+    case f: Float   => unapply(f)
+    case d: Double  => unapply(d)
+    case b: Boolean => unapply(b)
+    case u: Unit    => unapply(u)
+    case a: Any     => unapplyImpl(a)
+  }
 
   // TODO: Inline the bodies of these into the Any-accepting unapply overload above and delete them.
   // This cannot be done until at least 2.12.0 for reasons of binary compatibility

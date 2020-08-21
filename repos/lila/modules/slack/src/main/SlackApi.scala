@@ -30,69 +30,60 @@ final class SlackApi(
     }
   }
 
-  def publishEvent(event: Event): Funit =
-    event match {
-      case Error(msg)   => publishError(msg)
-      case Warning(msg) => publishWarning(msg)
-      case Info(msg)    => publishInfo(msg)
-      case Victory(msg) => publishVictory(msg)
-    }
+  def publishEvent(event: Event): Funit = event match {
+    case Error(msg)   => publishError(msg)
+    case Warning(msg) => publishWarning(msg)
+    case Info(msg)    => publishInfo(msg)
+    case Victory(msg) => publishVictory(msg)
+  }
 
-  def publishError(msg: String): Funit =
-    client(
-      SlackMessage(
-        username = "lichess error",
-        icon = "lightning",
-        text = msg,
-        channel = "general"))
+  def publishError(msg: String): Funit = client(
+    SlackMessage(
+      username = "lichess error",
+      icon = "lightning",
+      text = msg,
+      channel = "general"))
 
-  def publishWarning(msg: String): Funit =
-    client(
-      SlackMessage(
-        username = "lichess warning",
-        icon = "thinking_face",
-        text = msg,
-        channel = "general"))
+  def publishWarning(msg: String): Funit = client(
+    SlackMessage(
+      username = "lichess warning",
+      icon = "thinking_face",
+      text = msg,
+      channel = "general"))
 
-  def publishVictory(msg: String): Funit =
-    client(
-      SlackMessage(
-        username = "lichess victory",
-        icon = "tada",
-        text = msg,
-        channel = "general"))
+  def publishVictory(msg: String): Funit = client(
+    SlackMessage(
+      username = "lichess victory",
+      icon = "tada",
+      text = msg,
+      channel = "general"))
 
-  def publishInfo(msg: String): Funit =
-    client(
-      SlackMessage(
-        username = "lichess info",
-        icon = "monkey",
-        text = msg,
-        channel = "general"))
+  def publishInfo(msg: String): Funit = client(
+    SlackMessage(
+      username = "lichess info",
+      icon = "monkey",
+      text = msg,
+      channel = "general"))
 
-  def userMod(user: User, mod: User): Funit =
-    client(
-      SlackMessage(
-        username = mod.username,
-        icon = "oncoming_police_car",
-        text =
-          s"Let's have a look at <http://lichess.org/@/${user.username}?mod>",
-        channel = "tavern"))
+  def userMod(user: User, mod: User): Funit = client(
+    SlackMessage(
+      username = mod.username,
+      icon = "oncoming_police_car",
+      text =
+        s"Let's have a look at <http://lichess.org/@/${user.username}?mod>",
+      channel = "tavern"))
 
-  def deployPre: Funit =
-    client(
-      SlackMessage(
-        username = "deployment",
-        icon = "rocket",
-        text =
-          "Lichess will be updated in a few minutes! Fasten your seatbelts.",
-        channel = "general"))
+  def deployPre: Funit = client(
+    SlackMessage(
+      username = "deployment",
+      icon = "rocket",
+      text = "Lichess will be updated in a few minutes! Fasten your seatbelts.",
+      channel = "general"))
 
-  def deployPost: Funit =
-    client(
-      SlackMessage(
-        username = "deployment",
-        icon = "rocket",
-        text = "Lichess is being updated! Brace for impact.",
-        channel = "general"))
+  def deployPost: Funit = client(
+    SlackMessage(
+      username = "deployment",
+      icon = "rocket",
+      text = "Lichess is being updated! Brace for impact.",
+      channel = "general"))
 }

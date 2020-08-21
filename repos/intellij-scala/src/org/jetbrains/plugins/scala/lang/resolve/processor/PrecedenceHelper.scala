@@ -147,8 +147,8 @@ trait PrecedenceHelper[T] {
   /**
     * Do not add ResolveResults through candidatesSet. It may break precedence. Use this method instead.
     */
-  protected def addResult(result: ScalaResolveResult): Boolean =
-    addResults(Seq(result))
+  protected def addResult(result: ScalaResolveResult): Boolean = addResults(
+    Seq(result))
   protected def addResults(results: Seq[ScalaResolveResult]): Boolean = {
     if (isUpdateHistory && !fromHistory) history += AddResult(results)
     if (results.isEmpty) return true

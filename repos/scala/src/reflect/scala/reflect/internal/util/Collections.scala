@@ -22,15 +22,14 @@ trait Collections {
   @tailrec final def corresponds3[A, B, C](
       xs1: List[A],
       xs2: List[B],
-      xs3: List[C])(f: (A, B, C) => Boolean): Boolean =
-    (
-      if (xs1.isEmpty) xs2.isEmpty && xs3.isEmpty
-      else
-        !xs2.isEmpty && !xs3.isEmpty && f(
-          xs1.head,
-          xs2.head,
-          xs3.head) && corresponds3(xs1.tail, xs2.tail, xs3.tail)(f)
-    )
+      xs3: List[C])(f: (A, B, C) => Boolean): Boolean = (
+    if (xs1.isEmpty) xs2.isEmpty && xs3.isEmpty
+    else
+      !xs2.isEmpty && !xs3.isEmpty && f(
+        xs1.head,
+        xs2.head,
+        xs3.head) && corresponds3(xs1.tail, xs2.tail, xs3.tail)(f)
+  )
 
   /** All these mm methods are "deep map" style methods for
     *  mapping etc. on a list of lists while avoiding unnecessary
@@ -58,30 +57,28 @@ trait Collections {
     xss foreach (_ foreach f)
 
   /** A version of List#map, specialized for List, and optimized to avoid allocation if `as` is empty */
-  final def mapList[A, B](as: List[A])(f: A => B): List[B] =
-    if (as eq Nil) Nil
-    else {
-      val head = new ::[B](f(as.head), Nil)
-      var tail: ::[B] = head
-      var rest = as.tail
-      while (rest ne Nil) {
-        val next = new ::(f(rest.head), Nil)
-        tail.tl = next
-        tail = next
-        rest = rest.tail
-      }
-      head
+  final def mapList[A, B](as: List[A])(f: A => B): List[B] = if (as eq Nil) Nil
+  else {
+    val head = new ::[B](f(as.head), Nil)
+    var tail: ::[B] = head
+    var rest = as.tail
+    while (rest ne Nil) {
+      val next = new ::(f(rest.head), Nil)
+      tail.tl = next
+      tail = next
+      rest = rest.tail
     }
+    head
+  }
 
   final def collectFirst[A, B](as: List[A])(
       pf: PartialFunction[A, B]): Option[B] = {
     @tailrec
-    def loop(rest: List[A]): Option[B] =
-      rest match {
-        case Nil                          => None
-        case a :: as if pf.isDefinedAt(a) => Some(pf(a))
-        case a :: as                      => loop(as)
-      }
+    def loop(rest: List[A]): Option[B] = rest match {
+      case Nil                          => None
+      case a :: as if pf.isDefinedAt(a) => Some(pf(a))
+      case a :: as                      => loop(as)
+    }
     loop(as)
   }
 
@@ -312,12 +309,11 @@ trait Collections {
     else Some(as.flatten)
   }
 
-  final def transposeSafe[A](ass: List[List[A]]): Option[List[List[A]]] =
-    try {
-      Some(ass.transpose)
-    } catch {
-      case _: IllegalArgumentException => None
-    }
+  final def transposeSafe[A](ass: List[List[A]]): Option[List[List[A]]] = try {
+    Some(ass.transpose)
+  } catch {
+    case _: IllegalArgumentException => None
+  }
 }
 
 object Collections extends Collections

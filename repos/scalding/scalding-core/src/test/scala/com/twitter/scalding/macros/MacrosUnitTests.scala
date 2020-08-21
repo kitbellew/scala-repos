@@ -54,13 +54,12 @@ case class SampleClassG(a: java.util.Date)
 case class SampleClassFail(a: Option[Option[Int]])
 
 object MacroProperties extends Properties("TypeDescriptor.roundTrip") {
-  def roundTrip[T: Arbitrary: TypeDescriptor]: Prop =
-    forAll { t: T =>
-      val setter = implicitly[TypeDescriptor[T]].setter
-      val converter = implicitly[TypeDescriptor[T]].converter
-      val fields = implicitly[TypeDescriptor[T]].fields
-      converter(new TupleEntry(fields, setter(t))) == t
-    }
+  def roundTrip[T: Arbitrary: TypeDescriptor]: Prop = forAll { t: T =>
+    val setter = implicitly[TypeDescriptor[T]].setter
+    val converter = implicitly[TypeDescriptor[T]].converter
+    val fields = implicitly[TypeDescriptor[T]].fields
+    converter(new TupleEntry(fields, setter(t))) == t
+  }
 
   def propertyFor[T: TypeTag: Arbitrary: TypeDescriptor]: Unit = {
     property(typeTag[T].tpe.toString) = roundTrip[T]
@@ -101,8 +100,8 @@ class MacrosUnitTests extends WordSpec with Matchers {
 
   def mgConv[T](te: TupleEntry)(implicit conv: TupleConverter[T]): T =
     isMg(conv)(te)
-  def mgSet[T](t: T)(implicit set: TupleSetter[T]): TupleEntry =
-    new TupleEntry(isMg(set)(t))
+  def mgSet[T](t: T)(implicit set: TupleSetter[T]): TupleEntry = new TupleEntry(
+    isMg(set)(t))
 
   def shouldRoundTrip[T: IsCaseClass: TupleSetter: TupleConverter](t: T) {
     t shouldBe mgConv(mgSet(t))

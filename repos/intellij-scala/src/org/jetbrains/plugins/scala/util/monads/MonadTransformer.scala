@@ -15,25 +15,22 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.{
 trait MonadTransformer { self: PsiElement =>
 
   class MonadLike[+T](opt: Option[T])(implicit msg: String) {
-    def flatMap[U <: ScType](f: T => TypeResult[U]): TypeResult[U] =
-      opt match {
-        case Some(elem) => f(elem)
-        case None       => Failure(msg, Some(self))
-      }
-    def map[U <: ScType](f: T => U): TypeResult[U] =
-      opt match {
-        case s @ Some(elem) => Success(f(elem), Some(self))
-        case None           => Failure(msg, None)
-      }
+    def flatMap[U <: ScType](f: T => TypeResult[U]): TypeResult[U] = opt match {
+      case Some(elem) => f(elem)
+      case None       => Failure(msg, Some(self))
+    }
+    def map[U <: ScType](f: T => U): TypeResult[U] = opt match {
+      case s @ Some(elem) => Success(f(elem), Some(self))
+      case None           => Failure(msg, None)
+    }
   }
 
   class SemiMonadLike[+T](opt: Option[T], default: ScType)(implicit
       msg: String) {
-    def flatMap(f: T => TypeResult[ScType]): TypeResult[ScType] =
-      opt match {
-        case Some(elem) => f(elem)
-        case None       => Success(default, None)
-      }
+    def flatMap(f: T => TypeResult[ScType]): TypeResult[ScType] = opt match {
+      case Some(elem) => f(elem)
+      case None       => Success(default, None)
+    }
   }
 
   implicit val DEFAULT_ERROR_MESSAGE = "No element found"

@@ -85,10 +85,9 @@ object Flaggable {
     *
     * @param f Function that parses a string into an object of type `T`
     */
-  def mandatory[T](f: String => T): Flaggable[T] =
-    new Flaggable[T] {
-      def parse(s: String) = f(s)
-    }
+  def mandatory[T](f: String => T): Flaggable[T] = new Flaggable[T] {
+    def parse(s: String) = f(s)
+  }
 
   implicit val ofString: Flaggable[String] = mandatory(identity)
 
@@ -129,15 +128,14 @@ object Flaggable {
 
   implicit val ofInetSocketAddress: Flaggable[InetSocketAddress] =
     new Flaggable[InetSocketAddress] {
-      def parse(v: String) =
-        v.split(":") match {
-          case Array("", p) =>
-            new InetSocketAddress(p.toInt)
-          case Array(h, p) =>
-            new InetSocketAddress(h, p.toInt)
-          case _ =>
-            throw new IllegalArgumentException
-        }
+      def parse(v: String) = v.split(":") match {
+        case Array("", p) =>
+          new InetSocketAddress(p.toInt)
+        case Array(h, p) =>
+          new InetSocketAddress(h, p.toInt)
+        case _ =>
+          throw new IllegalArgumentException
+      }
 
       override def show(addr: InetSocketAddress) =
         "%s:%d".format(
@@ -161,11 +159,10 @@ object Flaggable {
       assert(!tflag.default.isDefined)
       assert(!uflag.default.isDefined)
 
-      def parse(v: String): (T, U) =
-        v.split(",") match {
-          case Array(t, u) => (tflag.parse(t), uflag.parse(u))
-          case _           => throw new IllegalArgumentException("not a 't,u'")
-        }
+      def parse(v: String): (T, U) = v.split(",") match {
+        case Array(t, u) => (tflag.parse(t), uflag.parse(u))
+        case _           => throw new IllegalArgumentException("not a 't,u'")
+      }
 
       override def show(tup: (T, U)) = {
         val (t, u) = tup
@@ -310,15 +307,14 @@ class Flag[T: Flaggable] private[app] (
 
   protected val flaggable = implicitly[Flaggable[T]]
 
-  private[this] def localValue: Option[T] =
-    localFlagValues() match {
-      case None => None
-      case Some(flagValues) =>
-        flagValues.get(this) match {
-          case None            => None
-          case Some(flagValue) => Some(flagValue.asInstanceOf[T])
-        }
-    }
+  private[this] def localValue: Option[T] = localFlagValues() match {
+    case None => None
+    case Some(flagValues) =>
+      flagValues.get(this) match {
+        case None            => None
+        case Some(flagValue) => Some(flagValue.asInstanceOf[T])
+      }
+  }
 
   private[this] def setLocalValue(value: Option[T]): Unit = {
     val updatedMap: Map[Flag[_], Any] = (localFlagValues(), value) match {
@@ -367,11 +363,10 @@ class Flag[T: Flaggable] private[app] (
       }
   }
 
-  private def valueOrDefault: Option[T] =
-    getValue match {
-      case v @ Some(_) => v
-      case None        => default
-    }
+  private def valueOrDefault: Option[T] = getValue match {
+    case v @ Some(_) => v
+    case None        => default
+  }
 
   private[this] def flagNotFound: IllegalArgumentException =
     new IllegalArgumentException("flag '%s' not found".format(name))
@@ -570,10 +565,9 @@ class Flags(
   // Add a help flag by default
   private[this] val helpFlag = this("help", false, "Show this help")
 
-  def reset() =
-    synchronized {
-      flags foreach { case (_, f) => f.reset() }
-    }
+  def reset() = synchronized {
+    flags foreach { case (_, f) => f.reset() }
+  }
 
   private[app] def finishParsing(): Unit = {
     flags.values.foreach { _.finishParsing() }
@@ -601,96 +595,95 @@ class Flags(
   def parseArgs(
       args: Array[String],
       allowUndefinedFlags: Boolean = false
-  ): FlagParseResult =
-    synchronized {
-      reset()
-      val remaining = new ArrayBuffer[String]
-      var i = 0
-      while (i < args.size) {
-        val a = args(i)
-        i += 1
-        if (a == "--") {
-          remaining ++= args.slice(i, args.size)
-          i = args.size
-        } else if (a startsWith "-") {
-          a drop 1 split ("=", 2) match {
-            // There seems to be a bug Scala's pattern matching
-            // optimizer that leaves `v' dangling in the last case if
-            // we make this a wildcard (Array(k, _@_*))
-            case Array(k) if !hasFlag(k) =>
-              if (allowUndefinedFlags)
-                remaining += a
-              else
-                return Error(
-                  "Error parsing flag \"%s\": %s\n%s".format(
-                    k,
-                    FlagUndefinedMessage,
-                    usage)
-                )
-
-            // Flag isn't defined
-            case Array(k, _) if !hasFlag(k) =>
-              if (allowUndefinedFlags)
-                remaining += a
-              else
-                return Error(
-                  "Error parsing flag \"%s\": %s\n%s".format(
-                    k,
-                    FlagUndefinedMessage,
-                    usage)
-                )
-
-            // Optional argument without a value
-            case Array(k) if flag(k).noArgumentOk =>
-              flag(k).parse()
-
-            // Mandatory argument without a value and with no more arguments.
-            case Array(k) if i == args.size =>
+  ): FlagParseResult = synchronized {
+    reset()
+    val remaining = new ArrayBuffer[String]
+    var i = 0
+    while (i < args.size) {
+      val a = args(i)
+      i += 1
+      if (a == "--") {
+        remaining ++= args.slice(i, args.size)
+        i = args.size
+      } else if (a startsWith "-") {
+        a drop 1 split ("=", 2) match {
+          // There seems to be a bug Scala's pattern matching
+          // optimizer that leaves `v' dangling in the last case if
+          // we make this a wildcard (Array(k, _@_*))
+          case Array(k) if !hasFlag(k) =>
+            if (allowUndefinedFlags)
+              remaining += a
+            else
               return Error(
                 "Error parsing flag \"%s\": %s\n%s".format(
                   k,
-                  FlagValueRequiredMessage,
+                  FlagUndefinedMessage,
                   usage)
               )
 
-            // Mandatory argument with another argument
-            case Array(k) =>
-              i += 1
-              try flag(k).parse(args(i - 1))
-              catch {
-                case NonFatal(e) =>
-                  return Error(
-                    "Error parsing flag \"%s\": %s\n%s".format(
-                      k,
-                      e.getMessage,
-                      usage)
-                  )
-              }
+          // Flag isn't defined
+          case Array(k, _) if !hasFlag(k) =>
+            if (allowUndefinedFlags)
+              remaining += a
+            else
+              return Error(
+                "Error parsing flag \"%s\": %s\n%s".format(
+                  k,
+                  FlagUndefinedMessage,
+                  usage)
+              )
 
-            // Mandatory k=v
-            case Array(k, v) =>
-              try flag(k).parse(v)
-              catch {
-                case e: Throwable =>
-                  return Error(
-                    "Error parsing flag \"%s\": %s\n%s".format(
-                      k,
-                      e.getMessage,
-                      usage)
-                  )
-              }
-          }
-        } else {
-          remaining += a
+          // Optional argument without a value
+          case Array(k) if flag(k).noArgumentOk =>
+            flag(k).parse()
+
+          // Mandatory argument without a value and with no more arguments.
+          case Array(k) if i == args.size =>
+            return Error(
+              "Error parsing flag \"%s\": %s\n%s".format(
+                k,
+                FlagValueRequiredMessage,
+                usage)
+            )
+
+          // Mandatory argument with another argument
+          case Array(k) =>
+            i += 1
+            try flag(k).parse(args(i - 1))
+            catch {
+              case NonFatal(e) =>
+                return Error(
+                  "Error parsing flag \"%s\": %s\n%s".format(
+                    k,
+                    e.getMessage,
+                    usage)
+                )
+            }
+
+          // Mandatory k=v
+          case Array(k, v) =>
+            try flag(k).parse(v)
+            catch {
+              case e: Throwable =>
+                return Error(
+                  "Error parsing flag \"%s\": %s\n%s".format(
+                    k,
+                    e.getMessage,
+                    usage)
+                )
+            }
         }
+      } else {
+        remaining += a
       }
-      finishParsing()
-
-      if (helpFlag())
-        Help(usage)
-      else
-        Ok(remaining)
     }
+    finishParsing()
+
+    if (helpFlag())
+      Help(usage)
+    else
+      Ok(remaining)
+  }
 
   /**
     * Parse an array of flag strings.
@@ -710,12 +703,11 @@ class Flags(
   def parse(
       args: Array[String],
       undefOk: Boolean = false
-  ): Seq[String] =
-    parseArgs(args, undefOk) match {
-      case Ok(remainder) => remainder
-      case Help(usage)   => throw FlagUsageError(usage)
-      case Error(reason) => throw FlagParseException(reason)
-    }
+  ): Seq[String] = parseArgs(args, undefOk) match {
+    case Ok(remainder) => remainder
+    case Help(usage)   => throw FlagUsageError(usage)
+    case Error(reason) => throw FlagParseException(reason)
+  }
 
   /**
     * Parse an array of flag strings or exit the application (with exit code 1)
@@ -746,12 +738,11 @@ class Flags(
     *
     * @param f A concrete Flag to add
     */
-  def add(f: Flag[_]) =
-    synchronized {
-      if (flags contains f.name)
-        System.err.printf("Flag %s already defined!\n", f.name)
-      flags(f.name) = f
-    }
+  def add(f: Flag[_]) = synchronized {
+    if (flags contains f.name)
+      System.err.printf("Flag %s already defined!\n", f.name)
+    flags(f.name) = f
+  }
 
   /**
     * Add a named flag with a default value and a help message.
@@ -822,32 +813,31 @@ class Flags(
     cmdUsage = u
   }
 
-  def usage: String =
-    synchronized {
-      val lines =
-        for (k <- flags.keys.toArray.sorted)
-          yield flags(k).usageString
-      val globalLines =
-        if (!includeGlobal) Seq.empty
-        else {
-          GlobalFlag
-            .getAllOrEmptyArray(getClass.getClassLoader)
-            .map(_.usageString)
-            .sorted
-        }
+  def usage: String = synchronized {
+    val lines =
+      for (k <- flags.keys.toArray.sorted)
+        yield flags(k).usageString
+    val globalLines =
+      if (!includeGlobal) Seq.empty
+      else {
+        GlobalFlag
+          .getAllOrEmptyArray(getClass.getClassLoader)
+          .map(_.usageString)
+          .sorted
+      }
 
-      val cmd = if (cmdUsage.nonEmpty) cmdUsage + "\n" else "usage: "
+    val cmd = if (cmdUsage.nonEmpty) cmdUsage + "\n" else "usage: "
 
-      cmd + argv0 + " [<flag>...]\n" +
-        "flags:\n" +
-        (lines mkString "\n") + (
-        if (globalLines.isEmpty) ""
-        else {
-          "\nglobal flags:\n" +
-            (globalLines mkString "\n")
-        }
-      )
-    }
+    cmd + argv0 + " [<flag>...]\n" +
+      "flags:\n" +
+      (lines mkString "\n") + (
+      if (globalLines.isEmpty) ""
+      else {
+        "\nglobal flags:\n" +
+          (globalLines mkString "\n")
+      }
+    )
+  }
 
   /**
     * Get all of the flags known to this Flags instance.
@@ -863,17 +853,16 @@ class Flags(
   def getAll(
       includeGlobal: Boolean = this.includeGlobal,
       classLoader: ClassLoader = this.getClass.getClassLoader
-  ): Iterable[Flag[_]] =
-    synchronized {
-      var flags =
-        TreeSet[Flag[_]]()(Ordering.by(_.name)) ++ this.flags.valuesIterator
+  ): Iterable[Flag[_]] = synchronized {
+    var flags =
+      TreeSet[Flag[_]]()(Ordering.by(_.name)) ++ this.flags.valuesIterator
 
-      if (includeGlobal) {
-        flags ++= GlobalFlag.getAll(classLoader).iterator
-      }
-
-      flags
+    if (includeGlobal) {
+      flags ++= GlobalFlag.getAll(classLoader).iterator
     }
+
+    flags
+  }
 
   /**
     * Formats all values of all flags known to this instance into a format
@@ -978,26 +967,24 @@ class GlobalFlag[T] private[app] (
   // doesn't give the right answer.
   override val name = getClass.getName.stripSuffix("$")
 
-  protected override def getValue =
-    super.getValue match {
-      case v @ Some(_) => v
-      case _           => propertyValue
-    }
+  protected override def getValue = super.getValue match {
+    case v @ Some(_) => v
+    case _           => propertyValue
+  }
 
   def getGlobalFlag: Flag[_] = this
 }
 
 private object GlobalFlag {
-  def get(f: String): Option[Flag[_]] =
-    try {
-      val cls = Class.forName(f)
-      val m = cls.getMethod("getGlobalFlag")
-      Some(m.invoke(null).asInstanceOf[Flag[_]])
-    } catch {
-      case _: ClassNotFoundException | _: NoSuchMethodException |
-          _: IllegalArgumentException =>
-        None
-    }
+  def get(f: String): Option[Flag[_]] = try {
+    val cls = Class.forName(f)
+    val m = cls.getMethod("getGlobalFlag")
+    Some(m.invoke(null).asInstanceOf[Flag[_]])
+  } catch {
+    case _: ClassNotFoundException | _: NoSuchMethodException |
+        _: IllegalArgumentException =>
+      None
+  }
 
   private[this] val log = java.util.logging.Logger.getLogger("")
 

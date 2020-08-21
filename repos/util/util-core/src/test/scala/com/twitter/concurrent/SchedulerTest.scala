@@ -9,10 +9,9 @@ import com.twitter.util.Promise
 
 abstract class LocalSchedulerTest(lifo: Boolean) extends FunSuite {
   private val scheduler = new LocalScheduler(lifo)
-  def submit(f: => Unit) =
-    scheduler.submit(new Runnable {
-      def run() = f
-    })
+  def submit(f: => Unit) = scheduler.submit(new Runnable {
+    def run() = f
+  })
 
   val N = 100
 

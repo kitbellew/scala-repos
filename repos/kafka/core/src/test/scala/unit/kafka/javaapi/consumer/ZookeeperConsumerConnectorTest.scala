@@ -50,10 +50,9 @@ class ZookeeperConsumerConnectorTest
   val overridingProps = new Properties()
   overridingProps.put(KafkaConfig.NumPartitionsProp, numParts.toString)
 
-  def generateConfigs() =
-    TestUtils
-      .createBrokerConfigs(numNodes, zkConnect)
-      .map(KafkaConfig.fromProps(_, overridingProps))
+  def generateConfigs() = TestUtils
+    .createBrokerConfigs(numNodes, zkConnect)
+    .map(KafkaConfig.fromProps(_, overridingProps))
 
   val group = "group1"
   val consumer1 = "consumer1"

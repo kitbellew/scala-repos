@@ -49,8 +49,8 @@ object ProjectManipulation {
 /** this represents an actually Setting[_] or Seq[Setting[_]] configured by the sbt DSL. */
 case class DslSetting(settings: SettingsDefinition) extends ProjectSettings {
   def toSettings = settings.settings
-  final def withPos(pos: RangePosition): DslEntry =
-    DslSetting(settings.settings.map(_.withPos(pos)))
+  final def withPos(pos: RangePosition): DslEntry = DslSetting(
+    settings.settings.map(_.withPos(pos)))
 }
 
 /** this represents an `enablePlugins()` in the sbt DSL */

@@ -1,6 +1,5 @@
 object Test {
-  def foo(t: A.T) =
-    t match {
-      case a: A.TT => 0
-    }
+  def foo(t: A.T) = t match {
+    case a: A.TT => 0
+  }
 }

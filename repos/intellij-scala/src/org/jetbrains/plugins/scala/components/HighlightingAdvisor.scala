@@ -154,9 +154,8 @@ class HighlightingAdvisor(project: Project)
     }
   }
 
-  private def status =
-    "Scala type-aware highlighting: %s"
-      .format(if (enabled) "enabled" else "disabled")
+  private def status = "Scala type-aware highlighting: %s"
+    .format(if (enabled) "enabled" else "disabled")
 
   private def updateWidget(bar: StatusBar) {
     bar.updateWidget(Widget.ID)
@@ -195,9 +194,8 @@ class HighlightingAdvisor(project: Project)
 
       def getClickConsumer = ClickConsumer
 
-      def getTooltipText =
-        "%s (click to %s, or press Ctrl+Shift+Alt+E)"
-          .format(status, if (enabled) "disable" else "enable")
+      def getTooltipText = "%s (click to %s, or press Ctrl+Shift+Alt+E)"
+        .format(status, if (enabled) "disable" else "enable")
 
       object ClickConsumer extends Consumer[MouseEvent] {
         def consume(t: MouseEvent) {

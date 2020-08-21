@@ -36,8 +36,8 @@ object Event {
   implicit def sfxEvent2jfx(e: Event): jfxe.Event =
     if (e != null) e.delegate else null
 
-  def apply[T <: jfxe.Event](eventType: jfxe.EventType[T]) =
-    new Event(new jfxe.Event(eventType))
+  def apply[T <: jfxe.Event](eventType: jfxe.EventType[T]) = new Event(
+    new jfxe.Event(eventType))
 
   /**
     * Fires the specified event.

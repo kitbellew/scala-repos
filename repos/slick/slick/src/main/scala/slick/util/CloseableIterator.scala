@@ -38,13 +38,12 @@ trait CloseableIterator[+T] extends Iterator[T] with Closeable { self =>
     new CloseableIterator[T] {
       def hasNext = self.hasNext
       def next() = self.next()
-      def close() =
-        try self.close()
-        finally c.close()
+      def close() = try self.close()
+      finally c.close()
     }
 
-  protected final def noNext =
-    throw new NoSuchElementException("next on empty iterator")
+  protected final def noNext = throw new NoSuchElementException(
+    "next on empty iterator")
 }
 
 object CloseableIterator {
@@ -64,9 +63,8 @@ object CloseableIterator {
   class Single[+T](item: T) extends CloseableIterator[T] {
     private var more = true
     def hasNext = more
-    def next() =
-      if (more) { more = false; item }
-      else noNext
+    def next() = if (more) { more = false; item }
+    else noNext
     def close {}
   }
 

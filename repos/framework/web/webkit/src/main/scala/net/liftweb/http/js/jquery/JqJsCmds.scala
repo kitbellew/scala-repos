@@ -219,14 +219,13 @@ object JqJE {
     * See http://api.jquery.com/keypress/ .
     */
   case class JqKeypress(what: (Char, JsCmd)*) extends JsExp with JsMember {
-    override def toJsCmd =
-      "keypress(function(e) {" +
-        what
-          .map { case (chr, cmd) =>
-            "if (e.which == " + chr.toInt + ") {" + cmd.toJsCmd + "}"
-          }
-          .mkString(" else \n") +
-        "})"
+    override def toJsCmd = "keypress(function(e) {" +
+      what
+        .map { case (chr, cmd) =>
+          "if (e.which == " + chr.toInt + ") {" + cmd.toJsCmd + "}"
+        }
+        .mkString(" else \n") +
+      "})"
   }
 
   /**
@@ -353,10 +352,9 @@ object JqJE {
       *
       * See http://api.jquery.com/html/ .
       */
-    def apply(): JsExp with JsMember =
-      new JsExp with JsMember {
-        def toJsCmd = "html()"
-      }
+    def apply(): JsExp with JsMember = new JsExp with JsMember {
+      def toJsCmd = "html()"
+    }
 
     /**
       * Calls the jQuery html function with the given content.
@@ -365,10 +363,9 @@ object JqJE {
       *
       * See http://api.jquery.com/html/ .
       */
-    def apply(content: NodeSeq): JsExp with JsMember =
-      new JsExp with JsMember {
-        val toJsCmd = fixHtmlCmdFunc("inline", content) { "html(" + _ + ")" }
-      }
+    def apply(content: NodeSeq): JsExp with JsMember = new JsExp with JsMember {
+      val toJsCmd = fixHtmlCmdFunc("inline", content) { "html(" + _ + ")" }
+    }
   }
 
   object JqText {
@@ -380,10 +377,9 @@ object JqJE {
       *
       * See http://api.jquery.com/text/ .
       */
-    def apply(): JsExp with JsMember =
-      new JsExp with JsMember {
-        def toJsCmd = "text()"
-      }
+    def apply(): JsExp with JsMember = new JsExp with JsMember {
+      def toJsCmd = "text()"
+    }
 
     /**
       * Calls the jQuery text function with the given content.
@@ -392,10 +388,9 @@ object JqJE {
       *
       * See http://api.jquery.com/text/ .
       */
-    def apply(content: String): JsExp with JsMember =
-      new JsExp with JsMember {
-        def toJsCmd = "text(" + content.encJs + ")"
-      }
+    def apply(content: String): JsExp with JsMember = new JsExp with JsMember {
+      def toJsCmd = "text(" + content.encJs + ")"
+    }
   }
 
   /**
@@ -591,10 +586,9 @@ object JqJsCmds {
       duration: TimeSpan,
       fadeTime: TimeSpan)
       extends JsCmd {
-    def toJsCmd =
-      (Show(where) & JqSetHtml(where, msg) & After(
-        duration,
-        Hide(where, fadeTime))).toJsCmd
+    def toJsCmd = (Show(where) & JqSetHtml(where, msg) & After(
+      duration,
+      Hide(where, fadeTime))).toJsCmd
   }
 
   /**
@@ -615,11 +609,10 @@ object JqJsCmds {
     */
   case class FadeOut(id: String, duration: TimeSpan, fadeTime: TimeSpan)
       extends JsCmd {
-    def toJsCmd =
-      (After(
-        duration,
-        JqJE.JqId(id) ~> (new JsRaw("fadeOut(" + fadeTime.millis + ")")
-          with JsMember))).toJsCmd
+    def toJsCmd = (After(
+      duration,
+      JqJE.JqId(id) ~> (new JsRaw("fadeOut(" + fadeTime.millis + ")")
+        with JsMember))).toJsCmd
   }
 
   /**
@@ -641,11 +634,10 @@ object JqJsCmds {
     */
   case class FadeIn(id: String, duration: TimeSpan, fadeTime: TimeSpan)
       extends JsCmd {
-    def toJsCmd =
-      (After(
-        duration,
-        JqJE.JqId(id) ~> (new JsRaw("fadeIn(" + fadeTime.millis + ")")
-          with JsMember))).toJsCmd
+    def toJsCmd = (After(
+      duration,
+      JqJE.JqId(id) ~> (new JsRaw("fadeIn(" + fadeTime.millis + ")")
+        with JsMember))).toJsCmd
   }
 
   /**

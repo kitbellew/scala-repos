@@ -39,8 +39,8 @@ object Transpose extends TransposeLowPrio {
       canTranspose: CanTranspose[R, RT])
       : OpMulMatrix.Impl2[Transpose[U], Transpose[T], RT] = {
     new OpMulMatrix.Impl2[Transpose[U], Transpose[T], RT] {
-      def apply(v: Transpose[U], v2: Transpose[T]): RT =
-        canTranspose(op(v2.inner, v.inner))
+      def apply(v: Transpose[U], v2: Transpose[T]): RT = canTranspose(
+        op(v2.inner, v.inner))
     }
   }
 

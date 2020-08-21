@@ -314,137 +314,133 @@ private[joins] final class UnsafeHashedRelation(
     }
   }
 
-  override def writeExternal(out: ObjectOutput): Unit =
-    Utils.tryOrIOException {
-      if (binaryMap != null) {
-        // This could happen when a cached broadcast object need to be dumped into disk to free memory
-        out.writeInt(binaryMap.numElements())
+  override def writeExternal(out: ObjectOutput): Unit = Utils.tryOrIOException {
+    if (binaryMap != null) {
+      // This could happen when a cached broadcast object need to be dumped into disk to free memory
+      out.writeInt(binaryMap.numElements())
 
-        var buffer = new Array[Byte](64)
-        def write(base: Object, offset: Long, length: Int): Unit = {
-          if (buffer.length < length) {
-            buffer = new Array[Byte](length)
-          }
-          Platform.copyMemory(
-            base,
-            offset,
-            buffer,
-            Platform.BYTE_ARRAY_OFFSET,
-            length)
-          out.write(buffer, 0, length)
+      var buffer = new Array[Byte](64)
+      def write(base: Object, offset: Long, length: Int): Unit = {
+        if (buffer.length < length) {
+          buffer = new Array[Byte](length)
         }
+        Platform.copyMemory(
+          base,
+          offset,
+          buffer,
+          Platform.BYTE_ARRAY_OFFSET,
+          length)
+        out.write(buffer, 0, length)
+      }
 
-        val iter = binaryMap.iterator()
-        while (iter.hasNext) {
-          val loc = iter.next()
-          // [key size] [values size] [key bytes] [values bytes]
-          out.writeInt(loc.getKeyLength)
-          out.writeInt(loc.getValueLength)
-          write(loc.getKeyBase, loc.getKeyOffset, loc.getKeyLength)
-          write(loc.getValueBase, loc.getValueOffset, loc.getValueLength)
+      val iter = binaryMap.iterator()
+      while (iter.hasNext) {
+        val loc = iter.next()
+        // [key size] [values size] [key bytes] [values bytes]
+        out.writeInt(loc.getKeyLength)
+        out.writeInt(loc.getValueLength)
+        write(loc.getKeyBase, loc.getKeyOffset, loc.getKeyLength)
+        write(loc.getValueBase, loc.getValueOffset, loc.getValueLength)
+      }
+
+    } else {
+      assert(hashTable != null)
+      out.writeInt(hashTable.size())
+
+      val iter = hashTable.entrySet().iterator()
+      while (iter.hasNext) {
+        val entry = iter.next()
+        val key = entry.getKey
+        val values = entry.getValue
+
+        // write all the values as single byte array
+        var totalSize = 0L
+        var i = 0
+        while (i < values.length) {
+          totalSize += values(i).getSizeInBytes + 4 + 4
+          i += 1
         }
+        assert(totalSize < Integer.MAX_VALUE, "values are too big")
 
-      } else {
-        assert(hashTable != null)
-        out.writeInt(hashTable.size())
-
-        val iter = hashTable.entrySet().iterator()
-        while (iter.hasNext) {
-          val entry = iter.next()
-          val key = entry.getKey
-          val values = entry.getValue
-
-          // write all the values as single byte array
-          var totalSize = 0L
-          var i = 0
-          while (i < values.length) {
-            totalSize += values(i).getSizeInBytes + 4 + 4
-            i += 1
+        // [key size] [values size] [key bytes] [values bytes]
+        out.writeInt(key.getSizeInBytes)
+        out.writeInt(totalSize.toInt)
+        out.write(key.getBytes)
+        i = 0
+        while (i < values.length) {
+          // [num of fields] [num of bytes] [row bytes]
+          // write the integer in native order, so they can be read by UNSAFE.getInt()
+          if (ByteOrder.nativeOrder() == ByteOrder.BIG_ENDIAN) {
+            out.writeInt(values(i).numFields())
+            out.writeInt(values(i).getSizeInBytes)
+          } else {
+            out.writeInt(Integer.reverseBytes(values(i).numFields()))
+            out.writeInt(Integer.reverseBytes(values(i).getSizeInBytes))
           }
-          assert(totalSize < Integer.MAX_VALUE, "values are too big")
-
-          // [key size] [values size] [key bytes] [values bytes]
-          out.writeInt(key.getSizeInBytes)
-          out.writeInt(totalSize.toInt)
-          out.write(key.getBytes)
-          i = 0
-          while (i < values.length) {
-            // [num of fields] [num of bytes] [row bytes]
-            // write the integer in native order, so they can be read by UNSAFE.getInt()
-            if (ByteOrder.nativeOrder() == ByteOrder.BIG_ENDIAN) {
-              out.writeInt(values(i).numFields())
-              out.writeInt(values(i).getSizeInBytes)
-            } else {
-              out.writeInt(Integer.reverseBytes(values(i).numFields()))
-              out.writeInt(Integer.reverseBytes(values(i).getSizeInBytes))
-            }
-            out.write(values(i).getBytes)
-            i += 1
-          }
+          out.write(values(i).getBytes)
+          i += 1
         }
       }
     }
+  }
 
-  override def readExternal(in: ObjectInput): Unit =
-    Utils.tryOrIOException {
-      val nKeys = in.readInt()
-      // This is used in Broadcast, shared by multiple tasks, so we use on-heap memory
-      // TODO(josh): This needs to be revisited before we merge this patch; making this change now
-      // so that tests compile:
-      val taskMemoryManager = new TaskMemoryManager(
-        new StaticMemoryManager(
-          new SparkConf().set("spark.memory.offHeap.enabled", "false"),
-          Long.MaxValue,
-          Long.MaxValue,
-          1),
-        0)
+  override def readExternal(in: ObjectInput): Unit = Utils.tryOrIOException {
+    val nKeys = in.readInt()
+    // This is used in Broadcast, shared by multiple tasks, so we use on-heap memory
+    // TODO(josh): This needs to be revisited before we merge this patch; making this change now
+    // so that tests compile:
+    val taskMemoryManager = new TaskMemoryManager(
+      new StaticMemoryManager(
+        new SparkConf().set("spark.memory.offHeap.enabled", "false"),
+        Long.MaxValue,
+        Long.MaxValue,
+        1),
+      0)
 
-      val pageSizeBytes = Option(SparkEnv.get)
-        .map(_.memoryManager.pageSizeBytes)
-        .getOrElse(
-          new SparkConf().getSizeAsBytes("spark.buffer.pageSize", "16m"))
+    val pageSizeBytes = Option(SparkEnv.get)
+      .map(_.memoryManager.pageSizeBytes)
+      .getOrElse(new SparkConf().getSizeAsBytes("spark.buffer.pageSize", "16m"))
 
-      // TODO(josh): We won't need this dummy memory manager after future refactorings; revisit
-      // during code review
+    // TODO(josh): We won't need this dummy memory manager after future refactorings; revisit
+    // during code review
 
-      binaryMap = new BytesToBytesMap(
-        taskMemoryManager,
-        (nKeys * 1.5 + 1).toInt, // reduce hash collision
-        pageSizeBytes)
+    binaryMap = new BytesToBytesMap(
+      taskMemoryManager,
+      (nKeys * 1.5 + 1).toInt, // reduce hash collision
+      pageSizeBytes)
 
-      var i = 0
-      var keyBuffer = new Array[Byte](1024)
-      var valuesBuffer = new Array[Byte](1024)
-      while (i < nKeys) {
-        val keySize = in.readInt()
-        val valuesSize = in.readInt()
-        if (keySize > keyBuffer.length) {
-          keyBuffer = new Array[Byte](keySize)
-        }
-        in.readFully(keyBuffer, 0, keySize)
-        if (valuesSize > valuesBuffer.length) {
-          valuesBuffer = new Array[Byte](valuesSize)
-        }
-        in.readFully(valuesBuffer, 0, valuesSize)
-
-        // put it into binary map
-        val loc =
-          binaryMap.lookup(keyBuffer, Platform.BYTE_ARRAY_OFFSET, keySize)
-        assert(!loc.isDefined, "Duplicated key found!")
-        val putSuceeded = loc.putNewKey(
-          keyBuffer,
-          Platform.BYTE_ARRAY_OFFSET,
-          keySize,
-          valuesBuffer,
-          Platform.BYTE_ARRAY_OFFSET,
-          valuesSize)
-        if (!putSuceeded) {
-          throw new IOException(
-            "Could not allocate memory to grow BytesToBytesMap")
-        }
-        i += 1
+    var i = 0
+    var keyBuffer = new Array[Byte](1024)
+    var valuesBuffer = new Array[Byte](1024)
+    while (i < nKeys) {
+      val keySize = in.readInt()
+      val valuesSize = in.readInt()
+      if (keySize > keyBuffer.length) {
+        keyBuffer = new Array[Byte](keySize)
       }
+      in.readFully(keyBuffer, 0, keySize)
+      if (valuesSize > valuesBuffer.length) {
+        valuesBuffer = new Array[Byte](valuesSize)
+      }
+      in.readFully(valuesBuffer, 0, valuesSize)
+
+      // put it into binary map
+      val loc = binaryMap.lookup(keyBuffer, Platform.BYTE_ARRAY_OFFSET, keySize)
+      assert(!loc.isDefined, "Duplicated key found!")
+      val putSuceeded = loc.putNewKey(
+        keyBuffer,
+        Platform.BYTE_ARRAY_OFFSET,
+        keySize,
+        valuesBuffer,
+        Platform.BYTE_ARRAY_OFFSET,
+        valuesSize)
+      if (!putSuceeded) {
+        throw new IOException(
+          "Could not allocate memory to grow BytesToBytesMap")
+      }
+      i += 1
     }
+  }
 }
 
 private[joins] object UnsafeHashedRelation {
@@ -736,11 +732,10 @@ private[execution] case class HashedRelationBroadcastMode(
     }
   }
 
-  override def compatibleWith(other: BroadcastMode): Boolean =
-    other match {
-      case m: HashedRelationBroadcastMode =>
-        canJoinKeyFitWithinLong == m.canJoinKeyFitWithinLong &&
-          canonicalizedKeys == m.canonicalizedKeys
-      case _ => false
-    }
+  override def compatibleWith(other: BroadcastMode): Boolean = other match {
+    case m: HashedRelationBroadcastMode =>
+      canJoinKeyFitWithinLong == m.canJoinKeyFitWithinLong &&
+        canonicalizedKeys == m.canonicalizedKeys
+    case _ => false
+  }
 }

@@ -92,8 +92,8 @@ class StreamExecution(
     new SinkStatus(sink.toString, sink.currentOffset)
 
   /** Returns the [[ContinuousQueryException]] if the query was terminated by an exception. */
-  override def exception: Option[ContinuousQueryException] =
-    Option(streamDeathCause)
+  override def exception: Option[ContinuousQueryException] = Option(
+    streamDeathCause)
 
   /**
     * Starts the execution. This returns only after the thread has started and [[QueryStarted]] event
@@ -266,10 +266,9 @@ class StreamExecution(
     * least the given `Offset`. This method is indented for use primarily when writing tests.
     */
   def awaitOffset(source: Source, newOffset: Offset): Unit = {
-    def notDone =
-      streamProgress.synchronized {
-        !streamProgress.contains(source) || streamProgress(source) < newOffset
-      }
+    def notDone = streamProgress.synchronized {
+      !streamProgress.contains(source) || streamProgress(source) < newOffset
+    }
 
     while (notDone) {
       logInfo(s"Waiting until $newOffset at $source")

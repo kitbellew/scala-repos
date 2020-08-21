@@ -49,11 +49,10 @@ class ScrollToEventSpec[String]
   override def getScalaClassInstance =
     new ScrollToEvent[String](getJavaClassInstance)
 
-  override def getJavaClassInstance =
-    new jfxsc.ScrollToEvent(
-      null,
-      null,
-      null.asInstanceOf[EventType[jfxsc.ScrollToEvent[String]]],
-      "eventTarget".asInstanceOf[String])
+  override def getJavaClassInstance = new jfxsc.ScrollToEvent(
+    null,
+    null,
+    null.asInstanceOf[EventType[jfxsc.ScrollToEvent[String]]],
+    "eventTarget".asInstanceOf[String])
 
 }

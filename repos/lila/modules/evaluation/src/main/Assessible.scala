@@ -38,16 +38,15 @@ case class Assessible(analysed: Analysed) {
   def suspiciousHoldAlert(color: Color): Boolean =
     game.player(color).hasSuspiciousHoldAlert
 
-  def mkFlags(color: Color): PlayerFlags =
-    PlayerFlags(
-      suspiciousErrorRate(color),
-      alwaysHasAdvantage(color),
-      highBlurRate(color),
-      moderateBlurRate(color),
-      consistentMoveTimes(Pov(game, color)),
-      noFastMoves(Pov(game, color)),
-      suspiciousHoldAlert(color)
-    )
+  def mkFlags(color: Color): PlayerFlags = PlayerFlags(
+    suspiciousErrorRate(color),
+    alwaysHasAdvantage(color),
+    highBlurRate(color),
+    moderateBlurRate(color),
+    consistentMoveTimes(Pov(game, color)),
+    noFastMoves(Pov(game, color)),
+    suspiciousHoldAlert(color)
+  )
 
   private val T = true
   private val F = false
@@ -91,10 +90,10 @@ case class Assessible(analysed: Analysed) {
     else assessment
   }
 
-  def sfAvg(color: Color): Int =
-    listAverage(Accuracy.diffsList(Pov(game, color), analysis)).toInt
-  def sfSd(color: Color): Int =
-    listDeviation(Accuracy.diffsList(Pov(game, color), analysis)).toInt
+  def sfAvg(color: Color): Int = listAverage(
+    Accuracy.diffsList(Pov(game, color), analysis)).toInt
+  def sfSd(color: Color): Int = listDeviation(
+    Accuracy.diffsList(Pov(game, color), analysis)).toInt
   def mtAvg(color: Color): Int = listAverage(game moveTimes color).toInt
   def mtSd(color: Color): Int = listDeviation(game moveTimes color).toInt
   def blurs(color: Color): Int = game.playerBlurPercent(color)

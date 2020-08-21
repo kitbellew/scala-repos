@@ -98,14 +98,13 @@ class LRUMap[K, V](
     *
     * Accessing a key this way will mark its value as most-recently-used.
     */
-  def get(key: K): Box[V] =
-    localMap.get(key) match {
-      case null => Empty
-      case v =>
-        v.remove
-        addAtHead(v)
-        Full(v.value2)
-    }
+  def get(key: K): Box[V] = localMap.get(key) match {
+    case null => Empty
+    case v =>
+      v.remove
+      addAtHead(v)
+      Full(v.value2)
+  }
 
   /**
     * Unsafe version of `[[get]]`.
@@ -114,9 +113,8 @@ class LRUMap[K, V](
     *         instead to get a safe `[[Box]]` result that can be checked for
     *         existence, or use `[[contains]]` before calling this.
     */
-  def apply(key: K) =
-    get(key).openOrThrowException(
-      "Simulating what happens with a regular Map, use contains(key) to check if it is present or not.")
+  def apply(key: K) = get(key).openOrThrowException(
+    "Simulating what happens with a regular Map, use contains(key) to check if it is present or not.")
 
   /**
     * Check if the given `key` exists in the map. A key may not be in the map

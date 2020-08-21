@@ -19,25 +19,24 @@ class HoconCommentJoinLinesHandler extends JoinLinesHandlerDelegate {
       document: Document,
       file: PsiFile,
       start: Int,
-      end: Int): Int =
-    file match {
-      case hoconFile: HoconPsiFile =>
-        import CommonUtil._
-        val element = file.findElementAt(start)
-        if (element != null && HoconTokenSets.Comment.contains(
-            element.getNode.getElementType)) {
-          val joinedSequence =
-            document.getCharsSequence.subSequence(end, document.getTextLength)
-          List("#", "//").find(joinedSequence.startsWith).map { nextPrefix =>
-            val toRemoveEnd = CharArrayUtil.shiftForward(
-              document.getCharsSequence,
-              end + nextPrefix.length,
-              element.getTextRange.getEndOffset,
-              " \t")
-            document.replaceString(start + 1, toRemoveEnd, " ")
-            start + 1
-          } getOrElse CANNOT_JOIN
-        } else CANNOT_JOIN
-      case _ => CANNOT_JOIN
-    }
+      end: Int): Int = file match {
+    case hoconFile: HoconPsiFile =>
+      import CommonUtil._
+      val element = file.findElementAt(start)
+      if (element != null && HoconTokenSets.Comment.contains(
+          element.getNode.getElementType)) {
+        val joinedSequence =
+          document.getCharsSequence.subSequence(end, document.getTextLength)
+        List("#", "//").find(joinedSequence.startsWith).map { nextPrefix =>
+          val toRemoveEnd = CharArrayUtil.shiftForward(
+            document.getCharsSequence,
+            end + nextPrefix.length,
+            element.getTextRange.getEndOffset,
+            " \t")
+          document.replaceString(start + 1, toRemoveEnd, " ")
+          start + 1
+        } getOrElse CANNOT_JOIN
+      } else CANNOT_JOIN
+    case _ => CANNOT_JOIN
+  }
 }

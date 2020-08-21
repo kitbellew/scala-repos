@@ -252,12 +252,11 @@ class MacroExpandAction extends AnAction {
     psiFile.findElementAt(expansion.place.offset) match {
       // macro method call has offset pointing to '(', not method name
       case e: LeafPsiElement if e.findReferenceAt(0) == null =>
-        def walkUp(elem: PsiElement = e): Option[PsiElement] =
-          elem match {
-            case null            => None
-            case m: ScMethodCall => Some(m)
-            case e: PsiElement   => walkUp(e.getParent)
-          }
+        def walkUp(elem: PsiElement = e): Option[PsiElement] = elem match {
+          case null            => None
+          case m: ScMethodCall => Some(m)
+          case e: PsiElement   => walkUp(e.getParent)
+        }
         walkUp()
       // handle macro calls with incorrect offset pointing to macro annotation
       // most likely it means given call is located inside another macro expansion
@@ -271,12 +270,11 @@ class MacroExpandAction extends AnAction {
           None
       // macro annotations
       case e: LeafPsiElement =>
-        def walkUp(elem: PsiElement = e): Option[PsiElement] =
-          elem match {
-            case null            => None
-            case a: ScAnnotation => Some(a)
-            case e: PsiElement   => walkUp(e.getParent)
-          }
+        def walkUp(elem: PsiElement = e): Option[PsiElement] = elem match {
+          case null            => None
+          case a: ScAnnotation => Some(a)
+          case e: PsiElement   => walkUp(e.getParent)
+        }
         walkUp()
       case _ => None
     }

@@ -81,24 +81,24 @@ class CanTraverseValuesBenchmark
   }
    */
 
-  def timeMaxMatrixCols(reps: Int) =
-    runWith(reps, { randomMatrix(40, 1024) }) { arr =>
+  def timeMaxMatrixCols(reps: Int) = runWith(reps, { randomMatrix(40, 1024) }) {
+    arr =>
       max(arr(::, *))
-    }
+  }
 
-  def timeMaxMatrixRows(reps: Int) =
-    runWith(reps, { randomMatrix(40, 1024) }) { arr =>
+  def timeMaxMatrixRows(reps: Int) = runWith(reps, { randomMatrix(40, 1024) }) {
+    arr =>
       max(arr(*, ::))
-    }
+  }
 
-  def timeMinMatrixCols(reps: Int) =
-    runWith(reps, { randomMatrix(40, 1024) }) { arr =>
+  def timeMinMatrixCols(reps: Int) = runWith(reps, { randomMatrix(40, 1024) }) {
+    arr =>
       min(arr(::, *))
-    }
+  }
 
-  def timeMinMatrixRows(reps: Int) =
-    runWith(reps, { randomMatrix(40, 1024) }) { arr =>
+  def timeMinMatrixRows(reps: Int) = runWith(reps, { randomMatrix(40, 1024) }) {
+    arr =>
       max(arr(*, ::))
-    }
+  }
 
 }

@@ -34,12 +34,11 @@ class GaussianTest
   val expFam = Gaussian
   import org.scalacheck.Arbitrary.arbitrary;
 
-  def arbParameter =
-    Arbitrary {
-      for (mean <- arbitrary[Double].map { _ % 10000.0 };
-        std <- arbitrary[Double].map { x => math.abs(x) % 8.0 + .1 })
-        yield (mean, std)
-    }
+  def arbParameter = Arbitrary {
+    for (mean <- arbitrary[Double].map { _ % 10000.0 };
+      std <- arbitrary[Double].map { x => math.abs(x) % 8.0 + .1 })
+      yield (mean, std)
+  }
 
   def paramsClose(p: (Double, Double), b: (Double, Double)) = {
     val y1 = (p._1 - b._1).abs / (p._1.abs / 2 + b._1.abs / 2 + 1) < 1e-1
@@ -69,12 +68,11 @@ class GaussianTest
 
   override val VARIANCE_TOLERANCE: Double = 9e-2
 
-  implicit def arbDistr: Arbitrary[Distr] =
-    Arbitrary {
-      for (mean <- arbitrary[Double].map { x => math.abs(x) % 10000.0 };
-        std <- arbitrary[Double].map { x => math.abs(x) % 8.0 + .1 })
-        yield new Gaussian(mean, std);
-    }
+  implicit def arbDistr: Arbitrary[Distr] = Arbitrary {
+    for (mean <- arbitrary[Double].map { x => math.abs(x) % 10000.0 };
+      std <- arbitrary[Double].map { x => math.abs(x) % 8.0 + .1 })
+      yield new Gaussian(mean, std);
+  }
 
   def asDouble(x: Double) = x
 

@@ -9,8 +9,8 @@ trait MetricKeyDSL {
 
     import MetricKey._
 
-    def /(key: String): MetricKey =
-      MetricKey(path + "." + sanitizeMetricKeyPart(key))
+    def /(key: String): MetricKey = MetricKey(
+      path + "." + sanitizeMetricKeyPart(key))
 
     override def toString = path
   }

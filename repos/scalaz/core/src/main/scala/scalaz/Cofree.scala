@@ -87,8 +87,8 @@ object Cofree extends CofreeInstances {
   def delay[S[_], A](h: A, t: => S[Cofree[S, A]]): Cofree[S, A] =
     applyT(h, Trampoline.delay(t))
 
-  def unapply[S[_], A](c: Cofree[S, A]): Option[(A, S[Cofree[S, A]])] =
-    Some((c.head, c.tail))
+  def unapply[S[_], A](c: Cofree[S, A]): Option[(A, S[Cofree[S, A]])] = Some(
+    (c.head, c.tail))
 
   //creates an instance of Cofree that trampolines all of the calls to the tail so we get stack safety
   def applyT[S[_], A](a: A, tf: Free[Function0, S[Cofree[S, A]]])(implicit
@@ -253,9 +253,8 @@ private trait CofreeZipApplicative[F[_]]
     with CofreeZipApply[F] {
   implicit def F: Applicative[F]
 
-  def point[A](a: => A) =
-    Tags.Zip(
-      Cofree.delay(a, F.point(Tag.unwrap[Cofree[F, A], Tags.Zip](point(a)))))
+  def point[A](a: => A) = Tags.Zip(
+    Cofree.delay(a, F.point(Tag.unwrap[Cofree[F, A], Tags.Zip](point(a)))))
 }
 
 private trait CofreeBind[F[_]]

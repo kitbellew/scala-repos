@@ -55,11 +55,10 @@ trait Chars {
   }
 
   /** Is character a line break? */
-  def isLineBreakChar(c: Char) =
-    (c: @switch) match {
-      case LF | FF | CR | SU => true
-      case _                 => false
-    }
+  def isLineBreakChar(c: Char) = (c: @switch) match {
+    case LF | FF | CR | SU => true
+    case _                 => false
+  }
 
   /** Is character a whitespace character (but not a new line)? */
   def isWhitespace(c: Char) =
@@ -97,13 +96,12 @@ trait Chars {
     letterGroups(JCharacter.getType(ch).toByte) || otherLetters(ch)
 
   /** Can character form part of a Scala operator name? */
-  def isOperatorPart(c: Char): Boolean =
-    (c: @switch) match {
-      case '~' | '!' | '@' | '#' | '%' | '^' | '*' | '+' | '-' | '<' | '>' |
-          '?' | ':' | '=' | '&' | '|' | '/' | '\\' =>
-        true
-      case c => isSpecial(c)
-    }
+  def isOperatorPart(c: Char): Boolean = (c: @switch) match {
+    case '~' | '!' | '@' | '#' | '%' | '^' | '*' | '+' | '-' | '<' | '>' | '?' |
+        ':' | '=' | '&' | '|' | '/' | '\\' =>
+      true
+    case c => isSpecial(c)
+  }
 }
 
 object Chars extends Chars {}

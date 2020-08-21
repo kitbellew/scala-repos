@@ -256,20 +256,19 @@ case class ExplainCommand(
     extends RunnableCommand {
 
   // Run through the optimizer to generate the physical plan.
-  override def run(sqlContext: SQLContext): Seq[Row] =
-    try {
-      // TODO in Hive, the "extended" ExplainCommand prints the AST as well, and detailed properties.
-      val queryExecution = sqlContext.executePlan(logicalPlan)
-      val outputString =
-        if (extended) queryExecution.toString else queryExecution.simpleString
+  override def run(sqlContext: SQLContext): Seq[Row] = try {
+    // TODO in Hive, the "extended" ExplainCommand prints the AST as well, and detailed properties.
+    val queryExecution = sqlContext.executePlan(logicalPlan)
+    val outputString =
+      if (extended) queryExecution.toString else queryExecution.simpleString
 
-      outputString.split("\n").map(Row(_))
-    } catch {
-      case cause: TreeNodeException[_] =>
-        ("Error occurred during query planning: \n" + cause.getMessage)
-          .split("\n")
-          .map(Row(_))
-    }
+    outputString.split("\n").map(Row(_))
+  } catch {
+    case cause: TreeNodeException[_] =>
+      ("Error occurred during query planning: \n" + cause.getMessage)
+        .split("\n")
+        .map(Row(_))
+  }
 }
 
 case class CacheTableCommand(
@@ -386,22 +385,21 @@ case class ShowFunctions(db: Option[String], pattern: Option[String])
     schema.toAttributes
   }
 
-  override def run(sqlContext: SQLContext): Seq[Row] =
-    pattern match {
-      case Some(p) =>
-        try {
-          val regex = java.util.regex.Pattern.compile(p)
-          sqlContext.sessionState.functionRegistry
-            .listFunction()
-            .filter(regex.matcher(_).matches())
-            .map(Row(_))
-        } catch {
-          // probably will failed in the regex that user provided, then returns empty row.
-          case _: Throwable => Seq.empty[Row]
-        }
-      case None =>
-        sqlContext.sessionState.functionRegistry.listFunction().map(Row(_))
-    }
+  override def run(sqlContext: SQLContext): Seq[Row] = pattern match {
+    case Some(p) =>
+      try {
+        val regex = java.util.regex.Pattern.compile(p)
+        sqlContext.sessionState.functionRegistry
+          .listFunction()
+          .filter(regex.matcher(_).matches())
+          .map(Row(_))
+      } catch {
+        // probably will failed in the regex that user provided, then returns empty row.
+        case _: Throwable => Seq.empty[Row]
+      }
+    case None =>
+      sqlContext.sessionState.functionRegistry.listFunction().map(Row(_))
+  }
 }
 
 /**

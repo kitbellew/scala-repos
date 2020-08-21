@@ -401,10 +401,9 @@ class MyPayloadSerializer extends Serializer {
   def identifier: Int = 77123
   def includeManifest: Boolean = true
 
-  def toBinary(o: AnyRef): Array[Byte] =
-    o match {
-      case MyPayload(data) ⇒ s".${data}".getBytes(UTF_8)
-    }
+  def toBinary(o: AnyRef): Array[Byte] = o match {
+    case MyPayload(data) ⇒ s".${data}".getBytes(UTF_8)
+  }
 
   def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef =
     manifest match {
@@ -424,10 +423,9 @@ class MyPayload2Serializer extends SerializerWithStringManifest {
 
   def manifest(o: AnyRef): String = ManifestV2
 
-  def toBinary(o: AnyRef): Array[Byte] =
-    o match {
-      case MyPayload2(data, n) ⇒ s".$data:$n".getBytes(UTF_8)
-    }
+  def toBinary(o: AnyRef): Array[Byte] = o match {
+    case MyPayload2(data, n) ⇒ s".$data:$n".getBytes(UTF_8)
+  }
 
   def fromBinary(bytes: Array[Byte], manifest: String): AnyRef =
     manifest match {
@@ -447,10 +445,9 @@ class MySnapshotSerializer extends Serializer {
   def identifier: Int = 77124
   def includeManifest: Boolean = true
 
-  def toBinary(o: AnyRef): Array[Byte] =
-    o match {
-      case MySnapshot(data) ⇒ s".${data}".getBytes(UTF_8)
-    }
+  def toBinary(o: AnyRef): Array[Byte] = o match {
+    case MySnapshot(data) ⇒ s".${data}".getBytes(UTF_8)
+  }
 
   def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef =
     manifest match {
@@ -468,10 +465,9 @@ class MySnapshotSerializer2 extends SerializerWithStringManifest {
 
   def manifest(o: AnyRef): String = CurrentManifest
 
-  def toBinary(o: AnyRef): Array[Byte] =
-    o match {
-      case MySnapshot2(data) ⇒ s".${data}".getBytes(UTF_8)
-    }
+  def toBinary(o: AnyRef): Array[Byte] = o match {
+    case MySnapshot2(data) ⇒ s".${data}".getBytes(UTF_8)
+  }
 
   def fromBinary(bytes: Array[Byte], manifest: String): AnyRef =
     manifest match {
@@ -490,12 +486,11 @@ class OldPayloadSerializer extends SerializerWithStringManifest {
 
   def manifest(o: AnyRef): String = o.getClass.getName
 
-  def toBinary(o: AnyRef): Array[Byte] =
-    o match {
-      case MyPayload(data) ⇒ s".${data}".getBytes(UTF_8)
-      case old if old.getClass.getName == OldPayloadClassName ⇒
-        o.toString.getBytes(UTF_8)
-    }
+  def toBinary(o: AnyRef): Array[Byte] = o match {
+    case MyPayload(data) ⇒ s".${data}".getBytes(UTF_8)
+    case old if old.getClass.getName == OldPayloadClassName ⇒
+      o.toString.getBytes(UTF_8)
+  }
 
   def fromBinary(bytes: Array[Byte], manifest: String): AnyRef =
     manifest match {

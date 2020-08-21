@@ -161,10 +161,9 @@ trait TransSpecableModule[M[+_]]
         init: ((TransSpec1, DepGraph)) => N[S]) = {
 
       // Bifunctor leftMap would be better here if it existed in pimped type inferrable form
-      def leftMap(parent: S)(f: TransSpec1 => TransSpec1) =
-        get(parent) match {
-          case (spec, ancestor) => set(parent, (f(spec), ancestor))
-        }
+      def leftMap(parent: S)(f: TransSpec1 => TransSpec1) = get(parent) match {
+        case (spec, ancestor) => set(parent, (f(spec), ancestor))
+      }
 
       new TransSpecableFold[N[S]] {
         import trans._
@@ -332,13 +331,12 @@ trait TransSpecableModule[M[+_]]
     }
 
     object ConstInt {
-      def unapply(c: Const) =
-        c match {
-          case Const(CNum(n))    => Some(n.toInt)
-          case Const(CLong(n))   => Some(n.toInt)
-          case Const(CDouble(n)) => Some(n.toInt)
-          case _                 => None
-        }
+      def unapply(c: Const) = c match {
+        case Const(CNum(n))    => Some(n.toInt)
+        case Const(CLong(n))   => Some(n.toInt)
+        case Const(CDouble(n)) => Some(n.toInt)
+        case _                 => None
+      }
     }
 
     object Op2F2ForBinOp {
@@ -352,32 +350,27 @@ trait TransSpecableModule[M[+_]]
     def foldDownTransSpecableOrder[T](to: DepGraph, from: Option[DepGraph])(
         alg: TransSpecableOrderFold[T]): T = {
 
-      def loop(graph: DepGraph): T =
-        graph match {
-          case node if from.map(_ == node).getOrElse(false) => alg.done(node)
+      def loop(graph: DepGraph): T = graph match {
+        case node if from.map(_ == node).getOrElse(false) => alg.done(node)
 
-          case node @ Join(
-                instructions.WrapObject,
-                Cross(_),
-                Const(CString(field)),
-                right) =>
-            alg.WrapObject(node)(loop(right), field)
+        case node @ Join(
+              instructions.WrapObject,
+              Cross(_),
+              Const(CString(field)),
+              right) =>
+          alg.WrapObject(node)(loop(right), field)
 
-          case node @ Join(
-                DerefObject,
-                Cross(_),
-                left,
-                Const(CString(field))) =>
-            alg.DerefObjectStatic(node)(loop(left), field)
+        case node @ Join(DerefObject, Cross(_), left, Const(CString(field))) =>
+          alg.DerefObjectStatic(node)(loop(left), field)
 
-          case node @ Join(DerefArray, Cross(_), left, ConstInt(index)) =>
-            alg.DerefArrayStatic(node)(loop(left), index)
+        case node @ Join(DerefArray, Cross(_), left, ConstInt(index)) =>
+          alg.DerefArrayStatic(node)(loop(left), index)
 
-          case node @ Operate(instructions.WrapArray, parent) =>
-            alg.WrapArray(node)(loop(parent))
+        case node @ Operate(instructions.WrapArray, parent) =>
+          alg.WrapArray(node)(loop(parent))
 
-          case node => alg.unmatched(node)
-        }
+        case node => alg.unmatched(node)
+      }
 
       loop(to)
     }
@@ -385,136 +378,131 @@ trait TransSpecableModule[M[+_]]
     def foldDownTransSpecable[T](to: DepGraph, from: Option[DepGraph])(
         alg: TransSpecableFold[T]): T = {
 
-      def loop(graph: DepGraph): T =
-        graph match {
-          case node if from.map(_ == node).getOrElse(false) => alg.done(node)
+      def loop(graph: DepGraph): T = graph match {
+        case node if from.map(_ == node).getOrElse(false) => alg.done(node)
 
-          case node @ dag.Cond(
-                pred,
-                left @ dag.Const(_: CValue),
-                Cross(_),
-                right,
-                IdentitySort | ValueSort(_)) => {
-            val predRes = loop(pred)
+        case node @ dag.Cond(
+              pred,
+              left @ dag.Const(_: CValue),
+              Cross(_),
+              right,
+              IdentitySort | ValueSort(_)) => {
+          val predRes = loop(pred)
 
-            alg.Cond(node)(predRes, alg.Const(left)(predRes), loop(right))
-          }
-
-          case node @ dag.Cond(
-                pred,
-                left,
-                IdentitySort | ValueSort(_),
-                right @ dag.Const(_: CValue),
-                Cross(_)) => {
-            val predRes = loop(pred)
-
-            alg.Cond(node)(predRes, loop(left), alg.Const(right)(predRes))
-          }
-
-          case node @ dag.Cond(
-                pred,
-                left @ dag.Const(_: CValue),
-                Cross(_),
-                right @ dag.Const(_: CValue),
-                Cross(_)) => {
-            val predRes = loop(pred)
-
-            alg.Cond(node)(
-              predRes,
-              alg.Const(left)(predRes),
-              alg.Const(right)(predRes))
-          }
-
-          case node @ dag.Cond(
-                pred,
-                left,
-                IdentitySort | ValueSort(_),
-                right,
-                IdentitySort | ValueSort(_)) =>
-            alg.Cond(node)(loop(pred), loop(left), loop(right))
-
-          case node @ Join(Eq, Cross(_), left, Const(value)) =>
-            alg.EqualLiteral(node)(loop(left), value, false)
-
-          case node @ Join(Eq, Cross(_), Const(value), right) =>
-            alg.EqualLiteral(node)(loop(right), value, false)
-
-          case node @ Join(NotEq, Cross(_), left, Const(value)) =>
-            alg.EqualLiteral(node)(loop(left), value, true)
-
-          case node @ Join(NotEq, Cross(_), Const(value), right) =>
-            alg.EqualLiteral(node)(loop(right), value, true)
-
-          case node @ Join(
-                instructions.WrapObject,
-                Cross(_),
-                Const(CString(field)),
-                right) =>
-            alg.WrapObject(node)(loop(right), field)
-
-          case node @ Join(
-                DerefObject,
-                Cross(_),
-                left,
-                Const(CString(field))) =>
-            alg.DerefObjectStatic(node)(loop(left), field)
-
-          case node @ Join(
-                DerefMetadata,
-                Cross(_),
-                left,
-                Const(CString(field))) =>
-            alg.DerefMetadataStatic(node)(loop(left), field)
-
-          case node @ Join(DerefArray, Cross(_), left, ConstInt(index)) =>
-            alg.DerefArrayStatic(node)(loop(left), index)
-
-          case node @ Join(
-                instructions.ArraySwap,
-                Cross(_),
-                left,
-                ConstInt(index)) =>
-            alg.ArraySwap(node)(loop(left), index)
-
-          case node @ Join(JoinObject, Cross(_), left, Const(RObject.empty)) =>
-            alg.InnerObjectConcat(node)(loop(left))
-
-          case node @ Join(JoinObject, Cross(_), Const(RObject.empty), right) =>
-            alg.InnerObjectConcat(node)(loop(right))
-
-          case node @ Join(JoinArray, Cross(_), left, Const(RArray.empty)) =>
-            alg.InnerArrayConcat(node)(loop(left))
-
-          case node @ Join(JoinArray, Cross(_), Const(RArray.empty), right) =>
-            alg.InnerArrayConcat(node)(loop(right))
-
-          case node @ Join(Op2F2ForBinOp(op), Cross(_), left, Const(value)) =>
-            alg.Map1Left(node)(loop(left), op, left, value)
-
-          case node @ Join(Op2F2ForBinOp(op), Cross(_), Const(value), right) =>
-            alg.Map1Right(node)(loop(right), op, right, value)
-
-          case node @ Join(
-                op,
-                joinSort @ (IdentitySort | ValueSort(_)),
-                left,
-                right) =>
-            alg.binOp(node)(loop(left), loop(right), op)
-
-          case node @ dag.Filter(
-                joinSort @ (IdentitySort | ValueSort(_)),
-                left,
-                right) =>
-            alg.Filter(node)(loop(left), loop(right))
-
-          case node @ Operate(instructions.WrapArray, parent) =>
-            alg.WrapArray(node)(loop(parent))
-
-          case node @ Operate(op, parent) =>
-            alg.Op1(node)(loop(parent), op)
-
-          case node => alg.unmatched(node)
+          alg.Cond(node)(predRes, alg.Const(left)(predRes), loop(right))
         }
+
+        case node @ dag.Cond(
+              pred,
+              left,
+              IdentitySort | ValueSort(_),
+              right @ dag.Const(_: CValue),
+              Cross(_)) => {
+          val predRes = loop(pred)
+
+          alg.Cond(node)(predRes, loop(left), alg.Const(right)(predRes))
+        }
+
+        case node @ dag.Cond(
+              pred,
+              left @ dag.Const(_: CValue),
+              Cross(_),
+              right @ dag.Const(_: CValue),
+              Cross(_)) => {
+          val predRes = loop(pred)
+
+          alg.Cond(node)(
+            predRes,
+            alg.Const(left)(predRes),
+            alg.Const(right)(predRes))
+        }
+
+        case node @ dag.Cond(
+              pred,
+              left,
+              IdentitySort | ValueSort(_),
+              right,
+              IdentitySort | ValueSort(_)) =>
+          alg.Cond(node)(loop(pred), loop(left), loop(right))
+
+        case node @ Join(Eq, Cross(_), left, Const(value)) =>
+          alg.EqualLiteral(node)(loop(left), value, false)
+
+        case node @ Join(Eq, Cross(_), Const(value), right) =>
+          alg.EqualLiteral(node)(loop(right), value, false)
+
+        case node @ Join(NotEq, Cross(_), left, Const(value)) =>
+          alg.EqualLiteral(node)(loop(left), value, true)
+
+        case node @ Join(NotEq, Cross(_), Const(value), right) =>
+          alg.EqualLiteral(node)(loop(right), value, true)
+
+        case node @ Join(
+              instructions.WrapObject,
+              Cross(_),
+              Const(CString(field)),
+              right) =>
+          alg.WrapObject(node)(loop(right), field)
+
+        case node @ Join(DerefObject, Cross(_), left, Const(CString(field))) =>
+          alg.DerefObjectStatic(node)(loop(left), field)
+
+        case node @ Join(
+              DerefMetadata,
+              Cross(_),
+              left,
+              Const(CString(field))) =>
+          alg.DerefMetadataStatic(node)(loop(left), field)
+
+        case node @ Join(DerefArray, Cross(_), left, ConstInt(index)) =>
+          alg.DerefArrayStatic(node)(loop(left), index)
+
+        case node @ Join(
+              instructions.ArraySwap,
+              Cross(_),
+              left,
+              ConstInt(index)) =>
+          alg.ArraySwap(node)(loop(left), index)
+
+        case node @ Join(JoinObject, Cross(_), left, Const(RObject.empty)) =>
+          alg.InnerObjectConcat(node)(loop(left))
+
+        case node @ Join(JoinObject, Cross(_), Const(RObject.empty), right) =>
+          alg.InnerObjectConcat(node)(loop(right))
+
+        case node @ Join(JoinArray, Cross(_), left, Const(RArray.empty)) =>
+          alg.InnerArrayConcat(node)(loop(left))
+
+        case node @ Join(JoinArray, Cross(_), Const(RArray.empty), right) =>
+          alg.InnerArrayConcat(node)(loop(right))
+
+        case node @ Join(Op2F2ForBinOp(op), Cross(_), left, Const(value)) =>
+          alg.Map1Left(node)(loop(left), op, left, value)
+
+        case node @ Join(Op2F2ForBinOp(op), Cross(_), Const(value), right) =>
+          alg.Map1Right(node)(loop(right), op, right, value)
+
+        case node @ Join(
+              op,
+              joinSort @ (IdentitySort | ValueSort(_)),
+              left,
+              right) =>
+          alg.binOp(node)(loop(left), loop(right), op)
+
+        case node @ dag.Filter(
+              joinSort @ (IdentitySort | ValueSort(_)),
+              left,
+              right) =>
+          alg.Filter(node)(loop(left), loop(right))
+
+        case node @ Operate(instructions.WrapArray, parent) =>
+          alg.WrapArray(node)(loop(parent))
+
+        case node @ Operate(op, parent) =>
+          alg.Op1(node)(loop(parent), op)
+
+        case node => alg.unmatched(node)
+      }
 
       loop(to)
     }

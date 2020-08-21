@@ -26,11 +26,10 @@ sealed trait Parsed[+T] {
     * Converts this instance of [[Parsed]] into a [[Parsed.Success]] or
     * throws an exception if it was a failure.
     */
-  def get: Parsed.Success[T] =
-    this match {
-      case s: Parsed.Success[T] => s
-      case f: Parsed.Failure    => throw new ParseError(f)
-    }
+  def get: Parsed.Success[T] = this match {
+    case s: Parsed.Success[T] => s
+    case f: Parsed.Failure    => throw new ParseError(f)
+  }
 }
 
 case class ParseError(failure: Parsed.Failure)
@@ -91,13 +90,12 @@ object Parsed {
   case class Failure(lastParser: Parser[_], index: Int, extra: Failure.Extra)
       extends Parsed[Nothing] {
 
-    def msg =
-      Failure.formatStackTrace(
-        Nil,
-        extra.input,
-        index,
-        Failure.formatParser(lastParser, extra.input, index)
-      )
+    def msg = Failure.formatStackTrace(
+      Nil,
+      extra.input,
+      index,
+      Failure.formatParser(lastParser, extra.input, index)
+    )
 
     override def toString = s"Failure($msg)"
   }

@@ -39,29 +39,28 @@ final class LobbyApi(
       )
     }
 
-  def nowPlaying(pov: Pov) =
-    Json.obj(
-      "fullId" -> pov.fullId,
-      "gameId" -> pov.gameId,
-      "fen" -> (chess.format.Forsyth exportBoard pov.game.toChess.board),
-      "color" -> pov.color.name,
-      "lastMove" -> ~pov.game.castleLastMoveTime.lastMoveString,
-      "variant" -> Json.obj(
-        "key" -> pov.game.variant.key,
-        "name" -> pov.game.variant.name),
-      "speed" -> pov.game.speed.key,
-      "perf" -> lila.game.PerfPicker.key(pov.game),
-      "rated" -> pov.game.rated,
-      "opponent" -> Json
-        .obj(
-          "id" -> pov.opponent.userId,
-          "username" -> lila.game.Namer
-            .playerString(pov.opponent, withRating = false)(lightUser),
-          "rating" -> pov.opponent.rating,
-          "ai" -> pov.opponent.aiLevel
-        )
-        .noNull,
-      "isMyTurn" -> pov.isMyTurn,
-      "secondsLeft" -> pov.remainingSeconds
-    )
+  def nowPlaying(pov: Pov) = Json.obj(
+    "fullId" -> pov.fullId,
+    "gameId" -> pov.gameId,
+    "fen" -> (chess.format.Forsyth exportBoard pov.game.toChess.board),
+    "color" -> pov.color.name,
+    "lastMove" -> ~pov.game.castleLastMoveTime.lastMoveString,
+    "variant" -> Json.obj(
+      "key" -> pov.game.variant.key,
+      "name" -> pov.game.variant.name),
+    "speed" -> pov.game.speed.key,
+    "perf" -> lila.game.PerfPicker.key(pov.game),
+    "rated" -> pov.game.rated,
+    "opponent" -> Json
+      .obj(
+        "id" -> pov.opponent.userId,
+        "username" -> lila.game.Namer
+          .playerString(pov.opponent, withRating = false)(lightUser),
+        "rating" -> pov.opponent.rating,
+        "ai" -> pov.opponent.aiLevel
+      )
+      .noNull,
+    "isMyTurn" -> pov.isMyTurn,
+    "secondsLeft" -> pov.remainingSeconds
+  )
 }

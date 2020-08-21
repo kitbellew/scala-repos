@@ -40,9 +40,8 @@ object SwaggerSupportSyntax {
 
       def addLiteral(text: String): Builder = copy(path = path + text)
 
-      def addSplat: Builder =
-        throw new ScalatraException(
-          "Splats are not supported for swagger path inference")
+      def addSplat: Builder = throw new ScalatraException(
+        "Splats are not supported for swagger path inference")
 
       def addNamed(name: String): Builder =
         copy(path = path + "{" + name + "}")
@@ -62,16 +61,16 @@ object SwaggerSupportSyntax {
       def apply(pattern: String): (Builder => Builder) =
         parseAll(tokens, pattern) get
 
-      private def tokens: Parser[Builder => Builder] =
-        rep(token) ^^ { tokens =>
-          tokens reduceLeft ((acc, fun) => builder => fun(acc(builder)))
-        }
+      private def tokens: Parser[Builder => Builder] = rep(token) ^^ { tokens =>
+        tokens reduceLeft ((acc, fun) => builder => fun(acc(builder)))
+      }
 
       private def token: Parser[Builder => Builder] =
         splat | prefixedOptional | optional | named | literal
 
-      private def splat: Parser[Builder => Builder] =
-        "*" ^^^ { builder => builder addSplat }
+      private def splat: Parser[Builder => Builder] = "*" ^^^ { builder =>
+        builder addSplat
+      }
 
       private def prefixedOptional: Parser[Builder => Builder] =
         ("." | "/") ~ "?:" ~ """\w+""".r ~ "?" ^^ { case p ~ "?:" ~ o ~ "?" =>
@@ -117,10 +116,9 @@ object SwaggerSupportSyntax {
       def apply(pattern: String): (Builder => Builder) =
         parseAll(tokens, pattern) get
 
-      private def tokens: Parser[Builder => Builder] =
-        rep(token) ^^ { tokens =>
-          tokens reduceLeft ((acc, fun) => builder => fun(acc(builder)))
-        }
+      private def tokens: Parser[Builder => Builder] = rep(token) ^^ { tokens =>
+        tokens reduceLeft ((acc, fun) => builder => fun(acc(builder)))
+      }
 
       //private def token = param | glob | optional | static
       private def token: Parser[Builder => Builder] =
@@ -309,8 +307,8 @@ object SwaggerSupportSyntax {
     def responseMessages(errs: ResponseMessage[_]*): this.type = {
       _responseMessages :::= errs.toList; this
     }
-    def responseMessage(err: ResponseMessage[_]): this.type =
-      responseMessages(err)
+    def responseMessage(err: ResponseMessage[_]): this.type = responseMessages(
+      err)
     def produces(values: String*): this.type = {
       _produces :::= values.toList; this
     }
@@ -331,8 +329,8 @@ object SwaggerSupportSyntax {
     def position: Int = _position
 
     @deprecated("Swagger spec 1.2 defines errors as responseMessages", "2.2.2")
-    def errors(errs: ResponseMessage[_]*): this.type =
-      responseMessages(errs: _*)
+    def errors(errs: ResponseMessage[_]*): this.type = responseMessages(
+      errs: _*)
     @deprecated("Swagger spec 1.2 defines error as responseMessage", "2.2.2")
     def error(err: ResponseMessage[_]): this.type = responseMessages(err)
     @deprecated("Swagger spec 1.2 defines errors as responseMessages", "2.2.2")
@@ -343,21 +341,20 @@ object SwaggerSupportSyntax {
 
   class OperationBuilder(val resultClass: DataType)
       extends SwaggerOperationBuilder[Operation] {
-    def result: Operation =
-      Operation(
-        null,
-        resultClass,
-        summary,
-        position,
-        notes,
-        deprecated,
-        nickname,
-        parameters,
-        responseMessages,
-        consumes,
-        produces,
-        protocols,
-        authorizations)
+    def result: Operation = Operation(
+      null,
+      resultClass,
+      summary,
+      position,
+      notes,
+      deprecated,
+      nickname,
+      parameters,
+      responseMessages,
+      consumes,
+      produces,
+      protocols,
+      authorizations)
   }
 }
 trait SwaggerSupportSyntax extends Initializable with CorsSupport {
@@ -480,8 +477,8 @@ trait SwaggerSupportSyntax extends Initializable with CorsSupport {
   def models = _models
 
   private[swagger] var _description: PartialFunction[String, String] = Map.empty
-  protected def description(f: PartialFunction[String, String]) =
-    _description = f orElse _description
+  protected def description(f: PartialFunction[String, String]) = _description =
+    f orElse _description
 
   @deprecated(
     "Use the `apiOperation.summary` and `operation` methods to build swagger descriptions of endpoints",
@@ -605,18 +602,17 @@ trait SwaggerSupportSyntax extends Initializable with CorsSupport {
   }
   implicit def dataType2string(dt: DataType) = dt.name
 
-  protected def inferSwaggerEndpoint(route: Route): String =
-    route match {
-      case rev if rev.isReversible =>
-        rev.routeMatchers collectFirst {
-          case sin: SinatraRouteMatcher =>
-            new SinatraSwaggerGenerator(sin).toSwaggerPath
-          case rails: RailsRouteMatcher =>
-            new RailsSwaggerGenerator(rails).toSwaggerPath
-          case path: PathPatternRouteMatcher => path.toString
-        } getOrElse ""
-      case _ => ""
-    }
+  protected def inferSwaggerEndpoint(route: Route): String = route match {
+    case rev if rev.isReversible =>
+      rev.routeMatchers collectFirst {
+        case sin: SinatraRouteMatcher =>
+          new SinatraSwaggerGenerator(sin).toSwaggerPath
+        case rails: RailsRouteMatcher =>
+          new RailsSwaggerGenerator(rails).toSwaggerPath
+        case path: PathPatternRouteMatcher => path.toString
+      } getOrElse ""
+    case _ => ""
+  }
 
   protected def swaggerEndpointEntries[T <: SwaggerOperation](
       extract: (Route, HttpMethod) => T) =

@@ -158,11 +158,10 @@ final class Eval(
       }
       def read(file: File) = IO.readLines(file)
       def write(value: Seq[String], file: File) = IO.writeLines(file, value)
-      def extraHash =
-        file match {
-          case Some(f) => f.getAbsolutePath
-          case None    => ""
-        }
+      def extraHash = file match {
+        case Some(f) => f.getAbsolutePath
+        case None    => ""
+      }
     }
     val i = evalCommon(definitions.map(_._1), imports, Some(""), ev)
     new EvalDefinitions(i.loader, i.generated, i.enclosingModule, i.extra)
@@ -194,9 +193,8 @@ final class Eval(
     lazy val run = new Run {
       override def units = (unit :: Nil).iterator
     }
-    def unlinkAll(): Unit =
-      for ((sym, _) <- run.symSource)
-        if (ev.unlink) unlink(sym) else toUnlinkLater ::= sym
+    def unlinkAll(): Unit = for ((sym, _) <- run.symSource)
+      if (ev.unlink) unlink(sym) else toUnlinkLater ::= sym
 
     val (extra, loader) = backing match {
       case Some(back) if classExists(back, moduleName) =>
@@ -265,11 +263,10 @@ final class Eval(
   def load(dir: AbstractFile, moduleName: String): ClassLoader => Any =
     parent =>
       getValue[Any](moduleName, new AbstractFileClassLoader(dir, parent))
-  def loadPlain(dir: File, moduleName: String): ClassLoader => Any =
-    parent =>
-      getValue[Any](
-        moduleName,
-        new URLClassLoader(Array(dir.toURI.toURL), parent))
+  def loadPlain(dir: File, moduleName: String): ClassLoader => Any = parent =>
+    getValue[Any](
+      moduleName,
+      new URLClassLoader(Array(dir.toURI.toURL), parent))
 
   //wrap tree in object objectName { def WrapValName = <tree> }
   def augment(
@@ -288,25 +285,24 @@ final class Eval(
       objectName: String): Tree = {
     val emptyTypeName = nme.EMPTY.toTypeName
     def emptyPkg = parser.atPos(0, 0, 0) { Ident(nme.EMPTY_PACKAGE_NAME) }
-    def emptyInit =
-      DefDef(
-        NoMods,
-        nme.CONSTRUCTOR,
-        Nil,
-        List(Nil),
-        TypeTree(),
-        Block(
-          List(Apply(
+    def emptyInit = DefDef(
+      NoMods,
+      nme.CONSTRUCTOR,
+      Nil,
+      List(Nil),
+      TypeTree(),
+      Block(
+        List(
+          Apply(
             Select(Super(This(emptyTypeName), emptyTypeName), nme.CONSTRUCTOR),
             Nil)),
-          Literal(Constant(())))
-      )
+        Literal(Constant(())))
+    )
 
-    def moduleBody =
-      Template(
-        List(gen.scalaAnyRefConstr),
-        emptyValDef,
-        emptyInit :: definitions)
+    def moduleBody = Template(
+      List(gen.scalaAnyRefConstr),
+      emptyValDef,
+      emptyInit :: definitions)
     def moduleDef = ModuleDef(NoMods, newTermName(objectName), moduleBody)
     parser.makePackaging(0, emptyPkg, (imports :+ moduleDef).toList)
   }
@@ -314,12 +310,11 @@ final class Eval(
   private[this] final class TypeExtractor extends Traverser {
     private[this] var result = ""
     def getType(t: Tree) = { result = ""; traverse(t); result }
-    override def traverse(tree: Tree): Unit =
-      tree match {
-        case d: DefDef if d.symbol.nameString == WrapValName =>
-          result = d.symbol.tpe.finalResultType.toString
-        case _ => super.traverse(tree)
-      }
+    override def traverse(tree: Tree): Unit = tree match {
+      case d: DefDef if d.symbol.nameString == WrapValName =>
+        result = d.symbol.tpe.finalResultType.toString
+      case _ => super.traverse(tree)
+    }
   }
 
   /** Tree traverser that obtains the names of vals in a top-level module whose type is a subtype of one of `types`. */
@@ -331,14 +326,13 @@ final class Eval(
         tpes.contains(sym.fullName)
       }
     }
-    override def traverse(tree: Tree): Unit =
-      tree match {
-        case ValDef(_, n, actualTpe, _)
-            if isTopLevelModule(tree.symbol.owner) && isAcceptableType(
-              actualTpe.tpe) =>
-          vals ::= nme.localToGetter(n).encoded
-        case _ => super.traverse(tree)
-      }
+    override def traverse(tree: Tree): Unit = tree match {
+      case ValDef(_, n, actualTpe, _)
+          if isTopLevelModule(tree.symbol.owner) && isAcceptableType(
+            actualTpe.tpe) =>
+        vals ::= nme.localToGetter(n).encoded
+      case _ => super.traverse(tree)
+    }
   }
   // inlined implemented of Symbol.isTopLevelModule that was removed in e5b050814deb2e7e1d6d05511d3a6cb6b013b549
   private[this] def isTopLevelModule(s: Symbol): Boolean =
@@ -383,23 +377,20 @@ final class Eval(
       val extraBlank: String,
       val missingBlank: String,
       val extraSemi: String)
-  private[this] def definitionErrorStrings =
-    new ParseErrorStrings(
-      base = "Error parsing definition.",
-      extraBlank =
-        "  Ensure that there are no blank lines within a definition.",
-      missingBlank = "  Ensure that definitions are separated by blank lines.",
-      extraSemi =
-        "  A trailing semicolon is not permitted for standalone definitions."
-    )
-  private[this] def settingErrorStrings =
-    new ParseErrorStrings(
-      base = "Error parsing expression.",
-      extraBlank = "  Ensure that there are no blank lines within a setting.",
-      missingBlank = "  Ensure that settings are separated by blank lines.",
-      extraSemi =
-        "  Note that settings are expressions and do not end with semicolons.  (Semicolons are fine within {} blocks, however.)"
-    )
+  private[this] def definitionErrorStrings = new ParseErrorStrings(
+    base = "Error parsing definition.",
+    extraBlank = "  Ensure that there are no blank lines within a definition.",
+    missingBlank = "  Ensure that definitions are separated by blank lines.",
+    extraSemi =
+      "  A trailing semicolon is not permitted for standalone definitions."
+  )
+  private[this] def settingErrorStrings = new ParseErrorStrings(
+    base = "Error parsing expression.",
+    extraBlank = "  Ensure that there are no blank lines within a setting.",
+    missingBlank = "  Ensure that settings are separated by blank lines.",
+    extraSemi =
+      "  Note that settings are expressions and do not end with semicolons.  (Semicolons are fine within {} blocks, however.)"
+  )
 
   /**
     * Parses the provided compilation `unit` according to `f` and then performs checks on the final parser state
@@ -551,17 +542,16 @@ final class Eval(
   private[this] def fragmentSourceFile(
       srcName: String,
       content: String,
-      lineMap: Array[Int]) =
-    new BatchSourceFile(srcName, content) {
-      override def lineToOffset(line: Int): Int =
-        super.lineToOffset(lineMap.indexWhere(_ == line) max 0)
-      override def offsetToLine(offset: Int): Int =
-        index(lineMap, super.offsetToLine(offset))
-      // the SourceFile attribute is populated from this method, so we are required to only return the name
-      override def toString = new File(srcName).getName
-      private[this] def index(a: Array[Int], i: Int): Int =
-        if (i < 0 || i >= a.length) 0 else a(i)
-    }
+      lineMap: Array[Int]) = new BatchSourceFile(srcName, content) {
+    override def lineToOffset(line: Int): Int =
+      super.lineToOffset(lineMap.indexWhere(_ == line) max 0)
+    override def offsetToLine(offset: Int): Int =
+      index(lineMap, super.offsetToLine(offset))
+    // the SourceFile attribute is populated from this method, so we are required to only return the name
+    override def toString = new File(srcName).getName
+    private[this] def index(a: Array[Int], i: Int): Int =
+      if (i < 0 || i >= a.length) 0 else a(i)
+  }
 }
 private[sbt] object Eval {
   def optBytes[T](o: Option[T])(f: T => Array[Byte]): Array[Byte] =
@@ -571,9 +561,9 @@ private[sbt] object Eval {
   def bytes(b: Seq[Array[Byte]]): Array[Byte] =
     bytes(b.length) ++ b.flatten.toArray[Byte]
   def bytes(b: Boolean): Array[Byte] = Array[Byte](if (b) 1 else 0)
-  def filesModifiedBytes(fs: Array[File]): Array[Byte] =
-    if (fs eq null) filesModifiedBytes(Array[File]())
-    else seqBytes(fs)(fileModifiedBytes)
+  def filesModifiedBytes(fs: Array[File]): Array[Byte] = if (fs eq null)
+    filesModifiedBytes(Array[File]())
+  else seqBytes(fs)(fileModifiedBytes)
   def fileModifiedBytes(f: File): Array[Byte] =
     (if (f.isDirectory) filesModifiedBytes(f listFiles classDirFilter)
      else bytes(f.lastModified)) ++

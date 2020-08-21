@@ -25,13 +25,11 @@ object JodaDateFormats extends DateParser {
 
   def parse(s: String) = Web.parse(s)
 
-  def apply(f: DateFormat*): DateParser =
-    new DateParser {
-      def parse(s: String) =
-        f.toList.foldLeft(None: Option[DateTime]) { (r, f) ⇒
-          if (!r.isDefined) f.parse(s) else r
-        }
+  def apply(f: DateFormat*): DateParser = new DateParser {
+    def parse(s: String) = f.toList.foldLeft(None: Option[DateTime]) { (r, f) ⇒
+      if (!r.isDefined) f.parse(s) else r
     }
+  }
 
   trait DateFormat extends DateParser {
     def dateTimeFormat: DateTimeFormatter

@@ -13,8 +13,8 @@ class FutureDirectivesSpec extends RoutingSpec {
 
   class TestException(msg: String) extends Exception(msg)
   object TestException extends Exception("XXX")
-  def throwTestException[T](msgPrefix: String): T ⇒ Nothing =
-    t ⇒ throw new TestException(msgPrefix + t)
+  def throwTestException[T](msgPrefix: String): T ⇒ Nothing = t ⇒
+    throw new TestException(msgPrefix + t)
 
   implicit val exceptionHandler = ExceptionHandler { case e: TestException ⇒
     complete((StatusCodes.InternalServerError, "Oops. " + e))

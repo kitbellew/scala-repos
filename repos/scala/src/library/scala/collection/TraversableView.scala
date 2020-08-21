@@ -25,8 +25,8 @@ object TraversableView {
   class NoBuilder[A] extends Builder[A, Nothing] {
     def +=(elem: A): this.type = this
     def iterator: Iterator[A] = Iterator.empty
-    def result() =
-      throw new UnsupportedOperationException("TraversableView.Builder.result")
+    def result() = throw new UnsupportedOperationException(
+      "TraversableView.Builder.result")
     def clear() {}
   }
   type Coll = TraversableView[_, C] forSome { type C <: Traversable[_] }

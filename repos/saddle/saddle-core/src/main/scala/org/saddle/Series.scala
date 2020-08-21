@@ -529,15 +529,15 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
     * @tparam Y The type of the resulting index
     * @tparam U The type of the resulting values
     */
-  def map[Y: ST: ORD, U: ST](f: ((X, T)) => (Y, U)): Series[Y, U] =
-    Series(toSeq.map(f): _*)
+  def map[Y: ST: ORD, U: ST](f: ((X, T)) => (Y, U)): Series[Y, U] = Series(
+    toSeq.map(f): _*)
 
   /**
     * Map and then flatten over the key-value pairs of the Series, resulting in a new Series.
     */
   def flatMap[Y: ST: ORD, U: ST](
-      f: ((X, T)) => Traversable[(Y, U)]): Series[Y, U] =
-    Series(toSeq.flatMap(f): _*)
+      f: ((X, T)) => Traversable[(Y, U)]): Series[Y, U] = Series(
+    toSeq.flatMap(f): _*)
 
   /**
     * Map over the values of the Series, resulting in a new Series. Applies a function
@@ -582,8 +582,8 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
     * Create a new Series whose key/value entries are sorted according to the values of the Series.
     * @param ev Implicit evidence of ordering for T
     */
-  def sorted(implicit ev: ORD[T]): Series[X, T] =
-    take(array.argsort(values.toArray))
+  def sorted(implicit ev: ORD[T]): Series[X, T] = take(
+    array.argsort(values.toArray))
 
   /**
     * Create a new Series whose key/value entries are sorted according to the keys (index values).
@@ -947,12 +947,11 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
   override def hashCode(): Int =
     values.hashCode() * 31 + index.hashCode()
 
-  override def equals(other: Any): Boolean =
-    other match {
-      case s: Series[_, _] =>
-        (this eq s) || (length == s.length) && index == s.index && values == s.values
-      case _ => false
-    }
+  override def equals(other: Any): Boolean = other match {
+    case s: Series[_, _] =>
+      (this eq s) || (length == s.length) && index == s.index && values == s.values
+    case _ => false
+  }
 
   override def toString: String = stringify()
 }

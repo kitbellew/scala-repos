@@ -115,8 +115,8 @@ object AdaptiveGradientDescent {
 
     import space._
     case class History(sumOfSquaredGradients: T)
-    def initialHistory(f: StochasticDiffFunction[T], init: T) =
-      History(zeroLike(init))
+    def initialHistory(f: StochasticDiffFunction[T], init: T) = History(
+      zeroLike(init))
     /*
     override def updateHistory(newX: T, newGrad: T, newValue: Double, oldState: State) = {
       val oldHistory = oldState.history

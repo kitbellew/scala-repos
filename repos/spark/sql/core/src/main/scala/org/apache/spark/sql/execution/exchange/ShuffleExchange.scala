@@ -244,25 +244,24 @@ object ShuffleExchange {
       case _ => sys.error(s"Exchange not implemented for $newPartitioning")
       // TODO: Handle BroadcastPartitioning.
     }
-    def getPartitionKeyExtractor(): InternalRow => Any =
-      newPartitioning match {
-        case RoundRobinPartitioning(numPartitions) =>
-          // Distributes elements evenly across output partitions, starting from a random partition.
-          var position =
-            new Random(TaskContext.get().partitionId()).nextInt(numPartitions)
-          (row: InternalRow) => {
-            // The HashPartitioner will handle the `mod` by the number of partitions
-            position += 1
-            position
-          }
-        case h: HashPartitioning =>
-          val projection = UnsafeProjection.create(
-            h.partitionIdExpression :: Nil,
-            outputAttributes)
-          row => projection(row).getInt(0)
-        case RangePartitioning(_, _) | SinglePartition => identity
-        case _                                         => sys.error(s"Exchange not implemented for $newPartitioning")
-      }
+    def getPartitionKeyExtractor(): InternalRow => Any = newPartitioning match {
+      case RoundRobinPartitioning(numPartitions) =>
+        // Distributes elements evenly across output partitions, starting from a random partition.
+        var position =
+          new Random(TaskContext.get().partitionId()).nextInt(numPartitions)
+        (row: InternalRow) => {
+          // The HashPartitioner will handle the `mod` by the number of partitions
+          position += 1
+          position
+        }
+      case h: HashPartitioning =>
+        val projection = UnsafeProjection.create(
+          h.partitionIdExpression :: Nil,
+          outputAttributes)
+        row => projection(row).getInt(0)
+      case RangePartitioning(_, _) | SinglePartition => identity
+      case _                                         => sys.error(s"Exchange not implemented for $newPartitioning")
+    }
     val rddWithPartitionIds: RDD[Product2[Int, InternalRow]] = {
       if (needToCopyObjectsBeforeShuffle(part, serializer)) {
         rdd.mapPartitionsInternal { iter =>

@@ -52,18 +52,17 @@ final class Matcher private[regex] (
     lastMatch ne null
   }
 
-  def find(): Boolean =
-    if (canStillFind) {
-      lastMatchIsValid = true
-      lastMatch = regexp.exec(inputstr)
-      if (lastMatch ne null) {
-        if (lastMatch(0).get.isEmpty)
-          regexp.lastIndex += 1
-      } else {
-        canStillFind = false
-      }
-      lastMatch ne null
-    } else false
+  def find(): Boolean = if (canStillFind) {
+    lastMatchIsValid = true
+    lastMatch = regexp.exec(inputstr)
+    if (lastMatch ne null) {
+      if (lastMatch(0).get.isEmpty)
+        regexp.lastIndex += 1
+    } else {
+      canStillFind = false
+    }
+    lastMatch ne null
+  } else false
 
   def find(start: Int): Boolean = {
     reset()

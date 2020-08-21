@@ -111,10 +111,9 @@ class FreeApplicativeTests extends CatsSuite {
     type Tracked[A] = State[String, A]
 
     val f: Foo ~> Tracked = new (Foo ~> Tracked) {
-      def apply[A](fa: Foo[A]): Tracked[A] =
-        State[String, A] { s0 =>
-          (s0 + fa.toString + ";", fa.getA)
-        }
+      def apply[A](fa: Foo[A]): Tracked[A] = State[String, A] { s0 =>
+        (s0 + fa.toString + ";", fa.getA)
+      }
     }
 
     val x: Dsl[Int] = FreeApplicative.lift(Bar(3))

@@ -46,8 +46,8 @@ class ScDocTagImpl(node: ASTNode)
 
   def getDataElements: Array[PsiElement] = getChildren
 
-  def getValueElement: PsiDocTagValue =
-    findChildByClass(classOf[PsiDocTagValue])
+  def getValueElement: PsiDocTagValue = findChildByClass(
+    classOf[PsiDocTagValue])
 
   override def getName: String =
     if (getNameElement != null) {

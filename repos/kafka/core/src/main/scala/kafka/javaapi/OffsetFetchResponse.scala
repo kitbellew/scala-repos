@@ -33,6 +33,6 @@ class OffsetFetchResponse(
 }
 
 object OffsetFetchResponse {
-  def readFrom(buffer: ByteBuffer) =
-    new OffsetFetchResponse(kafka.api.OffsetFetchResponse.readFrom(buffer))
+  def readFrom(buffer: ByteBuffer) = new OffsetFetchResponse(
+    kafka.api.OffsetFetchResponse.readFrom(buffer))
 }

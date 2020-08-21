@@ -86,16 +86,15 @@ class ScFunctionDefinitionImpl protected (
 
   override def toString: String = "ScFunctionDefinition: " + name
 
-  def returnTypeInner: TypeResult[ScType] =
-    returnTypeElement match {
-      case None if !hasAssign => Success(Unit, Some(this))
-      case None =>
-        body match {
-          case Some(b) => b.getType(TypingContext.empty)
-          case _       => Success(Unit, Some(this))
-        }
-      case Some(rte: ScTypeElement) => rte.getType(TypingContext.empty)
-    }
+  def returnTypeInner: TypeResult[ScType] = returnTypeElement match {
+    case None if !hasAssign => Success(Unit, Some(this))
+    case None =>
+      body match {
+        case Some(b) => b.getType(TypingContext.empty)
+        case _       => Success(Unit, Some(this))
+      }
+    case Some(rte: ScTypeElement) => rte.getType(TypingContext.empty)
+  }
 
   def body: Option[ScExpression] = {
     val stub = getStub
@@ -123,14 +122,13 @@ class ScFunctionDefinitionImpl protected (
     assignment.foreach(_.delete())
   }
 
-  override def getBody: FakePsiCodeBlock =
-    body match {
-      case Some(b) =>
-        new FakePsiCodeBlock(
-          b
-        ) // Needed so that LineBreakpoint.canAddLineBreakpoint allows line breakpoints on one-line method definitions
-      case None => null
-    }
+  override def getBody: FakePsiCodeBlock = body match {
+    case Some(b) =>
+      new FakePsiCodeBlock(
+        b
+      ) // Needed so that LineBreakpoint.canAddLineBreakpoint allows line breakpoints on one-line method definitions
+    case None => null
+  }
 
   override def accept(visitor: ScalaElementVisitor) {
     visitor.visitFunctionDefinition(this)

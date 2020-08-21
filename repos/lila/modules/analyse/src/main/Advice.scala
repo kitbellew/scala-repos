@@ -61,13 +61,12 @@ private[analyse] object CpAdvice {
   private val cpNags =
     List(300 -> Nag.Blunder, 100 -> Nag.Mistake, 50 -> Nag.Inaccuracy)
 
-  def apply(prev: Info, info: Info): Option[CpAdvice] =
-    for {
-      cp ← prev.score map (_.ceiled.centipawns)
-      infoCp ← info.score map (_.ceiled.centipawns)
-      delta = (infoCp - cp) |> { d => info.color.fold(-d, d) }
-      nag ← cpNags find { case (d, n) => d <= delta } map (_._2)
-    } yield CpAdvice(nag, info, prev)
+  def apply(prev: Info, info: Info): Option[CpAdvice] = for {
+    cp ← prev.score map (_.ceiled.centipawns)
+    infoCp ← info.score map (_.ceiled.centipawns)
+    delta = (infoCp - cp) |> { d => info.color.fold(-d, d) }
+    nag ← cpNags find { case (d, n) => d <= delta } map (_._2)
+  } yield CpAdvice(nag, info, prev)
 }
 
 private[analyse] sealed abstract class MateSequence(val desc: String)

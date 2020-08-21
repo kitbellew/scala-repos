@@ -132,9 +132,8 @@ object Splitter {
       (T1, T2, T3, T4, T5, T6, T7, T8, T9),
       (T1, T2, T3, T4, T5, T6, T7, T8),
       T9] {
-      def apply(i: Index[(T1, T2, T3, T4, T5, T6, T7, T8, T9)]) =
-        (
-          i.map(t => (t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8)),
-          i.map(_._9))
+      def apply(i: Index[(T1, T2, T3, T4, T5, T6, T7, T8, T9)]) = (
+        i.map(t => (t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8)),
+        i.map(_._9))
     }
 }

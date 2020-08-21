@@ -57,10 +57,9 @@ object ApplicationProvider {
   /**
     * Creates an ApplicationProvider that wraps an Application instance.
     */
-  def apply(application: Application) =
-    new ApplicationProvider {
-      val get: Try[Application] = Success(application)
-    }
+  def apply(application: Application) = new ApplicationProvider {
+    val get: Try[Application] = Success(application)
+  }
 
 }
 

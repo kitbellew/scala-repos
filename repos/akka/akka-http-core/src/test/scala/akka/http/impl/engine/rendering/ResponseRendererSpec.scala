@@ -725,9 +725,8 @@ class ResponseRendererSpec
           .utf8String -> wasCompleted
       }
 
-    override def currentTimeMillis() =
-      DateTime(2011, 8, 25, 9, 10,
-        29).clicks // provide a stable date for testing
+    override def currentTimeMillis() = DateTime(2011, 8, 25, 9, 10,
+      29).clicks // provide a stable date for testing
   }
 
   def source[T](elems: T*) = Source(elems.toList)

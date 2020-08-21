@@ -93,8 +93,9 @@ object TimeTest {
 
   object testParser extends BaseParsers {
     //def ws1:Parser[String] = """( |\t|\v)+""".r
-    def ws2: Parser[String] =
-      rep1(elem(' ') | elem('\t') | elem('\u000B')) ^^ { _.mkString }
+    def ws2: Parser[String] = rep1(elem(' ') | elem('\t') | elem('\u000B')) ^^ {
+      _.mkString
+    }
 
     def runParser(s: String, p: Parser[String], iterations: Int) {
       for (i <- 0 until iterations) {

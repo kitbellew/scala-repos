@@ -70,14 +70,13 @@ object DialogsDemo extends JFXApp {
     }
   }
 
-  def button[R](text: String, action: () => R) =
-    new Button(text) {
-      onAction = handle { action() }
-      alignmentInParent = Pos.Center
-      hgrow = Priority.Always
-      maxWidth = Double.MaxValue
-      padding = Insets(7)
-    }
+  def button[R](text: String, action: () => R) = new Button(text) {
+    onAction = handle { action() }
+    alignmentInParent = Pos.Center
+    hgrow = Priority.Always
+    maxWidth = Double.MaxValue
+    padding = Insets(7)
+  }
 
   def informationDialog(): Unit = {
     new Alert(AlertType.Information) {

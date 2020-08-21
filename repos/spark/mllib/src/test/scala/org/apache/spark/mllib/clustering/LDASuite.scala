@@ -238,21 +238,20 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
     val k = 2
     val vocabSize = 6
 
-    def docs: Array[(Long, Vector)] =
-      Array(
-        Vectors.sparse(
-          vocabSize,
-          Array(0, 1, 2),
-          Array(1, 1, 1)
-        ), // apple, orange, banana
-        Vectors.sparse(
-          vocabSize,
-          Array(3, 4, 5),
-          Array(1, 1, 1)
-        ) // tiger, cat, dog
-      ).zipWithIndex.map { case (wordCounts, docId) =>
-        (docId.toLong, wordCounts)
-      }
+    def docs: Array[(Long, Vector)] = Array(
+      Vectors.sparse(
+        vocabSize,
+        Array(0, 1, 2),
+        Array(1, 1, 1)
+      ), // apple, orange, banana
+      Vectors.sparse(
+        vocabSize,
+        Array(3, 4, 5),
+        Array(1, 1, 1)
+      ) // tiger, cat, dog
+    ).zipWithIndex.map { case (wordCounts, docId) =>
+      (docId.toLong, wordCounts)
+    }
     val corpus = sc.parallelize(docs, 2)
 
     // Set GammaShape large to avoid the stochastic impact.
@@ -651,35 +650,30 @@ private[clustering] object LDASuite {
 
   def tinyK: Int = 3
   def tinyVocabSize: Int = 5
-  def tinyTopicsAsArray: Array[Array[Double]] =
-    Array(
-      Array[Double](0.1, 0.2, 0.3, 0.4, 0.0), // topic 0
-      Array[Double](0.5, 0.05, 0.05, 0.1, 0.3), // topic 1
-      Array[Double](0.2, 0.2, 0.05, 0.05, 0.5) // topic 2
-    )
-  def tinyTopics: Matrix =
-    new DenseMatrix(
-      numRows = tinyVocabSize,
-      numCols = tinyK,
-      values = tinyTopicsAsArray.fold(Array.empty[Double])(_ ++ _))
+  def tinyTopicsAsArray: Array[Array[Double]] = Array(
+    Array[Double](0.1, 0.2, 0.3, 0.4, 0.0), // topic 0
+    Array[Double](0.5, 0.05, 0.05, 0.1, 0.3), // topic 1
+    Array[Double](0.2, 0.2, 0.05, 0.05, 0.5) // topic 2
+  )
+  def tinyTopics: Matrix = new DenseMatrix(
+    numRows = tinyVocabSize,
+    numCols = tinyK,
+    values = tinyTopicsAsArray.fold(Array.empty[Double])(_ ++ _))
   def tinyTopicDescription: Array[(Array[Int], Array[Double])] =
     tinyTopicsAsArray.map { topic =>
       val (termWeights, terms) = topic.zipWithIndex.sortBy(-_._1).unzip
       (terms.toArray, termWeights.toArray)
     }
 
-  def tinyCorpus: Array[(Long, Vector)] =
-    Array(
-      Vectors.dense(0, 0, 0, 0, 0), // empty doc
-      Vectors.dense(1, 3, 0, 2, 8),
-      Vectors.dense(0, 2, 1, 0, 4),
-      Vectors.dense(2, 3, 12, 3, 1),
-      Vectors.dense(0, 0, 0, 0, 0), // empty doc
-      Vectors.dense(0, 3, 1, 9, 8),
-      Vectors.dense(1, 1, 4, 2, 6)
-    ).zipWithIndex.map { case (wordCounts, docId) =>
-      (docId.toLong, wordCounts)
-    }
+  def tinyCorpus: Array[(Long, Vector)] = Array(
+    Vectors.dense(0, 0, 0, 0, 0), // empty doc
+    Vectors.dense(1, 3, 0, 2, 8),
+    Vectors.dense(0, 2, 1, 0, 4),
+    Vectors.dense(2, 3, 12, 3, 1),
+    Vectors.dense(0, 0, 0, 0, 0), // empty doc
+    Vectors.dense(0, 3, 1, 9, 8),
+    Vectors.dense(1, 1, 4, 2, 6)
+  ).zipWithIndex.map { case (wordCounts, docId) => (docId.toLong, wordCounts) }
   assert(
     tinyCorpus.forall(_._2.size == tinyVocabSize)
   ) // sanity check for test data
@@ -689,17 +683,14 @@ private[clustering] object LDASuite {
       Vectors.norm(wc, p = 1.0) != 0.0
     }
 
-  def toyData: Array[(Long, Vector)] =
-    Array(
-      Vectors.sparse(6, Array(0, 1), Array(1, 1)),
-      Vectors.sparse(6, Array(1, 2), Array(1, 1)),
-      Vectors.sparse(6, Array(0, 2), Array(1, 1)),
-      Vectors.sparse(6, Array(3, 4), Array(1, 1)),
-      Vectors.sparse(6, Array(3, 5), Array(1, 1)),
-      Vectors.sparse(6, Array(4, 5), Array(1, 1))
-    ).zipWithIndex.map { case (wordCounts, docId) =>
-      (docId.toLong, wordCounts)
-    }
+  def toyData: Array[(Long, Vector)] = Array(
+    Vectors.sparse(6, Array(0, 1), Array(1, 1)),
+    Vectors.sparse(6, Array(1, 2), Array(1, 1)),
+    Vectors.sparse(6, Array(0, 2), Array(1, 1)),
+    Vectors.sparse(6, Array(3, 4), Array(1, 1)),
+    Vectors.sparse(6, Array(3, 5), Array(1, 1)),
+    Vectors.sparse(6, Array(4, 5), Array(1, 1))
+  ).zipWithIndex.map { case (wordCounts, docId) => (docId.toLong, wordCounts) }
 
   /** Used in the Java Test Suite */
   def javaToyData: JArrayList[(java.lang.Long, Vector)] = {

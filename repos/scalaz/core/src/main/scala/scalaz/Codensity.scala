@@ -14,10 +14,9 @@ abstract class Codensity[F[_], A] { self =>
     flatMap(x => Codensity.pureCodensity(k(x)))
 
   /** `Codensity[F,_]` is a right Kan extension of `F` along itself. */
-  def toRan: Ran[F, F, A] =
-    new Ran[F, F, A] {
-      def apply[B](f: A => F[B]) = self(f)
-    }
+  def toRan: Ran[F, F, A] = new Ran[F, F, A] {
+    def apply[B](f: A => F[B]) = self(f)
+  }
 }
 
 object Codensity extends CodensityInstances {

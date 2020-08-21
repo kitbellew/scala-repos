@@ -57,15 +57,14 @@ final class OffsetRange private (
   /** Number of messages this OffsetRange refers to */
   def count(): Long = untilOffset - fromOffset
 
-  override def equals(obj: Any): Boolean =
-    obj match {
-      case that: OffsetRange =>
-        this.topic == that.topic &&
-          this.partition == that.partition &&
-          this.fromOffset == that.fromOffset &&
-          this.untilOffset == that.untilOffset
-      case _ => false
-    }
+  override def equals(obj: Any): Boolean = obj match {
+    case that: OffsetRange =>
+      this.topic == that.topic &&
+        this.partition == that.partition &&
+        this.fromOffset == that.fromOffset &&
+        this.untilOffset == that.untilOffset
+    case _ => false
+  }
 
   override def hashCode(): Int = {
     toTuple.hashCode()

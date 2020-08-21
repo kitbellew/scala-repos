@@ -43,12 +43,11 @@ trait Trees extends scala.reflect.internal.Trees { self: Global =>
 
   /** Factory method for a primary constructor super call `super.<init>(args_1)...(args_n)`
     */
-  def PrimarySuperCall(argss: List[List[Tree]]): Tree =
-    argss match {
-      case Nil => Apply(gen.mkSuperInitCall, Nil)
-      case xs :: rest =>
-        rest.foldLeft(Apply(gen.mkSuperInitCall, xs): Tree)(Apply.apply)
-    }
+  def PrimarySuperCall(argss: List[List[Tree]]): Tree = argss match {
+    case Nil => Apply(gen.mkSuperInitCall, Nil)
+    case xs :: rest =>
+      rest.foldLeft(Apply(gen.mkSuperInitCall, xs): Tree)(Apply.apply)
+  }
 
   /** Construct class definition with given class symbol, value parameters,
     *  supercall arguments and template body.
@@ -134,43 +133,38 @@ trait Trees extends scala.reflect.internal.Trees { self: Global =>
       new SelectFromArray(qualifier, selector, erasure).copyAttrs(tree)
     def InjectDerivedValue(tree: Tree, arg: Tree) =
       new InjectDerivedValue(arg).copyAttrs(tree)
-    def TypeTreeWithDeferredRefCheck(tree: Tree) =
-      tree match {
-        case dc @ TypeTreeWithDeferredRefCheck() =>
-          new TypeTreeWithDeferredRefCheck()(dc.check).copyAttrs(tree)
-      }
+    def TypeTreeWithDeferredRefCheck(tree: Tree) = tree match {
+      case dc @ TypeTreeWithDeferredRefCheck() =>
+        new TypeTreeWithDeferredRefCheck()(dc.check).copyAttrs(tree)
+    }
   }
 
   class LazyTreeCopier extends super.LazyTreeCopier with TreeCopier {
-    def DocDef(tree: Tree, comment: DocComment, definition: Tree) =
-      tree match {
-        case t @ DocDef(comment0, definition0)
-            if (comment0 == comment) && (definition0 == definition) =>
-          t
-        case _ => this.treeCopy.DocDef(tree, comment, definition)
-      }
+    def DocDef(tree: Tree, comment: DocComment, definition: Tree) = tree match {
+      case t @ DocDef(comment0, definition0)
+          if (comment0 == comment) && (definition0 == definition) =>
+        t
+      case _ => this.treeCopy.DocDef(tree, comment, definition)
+    }
     def SelectFromArray(
         tree: Tree,
         qualifier: Tree,
         selector: Name,
-        erasure: Type) =
-      tree match {
-        case t @ SelectFromArray(qualifier0, selector0, _)
-            if (qualifier0 == qualifier) && (selector0 == selector) =>
-          t
-        case _ =>
-          this.treeCopy.SelectFromArray(tree, qualifier, selector, erasure)
-      }
-    def InjectDerivedValue(tree: Tree, arg: Tree) =
-      tree match {
-        case t @ InjectDerivedValue(arg0) if (arg0 == arg) => t
-        case _                                             => this.treeCopy.InjectDerivedValue(tree, arg)
-      }
-    def TypeTreeWithDeferredRefCheck(tree: Tree) =
-      tree match {
-        case t @ TypeTreeWithDeferredRefCheck() => t
-        case _                                  => this.treeCopy.TypeTreeWithDeferredRefCheck(tree)
-      }
+        erasure: Type) = tree match {
+      case t @ SelectFromArray(qualifier0, selector0, _)
+          if (qualifier0 == qualifier) && (selector0 == selector) =>
+        t
+      case _ =>
+        this.treeCopy.SelectFromArray(tree, qualifier, selector, erasure)
+    }
+    def InjectDerivedValue(tree: Tree, arg: Tree) = tree match {
+      case t @ InjectDerivedValue(arg0) if (arg0 == arg) => t
+      case _                                             => this.treeCopy.InjectDerivedValue(tree, arg)
+    }
+    def TypeTreeWithDeferredRefCheck(tree: Tree) = tree match {
+      case t @ TypeTreeWithDeferredRefCheck() => t
+      case _                                  => this.treeCopy.TypeTreeWithDeferredRefCheck(tree)
+    }
   }
 
   class Transformer extends super.Transformer {
@@ -193,26 +187,23 @@ trait Trees extends scala.reflect.internal.Trees { self: Global =>
 
   override protected def xtransform(
       transformer: super.Transformer,
-      tree: Tree): Tree =
-    tree match {
-      case DocDef(comment, definition) =>
-        transformer.treeCopy.DocDef(
-          tree,
-          comment,
-          transformer.transform(definition))
-      case SelectFromArray(qualifier, selector, erasure) =>
-        transformer.treeCopy.SelectFromArray(
-          tree,
-          transformer.transform(qualifier),
-          selector,
-          erasure)
-      case InjectDerivedValue(arg) =>
-        transformer.treeCopy.InjectDerivedValue(
-          tree,
-          transformer.transform(arg))
-      case TypeTreeWithDeferredRefCheck() =>
-        transformer.treeCopy.TypeTreeWithDeferredRefCheck(tree)
-    }
+      tree: Tree): Tree = tree match {
+    case DocDef(comment, definition) =>
+      transformer.treeCopy.DocDef(
+        tree,
+        comment,
+        transformer.transform(definition))
+    case SelectFromArray(qualifier, selector, erasure) =>
+      transformer.treeCopy.SelectFromArray(
+        tree,
+        transformer.transform(qualifier),
+        selector,
+        erasure)
+    case InjectDerivedValue(arg) =>
+      transformer.treeCopy.InjectDerivedValue(tree, transformer.transform(arg))
+    case TypeTreeWithDeferredRefCheck() =>
+      transformer.treeCopy.TypeTreeWithDeferredRefCheck(tree)
+  }
 
   object resetPos extends Traverser {
     override def traverse(t: Tree) {

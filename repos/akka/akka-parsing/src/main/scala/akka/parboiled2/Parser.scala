@@ -288,9 +288,8 @@ abstract class Parser(
   /**
     * THIS IS NOT PUBLIC API and might become hidden in future. Use only if you know what you are doing!
     */
-  def __saveState: Mark =
-    new Mark(
-      (_cursor.toLong << 32) + (_cursorChar.toLong << 16) + valueStack.size)
+  def __saveState: Mark = new Mark(
+    (_cursor.toLong << 32) + (_cursorChar.toLong << 16) + valueStack.size)
 
   /**
     * THIS IS NOT PUBLIC API and might become hidden in future. Use only if you know what you are doing!
@@ -313,8 +312,8 @@ abstract class Parser(
   /**
     * THIS IS NOT PUBLIC API and might become hidden in future. Use only if you know what you are doing!
     */
-  def __exitNotPredicate(saved: AnyRef): Unit =
-    phase = saved.asInstanceOf[ErrorAnalysisPhase]
+  def __exitNotPredicate(saved: AnyRef): Unit = phase =
+    saved.asInstanceOf[ErrorAnalysisPhase]
 
   /**
     * THIS IS NOT PUBLIC API and might become hidden in future. Use only if you know what you are doing!
@@ -666,9 +665,8 @@ object Parser {
       var currentAtomicStart: Int = Int.MinValue,
       var maxAtomicErrorStart: Int = Int.MinValue)
       extends ErrorAnalysisPhase {
-    def reportedErrorIndex =
-      if (maxAtomicErrorStart >= 0) maxAtomicErrorStart
-      else _principalErrorIndex
+    def reportedErrorIndex = if (maxAtomicErrorStart >= 0) maxAtomicErrorStart
+    else _principalErrorIndex
     def applyOffset(offset: Int) = {
       _principalErrorIndex -= offset
       if (currentAtomicStart != Int.MinValue) currentAtomicStart -= offset

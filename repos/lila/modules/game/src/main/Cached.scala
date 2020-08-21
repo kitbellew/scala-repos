@@ -19,8 +19,8 @@ final class Cached(mongoCache: MongoCache.Builder, defaultTtl: FiniteDuration) {
   def clearNbImportedByCache(userId: String) =
     count.remove(Query imported userId)
 
-  def nbPlaying(userId: String): Fu[Int] =
-    countShortTtl(Query nowPlaying userId)
+  def nbPlaying(userId: String): Fu[Int] = countShortTtl(
+    Query nowPlaying userId)
 
   private implicit val userHandler = User.userBSONHandler
 

@@ -31,8 +31,8 @@ class ScalaFunctionalTestSpec extends ExampleSpecification {
   case class Computer(name: String, introduced: Option[String])
 
   object Computer {
-    def findById(id: Int): Option[Computer] =
-      Some(Computer("Macintosh", Some("1984-01-24")))
+    def findById(id: Int): Option[Computer] = Some(
+      Computer("Macintosh", Some("1984-01-24")))
   }
 
   "Scala Functional Test" should {
@@ -83,12 +83,11 @@ class ScalaFunctionalTestSpec extends ExampleSpecification {
     // #scalafunctionaltest-testmodel
 
     // #scalafunctionaltest-testwithbrowser
-    def applicationWithBrowser =
-      new GuiceApplicationBuilder()
-        .router(Router.from {
-          case GET(p"/") =>
-            Action {
-              Ok("""
+    def applicationWithBrowser = new GuiceApplicationBuilder()
+      .router(Router.from {
+        case GET(p"/") =>
+          Action {
+            Ok("""
               |<html>
               |<body>
               |  <div id="title">Hello Guest</div>
@@ -96,19 +95,19 @@ class ScalaFunctionalTestSpec extends ExampleSpecification {
               |</body>
               |</html>
             """.stripMargin) as "text/html"
-            }
-          case GET(p"/login") =>
-            Action {
-              Ok("""
+          }
+        case GET(p"/login") =>
+          Action {
+            Ok("""
               |<html>
               |<body>
               |  <div id="title">Hello Coco</div>
               |</body>
               |</html>
             """.stripMargin) as "text/html"
-            }
-        })
-        .build()
+          }
+      })
+      .build()
 
     "run in a browser" in new WithBrowser(
       webDriver = WebDriverFactory(HTMLUNIT),

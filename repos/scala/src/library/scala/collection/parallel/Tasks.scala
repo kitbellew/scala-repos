@@ -92,10 +92,9 @@ trait Tasks {
   private[parallel] val debugMessages =
     scala.collection.mutable.ArrayBuffer[String]()
 
-  private[parallel] def debuglog(s: String) =
-    synchronized {
-      debugMessages += s
-    }
+  private[parallel] def debuglog(s: String) = synchronized {
+    debugMessages += s
+  }
 
   trait WrappedTask[R, +Tp] {
 
@@ -155,14 +154,13 @@ trait AdaptiveWorkStealingTasks extends Tasks {
 
     def split: Seq[WrappedTask[R, Tp]]
 
-    def compute() =
-      if (body.shouldSplitFurther) {
-        internal()
-        release()
-      } else {
-        body.tryLeaf(None)
-        release()
-      }
+    def compute() = if (body.shouldSplitFurther) {
+      internal()
+      release()
+    } else {
+      body.tryLeaf(None)
+      release()
+    }
 
     def internal() = {
       var last = spawnSubtasks()
@@ -232,37 +230,34 @@ trait ThreadPoolTasks extends Tasks {
     @volatile var owned = false
     @volatile var completed = false
 
-    def start() =
-      synchronized {
-        // debuglog("Starting " + body)
-        // utb: future = executor.submit(this)
-        executor.synchronized {
-          incrTasks()
-          executor.submit(this)
+    def start() = synchronized {
+      // debuglog("Starting " + body)
+      // utb: future = executor.submit(this)
+      executor.synchronized {
+        incrTasks()
+        executor.submit(this)
+      }
+    }
+    def sync() = synchronized {
+      // debuglog("Syncing on " + body)
+      // utb: future.get()
+      executor.synchronized {
+        val coresize = executor.getCorePoolSize
+        if (coresize < totaltasks) {
+          executor.setCorePoolSize(coresize + 1)
+          //assert(executor.getCorePoolSize == (coresize + 1))
         }
       }
-    def sync() =
-      synchronized {
-        // debuglog("Syncing on " + body)
-        // utb: future.get()
-        executor.synchronized {
-          val coresize = executor.getCorePoolSize
-          if (coresize < totaltasks) {
-            executor.setCorePoolSize(coresize + 1)
-            //assert(executor.getCorePoolSize == (coresize + 1))
-          }
-        }
-        while (!completed) this.wait
-      }
-    def tryCancel() =
-      synchronized {
-        // utb: future.cancel(false)
-        if (!owned) {
-          // debuglog("Cancelling " + body)
-          owned = true
-          true
-        } else false
-      }
+      while (!completed) this.wait
+    }
+    def tryCancel() = synchronized {
+      // utb: future.cancel(false)
+      if (!owned) {
+        // debuglog("Cancelling " + body)
+        owned = true
+        true
+      } else false
+    }
     def run() = {
       // utb: compute
       var isOkToRun = false
@@ -280,15 +275,14 @@ trait ThreadPoolTasks extends Tasks {
         // debuglog("skipping body of " + body)
       }
     }
-    override def release() =
-      synchronized {
-        //println("releasing: " + this + ", body: " + this.body)
-        completed = true
-        executor.synchronized {
-          decrTasks()
-        }
-        this.notifyAll
+    override def release() = synchronized {
+      //println("releasing: " + this + ", body: " + this.body)
+      completed = true
+      executor.synchronized {
+        decrTasks()
       }
+      this.notifyAll
+    }
   }
 
   protected def newWrappedTask[R, Tp](b: Task[R, Tp]): WrappedTask[R, Tp]
@@ -298,15 +292,13 @@ trait ThreadPoolTasks extends Tasks {
   def queue = executor.getQueue.asInstanceOf[LinkedBlockingQueue[Runnable]]
   @volatile var totaltasks = 0
 
-  private def incrTasks() =
-    synchronized {
-      totaltasks += 1
-    }
+  private def incrTasks() = synchronized {
+    totaltasks += 1
+  }
 
-  private def decrTasks() =
-    synchronized {
-      totaltasks -= 1
-    }
+  private def decrTasks() = synchronized {
+    totaltasks -= 1
+  }
 
   def execute[R, Tp](task: Task[R, Tp]): () => R = {
     val t = newWrappedTask(task)

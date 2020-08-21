@@ -18,8 +18,7 @@ object Highlight {
     else
       None
   }
-  def bold(s: String) =
-    if (ConsoleLogger.formatEnabled)
-      BOLD + s.replace(RESET, RESET + BOLD) + RESET
-    else s
+  def bold(s: String) = if (ConsoleLogger.formatEnabled)
+    BOLD + s.replace(RESET, RESET + BOLD) + RESET
+  else s
 }

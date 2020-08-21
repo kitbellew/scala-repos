@@ -66,9 +66,8 @@ class SpecializeParameters extends Phase {
   }
 
   /** Create a function that calls an extractor for a value and compares the result with a fixed value. */
-  def compare(f: (Any => Any), v: Any) =
-    new (Any => Boolean) {
-      def apply(param: Any) = v == f(param)
-      override def toString = s"$f(...) == $v"
-    }
+  def compare(f: (Any => Any), v: Any) = new (Any => Boolean) {
+    def apply(param: Any) = v == f(param)
+    override def toString = s"$f(...) == $v"
+  }
 }

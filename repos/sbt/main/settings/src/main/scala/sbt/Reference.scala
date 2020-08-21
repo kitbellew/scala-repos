@@ -99,20 +99,18 @@ object Reference {
       case ProjectRef(uri, id) => "{" + uri + "}" + id
     }
 
-  def buildURI(ref: ResolvedReference): URI =
-    ref match {
-      case BuildRef(b)      => b
-      case ProjectRef(b, _) => b
-    }
+  def buildURI(ref: ResolvedReference): URI = ref match {
+    case BuildRef(b)      => b
+    case ProjectRef(b, _) => b
+  }
 
   /** Extracts the build URI from a Reference if one has been explicitly defined. */
-  def uri(ref: Reference): Option[URI] =
-    ref match {
-      case RootProject(b)   => Some(b)
-      case ProjectRef(b, _) => Some(b)
-      case BuildRef(b)      => Some(b)
-      case _                => None
-    }
+  def uri(ref: Reference): Option[URI] = ref match {
+    case RootProject(b)   => Some(b)
+    case ProjectRef(b, _) => Some(b)
+    case BuildRef(b)      => Some(b)
+    case _                => None
+  }
 
   @deprecated("Explicitly wrap the URI in a call to RootProject.", "0.13.0")
   implicit def uriToRef(u: URI): ProjectReference = RootProject(u)

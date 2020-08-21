@@ -19,29 +19,27 @@ final class Api(
     blocks: (String, String) => Fu[Boolean],
     bus: lila.common.Bus) {
 
-  def inbox(me: User, page: Int): Fu[Paginator[Thread]] =
-    Paginator(
-      adapter = new Adapter(
-        selector = ThreadRepo visibleByUserQuery me.id,
-        sort = Seq(ThreadRepo.recentSort)
-      ),
-      currentPage = page,
-      maxPerPage = maxPerPage
-    )
+  def inbox(me: User, page: Int): Fu[Paginator[Thread]] = Paginator(
+    adapter = new Adapter(
+      selector = ThreadRepo visibleByUserQuery me.id,
+      sort = Seq(ThreadRepo.recentSort)
+    ),
+    currentPage = page,
+    maxPerPage = maxPerPage
+  )
 
-  def preview(userId: String): Fu[List[Thread]] =
-    unreadCache(userId) flatMap { ids =>
+  def preview(userId: String): Fu[List[Thread]] = unreadCache(userId) flatMap {
+    ids =>
       $find byOrderedIds ids
-    }
+  }
 
-  def thread(id: String, me: User): Fu[Option[Thread]] =
-    for {
-      threadOption ← $find.byId(id) map (_ filter (_ hasUser me))
-      _ ←
-        threadOption
-          .filter(_ isUnReadBy me)
-          .??(thread => (ThreadRepo setRead thread) >>- updateUser(me))
-    } yield threadOption
+  def thread(id: String, me: User): Fu[Option[Thread]] = for {
+    threadOption ← $find.byId(id) map (_ filter (_ hasUser me))
+    _ ←
+      threadOption
+        .filter(_ isUnReadBy me)
+        .??(thread => (ThreadRepo setRead thread) >>- updateUser(me))
+  } yield threadOption
 
   def markThreadAsRead(id: String, me: User): Funit = thread(id, me).void
 
@@ -69,14 +67,13 @@ final class Api(
     }
   }
 
-  def lichessThread(lt: LichessThread): Funit =
-    sendUnlessBlocked(
-      Thread.make(
-        name = lt.subject,
-        text = lt.message,
-        creatorId = lt.from,
-        invitedId = lt.to),
-      fromMod = false) >> unreadCache.clear(lt.to)
+  def lichessThread(lt: LichessThread): Funit = sendUnlessBlocked(
+    Thread.make(
+      name = lt.subject,
+      text = lt.message,
+      creatorId = lt.from,
+      invitedId = lt.to),
+    fromMod = false) >> unreadCache.clear(lt.to)
 
   private def sendUnlessBlocked(thread: Thread, fromMod: Boolean): Funit =
     if (fromMod) $insert(thread)

@@ -11,8 +11,8 @@ import scala.collection.JavaConverters._
 class SetMapConsistencyTest {
 
   trait MapBox[A] {
-    protected def oor(s: String, n: Int) =
-      throw new IllegalArgumentException(s"Out of range for $s: $n")
+    protected def oor(s: String, n: Int) = throw new IllegalArgumentException(
+      s"Out of range for $s: $n")
     def title: String
     def adders: Int
     def add(n: Int, a: A, v: Int): Unit
@@ -53,13 +53,12 @@ class SetMapConsistencyTest {
       }
     }
     def getters: Int = 3
-    def get(n: Int, a: A) =
-      n match {
-        case 0 => m.get(a).getOrElse(-1)
-        case 1 => if (m contains a) m(a) else -1
-        case 2 => m.getOrElse(a, -1)
-        case _ => oor("get", n)
-      }
+    def get(n: Int, a: A) = n match {
+      case 0 => m.get(a).getOrElse(-1)
+      case 1 => if (m contains a) m(a) else -1
+      case 2 => m.getOrElse(a, -1)
+      case _ => oor("get", n)
+    }
     def fiddlers: Int = 0
     def fiddle(n: Int) { oor("fiddle", n) }
     def keys = m.keysIterator
@@ -67,88 +66,78 @@ class SetMapConsistencyTest {
     override def toString = m.toString
   }
 
-  def boxMlm[A] =
-    new BoxMutableMap[A, cm.ListMap[A, Int]](
-      new cm.ListMap[A, Int],
-      "mutable.ListMap")
+  def boxMlm[A] = new BoxMutableMap[A, cm.ListMap[A, Int]](
+    new cm.ListMap[A, Int],
+    "mutable.ListMap")
 
-  def boxMhm[A] =
-    new BoxMutableMap[A, cm.HashMap[A, Int]](
-      new cm.HashMap[A, Int],
-      "mutable.HashMap")
+  def boxMhm[A] = new BoxMutableMap[A, cm.HashMap[A, Int]](
+    new cm.HashMap[A, Int],
+    "mutable.HashMap")
 
-  def boxMohm[A] =
-    new BoxMutableMap[A, cm.OpenHashMap[A, Int]](
-      new cm.OpenHashMap[A, Int],
-      "mutable.OpenHashMap")
+  def boxMohm[A] = new BoxMutableMap[A, cm.OpenHashMap[A, Int]](
+    new cm.OpenHashMap[A, Int],
+    "mutable.OpenHashMap")
 
-  def boxMtm[A: Ordering] =
-    new BoxMutableMap[A, cm.TreeMap[A, Int]](
-      new cm.TreeMap[A, Int],
-      "mutable.TreeMap")
+  def boxMtm[A: Ordering] = new BoxMutableMap[A, cm.TreeMap[A, Int]](
+    new cm.TreeMap[A, Int],
+    "mutable.TreeMap")
 
-  def boxMarm[A <: AnyRef] =
-    new BoxMutableMap[A, cm.AnyRefMap[A, Int]](
-      new cm.AnyRefMap[A, Int](_ => -1),
-      "mutable.AnyRefMap") {
-      private def arm: cm.AnyRefMap[A, Int] =
-        m.asInstanceOf[cm.AnyRefMap[A, Int]]
-      override def adders = 3
-      override def subbers = 1
-      override def getters: Int = 4
-      override def get(n: Int, a: A) =
-        n match {
-          case 0 => m.get(a).getOrElse(-1)
-          case 1 => m(a)
-          case 2 => m.getOrElse(a, -1)
-          case 3 =>
-            val x = arm.getOrNull(a); if (x == 0 && !(arm contains a)) -1 else x
-          case _ => oor("get", n)
-        }
-      override def fiddlers = 2
-      override def fiddle(n: Int) {
-        n match {
-          case 0 => m = arm.clone
-          case 1 => arm.repack
-          case _ => oor("fiddle", n)
-        }
+  def boxMarm[A <: AnyRef] = new BoxMutableMap[A, cm.AnyRefMap[A, Int]](
+    new cm.AnyRefMap[A, Int](_ => -1),
+    "mutable.AnyRefMap") {
+    private def arm: cm.AnyRefMap[A, Int] = m.asInstanceOf[cm.AnyRefMap[A, Int]]
+    override def adders = 3
+    override def subbers = 1
+    override def getters: Int = 4
+    override def get(n: Int, a: A) = n match {
+      case 0 => m.get(a).getOrElse(-1)
+      case 1 => m(a)
+      case 2 => m.getOrElse(a, -1)
+      case 3 =>
+        val x = arm.getOrNull(a); if (x == 0 && !(arm contains a)) -1 else x
+      case _ => oor("get", n)
+    }
+    override def fiddlers = 2
+    override def fiddle(n: Int) {
+      n match {
+        case 0 => m = arm.clone
+        case 1 => arm.repack
+        case _ => oor("fiddle", n)
       }
     }
+  }
 
-  def boxMjm =
-    new BoxMutableMap[Long, cm.LongMap[Int]](
-      new cm.LongMap[Int](_ => -1),
-      "mutable.LongMap") {
-      private def lm: cm.LongMap[Int] = m.asInstanceOf[cm.LongMap[Int]]
-      override def adders = 3
-      override def subbers = 1
-      override def getters: Int = 4
-      override def get(n: Int, a: Long) =
-        n match {
-          case 0 => m.get(a).getOrElse(-1)
-          case 1 => m(a)
-          case 2 => m.getOrElse(a, -1)
-          case 3 =>
-            val x = lm.getOrNull(a); if (x == 0 && !(lm contains a)) -1 else x
-          case _ => oor("get", n)
-        }
-      override def fiddlers = 2
-      override def fiddle(n: Int) {
-        n match {
-          case 0 => m = lm.clone
-          case 1 => lm.repack
-          case _ => oor("fiddle", n)
-        }
+  def boxMjm = new BoxMutableMap[Long, cm.LongMap[Int]](
+    new cm.LongMap[Int](_ => -1),
+    "mutable.LongMap") {
+    private def lm: cm.LongMap[Int] = m.asInstanceOf[cm.LongMap[Int]]
+    override def adders = 3
+    override def subbers = 1
+    override def getters: Int = 4
+    override def get(n: Int, a: Long) = n match {
+      case 0 => m.get(a).getOrElse(-1)
+      case 1 => m(a)
+      case 2 => m.getOrElse(a, -1)
+      case 3 =>
+        val x = lm.getOrNull(a); if (x == 0 && !(lm contains a)) -1 else x
+      case _ => oor("get", n)
+    }
+    override def fiddlers = 2
+    override def fiddle(n: Int) {
+      n match {
+        case 0 => m = lm.clone
+        case 1 => lm.repack
+        case _ => oor("fiddle", n)
       }
     }
+  }
 
-  def boxJavaM[A] =
-    new BoxMutableMap[A, cm.Map[A, Int]](
-      (new java.util.HashMap[A, Int]).asScala,
-      "java.util.HashMap") {
-      override def adders = 3
-      override def subbers = 1
-    }
+  def boxJavaM[A] = new BoxMutableMap[A, cm.Map[A, Int]](
+    (new java.util.HashMap[A, Int]).asScala,
+    "java.util.HashMap") {
+    override def adders = 3
+    override def subbers = 1
+  }
 
   // Immutable map wrappers
 
@@ -173,13 +162,12 @@ class SetMapConsistencyTest {
       }
     }
     def getters: Int = 3
-    def get(n: Int, a: A) =
-      n match {
-        case 0 => m.get(a).getOrElse(-1)
-        case 1 => if (m contains a) m(a) else -1
-        case 2 => m.getOrElse(a, -1)
-        case _ => oor("get", n)
-      }
+    def get(n: Int, a: A) = n match {
+      case 0 => m.get(a).getOrElse(-1)
+      case 1 => if (m contains a) m(a) else -1
+      case 2 => m.getOrElse(a, -1)
+      case _ => oor("get", n)
+    }
     def fiddlers: Int = 0
     def fiddle(n: Int) { oor("fiddle", n) }
     def keys = m.keysIterator
@@ -187,30 +175,25 @@ class SetMapConsistencyTest {
     override def toString = m.toString
   }
 
-  def boxIhm[A] =
-    new BoxImmutableMap[A, ci.HashMap[A, Int]](
-      new ci.HashMap[A, Int],
-      "immutable.HashMap")
+  def boxIhm[A] = new BoxImmutableMap[A, ci.HashMap[A, Int]](
+    new ci.HashMap[A, Int],
+    "immutable.HashMap")
 
-  def boxIim =
-    new BoxImmutableMap[Int, ci.IntMap[Int]](
-      ci.IntMap.empty[Int],
-      "immutable.IntMap")
+  def boxIim = new BoxImmutableMap[Int, ci.IntMap[Int]](
+    ci.IntMap.empty[Int],
+    "immutable.IntMap")
 
-  def boxIjm =
-    new BoxImmutableMap[Long, ci.LongMap[Int]](
-      ci.LongMap.empty[Int],
-      "immutable.LongMap")
+  def boxIjm = new BoxImmutableMap[Long, ci.LongMap[Int]](
+    ci.LongMap.empty[Int],
+    "immutable.LongMap")
 
-  def boxIlm[A] =
-    new BoxImmutableMap[A, ci.ListMap[A, Int]](
-      new ci.ListMap[A, Int],
-      "immutable.ListMap")
+  def boxIlm[A] = new BoxImmutableMap[A, ci.ListMap[A, Int]](
+    new ci.ListMap[A, Int],
+    "immutable.ListMap")
 
-  def boxItm[A: Ordering] =
-    new BoxImmutableMap[A, ci.TreeMap[A, Int]](
-      new ci.TreeMap[A, Int],
-      "immutable.TreeMap")
+  def boxItm[A: Ordering] = new BoxImmutableMap[A, ci.TreeMap[A, Int]](
+    new ci.TreeMap[A, Int],
+    "immutable.TreeMap")
 
   // Mutable set wrappers placed into the same framework (everything returns 0)
 
@@ -256,13 +239,12 @@ class SetMapConsistencyTest {
   def boxMts[A: Ordering] =
     new BoxMutableSet[A, cm.TreeSet[A]](new cm.TreeSet[A], "mutable.TreeSet")
 
-  def boxJavaS[A] =
-    new BoxMutableSet[A, cm.Set[A]](
-      (new java.util.HashSet[A]).asScala,
-      "java.util.HashSet") {
-      override def adders = 3
-      override def subbers = 1
-    }
+  def boxJavaS[A] = new BoxMutableSet[A, cm.Set[A]](
+    (new java.util.HashSet[A]).asScala,
+    "java.util.HashSet") {
+    override def adders = 3
+    override def subbers = 1
+  }
 
   // Immutable set wrappers placed into the same framework (everything returns 0)
 
@@ -298,20 +280,17 @@ class SetMapConsistencyTest {
   def boxIbs =
     new BoxImmutableSet[Int, ci.BitSet](ci.BitSet.empty, "immutable.BitSet")
 
-  def boxIhs[A] =
-    new BoxImmutableSet[A, ci.HashSet[A]](
-      ci.HashSet.empty[A],
-      "mutable.HashSet")
+  def boxIhs[A] = new BoxImmutableSet[A, ci.HashSet[A]](
+    ci.HashSet.empty[A],
+    "mutable.HashSet")
 
-  def boxIls[A] =
-    new BoxImmutableSet[A, ci.ListSet[A]](
-      ci.ListSet.empty[A],
-      "mutable.ListSet")
+  def boxIls[A] = new BoxImmutableSet[A, ci.ListSet[A]](
+    ci.ListSet.empty[A],
+    "mutable.ListSet")
 
-  def boxIts[A: Ordering] =
-    new BoxImmutableSet[A, ci.TreeSet[A]](
-      ci.TreeSet.empty[A],
-      "mutable.TreeSet")
+  def boxIts[A: Ordering] = new BoxImmutableSet[A, ci.TreeSet[A]](
+    ci.TreeSet.empty[A],
+    "mutable.TreeSet")
 
   // Random operations on maps
   def churn[A](

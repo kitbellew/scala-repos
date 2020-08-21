@@ -65,8 +65,8 @@ class ReflectionTupleConverter[T](fields: Fields)(implicit m: Manifest[T])
 
   def lowerFirst(s: String) = s.substring(0, 1).toLowerCase + s.substring(1)
   // Cut out "set" and lower case the first after
-  def setterToFieldName(setter: Method) =
-    lowerFirst(setter.getName.substring(3))
+  def setterToFieldName(setter: Method) = lowerFirst(
+    setter.getName.substring(3))
 
   /* The `_.get` is safe because of the `_.isEmpty` check.  ScalaTest does not
    * seem to support a more type safe way of doing this.
@@ -84,11 +84,10 @@ class ReflectionTupleConverter[T](fields: Fields)(implicit m: Manifest[T])
   }
   validate
 
-  def getSetters =
-    m.runtimeClass.getDeclaredMethods
-      .filter { _.getName.startsWith("set") }
-      .groupBy { setterToFieldName(_) }
-      .mapValues { _.head }
+  def getSetters = m.runtimeClass.getDeclaredMethods
+    .filter { _.getName.startsWith("set") }
+    .groupBy { setterToFieldName(_) }
+    .mapValues { _.head }
 
   // Do all the reflection for the setters we need:
   // This needs to be lazy because Method is not serializable
@@ -120,11 +119,10 @@ class OrderedConstructorConverter[T](fields: Fields)(implicit mf: Manifest[T])
   override val arity = fields.size
   // Keep this as a method, so we can validate by calling, but don't serialize it, and keep it lazy
   // below
-  def getConstructor =
-    mf.runtimeClass.getConstructors
-      .filter { _.getParameterTypes.size == fields.size }
-      .head
-      .asInstanceOf[Constructor[T]]
+  def getConstructor = mf.runtimeClass.getConstructors
+    .filter { _.getParameterTypes.size == fields.size }
+    .head
+    .asInstanceOf[Constructor[T]]
 
   //Make sure we can actually get a constructor:
   getConstructor

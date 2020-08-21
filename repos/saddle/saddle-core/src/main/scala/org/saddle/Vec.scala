@@ -494,21 +494,20 @@ trait Vec[@spec(Boolean, Int, Long, Double) T]
     *
     * NB: to avoid boxing, is overwritten in child classes
     */
-  override def equals(o: Any): Boolean =
-    o match {
-      case rv: Vec[_] =>
-        (this eq rv) || (this.length == rv.length) && {
-          var i = 0
-          var eq = true
-          while (eq && i < this.length) {
-            eq &&= (apply(i) == rv(i) || this.scalarTag.isMissing(
-              apply(i)) && rv.scalarTag.isMissing(rv(i)))
-            i += 1
-          }
-          eq
+  override def equals(o: Any): Boolean = o match {
+    case rv: Vec[_] =>
+      (this eq rv) || (this.length == rv.length) && {
+        var i = 0
+        var eq = true
+        while (eq && i < this.length) {
+          eq &&= (apply(i) == rv(i) || this.scalarTag.isMissing(
+            apply(i)) && rv.scalarTag.isMissing(rv(i)))
+          i += 1
         }
-      case _ => false
-    }
+        eq
+      }
+    case _ => false
+  }
 
   /**
     * Creates a string representation of Vec
@@ -531,9 +530,9 @@ trait Vec[@spec(Boolean, Int, Long, Double) T]
         .map(scalarTag.show(_))
         .foldLeft(0)(maxf)
 
-      def createRow(r: Int): String =
-        ("%" + { if (vlen > 0) vlen else 1 } + "s\n")
-          .format(scalarTag.show(apply(r)))
+      def createRow(r: Int): String = ("%" + {
+        if (vlen > 0) vlen else 1
+      } + "s\n").format(scalarTag.show(apply(r)))
       buf append util.buildStr(len, length, createRow, " ... \n")
     }
 

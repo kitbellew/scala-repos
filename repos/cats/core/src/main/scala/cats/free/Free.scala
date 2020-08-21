@@ -82,28 +82,26 @@ sealed abstract class Free[S[_], A] extends Product with Serializable {
 
   /** Takes one evaluation step in the Free monad, re-associating left-nested binds in the process. */
   @tailrec
-  final def step: Free[S, A] =
-    this match {
-      case Gosub(Gosub(c, f), g) => c.flatMap(cc => f(cc).flatMap(g)).step
-      case Gosub(Pure(a), f)     => f(a).step
-      case x                     => x
-    }
+  final def step: Free[S, A] = this match {
+    case Gosub(Gosub(c, f), g) => c.flatMap(cc => f(cc).flatMap(g)).step
+    case Gosub(Pure(a), f)     => f(a).step
+    case x                     => x
+  }
 
   /**
     * Evaluate a single layer of the free monad.
     */
   @tailrec
-  final def resume(implicit S: Functor[S]): S[Free[S, A]] Xor A =
-    this match {
-      case Pure(a)    => Right(a)
-      case Suspend(t) => Left(S.map(t)(Pure(_)))
-      case Gosub(c, f) =>
-        c match {
-          case Pure(a)     => f(a).resume
-          case Suspend(t)  => Left(S.map(t)(f))
-          case Gosub(d, g) => d.flatMap(dd => g(dd).flatMap(f)).resume
-        }
-    }
+  final def resume(implicit S: Functor[S]): S[Free[S, A]] Xor A = this match {
+    case Pure(a)    => Right(a)
+    case Suspend(t) => Left(S.map(t)(Pure(_)))
+    case Gosub(c, f) =>
+      c match {
+        case Pure(a)     => f(a).resume
+        case Suspend(t)  => Left(S.map(t)(f))
+        case Gosub(d, g) => d.flatMap(dd => g(dd).flatMap(f)).resume
+      }
+  }
 
   /**
     * Run to completion, using a function that extracts the resumption
@@ -127,11 +125,10 @@ sealed abstract class Free[S[_], A] extends Product with Serializable {
   final def runM[M[_]](f: S[Free[S, A]] => M[Free[S, A]])(implicit
       S: Functor[S],
       M: Monad[M]): M[A] = {
-    def runM2(t: Free[S, A]): M[A] =
-      t.resume match {
-        case Left(s)  => Monad[M].flatMap(f(s))(runM2)
-        case Right(r) => Monad[M].pure(r)
-      }
+    def runM2(t: Free[S, A]): M[A] = t.resume match {
+      case Left(s)  => Monad[M].flatMap(f(s))(runM2)
+      case Right(r) => Monad[M].pure(r)
+    }
     runM2(this)
   }
 

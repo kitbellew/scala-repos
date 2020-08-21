@@ -13,15 +13,14 @@ object Test extends App {
       class SuspImpl[A](lazyValue: => A) extends Susp[A] {
         private var maybeValue: Option[A] = None
 
-        override def apply() =
-          maybeValue match {
-            case None =>
-              val value = lazyValue
-              maybeValue = Some(value)
-              value
-            case Some(value) =>
-              value
-          }
+        override def apply() = maybeValue match {
+          case None =>
+            val value = lazyValue
+            maybeValue = Some(value)
+            value
+          case Some(value) =>
+            value
+        }
       }
     }
 

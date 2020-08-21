@@ -5,10 +5,9 @@ import java.time._
 
 trait TimeInstances0 {
 
-  private[this] def orderFromInt[A](f: (A, A) => Int): Order[A] =
-    new Order[A] {
-      def order(x: A, y: A) = Ordering.fromInt(f(x, y))
-    }
+  private[this] def orderFromInt[A](f: (A, A) => Int): Order[A] = new Order[A] {
+    def order(x: A, y: A) = Ordering.fromInt(f(x, y))
+  }
 
   implicit val instantInstance: Order[Instant] =
     orderFromInt[Instant](_ compareTo _)

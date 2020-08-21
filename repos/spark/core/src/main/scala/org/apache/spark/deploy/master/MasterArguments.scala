@@ -52,40 +52,39 @@ private[master] class MasterArguments(args: Array[String], conf: SparkConf) {
   }
 
   @tailrec
-  private def parse(args: List[String]): Unit =
-    args match {
-      case ("--ip" | "-i") :: value :: tail =>
-        Utils.checkHost(
-          value,
-          "ip no longer supported, please use hostname " + value)
-        host = value
-        parse(tail)
+  private def parse(args: List[String]): Unit = args match {
+    case ("--ip" | "-i") :: value :: tail =>
+      Utils.checkHost(
+        value,
+        "ip no longer supported, please use hostname " + value)
+      host = value
+      parse(tail)
 
-      case ("--host" | "-h") :: value :: tail =>
-        Utils.checkHost(value, "Please use hostname " + value)
-        host = value
-        parse(tail)
+    case ("--host" | "-h") :: value :: tail =>
+      Utils.checkHost(value, "Please use hostname " + value)
+      host = value
+      parse(tail)
 
-      case ("--port" | "-p") :: IntParam(value) :: tail =>
-        port = value
-        parse(tail)
+    case ("--port" | "-p") :: IntParam(value) :: tail =>
+      port = value
+      parse(tail)
 
-      case "--webui-port" :: IntParam(value) :: tail =>
-        webUiPort = value
-        parse(tail)
+    case "--webui-port" :: IntParam(value) :: tail =>
+      webUiPort = value
+      parse(tail)
 
-      case ("--properties-file") :: value :: tail =>
-        propertiesFile = value
-        parse(tail)
+    case ("--properties-file") :: value :: tail =>
+      propertiesFile = value
+      parse(tail)
 
-      case ("--help") :: tail =>
-        printUsageAndExit(0)
+    case ("--help") :: tail =>
+      printUsageAndExit(0)
 
-      case Nil => {}
+    case Nil => {}
 
-      case _ =>
-        printUsageAndExit(1)
-    }
+    case _ =>
+      printUsageAndExit(1)
+  }
 
   /**
     * Print usage and exit JVM with the given exit code.

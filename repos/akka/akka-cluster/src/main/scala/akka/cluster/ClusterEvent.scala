@@ -488,11 +488,10 @@ private[cluster] final class ClusterDomainEventPublisher
     to foreach { eventStream.subscribe(subscriber, _) }
   }
 
-  def unsubscribe(subscriber: ActorRef, to: Option[Class[_]]): Unit =
-    to match {
-      case None ⇒ eventStream.unsubscribe(subscriber)
-      case Some(c) ⇒ eventStream.unsubscribe(subscriber, c)
-    }
+  def unsubscribe(subscriber: ActorRef, to: Option[Class[_]]): Unit = to match {
+    case None ⇒ eventStream.unsubscribe(subscriber)
+    case Some(c) ⇒ eventStream.unsubscribe(subscriber, c)
+  }
 
   def publishChanges(newGossip: Gossip): Unit = {
     val oldGossip = latestGossip
@@ -515,8 +514,8 @@ private[cluster] final class ClusterDomainEventPublisher
     diffReachability(oldGossip, newGossip) foreach pub
   }
 
-  def publishInternalStats(currentStats: CurrentInternalStats): Unit =
-    publish(currentStats)
+  def publishInternalStats(currentStats: CurrentInternalStats): Unit = publish(
+    currentStats)
 
   def publish(event: AnyRef): Unit = eventStream publish event
 

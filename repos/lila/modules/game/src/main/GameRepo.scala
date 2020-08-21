@@ -65,31 +65,28 @@ object GameRepo {
 
   def remove(id: ID) = $remove($select(id))
 
-  def recentByUser(userId: String): Fu[List[Game]] =
-    $find(
-      $query(Query user userId) sort Query.sortCreated
-    )
+  def recentByUser(userId: String): Fu[List[Game]] = $find(
+    $query(Query user userId) sort Query.sortCreated
+  )
 
   def userPovsByGameIds(gameIds: List[String], user: User): Fu[List[Pov]] =
     $find.byOrderedIds(gameIds) map { _.flatMap(g => Pov(g, user)) }
 
-  def recentPovsByUser(user: User, nb: Int): Fu[List[Pov]] =
-    $find(
-      $query(Query user user) sort Query.sortCreated,
-      nb
-    ) map { _.flatMap(g => Pov(g, user)) }
+  def recentPovsByUser(user: User, nb: Int): Fu[List[Pov]] = $find(
+    $query(Query user user) sort Query.sortCreated,
+    nb
+  ) map { _.flatMap(g => Pov(g, user)) }
 
-  def gamesForAssessment(userId: String, nb: Int): Fu[List[Game]] =
-    $find(
-      $query(
-        Query.finished
-          ++ Query.rated
-          ++ Query.user(userId)
-          ++ Query.analysed(true)
-          ++ Query.turnsMoreThan(20)
-          ++ Query.clock(true)) sort ($sort asc F.createdAt),
-      nb
-    )
+  def gamesForAssessment(userId: String, nb: Int): Fu[List[Game]] = $find(
+    $query(
+      Query.finished
+        ++ Query.rated
+        ++ Query.user(userId)
+        ++ Query.analysed(true)
+        ++ Query.turnsMoreThan(20)
+        ++ Query.clock(true)) sort ($sort asc F.createdAt),
+    nb
+  )
 
   def unrate(gameId: String) =
     $update(
@@ -326,14 +323,13 @@ object GameRepo {
         "$set" -> BSONDocument("pgni.ca" -> g.createdAt)
       ))
 
-  def saveNext(game: Game, nextId: ID): Funit =
-    $update(
-      $select(game.id),
-      $set(F.next -> nextId) ++
-        $unset(
-          "p0." + Player.BSONFields.isOfferingRematch,
-          "p1." + Player.BSONFields.isOfferingRematch)
-    )
+  def saveNext(game: Game, nextId: ID): Funit = $update(
+    $select(game.id),
+    $set(F.next -> nextId) ++
+      $unset(
+        "p0." + Player.BSONFields.isOfferingRematch,
+        "p1." + Player.BSONFields.isOfferingRematch)
+  )
 
   def initialFen(gameId: ID): Fu[Option[String]] =
     $primitive.one($select(gameId), F.initialFen)(_.asOpt[String])
@@ -347,18 +343,16 @@ object GameRepo {
       }
     else fuccess(none)
 
-  def featuredCandidates: Fu[List[Game]] =
-    $find(
-      Query.playable ++ Query.clock(true) ++ Json.obj(
-        F.createdAt -> $gt($date(DateTime.now minusMinutes 5)),
-        F.updatedAt -> $gt($date(DateTime.now minusSeconds 40))
-      ) ++ $or(
-        Seq(
-          Json.obj(
-            s"${F.whitePlayer}.${Player.BSONFields.rating}" -> $gt(1200)),
-          Json.obj(s"${F.blackPlayer}.${Player.BSONFields.rating}" -> $gt(1200))
-        ))
-    )
+  def featuredCandidates: Fu[List[Game]] = $find(
+    Query.playable ++ Query.clock(true) ++ Json.obj(
+      F.createdAt -> $gt($date(DateTime.now minusMinutes 5)),
+      F.updatedAt -> $gt($date(DateTime.now minusSeconds 40))
+    ) ++ $or(
+      Seq(
+        Json.obj(s"${F.whitePlayer}.${Player.BSONFields.rating}" -> $gt(1200)),
+        Json.obj(s"${F.blackPlayer}.${Player.BSONFields.rating}" -> $gt(1200))
+      ))
+  )
 
   def count(query: Query.type => JsObject): Fu[Int] = $count(query(Query))
 
@@ -401,24 +395,23 @@ object GameRepo {
   def random(nb: Int): Fu[List[Game]] =
     $find($query.all sort Query.sortCreated skip (Random nextInt 1000), nb)
 
-  def findMirror(game: Game): Fu[Option[Game]] =
-    $find.one(
-      $query(
-        BSONDocument(
-          F.id -> BSONDocument("$ne" -> game.id),
-          F.playerUids -> BSONDocument("$in" -> game.userIds),
-          F.status -> Status.Started.id,
-          F.createdAt -> BSONDocument("$gt" -> (DateTime.now minusMinutes 15)),
-          F.updatedAt -> BSONDocument("$gt" -> (DateTime.now minusMinutes 5)),
-          "$or" -> BSONArray(
-            BSONDocument(
-              s"${F.whitePlayer}.ai" -> BSONDocument("$exists" -> true)),
-            BSONDocument(
-              s"${F.blackPlayer}.ai" -> BSONDocument("$exists" -> true))
-          ),
-          F.binaryPieces -> game.binaryPieces
-        )
-      ))
+  def findMirror(game: Game): Fu[Option[Game]] = $find.one(
+    $query(
+      BSONDocument(
+        F.id -> BSONDocument("$ne" -> game.id),
+        F.playerUids -> BSONDocument("$in" -> game.userIds),
+        F.status -> Status.Started.id,
+        F.createdAt -> BSONDocument("$gt" -> (DateTime.now minusMinutes 15)),
+        F.updatedAt -> BSONDocument("$gt" -> (DateTime.now minusMinutes 5)),
+        "$or" -> BSONArray(
+          BSONDocument(
+            s"${F.whitePlayer}.ai" -> BSONDocument("$exists" -> true)),
+          BSONDocument(
+            s"${F.blackPlayer}.ai" -> BSONDocument("$exists" -> true))
+        ),
+        F.binaryPieces -> game.binaryPieces
+      )
+    ))
 
   def findPgnImport(pgn: String): Fu[Option[Game]] =
     gameTube.coll

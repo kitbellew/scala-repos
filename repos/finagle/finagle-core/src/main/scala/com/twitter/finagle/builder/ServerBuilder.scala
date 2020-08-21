@@ -82,13 +82,12 @@ object ServerConfig {
   sealed trait Yes
   type FullySpecified[Req, Rep] = ServerConfig[Req, Rep, Yes, Yes, Yes]
 
-  def nilServer[Req, Rep] =
-    new FinagleServer[Req, Rep] {
-      def serve(
-          addr: SocketAddress,
-          service: ServiceFactory[Req, Rep]): ListeningServer =
-        NullServer
-    }
+  def nilServer[Req, Rep] = new FinagleServer[Req, Rep] {
+    def serve(
+        addr: SocketAddress,
+        service: ServiceFactory[Req, Rep]): ListeningServer =
+      NullServer
+  }
 
   // params specific to ServerBuilder
   private[builder] case class BindTo(addr: SocketAddress) {
@@ -557,10 +556,9 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
   def build(
       service: Service[Req, Rep],
       THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ServerBuilder_DOCUMENTATION: ThisConfig =:= FullySpecifiedConfig)
-      : Server =
-    build(
-      ServiceFactory.const(service),
-      THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ServerBuilder_DOCUMENTATION)
+      : Server = build(
+    ServiceFactory.const(service),
+    THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ServerBuilder_DOCUMENTATION)
 
   /**
     * Construct the Server, given the provided Service factory.
@@ -568,9 +566,8 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
   @deprecated("Use the ServiceFactory variant instead", "5.0.1")
   def build(serviceFactory: () => Service[Req, Rep])(implicit
       THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ServerBuilder_DOCUMENTATION: ThisConfig =:= FullySpecifiedConfig
-  ): Server =
-    build((_: ClientConnection) => serviceFactory())(
-      THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ServerBuilder_DOCUMENTATION)
+  ): Server = build((_: ClientConnection) => serviceFactory())(
+    THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ServerBuilder_DOCUMENTATION)
 
   /**
     * Construct the Server, given the provided ServiceFactory. This
@@ -580,14 +577,13 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
   @deprecated("Use the ServiceFactory variant instead", "5.0.1")
   def build(serviceFactory: (ClientConnection) => Service[Req, Rep])(implicit
       THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ServerBuilder_DOCUMENTATION: ThisConfig =:= FullySpecifiedConfig
-  ): Server =
-    build(
-      new ServiceFactory[Req, Rep] {
-        def apply(conn: ClientConnection) = Future.value(serviceFactory(conn))
-        def close(deadline: Time) = Future.Done
-      },
-      THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ServerBuilder_DOCUMENTATION
-    )
+  ): Server = build(
+    new ServiceFactory[Req, Rep] {
+      def apply(conn: ClientConnection) = Future.value(serviceFactory(conn))
+      def close(deadline: Time) = Future.Done
+    },
+    THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ServerBuilder_DOCUMENTATION
+  )
 
   /**
     * Construct the Server, given the provided ServiceFactory. This
@@ -638,9 +634,8 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
   def build(
       serviceFactory: ServiceFactory[Req, Rep],
       THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ServerBuilder_DOCUMENTATION: ThisConfig =:= FullySpecifiedConfig)
-      : Server =
-    build(serviceFactory)(
-      new ServerConfigEvidence[HasCodec, HasBindTo, HasName] {})
+      : Server = build(serviceFactory)(
+    new ServerConfigEvidence[HasCodec, HasBindTo, HasName] {})
 
   /**
     * Construct a Service, with runtime checks for builder

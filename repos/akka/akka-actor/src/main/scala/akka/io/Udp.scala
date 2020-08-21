@@ -331,8 +331,8 @@ object UdpMessage {
     * The “simple sender” will not stop itself, you will have to send it a [[akka.actor.PoisonPill]]
     * when you want to close the socket.
     */
-  def simpleSender(options: JIterable[SocketOption]): Command =
-    SimpleSender(options.asScala.to)
+  def simpleSender(options: JIterable[SocketOption]): Command = SimpleSender(
+    options.asScala.to)
 
   /**
     * Retrieve a simple sender without specifying options.

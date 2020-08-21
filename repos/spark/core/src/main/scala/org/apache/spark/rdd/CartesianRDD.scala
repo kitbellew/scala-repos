@@ -79,15 +79,14 @@ private[spark] class CartesianRDD[T: ClassTag, U: ClassTag](
       y <- rdd2.iterator(currSplit.s2, context)) yield (x, y)
   }
 
-  override def getDependencies: Seq[Dependency[_]] =
-    List(
-      new NarrowDependency(rdd1) {
-        def getParents(id: Int): Seq[Int] = List(id / numPartitionsInRdd2)
-      },
-      new NarrowDependency(rdd2) {
-        def getParents(id: Int): Seq[Int] = List(id % numPartitionsInRdd2)
-      }
-    )
+  override def getDependencies: Seq[Dependency[_]] = List(
+    new NarrowDependency(rdd1) {
+      def getParents(id: Int): Seq[Int] = List(id / numPartitionsInRdd2)
+    },
+    new NarrowDependency(rdd2) {
+      def getParents(id: Int): Seq[Int] = List(id % numPartitionsInRdd2)
+    }
+  )
 
   override def clearDependencies() {
     super.clearDependencies()

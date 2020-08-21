@@ -16,18 +16,17 @@ import org.scalatest.mock.MockitoSugar
 
 @RunWith(classOf[JUnitRunner])
 class ChannelStatsHandlerTest extends FunSuite with MockitoSugar {
-  def mkAttr[T](initial: T): Attribute[T] =
-    new Attribute[T] {
-      var _v = initial
-      def set(value: T): Unit = _v = value
-      def key(): AttributeKey[T] = ???
-      def get(): T = _v
-      def getAndRemove(): T = ???
-      def remove(): Unit = ???
-      def compareAndSet(oldValue: T, newValue: T): Boolean = ???
-      def setIfAbsent(value: T): T = ???
-      def getAndSet(value: T): T = ???
-    }
+  def mkAttr[T](initial: T): Attribute[T] = new Attribute[T] {
+    var _v = initial
+    def set(value: T): Unit = _v = value
+    def key(): AttributeKey[T] = ???
+    def get(): T = _v
+    def getAndRemove(): T = ???
+    def remove(): Unit = ???
+    def compareAndSet(oldValue: T, newValue: T): Boolean = ???
+    def setIfAbsent(value: T): T = ???
+    def getAndSet(value: T): T = ???
+  }
 
   trait SocketTest {
     val chan = mock[Channel]
@@ -118,15 +117,14 @@ class ChannelStatsHandlerTest extends FunSuite with MockitoSugar {
   def channelLifeCycleTest(
       counterName: String,
       f: (ChannelDuplexHandler, ChannelHandlerContext) => Unit
-  ) =
-    test(s"ChannelStatsHandler counts $counterName") {
-      val tc = new TestContext {}
-      import tc._
+  ) = test(s"ChannelStatsHandler counts $counterName") {
+    val tc = new TestContext {}
+    import tc._
 
-      assert(!sr.counters.contains(Seq(counterName)))
-      f(handler, ctx)
-      assert(sr.counters(Seq(counterName)) == 1)
-    }
+    assert(!sr.counters.contains(Seq(counterName)))
+    f(handler, ctx)
+    assert(sr.counters(Seq(counterName)) == 1)
+  }
 
   channelLifeCycleTest(
     "closes",

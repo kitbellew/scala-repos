@@ -120,13 +120,12 @@ object PartitionedTsv {
       pathFields: Fields = Fields.ALL,
       writeHeader: Boolean = false,
       tsvFields: Fields = Fields.ALL,
-      sinkMode: SinkMode = SinkMode.REPLACE) =
-    new PartitionedTsv(
-      basePath,
-      new DelimitedPartition(pathFields, delimiter),
-      writeHeader,
-      tsvFields,
-      sinkMode)
+      sinkMode: SinkMode = SinkMode.REPLACE) = new PartitionedTsv(
+    basePath,
+    new DelimitedPartition(pathFields, delimiter),
+    writeHeader,
+    tsvFields,
+    sinkMode)
 }
 
 /**
@@ -167,12 +166,11 @@ object PartitionedSequenceFile {
       delimiter: String = "/",
       pathFields: Fields = Fields.ALL,
       sequenceFields: Fields = Fields.ALL,
-      sinkMode: SinkMode = SinkMode.REPLACE) =
-    new PartitionedSequenceFile(
-      basePath,
-      new DelimitedPartition(pathFields, delimiter),
-      sequenceFields,
-      sinkMode)
+      sinkMode: SinkMode = SinkMode.REPLACE) = new PartitionedSequenceFile(
+    basePath,
+    new DelimitedPartition(pathFields, delimiter),
+    sequenceFields,
+    sinkMode)
 }
 
 /**

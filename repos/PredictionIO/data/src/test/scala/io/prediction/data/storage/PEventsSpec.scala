@@ -32,29 +32,25 @@ class PEventsSpec extends Specification with TestEvents {
   val channelId = 6
   val dbName = "test_pio_storage_events_" + hashCode
 
-  def hbLocal =
-    Storage.getDataObject[LEvents](
-      StorageTestUtils.hbaseSourceName,
-      dbName
-    )
+  def hbLocal = Storage.getDataObject[LEvents](
+    StorageTestUtils.hbaseSourceName,
+    dbName
+  )
 
-  def hbPar =
-    Storage.getDataObject[PEvents](
-      StorageTestUtils.hbaseSourceName,
-      dbName
-    )
+  def hbPar = Storage.getDataObject[PEvents](
+    StorageTestUtils.hbaseSourceName,
+    dbName
+  )
 
-  def jdbcLocal =
-    Storage.getDataObject[LEvents](
-      StorageTestUtils.jdbcSourceName,
-      dbName
-    )
+  def jdbcLocal = Storage.getDataObject[LEvents](
+    StorageTestUtils.jdbcSourceName,
+    dbName
+  )
 
-  def jdbcPar =
-    Storage.getDataObject[PEvents](
-      StorageTestUtils.jdbcSourceName,
-      dbName
-    )
+  def jdbcPar = Storage.getDataObject[PEvents](
+    StorageTestUtils.jdbcSourceName,
+    dbName
+  )
 
   def stopSpark = {
     sc.stop()
@@ -79,15 +75,14 @@ class PEventsSpec extends Specification with TestEvents {
 
   """
 
-  def jdbcPEvents =
-    sequential ^ s2"""
+  def jdbcPEvents = sequential ^ s2"""
 
     JDBCPEvents should
     - behave like any PEvents implementation ${events(jdbcLocal, jdbcPar)}
     - (table cleanup) ${Step(
-      StorageTestUtils.dropJDBCTable(s"${dbName}_$appId"))}
+    StorageTestUtils.dropJDBCTable(s"${dbName}_$appId"))}
     - (table cleanup) ${Step(
-      StorageTestUtils.dropJDBCTable(s"${dbName}_${appId}_$channelId"))}
+    StorageTestUtils.dropJDBCTable(s"${dbName}_${appId}_$channelId"))}
 
   """
 

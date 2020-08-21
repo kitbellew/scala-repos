@@ -16,15 +16,13 @@ trait SexpFormats {
       def read(json: Sexp) = reader.read(json)
     }
 
-  implicit def sexpIdentityFormat[T <: Sexp: ClassTag] =
-    new SexpFormat[T] {
-      def write(o: T) = o
-      def read(v: Sexp) =
-        v match {
-          case t: T => t
-          case x    => deserializationError(x)
-        }
+  implicit def sexpIdentityFormat[T <: Sexp: ClassTag] = new SexpFormat[T] {
+    def write(o: T) = o
+    def read(v: Sexp) = v match {
+      case t: T => t
+      case x    => deserializationError(x)
     }
+  }
 
   // performance boilerplate
   implicit val SexpFormat_ = SexpFormat[Sexp]

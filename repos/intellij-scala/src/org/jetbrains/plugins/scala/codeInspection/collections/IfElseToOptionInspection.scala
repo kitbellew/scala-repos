@@ -7,8 +7,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.ScExpression
   * @author Nikolay.Tropin
   */
 class IfElseToOptionInspection extends OperationOnCollectionInspection {
-  override def possibleSimplificationTypes: Array[SimplificationType] =
-    Array(IfElseToOption)
+  override def possibleSimplificationTypes: Array[SimplificationType] = Array(
+    IfElseToOption)
 }
 
 object IfElseToOption extends SimplificationType {

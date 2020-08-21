@@ -40,12 +40,11 @@ class SparkPlanInfo(
     simpleString.hashCode
   }
 
-  override def equals(other: Any): Boolean =
-    other match {
-      case o: SparkPlanInfo =>
-        nodeName == o.nodeName && simpleString == o.simpleString && children == o.children
-      case _ => false
-    }
+  override def equals(other: Any): Boolean = other match {
+    case o: SparkPlanInfo =>
+      nodeName == o.nodeName && simpleString == o.simpleString && children == o.children
+    case _ => false
+  }
 }
 
 private[sql] object SparkPlanInfo {

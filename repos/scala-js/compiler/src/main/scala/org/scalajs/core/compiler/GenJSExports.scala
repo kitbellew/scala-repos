@@ -327,17 +327,16 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
       ).max
 
       // Calculates possible arg counts for normal method
-      def argCounts(ex: Exported) =
-        ex match {
-          case ExportedSymbol(sym) =>
-            val params = sym.tpe.params
-            // Find default param
-            val dParam = params.indexWhere { _.hasFlag(Flags.DEFAULTPARAM) }
-            if (dParam == -1) Seq(params.size)
-            else dParam to params.size
-          case ex: ExportedBody =>
-            List(ex.params.size)
-        }
+      def argCounts(ex: Exported) = ex match {
+        case ExportedSymbol(sym) =>
+          val params = sym.tpe.params
+          // Find default param
+          val dParam = params.indexWhere { _.hasFlag(Flags.DEFAULTPARAM) }
+          if (dParam == -1) Seq(params.size)
+          else dParam to params.size
+        case ex: ExportedBody =>
+          List(ex.params.size)
+      }
 
       // Generate tuples (argc, method)
       val methodArgCounts = {
@@ -505,14 +504,13 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
                 paramIndex + 1,
                 maxArgc)
 
-              def hasDefaultParam =
-                subAlts.exists {
-                  case ExportedSymbol(p) =>
-                    val params = p.tpe.params
-                    params.size > paramIndex &&
-                    params(paramIndex).hasFlag(Flags.DEFAULTPARAM)
-                  case _: ExportedBody => false
-                }
+              def hasDefaultParam = subAlts.exists {
+                case ExportedSymbol(p) =>
+                  val params = p.tpe.params
+                  params.size > paramIndex &&
+                  params(paramIndex).hasFlag(Flags.DEFAULTPARAM)
+                case _: ExportedBody => false
+              }
 
               val optCond = typeTest match {
                 case HijackedTypeTest(boxedClassName, _) =>
@@ -557,10 +555,9 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
           enteringPhase(currentRun.posterasurePhase) {
             alt.paramss.flatten
           }
-        def paramTypePosterasure =
-          enteringPhase(currentRun.posterasurePhase) {
-            paramsPosterasure.apply(paramIndex).tpe
-          }
+        def paramTypePosterasure = enteringPhase(currentRun.posterasurePhase) {
+          paramsPosterasure.apply(paramIndex).tpe
+        }
 
         if (!alt.isClassConstructor) {
           // get parameter type while resolving repeated params

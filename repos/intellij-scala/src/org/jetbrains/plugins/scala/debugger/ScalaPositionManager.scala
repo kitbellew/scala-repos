@@ -261,11 +261,10 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
     if (!checkScalaFile(file)) throw NoDataException.INSTANCE
   }
 
-  private def checkScalaFile(file: PsiFile): Boolean =
-    file match {
-      case sf: ScalaFile => !sf.isCompiled
-      case _             => false
-    }
+  private def checkScalaFile(file: PsiFile): Boolean = file match {
+    case sf: ScalaFile => !sf.isCompiled
+    case _             => false
+  }
 
   private def filterAllClasses(
       condition: ReferenceType => Boolean,
@@ -761,8 +760,8 @@ object ScalaPositionManager {
   def instance(debugProcess: DebugProcess): Option[ScalaPositionManager] =
     instances.get(debugProcess)
 
-  def instance(mirror: Mirror): Option[ScalaPositionManager] =
-    instance(mirror.virtualMachine())
+  def instance(mirror: Mirror): Option[ScalaPositionManager] = instance(
+    mirror.virtualMachine())
 
   private def getVM(debugProcess: DebugProcess) = {
     debugProcess.getVirtualMachineProxy match {
@@ -959,13 +958,12 @@ object ScalaPositionManager {
   }
 
   object InsideAsync {
-    def unapply(elem: PsiElement): Option[ScMethodCall] =
-      elem match {
-        case InsideMacro(call @ ScMethodCall(ref: ScReferenceExpression, _))
-            if ref.refName == "async" =>
-          Some(call)
-        case _ => None
-      }
+    def unapply(elem: PsiElement): Option[ScMethodCall] = elem match {
+      case InsideMacro(call @ ScMethodCall(ref: ScReferenceExpression, _))
+          if ref.refName == "async" =>
+        Some(call)
+      case _ => None
+    }
   }
 
   def isInsideMacro(elem: PsiElement): Boolean =
@@ -985,16 +983,14 @@ object ScalaPositionManager {
     }
   }
 
-  def isDelayedInit(cl: PsiClass) =
-    cl match {
-      case obj: ScObject =>
-        val manager: ScalaPsiManager = ScalaPsiManager.instance(obj.getProject)
-        val clazz: PsiClass = manager
-          .getCachedClass(obj.getResolveScope, "scala.DelayedInit")
-          .orNull
-        clazz != null && manager.cachedDeepIsInheritor(obj, clazz)
-      case _ => false
-    }
+  def isDelayedInit(cl: PsiClass) = cl match {
+    case obj: ScObject =>
+      val manager: ScalaPsiManager = ScalaPsiManager.instance(obj.getProject)
+      val clazz: PsiClass =
+        manager.getCachedClass(obj.getResolveScope, "scala.DelayedInit").orNull
+      clazz != null && manager.cachedDeepIsInheritor(obj, clazz)
+    case _ => false
+  }
 
   private class MyClassPrepareRequestor(
       position: SourcePosition,

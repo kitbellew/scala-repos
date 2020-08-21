@@ -25,11 +25,10 @@ trait Cluster[T] { self =>
     * @return the Future object
     */
   def ready: Future[Unit] = {
-    def flatten(spool: Spool[Cluster.Change[T]]): Future[Unit] =
-      spool match {
-        case Cluster.Add(_) *:: tail => Future.Done
-        case _ *:: tail              => tail.flatMap(flatten)
-      }
+    def flatten(spool: Spool[Cluster.Change[T]]): Future[Unit] = spool match {
+      case Cluster.Add(_) *:: tail => Future.Done
+      case _ *:: tail              => tail.flatMap(flatten)
+    }
 
     snap match {
       case (current, changes) if current.isEmpty => changes.flatMap(flatten)
@@ -45,56 +44,55 @@ trait Cluster[T] { self =>
   /**
     * Maps the elements as well as future updates to the given type.
     */
-  def map[U](f: T => U): Cluster[U] =
-    new Cluster[U] {
-      // Translation cache to ensure that mapping is idempotent.
-      private[this] val mapped = mutable.HashMap.empty[T, mutable.Queue[U]]
+  def map[U](f: T => U): Cluster[U] = new Cluster[U] {
+    // Translation cache to ensure that mapping is idempotent.
+    private[this] val mapped = mutable.HashMap.empty[T, mutable.Queue[U]]
 
-      override def ready = self.ready
+    override def ready = self.ready
 
-      def snap: (Seq[U], Future[Spool[Cluster.Change[U]]]) = {
-        val (seqT, changeT) = self.snap
-        val seqU = mapped.synchronized {
-          seqT map { t =>
-            val q = mapped.getOrElseUpdate(t, mutable.Queue[U]())
-            val u = f(t)
-            q.enqueue(u)
-            u
-          }
+    def snap: (Seq[U], Future[Spool[Cluster.Change[U]]]) = {
+      val (seqT, changeT) = self.snap
+      val seqU = mapped.synchronized {
+        seqT map { t =>
+          val q = mapped.getOrElseUpdate(t, mutable.Queue[U]())
+          val u = f(t)
+          q.enqueue(u)
+          u
         }
+      }
 
-        val changeU = changeT map { spoolT =>
-          spoolT map { elem =>
-            mapped.synchronized {
-              elem match {
-                case Cluster.Add(t) =>
-                  val q = mapped.getOrElseUpdate(t, mutable.Queue[U]())
-                  val u = f(t)
-                  q.enqueue(u)
-                  Cluster.Add(u)
+      val changeU = changeT map { spoolT =>
+        spoolT map { elem =>
+          mapped.synchronized {
+            elem match {
+              case Cluster.Add(t) =>
+                val q = mapped.getOrElseUpdate(t, mutable.Queue[U]())
+                val u = f(t)
+                q.enqueue(u)
+                Cluster.Add(u)
 
-                case Cluster.Rem(t) =>
-                  mapped.get(t) match {
-                    case Some(q) =>
-                      val u = q.dequeue()
-                      if (q.isEmpty)
-                        mapped.remove(t)
-                      Cluster.Rem(u)
+              case Cluster.Rem(t) =>
+                mapped.get(t) match {
+                  case Some(q) =>
+                    val u = q.dequeue()
+                    if (q.isEmpty)
+                      mapped.remove(t)
+                    Cluster.Rem(u)
 
-                    case None =>
-                      Logger
-                        .getLogger("")
-                        .warning(
-                          "cluster does not have removed key, regenerating")
-                      Cluster.Rem(f(t))
-                  }
-              }
+                  case None =>
+                    Logger
+                      .getLogger("")
+                      .warning(
+                        "cluster does not have removed key, regenerating")
+                    Cluster.Rem(f(t))
+                }
             }
           }
         }
-        (seqU, changeU)
       }
+      (seqU, changeU)
     }
+  }
 }
 
 object Cluster {

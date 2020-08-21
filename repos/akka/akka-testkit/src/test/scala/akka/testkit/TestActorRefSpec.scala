@@ -22,16 +22,15 @@ object TestActorRefSpec {
   var otherthread: Thread = null
 
   trait TActor extends Actor {
-    def receive =
-      new Receive {
-        val recv = receiveT
-        def isDefinedAt(o: Any) = recv.isDefinedAt(o)
-        def apply(o: Any) {
-          if (Thread.currentThread ne thread)
-            otherthread = Thread.currentThread
-          recv(o)
-        }
+    def receive = new Receive {
+      val recv = receiveT
+      def isDefinedAt(o: Any) = recv.isDefinedAt(o)
+      def apply(o: Any) {
+        if (Thread.currentThread ne thread)
+          otherthread = Thread.currentThread
+        recv(o)
       }
+    }
     def receiveT: Receive
   }
 

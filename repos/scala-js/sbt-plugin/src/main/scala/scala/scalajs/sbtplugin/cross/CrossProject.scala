@@ -302,21 +302,20 @@ object CrossProject extends CrossProjectExtra {
     new CrossProject(crossType, jvm, js)
   }
 
-  private def sharedSrcSettings(crossType: CrossType) =
-    Seq(
-      unmanagedSourceDirectories in Compile ++= {
-        makeCrossSources(
-          crossType.sharedSrcDir(baseDirectory.value, "main"),
-          scalaBinaryVersion.value,
-          crossPaths.value)
-      },
-      unmanagedSourceDirectories in Test ++= {
-        makeCrossSources(
-          crossType.sharedSrcDir(baseDirectory.value, "test"),
-          scalaBinaryVersion.value,
-          crossPaths.value)
-      }
-    )
+  private def sharedSrcSettings(crossType: CrossType) = Seq(
+    unmanagedSourceDirectories in Compile ++= {
+      makeCrossSources(
+        crossType.sharedSrcDir(baseDirectory.value, "main"),
+        scalaBinaryVersion.value,
+        crossPaths.value)
+    },
+    unmanagedSourceDirectories in Test ++= {
+      makeCrossSources(
+        crossType.sharedSrcDir(baseDirectory.value, "test"),
+        scalaBinaryVersion.value,
+        crossPaths.value)
+    }
+  )
 
   // Inspired by sbt's Defaults.makeCrossSources
   private def makeCrossSources(

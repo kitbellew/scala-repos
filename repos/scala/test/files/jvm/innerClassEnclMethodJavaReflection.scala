@@ -18,13 +18,12 @@ object Test extends App {
         t.getMessage.replace('/', '.').contains(p))
     }
 
-    def unapply(t: Throwable): Option[Throwable] =
-      t match {
-        case _: NoClassDefFoundError | _: ClassNotFoundException |
-            _: TypeNotPresentException if ok(t) =>
-          Some(t)
-        case _ => None
-      }
+    def unapply(t: Throwable): Option[Throwable] = t match {
+      case _: NoClassDefFoundError | _: ClassNotFoundException |
+          _: TypeNotPresentException if ok(t) =>
+        Some(t)
+      case _ => None
+    }
   }
 
   jarsOrDirectories foreach testClasses
@@ -53,12 +52,11 @@ object Test extends App {
 
     val faulty = new collection.mutable.ListBuffer[(String, Throwable)]
 
-    def tryGetClass(name: String) =
-      try {
-        Some[Class[_]](classLoader.loadClass(name))
-      } catch {
-        case AllowedMissingClass(_) => None
-      }
+    def tryGetClass(name: String) = try {
+      Some[Class[_]](classLoader.loadClass(name))
+    } catch {
+      case AllowedMissingClass(_) => None
+    }
 
     for (name <- classFullNames; cls <- tryGetClass(name)) {
       try {

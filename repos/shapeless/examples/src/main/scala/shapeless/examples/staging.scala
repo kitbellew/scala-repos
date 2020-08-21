@@ -72,19 +72,18 @@ object ReflectionUtils {
   import scala.reflect.runtime.universe._
   import scala.tools.reflect.Eval
 
-  def mkTypeTree(a: Any): Tree =
-    a match {
-      case _: Byte    => tq"_root_.scala.Byte"
-      case _: Char    => tq"_root_.scala.Char"
-      case _: Short   => tq"_root_.scala.Short"
-      case _: Int     => tq"_root_.scala.Int"
-      case _: Long    => tq"_root_.scala.Long"
-      case _: Float   => tq"_root_.scala.Float"
-      case _: Double  => tq"_root_.scala.Double"
-      case _: Boolean => tq"_root_.scala.Boolean"
-      case _: Unit    => tq"_root_.scala.Unit"
-      case other      => tq"${other.getClass.getName}"
-    }
+  def mkTypeTree(a: Any): Tree = a match {
+    case _: Byte    => tq"_root_.scala.Byte"
+    case _: Char    => tq"_root_.scala.Char"
+    case _: Short   => tq"_root_.scala.Short"
+    case _: Int     => tq"_root_.scala.Int"
+    case _: Long    => tq"_root_.scala.Long"
+    case _: Float   => tq"_root_.scala.Float"
+    case _: Double  => tq"_root_.scala.Double"
+    case _: Boolean => tq"_root_.scala.Boolean"
+    case _: Unit    => tq"_root_.scala.Unit"
+    case other      => tq"${other.getClass.getName}"
+  }
 
   def mkExpr[T: TypeTag](tree: Tree): Expr[T] =
     Expr[T](

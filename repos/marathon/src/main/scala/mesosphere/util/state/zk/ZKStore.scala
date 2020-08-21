@@ -120,20 +120,18 @@ class ZKStore(
   }
 
   private[this] def createPath(path: ZNode): Future[ZNode] = {
-    def nodeExists(node: ZNode): Future[Boolean] =
-      node
-        .exists()
-        .asScala
-        .map(_ => true)
-        .recover { case ex: NoNodeException => false }
-        .recover(exceptionTransform("Can not query for exists"))
+    def nodeExists(node: ZNode): Future[Boolean] = node
+      .exists()
+      .asScala
+      .map(_ => true)
+      .recover { case ex: NoNodeException => false }
+      .recover(exceptionTransform("Can not query for exists"))
 
-    def createNode(node: ZNode): Future[ZNode] =
-      node
-        .create()
-        .asScala
-        .recover { case ex: NodeExistsException => node }
-        .recover(exceptionTransform("Can not create"))
+    def createNode(node: ZNode): Future[ZNode] = node
+      .create()
+      .asScala
+      .recover { case ex: NodeExistsException => node }
+      .recover(exceptionTransform("Can not create"))
 
     def createPath(node: ZNode): Future[ZNode] = {
       nodeExists(node).flatMap {

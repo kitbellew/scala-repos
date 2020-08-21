@@ -47,8 +47,8 @@ sealed trait TestEvent
   */
 object TestEvent {
   object Mute {
-    def apply(filter: EventFilter, filters: EventFilter*): Mute =
-      new Mute(filter +: filters.to[immutable.Seq])
+    def apply(filter: EventFilter, filters: EventFilter*): Mute = new Mute(
+      filter +: filters.to[immutable.Seq])
   }
   final case class Mute(filters: immutable.Seq[EventFilter])
       extends TestEvent
@@ -60,8 +60,8 @@ object TestEvent {
     def this(filters: JIterable[EventFilter]) = this(immutableSeq(filters))
   }
   object UnMute {
-    def apply(filter: EventFilter, filters: EventFilter*): UnMute =
-      new UnMute(filter +: filters.to[immutable.Seq])
+    def apply(filter: EventFilter, filters: EventFilter*): UnMute = new UnMute(
+      filter +: filters.to[immutable.Seq])
   }
   final case class UnMute(filters: immutable.Seq[EventFilter])
       extends TestEvent
@@ -617,10 +617,9 @@ class TestEventListener extends Logging.DefaultLogger {
     case m ⇒ print(Debug(context.system.name, this.getClass, m))
   }
 
-  def filter(event: LogEvent): Boolean =
-    filters exists (f ⇒
-      try { f(event) }
-      catch { case e: Exception ⇒ false })
+  def filter(event: LogEvent): Boolean = filters exists (f ⇒
+    try { f(event) }
+    catch { case e: Exception ⇒ false })
 
   def addFilter(filter: EventFilter): Unit = filters ::= filter
 
@@ -628,12 +627,11 @@ class TestEventListener extends Logging.DefaultLogger {
     @scala.annotation.tailrec
     def removeFirst(
         list: List[EventFilter],
-        zipped: List[EventFilter] = Nil): List[EventFilter] =
-      list match {
-        case head :: tail if head == filter ⇒ tail.reverse_:::(zipped)
-        case head :: tail ⇒ removeFirst(tail, head :: zipped)
-        case Nil ⇒ filters // filter not found, just return original list
-      }
+        zipped: List[EventFilter] = Nil): List[EventFilter] = list match {
+      case head :: tail if head == filter ⇒ tail.reverse_:::(zipped)
+      case head :: tail ⇒ removeFirst(tail, head :: zipped)
+      case Nil ⇒ filters // filter not found, just return original list
+    }
     filters = removeFirst(filters)
   }
 

@@ -220,13 +220,12 @@ trait PrepJSExports { this: PrepJSInterop =>
       val isExportAll = annot.symbol == JSExportAllAnnotation
       val hasExplicitName = annot.args.nonEmpty
 
-      def explicitName =
-        annot.stringArg(0).getOrElse {
-          reporter.error(
-            annot.pos,
-            s"The argument to ${annot.symbol.name} must be a literal string")
-          "dummy"
-        }
+      def explicitName = annot.stringArg(0).getOrElse {
+        reporter.error(
+          annot.pos,
+          s"The argument to ${annot.symbol.name} must be a literal string")
+        "dummy"
+      }
 
       val name = {
         if (hasExplicitName) explicitName
@@ -487,34 +486,32 @@ trait PrepJSExports { this: PrepJSInterop =>
       clsSym: Symbol,
       trgSym: Symbol,
       proxySym: Symbol,
-      pos: Position) =
-    atPos(pos) {
+      pos: Position) = atPos(pos) {
 
-      // Helper to ascribe repeated argument lists when calling
-      def spliceParam(sym: Symbol) = {
-        if (isRepeated(sym))
-          Typed(Ident(sym), Ident(tpnme.WILDCARD_STAR))
-        else
-          Ident(sym)
-      }
-
-      // Construct proxied function call
-      val sel: Tree = Select(This(clsSym), trgSym)
-      val rhs = (sel /: proxySym.paramss) { (fun, params) =>
-        Apply(fun, params map spliceParam)
-      }
-
-      typer.typedDefDef(DefDef(proxySym, rhs))
+    // Helper to ascribe repeated argument lists when calling
+    def spliceParam(sym: Symbol) = {
+      if (isRepeated(sym))
+        Typed(Ident(sym), Ident(tpnme.WILDCARD_STAR))
+      else
+        Ident(sym)
     }
+
+    // Construct proxied function call
+    val sel: Tree = Select(This(clsSym), trgSym)
+    val rhs = (sel /: proxySym.paramss) { (fun, params) =>
+      Apply(fun, params map spliceParam)
+    }
+
+    typer.typedDefDef(DefDef(proxySym, rhs))
+  }
 
   /** changes the return type of the method type tpe to Any. returns new type */
-  private def retToAny(tpe: Type): Type =
-    tpe match {
-      case MethodType(params, result) => MethodType(params, retToAny(result))
-      case NullaryMethodType(result)  => NullaryMethodType(AnyClass.tpe)
-      case PolyType(tparams, result)  => PolyType(tparams, retToAny(result))
-      case _                          => AnyClass.tpe
-    }
+  private def retToAny(tpe: Type): Type = tpe match {
+    case MethodType(params, result) => MethodType(params, retToAny(result))
+    case NullaryMethodType(result)  => NullaryMethodType(AnyClass.tpe)
+    case PolyType(tparams, result)  => PolyType(tparams, retToAny(result))
+    case _                          => AnyClass.tpe
+  }
 
   /** Whether the given symbol has a visibility that allows exporting */
   private def hasLegalExportVisibility(sym: Symbol): Boolean =

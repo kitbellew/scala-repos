@@ -91,15 +91,15 @@ object UnresolvedAttribute {
   /**
     * Creates an [[UnresolvedAttribute]], parsing segments separated by dots ('.').
     */
-  def apply(name: String): UnresolvedAttribute =
-    new UnresolvedAttribute(name.split("\\."))
+  def apply(name: String): UnresolvedAttribute = new UnresolvedAttribute(
+    name.split("\\."))
 
   /**
     * Creates an [[UnresolvedAttribute]], from a single quoted string (for example using backticks in
     * HiveQL.  Since the string is consider quoted, no processing is done on the name.
     */
-  def quoted(name: String): UnresolvedAttribute =
-    new UnresolvedAttribute(Seq(name))
+  def quoted(name: String): UnresolvedAttribute = new UnresolvedAttribute(
+    Seq(name))
 
   /**
     * Creates an [[UnresolvedAttribute]] from a string in an embedded language.  In this case

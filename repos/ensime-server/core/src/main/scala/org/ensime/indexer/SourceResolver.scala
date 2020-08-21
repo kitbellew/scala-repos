@@ -44,11 +44,10 @@ class SourceResolver(
     all = recalculate
   }
 
-  private def scan(f: FileObject) =
-    f.findFiles(SourceSelector) match {
-      case null => Nil
-      case res  => res.toList
-    }
+  private def scan(f: FileObject) = f.findFiles(SourceSelector) match {
+    case null => Nil
+    case res  => res.toList
+  }
 
   private val depSources = {
     val srcJars = config.referenceSourceJars.toSet ++ {

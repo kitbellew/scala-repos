@@ -23,14 +23,13 @@ class HeapBalancerTest
 
     def setStatus(x: Status) { _status = x }
 
-    def apply(conn: ClientConnection) =
-      Future.value {
-        load += 1
-        new Service[Unit, LoadedFactory] {
-          def apply(req: Unit) = Future.value(LoadedFactory.this)
-          override def close(deadline: Time) = { load -= 1; Future.Done }
-        }
+    def apply(conn: ClientConnection) = Future.value {
+      load += 1
+      new Service[Unit, LoadedFactory] {
+        def apply(req: Unit) = Future.value(LoadedFactory.this)
+        override def close(deadline: Time) = { load -= 1; Future.Done }
       }
+    }
 
     override def status = _status
     def isClosed = _closed

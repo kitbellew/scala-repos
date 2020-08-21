@@ -23,6 +23,6 @@ object ReverseIterator extends SimplificationType {
 }
 
 class ReverseIteratorInspection extends OperationOnCollectionInspection {
-  override def possibleSimplificationTypes: Array[SimplificationType] =
-    Array(ReverseIterator)
+  override def possibleSimplificationTypes: Array[SimplificationType] = Array(
+    ReverseIterator)
 }

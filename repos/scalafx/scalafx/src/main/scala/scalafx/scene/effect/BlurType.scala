@@ -58,13 +58,12 @@ object BlurType extends SFXEnumDelegateCompanion[jfxse.BlurType, BlurType] {
     "8.0.60-R10")
   val TWO_PASS_BOX = TwoPassBox
 
-  protected override def unsortedValues: Array[BlurType] =
-    Array(
-      OnePassBox,
-      TwoPassBox,
-      ThreePassBox,
-      Gaussian
-    )
+  protected override def unsortedValues: Array[BlurType] = Array(
+    OnePassBox,
+    TwoPassBox,
+    ThreePassBox,
+    Gaussian
+  )
 }
 
 sealed case class BlurType(override val delegate: jfxse.BlurType)

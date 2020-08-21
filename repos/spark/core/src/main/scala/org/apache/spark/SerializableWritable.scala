@@ -40,12 +40,11 @@ class SerializableWritable[T <: Writable](@transient var t: T)
       new ObjectWritable(t).write(out)
     }
 
-  private def readObject(in: ObjectInputStream): Unit =
-    Utils.tryOrIOException {
-      in.defaultReadObject()
-      val ow = new ObjectWritable()
-      ow.setConf(new Configuration(false))
-      ow.readFields(in)
-      t = ow.get().asInstanceOf[T]
-    }
+  private def readObject(in: ObjectInputStream): Unit = Utils.tryOrIOException {
+    in.defaultReadObject()
+    val ow = new ObjectWritable()
+    ow.setConf(new Configuration(false))
+    ow.readFields(in)
+    t = ow.get().asInstanceOf[T]
+  }
 }

@@ -17,10 +17,9 @@ package scalaguide.http.scalaactions {
     "A scala action" should {
       "allow writing a simple echo action" in {
         //#echo-action
-        def echo =
-          Action { request =>
-            Ok("Got request [" + request + "]")
-          }
+        def echo = Action { request =>
+          Ok("Got request [" + request + "]")
+        }
         //#echo-action
         testAction(echo)
       }
@@ -76,10 +75,9 @@ package scalaguide.http.scalaactions {
 
       "support an action with parameters" in {
         //#parameter-action
-        def hello(name: String) =
-          Action {
-            Ok("Hello " + name)
-          }
+        def hello(name: String) = Action {
+          Ok("Hello " + name)
+        }
         //#parameter-action
 
         assertAction(hello("world")) { result =>
@@ -91,15 +89,13 @@ package scalaguide.http.scalaactions {
         //#simple-result-action
         import play.api.http.HttpEntity
 
-        def index =
-          Action {
-            Result(
-              header = ResponseHeader(200, Map.empty),
-              body = HttpEntity.Strict(
-                ByteString("Hello world!"),
-                Some("text/plain"))
-            )
-          }
+        def index = Action {
+          Result(
+            header = ResponseHeader(200, Map.empty),
+            body =
+              HttpEntity.Strict(ByteString("Hello world!"), Some("text/plain"))
+          )
+        }
         //#simple-result-action
         assertAction(index) { result =>
           contentAsString(result) must_== "Hello world!"
@@ -108,10 +104,9 @@ package scalaguide.http.scalaactions {
 
       "support ok helper" in {
         //#ok-result-action
-        def index =
-          Action {
-            Ok("Hello world!")
-          }
+        def index = Action {
+          Ok("Hello world!")
+        }
         //#ok-result-action
         testAction(index)
       }
@@ -133,10 +128,9 @@ package scalaguide.http.scalaactions {
 
       "support redirects" in {
         //#redirect-action
-        def index =
-          Action {
-            Redirect("/user/home")
-          }
+        def index = Action {
+          Redirect("/user/home")
+        }
         //#redirect-action
         assertAction(index, expectedResponse = SEE_OTHER) { result =>
           header(LOCATION, result) must be some "/user/home"
@@ -145,10 +139,9 @@ package scalaguide.http.scalaactions {
 
       "support other redirects" in {
         //#moved-permanently-action
-        def index =
-          Action {
-            Redirect("/user/home", MOVED_PERMANENTLY)
-          }
+        def index = Action {
+          Redirect("/user/home", MOVED_PERMANENTLY)
+        }
         //#moved-permanently-action
         assertAction(index, expectedResponse = MOVED_PERMANENTLY) { result =>
           header(LOCATION, result) must be some "/user/home"
@@ -200,10 +193,9 @@ package scalaguide.http.scalaactions.full {
 
   class Application extends Controller {
 
-    def index =
-      Action {
-        Ok("It works!")
-      }
+    def index = Action {
+      Ok("It works!")
+    }
 
   }
 //#full-controller

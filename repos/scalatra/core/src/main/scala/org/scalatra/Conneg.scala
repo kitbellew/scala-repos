@@ -67,11 +67,10 @@ object Conneg {
     private val qFormat: DecimalFormat = new DecimalFormat("0.###")
 
     /** Parser for a single conneg value. */
-    def conneg: Parser[Option[Conneg[T]]] =
-      entry ~ qValue ^^ {
-        case Some(entry) ~ q => Some(new Conneg(entry, q))
-        case _               => None
-      }
+    def conneg: Parser[Option[Conneg[T]]] = entry ~ qValue ^^ {
+      case Some(entry) ~ q => Some(new Conneg(entry, q))
+      case _               => None
+    }
 
     /** Parser for a list of conneg values. */
     def connegs: Parser[List[Option[Conneg[T]]]] = repsep(conneg, ",")
@@ -132,11 +131,11 @@ object Conneg {
   }
 
   def preferredEncoding(implicit
-      req: HttpServletRequest): Option[ContentEncoding] =
-    preferredValue(AcceptEncoding)
+      req: HttpServletRequest): Option[ContentEncoding] = preferredValue(
+    AcceptEncoding)
   def acceptedEncodings(implicit
-      req: HttpServletRequest): List[Conneg[ContentEncoding]] =
-    values(AcceptEncoding)
+      req: HttpServletRequest): List[Conneg[ContentEncoding]] = values(
+    AcceptEncoding)
 
   // - Charset ---------------------------------------------------------------------------------------------------------
   // -------------------------------------------------------------------------------------------------------------------

@@ -62,12 +62,11 @@ case class SettingGraph(
       } getOrElse { d.typeName }
     } getOrElse { "" }
 
-  def dependsAscii: String =
-    Graph.toAscii(
-      this,
-      (x: SettingGraph) => x.depends.toSeq.sortBy(_.name),
-      (x: SettingGraph) =>
-        "%s = %s" format (x.definedIn getOrElse { "" }, x.dataString))
+  def dependsAscii: String = Graph.toAscii(
+    this,
+    (x: SettingGraph) => x.depends.toSeq.sortBy(_.name),
+    (x: SettingGraph) =>
+      "%s = %s" format (x.definedIn getOrElse { "" }, x.dataString))
 }
 
 object Graph {

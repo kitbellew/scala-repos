@@ -44,39 +44,35 @@ case class Term[@sp(Float, Double) C](coeff: C, exp: Int) { lhs =>
   override def toString: String = {
     import Term._
 
-    def expString =
-      exp match {
-        case 0 => ""
-        case 1 => "x"
-        case _ => "x" + exp.toString.map(superscript)
-      }
+    def expString = exp match {
+      case 0 => ""
+      case 1 => "x"
+      case _ => "x" + exp.toString.map(superscript)
+    }
 
-    def simpleCoeff: Option[String] =
-      coeff match {
-        case 0              => Some("")
-        case 1 if exp == 0  => Some(s" + $coeff")
-        case 1              => Some(s" + $expString")
-        case -1 if exp != 0 => Some(s" - $expString")
-        case _              => None
-      }
+    def simpleCoeff: Option[String] = coeff match {
+      case 0              => Some("")
+      case 1 if exp == 0  => Some(s" + $coeff")
+      case 1              => Some(s" + $expString")
+      case -1 if exp != 0 => Some(s" - $expString")
+      case _              => None
+    }
 
-    def stringCoeff: Option[String] =
-      coeff.toString match {
-        case IsZero()                        => Some("")
-        case IsNegative(posPart) if exp == 0 => Some(s" - $posPart")
-        case IsNegative(posPart)             => Some(s" - $posPart$expString")
-        case _                               => None
-      }
+    def stringCoeff: Option[String] = coeff.toString match {
+      case IsZero()                        => Some("")
+      case IsNegative(posPart) if exp == 0 => Some(s" - $posPart")
+      case IsNegative(posPart)             => Some(s" - $posPart$expString")
+      case _                               => None
+    }
 
     simpleCoeff orElse stringCoeff getOrElse s" + $coeff$expString"
   }
 }
 
 object Term {
-  implicit def ordering[C]: Order[Term[C]] =
-    new Order[Term[C]] {
-      def compare(x: Term[C], y: Term[C]): Int = x.exp compare y.exp
-    }
+  implicit def ordering[C]: Order[Term[C]] = new Order[Term[C]] {
+    def compare(x: Term[C], y: Term[C]): Int = x.exp compare y.exp
+  }
 
   def fromTuple[@sp(Float, Double) C](tpl: (Int, C)): Term[C] =
     Term(tpl._2, tpl._1)

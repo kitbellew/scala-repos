@@ -15,10 +15,9 @@ case class JsonQuestion(
         filters
           .map {
             case (filterKey, valueKeys) => {
-              def build[X](dimension: Dimension[X]) =
-                Filter[X](
-                  dimension,
-                  valueKeys.flatMap { Dimension.valueByKey(dimension, _) }).some
+              def build[X](dimension: Dimension[X]) = Filter[X](
+                dimension,
+                valueKeys.flatMap { Dimension.valueByKey(dimension, _) }).some
               filterKey match {
                 case Perf.key             => build(Perf)
                 case Phase.key            => build(Phase)
@@ -66,14 +65,13 @@ case class JsonQuestion(
 
 object JsonQuestion {
 
-  def fromQuestion(q: Question[_]) =
-    JsonQuestion(
-      dimension = q.dimension.key,
-      metric = q.metric.key,
-      filters = q.filters.map { case Filter(dimension, selected) =>
-        dimension.key -> selected.map(Dimension.valueKey(dimension))
-      } toMap
-    )
+  def fromQuestion(q: Question[_]) = JsonQuestion(
+    dimension = q.dimension.key,
+    metric = q.metric.key,
+    filters = q.filters.map { case Filter(dimension, selected) =>
+      dimension.key -> selected.map(Dimension.valueKey(dimension))
+    } toMap
+  )
 
   implicit val QuestionFormats = Json.format[JsonQuestion]
 }

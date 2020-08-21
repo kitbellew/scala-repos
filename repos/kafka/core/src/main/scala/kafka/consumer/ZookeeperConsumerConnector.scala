@@ -686,11 +686,10 @@ private[kafka] class ZookeeperConsumerConnector(
       },
       Map("clientId" -> config.clientId, "groupId" -> config.groupId))
 
-    private def ownedPartitionsCountMetricTags(topic: String) =
-      Map(
-        "clientId" -> config.clientId,
-        "groupId" -> config.groupId,
-        "topic" -> topic)
+    private def ownedPartitionsCountMetricTags(topic: String) = Map(
+      "clientId" -> config.clientId,
+      "groupId" -> config.groupId,
+      "topic" -> topic)
 
     private val watcherExecutorThread = new Thread(
       consumerIdString + "_watcher_executor") {

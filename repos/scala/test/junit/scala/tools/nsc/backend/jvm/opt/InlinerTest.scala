@@ -28,13 +28,12 @@ object InlinerTest extends ClearAfterClass.Clearable {
   var inlineOnlyCompiler = newCompiler(extraArgs = "-Yopt:inline-project")
 
   // allows inspecting the caches after a compilation run
-  def notPerRun: List[Clearable] =
-    List(
-      compiler.genBCode.bTypes.classBTypeFromInternalName,
-      compiler.genBCode.bTypes.byteCodeRepository.compilingClasses,
-      compiler.genBCode.bTypes.byteCodeRepository.parsedClasses,
-      compiler.genBCode.bTypes.callGraph.callsites
-    )
+  def notPerRun: List[Clearable] = List(
+    compiler.genBCode.bTypes.classBTypeFromInternalName,
+    compiler.genBCode.bTypes.byteCodeRepository.compilingClasses,
+    compiler.genBCode.bTypes.byteCodeRepository.parsedClasses,
+    compiler.genBCode.bTypes.callGraph.callsites
+  )
   notPerRun foreach compiler.perRunCaches.unrecordCache
 
   def clear(): Unit = { compiler = null; inlineOnlyCompiler = null }
@@ -81,12 +80,11 @@ class InlinerTest extends ClearAfterClass {
       callsite.callee.get.callee.name)
   }
 
-  def getCallsite(method: MethodNode, calleeName: String) =
-    callGraph
-      .callsites(method)
-      .valuesIterator
-      .find(_.callee.get.callee.name == calleeName)
-      .get
+  def getCallsite(method: MethodNode, calleeName: String) = callGraph
+    .callsites(method)
+    .valuesIterator
+    .find(_.callee.get.callee.name == calleeName)
+    .get
 
   def gMethAndFCallsite(code: String, mod: ClassNode => Unit = _ => ()) = {
     val List(c) = compile(code)
@@ -1607,10 +1605,9 @@ class InlinerTest extends ClearAfterClass {
         |class D extends C
       """.stripMargin
     val List(c, _) = compile(code)
-    def casts(m: String) =
-      getSingleMethod(c, m).instructions collect { case TypeOp(CHECKCAST, tp) =>
-        tp
-      }
+    def casts(m: String) = getSingleMethod(c, m).instructions collect {
+      case TypeOp(CHECKCAST, tp) => tp
+    }
     assertSameCode(getSingleMethod(c, "t1"), List(VarOp(ALOAD, 1), Op(ARETURN)))
     assertSameCode(getSingleMethod(c, "t2"), List(VarOp(ALOAD, 1), Op(ARETURN)))
     assertSameCode(

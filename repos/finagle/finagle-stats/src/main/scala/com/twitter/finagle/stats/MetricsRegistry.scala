@@ -25,11 +25,10 @@ private[twitter] trait MetricsRegistry extends StatsRegistry {
 
   private[this] val metrics = mutable.Map.empty[String, StatEntry]
 
-  def apply(): Map[String, StatEntry] =
-    synchronized {
-      updateMetrics()
-      metrics.toMap
-    }
+  def apply(): Map[String, StatEntry] = synchronized {
+    updateMetrics()
+    metrics.toMap
+  }
 
   private[this] def updateMetrics(): Unit =
     if (registry != null) {

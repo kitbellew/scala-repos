@@ -47,9 +47,9 @@ trait GeometryIncludes {
     * @param b JavaFX Bounds
     * @return ScalaFX Bounds
     */
-  implicit def jfxBounds2sfx(b: jfxg.Bounds): Bounds =
-    if (b != null) new Bounds(b) {}
-    else null
+  implicit def jfxBounds2sfx(b: jfxg.Bounds): Bounds = if (b != null)
+    new Bounds(b) {}
+  else null
 
   /**
     * Converts a

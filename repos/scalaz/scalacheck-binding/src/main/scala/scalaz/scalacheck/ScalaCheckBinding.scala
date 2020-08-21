@@ -9,11 +9,11 @@ object ScalaCheckBinding {
   import Gen.{sized, const}
 
   implicit val ArbitraryMonad: Monad[Arbitrary] = new Monad[Arbitrary] {
-    def bind[A, B](fa: Arbitrary[A])(f: A => Arbitrary[B]) =
-      Arbitrary(fa.arbitrary.flatMap(f(_).arbitrary))
+    def bind[A, B](fa: Arbitrary[A])(f: A => Arbitrary[B]) = Arbitrary(
+      fa.arbitrary.flatMap(f(_).arbitrary))
     def point[A](a: => A) = Arbitrary(sized(_ => const(a)))
-    override def map[A, B](fa: Arbitrary[A])(f: A => B) =
-      Arbitrary(fa.arbitrary.map(f))
+    override def map[A, B](fa: Arbitrary[A])(f: A => B) = Arbitrary(
+      fa.arbitrary.map(f))
   }
 
   implicit val GenMonad: Monad[Gen] = new Monad[Gen] {

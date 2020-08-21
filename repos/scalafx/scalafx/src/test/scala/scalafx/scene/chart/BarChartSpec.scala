@@ -49,9 +49,8 @@ class BarChartSpec
   override def getScalaClassInstance =
     new BarChart[String, Number](getJavaClassInstance)
 
-  override def getJavaClassInstance =
-    new jfxsc.BarChart[String, Number](
-      new jfxsc.CategoryAxis,
-      new jfxsc.NumberAxis)
+  override def getJavaClassInstance = new jfxsc.BarChart[String, Number](
+    new jfxsc.CategoryAxis,
+    new jfxsc.NumberAxis)
 
 }

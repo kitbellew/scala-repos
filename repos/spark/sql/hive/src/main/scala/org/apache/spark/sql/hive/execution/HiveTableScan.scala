@@ -56,9 +56,8 @@ private[hive] case class HiveTableScan(
     "numOutputRows" -> SQLMetrics
       .createLongMetric(sparkContext, "number of output rows"))
 
-  override def producedAttributes: AttributeSet =
-    outputSet ++
-      AttributeSet(partitionPruningPred.flatMap(_.references))
+  override def producedAttributes: AttributeSet = outputSet ++
+    AttributeSet(partitionPruningPred.flatMap(_.references))
 
   // Retrieve the original attributes based on expression ID so that capitalization matches.
   val attributes = requestedAttributes.map(relation.attributeMap)

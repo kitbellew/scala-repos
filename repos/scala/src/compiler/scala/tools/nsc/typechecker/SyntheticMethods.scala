@@ -320,33 +320,30 @@ trait SyntheticMethods extends ast.TreeDSL {
         forwardToRuntime(Object_hashCode)
     }
 
-    def valueClassMethods =
-      List(
-        Any_hashCode -> (() => hashCodeDerivedValueClassMethod),
-        Any_equals -> (() => equalsDerivedValueClassMethod)
-      )
+    def valueClassMethods = List(
+      Any_hashCode -> (() => hashCodeDerivedValueClassMethod),
+      Any_equals -> (() => equalsDerivedValueClassMethod)
+    )
 
-    def caseClassMethods =
-      productMethods ++ /*productNMethods ++*/ Seq(
-        Object_hashCode -> (() => chooseHashcode),
-        Object_toString -> (() => forwardToRuntime(Object_toString)),
-        Object_equals -> (() => equalsCaseClassMethod)
-      )
+    def caseClassMethods = productMethods ++ /*productNMethods ++*/ Seq(
+      Object_hashCode -> (() => chooseHashcode),
+      Object_toString -> (() => forwardToRuntime(Object_toString)),
+      Object_equals -> (() => equalsCaseClassMethod)
+    )
 
     def valueCaseClassMethods =
       productMethods ++ /*productNMethods ++*/ valueClassMethods ++ Seq(
         Any_toString -> (() => forwardToRuntime(Object_toString))
       )
 
-    def caseObjectMethods =
-      productMethods ++ Seq(
-        Object_hashCode -> (() =>
-          constantMethod(nme.hashCode_, clazz.name.decode.hashCode)),
-        Object_toString -> (() =>
-          constantMethod(nme.toString_, clazz.name.decode))
-        // Not needed, as reference equality is the default.
-        // Object_equals   -> (() => createMethod(Object_equals)(m => This(clazz) ANY_EQ Ident(m.firstParam)))
-      )
+    def caseObjectMethods = productMethods ++ Seq(
+      Object_hashCode -> (() =>
+        constantMethod(nme.hashCode_, clazz.name.decode.hashCode)),
+      Object_toString -> (() =>
+        constantMethod(nme.toString_, clazz.name.decode))
+      // Not needed, as reference equality is the default.
+      // Object_equals   -> (() => createMethod(Object_equals)(m => This(clazz) ANY_EQ Ident(m.firstParam)))
+    )
 
     /* If you serialize a singleton and then deserialize it twice,
      * you will have two instances of your singleton unless you implement
@@ -354,13 +351,12 @@ trait SyntheticMethods extends ast.TreeDSL {
      * no implementation and which are marked serializable (which is true
      * for all case objects.)
      */
-    def needsReadResolve =
-      (
-        clazz.isModuleClass
-          && clazz.isSerializable
-          && !hasConcreteImpl(nme.readResolve)
-          && clazz.isStatic
-      )
+    def needsReadResolve = (
+      clazz.isModuleClass
+        && clazz.isSerializable
+        && !hasConcreteImpl(nme.readResolve)
+        && clazz.isStatic
+    )
 
     def synthesize(): List[Tree] = {
       val methods =

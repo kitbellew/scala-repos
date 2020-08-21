@@ -152,11 +152,10 @@ object Json {
   implicit def toJsFieldJsValueWrapper[T](field: T)(implicit
       w: Writes[T]): JsValueWrapper = JsValueWrapperImpl(w.writes(field))
 
-  def obj(fields: (String, JsValueWrapper)*): JsObject =
-    JsObject(
-      fields.map(f => (f._1, f._2.asInstanceOf[JsValueWrapperImpl].field)))
-  def arr(fields: JsValueWrapper*): JsArray =
-    JsArray(fields.map(_.asInstanceOf[JsValueWrapperImpl].field))
+  def obj(fields: (String, JsValueWrapper)*): JsObject = JsObject(
+    fields.map(f => (f._1, f._2.asInstanceOf[JsValueWrapperImpl].field)))
+  def arr(fields: JsValueWrapper*): JsArray = JsArray(
+    fields.map(_.asInstanceOf[JsValueWrapperImpl].field))
 
   import play.api.libs.iteratee.Enumeratee
 

@@ -31,8 +31,8 @@ object JavaStreamEnrichments {
     */
   implicit class RichByteArrayOutputStream(val baos: ByteArrayOutputStream)
       extends AnyVal {
-    def toInputStream: ByteArrayInputStream =
-      new ByteArrayInputStream(baos.toByteArray)
+    def toInputStream: ByteArrayInputStream = new ByteArrayInputStream(
+      baos.toByteArray)
   }
 
   /**
@@ -261,8 +261,8 @@ object JavaStreamEnrichments {
       }
     }
 
-    def writeDouble(d: Double): Unit =
-      writeLong(java.lang.Double.doubleToLongBits(d))
+    def writeDouble(d: Double): Unit = writeLong(
+      java.lang.Double.doubleToLongBits(d))
 
     def writeFloat(f: Float): Unit = writeInt(java.lang.Float.floatToIntBits(f))
 

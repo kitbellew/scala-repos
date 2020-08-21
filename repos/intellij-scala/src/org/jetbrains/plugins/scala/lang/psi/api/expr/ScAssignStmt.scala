@@ -17,14 +17,14 @@ import org.jetbrains.plugins.scala.lang.resolve.{
   */
 
 trait ScAssignStmt extends ScExpression {
-  def getLExpression: ScExpression =
-    findChildByClassScala(classOf[ScExpression])
+  def getLExpression: ScExpression = findChildByClassScala(
+    classOf[ScExpression])
 
-  def getRExpression: Option[ScExpression] =
-    findLastChild(classOf[ScExpression]) match {
-      case Some(expr: ScExpression) if expr != getLExpression => Some(expr)
-      case _                                                  => None
-    }
+  def getRExpression: Option[ScExpression] = findLastChild(
+    classOf[ScExpression]) match {
+    case Some(expr: ScExpression) if expr != getLExpression => Some(expr)
+    case _                                                  => None
+  }
 
   def assignName: Option[String] = {
     getLExpression match {

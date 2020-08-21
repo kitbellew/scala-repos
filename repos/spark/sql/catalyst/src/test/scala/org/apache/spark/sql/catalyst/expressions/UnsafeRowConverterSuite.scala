@@ -327,8 +327,8 @@ class UnsafeRowConverterSuite extends SparkFunSuite with Matchers {
       unsafeRow.getSizeInBytes == 8 + 2 * 8 + row1.getSizeInBytes + row2.getSizeInBytes)
   }
 
-  private def createArray(values: Any*): ArrayData =
-    new GenericArrayData(values.toArray)
+  private def createArray(values: Any*): ArrayData = new GenericArrayData(
+    values.toArray)
 
   private def createMap(keys: Any*)(values: Any*): MapData = {
     assert(keys.length == values.length)

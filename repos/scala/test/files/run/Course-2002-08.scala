@@ -167,26 +167,24 @@ object M5 {
     def currentTime: Int = curtime;
 
     def afterDelay(delay: Int)(action: Action): Unit = {
-      def insert(ag: Agenda, time: Int): Agenda =
-        ag match {
-          case List() =>
-            List((time, action))
-          case (t, act) :: ag1 =>
-            if (time < t) (time, action) :: ag
-            else (t, act) :: insert(ag1, time)
-        }
+      def insert(ag: Agenda, time: Int): Agenda = ag match {
+        case List() =>
+          List((time, action))
+        case (t, act) :: ag1 =>
+          if (time < t) (time, action) :: ag
+          else (t, act) :: insert(ag1, time)
+      }
       agenda = insert(agenda, curtime + delay)
     }
 
-    private def next: Unit =
-      agenda match {
-        case List() => ()
-        case (time, action) :: ag1 => {
-          agenda = ag1;
-          curtime = time;
-          action();
-        }
+    private def next: Unit = agenda match {
+      case List() => ()
+      case (time, action) :: ag1 => {
+        agenda = ag1;
+        curtime = time;
+        action();
       }
+    }
 
     def run: Unit = {
       afterDelay(0) { () => Console.println("*** simulation started ***"); }
@@ -419,26 +417,24 @@ class Simulator() {
   private var curtime = 0;
 
   def afterDelay(delay: Int)(action: Action) = {
-    def insert(ag: Agenda, time: Int): Agenda =
-      ag match {
-        case List() =>
-          List((time, action))
-        case (t, act) :: ag1 =>
-          if (time < t) (time, action) :: ag
-          else (t, act) :: insert(ag1, time)
-      }
+    def insert(ag: Agenda, time: Int): Agenda = ag match {
+      case List() =>
+        List((time, action))
+      case (t, act) :: ag1 =>
+        if (time < t) (time, action) :: ag
+        else (t, act) :: insert(ag1, time)
+    }
     agenda = insert(agenda, curtime + delay)
   }
 
-  def next: Unit =
-    agenda match {
-      case List() => ()
-      case (time, action) :: rest => {
-        agenda = rest;
-        curtime = time;
-        action();
-      }
+  def next: Unit = agenda match {
+    case List() => ()
+    case (time, action) :: rest => {
+      agenda = rest;
+      curtime = time;
+      action();
     }
+  }
 
   protected def currentTime: Int = curtime;
 
@@ -538,19 +534,18 @@ abstract class CircuitSimulator() extends BasicCircuitSimulator() {
     in addAction { () => out.setSignal(in.getSignal); }
   }
 
-  def demux(in: Wire, ctrl: List[Wire], out: List[Wire]): Unit =
-    ctrl match {
-      case List() => connect(in, out.head);
-      case c :: rest =>
-        val c_ = new Wire();
-        val w1 = new Wire();
-        val w2 = new Wire();
-        inverter(c, c_);
-        andGate(in, c_, w1);
-        andGate(in, c, w2);
-        demux(w1, rest, out.drop(out.length / 2));
-        demux(w2, rest, out.take(out.length / 2));
-    }
+  def demux(in: Wire, ctrl: List[Wire], out: List[Wire]): Unit = ctrl match {
+    case List() => connect(in, out.head);
+    case c :: rest =>
+      val c_ = new Wire();
+      val w1 = new Wire();
+      val w2 = new Wire();
+      inverter(c, c_);
+      andGate(in, c_, w1);
+      andGate(in, c, w2);
+      demux(w1, rest, out.drop(out.length / 2));
+      demux(w2, rest, out.take(out.length / 2));
+  }
 }
 
 class Main() extends CircuitSimulator() {

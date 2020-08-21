@@ -266,10 +266,10 @@ trait ScBlock
   def isInCatchBlock: Boolean = getContext.isInstanceOf[ScCatchBlock]
   def isAnonymousFunction = hasCaseClauses && !isInCatchBlock
 
-  def exprs: Seq[ScExpression] =
-    findChildrenByClassScala(classOf[ScExpression]).toSeq
-  def statements: Seq[ScBlockStatement] =
-    findChildrenByClassScala(classOf[ScBlockStatement]).toSeq
+  def exprs: Seq[ScExpression] = findChildrenByClassScala(
+    classOf[ScExpression]).toSeq
+  def statements: Seq[ScBlockStatement] = findChildrenByClassScala(
+    classOf[ScBlockStatement]).toSeq
 
   def hasRBrace: Boolean =
     getNode.getChildren(TokenSet.create(ScalaTokenTypes.tRBRACE)).length == 1
@@ -311,6 +311,6 @@ trait ScBlock
 }
 
 object ScBlock {
-  def unapplySeq(block: ScBlock): Option[Seq[ScBlockStatement]] =
-    Option(block.statements)
+  def unapplySeq(block: ScBlock): Option[Seq[ScBlockStatement]] = Option(
+    block.statements)
 }

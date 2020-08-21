@@ -47,7 +47,7 @@ class BigDecimalStringConverter(
 
   override def toString(b: BigDecimal): String = delegate.toString(b.bigDecimal)
 
-  override def fromString(s: String): BigDecimal =
-    BigDecimal(delegate.fromString(s))
+  override def fromString(s: String): BigDecimal = BigDecimal(
+    delegate.fromString(s))
 
 }

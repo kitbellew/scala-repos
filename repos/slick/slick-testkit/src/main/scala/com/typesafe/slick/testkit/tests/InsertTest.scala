@@ -56,42 +56,38 @@ class InsertTest extends AsyncTest[JdbcTestDB] {
     )
   }
 
-  def testReturning =
-    ifCap(jcap.returnInsertKey) {
-      class A(tag: Tag) extends Table[(Int, String, String)](tag, "A") {
-        def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
-        def s1 = column[String]("S1")
-        def s2 = column[String]("S2")
-        def * = (id, s1, s2)
-      }
-      val as = TableQuery[A]
-      def ins1 = as.map(a => (a.s1, a.s2)) returning as.map(_.id)
-      def ins2 = as.map(a => (a.s1, a.s2)) returning as.map(a => (a.id, a.s1))
-      def ins3 =
-        as.map(a => (a.s1, a.s2)) returning as.map(_.id) into ((v, i) =>
-          (i, v._1, v._2))
-      def ins4 = as.map(a => (a.s1, a.s2)) returning as.map(a => a)
-
-      (for {
-        _ <- as.schema.create
-        _ <- (ins1 += ("a", "b")) map { id1: Int => id1 shouldBe 1 }
-        _ <- ifCap(jcap.returnInsertOther) {
-          (ins2 += ("c", "d")) map { id2: (Int, String) =>
-            id2 shouldBe (2, "c")
-          }
-        }
-        _ <- ifNotCap(jcap.returnInsertOther) {
-          (ins1 += ("c", "d")) map { id2: Int => id2 shouldBe 2 }
-        }
-        _ <- (ins1 ++= Seq(("e", "f"), ("g", "h"))) map (_ shouldBe Seq(3, 4))
-        _ <- (ins3 += ("i", "j")) map (_ shouldBe (5, "i", "j"))
-        _ <- ifCap(jcap.returnInsertOther) {
-          (ins4 += ("k", "l")) map { id5: (Int, String, String) =>
-            id5 shouldBe (6, "k", "l")
-          }
-        }
-      } yield ()).withPinnedSession // Some database servers (e.g. DB2) preallocate ID blocks per session
+  def testReturning = ifCap(jcap.returnInsertKey) {
+    class A(tag: Tag) extends Table[(Int, String, String)](tag, "A") {
+      def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
+      def s1 = column[String]("S1")
+      def s2 = column[String]("S2")
+      def * = (id, s1, s2)
     }
+    val as = TableQuery[A]
+    def ins1 = as.map(a => (a.s1, a.s2)) returning as.map(_.id)
+    def ins2 = as.map(a => (a.s1, a.s2)) returning as.map(a => (a.id, a.s1))
+    def ins3 = as.map(a => (a.s1, a.s2)) returning as.map(_.id) into ((v, i) =>
+      (i, v._1, v._2))
+    def ins4 = as.map(a => (a.s1, a.s2)) returning as.map(a => a)
+
+    (for {
+      _ <- as.schema.create
+      _ <- (ins1 += ("a", "b")) map { id1: Int => id1 shouldBe 1 }
+      _ <- ifCap(jcap.returnInsertOther) {
+        (ins2 += ("c", "d")) map { id2: (Int, String) => id2 shouldBe (2, "c") }
+      }
+      _ <- ifNotCap(jcap.returnInsertOther) {
+        (ins1 += ("c", "d")) map { id2: Int => id2 shouldBe 2 }
+      }
+      _ <- (ins1 ++= Seq(("e", "f"), ("g", "h"))) map (_ shouldBe Seq(3, 4))
+      _ <- (ins3 += ("i", "j")) map (_ shouldBe (5, "i", "j"))
+      _ <- ifCap(jcap.returnInsertOther) {
+        (ins4 += ("k", "l")) map { id5: (Int, String, String) =>
+          id5 shouldBe (6, "k", "l")
+        }
+      }
+    } yield ()).withPinnedSession // Some database servers (e.g. DB2) preallocate ID blocks per session
+  }
 
   def testForced = {
     class T(tname: String)(tag: Tag)

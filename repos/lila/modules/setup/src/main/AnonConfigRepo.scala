@@ -36,17 +36,16 @@ private[setup] object AnonConfigRepo {
   private def configOption(req: RequestHeader): Fu[Option[UserConfig]] =
     sessionId(req).??(s => config(s) map (_.some))
 
-  def filter(req: RequestHeader): Fu[FilterConfig] =
-    sessionId(req) ?? { sid =>
-      anonConfigTube.coll
-        .find(
-          BSONDocument("_id" -> sid),
-          BSONDocument("filter" -> true)
-        )
-        .one[BSONDocument] map {
-        _ flatMap (_.getAs[FilterConfig]("filter"))
-      }
-    } map (_ | FilterConfig.default)
+  def filter(req: RequestHeader): Fu[FilterConfig] = sessionId(req) ?? { sid =>
+    anonConfigTube.coll
+      .find(
+        BSONDocument("_id" -> sid),
+        BSONDocument("filter" -> true)
+      )
+      .one[BSONDocument] map {
+      _ flatMap (_.getAs[FilterConfig]("filter"))
+    }
+  } map (_ | FilterConfig.default)
 
   private def sessionId(req: RequestHeader): Option[String] =
     lila.common.HTTPRequest sid req

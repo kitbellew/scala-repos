@@ -27,9 +27,8 @@ object BuildFileChange {
     * working copies are light virtual files and have no reasonable path associated with them.
     * @param change change to swap revisions for
     */
-  def swap(change: BuildFileChange) =
-    new BuildFileChange(
-      change.afterRevision,
-      change.beforeRevision,
-      change.buildFileStatus)
+  def swap(change: BuildFileChange) = new BuildFileChange(
+    change.afterRevision,
+    change.beforeRevision,
+    change.buildFileStatus)
 }

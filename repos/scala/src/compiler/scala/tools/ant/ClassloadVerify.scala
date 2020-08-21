@@ -31,11 +31,10 @@ class ClassloadVerify extends ScalaMatchingTask {
     classpath = Some(p)
   }
 
-  private def getClasspath: Array[String] =
-    classpath match {
-      case None    => buildError("Member 'classpath' is empty.")
-      case Some(x) => x.list.toArray
-    }
+  private def getClasspath: Array[String] = classpath match {
+    case None    => buildError("Member 'classpath' is empty.")
+    case Some(x) => x.list.toArray
+  }
 
   override def execute(): Unit = {
     val results = VerifyClass.run(getClasspath).asScala

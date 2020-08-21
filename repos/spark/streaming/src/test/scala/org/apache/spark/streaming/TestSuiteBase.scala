@@ -47,8 +47,8 @@ private[streaming] class DummyDStream(ssc: StreamingContext)
     extends DStream[Int](ssc) {
   override def dependencies: List[DStream[Int]] = List.empty
   override def slideDuration: Duration = Seconds(1)
-  override def compute(time: Time): Option[RDD[Int]] =
-    Some(ssc.sc.emptyRDD[Int])
+  override def compute(time: Time): Option[RDD[Int]] = Some(
+    ssc.sc.emptyRDD[Int])
 }
 
 /**
@@ -58,8 +58,8 @@ private[streaming] class DummyInputDStream(ssc: StreamingContext)
     extends InputDStream[Int](ssc) {
   override def start(): Unit = {}
   override def stop(): Unit = {}
-  override def compute(time: Time): Option[RDD[Int]] =
-    Some(ssc.sc.emptyRDD[Int])
+  override def compute(time: Time): Option[RDD[Int]] = Some(
+    ssc.sc.emptyRDD[Int])
 }
 
 /**
@@ -181,20 +181,17 @@ class BatchCounter(ssc: StreamingContext) {
   }
   ssc.addStreamingListener(listener)
 
-  def getNumCompletedBatches: Int =
-    this.synchronized {
-      numCompletedBatches
-    }
+  def getNumCompletedBatches: Int = this.synchronized {
+    numCompletedBatches
+  }
 
-  def getNumStartedBatches: Int =
-    this.synchronized {
-      numStartedBatches
-    }
+  def getNumStartedBatches: Int = this.synchronized {
+    numStartedBatches
+  }
 
-  def getLastCompletedBatchTime: Time =
-    this.synchronized {
-      lastCompletedBatchTime
-    }
+  def getLastCompletedBatchTime: Time = this.synchronized {
+    lastCompletedBatchTime
+  }
 
   /**
     * Wait until `expectedNumCompletedBatches` batches are completed, or timeout. Return true if

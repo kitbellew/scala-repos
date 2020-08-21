@@ -93,9 +93,8 @@ trait CombParserHelpers {
 
   def xform(in: Char): Char = Character.toUpperCase(in)
 
-  private def acceptCIChar(c: Elem) =
-    acceptIf(a => xform(a) == xform(c))(
-      "`" + c + "' expected but " + _ + " found")
+  private def acceptCIChar(c: Elem) = acceptIf(a => xform(a) == xform(c))(
+    "`" + c + "' expected but " + _ + " found")
 
   /**
     * @return a trimmed string of the input (a List of Elem)
@@ -126,9 +125,8 @@ trait CombParserHelpers {
   /**
     * @return a parser discarding end of lines
     */
-  def EOL: Parser[Unit] =
-    (accept("\n\r") | accept("\r\n") | '\r' |
-      '\n' | EOF) ^^^ ()
+  def EOL: Parser[Unit] = (accept("\n\r") | accept("\r\n") | '\r' |
+    '\n' | EOF) ^^^ ()
 
   def notEOL: Parser[Elem] = (not(EOL) ~> anyChar)
 
@@ -139,8 +137,9 @@ trait CombParserHelpers {
   /**
     * @return a parser returning an Int if succeeding
     */
-  def aNumber: Parser[Int] =
-    rep1(elem("Number", isNum)) ^^ { case xs => xs.mkString("").toInt }
+  def aNumber: Parser[Int] = rep1(elem("Number", isNum)) ^^ { case xs =>
+    xs.mkString("").toInt
+  }
 
   /**
     * @return a parser which tries the permutations of a list of parsers

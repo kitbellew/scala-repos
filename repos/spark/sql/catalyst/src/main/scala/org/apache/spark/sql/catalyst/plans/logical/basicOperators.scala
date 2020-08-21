@@ -129,8 +129,8 @@ abstract class SetOperation(left: LogicalPlan, right: LogicalPlan)
 }
 
 private[sql] object SetOperation {
-  def unapply(p: SetOperation): Option[(LogicalPlan, LogicalPlan)] =
-    Some((p.left, p.right))
+  def unapply(p: SetOperation): Option[(LogicalPlan, LogicalPlan)] = Some(
+    (p.left, p.right))
 }
 
 case class Intersect(left: LogicalPlan, right: LogicalPlan)
@@ -472,8 +472,8 @@ case class Window(
   override def output: Seq[Attribute] =
     child.output ++ windowExpressions.map(_.toAttribute)
 
-  def windowOutputSet: AttributeSet =
-    AttributeSet(windowExpressions.map(_.toAttribute))
+  def windowOutputSet: AttributeSet = AttributeSet(
+    windowExpressions.map(_.toAttribute))
 }
 
 private[sql] object Expand {

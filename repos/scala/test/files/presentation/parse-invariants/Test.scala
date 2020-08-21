@@ -17,13 +17,12 @@ object Test extends InteractiveTest {
     * Asking for a parseTree should not enter any new symbols.
     */
   private def noNewSymbols(sf: SourceFile) {
-    def nextId() =
-      compiler.NoSymbol
-        .newTermSymbol(
-          compiler.TermName("dummy"),
-          compiler.NoPosition,
-          compiler.NoFlags)
-        .id
+    def nextId() = compiler.NoSymbol
+      .newTermSymbol(
+        compiler.TermName("dummy"),
+        compiler.NoPosition,
+        compiler.NoFlags)
+      .id
     val id = nextId()
     val tree = compiler.parseTree(sf)
     val id2 = nextId()

@@ -120,11 +120,10 @@ private[lease] object Coordinator {
   def parallelGc(
       ms: Buffer[MemoryPoolMXBean],
       cs: Buffer[GarbageCollectorMXBean]
-  ): Option[(MemoryPoolMXBean, GarbageCollectorMXBean)] =
-    for {
-      parEden <- ms find (_.getName == "PS Eden Space")
-      parScav <- cs find (_.getName == "PS Scavenge")
-    } yield (parEden, parScav)
+  ): Option[(MemoryPoolMXBean, GarbageCollectorMXBean)] = for {
+    parEden <- ms find (_.getName == "PS Eden Space")
+    parScav <- cs find (_.getName == "PS Scavenge")
+  } yield (parEden, parScav)
 
   /**
     * Try to to get garbage stats for a ParNew+CMS collected Java
@@ -133,9 +132,8 @@ private[lease] object Coordinator {
   def parNewCMS(
       ms: Buffer[MemoryPoolMXBean],
       cs: Buffer[GarbageCollectorMXBean]
-  ): Option[(MemoryPoolMXBean, GarbageCollectorMXBean)] =
-    for {
-      parEden <- ms find (_.getName == "Par Eden Space")
-      parNew <- cs find (_.getName == "ParNew")
-    } yield (parEden, parNew)
+  ): Option[(MemoryPoolMXBean, GarbageCollectorMXBean)] = for {
+    parEden <- ms find (_.getName == "Par Eden Space")
+    parNew <- cs find (_.getName == "ParNew")
+  } yield (parEden, parNew)
 }

@@ -58,12 +58,11 @@ case class Grant(
     createdAt: Instant,
     expirationDate: Option[DateTime]) {
 
-  def isExpired(at: Option[DateTime]) =
-    (expirationDate, at) match {
-      case (None, _)                 => false
-      case (_, None)                 => true
-      case (Some(expiry), Some(ref)) => expiry.isBefore(ref)
-    }
+  def isExpired(at: Option[DateTime]) = (expirationDate, at) match {
+    case (None, _)                 => false
+    case (_, None)                 => true
+    case (Some(expiry), Some(ref)) => expiry.isBefore(ref)
+  }
 
   def implies(perm: Permission, at: Option[DateTime]): Boolean = {
     !isExpired(at) && permissions.exists(_.implies(perm))
@@ -147,13 +146,12 @@ object Grant extends Logging {
       at: Option[DateTime] = None): Set[Grant] = {
     if (!implies(grants, perms, at)) Set.empty[Grant]
     else {
-      def tsort(grants: List[Grant]): List[Grant] =
-        grants.find(g1 =>
-          !grants.exists(g2 => g2 != g1 && g2.implies(g1))) match {
-          case Some(undominated) =>
-            undominated +: tsort(grants.filterNot(_ == undominated))
-          case _ => List()
-        }
+      def tsort(grants: List[Grant]): List[Grant] = grants.find(g1 =>
+        !grants.exists(g2 => g2 != g1 && g2.implies(g1))) match {
+        case Some(undominated) =>
+          undominated +: tsort(grants.filterNot(_ == undominated))
+        case _ => List()
+      }
 
       def minimize(grants: Seq[Grant], perms: Seq[Permission]): Set[Grant] =
         grants match {

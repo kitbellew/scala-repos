@@ -22,10 +22,9 @@ class InsertGapIntoStringIntention extends PsiElementBaseIntentionAction {
   def isAvailable(
       project: Project,
       editor: Editor,
-      element: PsiElement): Boolean =
-    element != null &&
-      element.getNode != null && Set(tSTRING, tMULTILINE_STRING).contains(
-      element.getNode.getElementType)
+      element: PsiElement): Boolean = element != null &&
+    element.getNode != null && Set(tSTRING, tMULTILINE_STRING).contains(
+    element.getNode.getElementType)
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     def insertString(str: String, caretMove: Int) {

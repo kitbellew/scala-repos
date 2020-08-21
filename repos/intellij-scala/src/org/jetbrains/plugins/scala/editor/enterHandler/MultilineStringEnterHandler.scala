@@ -103,18 +103,17 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
 
     def getSpaces(count: Int) = StringUtil.repeat(" ", count)
 
-    def getSmartSpaces(count: Int) =
-      if (useTabs) {
-        StringUtil.repeat("\t", count / tabSize) + StringUtil.repeat(
-          " ",
-          count % tabSize)
-      } else {
-        StringUtil.repeat(" ", count)
-      }
+    def getSmartSpaces(count: Int) = if (useTabs) {
+      StringUtil.repeat("\t", count / tabSize) + StringUtil.repeat(
+        " ",
+        count % tabSize)
+    } else {
+      StringUtil.repeat(" ", count)
+    }
 
-    def getSmartLength(line: String) =
-      if (useTabs) line.length + line.count(_ == '\t') * (tabSize - 1)
-      else line.length
+    def getSmartLength(line: String) = if (useTabs)
+      line.length + line.count(_ == '\t') * (tabSize - 1)
+    else line.length
 
     def insertNewLine(nlOffset: Int, indent: Int, trimPreviousLine: Boolean) {
       document.insertString(nlOffset, "\n")

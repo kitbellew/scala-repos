@@ -431,14 +431,12 @@ class ScalaLookupItem(
 }
 
 object ScalaLookupItem {
-  def unapply(item: ScalaLookupItem): Option[PsiNamedElement] =
-    Some(item.element)
+  def unapply(item: ScalaLookupItem): Option[PsiNamedElement] = Some(
+    item.element)
 
   @tailrec
-  def original(element: LookupElement): LookupElement =
-    element match {
-      case decorator: LookupElementDecorator[_] =>
-        original(decorator.getDelegate)
-      case it => it
-    }
+  def original(element: LookupElement): LookupElement = element match {
+    case decorator: LookupElementDecorator[_] => original(decorator.getDelegate)
+    case it                                   => it
+  }
 }

@@ -37,14 +37,13 @@ class GammaTest
 
   override val numSamples = 40000
 
-  implicit def arbParameter =
-    Arbitrary {
-      for (shape <- arbitrary[Double].map {
-          _.abs % 200.0 + 0.2
-        }; // Gamma pdf at 0 not defined when shape == 1
-        scale <- arbitrary[Double].map { _.abs % 8.0 + 1.0 })
-        yield (shape, scale);
-    }
+  implicit def arbParameter = Arbitrary {
+    for (shape <- arbitrary[Double].map {
+        _.abs % 200.0 + 0.2
+      }; // Gamma pdf at 0 not defined when shape == 1
+      scale <- arbitrary[Double].map { _.abs % 8.0 + 1.0 })
+      yield (shape, scale);
+  }
 
   def paramsClose(p: (Double, Double), b: (Double, Double)) = {
     val y1 = (p._1 - b._1).abs / (p._1.abs / 2 + b._1.abs / 2 + 1) < 2e-1
@@ -56,14 +55,13 @@ class GammaTest
 
   def fromDouble(x: Double) = x
 
-  implicit def arbDistr =
-    Arbitrary {
-      for (shape <- arbitrary[Double].map { x =>
-          math.abs(x) % 1000.0 + 1.1
-        }; // Gamma pdf at 0 not defined when shape == 1
-        scale <- arbitrary[Double].map { x => math.abs(x) % 8.0 + 1.0 })
-        yield new Gamma(shape, scale)(RandBasis.mt0)
-    }
+  implicit def arbDistr = Arbitrary {
+    for (shape <- arbitrary[Double].map { x =>
+        math.abs(x) % 1000.0 + 1.1
+      }; // Gamma pdf at 0 not defined when shape == 1
+      scale <- arbitrary[Double].map { x => math.abs(x) % 8.0 + 1.0 })
+      yield new Gamma(shape, scale)(RandBasis.mt0)
+  }
 
   test("Issue #11 on github") {
     val mean = 2.834312

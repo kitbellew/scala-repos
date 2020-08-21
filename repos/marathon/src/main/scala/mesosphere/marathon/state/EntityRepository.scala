@@ -27,59 +27,55 @@ trait EntityRepository[T <: MarathonState[_, T]]
   /**
     * Returns the id for all entities.
     */
-  def allIds(): Future[Iterable[String]] =
-    timedRead {
-      this.store.names().map { names =>
-        names.collect {
-          case name: String if noVersionKey(name) => name
-        }
+  def allIds(): Future[Iterable[String]] = timedRead {
+    this.store.names().map { names =>
+      names.collect {
+        case name: String if noVersionKey(name) => name
       }
     }
+  }
 
   /**
     * Returns the current version for all entities.
     */
-  protected def current(): Future[Iterable[T]] =
-    timedRead {
-      allIds().flatMap { names =>
-        Future
-          .sequence(names.map { name =>
-            currentVersion(name)
-          })
-          .map { _.flatten }
-      }
+  protected def current(): Future[Iterable[T]] = timedRead {
+    allIds().flatMap { names =>
+      Future
+        .sequence(names.map { name =>
+          currentVersion(name)
+        })
+        .map { _.flatten }
     }
+  }
 
   /**
     * Returns the timestamp of each stored version of the entity with the supplied id.
     */
-  def listVersions(id: String): Future[Iterable[Timestamp]] =
-    timedRead {
-      val prefix = versionKeyPrefix(id)
-      this.store.names().map { names =>
-        names
-          .collect {
-            case name: String if name.startsWith(prefix) =>
-              Timestamp(name.substring(prefix.length))
-          }
-          .sorted
-          .reverse
-      }
+  def listVersions(id: String): Future[Iterable[Timestamp]] = timedRead {
+    val prefix = versionKeyPrefix(id)
+    this.store.names().map { names =>
+      names
+        .collect {
+          case name: String if name.startsWith(prefix) =>
+            Timestamp(name.substring(prefix.length))
+        }
+        .sorted
+        .reverse
     }
+  }
 
   /**
     * Deletes all versions of the entity with the supplied id.
     */
-  def expunge(id: String): Future[Iterable[Boolean]] =
-    timedWrite {
-      listVersions(id).flatMap { timestamps =>
-        val versionsDeleteResult = timestamps.map { timestamp =>
-          store.expunge(versionKey(id, timestamp))
-        }
-        val currentDeleteResult = store.expunge(id)
-        Future.sequence(currentDeleteResult +: versionsDeleteResult.toSeq)
+  def expunge(id: String): Future[Iterable[Boolean]] = timedWrite {
+    listVersions(id).flatMap { timestamps =>
+      val versionsDeleteResult = timestamps.map { timestamp =>
+        store.expunge(versionKey(id, timestamp))
       }
+      val currentDeleteResult = store.expunge(id)
+      Future.sequence(currentDeleteResult +: versionsDeleteResult.toSeq)
     }
+  }
 
   private[this] def limitNumberOfVersions(
       id: String): Future[Iterable[Boolean]] = {
@@ -108,8 +104,7 @@ trait EntityRepository[T <: MarathonState[_, T]]
   /**
     * Stores the given entity directly under the given id without a second versioned store.
     */
-  protected def storeByName(id: String, t: T): Future[T] =
-    timedWrite {
-      this.store.store(id, t)
-    }
+  protected def storeByName(id: String, t: T): Future[T] = timedWrite {
+    this.store.store(id, t)
+  }
 }

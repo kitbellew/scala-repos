@@ -20,25 +20,22 @@ class QueryCompiler(val phases: Vector[Phase]) extends Logging {
   /** Return a new compiler with the new phase added directly after another
     * phase (or a different implementation of the same phase name).
     */
-  def addAfter(p: Phase, after: Phase) =
-    new QueryCompiler({
-      val i = phases.lastIndexWhere(_.name == after.name)
-      if (i == -1)
-        throw new SlickException("Previous phase " + after.name + " not found")
-      else phases.patch(i + 1, Seq(p), 0)
-    })
+  def addAfter(p: Phase, after: Phase) = new QueryCompiler({
+    val i = phases.lastIndexWhere(_.name == after.name)
+    if (i == -1)
+      throw new SlickException("Previous phase " + after.name + " not found")
+    else phases.patch(i + 1, Seq(p), 0)
+  })
 
   /** Return a new compiler with the new phase added directly before another
     * phase (or a different implementation of the same phase name).
     */
-  def addBefore(p: Phase, before: Phase) =
-    new QueryCompiler({
-      val i = phases.indexWhere(_.name == before.name)
-      if (i == -1)
-        throw new SlickException(
-          "Following phase " + before.name + " not found")
-      else phases.patch(i, Seq(p), 0)
-    })
+  def addBefore(p: Phase, before: Phase) = new QueryCompiler({
+    val i = phases.indexWhere(_.name == before.name)
+    if (i == -1)
+      throw new SlickException("Following phase " + before.name + " not found")
+    else phases.patch(i, Seq(p), 0)
+  })
 
   /** Return a new compiler without the given phase (or a different
     * implementation of the same phase name.
@@ -49,8 +46,8 @@ class QueryCompiler(val phases: Vector[Phase]) extends Logging {
     * the same name. The new phase must have a State that is assignable to the
     * original phase's state.
     */
-  def replace(p: Phase) =
-    new QueryCompiler(phases.map(o => if (o.name == p.name) p else o))
+  def replace(p: Phase) = new QueryCompiler(
+    phases.map(o => if (o.name == p.name) p else o))
 
   /** Compile an AST with a new `CompilerState`. */
   def run(tree: Node): CompilerState = {

@@ -94,14 +94,13 @@ final class Env(
 
   private val socketHub = system.actorOf(
     Props(new lila.socket.SocketHubActor.Default[Socket] {
-      def mkActor(tournamentId: String) =
-        new Socket(
-          tournamentId = tournamentId,
-          history = new History(ttl = HistoryMessageTtl),
-          jsonView = jsonView,
-          uidTimeout = UidTimeout,
-          socketTimeout = SocketTimeout,
-          lightUser = lightUser)
+      def mkActor(tournamentId: String) = new Socket(
+        tournamentId = tournamentId,
+        history = new History(ttl = HistoryMessageTtl),
+        jsonView = jsonView,
+        uidTimeout = UidTimeout,
+        socketTimeout = SocketTimeout,
+        lightUser = lightUser)
     }),
     name = SocketName
   )
@@ -142,12 +141,11 @@ final class Env(
   def version(tourId: String): Fu[Int] =
     socketHub ? Ask(tourId, GetVersion) mapTo manifest[Int]
 
-  def cli =
-    new lila.common.Cli {
-      def process = { case "tournament" :: "leaderboard" :: "generate" :: Nil =>
-        leaderboardIndexer.generateAll inject "Done!"
-      }
+  def cli = new lila.common.Cli {
+    def process = { case "tournament" :: "leaderboard" :: "generate" :: Nil =>
+      leaderboardIndexer.generateAll inject "Done!"
     }
+  }
 
   private lazy val autoPairing =
     new AutoPairing(roundMap = roundMap, system = system, onStart = onStart)

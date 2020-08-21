@@ -28,19 +28,15 @@ object HttpResponseClassifier {
     */
   def apply(
       underlying: PartialFunction[(Request, Response), ResponseClass]
-  ): ResponseClassifier =
-    new ResponseClassifier {
-      def isDefinedAt(x: ReqRep): Boolean =
-        x match {
-          case ReqRep(req: Request, Return(rep: Response)) =>
-            underlying.isDefinedAt((req, rep))
-          case _ => false
-        }
-
-      def apply(x: ReqRep): ResponseClass =
-        x match {
-          case ReqRep(req: Request, Return(rep: Response)) =>
-            underlying((req, rep))
-        }
+  ): ResponseClassifier = new ResponseClassifier {
+    def isDefinedAt(x: ReqRep): Boolean = x match {
+      case ReqRep(req: Request, Return(rep: Response)) =>
+        underlying.isDefinedAt((req, rep))
+      case _ => false
     }
+
+    def apply(x: ReqRep): ResponseClass = x match {
+      case ReqRep(req: Request, Return(rep: Response)) => underlying((req, rep))
+    }
+  }
 }

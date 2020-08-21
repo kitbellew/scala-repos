@@ -6,10 +6,9 @@ import java.time._
 // https://github.com/scala-js/scala-js-java-time/issues/7
 trait TimeInstances extends TimeInstances0 {
 
-  private[this] def orderFromInt[A](f: (A, A) => Int): Order[A] =
-    new Order[A] {
-      def order(x: A, y: A) = Ordering.fromInt(f(x, y))
-    }
+  private[this] def orderFromInt[A](f: (A, A) => Int): Order[A] = new Order[A] {
+    def order(x: A, y: A) = Ordering.fromInt(f(x, y))
+  }
 
   implicit val durationInstance: Monoid[Duration] with Order[Duration] =
     new Monoid[Duration] with Order[Duration] {

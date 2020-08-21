@@ -6,11 +6,10 @@ object Test {
   }
   class C3(x: Int) extends C1(x) {
     override def canEqual(other: Any) = other.isInstanceOf[C3]
-    override def equals(other: Any) =
-      other match {
-        case ob: C3 => x == ob.x
-        case _      => false
-      }
+    override def equals(other: Any) = other match {
+      case ob: C3 => x == ob.x
+      case _      => false
+    }
   }
 
   case class CS1(xs: Any*)

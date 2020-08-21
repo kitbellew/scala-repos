@@ -43,12 +43,11 @@ class Currency(val amount: Long, val symbol: String, val decimals: Int) {
     * Determines whether two currencies are equal with respect to
     * symbol, amount, and decimal value.
     */
-  override def equals(other: Any) =
-    other match {
-      case c: Currency =>
-        c.amount == amount && c.symbol == symbol && c.decimals == decimals
-      case _ => false
-    }
+  override def equals(other: Any) = other match {
+    case c: Currency =>
+      c.amount == amount && c.symbol == symbol && c.decimals == decimals
+    case _ => false
+  }
 
   /**
     * Addition on Currency objects. This compares currency symbols to prevent
@@ -82,11 +81,10 @@ object Currency {
   /**
     * Parse a currency from the format specified by Currency.forDB
     */
-  def apply(s: String): Box[Currency] =
-    s.roboSplit("&") match {
-      case List(cur, a, d) =>
-        for (av <- asLong(a); dv <- asInt(d))
-          yield new Currency(av, urlDecode(cur), dv)
-      case _ => Empty
-    }
+  def apply(s: String): Box[Currency] = s.roboSplit("&") match {
+    case List(cur, a, d) =>
+      for (av <- asLong(a); dv <- asInt(d))
+        yield new Currency(av, urlDecode(cur), dv)
+    case _ => Empty
+  }
 }

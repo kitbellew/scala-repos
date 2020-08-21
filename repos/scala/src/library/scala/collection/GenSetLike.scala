@@ -111,17 +111,16 @@ trait GenSetLike[A, +Repr]
     *  @return     `true` if `that` is a set which contains the same elements
     *              as this set.
     */
-  override def equals(that: Any): Boolean =
-    that match {
-      case that: GenSet[_] =>
-        (this eq that) ||
-          (that canEqual this) &&
-            (this.size == that.size) &&
-            (try this subsetOf that.asInstanceOf[GenSet[A]]
-            catch { case ex: ClassCastException => false })
-      case _ =>
-        false
-    }
+  override def equals(that: Any): Boolean = that match {
+    case that: GenSet[_] =>
+      (this eq that) ||
+        (that canEqual this) &&
+          (this.size == that.size) &&
+          (try this subsetOf that.asInstanceOf[GenSet[A]]
+          catch { case ex: ClassCastException => false })
+    case _ =>
+      false
+  }
 
   // Careful! Don't write a Set's hashCode like:
   //    override def hashCode() = this map (_.hashCode) sum

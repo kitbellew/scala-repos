@@ -8,11 +8,10 @@ final class NonEmptyList[A] private[scalaz] (val head: A, val tail: IList[A]) {
 
   def <::(b: A): NonEmptyList[A] = nel(b, head :: tail)
 
-  def <:::(bs: IList[A]): NonEmptyList[A] =
-    bs match {
-      case INil()       => this
-      case ICons(b, bs) => nel(b, bs ::: list)
-    }
+  def <:::(bs: IList[A]): NonEmptyList[A] = bs match {
+    case INil()       => this
+    case ICons(b, bs) => nel(b, bs ::: list)
+  }
 
   def :::>(bs: IList[A]): NonEmptyList[A] = nel(head, tail ::: bs)
 
@@ -85,10 +84,9 @@ final class NonEmptyList[A] private[scalaz] (val head: A, val tail: IList[A]) {
     tails0(this, IList.empty)
   }
 
-  def reverse: NonEmptyList[A] =
-    (list.reverse: @unchecked) match {
-      case ICons(x, xs) => nel(x, xs)
-    }
+  def reverse: NonEmptyList[A] = (list.reverse: @unchecked) match {
+    case ICons(x, xs) => nel(x, xs)
+  }
 
   /** @since 7.0.2 */
 
@@ -233,12 +231,11 @@ sealed abstract class NonEmptyListInstances extends NonEmptyListInstances0 {
 
       def unzip[A, B](a: NonEmptyList[(A, B)]) = a.unzip
 
-      def alignWith[A, B, C](f: A \&/ B => C) =
-        (a, b) => {
-          NonEmptyList.nel(
-            f(\&/.Both(a.head, b.head)),
-            Align[IList].alignWith(f)(a.tail, b.tail))
-        }
+      def alignWith[A, B, C](f: A \&/ B => C) = (a, b) => {
+        NonEmptyList.nel(
+          f(\&/.Both(a.head, b.head)),
+          Align[IList].alignWith(f)(a.tail, b.tail))
+      }
 
       override def length[A](a: NonEmptyList[A]): Int = a.size
 

@@ -199,9 +199,9 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
 
       /** The state of the stream. 0 = in result set, 1 = before end marker, 2 = after end marker. */
       var state = 0
-      def row =
-        if (state > 0) throw new SlickException("After end of result set")
-        else current
+      def row = if (state > 0)
+        throw new SlickException("After end of result set")
+      else current
       def row_=(value: T): Unit = {
         if (state > 0) throw new SlickException("After end of result set")
         pr.restart
@@ -243,9 +243,9 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
         }
         if (state < 2) this else null
       }
-      def end =
-        if (state > 1) throw new SlickException("After end of result set")
-        else state > 0
+      def end = if (state > 1)
+        throw new SlickException("After end of result set")
+      else state > 0
       override def toString = s"Mutator(state = $state, current = $current)"
     }
     type StreamState = Mutator
@@ -294,17 +294,12 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
       param: Any)
       extends super.QueryActionExtensionMethodsImpl[R, S] {
     def result: ProfileAction[R, S, Effect.Read] = {
-      def findSql(n: Node): String =
-        n match {
-          case c: CompiledStatement =>
-            c.extra.asInstanceOf[SQLBuilder.Result].sql
-          case ParameterSwitch(cases, default) =>
-            findSql(
-              cases
-                .find { case (f, n) => f(param) }
-                .map(_._2)
-                .getOrElse(default))
-        }
+      def findSql(n: Node): String = n match {
+        case c: CompiledStatement => c.extra.asInstanceOf[SQLBuilder.Result].sql
+        case ParameterSwitch(cases, default) =>
+          findSql(
+            cases.find { case (f, n) => f(param) }.map(_._2).getOrElse(default))
+      }
       (tree match {
         case (rsm @ ResultSetMapping(
               _,
@@ -314,10 +309,9 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
           new StreamingInvokerAction[R, Any, Effect] { streamingAction =>
             protected[this] def createInvoker(sql: Iterable[String]) =
               createQueryInvoker(rsm, param, sql.head)
-            protected[this] def createBuilder =
-              ct.cons
-                .createBuilder(ct.elementType.classTag)
-                .asInstanceOf[Builder[Any, R]]
+            protected[this] def createBuilder = ct.cons
+              .createBuilder(ct.elementType.classTag)
+              .asInstanceOf[Builder[Any, R]]
             def statements = List(sql)
             override def getDumpInfo = super.getDumpInfo.copy(name = "result")
           }

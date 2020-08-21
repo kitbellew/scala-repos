@@ -578,10 +578,9 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
     }
   }
 
-  private def isRepeated(p: ParameterInfo) =
-    p match {
-      case p: ScalaParameterInfo => p.isRepeatedParameter
-      case p: JavaParameterInfo  => p.isVarargType
-      case _                     => false
-    }
+  private def isRepeated(p: ParameterInfo) = p match {
+    case p: ScalaParameterInfo => p.isRepeatedParameter
+    case p: JavaParameterInfo  => p.isVarargType
+    case _                     => false
+  }
 }

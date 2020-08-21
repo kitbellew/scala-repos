@@ -85,45 +85,44 @@ trait ParHashTable[K, Entry >: Null <: HashEntry[K, Entry]]
 
     def dup = newIterator(idx, until, totalsize, es)
 
-    def split: Seq[IterableSplitter[T]] =
-      if (remaining > 1) {
-        if (until > idx) {
-          // there is at least one more slot for the next iterator
-          // divide the rest of the table
-          val divsz = (until - idx) / 2
+    def split: Seq[IterableSplitter[T]] = if (remaining > 1) {
+      if (until > idx) {
+        // there is at least one more slot for the next iterator
+        // divide the rest of the table
+        val divsz = (until - idx) / 2
 
-          // second iterator params
-          val sidx = idx + divsz + 1 // + 1 preserves iteration invariant
-          val suntil = until
-          val ses =
-            itertable(sidx - 1).asInstanceOf[
-              Entry
-            ] // sidx - 1 ensures counting from the right spot
-          val stotal =
-            calcNumElems(sidx - 1, suntil, table.length, sizeMapBucketSize)
+        // second iterator params
+        val sidx = idx + divsz + 1 // + 1 preserves iteration invariant
+        val suntil = until
+        val ses =
+          itertable(sidx - 1).asInstanceOf[
+            Entry
+          ] // sidx - 1 ensures counting from the right spot
+        val stotal =
+          calcNumElems(sidx - 1, suntil, table.length, sizeMapBucketSize)
 
-          // first iterator params
-          val fidx = idx
-          val funtil = idx + divsz
-          val fes = es
-          val ftotal = totalsize - stotal
+        // first iterator params
+        val fidx = idx
+        val funtil = idx + divsz
+        val fes = es
+        val ftotal = totalsize - stotal
 
-          Seq(
-            newIterator(fidx, funtil, ftotal, fes),
-            newIterator(sidx, suntil, stotal, ses)
-          )
-        } else {
-          // otherwise, this is the last entry in the table - all what remains is the chain
-          // so split the rest of the chain
-          val arr = convertToArrayBuffer(es)
-          val arrpit = new scala.collection.parallel.BufferSplitter[T](
-            arr,
-            0,
-            arr.length,
-            signalDelegate)
-          arrpit.split
-        }
-      } else Seq(this.asInstanceOf[IterRepr])
+        Seq(
+          newIterator(fidx, funtil, ftotal, fes),
+          newIterator(sidx, suntil, stotal, ses)
+        )
+      } else {
+        // otherwise, this is the last entry in the table - all what remains is the chain
+        // so split the rest of the chain
+        val arr = convertToArrayBuffer(es)
+        val arrpit = new scala.collection.parallel.BufferSplitter[T](
+          arr,
+          0,
+          arr.length,
+          signalDelegate)
+        arrpit.split
+      }
+    } else Seq(this.asInstanceOf[IterRepr])
 
     private def convertToArrayBuffer(
         chainhead: Entry): mutable.ArrayBuffer[T] = {

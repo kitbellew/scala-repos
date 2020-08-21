@@ -49,28 +49,25 @@ private[tv] final class ChannelActor(channel: Tv.Channel) extends Actor {
     gameOption foreach { self ! SetGame(_) }
   }
 
-  def wayBetter(game: Game, candidates: List[Game]) =
-    feature(candidates) map {
-      case Some(next) if isWayBetter(game, next) => next.some
-      case _                                     => none
-    }
+  def wayBetter(game: Game, candidates: List[Game]) = feature(candidates) map {
+    case Some(next) if isWayBetter(game, next) => next.some
+    case _                                     => none
+  }
 
   def isWayBetter(g1: Game, g2: Game) =
     score(g2.resetTurns) > (score(g1.resetTurns) * 1.15)
 
   def rematch(game: Game) = game.next ?? GameRepo.game
 
-  def feature(candidates: List[Game]) =
-    fuccess {
-      candidates sortBy { -score(_) } headOption
-    }
+  def feature(candidates: List[Game]) = fuccess {
+    candidates sortBy { -score(_) } headOption
+  }
 
-  def score(game: Game): Int =
-    math.round {
-      (heuristics map { case (fn, coefficient) =>
-        heuristicBox(fn(game)) * coefficient
-      }).sum * 1000
-    }
+  def score(game: Game): Int = math.round {
+    (heuristics map { case (fn, coefficient) =>
+      heuristicBox(fn(game)) * coefficient
+    }).sum * 1000
+  }
 
   type Heuristic = Game => Float
   val heuristicBox = box(0 to 1) _
@@ -82,8 +79,8 @@ private[tv] final class ChannelActor(channel: Tv.Channel) extends Actor {
     ratingHeuristic(Color.Black) -> 1.2f,
     progressHeuristic -> 0.7f)
 
-  def ratingHeuristic(color: Color): Heuristic =
-    game => ratingBox(game.player(color).rating | 1400)
+  def ratingHeuristic(color: Color): Heuristic = game =>
+    ratingBox(game.player(color).rating | 1400)
 
   def progressHeuristic: Heuristic = game => 1 - turnBox(game.turns)
 

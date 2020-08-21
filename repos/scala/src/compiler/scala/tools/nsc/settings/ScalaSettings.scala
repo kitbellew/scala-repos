@@ -37,22 +37,20 @@ trait ScalaSettings
   protected def futureSettings = List[BooleanSetting]()
 
   /** If any of these settings is enabled, the compiler should print a message and exit. */
-  def infoSettings =
-    List[Setting](
-      version,
-      help,
-      Xhelp,
-      Yhelp,
-      showPlugins,
-      showPhases,
-      genPhaseGraph)
+  def infoSettings = List[Setting](
+    version,
+    help,
+    Xhelp,
+    Yhelp,
+    showPlugins,
+    showPhases,
+    genPhaseGraph)
 
   /** Any -multichoice:help? Nicer if any option could report that it had help to offer. */
-  private def multihelp =
-    allSettings exists {
-      case s: MultiChoiceSetting[_] => s.isHelping
-      case _                        => false
-    }
+  private def multihelp = allSettings exists {
+    case s: MultiChoiceSetting[_] => s.isHelping
+    case _                        => false
+  }
 
   /** Is an info setting set? */
   def isInfo = (infoSettings exists (_.isSetByUser)) || multihelp
@@ -587,10 +585,9 @@ trait ScalaSettings
     default = Some(List(YoptWarningsChoices.atInlineFailed.name))
   )
 
-  def YoptWarningsSummaryOnly =
-    YoptWarnings.value subsetOf Set(
-      YoptWarningsChoices.none,
-      YoptWarningsChoices.atInlineFailedSummary)
+  def YoptWarningsSummaryOnly = YoptWarnings.value subsetOf Set(
+    YoptWarningsChoices.none,
+    YoptWarningsChoices.atInlineFailedSummary)
 
   def YoptWarningEmitAtInlineFailed =
     !YoptWarnings.isSetByUser ||
@@ -602,9 +599,8 @@ trait ScalaSettings
     YoptWarnings.contains(YoptWarningsChoices.noInlineMixed)
   def YoptWarningNoInlineMissingBytecode =
     YoptWarnings.contains(YoptWarningsChoices.noInlineMissingBytecode)
-  def YoptWarningNoInlineMissingScalaInlineInfoAttr =
-    YoptWarnings.contains(
-      YoptWarningsChoices.noInlineMissingScalaInlineInfoAttr)
+  def YoptWarningNoInlineMissingScalaInlineInfoAttr = YoptWarnings.contains(
+    YoptWarningsChoices.noInlineMissingScalaInlineInfoAttr)
 
   val YoptTrace = StringSetting(
     "-Yopt-trace",

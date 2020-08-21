@@ -65,12 +65,11 @@ object SwaggerAuthSerializers {
   }
 
   def authFormats[T <: AnyRef](userOption: Option[T])(implicit
-      mf: Manifest[T]): SwaggerFormats =
-    SwaggerSerializers.formats ++ Seq(
-      new AuthOperationSerializer[T](userOption),
-      new AuthEndpointSerializer[T],
-      new AuthApiSerializer[T]
-    )
+      mf: Manifest[T]): SwaggerFormats = SwaggerSerializers.formats ++ Seq(
+    new AuthOperationSerializer[T](userOption),
+    new AuthEndpointSerializer[T],
+    new AuthApiSerializer[T]
+  )
 
   class AuthOperationSerializer[T <: AnyRef: Manifest](userOption: Option[T])
       extends CustomSerializer[AuthOperation[T]](implicit formats =>
@@ -276,23 +275,22 @@ object AuthApi {
 
   class AuthOperationBuilder[T <: AnyRef](val resultClass: DataType)
       extends SwaggerAuthOperationBuilder[T] {
-    def result: AuthOperation[T] =
-      AuthOperation[T](
-        null,
-        resultClass,
-        summary,
-        position,
-        notes,
-        deprecated,
-        nickname,
-        parameters,
-        responseMessages,
-        consumes,
-        produces,
-        protocols,
-        authorizations,
-        allows
-      )
+    def result: AuthOperation[T] = AuthOperation[T](
+      null,
+      resultClass,
+      summary,
+      position,
+      notes,
+      deprecated,
+      nickname,
+      parameters,
+      responseMessages,
+      consumes,
+      produces,
+      protocols,
+      authorizations,
+      allows
+    )
   }
 
 }

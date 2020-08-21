@@ -22,17 +22,16 @@ final class DisposableEmailDomain(
     }
   }
 
-  private[security] def setDomains(json: JsValue): Unit =
-    try {
-      val ds = json.as[List[String]]
-      matchers = ds.map { d =>
-        val regex = s"""(.+\\.|)${d.replace(".", "\\.")}"""
-        makeMatcher(regex)
-      }
-      failed = false
-    } catch {
-      case e: Exception => onError(e)
+  private[security] def setDomains(json: JsValue): Unit = try {
+    val ds = json.as[List[String]]
+    matchers = ds.map { d =>
+      val regex = s"""(.+\\.|)${d.replace(".", "\\.")}"""
+      makeMatcher(regex)
     }
+    failed = false
+  } catch {
+    case e: Exception => onError(e)
+  }
 
   private var failed = false
 

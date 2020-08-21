@@ -24,18 +24,16 @@ object Stages {
   /**
     * Generate a Stage from a code block.
     */
-  def stage(f: ChannelBuffer => NextStep): Stage =
-    new Stage {
-      def apply(buffer: ChannelBuffer) = f(buffer)
-    }
+  def stage(f: ChannelBuffer => NextStep): Stage = new Stage {
+    def apply(buffer: ChannelBuffer) = f(buffer)
+  }
 
   /**
     * Wrap a Stage. The wrapped stage will be regenerated on each call.
     */
-  def proxy(stage: => Stage): Stage =
-    new Stage {
-      def apply(buffer: ChannelBuffer) = stage.apply(buffer)
-    }
+  def proxy(stage: => Stage): Stage = new Stage {
+    def apply(buffer: ChannelBuffer) = stage.apply(buffer)
+  }
 
   /**
     * Allow a decoder to return a Stage when we expected a NextStep.
@@ -49,10 +47,9 @@ object Stages {
     * `getCount` each time new data arrives, to recompute the total number of bytes desired.
     */
   def ensureBytesDynamic(getCount: => Int)(
-      process: ChannelBuffer => NextStep): Stage =
-    proxy {
-      ensureBytes(getCount)(process)
-    }
+      process: ChannelBuffer => NextStep): Stage = proxy {
+    ensureBytes(getCount)(process)
+  }
 
   /**
     * Ensure that a certain number of bytes is buffered before executing the * next step.
@@ -79,8 +76,8 @@ object Stages {
   /**
     * Read `count` bytes into a byte buffer and pass that buffer to the next step in processing.
     */
-  def readBytes(count: Int)(process: Array[Byte] => NextStep) =
-    stage { buffer =>
+  def readBytes(count: Int)(process: Array[Byte] => NextStep) = stage {
+    buffer =>
       if (buffer.readableBytes < count) {
         Incomplete
       } else {
@@ -88,32 +85,30 @@ object Stages {
         buffer.readBytes(bytes)
         process(bytes)
       }
-    }
+  }
 
   /**
     * Read bytes until a delimiter is present. The number of bytes up to and including the delimiter
     * is passed to the next processing step. `getDelimiter` is called each time new data arrives.
     */
   def ensureDelimiterDynamic(getDelimiter: => Byte)(
-      process: (Int, ChannelBuffer) => NextStep) =
-    proxy {
-      ensureDelimiter(getDelimiter)(process)
-    }
+      process: (Int, ChannelBuffer) => NextStep) = proxy {
+    ensureDelimiter(getDelimiter)(process)
+  }
 
   /**
     * Read bytes until a delimiter is present. The number of bytes up to and including the delimiter
     * is passed to the next processing step.
     */
   def ensureDelimiter(delimiter: Byte)(
-      process: (Int, ChannelBuffer) => NextStep) =
-    stage { buffer =>
-      val n = buffer.bytesBefore(delimiter)
-      if (n < 0) {
-        Incomplete
-      } else {
-        process(n + 1, buffer)
-      }
+      process: (Int, ChannelBuffer) => NextStep) = stage { buffer =>
+    val n = buffer.bytesBefore(delimiter)
+    if (n < 0) {
+      Incomplete
+    } else {
+      process(n + 1, buffer)
     }
+  }
 
   /**
     * Read bytes until a delimiter is present, and pass a buffer containing the bytes up to and
@@ -121,10 +116,9 @@ object Stages {
     * data arrives.
     */
   def readToDelimiterDynamic(getDelimiter: => Byte)(
-      process: Array[Byte] => NextStep) =
-    proxy {
-      readToDelimiter(getDelimiter)(process)
-    }
+      process: Array[Byte] => NextStep) = proxy {
+    readToDelimiter(getDelimiter)(process)
+  }
 
   /**
     * Read bytes until a delimiter is present, and pass a buffer containing the bytes up to and

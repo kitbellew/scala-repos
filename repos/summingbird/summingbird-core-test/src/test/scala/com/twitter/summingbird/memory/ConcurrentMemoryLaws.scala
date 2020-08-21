@@ -46,11 +46,10 @@ class ConcurrentMemoryLaws extends WordSpec {
   def sample[T: Arbitrary]: T = Arbitrary.arbitrary[T].sample.get
 
   def empty[T](b: BlockingQueue[T]): List[T] = {
-    def go(items: List[T]): List[T] =
-      b.poll() match {
-        case null => items.reverse
-        case x    => go(x :: items)
-      }
+    def go(items: List[T]): List[T] = b.poll() match {
+      case null => items.reverse
+      case x    => go(x :: items)
+    }
     go(Nil)
   }
 

@@ -88,8 +88,8 @@ class ClientStoreLaws extends WordSpec {
 
 class ClientStoreProps extends Properties("ClientStore") {
 
-  implicit def batchArb: Arbitrary[BatchID] =
-    Arbitrary(Gen.choose(0L, 100L).map(BatchID(_)))
+  implicit def batchArb: Arbitrary[BatchID] = Arbitrary(
+    Gen.choose(0L, 100L).map(BatchID(_)))
 
   property("OfflineLTEQ Batch works") = Prop.forAll {
     (b: BatchID, offset: Int) =>

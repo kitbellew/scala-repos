@@ -259,13 +259,12 @@ object Commands {
     PFMERGE -> { PFMerge(_) }
   )
 
-  def doMatch(cmd: String, args: List[Array[Byte]]) =
-    commandMap
-      .get(cmd.toUpperCase)
-      .map {
-        _(args)
-      }
-      .getOrElse(throw ClientError("Unsupported command: " + cmd))
+  def doMatch(cmd: String, args: List[Array[Byte]]) = commandMap
+    .get(cmd.toUpperCase)
+    .map {
+      _(args)
+    }
+    .getOrElse(throw ClientError("Unsupported command: " + cmd))
 
   def trimList(list: Seq[Array[Byte]], count: Int, from: String = "") = {
     RequireClientProtocol(list != null, "%s Empty list found".format(from))
@@ -435,14 +434,13 @@ class CommandCodec extends UnifiedProtocolCodec {
     }
   }
 
-  def decodeInlineRequest(c: Char) =
-    readLine { line =>
-      val listOfArrays = (c + line).split(' ').toList.map { args =>
-        args.getBytes(Charsets.Utf8)
-      }
-      val cmd = commandDecode(listOfArrays)
-      emit(cmd)
+  def decodeInlineRequest(c: Char) = readLine { line =>
+    val listOfArrays = (c + line).split(' ').toList.map { args =>
+      args.getBytes(Charsets.Utf8)
     }
+    val cmd = commandDecode(listOfArrays)
+    emit(cmd)
+  }
 
   def commandDecode(lines: List[Array[Byte]]): Command = {
     RequireClientProtocol(

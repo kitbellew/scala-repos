@@ -36,9 +36,6 @@ trait StorageReader {
     */
   def length: Int
 
-  override def toString =
-    "StorageReader: id = %d, length = %d, structure = %s".format(
-      id,
-      length,
-      structure)
+  override def toString = "StorageReader: id = %d, length = %d, structure = %s"
+    .format(id, length, structure)
 }

@@ -133,24 +133,22 @@ class SecurityHeadersFilter @Inject() (config: SecurityHeadersConfig)
     * Returns the security headers for a request.
     * All security headers applied to all requests by default. Override to alter that behavior.
     */
-  protected def headers(request: RequestHeader): Seq[(String, String)] =
-    Seq(
-      config.frameOptions.map(X_FRAME_OPTIONS_HEADER -> _),
-      config.xssProtection.map(X_XSS_PROTECTION_HEADER -> _),
-      config.contentTypeOptions.map(X_CONTENT_TYPE_OPTIONS_HEADER -> _),
-      config.permittedCrossDomainPolicies.map(
-        X_PERMITTED_CROSS_DOMAIN_POLICIES_HEADER -> _),
-      config.contentSecurityPolicy.map(CONTENT_SECURITY_POLICY_HEADER -> _)
-    ).flatten
+  protected def headers(request: RequestHeader): Seq[(String, String)] = Seq(
+    config.frameOptions.map(X_FRAME_OPTIONS_HEADER -> _),
+    config.xssProtection.map(X_XSS_PROTECTION_HEADER -> _),
+    config.contentTypeOptions.map(X_CONTENT_TYPE_OPTIONS_HEADER -> _),
+    config.permittedCrossDomainPolicies.map(
+      X_PERMITTED_CROSS_DOMAIN_POLICIES_HEADER -> _),
+    config.contentSecurityPolicy.map(CONTENT_SECURITY_POLICY_HEADER -> _)
+  ).flatten
 
   /**
     * Applies the filter to an action, appending the headers to the result so it shows in the HTTP response.
     */
-  def apply(next: EssentialAction) =
-    EssentialAction { req =>
-      import play.api.libs.iteratee.Execution.Implicits.trampoline
-      next(req).map(_.withHeaders(headers(req): _*))
-    }
+  def apply(next: EssentialAction) = EssentialAction { req =>
+    import play.api.libs.iteratee.Execution.Implicits.trampoline
+    next(req).map(_.withHeaders(headers(req): _*))
+  }
 }
 
 /**
@@ -166,11 +164,10 @@ class SecurityHeadersConfigProvider @Inject() (configuration: Configuration)
   * The security headers module.
   */
 class SecurityHeadersModule extends Module {
-  def bindings(environment: Environment, configuration: Configuration) =
-    Seq(
-      bind[SecurityHeadersConfig].toProvider[SecurityHeadersConfigProvider],
-      bind[SecurityHeadersFilter].toSelf
-    )
+  def bindings(environment: Environment, configuration: Configuration) = Seq(
+    bind[SecurityHeadersConfig].toProvider[SecurityHeadersConfigProvider],
+    bind[SecurityHeadersFilter].toSelf
+  )
 }
 
 /**

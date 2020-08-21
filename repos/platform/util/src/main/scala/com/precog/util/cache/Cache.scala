@@ -35,10 +35,9 @@ class SimpleCache[K, V](private val backing: GCache[K, V]) extends Map[K, V] {
   def +=(kv: (K, V)) = { backing.put(kv._1, kv._2); this }
   def -=(key: K) = { backing.invalidate(key); this }
   def get(key: K): Option[V] = Option(backing.getIfPresent(key))
-  def iterator: Iterator[(K, V)] =
-    backing.asMap.entrySet.iterator.asScala.map { kv =>
-      (kv.getKey, kv.getValue)
-    }
+  def iterator: Iterator[(K, V)] = backing.asMap.entrySet.iterator.asScala.map {
+    kv => (kv.getKey, kv.getValue)
+  }
   def invalidateAll = backing.invalidateAll
 }
 
@@ -47,16 +46,14 @@ class AutoCache[K, V](private val backing: LoadingCache[K, V])
   def +=(kv: (K, V)) = { backing.put(kv._1, kv._2); this }
   def -=(key: K) = { backing.invalidate(key); this }
   def get(key: K): Option[V] = getFull(key).toOption
-  def iterator: Iterator[(K, V)] =
-    backing.asMap.entrySet.iterator.asScala.map { kv =>
-      (kv.getKey, kv.getValue)
-    }
+  def iterator: Iterator[(K, V)] = backing.asMap.entrySet.iterator.asScala.map {
+    kv => (kv.getKey, kv.getValue)
+  }
   def invalidateAll = backing.invalidateAll
 
-  def getFull(key: K): Validation[Throwable, V] =
-    Validation.fromTryCatch {
-      backing.get(key)
-    }
+  def getFull(key: K): Validation[Throwable, V] = Validation.fromTryCatch {
+    backing.get(key)
+  }
 }
 
 object Cache {
@@ -84,11 +81,10 @@ object Cache {
       extends CacheOption[K, V] {
     def apply(builder: CacheBuilder[K, V]) =
       builder.removalListener(new RemovalListener[K, V] {
-        def onRemoval(notification: RemovalNotification[K, V]) =
-          onRemove(
-            notification.getKey,
-            notification.getValue,
-            notification.getCause)
+        def onRemoval(notification: RemovalNotification[K, V]) = onRemove(
+          notification.getKey,
+          notification.getValue,
+          notification.getCause)
       })
   }
 

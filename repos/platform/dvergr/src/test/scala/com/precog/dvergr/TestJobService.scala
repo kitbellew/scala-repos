@@ -95,22 +95,18 @@ class JobServiceSpec extends TestJobService {
       JField("data", JObject(JField("x", JNum(1))))
     ))
 
-  def startJob(ts: Option[DateTime] = None): JValue =
-    JObject(
-      JField("state", JString("started")) ::
-        (ts map { dt =>
-          JField("timestamp", dt.serialize) :: Nil
-        } getOrElse Nil)
-    )
+  def startJob(ts: Option[DateTime] = None): JValue = JObject(
+    JField("state", JString("started")) ::
+      (ts map { dt => JField("timestamp", dt.serialize) :: Nil } getOrElse Nil)
+  )
 
   def postJob(job: JValue, apiKey: String = validAPIKey) =
     jobsClient.query("apiKey", apiKey).post[JValue]("/jobs/")(job)
 
-  def postJobAndGetId(job: JValue, apiKey: String = validAPIKey) =
-    for {
-      res <- jobsClient.query("apiKey", apiKey).post[JValue]("/jobs/")(job)
-      Some(JString(jobId)) = res.content map (_ \ "id")
-    } yield jobId
+  def postJobAndGetId(job: JValue, apiKey: String = validAPIKey) = for {
+    res <- jobsClient.query("apiKey", apiKey).post[JValue]("/jobs/")(job)
+    Some(JString(jobId)) = res.content map (_ \ "id")
+  } yield jobId
 
   def getJob(jobId: String) = jobsClient.get[JValue]("/jobs/%s".format(jobId))
 
@@ -123,11 +119,10 @@ class JobServiceSpec extends TestJobService {
   def postMessage(jobId: String, channel: String, msg: JValue) =
     jobsClient.post[JValue]("/jobs/%s/messages/%s" format (jobId, channel))(msg)
 
-  def postMessageAndGetId(jobId: String, channel: String, msg: JValue) =
-    for {
-      res <- postMessage(jobId, channel, msg)
-      Some(JNum(id)) = res.content map (_ \ "id")
-    } yield id
+  def postMessageAndGetId(jobId: String, channel: String, msg: JValue) = for {
+    res <- postMessage(jobId, channel, msg)
+    Some(JNum(id)) = res.content map (_ \ "id")
+  } yield id
 
   def getMessages(jobId: String, channel: String, after: Option[BigDecimal]) = {
     val client0 = after map { id =>
@@ -370,9 +365,8 @@ class JobServiceSpec extends TestJobService {
       }
     }
 
-    def say(name: String, msg: String): JValue =
-      JObject(
-        JField("name", JString(name)) :: JField("msg", JString(msg)) :: Nil)
+    def say(name: String, msg: String): JValue = JObject(
+      JField("name", JString(name)) :: JField("msg", JString(msg)) :: Nil)
 
     "post a simple message to a job" in {
       (for {
@@ -545,10 +539,9 @@ class JobServiceSpec extends TestJobService {
           JField("progress", JNum(99)) :: JField("unit", JString("%")) :: Nil))
       } yield (res1, res2, res3, res4)).copoint
 
-      def mustBeBad(res: HttpResponse[JValue]) =
-        res must beLike {
-          case HttpResponse(HttpStatus(BadRequest, _), _, _, _) => ok
-        }
+      def mustBeBad(res: HttpResponse[JValue]) = res must beLike {
+        case HttpResponse(HttpStatus(BadRequest, _), _, _, _) => ok
+      }
 
       mustBeBad(res1)
       mustBeBad(res2)

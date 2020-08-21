@@ -112,20 +112,19 @@ class DenseVector[@spec(Double, Int, Float, Long) V](
 
   def activeKeysIterator: Iterator[Int] = keysIterator
 
-  override def equals(p1: Any) =
-    p1 match {
-      case y: DenseVector[_] =>
-        y.length == length && ArrayUtil.nonstupidEquals(
-          data,
-          offset,
-          stride,
-          length,
-          y.data,
-          y.offset,
-          y.stride,
-          y.length)
-      case _ => super.equals(p1)
-    }
+  override def equals(p1: Any) = p1 match {
+    case y: DenseVector[_] =>
+      y.length == length && ArrayUtil.nonstupidEquals(
+        data,
+        offset,
+        stride,
+        length,
+        y.data,
+        y.offset,
+        y.stride,
+        y.length)
+    case _ => super.equals(p1)
+  }
 
   // TODO: this is only consistent if the hashcode of inactive elements is 0!!!
   override def hashCode(): Int =
@@ -240,20 +239,19 @@ class DenseVector[@spec(Double, Int, Float, Long) V](
     new DenseMatrix[V](1, length, data, offset, stride)
   }
 
-  override def toArray(implicit cm: ClassTag[V]): Array[V] =
-    if (stride == 1) {
-      ArrayUtil.copyOfRange(data, offset, offset + length)
-    } else {
-      val arr = new Array[V](length)
-      var i = 0
-      var off = offset
-      while (i < length) {
-        arr(i) = data(off)
-        off += stride
-        i += 1
-      }
-      arr
+  override def toArray(implicit cm: ClassTag[V]): Array[V] = if (stride == 1) {
+    ArrayUtil.copyOfRange(data, offset, offset + length)
+  } else {
+    val arr = new Array[V](length)
+    var i = 0
+    var off = offset
+    while (i < length) {
+      arr(i) = data(off)
+      off += stride
+      i += 1
     }
+    arr
+  }
 
   /** Returns copy of this [[breeze.linalg.DenseVector]] as a [[scala.Vector]] */
   def toScalaVector()(implicit cm: ClassTag[V]): scala.Vector[V] =

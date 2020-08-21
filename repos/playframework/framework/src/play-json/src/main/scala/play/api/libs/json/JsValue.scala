@@ -18,14 +18,14 @@ sealed trait JsValue extends JsReadable {
 
   def validate[A](implicit rds: Reads[A]): JsResult[A] = rds.reads(this)
 
-  def validateOpt[A](implicit rds: Reads[A]): JsResult[Option[A]] =
-    JsDefined(this).validateOpt[A]
+  def validateOpt[A](implicit rds: Reads[A]): JsResult[Option[A]] = JsDefined(
+    this).validateOpt[A]
 }
 
 object JsValue {
   import scala.language.implicitConversions
-  implicit def jsValueToJsLookup(value: JsValue): JsLookup =
-    JsLookup(JsDefined(value))
+  implicit def jsValueToJsLookup(value: JsValue): JsLookup = JsLookup(
+    JsDefined(value))
 }
 
 /**
@@ -120,8 +120,8 @@ case class JsObject(private val underlying: Map[String, JsValue])
   /**
     * Adds one field to the JsObject
     */
-  def +(otherField: (String, JsValue)): JsObject =
-    JsObject(underlying + otherField)
+  def +(otherField: (String, JsValue)): JsObject = JsObject(
+    underlying + otherField)
 
   /**
     * merges everything in depth and doesn't stop at first level, as ++ does
@@ -143,11 +143,10 @@ case class JsObject(private val underlying: Map[String, JsValue])
     merge(this, other)
   }
 
-  override def equals(other: Any): Boolean =
-    other match {
-      case that: JsObject => (that canEqual this) && fieldSet == that.fieldSet
-      case _              => false
-    }
+  override def equals(other: Any): Boolean = other match {
+    case that: JsObject => (that canEqual this) && fieldSet == that.fieldSet
+    case _              => false
+  }
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[JsObject]
 
@@ -159,6 +158,6 @@ object JsObject {
   /**
     * Construct a new JsObject, with the order of fields in the Seq.
     */
-  def apply(fields: Seq[(String, JsValue)]): JsObject =
-    new JsObject(mutable.LinkedHashMap(fields: _*))
+  def apply(fields: Seq[(String, JsValue)]): JsObject = new JsObject(
+    mutable.LinkedHashMap(fields: _*))
 }

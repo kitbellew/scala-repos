@@ -72,8 +72,9 @@ private[deploy] class Master(
 
   private val hadoopConf = SparkHadoopUtil.get.newConfiguration(conf)
 
-  private def createDateFormat =
-    new SimpleDateFormat("yyyyMMddHHmmss") // For application IDs
+  private def createDateFormat = new SimpleDateFormat(
+    "yyyyMMddHHmmss"
+  ) // For application IDs
 
   private val WORKER_TIMEOUT_MS =
     conf.getLong("spark.worker.timeout", 60) * 1000
@@ -161,10 +162,9 @@ private[deploy] class Master(
     masterWebUiUrl = "http://" + masterPublicAddress + ":" + webUi.boundPort
     checkForWorkerTimeOutTask = forwardMessageThread.scheduleAtFixedRate(
       new Runnable {
-        override def run(): Unit =
-          Utils.tryLogNonFatalError {
-            self.send(CheckForWorkerTimeOut)
-          }
+        override def run(): Unit = Utils.tryLogNonFatalError {
+          self.send(CheckForWorkerTimeOut)
+        }
       },
       0,
       WORKER_TIMEOUT_MS,
@@ -260,10 +260,9 @@ private[deploy] class Master(
         beginRecovery(storedApps, storedDrivers, storedWorkers)
         recoveryCompletionTask = forwardMessageThread.schedule(
           new Runnable {
-            override def run(): Unit =
-              Utils.tryLogNonFatalError {
-                self.send(CompleteRecovery)
-              }
+            override def run(): Unit = Utils.tryLogNonFatalError {
+              self.send(CompleteRecovery)
+            }
           },
           WORKER_TIMEOUT_MS,
           TimeUnit.MILLISECONDS)

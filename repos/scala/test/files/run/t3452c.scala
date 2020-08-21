@@ -71,8 +71,8 @@ abstract class DBag
     with D5[String]
     with D6[String]
     with D7 {
-  def f(x: String, y: String, z: String) =
-    println(x.length + y.length + z.length)
+  def f(x: String, y: String, z: String) = println(
+    x.length + y.length + z.length)
 }
 abstract class EBag
     extends E1[String, String]
@@ -82,8 +82,8 @@ abstract class EBag
     with E5[String]
     with E6[String]
     with E7 {
-  def f(x: String, y: String, z: String) =
-    println(x.length + y.length + z.length)
+  def f(x: String, y: String, z: String) = println(
+    x.length + y.length + z.length)
 }
 abstract class FBag
     extends F1[String, String]
@@ -93,8 +93,8 @@ abstract class FBag
     with F5[String]
     with F6[String]
     with F7 {
-  override def f(x: String, y: String, z: String) =
-    println(x.length + y.length + z.length)
+  override def f(x: String, y: String, z: String) = println(
+    x.length + y.length + z.length)
 }
 
 abstract class GBag1[A, B] extends Base[A, B, String] with D2[A, B] {

@@ -77,125 +77,123 @@ private[http] object RouteImplementation
     extends Directives
     with server.RouteConcatenation {
   def apply(route: Route): ScalaRoute = {
-    def directiveFor(route: DirectiveRoute): Directive0 =
-      route match {
-        case RouteAlternatives() ⇒ ScalaDirective.Empty
-        case RawPathPrefix(elements) ⇒
-          pathMatcherDirective[String](elements, rawPathPrefix)
-        case RawPathPrefixTest(elements) ⇒
-          pathMatcherDirective[String](elements, rawPathPrefixTest)
-        case PathSuffix(elements) ⇒
-          pathMatcherDirective[String](elements, pathSuffix)
-        case PathSuffixTest(elements) ⇒
-          pathMatcherDirective[String](elements, pathSuffixTest)
-        case RedirectToTrailingSlashIfMissing(code) ⇒
-          redirectToTrailingSlashIfMissing(
-            code.asScala.asInstanceOf[Redirection])
-        case RedirectToNoTrailingSlashIfPresent(code) ⇒
-          redirectToNoTrailingSlashIfPresent(
-            code.asScala.asInstanceOf[Redirection])
+    def directiveFor(route: DirectiveRoute): Directive0 = route match {
+      case RouteAlternatives() ⇒ ScalaDirective.Empty
+      case RawPathPrefix(elements) ⇒
+        pathMatcherDirective[String](elements, rawPathPrefix)
+      case RawPathPrefixTest(elements) ⇒
+        pathMatcherDirective[String](elements, rawPathPrefixTest)
+      case PathSuffix(elements) ⇒
+        pathMatcherDirective[String](elements, pathSuffix)
+      case PathSuffixTest(elements) ⇒
+        pathMatcherDirective[String](elements, pathSuffixTest)
+      case RedirectToTrailingSlashIfMissing(code) ⇒
+        redirectToTrailingSlashIfMissing(code.asScala.asInstanceOf[Redirection])
+      case RedirectToNoTrailingSlashIfPresent(code) ⇒
+        redirectToNoTrailingSlashIfPresent(
+          code.asScala.asInstanceOf[Redirection])
 
-        case MethodFilter(m) ⇒ method(m.asScala)
-        case Extract(extractions) ⇒
-          extractRequestContext.flatMap { ctx ⇒
-            extractions
-              .map { e ⇒
-                e.directive.flatMap(
-                  addExtraction(e.asInstanceOf[RequestVal[Any]], _))
+      case MethodFilter(m) ⇒ method(m.asScala)
+      case Extract(extractions) ⇒
+        extractRequestContext.flatMap { ctx ⇒
+          extractions
+            .map { e ⇒
+              e.directive.flatMap(
+                addExtraction(e.asInstanceOf[RequestVal[Any]], _))
+            }
+            .reduce(_ & _)
+        }
+
+      case BasicAuthentication(authenticator) ⇒
+        authenticateBasicAsync(
+          authenticator.realm,
+          { creds ⇒
+            val javaCreds =
+              creds match {
+                case Credentials.Missing ⇒
+                  new BasicCredentials {
+                    def available: Boolean = false
+                    def identifier: String =
+                      throw new IllegalStateException("Credentials missing")
+                    def verify(secret: String): Boolean =
+                      throw new IllegalStateException("Credentials missing")
+                  }
+                case p @ Credentials.Provided(name) ⇒
+                  new BasicCredentials {
+                    def available: Boolean = true
+                    def identifier: String = name
+                    def verify(secret: String): Boolean = p.verify(secret)
+                  }
               }
-              .reduce(_ & _)
+
+            authenticator
+              .authenticate(javaCreds)
+              .toScala
+              .map(_.asScala)(
+                akka.dispatch.ExecutionContexts.sameThreadExecutionContext)
           }
+        ).flatMap { user ⇒
+          addExtraction(authenticator.asInstanceOf[RequestVal[Any]], user)
+        }
 
-        case BasicAuthentication(authenticator) ⇒
-          authenticateBasicAsync(
-            authenticator.realm,
-            { creds ⇒
-              val javaCreds =
-                creds match {
-                  case Credentials.Missing ⇒
-                    new BasicCredentials {
-                      def available: Boolean = false
-                      def identifier: String =
-                        throw new IllegalStateException("Credentials missing")
-                      def verify(secret: String): Boolean =
-                        throw new IllegalStateException("Credentials missing")
-                    }
-                  case p @ Credentials.Provided(name) ⇒
-                    new BasicCredentials {
-                      def available: Boolean = true
-                      def identifier: String = name
-                      def verify(secret: String): Boolean = p.verify(secret)
-                    }
-                }
+      case OAuth2Authentication(authenticator) ⇒
+        authenticateOAuth2Async(
+          authenticator.realm,
+          { creds ⇒
+            val javaCreds =
+              creds match {
+                case Credentials.Missing ⇒
+                  new OAuth2Credentials {
+                    def available: Boolean = false
+                    def identifier: String =
+                      throw new IllegalStateException("Credentials missing")
+                    def verify(secret: String): Boolean =
+                      throw new IllegalStateException("Credentials missing")
+                  }
+                case p @ Credentials.Provided(name) ⇒
+                  new OAuth2Credentials {
+                    def available: Boolean = true
+                    def identifier: String = name
+                    def verify(secret: String): Boolean = p.verify(secret)
+                  }
+              }
 
-              authenticator
-                .authenticate(javaCreds)
-                .toScala
-                .map(_.asScala)(
-                  akka.dispatch.ExecutionContexts.sameThreadExecutionContext)
-            }
-          ).flatMap { user ⇒
-            addExtraction(authenticator.asInstanceOf[RequestVal[Any]], user)
+            authenticator
+              .authenticate(javaCreds)
+              .toScala
+              .map(_.asScala)(sameThreadExecutionContext)
           }
+        ).flatMap { user ⇒
+          addExtraction(authenticator.asInstanceOf[RequestVal[Any]], user)
+        }
 
-        case OAuth2Authentication(authenticator) ⇒
-          authenticateOAuth2Async(
-            authenticator.realm,
-            { creds ⇒
-              val javaCreds =
-                creds match {
-                  case Credentials.Missing ⇒
-                    new OAuth2Credentials {
-                      def available: Boolean = false
-                      def identifier: String =
-                        throw new IllegalStateException("Credentials missing")
-                      def verify(secret: String): Boolean =
-                        throw new IllegalStateException("Credentials missing")
-                    }
-                  case p @ Credentials.Provided(name) ⇒
-                    new OAuth2Credentials {
-                      def available: Boolean = true
-                      def identifier: String = name
-                      def verify(secret: String): Boolean = p.verify(secret)
-                    }
-                }
+      case EncodeResponse(coders) ⇒
+        val scalaCoders = coders.map(_._underlyingScalaCoder())
+        encodeResponseWith(scalaCoders.head, scalaCoders.tail: _*)
 
-              authenticator
-                .authenticate(javaCreds)
-                .toScala
-                .map(_.asScala)(sameThreadExecutionContext)
-            }
-          ).flatMap { user ⇒
-            addExtraction(authenticator.asInstanceOf[RequestVal[Any]], user)
+      case DecodeRequest(coders) ⇒
+        decodeRequestWith(coders.map(_._underlyingScalaCoder()): _*)
+      case Conditional(eTag, lastModified) ⇒
+        conditional(eTag.map(_.asScala), lastModified.map(_.asScala))
+      case h: HostFilter ⇒ host(h.filter _)
+      case SchemeFilter(schemeName) ⇒ scheme(schemeName)
+
+      case HandleExceptions(handler) ⇒
+        val pf: akka.http.scaladsl.server.ExceptionHandler =
+          akka.http.scaladsl.server.ExceptionHandler {
+            case e: RuntimeException ⇒ apply(handler.handle(e))
           }
+        handleExceptions(pf)
 
-        case EncodeResponse(coders) ⇒
-          val scalaCoders = coders.map(_._underlyingScalaCoder())
-          encodeResponseWith(scalaCoders.head, scalaCoders.tail: _*)
-
-        case DecodeRequest(coders) ⇒
-          decodeRequestWith(coders.map(_._underlyingScalaCoder()): _*)
-        case Conditional(eTag, lastModified) ⇒
-          conditional(eTag.map(_.asScala), lastModified.map(_.asScala))
-        case h: HostFilter ⇒ host(h.filter _)
-        case SchemeFilter(schemeName) ⇒ scheme(schemeName)
-
-        case HandleExceptions(handler) ⇒
-          val pf: akka.http.scaladsl.server.ExceptionHandler =
-            akka.http.scaladsl.server.ExceptionHandler {
-              case e: RuntimeException ⇒ apply(handler.handle(e))
-            }
-          handleExceptions(pf)
-
-        case HandleRejections(handler) ⇒
-          handleRejections(new RejectionHandlerWrapper(handler))
-        case Validated(isValid, errorMsg) ⇒ validate(isValid, errorMsg)
-        case RangeSupport() ⇒ withRangeSupport
-        case SetCookie(cookie) ⇒ setCookie(cookie.asScala)
-        case DeleteCookie(name, domain, path) ⇒
-          deleteCookie(
-            HttpCookie(name, domain = domain, path = path, value = "deleted"))
-      }
+      case HandleRejections(handler) ⇒
+        handleRejections(new RejectionHandlerWrapper(handler))
+      case Validated(isValid, errorMsg) ⇒ validate(isValid, errorMsg)
+      case RangeSupport() ⇒ withRangeSupport
+      case SetCookie(cookie) ⇒ setCookie(cookie.asScala)
+      case DeleteCookie(name, domain, path) ⇒
+        deleteCookie(
+          HttpCookie(name, domain = domain, path = path, value = "deleted"))
+    }
 
     route match {
       case route: DirectiveRoute ⇒
@@ -280,9 +278,8 @@ private[http] object RouteImplementation
         .asInstanceOf[PathMatcherImpl[_]]
         .matcher
         .transform(_.map(v ⇒ Tuple1(Map(matcher -> v._1))))
-    def addExtractions(valMap: T): Directive0 =
-      transformExtractionMap(
-        _.addAll(valMap.asInstanceOf[Map[RequestVal[_], Any]]))
+    def addExtractions(valMap: T): Directive0 = transformExtractionMap(
+      _.addAll(valMap.asInstanceOf[Map[RequestVal[_], Any]]))
     val reduced: ScalaPathMatcher[ValMap] =
       matchers.map(toScala).reduce(_.~(_)(AddToMapJoin))
     directive(reduced.asInstanceOf[PathMatcher1[T]]).flatMap(addExtractions)

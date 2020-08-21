@@ -21,9 +21,8 @@ object MakePomTest extends Build {
   val fakeRepo = fakeName at fakeURL
   def extraTagName = "extra-tag"
 
-  def checkProject(pom: Elem) =
-    if (pom.label != "project")
-      sys.error("Top level element was not 'project': " + pom.label)
+  def checkProject(pom: Elem) = if (pom.label != "project")
+    sys.error("Top level element was not 'project': " + pom.label)
 
   def withRepositories[T](pomXML: Elem)(f: NodeSeq => T) = {
     val repositoriesElement = pomXML \ "repositories"

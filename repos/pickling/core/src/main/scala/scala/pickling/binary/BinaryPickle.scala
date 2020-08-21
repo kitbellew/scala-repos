@@ -38,10 +38,10 @@ case class BinaryInputPickle(input: BinaryInput) extends BinaryPickle {
 object BinaryPickle {
   def apply(a: Array[Byte]): BinaryPickle = new BinaryPickleArray(a)
   def apply(a: BinaryInput): BinaryPickle = new BinaryInputPickle(a)
-  def apply(a: InputStream): BinaryPickle =
-    new BinaryInputPickle(new StreamInput(a))
-  def apply(a: ByteBuffer): BinaryPickle =
-    new BinaryInputPickle(new ByteBufferInput(a))
+  def apply(a: InputStream): BinaryPickle = new BinaryInputPickle(
+    new StreamInput(a))
+  def apply(a: ByteBuffer): BinaryPickle = new BinaryInputPickle(
+    new ByteBufferInput(a))
 }
 
 class BinaryPickleBuilder(format: BinaryPickleFormat, out: BinaryOutput)
@@ -148,11 +148,10 @@ class BinaryPickleBuilder(format: BinaryPickleFormat, out: BinaryOutput)
     isIgnoringFields = false
   }
 
-  @inline def beginCollection(length: Int): PBuilder =
-    ignoringSharedRefs {
-      output.putInt(length)
-      this
-    }
+  @inline def beginCollection(length: Int): PBuilder = ignoringSharedRefs {
+    output.putInt(length)
+    this
+  }
 
   @inline def putElement(pickler: PBuilder => Unit): PBuilder =
     ignoringSharedRefs {

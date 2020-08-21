@@ -7,8 +7,8 @@ object ScriptCommands {
   def all = Seq(setupPublishCore)
 
   /** Set up the environment for `validate/publish-core`. The argument is the Artifactory snapshot repository URL. */
-  def setupPublishCore =
-    Command.single("setupPublishCore") { case (state, url) =>
+  def setupPublishCore = Command.single("setupPublishCore") {
+    case (state, url) =>
       Project
         .extract(state)
         .append(
@@ -24,5 +24,5 @@ object ScriptCommands {
           ),
           state
         )
-    }
+  }
 }

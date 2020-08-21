@@ -19,10 +19,9 @@ object BasicCommandStrings {
   /** The command name to terminate the program. */
   val TerminateAction: String = Exit
 
-  def helpBrief =
-    (
-      HelpCommand,
-      s"Displays this help message or prints detailed help on requested commands (run '$HelpCommand <command>').")
+  def helpBrief = (
+    HelpCommand,
+    s"Displays this help message or prints detailed help on requested commands (run '$HelpCommand <command>').")
   def helpDetailed = HelpCommand + """
 
 	Prints a help summary.
@@ -42,11 +41,10 @@ object BasicCommandStrings {
 
   def HistoryHelpBrief =
     (HistoryCommands.Start -> "History command help.  Lists and describes all history commands.")
-  def historyHelp =
-    Help(
-      Nil,
-      (HistoryHelpBrief +: HistoryCommands.descriptions).toMap,
-      Set(HistoryCommands.Start))
+  def historyHelp = Help(
+    Nil,
+    (HistoryHelpBrief +: HistoryCommands.descriptions).toMap,
+    Set(HistoryCommands.Start))
 
   def exitBrief = "Terminates the build."
 
@@ -130,10 +128,9 @@ ${runEarly(level.toString)}
 	  and is useful when working with development versions of sbt or Scala."""
 
   def Multi = ";"
-  def MultiBrief =
-    (
-      Multi + " <command> (" + Multi + " <command>)*",
-      "Runs the provided semicolon-separated commands.")
+  def MultiBrief = (
+    Multi + " <command> (" + Multi + " <command>)*",
+    "Runs the provided semicolon-separated commands.")
   def MultiDetailed =
     Multi + " command1 " + Multi + """ command2 ...
 

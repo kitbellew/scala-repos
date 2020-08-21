@@ -55,27 +55,26 @@ object accumulateAndCount extends UFunc {
   implicit def reduce[T, @expand.args(Double, Complex, Float) Scalar](implicit
       iter: CanTraverseValues[T, Scalar],
       @expand.sequence[Scalar](0.0, Complex.zero, 0.0f) zero: Scalar)
-      : Impl[T, (Scalar, Int)] =
-    new Impl[T, (Scalar, Int)] {
-      def apply(v: T): (Scalar, Int) = {
-        val visit = new ValuesVisitor[Scalar] {
-          var sum = zero
-          var n = 0
-          def visit(a: Scalar): Unit = {
-            sum += a
-            n += 1
-          }
-
-          def zeros(numZero: Int, zeroValue: Scalar): Unit = {
-            sum += (numZero * zeroValue)
-            n += numZero
-          }
+      : Impl[T, (Scalar, Int)] = new Impl[T, (Scalar, Int)] {
+    def apply(v: T): (Scalar, Int) = {
+      val visit = new ValuesVisitor[Scalar] {
+        var sum = zero
+        var n = 0
+        def visit(a: Scalar): Unit = {
+          sum += a
+          n += 1
         }
-        iter.traverse(v, visit)
 
-        (visit.sum, visit.n)
+        def zeros(numZero: Int, zeroValue: Scalar): Unit = {
+          sum += (numZero * zeroValue)
+          n += numZero
+        }
       }
+      iter.traverse(v, visit)
+
+      (visit.sum, visit.n)
     }
+  }
 }
 
 trait DescriptiveStats {
@@ -169,10 +168,9 @@ trait DescriptiveStats {
     */
   object stddev extends UFunc {
     implicit def reduceDouble[T](implicit
-        vari: variance.Impl[T, Double]): Impl[T, Double] =
-      new Impl[T, Double] {
-        def apply(v: T): Double = scala.math.sqrt(vari(v))
-      }
+        vari: variance.Impl[T, Double]): Impl[T, Double] = new Impl[T, Double] {
+      def apply(v: T): Double = scala.math.sqrt(vari(v))
+    }
   }
 
   /**
@@ -270,27 +268,26 @@ trait DescriptiveStats {
   object corrcoeff extends UFunc {
     implicit def matrixCorrelation[T](implicit
         covarianceCalculator: covmat.Impl[T, DenseMatrix[Double]])
-        : Impl[T, DenseMatrix[Double]] =
-      new Impl[T, DenseMatrix[Double]] {
-        def apply(data: T) = {
-          val covariance = covarianceCalculator(data)
-          val d = new Array[Double](covariance.rows)
-          cfor(0)(i => i < covariance.rows, i => i + 1)(i => {
-            d(i) = math.sqrt(covariance(i, i))
-          })
+        : Impl[T, DenseMatrix[Double]] = new Impl[T, DenseMatrix[Double]] {
+      def apply(data: T) = {
+        val covariance = covarianceCalculator(data)
+        val d = new Array[Double](covariance.rows)
+        cfor(0)(i => i < covariance.rows, i => i + 1)(i => {
+          d(i) = math.sqrt(covariance(i, i))
+        })
 
-          cfor(0)(i => i < covariance.rows, i => i + 1)(i => {
-            cfor(0)(j => j < covariance.rows, j => j + 1)(j => {
-              if (i != j) {
-                covariance(i, j) /= (d(i) * d(j))
-              } else {
-                covariance(i, j) = 1.0
-              }
-            })
+        cfor(0)(i => i < covariance.rows, i => i + 1)(i => {
+          cfor(0)(j => j < covariance.rows, j => j + 1)(j => {
+            if (i != j) {
+              covariance(i, j) /= (d(i) * d(j))
+            } else {
+              covariance(i, j) = 1.0
+            }
           })
-          covariance
-        }
+        })
+        covariance
       }
+    }
   }
 
   object mode extends UFunc {

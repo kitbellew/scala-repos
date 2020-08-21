@@ -137,13 +137,12 @@ trait Logic extends Debugging {
         val const: Const)
         extends Prop {
 
-      override def equals(other: scala.Any): Boolean =
-        other match {
-          case that: Sym =>
-            this.variable == that.variable &&
-              this.const == that.const
-          case _ => false
-        }
+      override def equals(other: scala.Any): Boolean = other match {
+        case that: Sym =>
+          this.variable == that.variable &&
+            this.const == that.const
+        case _ => false
+      }
 
       override def hashCode(): Int = {
         variable.hashCode * 41 + const.hashCode
@@ -186,95 +185,90 @@ trait Logic extends Debugging {
     def simplify(f: Prop): Prop = {
 
       // limit size to avoid blow up
-      def hasImpureAtom(ops: Seq[Prop]): Boolean =
-        ops.size < 10 &&
-          ops.combinations(2).exists {
-            case Seq(a, Not(b)) if a == b => true
-            case Seq(Not(a), b) if a == b => true
-            case _                        => false
-          }
+      def hasImpureAtom(ops: Seq[Prop]): Boolean = ops.size < 10 &&
+        ops.combinations(2).exists {
+          case Seq(a, Not(b)) if a == b => true
+          case Seq(Not(a), b) if a == b => true
+          case _                        => false
+        }
 
       // push negation inside formula
-      def negationNormalFormNot(p: Prop): Prop =
-        p match {
-          case And(ops) => Or(ops.map(negationNormalFormNot)) // De'Morgan
-          case Or(ops)  => And(ops.map(negationNormalFormNot)) // De'Morgan
-          case Not(p)   => negationNormalForm(p)
-          case True     => False
-          case False    => True
-          case s: Sym   => Not(s)
-        }
+      def negationNormalFormNot(p: Prop): Prop = p match {
+        case And(ops) => Or(ops.map(negationNormalFormNot)) // De'Morgan
+        case Or(ops)  => And(ops.map(negationNormalFormNot)) // De'Morgan
+        case Not(p)   => negationNormalForm(p)
+        case True     => False
+        case False    => True
+        case s: Sym   => Not(s)
+      }
 
-      def negationNormalForm(p: Prop): Prop =
-        p match {
-          case And(ops)                                 => And(ops.map(negationNormalForm))
-          case Or(ops)                                  => Or(ops.map(negationNormalForm))
-          case Not(negated)                             => negationNormalFormNot(negated)
-          case True | False | (_: Sym) | (_: AtMostOne) => p
-        }
+      def negationNormalForm(p: Prop): Prop = p match {
+        case And(ops)                                 => And(ops.map(negationNormalForm))
+        case Or(ops)                                  => Or(ops.map(negationNormalForm))
+        case Not(negated)                             => negationNormalFormNot(negated)
+        case True | False | (_: Sym) | (_: AtMostOne) => p
+      }
 
-      def simplifyProp(p: Prop): Prop =
-        p match {
-          case And(fv) =>
-            // recurse for nested And (pulls all Ands up)
-            val ops = fv.map(simplifyProp) - True // ignore `True`
+      def simplifyProp(p: Prop): Prop = p match {
+        case And(fv) =>
+          // recurse for nested And (pulls all Ands up)
+          val ops = fv.map(simplifyProp) - True // ignore `True`
 
-            // build up Set in order to remove duplicates
-            val opsFlattened = ops.flatMap {
-              case And(fv) => fv
-              case f       => Set(f)
-            }.toSeq
+          // build up Set in order to remove duplicates
+          val opsFlattened = ops.flatMap {
+            case And(fv) => fv
+            case f       => Set(f)
+          }.toSeq
 
-            if (hasImpureAtom(opsFlattened) || opsFlattened.contains(False)) {
-              False
-            } else {
-              opsFlattened match {
-                case Seq()  => True
-                case Seq(f) => f
-                case ops    => And(ops: _*)
-              }
+          if (hasImpureAtom(opsFlattened) || opsFlattened.contains(False)) {
+            False
+          } else {
+            opsFlattened match {
+              case Seq()  => True
+              case Seq(f) => f
+              case ops    => And(ops: _*)
             }
-          case Or(fv) =>
-            // recurse for nested Or (pulls all Ors up)
-            val ops = fv.map(simplifyProp) - False // ignore `False`
+          }
+        case Or(fv) =>
+          // recurse for nested Or (pulls all Ors up)
+          val ops = fv.map(simplifyProp) - False // ignore `False`
 
-            val opsFlattened = ops.flatMap {
-              case Or(fv) => fv
-              case f      => Set(f)
-            }.toSeq
+          val opsFlattened = ops.flatMap {
+            case Or(fv) => fv
+            case f      => Set(f)
+          }.toSeq
 
-            if (hasImpureAtom(opsFlattened) || opsFlattened.contains(True)) {
-              True
-            } else {
-              opsFlattened match {
-                case Seq()  => False
-                case Seq(f) => f
-                case ops    => Or(ops: _*)
-              }
+          if (hasImpureAtom(opsFlattened) || opsFlattened.contains(True)) {
+            True
+          } else {
+            opsFlattened match {
+              case Seq()  => False
+              case Seq(f) => f
+              case ops    => Or(ops: _*)
             }
-          case Not(Not(a)) =>
-            simplify(a)
-          case Not(p) =>
-            Not(simplify(p))
-          case p =>
-            p
-        }
+          }
+        case Not(Not(a)) =>
+          simplify(a)
+        case Not(p) =>
+          Not(simplify(p))
+        case p =>
+          p
+      }
 
       val nnf = negationNormalForm(f)
       simplifyProp(nnf)
     }
 
     trait PropTraverser {
-      def apply(x: Prop): Unit =
-        x match {
-          case And(ops)       => ops foreach apply
-          case Or(ops)        => ops foreach apply
-          case Not(a)         => apply(a)
-          case Eq(a, b)       => applyVar(a); applyConst(b)
-          case s: Sym         => applySymbol(s)
-          case AtMostOne(ops) => ops.foreach(applySymbol)
-          case _              =>
-        }
+      def apply(x: Prop): Unit = x match {
+        case And(ops)       => ops foreach apply
+        case Or(ops)        => ops foreach apply
+        case Not(a)         => apply(a)
+        case Eq(a, b)       => applyVar(a); applyConst(b)
+        case s: Sym         => applySymbol(s)
+        case AtMostOne(ops) => ops.foreach(applySymbol)
+        case _              =>
+      }
       def applyVar(x: Var): Unit = {}
       def applyConst(x: Const): Unit = {}
       def applySymbol(x: Sym): Unit = {}
@@ -297,13 +291,12 @@ trait Logic extends Debugging {
     }
 
     trait PropMap {
-      def apply(x: Prop): Prop =
-        x match { // TODO: mapConserve
-          case And(ops) => And(ops map apply)
-          case Or(ops)  => Or(ops map apply)
-          case Not(a)   => Not(apply(a))
-          case p        => p
-        }
+      def apply(x: Prop): Prop = x match { // TODO: mapConserve
+        case And(ops) => And(ops map apply)
+        case Or(ops)  => Or(ops map apply)
+        case Not(a)   => Not(apply(a))
+        case p        => p
+      }
     }
 
     // to govern how much time we spend analyzing matches for unreachability/exhaustivity
@@ -360,21 +353,19 @@ trait Logic extends Debugging {
       val vars = new mutable.HashSet[Var]
 
       object gatherEqualities extends PropTraverser {
-        override def apply(p: Prop) =
-          p match {
-            case Eq(v, c) =>
-              vars += v
-              v.registerEquality(c)
-            case _ => super.apply(p)
-          }
+        override def apply(p: Prop) = p match {
+          case Eq(v, c) =>
+            vars += v
+            v.registerEquality(c)
+          case _ => super.apply(p)
+        }
       }
 
       object rewriteEqualsToProp extends PropMap {
-        override def apply(p: Prop) =
-          p match {
-            case Eq(v, c) => v.propForEqualsTo(c)
-            case _        => super.apply(p)
-          }
+        override def apply(p: Prop) = p match {
+          case Eq(v, c) => v.propForEqualsTo(c)
+          case _        => super.apply(p)
+        }
       }
 
       props foreach gatherEqualities.apply
@@ -639,12 +630,11 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
         val excludedPair = new mutable.HashSet[ExcludedPair]
 
         case class ExcludedPair(a: Const, b: Const) {
-          override def equals(o: Any) =
-            o match {
-              case ExcludedPair(aa, bb) =>
-                (a == aa && b == bb) || (a == bb && b == aa)
-              case _ => false
-            }
+          override def equals(o: Any) = o match {
+            case ExcludedPair(aa, bb) =>
+              (a == aa && b == bb) || (a == bb && b == aa)
+            case _ => false
+          }
           // make ExcludedPair(a, b).hashCode == ExcludedPair(b, a).hashCode
           override def hashCode = a.hashCode ^ b.hashCode
         }
@@ -686,12 +676,11 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
 
       // don't call until all equalities have been registered and registerNull has been called (if needed)
       def describe = {
-        def domain_s =
-          domain match {
-            case Some(d) =>
-              d mkString (" ::= ", " | ", "// " + symForEqualsTo.keys)
-            case _ => symForEqualsTo.keys mkString (" ::= ", " | ", " | ...")
-          }
+        def domain_s = domain match {
+          case Some(d) =>
+            d mkString (" ::= ", " | ", "// " + symForEqualsTo.keys)
+          case _ => symForEqualsTo.keys mkString (" ::= ", " | ", " | ...")
+        }
         s"$this: ${staticTp}${domain_s} // = $path"
       }
       override def toString = "V" + id

@@ -50,10 +50,9 @@ object OfferMatcher {
     def ops: Iterable[TaskOp] = opsWithSource.view.map(_.op)
 
     /** All TaskInfos of launched tasks. */
-    def launchedTaskInfos: Iterable[Mesos.TaskInfo] =
-      ops.view.collect { case TaskOp.Launch(taskInfo, _, _, _) =>
-        taskInfo
-      }
+    def launchedTaskInfos: Iterable[Mesos.TaskInfo] = ops.view.collect {
+      case TaskOp.Launch(taskInfo, _, _, _) => taskInfo
+    }
   }
 
   object MatchedTaskOps {

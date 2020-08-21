@@ -9,11 +9,10 @@ final case class ScopedKeyData[A](scoped: ScopedKey[A], value: Any) {
   def typeName: String =
     fold(fmtMf("Task[%s]"), fmtMf("InputTask[%s]"), key.manifest.toString)
   def settingValue: Option[Any] = fold(const(None), const(None), Some(value))
-  def description: String =
-    fold(
-      fmtMf("Task: %s"),
-      fmtMf("Input task: %s"),
-      "Setting: %s = %s" format (key.manifest.toString, value.toString))
+  def description: String = fold(
+    fmtMf("Task: %s"),
+    fmtMf("Input task: %s"),
+    "Setting: %s = %s" format (key.manifest.toString, value.toString))
   def fold[A](
       targ: OptManifest[_] => A,
       itarg: OptManifest[_] => A,

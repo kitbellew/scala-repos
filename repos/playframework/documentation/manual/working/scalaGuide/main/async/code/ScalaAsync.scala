@@ -69,11 +69,10 @@ object ScalaAsyncSamples extends Controller {
     //#async-result
     import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-    def index =
-      Action.async {
-        val futureInt = scala.concurrent.Future { intensiveComputation() }
-        futureInt.map(i => Ok("Got result: " + i))
-      }
+    def index = Action.async {
+      val futureInt = scala.concurrent.Future { intensiveComputation() }
+      futureInt.map(i => Ok("Got result: " + i))
+    }
     //#async-result
 
     index
@@ -88,16 +87,15 @@ object ScalaAsyncSamples extends Controller {
     import play.api.libs.concurrent.Execution.Implicits.defaultContext
     import scala.concurrent.duration._
 
-    def index =
-      Action.async {
-        val futureInt = scala.concurrent.Future { intensiveComputation() }
-        val timeoutFuture =
-          play.api.libs.concurrent.Promise.timeout("Oops", 1.second)
-        Future.firstCompletedOf(Seq(futureInt, timeoutFuture)).map {
-          case i: Int    => Ok("Got result: " + i)
-          case t: String => InternalServerError(t)
-        }
+    def index = Action.async {
+      val futureInt = scala.concurrent.Future { intensiveComputation() }
+      val timeoutFuture =
+        play.api.libs.concurrent.Promise.timeout("Oops", 1.second)
+      Future.firstCompletedOf(Seq(futureInt, timeoutFuture)).map {
+        case i: Int    => Ok("Got result: " + i)
+        case t: String => InternalServerError(t)
       }
+    }
     //#timeout
     index
   }

@@ -84,11 +84,10 @@ private[streams] class FutureSubscription[T, U >: T](
     }
   }
 
-  override def isActive: Boolean =
-    state match {
-      case AwaitingRequest | Requested => true
-      case Cancelled | Completed       => false
-    }
+  override def isActive: Boolean = state match {
+    case AwaitingRequest | Requested => true
+    case Cancelled | Completed       => false
+  }
 
   override def subscriber: Subscriber[U] = subr
 
@@ -116,42 +115,40 @@ private[streams] class FutureSubscription[T, U >: T](
     }
   }
 
-  override def cancel(): Unit =
-    exclusive {
-      case AwaitingRequest =>
-        state = Cancelled
-      case Requested =>
-        state = Cancelled
-      case _ =>
-        ()
-    }
+  override def cancel(): Unit = exclusive {
+    case AwaitingRequest =>
+      state = Cancelled
+    case Requested =>
+      state = Cancelled
+    case _ =>
+      ()
+  }
 
   /**
     * Called when both an element has been requested and the Future is
     * completed. Calls onNext/onComplete or onError on the Subscriber.
     */
-  private def onFutureCompleted(result: Try[T]): Unit =
-    exclusive {
-      case AwaitingRequest =>
-        throw new IllegalStateException(
-          "onFutureCompleted shouldn't be called when in state AwaitingRequest")
-      case Requested =>
-        state = Completed
-        result match {
-          case Success(null) =>
-            subr.onError(new NullPointerException(
-              "Future completed with a null value that cannot be sent by a Publisher"))
-          case Success(value) =>
-            subr.onNext(value)
-            subr.onComplete()
-          case Failure(t) =>
-            subr.onError(t)
-        }
-        onSubscriptionEnded(this)
-      case Cancelled =>
-        ()
-      case Completed =>
-        throw new IllegalStateException(
-          "onFutureCompleted shouldn't be called when already in state Completed")
-    }
+  private def onFutureCompleted(result: Try[T]): Unit = exclusive {
+    case AwaitingRequest =>
+      throw new IllegalStateException(
+        "onFutureCompleted shouldn't be called when in state AwaitingRequest")
+    case Requested =>
+      state = Completed
+      result match {
+        case Success(null) =>
+          subr.onError(new NullPointerException(
+            "Future completed with a null value that cannot be sent by a Publisher"))
+        case Success(value) =>
+          subr.onNext(value)
+          subr.onComplete()
+        case Failure(t) =>
+          subr.onError(t)
+      }
+      onSubscriptionEnded(this)
+    case Cancelled =>
+      ()
+    case Completed =>
+      throw new IllegalStateException(
+        "onFutureCompleted shouldn't be called when already in state Completed")
+  }
 }

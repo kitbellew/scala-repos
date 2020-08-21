@@ -249,19 +249,17 @@ class FancyTailCalls {
 }
 
 class NonTailCall {
-  final def f1(n: Int): Int =
-    try {
-      if (n == 0) 0
-      else f1(n - 1)
-    } finally {
-      Console.print(" " + n)
-    }
+  final def f1(n: Int): Int = try {
+    if (n == 0) 0
+    else f1(n - 1)
+  } finally {
+    Console.print(" " + n)
+  }
 
-  final def f2(n: Int): Int =
-    synchronized {
-      if (n == 0) 0
-      else f2(n - 1)
-    }
+  final def f2(n: Int): Int = synchronized {
+    if (n == 0) 0
+    else f2(n - 1)
+  }
 
 }
 

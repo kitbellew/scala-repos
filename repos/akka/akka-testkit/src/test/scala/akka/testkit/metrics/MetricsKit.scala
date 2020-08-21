@@ -226,8 +226,8 @@ private[akka] object MetricsKit {
 trait AkkaMetricRegistry {
   this: MetricRegistry ⇒
 
-  def getKnownOpsInTimespanCounters =
-    filterFor(classOf[KnownOpsInTimespanTimer])
+  def getKnownOpsInTimespanCounters = filterFor(
+    classOf[KnownOpsInTimespanTimer])
   def getHdrHistograms = filterFor(classOf[HdrHistogram])
   def getAveragingGauges = filterFor(classOf[AveragingGauge])
 

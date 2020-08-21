@@ -25,29 +25,27 @@ object BSONHandlers {
 
       import Crazyhouse._
 
-      def reads(r: BSON.Reader) =
-        Crazyhouse.Data(
-          pockets = {
-            val (white, black) = r
-              .str("p")
-              .toList
-              .flatMap(chess.Piece.fromChar)
-              .partition(_ is chess.White)
-            Pockets(
-              white = Pocket(white.map(_.role)),
-              black = Pocket(black.map(_.role)))
-          },
-          promoted = r.str("t").toSet.flatMap(chess.Pos.piotr)
-        )
+      def reads(r: BSON.Reader) = Crazyhouse.Data(
+        pockets = {
+          val (white, black) = r
+            .str("p")
+            .toList
+            .flatMap(chess.Piece.fromChar)
+            .partition(_ is chess.White)
+          Pockets(
+            white = Pocket(white.map(_.role)),
+            black = Pocket(black.map(_.role)))
+        },
+        promoted = r.str("t").toSet.flatMap(chess.Pos.piotr)
+      )
 
-      def writes(w: BSON.Writer, o: Crazyhouse.Data) =
-        BSONDocument(
-          "p" -> {
-            o.pockets.white.roles.map(_.forsythUpper).mkString +
-              o.pockets.black.roles.map(_.forsyth).mkString
-          },
-          "t" -> o.promoted.map(_.piotr).mkString
-        )
+      def writes(w: BSON.Writer, o: Crazyhouse.Data) = BSONDocument(
+        "p" -> {
+          o.pockets.white.roles.map(_.forsythUpper).mkString +
+            o.pockets.black.roles.map(_.forsyth).mkString
+        },
+        "t" -> o.promoted.map(_.piotr).mkString
+      )
     }
 
   implicit val gameBSONHandler = new BSON[Game] {
@@ -122,44 +120,42 @@ object BSONHandlers {
       )
     }
 
-    def writes(w: BSON.Writer, o: Game) =
-      BSONDocument(
-        id -> o.id,
-        playerIds -> (o.whitePlayer.id + o.blackPlayer.id),
-        playerUids -> w.listO(
-          List(~o.whitePlayer.userId, ~o.blackPlayer.userId)),
-        whitePlayer -> w.docO(playerBSONHandler write ((_: Color) =>
-          (_: Player.Id) =>
-            (_: Player.UserId) => (_: Player.Win) => o.whitePlayer)),
-        blackPlayer -> w.docO(playerBSONHandler write ((_: Color) =>
-          (_: Player.Id) =>
-            (_: Player.UserId) => (_: Player.Win) => o.blackPlayer)),
-        binaryPieces -> o.binaryPieces,
-        binaryPgn -> w.byteArrayO(o.binaryPgn),
-        status -> o.status,
-        turns -> o.turns,
-        startedAtTurn -> w.intO(o.startedAtTurn),
-        clock -> (o.clock map { c => clockBSONWrite(o.createdAt, c) }),
-        positionHashes -> w.bytesO(o.positionHashes),
-        checkCount -> o.checkCount.nonEmpty.option(o.checkCount),
-        castleLastMoveTime -> CastleLastMoveTime.castleLastMoveTimeBSONHandler
-          .write(o.castleLastMoveTime),
-        daysPerTurn -> o.daysPerTurn,
-        moveTimes -> (BinaryFormat.moveTime write o.moveTimes),
-        rated -> w.boolO(o.mode.rated),
-        variant -> o.variant.exotic.option(o.variant.id).map(w.int),
-        crazyData -> o.crazyData,
-        next -> o.next,
-        bookmarks -> w.intO(o.bookmarks),
-        createdAt -> w.date(o.createdAt),
-        updatedAt -> o.updatedAt.map(w.date),
-        source -> o.metadata.source.map(_.id),
-        pgnImport -> o.metadata.pgnImport,
-        tournamentId -> o.metadata.tournamentId,
-        simulId -> o.metadata.simulId,
-        tvAt -> o.metadata.tvAt.map(w.date),
-        analysed -> w.boolO(o.metadata.analysed)
-      )
+    def writes(w: BSON.Writer, o: Game) = BSONDocument(
+      id -> o.id,
+      playerIds -> (o.whitePlayer.id + o.blackPlayer.id),
+      playerUids -> w.listO(List(~o.whitePlayer.userId, ~o.blackPlayer.userId)),
+      whitePlayer -> w.docO(playerBSONHandler write ((_: Color) =>
+        (_: Player.Id) =>
+          (_: Player.UserId) => (_: Player.Win) => o.whitePlayer)),
+      blackPlayer -> w.docO(playerBSONHandler write ((_: Color) =>
+        (_: Player.Id) =>
+          (_: Player.UserId) => (_: Player.Win) => o.blackPlayer)),
+      binaryPieces -> o.binaryPieces,
+      binaryPgn -> w.byteArrayO(o.binaryPgn),
+      status -> o.status,
+      turns -> o.turns,
+      startedAtTurn -> w.intO(o.startedAtTurn),
+      clock -> (o.clock map { c => clockBSONWrite(o.createdAt, c) }),
+      positionHashes -> w.bytesO(o.positionHashes),
+      checkCount -> o.checkCount.nonEmpty.option(o.checkCount),
+      castleLastMoveTime -> CastleLastMoveTime.castleLastMoveTimeBSONHandler
+        .write(o.castleLastMoveTime),
+      daysPerTurn -> o.daysPerTurn,
+      moveTimes -> (BinaryFormat.moveTime write o.moveTimes),
+      rated -> w.boolO(o.mode.rated),
+      variant -> o.variant.exotic.option(o.variant.id).map(w.int),
+      crazyData -> o.crazyData,
+      next -> o.next,
+      bookmarks -> w.intO(o.bookmarks),
+      createdAt -> w.date(o.createdAt),
+      updatedAt -> o.updatedAt.map(w.date),
+      source -> o.metadata.source.map(_.id),
+      pgnImport -> o.metadata.pgnImport,
+      tournamentId -> o.metadata.tournamentId,
+      simulId -> o.metadata.simulId,
+      tvAt -> o.metadata.tvAt.map(w.date),
+      analysed -> w.boolO(o.metadata.analysed)
+    )
   }
 
   import lila.db.ByteArray.ByteArrayBSONHandler
@@ -167,17 +163,15 @@ object BSONHandlers {
   private[game] def clockBSONReader(
       since: DateTime,
       whiteBerserk: Boolean,
-      blackBerserk: Boolean) =
-    new BSONReader[BSONBinary, Color => Clock] {
-      def read(bin: BSONBinary) =
-        BinaryFormat
-          .clock(since)
-          .read(
-            ByteArrayBSONHandler read bin,
-            whiteBerserk,
-            blackBerserk
-          )
-    }
+      blackBerserk: Boolean) = new BSONReader[BSONBinary, Color => Clock] {
+    def read(bin: BSONBinary) = BinaryFormat
+      .clock(since)
+      .read(
+        ByteArrayBSONHandler read bin,
+        whiteBerserk,
+        blackBerserk
+      )
+  }
   private[game] def clockBSONWrite(since: DateTime, clock: Clock) =
     ByteArrayBSONHandler write {
       BinaryFormat clock since write clock

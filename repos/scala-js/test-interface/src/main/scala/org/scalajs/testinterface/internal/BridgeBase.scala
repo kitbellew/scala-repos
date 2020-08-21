@@ -39,16 +39,15 @@ abstract class BridgeBase(frameworkName: String) {
     }
   }
 
-  protected def reply(result: Try[Any]): Unit =
-    result match {
-      case Success(()) =>
-        Com.send("ok:")
-      case Success(v) =>
-        Com.send("ok:" + v)
-      case Failure(e) =>
-        val data = js.JSON.stringify(ThrowableSerializer.serialize(e))
-        Com.send("fail:" + data)
-    }
+  protected def reply(result: Try[Any]): Unit = result match {
+    case Success(()) =>
+      Com.send("ok:")
+    case Success(v) =>
+      Com.send("ok:" + v)
+    case Failure(e) =>
+      val data = js.JSON.stringify(ThrowableSerializer.serialize(e))
+      Com.send("fail:" + data)
+  }
 
   protected def handleMsgImpl(cmd: String, strArg: => String): Unit
 

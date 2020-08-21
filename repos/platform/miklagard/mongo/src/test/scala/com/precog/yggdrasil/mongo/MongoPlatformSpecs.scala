@@ -63,47 +63,44 @@ object MongoPlatformSpecEngine extends Logging {
     override def run() { if (engine != null) engine.shutdown() }
   })
 
-  def acquire =
-    lock.synchronized {
-      refcount += 1
+  def acquire = lock.synchronized {
+    refcount += 1
 
-      if (engine == null) {
-        logger.debug("Allocating new Mongo engine")
-        engine = new RealMongoSpecSupport {}
-        engine.startup()
-        runLoads()
-        logger.debug("Mongo engine startup complete")
-      }
-
-      logger.debug("Mongo acquired, refcount = " + refcount)
-
-      engine
+    if (engine == null) {
+      logger.debug("Allocating new Mongo engine")
+      engine = new RealMongoSpecSupport {}
+      engine.startup()
+      runLoads()
+      logger.debug("Mongo engine startup complete")
     }
 
-  def release: Unit =
-    lock.synchronized {
-      refcount -= 1
+    logger.debug("Mongo acquired, refcount = " + refcount)
 
-      if (refcount == 0) {
-        scheduler.schedule(checkUnused, 5, TimeUnit.SECONDS)
-      }
+    engine
+  }
 
-      logger.debug("Mongo released, refcount = " + refcount)
+  def release: Unit = lock.synchronized {
+    refcount -= 1
+
+    if (refcount == 0) {
+      scheduler.schedule(checkUnused, 5, TimeUnit.SECONDS)
     }
+
+    logger.debug("Mongo released, refcount = " + refcount)
+  }
 
   private val checkUnused = new Runnable {
-    def run =
-      lock.synchronized {
-        logger.debug(
-          "Checking for unused MongoPlatformSpecEngine. Count = " + refcount)
-        if (refcount == 0) {
-          logger.debug("Running shutdown after final Mongo release")
-          val current = engine
-          engine = null
-          current.shutdown()
-          logger.debug("Mongo shutdown complete")
-        }
+    def run = lock.synchronized {
+      logger.debug(
+        "Checking for unused MongoPlatformSpecEngine. Count = " + refcount)
+      if (refcount == 0) {
+        logger.debug("Running shutdown after final Mongo release")
+        val current = engine
+        engine = null
+        current.shutdown()
+        logger.debug("Mongo shutdown complete")
       }
+    }
   }
 
   def runLoads(): Unit = {
@@ -180,11 +177,10 @@ trait MongoPlatformSpecs
       1000 // 10 was waaaaay too small, and we have other specs that cover that case
   }
 
-  override def controlTimeout =
-    Duration(
-      10,
-      "minutes"
-    ) // it's just unreasonable to run tests longer than this
+  override def controlTimeout = Duration(
+    10,
+    "minutes"
+  ) // it's just unreasonable to run tests longer than this
 
   def includeIdField = false
 

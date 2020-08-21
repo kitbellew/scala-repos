@@ -48,30 +48,29 @@ trait Tuples {
         _13: (M => MM) = identity[M] _,
         _14: (N => NN) = identity[N] _,
         _15: (O => OO) = identity[O] _)
-        : (AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL, MM, NN, OO) =
-      (
-        _1(value._1),
-        _2(value._2),
-        _3(value._3),
-        _4(value._4),
-        _5(value._5),
-        _6(value._6),
-        _7(value._7),
-        _8(value._8),
-        _9(value._9),
-        _10(value._10),
-        _11(value._11),
-        _12(value._12),
-        _13(value._13),
-        _14(value._14),
-        _15(value._15))
+        : (AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL, MM, NN, OO) = (
+      _1(value._1),
+      _2(value._2),
+      _3(value._3),
+      _4(value._4),
+      _5(value._5),
+      _6(value._6),
+      _7(value._7),
+      _8(value._8),
+      _9(value._9),
+      _10(value._10),
+      _11(value._11),
+      _12(value._12),
+      _13(value._13),
+      _14(value._14),
+      _15(value._15))
   }
 
   implicit def ToTuple15W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](
       t: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O))
-      : Tuple15W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O] =
-    new { val value = t }
-    with Tuple15W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O]
+      : Tuple15W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O] = new {
+    val value = t
+  } with Tuple15W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O]
 
   trait Tuple16W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]
       extends EnrichedType[
@@ -136,31 +135,30 @@ trait Tuples {
         _14: (N => NN) = identity[N] _,
         _15: (O => OO) = identity[O] _,
         _16: (P => PP) = identity[P] _)
-        : (AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL, MM, NN, OO, PP) =
-      (
-        _1(value._1),
-        _2(value._2),
-        _3(value._3),
-        _4(value._4),
-        _5(value._5),
-        _6(value._6),
-        _7(value._7),
-        _8(value._8),
-        _9(value._9),
-        _10(value._10),
-        _11(value._11),
-        _12(value._12),
-        _13(value._13),
-        _14(value._14),
-        _15(value._15),
-        _16(value._16))
+        : (AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL, MM, NN, OO, PP) = (
+      _1(value._1),
+      _2(value._2),
+      _3(value._3),
+      _4(value._4),
+      _5(value._5),
+      _6(value._6),
+      _7(value._7),
+      _8(value._8),
+      _9(value._9),
+      _10(value._10),
+      _11(value._11),
+      _12(value._12),
+      _13(value._13),
+      _14(value._14),
+      _15(value._15),
+      _16(value._16))
   }
 
   implicit def ToTuple16W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](
       t: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P))
-      : Tuple16W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P] =
-    new { val value = t }
-    with Tuple16W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]
+      : Tuple16W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P] = new {
+    val value = t
+  } with Tuple16W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]
 
   trait Tuple17W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]
       extends EnrichedType[
@@ -284,9 +282,9 @@ trait Tuples {
 
   implicit def ToTuple17W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](
       t: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q))
-      : Tuple17W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q] =
-    new { val value = t }
-    with Tuple17W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]
+      : Tuple17W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q] = new {
+    val value = t
+  } with Tuple17W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]
 
   trait Tuple18W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]
       extends EnrichedType[
@@ -410,33 +408,32 @@ trait Tuples {
         OO,
         PP,
         QQ,
-        RR) =
-      (
-        _1(value._1),
-        _2(value._2),
-        _3(value._3),
-        _4(value._4),
-        _5(value._5),
-        _6(value._6),
-        _7(value._7),
-        _8(value._8),
-        _9(value._9),
-        _10(value._10),
-        _11(value._11),
-        _12(value._12),
-        _13(value._13),
-        _14(value._14),
-        _15(value._15),
-        _16(value._16),
-        _17(value._17),
-        _18(value._18))
+        RR) = (
+      _1(value._1),
+      _2(value._2),
+      _3(value._3),
+      _4(value._4),
+      _5(value._5),
+      _6(value._6),
+      _7(value._7),
+      _8(value._8),
+      _9(value._9),
+      _10(value._10),
+      _11(value._11),
+      _12(value._12),
+      _13(value._13),
+      _14(value._14),
+      _15(value._15),
+      _16(value._16),
+      _17(value._17),
+      _18(value._18))
   }
 
   implicit def ToTuple18W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](
       t: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R))
-      : Tuple18W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R] =
-    new { val value = t }
-    with Tuple18W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]
+      : Tuple18W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R] = new {
+    val value = t
+  } with Tuple18W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]
 
   trait Tuple19W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]
       extends EnrichedType[
@@ -566,27 +563,26 @@ trait Tuples {
         PP,
         QQ,
         RR,
-        SS) =
-      (
-        _1(value._1),
-        _2(value._2),
-        _3(value._3),
-        _4(value._4),
-        _5(value._5),
-        _6(value._6),
-        _7(value._7),
-        _8(value._8),
-        _9(value._9),
-        _10(value._10),
-        _11(value._11),
-        _12(value._12),
-        _13(value._13),
-        _14(value._14),
-        _15(value._15),
-        _16(value._16),
-        _17(value._17),
-        _18(value._18),
-        _19(value._19))
+        SS) = (
+      _1(value._1),
+      _2(value._2),
+      _3(value._3),
+      _4(value._4),
+      _5(value._5),
+      _6(value._6),
+      _7(value._7),
+      _8(value._8),
+      _9(value._9),
+      _10(value._10),
+      _11(value._11),
+      _12(value._12),
+      _13(value._13),
+      _14(value._14),
+      _15(value._15),
+      _16(value._16),
+      _17(value._17),
+      _18(value._18),
+      _19(value._19))
   }
 
   implicit def ToTuple19W[
@@ -747,28 +743,27 @@ trait Tuples {
         QQ,
         RR,
         SS,
-        TT) =
-      (
-        _1(value._1),
-        _2(value._2),
-        _3(value._3),
-        _4(value._4),
-        _5(value._5),
-        _6(value._6),
-        _7(value._7),
-        _8(value._8),
-        _9(value._9),
-        _10(value._10),
-        _11(value._11),
-        _12(value._12),
-        _13(value._13),
-        _14(value._14),
-        _15(value._15),
-        _16(value._16),
-        _17(value._17),
-        _18(value._18),
-        _19(value._19),
-        _20(value._20))
+        TT) = (
+      _1(value._1),
+      _2(value._2),
+      _3(value._3),
+      _4(value._4),
+      _5(value._5),
+      _6(value._6),
+      _7(value._7),
+      _8(value._8),
+      _9(value._9),
+      _10(value._10),
+      _11(value._11),
+      _12(value._12),
+      _13(value._13),
+      _14(value._14),
+      _15(value._15),
+      _16(value._16),
+      _17(value._17),
+      _18(value._18),
+      _19(value._19),
+      _20(value._20))
   }
 
   implicit def ToTuple20W[
@@ -976,29 +971,28 @@ trait Tuples {
         RR,
         SS,
         TT,
-        UU) =
-      (
-        _1(value._1),
-        _2(value._2),
-        _3(value._3),
-        _4(value._4),
-        _5(value._5),
-        _6(value._6),
-        _7(value._7),
-        _8(value._8),
-        _9(value._9),
-        _10(value._10),
-        _11(value._11),
-        _12(value._12),
-        _13(value._13),
-        _14(value._14),
-        _15(value._15),
-        _16(value._16),
-        _17(value._17),
-        _18(value._18),
-        _19(value._19),
-        _20(value._20),
-        _21(value._21))
+        UU) = (
+      _1(value._1),
+      _2(value._2),
+      _3(value._3),
+      _4(value._4),
+      _5(value._5),
+      _6(value._6),
+      _7(value._7),
+      _8(value._8),
+      _9(value._9),
+      _10(value._10),
+      _11(value._11),
+      _12(value._12),
+      _13(value._13),
+      _14(value._14),
+      _15(value._15),
+      _16(value._16),
+      _17(value._17),
+      _18(value._18),
+      _19(value._19),
+      _20(value._20),
+      _21(value._21))
   }
 
   implicit def ToTuple21W[
@@ -1044,9 +1038,8 @@ trait Tuples {
         R,
         S,
         T,
-        U] =
-    new { val value = t }
-    with Tuple21W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]
+        U] = new { val value = t }
+  with Tuple21W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]
 
   trait Tuple22W[
       A,
@@ -1258,30 +1251,29 @@ trait Tuples {
         SS,
         TT,
         UU,
-        VV) =
-      (
-        _1(value._1),
-        _2(value._2),
-        _3(value._3),
-        _4(value._4),
-        _5(value._5),
-        _6(value._6),
-        _7(value._7),
-        _8(value._8),
-        _9(value._9),
-        _10(value._10),
-        _11(value._11),
-        _12(value._12),
-        _13(value._13),
-        _14(value._14),
-        _15(value._15),
-        _16(value._16),
-        _17(value._17),
-        _18(value._18),
-        _19(value._19),
-        _20(value._20),
-        _21(value._21),
-        _22(value._22))
+        VV) = (
+      _1(value._1),
+      _2(value._2),
+      _3(value._3),
+      _4(value._4),
+      _5(value._5),
+      _6(value._6),
+      _7(value._7),
+      _8(value._8),
+      _9(value._9),
+      _10(value._10),
+      _11(value._11),
+      _12(value._12),
+      _13(value._13),
+      _14(value._14),
+      _15(value._15),
+      _16(value._16),
+      _17(value._17),
+      _18(value._18),
+      _19(value._19),
+      _20(value._20),
+      _21(value._21),
+      _22(value._22))
   }
 
   implicit def ToTuple22W[
@@ -1329,28 +1321,27 @@ trait Tuples {
         S,
         T,
         U,
-        V] =
-    new { val value = t } with Tuple22W[
-      A,
-      B,
-      C,
-      D,
-      E,
-      F,
-      G,
-      H,
-      I,
-      J,
-      K,
-      L,
-      M,
-      N,
-      O,
-      P,
-      Q,
-      R,
-      S,
-      T,
-      U,
-      V]
+        V] = new { val value = t } with Tuple22W[
+    A,
+    B,
+    C,
+    D,
+    E,
+    F,
+    G,
+    H,
+    I,
+    J,
+    K,
+    L,
+    M,
+    N,
+    O,
+    P,
+    Q,
+    R,
+    S,
+    T,
+    U,
+    V]
 }

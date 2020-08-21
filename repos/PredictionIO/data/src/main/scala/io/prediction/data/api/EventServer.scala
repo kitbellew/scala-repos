@@ -57,13 +57,12 @@ class EventServiceActor(
     extends HttpServiceActor {
 
   object Json4sProtocol extends Json4sSupport {
-    implicit def json4sFormats: Formats =
-      DefaultFormats +
-        new EventJson4sSupport.APISerializer +
-        new BatchEventsJson4sSupport.APISerializer +
-        // NOTE: don't use Json4s JodaTimeSerializers since it has issues,
-        // some format not converted, or timezone not correct
-        new DateTimeJson4sSupport.Serializer
+    implicit def json4sFormats: Formats = DefaultFormats +
+      new EventJson4sSupport.APISerializer +
+      new BatchEventsJson4sSupport.APISerializer +
+      // NOTE: don't use Json4s JodaTimeSerializers since it has issues,
+      // some format not converted, or timezone not correct
+      new DateTimeJson4sSupport.Serializer
   }
 
   val MaxNumberOfEventsPerBatchRequest = 50

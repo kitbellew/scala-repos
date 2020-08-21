@@ -92,13 +92,12 @@ sealed trait ExpressionDag[N[_]] { self =>
       id2Exp: HMap[Id, E] = self.idToExp,
       node2Literal: GenFunction[N, Lit] = self.nodeToLiteral,
       gcroots: Set[Id[_]] = self.roots,
-      id: Int = self.nextId): ExpressionDag[N] =
-    new ExpressionDag[N] {
-      def idToExp = id2Exp
-      def roots = gcroots
-      def nodeToLiteral = node2Literal
-      def nextId = id
-    }
+      id: Int = self.nextId): ExpressionDag[N] = new ExpressionDag[N] {
+    def idToExp = id2Exp
+    def roots = gcroots
+    def nodeToLiteral = node2Literal
+    def nextId = id
+  }
 
   override def toString: String =
     "ExpressionDag(idToExp = %s)".format(idToExp)
@@ -223,17 +222,16 @@ sealed trait ExpressionDag[N[_]] { self =>
     * This finds the Id[T] in the current graph that is equivalent
     * to the given N[T]
     */
-  def find[T](node: N[T]): Option[Id[T]] =
-    nodeToId.getOrElseUpdate(
-      node, {
-        val partial = new GenPartial[HMap[Id, E]#Pair, Id] {
-          def apply[T] = {
-            case (thisId, expr) if node == expr.evaluate(idToExp) => thisId
-          }
+  def find[T](node: N[T]): Option[Id[T]] = nodeToId.getOrElseUpdate(
+    node, {
+      val partial = new GenPartial[HMap[Id, E]#Pair, Id] {
+        def apply[T] = {
+          case (thisId, expr) if node == expr.evaluate(idToExp) => thisId
         }
-        idToExp.collect(partial).headOption.asInstanceOf[Option[Id[T]]]
       }
-    )
+      idToExp.collect(partial).headOption.asInstanceOf[Option[Id[T]]]
+    }
+  )
 
   /**
     * This throws if the node is missing, use find if this is not
@@ -379,12 +377,11 @@ trait Rule[N[_]] { self =>
   def apply[T](on: ExpressionDag[N]): (N[T] => Option[N[T]])
 
   // If the current rule cannot apply, then try the argument here
-  def orElse(that: Rule[N]): Rule[N] =
-    new Rule[N] {
-      def apply[T](on: ExpressionDag[N]) = { n =>
-        self.apply(on)(n).orElse(that.apply(on)(n))
-      }
+  def orElse(that: Rule[N]): Rule[N] = new Rule[N] {
+    def apply[T](on: ExpressionDag[N]) = { n =>
+      self.apply(on)(n).orElse(that.apply(on)(n))
     }
+  }
 }
 
 /**

@@ -30,16 +30,14 @@ object rootMeanSquare extends UFunc {
   //temporary placeholder implementation until mean is fully generified
   implicit def rms1DInt: rootMeanSquare.Impl[DenseVector[Int], Double] = {
     new rootMeanSquare.Impl[DenseVector[Int], Double] {
-      def apply(v: DenseVector[Int]): Double =
-        sqrt(
-          sum(convert(v, Double).map(elem => elem * elem)) / v.length.toDouble)
+      def apply(v: DenseVector[Int]): Double = sqrt(
+        sum(convert(v, Double).map(elem => elem * elem)) / v.length.toDouble)
     }
   }
   implicit def rms1DLong: rootMeanSquare.Impl[DenseVector[Long], Double] = {
     new rootMeanSquare.Impl[DenseVector[Long], Double] {
-      def apply(v: DenseVector[Long]): Double =
-        sqrt(
-          sum(convert(v, Double).map(elem => elem * elem)) / v.length.toDouble)
+      def apply(v: DenseVector[Long]): Double = sqrt(
+        sum(convert(v, Double).map(elem => elem * elem)) / v.length.toDouble)
     }
   }
 

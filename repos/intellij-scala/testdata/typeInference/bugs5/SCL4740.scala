@@ -31,11 +31,10 @@ object PhoneCode {
     //i love to create classes nested inside methods just before i need them :) (6 lines)
     case class Step(translated: String, remaining: String, original: String) {
       def canFallBackToDigit = !translated.lastOption.exists(_.isDigit)
-      def asFallback(notMatched: String) =
-        if (canFallBackToDigit)
-          List(
-            copy(translated + " " + notMatched.head, notMatched.tail, original))
-        else Nil
+      def asFallback(notMatched: String) = if (canFallBackToDigit)
+        List(
+          copy(translated + " " + notMatched.head, notMatched.tail, original))
+      else Nil
       def format = original + ": " + translated.trim
       def ifFinished = if (remaining.isEmpty) Some(List(this)) else None
     }

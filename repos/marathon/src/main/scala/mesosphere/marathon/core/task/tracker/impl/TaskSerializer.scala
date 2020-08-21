@@ -39,30 +39,27 @@ object TaskSerializer {
       )
     }
 
-    def reservation: Option[Task.Reservation] =
-      if (proto.hasReservation) {
-        Some(ReservationSerializer.fromProto(proto.getReservation))
-      } else None
+    def reservation: Option[Task.Reservation] = if (proto.hasReservation) {
+      Some(ReservationSerializer.fromProto(proto.getReservation))
+    } else None
 
     def appVersion = Timestamp(proto.getVersion)
 
-    def taskStatus =
-      Task.Status(
-        stagedAt = Timestamp(proto.getStagedAt),
-        startedAt =
-          if (proto.hasStartedAt) Some(Timestamp(proto.getStartedAt)) else None,
-        mesosStatus = opt(_.hasStatus, _.getStatus)
-      )
+    def taskStatus = Task.Status(
+      stagedAt = Timestamp(proto.getStagedAt),
+      startedAt =
+        if (proto.hasStartedAt) Some(Timestamp(proto.getStartedAt)) else None,
+      mesosStatus = opt(_.hasStatus, _.getStatus)
+    )
 
-    def networking =
-      if (proto.getPortsCount != 0) {
-        Task.HostPorts(
-          proto.getPortsList.iterator().asScala.map(_.intValue()).toVector)
-      } else if (proto.getNetworksCount != 0) {
-        Task.NetworkInfoList(proto.getNetworksList.asScala)
-      } else {
-        Task.NoNetworking
-      }
+    def networking = if (proto.getPortsCount != 0) {
+      Task.HostPorts(
+        proto.getPortsList.iterator().asScala.map(_.intValue()).toVector)
+    } else if (proto.getNetworksCount != 0) {
+      Task.NetworkInfoList(proto.getNetworksList.asScala)
+    } else {
+      Task.NoNetworking
+    }
 
     def launchedTask: Option[Task.Launched] = {
       if (proto.hasStagedAt) {

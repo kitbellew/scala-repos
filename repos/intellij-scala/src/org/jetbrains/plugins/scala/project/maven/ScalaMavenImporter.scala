@@ -68,8 +68,8 @@ class ScalaMavenImporter
   }
 
   // exclude "default" plugins, should be done inside IDEA's MavenImporter itself
-  override def isApplicable(mavenProject: MavenProject) =
-    validConfigurationIn(mavenProject).isDefined
+  override def isApplicable(mavenProject: MavenProject) = validConfigurationIn(
+    mavenProject).isDefined
 
   override def preProcess(
       module: Module,
@@ -209,11 +209,10 @@ private class ScalaConfiguration(project: MavenProject) {
     if (usesReflect) basicIds :+ scalaReflectId else basicIds
   }
 
-  def compilerVersion: Option[Version] =
-    element("scalaVersion")
-      .map(_.getTextTrim)
-      .orElse(standardLibrary.map(_.getVersion))
-      .map(Version(_))
+  def compilerVersion: Option[Version] = element("scalaVersion")
+    .map(_.getTextTrim)
+    .orElse(standardLibrary.map(_.getVersion))
+    .map(Version(_))
 
   private def usesReflect: Boolean =
     compilerVersion.exists(it => it.toLanguageLevel.exists(_ >= Scala_2_10))

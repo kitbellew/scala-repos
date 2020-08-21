@@ -465,24 +465,23 @@ final class BigDecimal(val bigDecimal: BigDec, val mc: MathContext)
   /** Compares this BigDecimal with the specified value for equality.  Where `Float` and `Double`
     *  disagree, `BigDecimal` will agree with the `Double` value
     */
-  override def equals(that: Any): Boolean =
-    that match {
-      case that: BigDecimal => this equals that
-      case that: BigInt =>
-        that.bitLength > (precision - scale - 2) * BigDecimal.deci2binary &&
-          this.toBigIntExact.exists(that equals _)
-      case that: Double =>
-        !that.isInfinity && {
-          val d = toDouble
-          !d.isInfinity && d == that && equals(decimal(d))
-        }
-      case that: Float =>
-        !that.isInfinity && {
-          val f = toFloat
-          !f.isInfinity && f == that && equals(decimal(f.toDouble))
-        }
-      case _ => isValidLong && unifiedPrimitiveEquals(that)
-    }
+  override def equals(that: Any): Boolean = that match {
+    case that: BigDecimal => this equals that
+    case that: BigInt =>
+      that.bitLength > (precision - scale - 2) * BigDecimal.deci2binary &&
+        this.toBigIntExact.exists(that equals _)
+    case that: Double =>
+      !that.isInfinity && {
+        val d = toDouble
+        !d.isInfinity && d == that && equals(decimal(d))
+      }
+    case that: Float =>
+      !that.isInfinity && {
+        val f = toFloat
+        !f.isInfinity && f == that && equals(decimal(f.toDouble))
+      }
+    case _ => isValidLong && unifiedPrimitiveEquals(that)
+  }
   override def isValidByte = noArithmeticException(toByteExact)
   override def isValidShort = noArithmeticException(toShortExact)
   override def isValidChar =
@@ -602,19 +601,17 @@ final class BigDecimal(val bigDecimal: BigDec, val mc: MathContext)
 
   /** Returns the minimum of this and that, or this if the two are equal
     */
-  def min(that: BigDecimal): BigDecimal =
-    (this compare that) match {
-      case x if x <= 0 => this
-      case _           => that
-    }
+  def min(that: BigDecimal): BigDecimal = (this compare that) match {
+    case x if x <= 0 => this
+    case _           => that
+  }
 
   /** Returns the maximum of this and that, or this if the two are equal
     */
-  def max(that: BigDecimal): BigDecimal =
-    (this compare that) match {
-      case x if x >= 0 => this
-      case _           => that
-    }
+  def max(that: BigDecimal): BigDecimal = (this compare that) match {
+    case x if x >= 0 => this
+    case _           => that
+  }
 
   /** Remainder after dividing this by that.
     */

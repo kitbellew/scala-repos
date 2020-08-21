@@ -28,6 +28,6 @@ final case class UnpickleOps(val thePickle: Pickle) {
 
 trait Ops {
   implicit def pickleOps[T](picklee: T): PickleOps[T] = PickleOps(picklee)
-  implicit def unpickleOps(thePickle: Pickle): UnpickleOps =
-    UnpickleOps(thePickle)
+  implicit def unpickleOps(thePickle: Pickle): UnpickleOps = UnpickleOps(
+    thePickle)
 }

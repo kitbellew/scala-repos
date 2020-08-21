@@ -68,8 +68,8 @@ object Args {
 class Args(val m: Map[String, List[String]]) extends java.io.Serializable {
 
   //Replace or add a given key+args pair:
-  def +(keyvals: (String, Iterable[String])): Args =
-    new Args(m + (keyvals._1 -> keyvals._2.toList))
+  def +(keyvals: (String, Iterable[String])): Args = new Args(
+    m + (keyvals._1 -> keyvals._2.toList))
 
   /**
     * Does this Args contain a given key?
@@ -97,13 +97,12 @@ class Args(val m: Map[String, List[String]]) extends java.io.Serializable {
   /**
     * return required positional value.
     */
-  def required(position: Int): String =
-    positional match {
-      case l if l.size > position => l(position)
-      case _ =>
-        throw ArgsException(
-          "Please provide " + (position + 1) + " positional arguments")
-    }
+  def required(position: Int): String = positional match {
+    case l if l.size > position => l(position)
+    case _ =>
+      throw ArgsException(
+        "Please provide " + (position + 1) + " positional arguments")
+  }
 
   /**
     * This is a synonym for required
@@ -130,13 +129,12 @@ class Args(val m: Map[String, List[String]]) extends java.io.Serializable {
     * return exactly one value for a given key.
     * If there is more than one value, you get an exception
     */
-  def required(key: String): String =
-    list(key) match {
-      case List()  => throw ArgsException("Please provide a value for --" + key)
-      case List(a) => a
-      case _ =>
-        throw ArgsException("Please only provide a single value for --" + key)
-    }
+  def required(key: String): String = list(key) match {
+    case List()  => throw ArgsException("Please provide a value for --" + key)
+    case List(a) => a
+    case _ =>
+      throw ArgsException("Please only provide a single value for --" + key)
+  }
 
   def toList: List[String] = {
     m.foldLeft(List[String]()) { (args, kvlist) =>
@@ -172,13 +170,12 @@ class Args(val m: Map[String, List[String]]) extends java.io.Serializable {
     * If there is zero or one element, return it as an Option.
     * If there is a list of more than one item, you get an error
     */
-  def optional(key: String): Option[String] =
-    list(key) match {
-      case List()  => None
-      case List(a) => Some(a)
-      case _ =>
-        throw ArgsException("Please provide at most one value for --" + key)
-    }
+  def optional(key: String): Option[String] = list(key) match {
+    case List()  => None
+    case List(a) => Some(a)
+    case _ =>
+      throw ArgsException("Please provide at most one value for --" + key)
+  }
 
   def int(key: String, default: Int): Int = {
     optional(key)

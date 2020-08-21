@@ -153,8 +153,8 @@ object KeyCombination {
   /**
     * Constructs a new KeyCombination from the specified string.
     */
-  def keyCombination(name: String): KeyCombination =
-    new KeyCombination(jfxsi.KeyCombination.keyCombination(name)) {}
+  def keyCombination(name: String): KeyCombination = new KeyCombination(
+    jfxsi.KeyCombination.keyCombination(name)) {}
 
   /**
     * Constructs a new KeyCombination from the specified string.
@@ -165,8 +165,8 @@ object KeyCombination {
   /**
     * Constructs a new KeyCombination from the specified string.
     */
-  def apply(value: String): KeyCombination =
-    new KeyCombination(jfxsi.KeyCombination.valueOf(value)) {}
+  def apply(value: String): KeyCombination = new KeyCombination(
+    jfxsi.KeyCombination.valueOf(value)) {}
 
 }
 

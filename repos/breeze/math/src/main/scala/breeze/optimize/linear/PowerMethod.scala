@@ -107,18 +107,17 @@ object PowerMethod {
       override def iterations(
           A: BDM,
           y: BDV,
-          initialState: State): Iterator[State] =
-        Iterator
-          .iterate(reset(A, y, initialState)) { state =>
-            import state._
-            ay := eigenVector
-            QuadraticMinimizer.dpotrs(A, ay)
-            val lambda = nextEigen(eigenVector, ay)
-            val val_dif = abs(lambda - eigenValue)
-            if (val_dif <= tolerance || iter > maxIters)
-              State(lambda, eigenVector, ay, iter + 1, true)
-            else State(lambda, eigenVector, ay, iter + 1, false)
-          }
-          .takeUpToWhere(_.converged)
+          initialState: State): Iterator[State] = Iterator
+        .iterate(reset(A, y, initialState)) { state =>
+          import state._
+          ay := eigenVector
+          QuadraticMinimizer.dpotrs(A, ay)
+          val lambda = nextEigen(eigenVector, ay)
+          val val_dif = abs(lambda - eigenValue)
+          if (val_dif <= tolerance || iter > maxIters)
+            State(lambda, eigenVector, ay, iter + 1, true)
+          else State(lambda, eigenVector, ay, iter + 1, false)
+        }
+        .takeUpToWhere(_.converged)
     }
 }

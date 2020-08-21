@@ -543,21 +543,22 @@ class CodingDirectivesSpec extends RoutingSpec with Inside {
   }
 
   def hexDump(bytes: Array[Byte]) = bytes.map("%02x" format _).mkString
-  def fromHexDump(dump: String) =
-    dump
-      .grouped(2)
-      .toArray
-      .map(chars ⇒ Integer.parseInt(new String(chars), 16).toByte)
+  def fromHexDump(dump: String) = dump
+    .grouped(2)
+    .toArray
+    .map(chars ⇒ Integer.parseInt(new String(chars), 16).toByte)
 
-  def haveNoContentEncoding: Matcher[HttpResponse] =
-    be(None) compose { (_: HttpResponse).header[`Content-Encoding`] }
+  def haveNoContentEncoding: Matcher[HttpResponse] = be(None) compose {
+    (_: HttpResponse).header[`Content-Encoding`]
+  }
   def haveContentEncoding(encoding: HttpEncoding): Matcher[HttpResponse] =
     be(Some(`Content-Encoding`(encoding))) compose {
       (_: HttpResponse).header[`Content-Encoding`]
     }
 
-  def readAs(string: String, charset: String = "UTF8") =
-    be(string) compose { (_: ByteString).decodeString(charset) }
+  def readAs(string: String, charset: String = "UTF8") = be(string) compose {
+    (_: ByteString).decodeString(charset)
+  }
 
   def strictify(entity: HttpEntity) =
     entity.toStrict(1.second).awaitResult(1.second)

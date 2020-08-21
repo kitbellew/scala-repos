@@ -270,19 +270,17 @@ private[round] final class Round(
     } recover errorHandler("handlePov")
 
   private def handleGame(game: Fu[Option[Game]])(
-      op: Game => Fu[Events]): Funit =
-    publish {
-      game flatten "game not found" flatMap op
-    } recover errorHandler("handleGame")
+      op: Game => Fu[Events]): Funit = publish {
+    game flatten "game not found" flatMap op
+  } recover errorHandler("handleGame")
 
-  private def publish[A](op: Fu[Events]): Funit =
-    op.addEffect { events =>
-      if (events.nonEmpty) socketHub ! Tell(gameId, EventList(events))
-      if (events exists {
-          case e: Event.Move => e.threefold
-          case _             => false
-        }) self ! Threefold
-    }.void recover errorHandler("publish")
+  private def publish[A](op: Fu[Events]): Funit = op.addEffect { events =>
+    if (events.nonEmpty) socketHub ! Tell(gameId, EventList(events))
+    if (events exists {
+        case e: Event.Move => e.threefold
+        case _             => false
+      }) self ! Threefold
+  }.void recover errorHandler("publish")
 
   private def errorHandler(name: String): PartialFunction[Throwable, Unit] = {
     case e: ClientError  => lila.mon.round.error.client()

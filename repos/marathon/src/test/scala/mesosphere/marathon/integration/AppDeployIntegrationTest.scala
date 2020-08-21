@@ -318,11 +318,10 @@ class AppDeployIntegrationTest
     extractDeploymentIds(create) should have size 1
 
     And("a number of failed health events but the deployment does not succeed")
-    def interestingEvent() =
-      waitForEventMatching("failed_health_check_event or deployment_success")(
-        callbackEvent =>
-          callbackEvent.eventType == "deployment_success" ||
-            callbackEvent.eventType == "failed_health_check_event")
+    def interestingEvent() = waitForEventMatching(
+      "failed_health_check_event or deployment_success")(callbackEvent =>
+      callbackEvent.eventType == "deployment_success" ||
+        callbackEvent.eventType == "failed_health_check_event")
 
     for (event <- Iterator.continually(interestingEvent()).take(10)) {
       event.eventType should be("failed_health_check_event")
@@ -737,9 +736,8 @@ class AppDeployIntegrationTest
     maybeContainer1.get.docker shouldBe (empty)
   }
 
-  def healthCheck =
-    HealthCheck(
-      gracePeriod = 20.second,
-      interval = 1.second,
-      maxConsecutiveFailures = 10)
+  def healthCheck = HealthCheck(
+    gracePeriod = 20.second,
+    interval = 1.second,
+    maxConsecutiveFailures = 10)
 }

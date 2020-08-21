@@ -78,15 +78,14 @@ class ScalaChangeSignatureHandler extends ChangeSignatureHandler {
     }
 
     @tailrec
-    def unwrapMethod(element: PsiElement): Option[PsiMethod] =
-      element match {
-        case null                       => None
-        case isWrapper(fun: ScFunction) => unwrapMethod(fun)
-        case fun: ScFunction if fun.isSynthetic =>
-          fun.syntheticCaseClass.flatMap(_.constructor)
-        case m: PsiMethod => Some(m)
-        case _            => None
-      }
+    def unwrapMethod(element: PsiElement): Option[PsiMethod] = element match {
+      case null                       => None
+      case isWrapper(fun: ScFunction) => unwrapMethod(fun)
+      case fun: ScFunction if fun.isSynthetic =>
+        fun.syntheticCaseClass.flatMap(_.constructor)
+      case m: PsiMethod => Some(m)
+      case _            => None
+    }
 
     unwrapMethod(element) match {
       case Some(method) =>

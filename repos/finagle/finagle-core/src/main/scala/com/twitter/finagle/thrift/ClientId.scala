@@ -27,19 +27,17 @@ object ClientId {
   private[finagle] val clientIdCtx =
     new Contexts.broadcast.Key[Option[ClientId]](
       "com.twitter.finagle.thrift.ClientIdContext") {
-      def marshal(clientId: Option[ClientId]): Buf =
-        clientId match {
-          case None                 => Buf.Empty
-          case Some(ClientId(name)) => Buf.Utf8(name)
-        }
+      def marshal(clientId: Option[ClientId]): Buf = clientId match {
+        case None                 => Buf.Empty
+        case Some(ClientId(name)) => Buf.Utf8(name)
+      }
 
-      def tryUnmarshal(buf: Buf) =
-        buf match {
-          case buf if buf.isEmpty => Return.None
-          case Buf.Utf8(name)     => Return(Some(ClientId(name)))
-          case invalid =>
-            Throw(new IllegalArgumentException("client id not a utf8 string"))
-        }
+      def tryUnmarshal(buf: Buf) = buf match {
+        case buf if buf.isEmpty => Return.None
+        case Buf.Utf8(name)     => Return(Some(ClientId(name)))
+        case invalid =>
+          Throw(new IllegalArgumentException("client id not a utf8 string"))
+      }
     }
 
   private[this] val NoClientFn: () => Option[ClientId] = () => None

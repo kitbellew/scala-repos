@@ -60,8 +60,8 @@ object ConsoleProject {
   /** Conveniences for consoleProject that shouldn't normally be used for builds. */
   final class Imports private[sbt] (extracted: Extracted, state: State) {
     import extracted._
-    implicit def taskKeyEvaluate[T](t: TaskKey[T]): Evaluate[T] =
-      new Evaluate(runTask(t, state)._2)
+    implicit def taskKeyEvaluate[T](t: TaskKey[T]): Evaluate[T] = new Evaluate(
+      runTask(t, state)._2)
     implicit def settingKeyEvaluate[T](s: SettingKey[T]): Evaluate[T] =
       new Evaluate(get(s))
   }

@@ -26,17 +26,16 @@ trait HasCompileSocket {
       out println (compileSocket getPassword sock.getPort())
       out println (args mkString "\u0000")
 
-      def loop(): Boolean =
-        in.readLine() match {
-          case null => noErrors
-          case line =>
-            if (isErrorMessage(line))
-              noErrors = false
+      def loop(): Boolean = in.readLine() match {
+        case null => noErrors
+        case line =>
+          if (isErrorMessage(line))
+            noErrors = false
 
-            // be consistent with scalac: everything goes to stderr
-            compileSocket.warn(line)
-            loop()
-        }
+          // be consistent with scalac: everything goes to stderr
+          compileSocket.warn(line)
+          loop()
+      }
       try loop()
       finally sock.close()
     }
@@ -111,21 +110,19 @@ class CompileSocket extends CompileOutputCommon {
   def portFile(port: Int) = portsDir / File(port.toString)
 
   /** Poll for a server port number; return -1 if none exists yet */
-  private def pollPort(): Int =
-    if (fixPort > 0) {
-      if (portsDir.list.toList.exists(_.name == fixPort.toString)) fixPort
-      else -1
-    } else
-      portsDir.list.toList match {
-        case Nil => -1
-        case x :: xs =>
-          try x.name.toInt
-          catch {
-            case e: Exception =>
-              x.delete()
-              throw e
-          }
-      }
+  private def pollPort(): Int = if (fixPort > 0) {
+    if (portsDir.list.toList.exists(_.name == fixPort.toString)) fixPort else -1
+  } else
+    portsDir.list.toList match {
+      case Nil => -1
+      case x :: xs =>
+        try x.name.toInt
+        catch {
+          case e: Exception =>
+            x.delete()
+            throw e
+        }
+    }
 
   /** Get the port number to which a scala compile server is connected;
     *  If no server is running yet, then create one.
@@ -181,30 +178,29 @@ class CompileSocket extends CompileOutputCommon {
     val retryDelay = 50L
     val maxAttempts = (maxMillis / retryDelay).toInt
 
-    def getsock(attempts: Int): Option[Socket] =
-      attempts match {
-        case 0 =>
-          warn("Unable to establish connection to compilation daemon"); None
-        case num =>
-          val port = if (create) getPort(vmArgs) else pollPort()
-          if (port < 0) return None
+    def getsock(attempts: Int): Option[Socket] = attempts match {
+      case 0 =>
+        warn("Unable to establish connection to compilation daemon"); None
+      case num =>
+        val port = if (create) getPort(vmArgs) else pollPort()
+        if (port < 0) return None
 
-          Socket.localhost(port).either match {
-            case Right(socket) =>
-              info("[Connected to compilation daemon at port %d]" format port)
-              Some(socket)
-            case Left(err) =>
-              info(err.toString)
-              info(
-                "[Connecting to compilation daemon at port %d failed; re-trying...]" format port)
+        Socket.localhost(port).either match {
+          case Right(socket) =>
+            info("[Connected to compilation daemon at port %d]" format port)
+            Some(socket)
+          case Left(err) =>
+            info(err.toString)
+            info(
+              "[Connecting to compilation daemon at port %d failed; re-trying...]" format port)
 
-              if (attempts % 2 == 0)
-                deletePort(port) // 50% chance to stop trying on this port
+            if (attempts % 2 == 0)
+              deletePort(port) // 50% chance to stop trying on this port
 
-              Thread sleep retryDelay // delay before retrying
-              getsock(attempts - 1)
-          }
-      }
+            Thread sleep retryDelay // delay before retrying
+            getsock(attempts - 1)
+        }
+    }
     getsock(maxAttempts)
   }
 
@@ -213,12 +209,10 @@ class CompileSocket extends CompileOutputCommon {
     try { Some(x.toInt) }
     catch { case _: NumberFormatException => None }
 
-  def getSocket(serverAdr: String): Option[Socket] =
-    (
-      for ((name, portStr) <-
-          splitWhere(serverAdr, _ == ':', doDropIndex = true);
-        port <- parseInt(portStr)) yield getSocket(name, port)
-    ) getOrElse fatal("Malformed server address: %s; exiting" format serverAdr)
+  def getSocket(serverAdr: String): Option[Socket] = (
+    for ((name, portStr) <- splitWhere(serverAdr, _ == ':', doDropIndex = true);
+      port <- parseInt(portStr)) yield getSocket(name, port)
+  ) getOrElse fatal("Malformed server address: %s; exiting" format serverAdr)
 
   def getSocket(hostName: String, port: Int): Option[Socket] = {
     val sock = Socket(hostName, port).opt

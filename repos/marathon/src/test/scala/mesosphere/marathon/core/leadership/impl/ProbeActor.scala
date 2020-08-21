@@ -21,8 +21,7 @@ class ProbeActor(testProbe: TestProbe) extends Actor {
     testProbe.ref ! ProbeActor.PostStop(self)
   }
 
-  override def receive: Receive =
-    LoggingReceive { case any: Any =>
-      testProbe.ref.forward(any)
-    }
+  override def receive: Receive = LoggingReceive { case any: Any =>
+    testProbe.ref.forward(any)
+  }
 }

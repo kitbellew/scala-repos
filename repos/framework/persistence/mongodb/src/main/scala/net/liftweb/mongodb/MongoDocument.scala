@@ -42,11 +42,10 @@ trait MongoDocument[BaseDocument] extends JsonObject[BaseDocument] {
 
   def save = meta.save(this)
 
-  def getRef: Option[MongoRef] =
-    _id match {
-      case oid: ObjectId => Some(MongoRef(meta.collectionName, oid))
-      case _             => None
-    }
+  def getRef: Option[MongoRef] = _id match {
+    case oid: ObjectId => Some(MongoRef(meta.collectionName, oid))
+    case _             => None
+  }
 }
 
 /*
@@ -101,26 +100,26 @@ trait MongoDocumentMeta[BaseDocument]
   /**
     * Find a single document by _id using an ObjectId.
     */
-  def find(oid: ObjectId): Option[BaseDocument] =
-    find(new BasicDBObject("_id", oid))
+  def find(oid: ObjectId): Option[BaseDocument] = find(
+    new BasicDBObject("_id", oid))
 
   /**
     * Find a single document by _id using a UUID.
     */
-  def find(uuid: UUID): Option[BaseDocument] =
-    find(new BasicDBObject("_id", uuid))
+  def find(uuid: UUID): Option[BaseDocument] = find(
+    new BasicDBObject("_id", uuid))
 
   /**
     * Find a single document by a qry using String, Any inputs
     */
-  def find(k: String, v: Any): Option[BaseDocument] =
-    find(new BasicDBObject(k, v))
+  def find(k: String, v: Any): Option[BaseDocument] = find(
+    new BasicDBObject(k, v))
 
   /**
     * Find a single document by a qry using a json query
     */
-  def find(json: JObject): Option[BaseDocument] =
-    find(JObjectParser.parse(json))
+  def find(json: JObject): Option[BaseDocument] = find(
+    JObjectParser.parse(json))
 
   /**
     * Find all documents in this collection

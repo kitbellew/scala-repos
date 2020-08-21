@@ -10,8 +10,7 @@ class CountDownLatch(val initialCount: Int) {
   def await() = underlying.await()
   def await(timeout: Duration) =
     underlying.await(timeout.inMillis, TimeUnit.MILLISECONDS)
-  def within(timeout: Duration) =
-    await(timeout) || {
-      throw new TimeoutException(timeout.toString)
-    }
+  def within(timeout: Duration) = await(timeout) || {
+    throw new TimeoutException(timeout.toString)
+  }
 }

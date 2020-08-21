@@ -101,15 +101,14 @@ trait CachedFacet extends ProductISOFacet {
         if (found != null) found.get else extracted
       }
     }
-    def intern(c: C): C =
-      cache.synchronized {
-        val found = cache.get(c)
-        if (found != null) found.get
-        else {
-          cache.put(c, new WeakReference(c))
-          c
-        }
+    def intern(c: C): C = cache.synchronized {
+      val found = cache.get(c)
+      if (found != null) found.get
+      else {
+        cache.put(c, new WeakReference(c))
+        c
       }
+    }
     def alive(): Long = cache.synchronized { cache.size() }
     def aliveExtracted(): Long = uncache.synchronized { uncache.size() }
   }

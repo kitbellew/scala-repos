@@ -79,11 +79,10 @@ abstract class PositionManagerTestBase extends ScalaDebuggerTestCase {
     }
   }
 
-  private def toSimpleLocation(location: Location) =
-    Loc(
-      location.declaringType().name(),
-      location.method().name(),
-      location.lineNumber())
+  private def toSimpleLocation(location: Location) = Loc(
+    location.declaringType().name(),
+    location.method().name(),
+    location.lineNumber())
 
   protected def setupFile(fileName: String, fileText: String): Unit = {
     val breakpointLine = fileText.lines.indexWhere(_.contains(bp))

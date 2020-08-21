@@ -154,11 +154,10 @@ private[python] class JavaToWritableConverter extends Converter[Any, Writable] {
     }
   }
 
-  override def convert(obj: Any): Writable =
-    obj match {
-      case writable: Writable => writable
-      case other              => convertToWritable(other)
-    }
+  override def convert(obj: Any): Writable = obj match {
+    case writable: Writable => writable
+    case other              => convertToWritable(other)
+  }
 }
 
 /** Utilities for working with Python objects <-> Hadoop-related objects */

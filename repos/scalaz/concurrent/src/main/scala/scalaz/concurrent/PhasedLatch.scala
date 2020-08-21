@@ -17,8 +17,9 @@ sealed abstract class PhasedLatch {
 
   /** Await the current phase for the specified period. */
   @throws(classOf[InterruptedException])
-  final def awaitFor(time: Long, unit: TimeUnit) =
-    currentPhase flatMap { awaitPhaseFor(_, time, unit) }
+  final def awaitFor(time: Long, unit: TimeUnit) = currentPhase flatMap {
+    awaitPhaseFor(_, time, unit)
+  }
 
   /** Await for the specified phase. */
   @throws(classOf[InterruptedException])
@@ -43,43 +44,41 @@ trait PhasedLatches {
     }
   }
 
-  def newPhasedLatch: IO[PhasedLatch] =
-    IO(new PhasedLatch {
+  def newPhasedLatch: IO[PhasedLatch] = IO(new PhasedLatch {
 
-      /** This sync implements Phasing. The state represents the current phase as
-        *  an integer that continually increases. The phase can wrap around past
-        *  Int#MaxValue
-        */
-      class QueuedSynchronizer extends AbstractQueuedSynchronizer {
-        def currentPhase = getState
+    /** This sync implements Phasing. The state represents the current phase as
+      *  an integer that continually increases. The phase can wrap around past
+      *  Int#MaxValue
+      */
+    class QueuedSynchronizer extends AbstractQueuedSynchronizer {
+      def currentPhase = getState
 
-        override def tryAcquireShared(waitingFor: Int) =
-          if (phaseOrder.lessThan(currentPhase, waitingFor)) 1
-          else -1
+      override def tryAcquireShared(waitingFor: Int) =
+        if (phaseOrder.lessThan(currentPhase, waitingFor)) 1
+        else -1
 
-        @annotation.tailrec
-        override final def tryReleaseShared(ignore: Int) = {
-          val phase = currentPhase
-          if (compareAndSetState(phase, phase + 1)) true
-          else tryReleaseShared(ignore)
-        }
+      @annotation.tailrec
+      override final def tryReleaseShared(ignore: Int) = {
+        val phase = currentPhase
+        if (compareAndSetState(phase, phase + 1)) true
+        else tryReleaseShared(ignore)
       }
+    }
 
-      val sync = new QueuedSynchronizer
+    val sync = new QueuedSynchronizer
 
-      /** Release the current phase. */
-      def release = IO { sync releaseShared 1 }
+    /** Release the current phase. */
+    def release = IO { sync releaseShared 1 }
 
-      /** Await for the specified phase. */
-      @throws(classOf[InterruptedException])
-      def awaitPhase(phase: Int) = IO { sync acquireSharedInterruptibly phase }
+    /** Await for the specified phase. */
+    @throws(classOf[InterruptedException])
+    def awaitPhase(phase: Int) = IO { sync acquireSharedInterruptibly phase }
 
-      @throws(classOf[InterruptedException])
-      def awaitPhaseFor(phase: Int, period: Long, unit: TimeUnit) =
-        IO {
-          sync.tryAcquireSharedNanos(phase, unit.toNanos(period))
-        }
+    @throws(classOf[InterruptedException])
+    def awaitPhaseFor(phase: Int, period: Long, unit: TimeUnit) = IO {
+      sync.tryAcquireSharedNanos(phase, unit.toNanos(period))
+    }
 
-      def currentPhase = IO(sync.currentPhase)
-    })
+    def currentPhase = IO(sync.currentPhase)
+  })
 }

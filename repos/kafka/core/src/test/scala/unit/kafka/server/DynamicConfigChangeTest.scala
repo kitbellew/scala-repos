@@ -32,8 +32,8 @@ import kafka.admin.{AdminOperationException, AdminUtils}
 import scala.collection.Map
 
 class DynamicConfigChangeTest extends KafkaServerTestHarness {
-  def generateConfigs() =
-    List(KafkaConfig.fromProps(TestUtils.createBrokerConfig(0, zkConnect)))
+  def generateConfigs() = List(
+    KafkaConfig.fromProps(TestUtils.createBrokerConfig(0, zkConnect)))
 
   @Test
   def testConfigChange() {

@@ -88,8 +88,9 @@ case class ParametrizedConstruction(
     with TypedElement {
   var assocoationMap = Seq[(IntermediateNode, Option[String])]()
 
-  def getAssociations =
-    assocoationMap.collect { case (n, Some(value)) => (n, value) }
+  def getAssociations = assocoationMap.collect { case (n, Some(value)) =>
+    (n, value)
+  }
 
   override def getType: TypeConstruction =
     iNode.asInstanceOf[TypedElement].getType
@@ -100,8 +101,9 @@ case class ArrayConstruction(iNode: IntermediateNode)
     with TypedElement {
   var assocoationMap = Seq[(IntermediateNode, Option[String])]()
 
-  def getAssociations =
-    assocoationMap.collect { case (n, Some(value)) => (n, value) }
+  def getAssociations = assocoationMap.collect { case (n, Some(value)) =>
+    (n, value)
+  }
 
   override def getType: TypeConstruction =
     iNode.asInstanceOf[TypedElement].getType

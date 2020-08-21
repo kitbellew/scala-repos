@@ -114,16 +114,15 @@ object ActorRefSpec {
 class ActorRefSpec extends AkkaSpec with DefaultTimeout {
   import akka.actor.ActorRefSpec._
 
-  def promiseIntercept(f: ⇒ Actor)(to: Promise[Actor]): Actor =
-    try {
-      val r = f
-      to.success(r)
-      r
-    } catch {
-      case e: Throwable ⇒
-        to.failure(e)
-        throw e
-    }
+  def promiseIntercept(f: ⇒ Actor)(to: Promise[Actor]): Actor = try {
+    val r = f
+    to.success(r)
+    r
+  } catch {
+    case e: Throwable ⇒
+      to.failure(e)
+      throw e
+  }
 
   def wrap[T](f: Promise[Actor] ⇒ T): T = {
     val result = Promise[Actor]()

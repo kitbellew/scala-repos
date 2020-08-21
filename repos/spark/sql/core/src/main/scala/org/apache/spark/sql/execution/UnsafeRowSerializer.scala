@@ -115,14 +115,13 @@ private class UnsafeRowSerializerInstance(numFields: Int)
       override def asKeyValueIterator: Iterator[(Int, UnsafeRow)] = {
         new Iterator[(Int, UnsafeRow)] {
 
-          private[this] def readSize(): Int =
-            try {
-              dIn.readInt()
-            } catch {
-              case e: EOFException =>
-                dIn.close()
-                EOF
-            }
+          private[this] def readSize(): Int = try {
+            dIn.readInt()
+          } catch {
+            case e: EOFException =>
+              dIn.close()
+              EOF
+          }
 
           private[this] var rowSize: Int = readSize()
           override def hasNext: Boolean = rowSize != EOF

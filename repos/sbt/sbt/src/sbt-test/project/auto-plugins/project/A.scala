@@ -19,11 +19,10 @@ object TopA extends AutoPlugin {
 
   override def trigger = AllRequirements
 
-  override def projectSettings: scala.Seq[sbt.Setting[_]] =
-    Seq(
-      topLevelDemo := s"TopA: topLevelDemo project ${name.value}",
-      demo := s"TopA: demo project ${name.value}"
-    )
+  override def projectSettings: scala.Seq[sbt.Setting[_]] = Seq(
+    topLevelDemo := s"TopA: topLevelDemo project ${name.value}",
+    demo := s"TopA: demo project ${name.value}"
+  )
 
 }
 
@@ -33,10 +32,9 @@ object TopB extends AutoPlugin {
 
   val autoImport = TopLevelImports
 
-  override def projectSettings: Seq[Setting[_]] =
-    Seq(
-      topLevelDemo := s"TopB: topLevelDemo project ${name.value}"
-    )
+  override def projectSettings: Seq[Setting[_]] = Seq(
+    topLevelDemo := s"TopB: topLevelDemo project ${name.value}"
+  )
 
 }
 

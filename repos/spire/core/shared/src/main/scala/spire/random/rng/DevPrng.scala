@@ -58,23 +58,21 @@ class CycledFile(f: File) extends Generator { self =>
   def setSeedBytes(bytes: Array[Byte]): Unit =
     throw new UnsupportedOperationException("setSeedBytes")
 
-  def nextInt(): Int =
-    try {
+  def nextInt(): Int = try {
+    dis.readInt()
+  } catch {
+    case e: EOFException =>
+      reinit()
       dis.readInt()
-    } catch {
-      case e: EOFException =>
-        reinit()
-        dis.readInt()
-    }
+  }
 
-  def nextLong(): Long =
-    try {
-      dis.readLong()
-    } catch {
-      case e: EOFException =>
-        reinit()
-        dis.readInt()
-    }
+  def nextLong(): Long = try {
+    dis.readLong()
+  } catch {
+    case e: EOFException =>
+      reinit()
+      dis.readInt()
+  }
 }
 
 object CycledFile {

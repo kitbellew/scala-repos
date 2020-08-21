@@ -89,14 +89,13 @@ class TestInterference extends {
 
 object Test extends App {
 
-  def shouldThrow(t: => Unit) =
-    try {
-      t
-      println("[FAIL]: No UFE thrown")
-    } catch {
-      case UninitializedFieldError(msg) =>
-        println("[OK] Caught UFE: " + msg)
-    }
+  def shouldThrow(t: => Unit) = try {
+    t
+    println("[FAIL]: No UFE thrown")
+  } catch {
+    case UninitializedFieldError(msg) =>
+      println("[OK] Caught UFE: " + msg)
+  }
 
   val d = new D()
   println(d)

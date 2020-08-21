@@ -32,6 +32,6 @@ object VizGraph {
   def apply[P <: Platform[P]](dag: Dag[P]): String = DagViz(dag).toString
   def apply[P <: Platform[P]](tail: Producer[P, _], writer: Writer): Unit =
     writer.write(VizGraph(tail))
-  def apply[P <: Platform[P]](tail: Producer[P, _]): String =
-    ProducerViz(tail).toString
+  def apply[P <: Platform[P]](tail: Producer[P, _]): String = ProducerViz(
+    tail).toString
 }

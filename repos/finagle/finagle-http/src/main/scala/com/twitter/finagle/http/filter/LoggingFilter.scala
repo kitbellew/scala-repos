@@ -116,9 +116,8 @@ class CommonLogFormatter extends LogFormatter {
   def formatException(
       request: Request,
       throwable: Throwable,
-      responseTime: Duration): String =
-    throw new UnsupportedOperationException(
-      "Log throwables as empty 500s instead")
+      responseTime: Duration): String = throw new UnsupportedOperationException(
+    "Log throwables as empty 500s instead")
 
   def formattedDate(): String =
     DateFormat.format(Time.now.toDate)

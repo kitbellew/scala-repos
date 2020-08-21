@@ -75,14 +75,13 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
     val filter = new SimpleFilter[Message, Message] {
       def apply(
           req: Message,
-          service: Service[Message, Message]): Future[Message] =
-        req match {
-          case Message.Tdispatch(tag, _, _, _, _) if !canDispatch =>
-            Future.value(Message.Rerr(tag, "Tdispatch not enabled"))
-          case Message.Tping(tag) =>
-            ping().before { Future.value(Message.Rping(tag)) }
-          case req => service(req)
-        }
+          service: Service[Message, Message]): Future[Message] = req match {
+        case Message.Tdispatch(tag, _, _, _, _) if !canDispatch =>
+          Future.value(Message.Rerr(tag, "Tdispatch not enabled"))
+        case Message.Tping(tag) =>
+          ping().before { Future.value(Message.Rping(tag)) }
+        case req => service(req)
+      }
     }
 
     val server = new ServerDispatcher(

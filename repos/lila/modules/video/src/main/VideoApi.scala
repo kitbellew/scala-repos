@@ -24,19 +24,18 @@ private[video] final class VideoApi(videoColl: Coll, viewColl: Coll) {
   import View.viewBSONHandler
 
   private def videoViews(userOption: Option[User])(
-      videos: Seq[Video]): Fu[Seq[VideoView]] =
-    userOption match {
-      case None =>
-        fuccess {
-          videos map { VideoView(_, false) }
+      videos: Seq[Video]): Fu[Seq[VideoView]] = userOption match {
+    case None =>
+      fuccess {
+        videos map { VideoView(_, false) }
+      }
+    case Some(user) =>
+      view.seenVideoIds(user, videos) map { ids =>
+        videos.map { v =>
+          VideoView(v, ids contains v.id)
         }
-      case Some(user) =>
-        view.seenVideoIds(user, videos) map { ids =>
-          videos.map { v =>
-            VideoView(v, ids contains v.id)
-          }
-        }
-    }
+      }
+  }
 
   object video {
 
@@ -179,9 +178,8 @@ private[video] final class VideoApi(videoColl: Coll, viewColl: Coll) {
           ))
         .one[View]
 
-    def add(a: View) =
-      (viewColl insert a).void recover
-        lila.db.recoverDuplicateKey(_ => ())
+    def add(a: View) = (viewColl insert a).void recover
+      lila.db.recoverDuplicateKey(_ => ())
 
     def hasSeen(user: User, video: Video): Fu[Boolean] =
       viewColl.count(
@@ -201,8 +199,8 @@ private[video] final class VideoApi(videoColl: Coll, viewColl: Coll) {
 
   object tag {
 
-    def paths(filterTags: List[Tag]): Fu[List[TagNb]] =
-      pathsCache(filterTags.sorted)
+    def paths(filterTags: List[Tag]): Fu[List[TagNb]] = pathsCache(
+      filterTags.sorted)
 
     def allPopular: Fu[List[TagNb]] = popularCache(true)
 

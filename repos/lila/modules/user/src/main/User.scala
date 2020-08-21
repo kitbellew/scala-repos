@@ -28,11 +28,10 @@ case class User(
     lang: Option[String])
     extends Ordered[User] {
 
-  override def equals(other: Any) =
-    other match {
-      case u: User => id == u.id
-      case _       => false
-    }
+  override def equals(other: Any) = other match {
+    case u: User => id == u.id
+    case _       => false
+  }
 
   override def toString =
     s"User $username(${perfs.bestRating}) games:${count.game}${troll ?? " troll"}${engine ?? " engine"}"
@@ -66,19 +65,17 @@ case class User(
 
   def seenRecently: Boolean = timeNoSee < 10.minutes
 
-  def timeNoSee: Duration =
-    seenAt.fold[Duration](Duration.Inf) { s =>
-      (nowMillis - s.getMillis).millis
-    }
+  def timeNoSee: Duration = seenAt.fold[Duration](Duration.Inf) { s =>
+    (nowMillis - s.getMillis).millis
+  }
 
   def lame = booster || engine
 
   def lameOrTroll = lame || troll
 
-  def lightPerf(key: String) =
-    perfs(key) map { perf =>
-      User.LightPerf(light, key, perf.intRating, perf.progress)
-    }
+  def lightPerf(key: String) = perfs(key) map { perf =>
+    User.LightPerf(light, key, perf.intRating, perf.progress)
+  }
 
   def lightCount = User.LightCount(light, count.game)
 }
@@ -162,49 +159,47 @@ object User {
     private implicit def profileHandler = Profile.profileBSONHandler
     private implicit def perfsHandler = Perfs.perfsBSONHandler
 
-    def reads(r: BSON.Reader): User =
-      User(
-        id = r str id,
-        username = r str username,
-        perfs = r.getO[Perfs](perfs) | Perfs.default,
-        count = r.get[Count](count),
-        troll = r boolD troll,
-        ipBan = r boolD ipBan,
-        enabled = r bool enabled,
-        roles = ~r.getO[List[String]](roles),
-        profile = r.getO[Profile](profile),
-        engine = r boolD engine,
-        booster = r boolD booster,
-        toints = r nIntD toints,
-        playTime = r.getO[PlayTime](playTime),
-        createdAt = r date createdAt,
-        seenAt = r dateO seenAt,
-        kid = r boolD kid,
-        lang = r strO lang,
-        title = r strO title
-      )
+    def reads(r: BSON.Reader): User = User(
+      id = r str id,
+      username = r str username,
+      perfs = r.getO[Perfs](perfs) | Perfs.default,
+      count = r.get[Count](count),
+      troll = r boolD troll,
+      ipBan = r boolD ipBan,
+      enabled = r bool enabled,
+      roles = ~r.getO[List[String]](roles),
+      profile = r.getO[Profile](profile),
+      engine = r boolD engine,
+      booster = r boolD booster,
+      toints = r nIntD toints,
+      playTime = r.getO[PlayTime](playTime),
+      createdAt = r date createdAt,
+      seenAt = r dateO seenAt,
+      kid = r boolD kid,
+      lang = r strO lang,
+      title = r strO title
+    )
 
-    def writes(w: BSON.Writer, o: User) =
-      BSONDocument(
-        id -> o.id,
-        username -> o.username,
-        perfs -> o.perfs,
-        count -> o.count,
-        troll -> w.boolO(o.troll),
-        ipBan -> w.boolO(o.ipBan),
-        enabled -> o.enabled,
-        roles -> o.roles.some.filter(_.nonEmpty),
-        profile -> o.profile,
-        engine -> w.boolO(o.engine),
-        booster -> w.boolO(o.booster),
-        toints -> w.intO(o.toints),
-        playTime -> o.playTime,
-        createdAt -> o.createdAt,
-        seenAt -> o.seenAt,
-        kid -> w.boolO(o.kid),
-        lang -> o.lang,
-        title -> o.title
-      )
+    def writes(w: BSON.Writer, o: User) = BSONDocument(
+      id -> o.id,
+      username -> o.username,
+      perfs -> o.perfs,
+      count -> o.count,
+      troll -> w.boolO(o.troll),
+      ipBan -> w.boolO(o.ipBan),
+      enabled -> o.enabled,
+      roles -> o.roles.some.filter(_.nonEmpty),
+      profile -> o.profile,
+      engine -> w.boolO(o.engine),
+      booster -> w.boolO(o.booster),
+      toints -> w.intO(o.toints),
+      playTime -> o.playTime,
+      createdAt -> o.createdAt,
+      seenAt -> o.seenAt,
+      kid -> w.boolO(o.kid),
+      lang -> o.lang,
+      title -> o.title
+    )
   }
 
   private[user] lazy val tube = lila.db.BsTube(userBSONHandler)

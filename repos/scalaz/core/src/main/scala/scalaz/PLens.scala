@@ -171,8 +171,8 @@ sealed abstract class PLensFamily[A1, A2, B1, B2] {
 
   /** alias for `compose` */
   def <=<[C1, C2](
-      that: PLensFamily[C1, C2, A1, A2]): PLensFamily[C1, C2, B1, B2] =
-    compose(that)
+      that: PLensFamily[C1, C2, A1, A2]): PLensFamily[C1, C2, B1, B2] = compose(
+    that)
 
   def andThen[C1, C2](
       that: PLensFamily[B1, B2, C1, C2]): PLensFamily[A1, A2, C1, C2] =
@@ -180,8 +180,8 @@ sealed abstract class PLensFamily[A1, A2, B1, B2] {
 
   /** alias for `andThen` */
   def >=>[C1, C2](
-      that: PLensFamily[B1, B2, C1, C2]): PLensFamily[A1, A2, C1, C2] =
-    andThen(that)
+      that: PLensFamily[B1, B2, C1, C2]): PLensFamily[A1, A2, C1, C2] = andThen(
+    that)
 
   /** Two partial lenses that view a value of the same type can be joined */
   def sum[C1, C2](that: => PLensFamily[C1, C2, B1, B2])
@@ -362,10 +362,9 @@ trait PLensFamilyFunctions extends PLensInstances {
 trait PLensFunctions extends PLensInstances with PLensFamilyFunctions {
   import BijectionT._
 
-  def plens[A, B](r: A => Option[Store[B, A]]): PLens[A, B] =
-    new PLens[A, B] {
-      def run(a: A): Option[Store[B, A]] = r(a)
-    }
+  def plens[A, B](r: A => Option[Store[B, A]]): PLens[A, B] = new PLens[A, B] {
+    def run(a: A): Option[Store[B, A]] = r(a)
+  }
 
   def plensf[A, B](r: PartialFunction[A, Store[B, A]]): PLens[A, B] =
     plens(r.lift)

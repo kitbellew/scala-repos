@@ -104,15 +104,14 @@ object CircuitBreakerProxy {
       *
       * @param target the target actor ref
       */
-    def props(target: ActorRef) =
-      CircuitBreakerProxy.props(
-        target,
-        maxFailures,
-        callTimeout,
-        resetTimeout,
-        circuitEventListener,
-        failureDetector,
-        openCircuitFailureConverter)
+    def props(target: ActorRef) = CircuitBreakerProxy.props(
+      target,
+      maxFailures,
+      callTimeout,
+      resetTimeout,
+      circuitEventListener,
+      failureDetector,
+      openCircuitFailureConverter)
 
   }
 

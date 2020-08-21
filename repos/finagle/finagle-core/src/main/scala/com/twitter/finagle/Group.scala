@@ -61,22 +61,21 @@ trait Group[T] { outer =>
     * with `f`. `f` is guaranteed to be invoked exactly once for each
     * element of the group, even for dynamic groups.
     */
-  def collect[U](f: PartialFunction[T, U]): Group[U] =
-    new Group[U] {
-      var mapped = Map[T, U]()
-      var last = Set[T]()
-      protected[finagle] val set = outer.set map { set =>
-        synchronized {
-          mapped ++= (set &~ last) collect {
-            case el if f.isDefinedAt(el) => el -> f(el)
-          }
-          mapped --= last &~ set
-          last = set
+  def collect[U](f: PartialFunction[T, U]): Group[U] = new Group[U] {
+    var mapped = Map[T, U]()
+    var last = Set[T]()
+    protected[finagle] val set = outer.set map { set =>
+      synchronized {
+        mapped ++= (set &~ last) collect {
+          case el if f.isDefinedAt(el) => el -> f(el)
         }
-
-        mapped.values.toSet
+        mapped --= last &~ set
+        last = set
       }
+
+      mapped.values.toSet
     }
+  }
 
   /**
     * The current members of this group. If the group has not
@@ -94,12 +93,11 @@ trait Group[T] { outer =>
     */
   def named(n: String): Group[T] = LabelledGroup(this, n)
 
-  def +(other: Group[T]): Group[T] =
-    new Group[T] {
-      protected[finagle] val set = for {
-        a <- outer.set; b <- other.set
-      } yield a ++ b
-    }
+  def +(other: Group[T]): Group[T] = new Group[T] {
+    protected[finagle] val set = for {
+      a <- outer.set; b <- other.set
+    } yield a ++ b
+  }
 
   override def toString = "Group(%s)".format(this() mkString ", ")
 }
@@ -149,10 +147,9 @@ object Group {
   @deprecated(
     "Use `com.twitter.finagle.Name` to represent clusters instead",
     "2014-11-21")
-  def apply[T](staticMembers: T*): Group[T] =
-    new Group[T] {
-      protected[finagle] val set = Var(Set(staticMembers: _*))
-    }
+  def apply[T](staticMembers: T*): Group[T] = new Group[T] {
+    protected[finagle] val set = Var(Set(staticMembers: _*))
+  }
 
   def fromVarAddr(va: Var[Addr]): Group[SocketAddress] =
     new Group[SocketAddress] {
@@ -163,10 +160,9 @@ object Group {
       }
     }
 
-  def fromVar[T](v: Var[Set[T]]): Group[T] =
-    new Group[T] {
-      protected[finagle] val set = v
-    }
+  def fromVar[T](v: Var[Set[T]]): Group[T] = new Group[T] {
+    protected[finagle] val set = v
+  }
 
   /**
     * The empty group of type `T`.
@@ -184,11 +180,10 @@ object Group {
   @deprecated(
     "Use `com.twitter.finagle.Name` to represent clusters instead",
     "2014-11-21")
-  def mutable[T](initial: T*): MutableGroup[T] =
-    new MutableGroup[T] {
-      protected[finagle] val set = Var(Set(initial: _*))
-      def update(newMembers: Set[T]) { set() = newMembers }
-    }
+  def mutable[T](initial: T*): MutableGroup[T] = new MutableGroup[T] {
+    protected[finagle] val set = Var(Set(initial: _*))
+    def update(newMembers: Set[T]) { set() = newMembers }
+  }
 
   /**
     * Construct a (dynamic) `Group` from the given

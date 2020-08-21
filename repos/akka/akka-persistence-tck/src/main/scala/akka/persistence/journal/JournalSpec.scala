@@ -90,13 +90,12 @@ abstract class JournalSpec(config: Config)
       sender: ActorRef,
       writerUuid: String): Unit = {
 
-    def persistentRepr(sequenceNr: Long) =
-      PersistentRepr(
-        payload = s"a-$sequenceNr",
-        sequenceNr = sequenceNr,
-        persistenceId = pid,
-        sender = sender,
-        writerUuid = writerUuid)
+    def persistentRepr(sequenceNr: Long) = PersistentRepr(
+      payload = s"a-$sequenceNr",
+      sequenceNr = sequenceNr,
+      persistenceId = pid,
+      sender = sender,
+      writerUuid = writerUuid)
 
     val msgs =
       if (supportsAtomicPersistAllOfSeveralEvents) {

@@ -82,12 +82,11 @@ object Volume {
     }
 
   implicit val validVolume: Validator[Volume] = new Validator[Volume] {
-    override def apply(volume: Volume): Result =
-      volume match {
-        case pv: PersistentVolume =>
-          validate(pv)(PersistentVolume.validPersistentVolume)
-        case dv: DockerVolume => validate(dv)(DockerVolume.validDockerVolume)
-      }
+    override def apply(volume: Volume): Result = volume match {
+      case pv: PersistentVolume =>
+        validate(pv)(PersistentVolume.validPersistentVolume)
+      case dv: DockerVolume => validate(dv)(DockerVolume.validDockerVolume)
+    }
   }
 }
 

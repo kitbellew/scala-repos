@@ -28,39 +28,36 @@ class SwaggerApiLookupSpec extends ScalatraSpec with JsonMatchers {
   addServlet(new ApiDocs()(swagger), "/api-docs")
   implicit val formats: Formats = DefaultFormats
 
-  def listResources =
-    get("/api-docs") {
-      status must_== 200
-      jackson.parseJson(body) \ "apis" must_== JArray(
-        List(
-          JObject(
-            "path" -> JString("/api/unnamed"),
-            "description" -> JString("The first API")),
-          JObject(
-            "path" -> JString("/api/custom-name"),
-            "description" -> JString("The second API"))
-        ))
-    }
+  def listResources = get("/api-docs") {
+    status must_== 200
+    jackson.parseJson(body) \ "apis" must_== JArray(
+      List(
+        JObject(
+          "path" -> JString("/api/unnamed"),
+          "description" -> JString("The first API")),
+        JObject(
+          "path" -> JString("/api/custom-name"),
+          "description" -> JString("The second API"))
+      ))
+  }
 
-  def listFooOperations =
-    get("/api-docs/api/unnamed") {
-      status must_== 200
-      val json = jackson.parseJson(body)
-      json \ "resourcePath" must_== JString("/api/unnamed")
-      json \ "apis" \\ "path" must_== JObject(
-        "path" -> JString("/api/unnamed/"),
-        "path" -> JString("/api/unnamed/{id}"))
-    }
+  def listFooOperations = get("/api-docs/api/unnamed") {
+    status must_== 200
+    val json = jackson.parseJson(body)
+    json \ "resourcePath" must_== JString("/api/unnamed")
+    json \ "apis" \\ "path" must_== JObject(
+      "path" -> JString("/api/unnamed/"),
+      "path" -> JString("/api/unnamed/{id}"))
+  }
 
-  def listBarOperations =
-    get("/api-docs/api/custom-name") {
-      status must_== 200
-      val json = jackson.parseJson(body)
-      json \ "resourcePath" must_== JString("/api/custom-name")
-      json \ "apis" \\ "path" must_== JObject(
-        "path" -> JString("/api/custom-name/"),
-        "path" -> JString("/api/custom-name/{id}"))
-    }
+  def listBarOperations = get("/api-docs/api/custom-name") {
+    status must_== 200
+    val json = jackson.parseJson(body)
+    json \ "resourcePath" must_== JString("/api/custom-name")
+    json \ "apis" \\ "path" must_== JObject(
+      "path" -> JString("/api/custom-name/"),
+      "path" -> JString("/api/custom-name/{id}"))
+  }
 
 }
 

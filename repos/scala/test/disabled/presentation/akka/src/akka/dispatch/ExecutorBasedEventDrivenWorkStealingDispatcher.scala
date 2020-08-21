@@ -177,19 +177,18 @@ class ExecutorBasedEventDrivenWorkStealingDispatcher(
     */
   protected def attemptDonationOf(
       message: MessageInvocation,
-      donorMbox: MessageQueue with ExecutableMailbox): Boolean =
-    try {
-      donationInProgress.value = true
-      val actors =
-        members // copy to prevent concurrent modifications having any impact
-      doFindDonorRecipient(
-        donorMbox,
-        actors,
-        System.identityHashCode(message) % actors.size) match {
-        case null      => false
-        case recipient => donate(message, recipient)
-      }
-    } finally { donationInProgress.value = false }
+      donorMbox: MessageQueue with ExecutableMailbox): Boolean = try {
+    donationInProgress.value = true
+    val actors =
+      members // copy to prevent concurrent modifications having any impact
+    doFindDonorRecipient(
+      donorMbox,
+      actors,
+      System.identityHashCode(message) % actors.size) match {
+      case null      => false
+      case recipient => donate(message, recipient)
+    }
+  } finally { donationInProgress.value = false }
 
   /**
     * Rewrites the message and adds that message to the recipients mailbox

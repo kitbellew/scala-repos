@@ -43,8 +43,8 @@ object Insets {
   /**
     * Constructs a new Insets instance with same value for all four offsets.
     */
-  def apply(topRightBottomLeft: Double): Insets =
-    new Insets(new jfxg.Insets(topRightBottomLeft))
+  def apply(topRightBottomLeft: Double): Insets = new Insets(
+    new jfxg.Insets(topRightBottomLeft))
 
   /**
     * Constructs a new Insets instance with four different offsets.

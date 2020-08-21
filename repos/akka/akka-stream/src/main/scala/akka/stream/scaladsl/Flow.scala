@@ -276,14 +276,14 @@ final class Flow[-In, +Out, +Mat](private[stream] override val module: Module)
     * operation has no effect on an empty Flow (because the attributes apply
     * only to the contained processing stages).
     */
-  override def addAttributes(attr: Attributes): Repr[Out] =
-    withAttributes(module.attributes and attr)
+  override def addAttributes(attr: Attributes): Repr[Out] = withAttributes(
+    module.attributes and attr)
 
   /**
     * Add a ``name`` attribute to this Flow.
     */
-  override def named(name: String): Repr[Out] =
-    addAttributes(Attributes.name(name))
+  override def named(name: String): Repr[Out] = addAttributes(
+    Attributes.name(name))
 
   /**
     * Put an asynchronous boundary around this `Flow`
@@ -433,8 +433,8 @@ final case class RunnableGraph[+Mat](
   override def withAttributes(attr: Attributes): RunnableGraph[Mat] =
     new RunnableGraph(module.withAttributes(attr))
 
-  override def named(name: String): RunnableGraph[Mat] =
-    withAttributes(Attributes.name(name))
+  override def named(name: String): RunnableGraph[Mat] = withAttributes(
+    Attributes.name(name))
 }
 
 /**
@@ -486,8 +486,8 @@ trait FlowOps[+Out, +Mat] {
     *
     * '''Cancels when''' downstream cancels
     */
-  def recover[T >: Out](pf: PartialFunction[Throwable, T]): Repr[T] =
-    andThen(Recover(pf))
+  def recover[T >: Out](pf: PartialFunction[Throwable, T]): Repr[T] = andThen(
+    Recover(pf))
 
   /**
     * RecoverWith allows to switch to alternative Source on flow failure. It will stay in effect after
@@ -598,8 +598,8 @@ trait FlowOps[+Out, +Mat] {
     *
     * @see [[#mapAsyncUnordered]]
     */
-  def mapAsync[T](parallelism: Int)(f: Out ⇒ Future[T]): Repr[T] =
-    via(MapAsync(parallelism, f))
+  def mapAsync[T](parallelism: Int)(f: Out ⇒ Future[T]): Repr[T] = via(
+    MapAsync(parallelism, f))
 
   /**
     * Transform this stream by applying the given function to each of the elements
@@ -630,8 +630,8 @@ trait FlowOps[+Out, +Mat] {
     *
     * @see [[#mapAsync]]
     */
-  def mapAsyncUnordered[T](parallelism: Int)(f: Out ⇒ Future[T]): Repr[T] =
-    via(MapAsyncUnordered(parallelism, f))
+  def mapAsyncUnordered[T](parallelism: Int)(f: Out ⇒ Future[T]): Repr[T] = via(
+    MapAsyncUnordered(parallelism, f))
 
   /**
     * Only pass on those elements that satisfy the given predicate.
@@ -771,8 +771,8 @@ trait FlowOps[+Out, +Mat] {
     *
     * See also [[FlowOps.take]], [[FlowOps.takeWithin]], [[FlowOps.takeWhile]]
     */
-  def limitWeighted[T](max: Long)(costFn: Out ⇒ Long): Repr[Out] =
-    andThen(LimitWeighted(max, costFn))
+  def limitWeighted[T](max: Long)(costFn: Out ⇒ Long): Repr[Out] = andThen(
+    LimitWeighted(max, costFn))
 
   /**
     * Apply a sliding window over the stream and return the windows as groups of elements, with the last group
@@ -789,8 +789,8 @@ trait FlowOps[+Out, +Mat] {
     *
     * '''Cancels when''' downstream cancels
     */
-  def sliding(n: Int, step: Int = 1): Repr[immutable.Seq[Out]] =
-    andThen(Sliding(n, step))
+  def sliding(n: Int, step: Int = 1): Repr[immutable.Seq[Out]] = andThen(
+    Sliding(n, step))
 
   /**
     * Similar to `fold` but is not a terminal operation,
@@ -1170,8 +1170,8 @@ trait FlowOps[+Out, +Mat] {
     * @param extrapolate Takes the current extrapolation state to produce an output element and the next extrapolation
     *                    state.
     */
-  def expand[U](extrapolate: Out ⇒ Iterator[U]): Repr[U] =
-    via(new Expand(extrapolate))
+  def expand[U](extrapolate: Out ⇒ Iterator[U]): Repr[U] = via(
+    new Expand(extrapolate))
 
   /**
     * Adds a fixed size buffer in the flow that allows to store elements from a faster upstream until it becomes full.
@@ -1491,8 +1491,8 @@ trait FlowOps[+Out, +Mat] {
     *
     * '''Cancels when''' downstream cancels
     */
-  def initialTimeout(timeout: FiniteDuration): Repr[Out] =
-    via(new Timers.Initial[Out](timeout))
+  def initialTimeout(timeout: FiniteDuration): Repr[Out] = via(
+    new Timers.Initial[Out](timeout))
 
   /**
     * If the completion of the stream does not happen until the provided timeout, the stream is failed
@@ -1506,8 +1506,8 @@ trait FlowOps[+Out, +Mat] {
     *
     * '''Cancels when''' downstream cancels
     */
-  def completionTimeout(timeout: FiniteDuration): Repr[Out] =
-    via(new Timers.Completion[Out](timeout))
+  def completionTimeout(timeout: FiniteDuration): Repr[Out] = via(
+    new Timers.Completion[Out](timeout))
 
   /**
     * If the time between two processed elements exceed the provided timeout, the stream is failed
@@ -1521,8 +1521,8 @@ trait FlowOps[+Out, +Mat] {
     *
     * '''Cancels when''' downstream cancels
     */
-  def idleTimeout(timeout: FiniteDuration): Repr[Out] =
-    via(new Timers.Idle[Out](timeout))
+  def idleTimeout(timeout: FiniteDuration): Repr[Out] = via(
+    new Timers.Idle[Out](timeout))
 
   /**
     * Injects additional elements if the upstream does not emit for a configured amount of time. In other words, this
@@ -1635,8 +1635,8 @@ trait FlowOps[+Out, +Mat] {
     *
     * '''Cancels when''' downstream cancels
     */
-  def initialDelay(delay: FiniteDuration): Repr[Out] =
-    via(new Timers.DelayInitial[Out](delay))
+  def initialDelay(delay: FiniteDuration): Repr[Out] = via(
+    new Timers.DelayInitial[Out](delay))
 
   /**
     * Logs elements flowing through the stream as well as completion and erroring.
@@ -1670,8 +1670,8 @@ trait FlowOps[+Out, +Mat] {
     *
     * '''Cancels when''' downstream cancels
     */
-  def zip[U](that: Graph[SourceShape[U], _]): Repr[(Out, U)] =
-    via(zipGraph(that))
+  def zip[U](that: Graph[SourceShape[U], _]): Repr[(Out, U)] = via(
+    zipGraph(that))
 
   protected def zipGraph[U, M](that: Graph[SourceShape[U], M])
       : Graph[FlowShape[Out @uncheckedVariance, (Out, U)], M] =

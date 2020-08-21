@@ -274,7 +274,7 @@ class HttpEntitySpec extends FreeSpec with MustMatchers with BeforeAndAfterAll {
       StreamUtils.byteStringTransformer(doubleChars, () ⇒ trailer))
 
   def trailer: ByteString = ByteString("--dup")
-  def doubleChars(bs: ByteString): ByteString =
-    ByteString(bs.flatMap(b ⇒ Seq(b, b)): _*)
+  def doubleChars(bs: ByteString): ByteString = ByteString(
+    bs.flatMap(b ⇒ Seq(b, b)): _*)
   def doubleChars(str: String): ByteString = doubleChars(ByteString(str))
 }

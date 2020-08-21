@@ -22,12 +22,11 @@ import Main.{SCALA_SIG_ANNOTATION, BYTES_VALUE}
   *  when it's bootstrapping, so the reference has to go from here to there.
   */
 object Decode {
-  private def getAliasSymbol(t: Type): Symbol =
-    t match {
-      case TypeRefType(_, s, _) => s
-      case PolyType(typeRef, _) => getAliasSymbol(typeRef)
-      case _                    => NoSymbol
-    }
+  private def getAliasSymbol(t: Type): Symbol = t match {
+    case TypeRefType(_, s, _) => s
+    case PolyType(typeRef, _) => getAliasSymbol(typeRef)
+    case _                    => NoSymbol
+  }
 
   /** Return the classfile bytes representing the scala sig classfile attribute.
     *  This has been obsoleted by the switch to annotations.

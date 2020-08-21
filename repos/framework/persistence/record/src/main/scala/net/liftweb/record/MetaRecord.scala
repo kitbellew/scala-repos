@@ -247,10 +247,9 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
     *
     * @return a JsObj
     */
-  def asJsExp(inst: BaseRecord): JsExp =
-    new JsExp {
-      lazy val toJsCmd = compactRender(asJValue(inst))
-    }
+  def asJsExp(inst: BaseRecord): JsExp = new JsExp {
+    lazy val toJsCmd = compactRender(asJValue(inst))
+  }
 
   /** Encode a record instance into a JValue */
   def asJValue(rec: BaseRecord): JValue = {

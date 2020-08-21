@@ -31,10 +31,9 @@ trait BadClientHandlingSpec
 
       val app = new BuiltInComponentsFromContext(
         ApplicationLoader.createContext(Environment.simple())) {
-        def router =
-          Router.from { case _ =>
-            Action(Results.Ok)
-          }
+        def router = Router.from { case _ =>
+          Action(Results.Ok)
+        }
         override lazy val httpErrorHandler = errorHandler
       }.application
 

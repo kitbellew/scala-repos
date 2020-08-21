@@ -13,15 +13,14 @@ case class SAdd(key: ChannelBuffer, values: Seq[ChannelBuffer])
 }
 
 object SAdd {
-  def apply(args: Seq[Array[Byte]]): SAdd =
-    args match {
-      case head :: tail =>
-        SAdd(
-          ChannelBuffers.wrappedBuffer(head),
-          tail map ChannelBuffers.wrappedBuffer)
-      case _ =>
-        throw ClientError("Invalid use of SAdd")
-    }
+  def apply(args: Seq[Array[Byte]]): SAdd = args match {
+    case head :: tail =>
+      SAdd(
+        ChannelBuffers.wrappedBuffer(head),
+        tail map ChannelBuffers.wrappedBuffer)
+    case _ =>
+      throw ClientError("Invalid use of SAdd")
+  }
 }
 
 case class SMembers(key: ChannelBuffer) extends StrictKeyCommand {
@@ -72,14 +71,13 @@ case class SRem(key: ChannelBuffer, values: List[ChannelBuffer])
 }
 
 object SRem {
-  def apply(args: Seq[Array[Byte]]): SRem =
-    args match {
-      case head :: tail =>
-        SRem(
-          ChannelBuffers.wrappedBuffer(head),
-          tail map ChannelBuffers.wrappedBuffer)
-      case _ => throw ClientError("Invalid use of SRem")
-    }
+  def apply(args: Seq[Array[Byte]]): SRem = args match {
+    case head :: tail =>
+      SRem(
+        ChannelBuffers.wrappedBuffer(head),
+        tail map ChannelBuffers.wrappedBuffer)
+    case _ => throw ClientError("Invalid use of SRem")
+  }
 }
 
 case class SPop(key: ChannelBuffer) extends StrictKeyCommand {
@@ -89,8 +87,8 @@ case class SPop(key: ChannelBuffer) extends StrictKeyCommand {
 }
 
 object SPop {
-  def apply(args: Seq[Array[Byte]]): SPop =
-    SPop(GetMonadArg(args, CommandBytes.SPOP))
+  def apply(args: Seq[Array[Byte]]): SPop = SPop(
+    GetMonadArg(args, CommandBytes.SPOP))
 }
 
 case class SRandMember(key: ChannelBuffer, count: Option[Int] = None)

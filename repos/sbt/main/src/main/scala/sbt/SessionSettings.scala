@@ -54,11 +54,10 @@ final case class SessionSettings(
   def setCurrent(
       build: URI,
       project: String,
-      eval: () => Eval): SessionSettings =
-    copy(
-      currentBuild = build,
-      currentProject = currentProject.updated(build, project),
-      currentEval = eval)
+      eval: () => Eval): SessionSettings = copy(
+    currentBuild = build,
+    currentProject = currentProject.updated(build, project),
+    currentEval = eval)
 
   /**
     * @return  The current ProjectRef with which we scope settings.
@@ -379,17 +378,15 @@ save, save-all
 
   def natSelect = rep1sep(token(range, "<range>"), ',')
 
-  def range: Parser[(Int, Int)] =
-    (NatBasic ~ ('-' ~> NatBasic).?).map { case lo ~ hi =>
-      (lo, hi getOrElse lo)
-    }
+  def range: Parser[(Int, Int)] = (NatBasic ~ ('-' ~> NatBasic).?).map {
+    case lo ~ hi => (lo, hi getOrElse lo)
+  }
 
   /** The raw implementation of the session command. */
-  def command(s: State) =
-    Command.applyEffect(parser) {
-      case p: Print  => if (p.all) printAllSettings(s) else printSettings(s)
-      case v: Save   => if (v.all) saveAllSettings(s) else saveSettings(s)
-      case c: Clear  => if (c.all) clearAllSettings(s) else clearSettings(s)
-      case r: Remove => removeSettings(s, r.ranges)
-    }
+  def command(s: State) = Command.applyEffect(parser) {
+    case p: Print  => if (p.all) printAllSettings(s) else printSettings(s)
+    case v: Save   => if (v.all) saveAllSettings(s) else saveSettings(s)
+    case c: Clear  => if (c.all) clearAllSettings(s) else clearSettings(s)
+    case r: Remove => removeSettings(s, r.ranges)
+  }
 }

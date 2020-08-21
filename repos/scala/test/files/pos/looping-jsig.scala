@@ -10,10 +10,9 @@ trait BugTrack {
     def giveMeSame = this
   }
 
-  def amethod[T](p: => A[T]): A[T] =
-    A(in =>
-      cache.get(p) match {
-        case Some(res) => res
-        case None      => p(in)
-      }).giveMeSame.asInstanceOf[A[T]]
+  def amethod[T](p: => A[T]): A[T] = A(in =>
+    cache.get(p) match {
+      case Some(res) => res
+      case None      => p(in)
+    }).giveMeSame.asInstanceOf[A[T]]
 }

@@ -134,10 +134,9 @@ object Trophy {
     def byKey(key: String) = all find (_.key == key)
   }
 
-  def make(userId: String, kind: Trophy.Kind) =
-    Trophy(
-      _id = ornicar.scalalib.Random nextStringUppercase 8,
-      user = userId,
-      kind = kind,
-      date = DateTime.now)
+  def make(userId: String, kind: Trophy.Kind) = Trophy(
+    _id = ornicar.scalalib.Random nextStringUppercase 8,
+    user = userId,
+    kind = kind,
+    date = DateTime.now)
 }

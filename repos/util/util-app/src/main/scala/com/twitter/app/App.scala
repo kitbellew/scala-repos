@@ -136,11 +136,10 @@ trait App extends Closable with CloseAwaitably {
     * Notify the application that it may stop running.
     * Returns a Future that is satisfied when the App has been torn down or errors at the deadline.
     */
-  final def close(deadline: Time): Future[Unit] =
-    closeAwaitably {
-      closeDeadline = deadline max (Time.now + MinGrace)
-      Closable.all(exits.asScala.toSeq: _*).close(closeDeadline)
-    }
+  final def close(deadline: Time): Future[Unit] = closeAwaitably {
+    closeDeadline = deadline max (Time.now + MinGrace)
+    Closable.all(exits.asScala.toSeq: _*).close(closeDeadline)
+  }
 
   final def main(args: Array[String]): Unit = {
     try {

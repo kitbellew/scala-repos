@@ -183,12 +183,12 @@ class VersionedBatchStore[K, V, K2, V2](
     * Returns a FlowProducer that supplies all data for the given
     * specific version within this store's rootPath.
     */
-  protected def readVersion(v: Long): FlowProducer[TypedPipe[(K, V)]] =
-    Reader { (flowMode: (FlowDef, Mode)) =>
+  protected def readVersion(v: Long): FlowProducer[TypedPipe[(K, V)]] = Reader {
+    (flowMode: (FlowDef, Mode)) =>
       val mappable =
         VersionedKeyValSource[K2, V2](rootPath, sourceVersion = Some(v))
       TypedPipe
         .from(mappable)
         .map(unpack)
-    }
+  }
 }

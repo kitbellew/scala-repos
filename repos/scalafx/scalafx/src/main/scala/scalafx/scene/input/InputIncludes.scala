@@ -248,9 +248,9 @@ trait InputIncludes {
     * @return $SFX $KCMD
     */
   implicit def jfxKeyCombinationModifier2sfx(
-      m: jfxsi.KeyCombination.Modifier): Modifier =
-    if (m != null) new KeyCombination.Modifier(m) {}
-    else null
+      m: jfxsi.KeyCombination.Modifier): Modifier = if (m != null)
+    new KeyCombination.Modifier(m) {}
+  else null
 
   /**
     * $START$KEEV.html $KEEV$END

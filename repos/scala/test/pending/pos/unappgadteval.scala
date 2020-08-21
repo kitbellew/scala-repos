@@ -23,14 +23,12 @@ class Suc() extends Term[Int => Int]
 // Environments :
 abstract class Env {
   def apply[a](v: Var[a]): a
-  def extend[a](v: Var[a], x: a) =
-    new Env {
-      def apply[b](w: Var[b]): b =
-        w match {
-          case _: v.type => x // v eq w, hence a = b
-          case _         => Env.this.apply(w)
-        }
+  def extend[a](v: Var[a], x: a) = new Env {
+    def apply[b](w: Var[b]): b = w match {
+      case _: v.type => x // v eq w, hence a = b
+      case _         => Env.this.apply(w)
     }
+  }
 }
 
 object empty extends Env {
@@ -47,28 +45,27 @@ object Test {
     .extend(v2, 58)
     .extend(v3, Nil))
 
-  def eval[a](t: Term[a], env: Env): a =
-    t match {
-      // First three work
-      case v: Var[b]      => env(v) // a = b
-      case n @ Num(value) => value // a = Int
-      case a @ App(f, e)  => eval(f, env)(eval(e, env)) // a = c
+  def eval[a](t: Term[a], env: Env): a = t match {
+    // First three work
+    case v: Var[b]      => env(v) // a = b
+    case n @ Num(value) => value // a = Int
+    case a @ App(f, e)  => eval(f, env)(eval(e, env)) // a = c
 
-      // Next one fails like:
-      //
-      // found   : (Int) => Int
-      // required: a
-      case i @ Suc() => { (y: Int) => y + 1 } // a = Int => Int
+    // Next one fails like:
+    //
+    // found   : (Int) => Int
+    // required: a
+    case i @ Suc() => { (y: Int) => y + 1 } // a = Int => Int
 
-      // Next one fails like:
-      //
-      // error: '=>' expected but '[' found.
-      //     case f @ Lam[b,c](x, e) => { (y: b) => eval(e, env.extend(x, y)) }  // a = b=>c
-      //                 ^
-      case f @ Lam[b, c](x, e) => { (y: b) =>
-        eval(e, env.extend(x, y))
-      } // a = b=>c
-    }
+    // Next one fails like:
+    //
+    // error: '=>' expected but '[' found.
+    //     case f @ Lam[b,c](x, e) => { (y: b) => eval(e, env.extend(x, y)) }  // a = b=>c
+    //                 ^
+    case f @ Lam[b, c](x, e) => { (y: b) =>
+      eval(e, env.extend(x, y))
+    } // a = b=>c
+  }
 
   val f1 = () => eval(v1, anEnv)
   val f2 = () => eval(v2, anEnv)

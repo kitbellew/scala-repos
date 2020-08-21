@@ -40,13 +40,12 @@ import org.jetbrains.plugins.scala.lang.refactoring.extractMethod.{
   * 2014-05-15
   */
 object DuplicatesUtil {
-  def isSignificant(e: PsiElement): Boolean =
-    e match {
-      case _: PsiWhiteSpace                                    => false
-      case _: PsiComment                                       => false
-      case ElementType(tp) if tp == ScalaTokenTypes.tSEMICOLON => false
-      case _                                                   => true
-    }
+  def isSignificant(e: PsiElement): Boolean = e match {
+    case _: PsiWhiteSpace                                    => false
+    case _: PsiComment                                       => false
+    case ElementType(tp) if tp == ScalaTokenTypes.tSEMICOLON => false
+    case _                                                   => true
+  }
 
   def filtered(elements: Seq[PsiElement]): Seq[PsiElement] = {
     elements.filter(isSignificant)

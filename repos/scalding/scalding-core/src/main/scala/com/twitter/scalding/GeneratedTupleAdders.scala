@@ -4013,8 +4013,8 @@ trait GeneratedTupleAdders {
   }
 
   implicit def tup13ToAdder[A, B, C, D, E, F, G, H, I, J, K, L, M](
-      tup: Tuple13[A, B, C, D, E, F, G, H, I, J, K, L, M]) =
-    new Tuple13Adder(tup)
+      tup: Tuple13[A, B, C, D, E, F, G, H, I, J, K, L, M]) = new Tuple13Adder(
+    tup)
 
   class Tuple14Adder[A, B, C, D, E, F, G, H, I, J, K, L, M, N](
       tup: Tuple14[A, B, C, D, E, F, G, H, I, J, K, L, M, N]) {

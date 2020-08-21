@@ -41,11 +41,10 @@ object Supervision {
         worker: Array[Server],
         restartHandler: Procedure2[
           ActorRef,
-          MaximumNumberOfRestartsWithinTimeRangeReached]) =
-      this(
-        restartStrategy,
-        worker.toList,
-        { (aRef, max) => restartHandler.apply(aRef, max) })
+          MaximumNumberOfRestartsWithinTimeRangeReached]) = this(
+      restartStrategy,
+      worker.toList,
+      { (aRef, max) => restartHandler.apply(aRef, max) })
   }
 
   class Supervise(
@@ -66,12 +65,11 @@ object Supervision {
       new Supervise(actorRef, lifeCycle, registerAsRemoteService)
     def apply(actorRef: ActorRef, lifeCycle: LifeCycle) =
       new Supervise(actorRef, lifeCycle, false)
-    def unapply(supervise: Supervise) =
-      Some(
-        (
-          supervise.actorRef,
-          supervise.lifeCycle,
-          supervise.registerAsRemoteService))
+    def unapply(supervise: Supervise) = Some(
+      (
+        supervise.actorRef,
+        supervise.lifeCycle,
+        supervise.registerAsRemoteService))
   }
 
   object AllForOneStrategy {

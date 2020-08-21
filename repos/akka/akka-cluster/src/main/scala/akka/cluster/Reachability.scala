@@ -19,11 +19,10 @@ private[cluster] object Reachability {
 
   def create(
       records: immutable.Seq[Record],
-      versions: Map[UniqueAddress, Long]): Reachability =
-    records match {
-      case r: immutable.IndexedSeq[Record] ⇒ apply(r, versions)
-      case _ ⇒ apply(records.toVector, versions)
-    }
+      versions: Map[UniqueAddress, Long]): Reachability = records match {
+    case r: immutable.IndexedSeq[Record] ⇒ apply(r, versions)
+    case _ ⇒ apply(records.toVector, versions)
+  }
 
   @SerialVersionUID(1L)
   final case class Record(
@@ -309,13 +308,12 @@ private[cluster] class Reachability private (
   override def hashCode: Int = versions.hashCode
 
   // only used for testing
-  override def equals(obj: Any): Boolean =
-    obj match {
-      case other: Reachability ⇒
-        records.size == other.records.size && versions == versions &&
-          cache.observerRowsMap == other.cache.observerRowsMap
-      case _ ⇒ false
-    }
+  override def equals(obj: Any): Boolean = obj match {
+    case other: Reachability ⇒
+      records.size == other.records.size && versions == versions &&
+        cache.observerRowsMap == other.cache.observerRowsMap
+    case _ ⇒ false
+  }
 
   override def toString: String = {
     val rows = for {

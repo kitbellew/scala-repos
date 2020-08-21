@@ -221,12 +221,11 @@ class PooledDatabase(
     pool: ConnectionPool)
     extends DefaultDatabase(name, configuration, environment) {
 
-  def this(name: String, configuration: Configuration) =
-    this(
-      name,
-      configuration.underlying,
-      Environment.simple(),
-      new HikariCPConnectionPool(Environment.simple()))
+  def this(name: String, configuration: Configuration) = this(
+    name,
+    configuration.underlying,
+    Environment.simple(),
+    new HikariCPConnectionPool(Environment.simple()))
 
   def createDataSource(): DataSource = {
     val datasource: DataSource =

@@ -192,12 +192,11 @@ abstract class Enumeration(initial: Int) extends Serializable {
       if (this.id < that.id) -1
       else if (this.id == that.id) 0
       else 1
-    override def equals(other: Any) =
-      other match {
-        case that: Enumeration#Value =>
-          (outerEnum eq that.outerEnum) && (id == that.id)
-        case _ => false
-      }
+    override def equals(other: Any) = other match {
+      case that: Enumeration#Value =>
+        (outerEnum eq that.outerEnum) && (id == that.id)
+      case _ => false
+    }
     override def hashCode: Int = id.##
 
     /** Create a ValueSet which contains this value and another one */
@@ -286,8 +285,8 @@ abstract class Enumeration(initial: Int) extends Serializable {
     /** A value set containing all the values for the zero-adjusted ids
       *  corresponding to the bits in an array
       */
-    def fromBitMask(elems: Array[Long]): ValueSet =
-      new ValueSet(immutable.BitSet.fromBitMask(elems))
+    def fromBitMask(elems: Array[Long]): ValueSet = new ValueSet(
+      immutable.BitSet.fromBitMask(elems))
 
     /** A builder object for value sets */
     def newBuilder: mutable.Builder[Value, ValueSet] =

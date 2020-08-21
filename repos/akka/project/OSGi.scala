@@ -12,12 +12,11 @@ object OSGi {
   // The included osgiSettings that creates bundles also publish the jar files
   // in the .../bundles directory which makes testing locally published artifacts
   // a pain. Create bundles but publish them to the normal .../jars directory.
-  def osgiSettings =
-    defaultOsgiSettings ++ Seq(
-      packagedArtifact in (Compile, packageBin) <<= (
-        artifact in (Compile, packageBin),
-        OsgiKeys.bundle).identityMap
-    )
+  def osgiSettings = defaultOsgiSettings ++ Seq(
+    packagedArtifact in (Compile, packageBin) <<= (
+      artifact in (Compile, packageBin),
+      OsgiKeys.bundle).identityMap
+  )
 
   val actor = osgiSettings ++ Seq(
     OsgiKeys.exportPackage := Seq("akka*"),
@@ -122,13 +121,12 @@ object OSGi {
       OsgiKeys.importPackage := imports ++ scalaVersion(defaultImports).value,
       OsgiKeys.exportPackage := packages
     )
-  def defaultImports(scalaVersion: String) =
-    Seq(
-      "!sun.misc",
-      akkaImport(),
-      configImport(),
-      scalaImport(scalaVersion),
-      "*")
+  def defaultImports(scalaVersion: String) = Seq(
+    "!sun.misc",
+    akkaImport(),
+    configImport(),
+    scalaImport(scalaVersion),
+    "*")
   def akkaImport(packageName: String = "akka.*") =
     versionedImport(packageName, "2.4", "2.5")
   def configImport(packageName: String = "com.typesafe.config.*") =
@@ -141,10 +139,10 @@ object OSGi {
   }
   def scalaJava8CompatImport(packageName: String = "scala.compat.java8.*") =
     versionedImport(packageName, "0.7.0", "1.0.0")
-  def kamonImport(packageName: String = "kamon.sigar.*") =
-    optionalResolution(versionedImport(packageName, "1.6.5", "1.6.6"))
-  def sigarImport(packageName: String = "org.hyperic.*") =
-    optionalResolution(versionedImport(packageName, "1.6.5", "1.6.6"))
+  def kamonImport(packageName: String = "kamon.sigar.*") = optionalResolution(
+    versionedImport(packageName, "1.6.5", "1.6.6"))
+  def sigarImport(packageName: String = "org.hyperic.*") = optionalResolution(
+    versionedImport(packageName, "1.6.5", "1.6.6"))
   def optionalResolution(packageName: String) =
     "%s;resolution:=optional".format(packageName)
   def versionedImport(packageName: String, lower: String, upper: String) =

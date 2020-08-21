@@ -47,8 +47,7 @@ class AnimationTimerSpec
   override protected def getScalaClassInstance =
     AnimationTimer((now: Long) => ())
 
-  override def getJavaClassInstance =
-    new jfxa.AnimationTimer {
-      def handle(now: Long) {}
-    }
+  override def getJavaClassInstance = new jfxa.AnimationTimer {
+    def handle(now: Long) {}
+  }
 }

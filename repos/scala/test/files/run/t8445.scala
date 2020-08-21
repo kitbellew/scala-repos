@@ -1,10 +1,9 @@
 object X {
   class Y
-  def y =
-    new Y {
-      class Z
-      def z = classOf[Z]
-    }
+  def y = new Y {
+    class Z
+    def z = classOf[Z]
+  }
 }
 
 object Test extends App {

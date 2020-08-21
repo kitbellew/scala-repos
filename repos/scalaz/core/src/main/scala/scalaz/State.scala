@@ -29,9 +29,8 @@ trait StateFunctions extends IndexedStateFunctions {
 
   def put[S](s: S): State[S, Unit] = State(_ => (s, ()))
 
-  def modify[S](f: S => S): State[S, Unit] =
-    State(s => {
-      val r = f(s);
-      (r, ())
-    })
+  def modify[S](f: S => S): State[S, Unit] = State(s => {
+    val r = f(s);
+    (r, ())
+  })
 }

@@ -80,9 +80,9 @@ trait ImageIncludes {
     * @return $SFX $PXF
     */
   implicit def jfxPixelFormat2sfx[B <: Buffer](
-      pf: jfxsi.PixelFormat[B]): PixelFormat[B] =
-    if (pf != null) new PixelFormat[B](pf) {}
-    else null
+      pf: jfxsi.PixelFormat[B]): PixelFormat[B] = if (pf != null)
+    new PixelFormat[B](pf) {}
+  else null
 
   /**
     * $START$PFT.html $PFT$END

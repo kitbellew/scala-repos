@@ -398,11 +398,11 @@ object Test extends App {
 
   // DEFINITIONS
   def test1(a: Int, b: String) = println(a + ": " + b)
-  def test2(u: Int, v: Int)(k: String, l: Int) =
-    println(l + ": " + k + ", " + (u + v))
+  def test2(u: Int, v: Int)(k: String, l: Int) = println(
+    l + ": " + k + ", " + (u + v))
 
-  def test3[T1, T2](a: Int, b: T1)(c: String, d: T2) =
-    println(a + ": " + c + ", " + b + ", " + d)
+  def test3[T1, T2](a: Int, b: T1)(c: String, d: T2) = println(
+    a + ": " + c + ", " + b + ", " + d)
 
   def test4(a: Int) = {
     def inner(b: Int = a, c: String) = println(b + ": " + c)

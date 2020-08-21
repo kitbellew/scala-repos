@@ -48,22 +48,20 @@ case class CTree(
   def getType(ctype: CType): Int = types.getOrElse(ctype, -1)
   def setType(ctype: CType, n: Int): Unit = types(ctype) = n
 
-  override def equals(that: Any): Boolean =
-    that match {
-      case CTree(`path`, fields2, indices2, types2) =>
-        fields == fields2 && indices == indices2 && types == types2
-      case _ =>
-        false
-    }
+  override def equals(that: Any): Boolean = that match {
+    case CTree(`path`, fields2, indices2, types2) =>
+      fields == fields2 && indices == indices2 && types == types2
+    case _ =>
+      false
+  }
 }
 
 object CTree {
-  def empty(path: CPath) =
-    CTree(
-      path,
-      MMap.empty[String, CTree],
-      ArrayBuffer.empty[CTree],
-      MMap.empty[CType, Int])
+  def empty(path: CPath) = CTree(
+    path,
+    MMap.empty[String, CTree],
+    ArrayBuffer.empty[CTree],
+    MMap.empty[CType, Int])
 }
 
 object Segments {
@@ -77,13 +75,12 @@ case class Segments(
     t: CTree,
     a: ArrayBuffer[Segment]) {
 
-  override def equals(that: Any): Boolean =
-    that match {
-      case Segments(`id`, length2, t2, a2) =>
-        length == length2 && t == t2 && a.toSet == a2.toSet
-      case _ =>
-        false
-    }
+  override def equals(that: Any): Boolean = that match {
+    case Segments(`id`, length2, t2, a2) =>
+      length == length2 && t == t2 && a.toSet == a2.toSet
+    case _ =>
+      false
+  }
 
   def addNullType(row: Int, tree: CTree, ct: CNullType) {
     val n = tree.getType(ct)

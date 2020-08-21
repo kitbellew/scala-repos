@@ -206,24 +206,23 @@ object AccessibleAction
     */
   val ShowMenu = new AccessibleAction(jfxs.AccessibleAction.SHOW_MENU)
 
-  protected override def unsortedValues: Array[AccessibleAction] =
-    Array(
-      BlockDecrement,
-      BlockIncrement,
-      Collapse,
-      Decrement,
-      Expand,
-      Fire,
-      Increment,
-      RequestFocus,
-      ShowItem,
-      ShowTextRange,
-      SetSelectedItems,
-      SetTextSelection,
-      SetText,
-      SetValue,
-      ShowMenu
-    )
+  protected override def unsortedValues: Array[AccessibleAction] = Array(
+    BlockDecrement,
+    BlockIncrement,
+    Collapse,
+    Decrement,
+    Expand,
+    Fire,
+    Increment,
+    RequestFocus,
+    ShowItem,
+    ShowTextRange,
+    SetSelectedItems,
+    SetTextSelection,
+    SetText,
+    SetValue,
+    ShowMenu
+  )
 }
 
 sealed case class AccessibleAction(override val delegate: jfxs.AccessibleAction)

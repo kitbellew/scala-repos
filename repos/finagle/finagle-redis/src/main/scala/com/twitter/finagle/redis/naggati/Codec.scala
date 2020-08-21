@@ -179,8 +179,7 @@ class Codec[A: Manifest](
     }
   }
 
-  def pipelineFactory =
-    new ChannelPipelineFactory() {
-      def getPipeline = Channels.pipeline(Codec.this)
-    }
+  def pipelineFactory = new ChannelPipelineFactory() {
+    def getPipeline = Channels.pipeline(Codec.this)
+  }
 }

@@ -100,8 +100,8 @@ case class IsNaN(child: Expression)
     with Predicate
     with ImplicitCastInputTypes {
 
-  override def inputTypes: Seq[AbstractDataType] =
-    Seq(TypeCollection(DoubleType, FloatType))
+  override def inputTypes: Seq[AbstractDataType] = Seq(
+    TypeCollection(DoubleType, FloatType))
 
   override def nullable: Boolean = false
 

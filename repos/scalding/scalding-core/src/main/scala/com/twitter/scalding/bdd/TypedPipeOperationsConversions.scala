@@ -56,8 +56,8 @@ trait TypedPipeOperationsConversions {
   class ListOfTypedPipesOperations[TypeOut](
       op: List[TypedPipe[_]] => TypedPipe[TypeOut])
       extends TypedPipeOperation[TypeOut] {
-    override def apply(pipes: List[TypedPipe[_]]): TypedPipe[TypeOut] =
-      op(pipes)
+    override def apply(pipes: List[TypedPipe[_]]): TypedPipe[TypeOut] = op(
+      pipes)
   }
 
   implicit def fromSingleTypedPipeFunctionToOperation[TypeIn, TypeOut](

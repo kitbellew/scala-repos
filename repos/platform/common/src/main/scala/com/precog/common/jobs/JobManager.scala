@@ -191,8 +191,8 @@ trait JobManager[M[+_]] { self =>
 
       def getStatus(job: JobId): N[Option[Status]] = t(self.getStatus(job))
 
-      def listChannels(job: JobId): N[Seq[ChannelId]] =
-        t(self.listChannels(job))
+      def listChannels(job: JobId): N[Seq[ChannelId]] = t(
+        self.listChannels(job))
 
       def addMessage(
           job: JobId,
@@ -202,35 +202,35 @@ trait JobManager[M[+_]] { self =>
       def listMessages(
           job: JobId,
           channel: ChannelId,
-          since: Option[MessageId]): N[Seq[Message]] =
-        t(self.listMessages(job, channel, since))
+          since: Option[MessageId]): N[Seq[Message]] = t(
+        self.listMessages(job, channel, since))
 
       def start(
           job: JobId,
-          startedAt: DateTime = new DateTime): N[Either[String, Job]] =
-        t(self.start(job, startedAt))
+          startedAt: DateTime = new DateTime): N[Either[String, Job]] = t(
+        self.start(job, startedAt))
 
       def cancel(
           job: JobId,
           reason: String,
-          cancelledAt: DateTime = new DateTime): N[Either[String, Job]] =
-        t(self.cancel(job, reason, cancelledAt))
+          cancelledAt: DateTime = new DateTime): N[Either[String, Job]] = t(
+        self.cancel(job, reason, cancelledAt))
 
       def abort(
           job: JobId,
           reason: String,
-          abortedAt: DateTime = new DateTime): N[Either[String, Job]] =
-        t(self.abort(job, reason, abortedAt))
+          abortedAt: DateTime = new DateTime): N[Either[String, Job]] = t(
+        self.abort(job, reason, abortedAt))
 
       def finish(
           job: JobId,
-          finishedAt: DateTime = new DateTime): N[Either[String, Job]] =
-        t(self.finish(job, finishedAt))
+          finishedAt: DateTime = new DateTime): N[Either[String, Job]] = t(
+        self.finish(job, finishedAt))
 
       def expire(
           job: JobId,
-          expiredAt: DateTime = new DateTime): N[Either[String, Job]] =
-        t(self.expire(job, expiredAt))
+          expiredAt: DateTime = new DateTime): N[Either[String, Job]] = t(
+        self.expire(job, expiredAt))
 
       def setResult(
           job: JobId,

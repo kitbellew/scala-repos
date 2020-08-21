@@ -63,8 +63,9 @@ class FileJobManagerSpec extends Specification {
     val M: Monad[Id] with Comonad[Id] = implicitly
   })
 
-  override def map(fs: => Fragments) =
-    Step { IOUtils.recursiveDelete(tempDir).unsafePerformIO } ^ fs
+  override def map(fs: => Fragments) = Step {
+    IOUtils.recursiveDelete(tempDir).unsafePerformIO
+  } ^ fs
 }
 
 class WebJobManagerSpec extends TestJobService { self =>
@@ -306,12 +307,11 @@ trait JobManagerSpec[M[+_]] extends Specification {
       val job =
         jobs.createJob(validAPIKey, "b", "c", None, Some(new DateTime)).copoint
 
-      def say(name: String, message: String): JValue =
-        JObject(
-          List(
-            JField("name", JString(name)),
-            JField("message", JString(message))
-          ))
+      def say(name: String, message: String): JValue = JObject(
+        List(
+          JField("name", JString(name)),
+          JField("message", JString(message))
+        ))
 
       val m1 = jobs.addMessage(job.id, "chat", say("Tom", "Hello")).copoint
       val m2 = jobs.addMessage(job.id, "chat", say("Bob", "Hi")).copoint

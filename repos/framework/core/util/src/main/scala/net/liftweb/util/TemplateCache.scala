@@ -77,11 +77,10 @@ class InMemoryCache(templatesCount: Int)
     }
   }
 
-  def set(key: T, node: NodeSeq): NodeSeq =
-    cache.synchronized {
-      cache(key) = node
-      node
-    }
+  def set(key: T, node: NodeSeq): NodeSeq = cache.synchronized {
+    cache(key) = node
+    node
+  }
 
   override def delete(key: T) {
     cache.synchronized(cache.remove(key))

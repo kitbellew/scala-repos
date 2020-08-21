@@ -34,42 +34,36 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
 
   def genReasonableSizeRange = oneOf(genArbitraryRange, genBoundaryRange)
 
-  def genArbitraryRange =
-    for {
-      start <- choose(Int.MinValue, Int.MaxValue)
-      end <- choose(Int.MinValue, Int.MaxValue)
-      step <- choose(-Int.MaxValue, Int.MaxValue)
-    } yield Range(start, end, if (step == 0) 100 else step)
+  def genArbitraryRange = for {
+    start <- choose(Int.MinValue, Int.MaxValue)
+    end <- choose(Int.MinValue, Int.MaxValue)
+    step <- choose(-Int.MaxValue, Int.MaxValue)
+  } yield Range(start, end, if (step == 0) 100 else step)
 
-  def genBoundaryRange =
-    for {
-      boundary <- oneOf(Int.MinValue, -1, 0, 1, Int.MaxValue)
-      isStart <- arbitrary[Boolean]
-      size <- choose(1, 100)
-      step <- choose(1, 101)
-    } yield {
-      val signum = if (boundary == 0) 1 else boundary.signum
-      if (isStart)
-        Range(boundary, boundary - size * boundary.signum, -step * signum)
-      else Range(boundary - size * boundary.signum, boundary, step * signum)
-    }
+  def genBoundaryRange = for {
+    boundary <- oneOf(Int.MinValue, -1, 0, 1, Int.MaxValue)
+    isStart <- arbitrary[Boolean]
+    size <- choose(1, 100)
+    step <- choose(1, 101)
+  } yield {
+    val signum = if (boundary == 0) 1 else boundary.signum
+    if (isStart)
+      Range(boundary, boundary - size * boundary.signum, -step * signum)
+    else Range(boundary - size * boundary.signum, boundary, step * signum)
+  }
 
-  def genSmallRange =
-    for {
-      start <- choose(-100, 100)
-      end <- choose(-100, 100)
-      step <- choose(1, 1)
-    } yield
-      if (start < end) Range(start, end, step) else Range(start, end, -step)
+  def genSmallRange = for {
+    start <- choose(-100, 100)
+    end <- choose(-100, 100)
+    step <- choose(1, 1)
+  } yield if (start < end) Range(start, end, step) else Range(start, end, -step)
 
   def genRangeByOne = oneOf(genRangeOpenByOne, genRangeClosedByOne)
 
-  def genRangeOpenByOne =
-    for {
-      r <- oneOf(genSmallRange, genBoundaryRange)
-      if (r.end.toLong - r.start.toLong).abs <= 10000000L
-    } yield
-      if (r.start < r.end) Range(r.start, r.end) else Range(r.end, r.start)
+  def genRangeOpenByOne = for {
+    r <- oneOf(genSmallRange, genBoundaryRange)
+    if (r.end.toLong - r.start.toLong).abs <= 10000000L
+  } yield if (r.start < r.end) Range(r.start, r.end) else Range(r.end, r.start)
 
   def genRangeClosedByOne = for (r <- genRangeOpenByOne) yield r.start to r.end
 
@@ -77,31 +71,29 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
     "Range[" + r.start + ", " + r.end + ", " + r.step + (if (r.isInclusive) "]"
                                                          else ")")
 
-  def expectedSize(r: Range): Long =
-    if (r.isInclusive) {
-      (r.end.toLong - r.start.toLong < 0, r.step < 0) match {
-        case (true, true) | (false, false) =>
-          (r.end.toLong - r.start.toLong).abs / r.step.abs.toLong + 1L
-        case _ => if (r.start == r.end) 1L else 0L
-      }
-    } else {
-      (r.end.toLong - r.start.toLong < 0, r.step < 0) match {
-        case (true, true) | (false, false) =>
-          (
-            (r.end.toLong - r.start.toLong).abs / r.step.abs.toLong
-              + (if ((r.end.toLong - r.start.toLong).abs % r.step.abs.toLong > 0L)
-                   1L
-                 else 0L)
-          )
-        case _ => 0L
-      }
+  def expectedSize(r: Range): Long = if (r.isInclusive) {
+    (r.end.toLong - r.start.toLong < 0, r.step < 0) match {
+      case (true, true) | (false, false) =>
+        (r.end.toLong - r.start.toLong).abs / r.step.abs.toLong + 1L
+      case _ => if (r.start == r.end) 1L else 0L
     }
+  } else {
+    (r.end.toLong - r.start.toLong < 0, r.step < 0) match {
+      case (true, true) | (false, false) =>
+        (
+          (r.end.toLong - r.start.toLong).abs / r.step.abs.toLong
+            + (if ((r.end.toLong - r.start.toLong).abs % r.step.abs.toLong > 0L)
+                 1L
+               else 0L)
+        )
+      case _ => 0L
+    }
+  }
 
-  def within(r: Range, x: Int) =
-    if (r.step > 0)
-      r.start <= x && (if (r.isInclusive) x <= r.end else x < r.end)
-    else
-      r.start >= x && (if (r.isInclusive) x >= r.end else x > r.end)
+  def within(r: Range, x: Int) = if (r.step > 0)
+    r.start <= x && (if (r.isInclusive) x <= r.end else x < r.end)
+  else
+    r.start >= x && (if (r.isInclusive) x >= r.end else x > r.end)
 
   def multiple(r: Range, x: Int) = (x.toLong - r.start) % r.step == 0
 
@@ -276,12 +268,11 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
 
 object NormalRangeTest extends RangeTest("normal") {
   override def myGen = genReasonableSizeRange
-  def genOne =
-    for {
-      start <- arbitrary[Int]
-      end <- arbitrary[Int]
-      if (start.toLong - end.toLong).abs < Int.MaxValue.toLong
-    } yield Range(start, end, if (start < end) 1 else -1)
+  def genOne = for {
+    start <- arbitrary[Int]
+    end <- arbitrary[Int]
+    if (start.toLong - end.toLong).abs < Int.MaxValue.toLong
+  } yield Range(start, end, if (start < end) 1 else -1)
   property("by 1.size + 1 == inclusive.size") = forAll(genOne) { r =>
     (r.size + 1 == r.inclusive.size) :| str(r)
   }

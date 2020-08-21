@@ -60,14 +60,14 @@ final case class XorT[F[_], A, B](value: F[A Xor B]) {
     F.map(value)(_.exists(f))
 
   def ensure[AA >: A](onFailure: => AA)(f: B => Boolean)(implicit
-      F: Functor[F]): XorT[F, AA, B] =
-    XorT(F.map(value)(_.ensure(onFailure)(f)))
+      F: Functor[F]): XorT[F, AA, B] = XorT(
+    F.map(value)(_.ensure(onFailure)(f)))
 
   def toEither(implicit F: Functor[F]): F[Either[A, B]] =
     F.map(value)(_.toEither)
 
-  def toOption(implicit F: Functor[F]): OptionT[F, B] =
-    OptionT(F.map(value)(_.toOption))
+  def toOption(implicit F: Functor[F]): OptionT[F, B] = OptionT(
+    F.map(value)(_.toOption))
 
   def to[G[_]](implicit
       functorF: Functor[F],

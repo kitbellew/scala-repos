@@ -117,6 +117,6 @@ object Searching {
   }
 
   implicit def search[Repr, A](coll: Repr)(implicit
-      fr: IsSeqLike[Repr]): SearchImpl[fr.A, Repr] =
-    new SearchImpl(fr.conversion(coll))
+      fr: IsSeqLike[Repr]): SearchImpl[fr.A, Repr] = new SearchImpl(
+    fr.conversion(coll))
 }

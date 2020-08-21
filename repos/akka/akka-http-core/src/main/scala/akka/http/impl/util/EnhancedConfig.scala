@@ -19,13 +19,13 @@ private[http] class EnhancedConfig(val underlying: Config) extends AnyVal {
       case x ⇒ Duration(x)
     }
 
-  def getFiniteDuration(path: String): FiniteDuration =
-    Duration(underlying.getString(path)) match {
-      case x: FiniteDuration ⇒ x
-      case _ ⇒
-        throw new ConfigurationException(
-          s"Config setting '$path' must be a finite duration")
-    }
+  def getFiniteDuration(path: String): FiniteDuration = Duration(
+    underlying.getString(path)) match {
+    case x: FiniteDuration ⇒ x
+    case _ ⇒
+      throw new ConfigurationException(
+        s"Config setting '$path' must be a finite duration")
+  }
 
   def getPossiblyInfiniteInt(path: String): Int =
     underlying.getString(path) match {

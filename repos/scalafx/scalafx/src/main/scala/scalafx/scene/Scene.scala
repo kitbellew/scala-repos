@@ -194,15 +194,14 @@ class Scene(
   /**
     * Returns Nodes children from this Scene's `root`.
     */
-  def getChildren =
-    root.value match {
-      case group: jfxs.Group => group.getChildren
-      case pane: jfxsl.Pane  => pane.getChildren
-      case _ =>
-        throw new IllegalStateException(
-          "Cannot access children of root: " + root + "\n" +
-            "Use a class that extends Group or Pane, or override the getChildren method.")
-    }
+  def getChildren = root.value match {
+    case group: jfxs.Group => group.getChildren
+    case pane: jfxsl.Pane  => pane.getChildren
+    case _ =>
+      throw new IllegalStateException(
+        "Cannot access children of root: " + root + "\n" +
+          "Use a class that extends Group or Pane, or override the getChildren method.")
+  }
 
   /**
     * Returns scene's antialiasing setting.

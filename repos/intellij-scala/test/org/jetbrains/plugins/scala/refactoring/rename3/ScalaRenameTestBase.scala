@@ -42,9 +42,8 @@ abstract class ScalaRenameTestBase
 
   protected val folderPath: String = TestUtils.getTestDataPath + "/rename3/"
 
-  private def rootBefore =
-    (folderPath + getTestName(true) + "/before")
-      .replace(File.separatorChar, '/')
+  private def rootBefore = (folderPath + getTestName(true) + "/before")
+    .replace(File.separatorChar, '/')
   private def rootAfter =
     (folderPath + getTestName(true) + "/after").replace(File.separatorChar, '/')
 

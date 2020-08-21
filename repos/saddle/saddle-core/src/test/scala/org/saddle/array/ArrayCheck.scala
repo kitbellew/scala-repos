@@ -29,11 +29,10 @@ class ArrayCheck extends Specification with ScalaCheck {
 
   "sum works for" in {
     "array of doubles" in {
-      def arrAndLocs =
-        for {
-          arr <- Gen.listOf(Gen.choose(-3d, 3d))
-          loc <- Gen.listOf(Gen.choose(-1, arr.length - 1))
-        } yield (arr.toArray, loc.toArray)
+      def arrAndLocs = for {
+        arr <- Gen.listOf(Gen.choose(-3d, 3d))
+        loc <- Gen.listOf(Gen.choose(-1, arr.length - 1))
+      } yield (arr.toArray, loc.toArray)
 
       forAll(arrAndLocs) { case (arr: Array[Double], locs: Array[Int]) =>
         val v = Vec(array.take(arr, locs, 0d))
@@ -42,11 +41,10 @@ class ArrayCheck extends Specification with ScalaCheck {
     }
 
     "array of ints" in {
-      def arrAndLocs =
-        for {
-          arr <- Gen.listOf(Gen.choose(-3, 3))
-          loc <- Gen.listOf(Gen.choose(-1, arr.length - 1))
-        } yield (arr.toArray, loc.toArray)
+      def arrAndLocs = for {
+        arr <- Gen.listOf(Gen.choose(-3, 3))
+        loc <- Gen.listOf(Gen.choose(-1, arr.length - 1))
+      } yield (arr.toArray, loc.toArray)
 
       forAll(arrAndLocs) { case (arr: Array[Int], locs: Array[Int]) =>
         val v = Vec(array.take(arr, locs, 0))

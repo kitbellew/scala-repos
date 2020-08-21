@@ -103,12 +103,11 @@ class TlsEndpointVerificationSpec extends AkkaSpec("""
 
   def pipeline(
       clientContext: ConnectionContext,
-      hostname: String): HttpRequest ⇒ Future[HttpResponse] =
-    req ⇒
-      Source
-        .single(req)
-        .via(pipelineFlow(clientContext, hostname))
-        .runWith(Sink.head)
+      hostname: String): HttpRequest ⇒ Future[HttpResponse] = req ⇒
+    Source
+      .single(req)
+      .via(pipelineFlow(clientContext, hostname))
+      .runWith(Sink.head)
 
   def pipelineFlow(
       clientContext: ConnectionContext,

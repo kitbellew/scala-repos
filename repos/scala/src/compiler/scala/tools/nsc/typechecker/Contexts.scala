@@ -657,11 +657,10 @@ trait Contexts { self: Analyzer =>
     def warning(pos: Position, msg: String) =
       reporter.warning(fixPosition(pos), msg)
     def echo(pos: Position, msg: String) = reporter.echo(fixPosition(pos), msg)
-    def fixPosition(pos: Position): Position =
-      pos match {
-        case NoPosition => nextEnclosing(_.tree.pos != NoPosition).tree.pos
-        case _          => pos
-      }
+    def fixPosition(pos: Position): Position = pos match {
+      case NoPosition => nextEnclosing(_.tree.pos != NoPosition).tree.pos
+      case _          => pos
+    }
 
     def deprecationWarning(pos: Position, sym: Symbol, msg: String): Unit =
       currentRun.reporting.deprecationWarning(fixPosition(pos), sym, msg)
@@ -713,21 +712,19 @@ trait Contexts { self: Analyzer =>
 
     private def treeTruncated =
       tree.toString.replaceAll("\\s+", " ").lines.mkString("\\n").take(70)
-    private def treeIdString =
-      if (settings.uniqid.value)
-        "#" + System.identityHashCode(tree).toString.takeRight(3)
-      else ""
-    private def treeString =
-      tree match {
-        case x: Import => "" + x
-        case Template(parents, `noSelfType`, body) =>
-          val pstr =
-            if ((parents eq null) || parents.isEmpty) "Nil"
-            else parents mkString " "
-          val bstr = if (body eq null) "" else body.length + " stats"
-          s"""Template($pstr, _, $bstr)"""
-        case x => s"${tree.shortClass}${treeIdString}:${treeTruncated}"
-      }
+    private def treeIdString = if (settings.uniqid.value)
+      "#" + System.identityHashCode(tree).toString.takeRight(3)
+    else ""
+    private def treeString = tree match {
+      case x: Import => "" + x
+      case Template(parents, `noSelfType`, body) =>
+        val pstr =
+          if ((parents eq null) || parents.isEmpty) "Nil"
+          else parents mkString " "
+        val bstr = if (body eq null) "" else body.length + " stats"
+        s"""Template($pstr, _, $bstr)"""
+      case x => s"${tree.shortClass}${treeIdString}:${treeTruncated}"
+    }
 
     override def toString =
       sm"""|Context($unit) {
@@ -791,11 +788,10 @@ trait Contexts { self: Analyzer =>
         } else (owner hasTransOwner ab)
       }
 
-      def isSubThisType(pre: Type, clazz: Symbol): Boolean =
-        pre match {
-          case ThisType(pclazz) => pclazz isNonBottomSubClass clazz
-          case _                => false
-        }
+      def isSubThisType(pre: Type, clazz: Symbol): Boolean = pre match {
+        case ThisType(pclazz) => pclazz isNonBottomSubClass clazz
+        case _                => false
+      }
 
       /* Is protected access to target symbol permitted */
       def isProtectedAccessOK(target: Symbol) = {
@@ -861,11 +857,10 @@ trait Contexts { self: Analyzer =>
     }
 
     def restoreTypeBounds(tp: Type): Type = {
-      def restore(): Type =
-        savedTypeBounds.foldLeft(tp) { case (current, (sym, savedInfo)) =>
-          def bounds_s(tb: TypeBounds) =
-            if (tb.isEmptyBounds) "<empty bounds>"
-            else s"TypeBounds(lo=${tb.lo}, hi=${tb.hi})"
+      def restore(): Type = savedTypeBounds.foldLeft(tp) {
+        case (current, (sym, savedInfo)) =>
+          def bounds_s(tb: TypeBounds) = if (tb.isEmptyBounds) "<empty bounds>"
+          else s"TypeBounds(lo=${tb.lo}, hi=${tb.hi})"
           //@M TODO: when higher-kinded types are inferred, probably need a case PolyType(_, TypeBounds(...)) if ... =>
           val TypeBounds(lo, hi) = sym.info.bounds
           val isUnique = lo <:< hi && hi <:< lo
@@ -886,7 +881,7 @@ trait Contexts { self: Analyzer =>
             logResult(
               s"Discarding inferred $current_s because $sym does not appear in")(
               current)
-        }
+      }
       try restore()
       finally {
         for ((sym, savedInfo) <- savedTypeBounds)
@@ -933,15 +928,14 @@ trait Contexts { self: Analyzer =>
     private def withQualifyingImplicitAlternatives(
         imp: ImportInfo,
         name: Name,
-        pre: Type)(f: Symbol => Unit) =
-      for {
-        sym <- importedAccessibleSymbol(
-          imp,
-          name,
-          requireExplicit = false,
-          record = false).alternatives
-        if isQualifyingImplicit(name, sym, pre, imported = true)
-      } f(sym)
+        pre: Type)(f: Symbol => Unit) = for {
+      sym <- importedAccessibleSymbol(
+        imp,
+        name,
+        requireExplicit = false,
+        record = false).alternatives
+      if isQualifyingImplicit(name, sym, pre, imported = true)
+    } f(sym)
 
     private def collectImplicits(
         syms: Scope,
@@ -956,26 +950,25 @@ trait Contexts { self: Analyzer =>
 
       val qualSym = qual.tpe.typeSymbol
       val pre = qual.tpe
-      def collect(sels: List[ImportSelector]): List[ImplicitInfo] =
-        sels match {
-          case List() =>
-            List()
-          case List(ImportSelector(nme.WILDCARD, _, _, _)) =>
-            // Using pre.implicitMembers seems to exposes a problem with out-dated symbols in the IDE,
-            // see the example in https://www.assembla.com/spaces/scala-ide/tickets/1002552#/activity/ticket
-            // I haven't been able to boil that down the an automated test yet.
-            // Looking up implicit members in the package, rather than package object, here is at least
-            // consistent with what is done just below for named imports.
-            collectImplicits(qual.tpe.implicitMembers, pre, imported = true)
-          case ImportSelector(from, _, to, _) :: sels1 =>
-            var impls = collect(sels1) filter (info => info.name != from)
-            if (to != nme.WILDCARD) {
-              withQualifyingImplicitAlternatives(imp, to, pre) { sym =>
-                impls = new ImplicitInfo(to, pre, sym) :: impls
-              }
+      def collect(sels: List[ImportSelector]): List[ImplicitInfo] = sels match {
+        case List() =>
+          List()
+        case List(ImportSelector(nme.WILDCARD, _, _, _)) =>
+          // Using pre.implicitMembers seems to exposes a problem with out-dated symbols in the IDE,
+          // see the example in https://www.assembla.com/spaces/scala-ide/tickets/1002552#/activity/ticket
+          // I haven't been able to boil that down the an automated test yet.
+          // Looking up implicit members in the package, rather than package object, here is at least
+          // consistent with what is done just below for named imports.
+          collectImplicits(qual.tpe.implicitMembers, pre, imported = true)
+        case ImportSelector(from, _, to, _) :: sels1 =>
+          var impls = collect(sels1) filter (info => info.name != from)
+          if (to != nme.WILDCARD) {
+            withQualifyingImplicitAlternatives(imp, to, pre) { sym =>
+              impls = new ImplicitInfo(to, pre, sym) :: impls
             }
-            impls
-        }
+          }
+          impls
+      }
       //debuglog("collect implicit imports " + imp + "=" + collect(imp.tree.selectors))//DEBUG
       collect(imp.tree.selectors)
     }
@@ -1074,12 +1067,11 @@ trait Contexts { self: Analyzer =>
       def mt1 = t1 memberType imp1Symbol
       def mt2 = t2 memberType imp2Symbol
 
-      def characterize =
-        List(
-          s"types:  $t1 =:= $t2  ${t1 =:= t2}  members: ${mt1 =:= mt2}",
-          s"member type 1: $mt1",
-          s"member type 2: $mt2"
-        ).mkString("\n  ")
+      def characterize = List(
+        s"types:  $t1 =:= $t2  ${t1 =:= t2}  members: ${mt1 =:= mt2}",
+        s"member type 1: $mt1",
+        s"member type 2: $mt2"
+      ).mkString("\n  ")
 
       if (!ambiguous || !imp2Symbol.exists) Some(imp1)
       else if (!imp1Symbol.exists) Some(imp2)
@@ -1118,13 +1110,12 @@ trait Contexts { self: Analyzer =>
       imp.importedSymbol(name, requireExplicit, record) filter (s =>
         isAccessible(s, imp.qual.tpe, superAccess = false))
 
-    private def requiresQualifier(s: Symbol): Boolean =
-      (
-        s.owner.isClass
-          && !s.owner.isPackageClass
-          && !s.isTypeParameterOrSkolem
-          && !s.isExistentiallyBound
-      )
+    private def requiresQualifier(s: Symbol): Boolean = (
+      s.owner.isClass
+        && !s.owner.isPackageClass
+        && !s.isTypeParameterOrSkolem
+        && !s.isExistentiallyBound
+    )
 
     /** Must `sym` defined in package object of package `pkg`, if
       *  it selected from a prefix with `pkg` as its type symbol?
@@ -1151,29 +1142,27 @@ trait Contexts { self: Analyzer =>
       var cx: Context = this // the context under consideration
       var symbolDepth: Int = -1 // the depth of the directly found symbol
 
-      def finish(qual: Tree, sym: Symbol): NameLookup =
-        (
-          if (lookupError ne null) lookupError
-          else
-            sym match {
-              case NoSymbol if inaccessible ne null => inaccessible
-              case NoSymbol                         => LookupNotFound
-              case _                                => LookupSucceeded(qual, sym)
-            }
-        )
+      def finish(qual: Tree, sym: Symbol): NameLookup = (
+        if (lookupError ne null) lookupError
+        else
+          sym match {
+            case NoSymbol if inaccessible ne null => inaccessible
+            case NoSymbol                         => LookupNotFound
+            case _                                => LookupSucceeded(qual, sym)
+          }
+      )
       def finishDefSym(sym: Symbol, pre0: Type): NameLookup =
         if (requiresQualifier(sym))
           finish(gen.mkAttributedQualifier(pre0), sym)
         else
           finish(EmptyTree, sym)
 
-      def isPackageOwnedInDifferentUnit(s: Symbol) =
-        (
-          s.isDefinedInPackage && (
-            !currentRun.compiles(s)
-              || unit.exists && s.sourceFile != unit.source.file
-          )
+      def isPackageOwnedInDifferentUnit(s: Symbol) = (
+        s.isDefinedInPackage && (
+          !currentRun.compiles(s)
+            || unit.exists && s.sourceFile != unit.source.file
         )
+      )
       def lookupInPrefix(name: Name) = pre member name filter qualifies
       def accessibleInPrefix(s: Symbol) =
         isAccessible(s, pre, superAccess = false)
@@ -1256,12 +1245,11 @@ trait Contexts { self: Analyzer =>
       //     package clause in the same compilation unit where the definition occurs have
       //     highest precedence.
       //  2) Explicit imports have next highest precedence.
-      def depthOk(imp: ImportInfo) =
-        (
-          imp.depth > symbolDepth
-            || (unit.isJava && imp.isExplicitImport(
-              name) && imp.depth == symbolDepth)
-        )
+      def depthOk(imp: ImportInfo) = (
+        imp.depth > symbolDepth
+          || (unit.isJava && imp.isExplicitImport(
+            name) && imp.depth == symbolDepth)
+      )
 
       while (!impSym.exists && imports.nonEmpty && depthOk(imports.head)) {
         impSym = lookupImport(imp1, requireExplicit = false)
@@ -1290,12 +1278,11 @@ trait Contexts { self: Analyzer =>
         // And at least one of the following is true:
         //   - imp1 and imp2 are at the same depth
         //   - imp1 is a wildcard import, so all explicit imports from outer scopes must be checked
-        def keepLooking =
-          (
-            lookupError == null
-              && imports.tail.nonEmpty
-              && (sameDepth || !imp1Explicit)
-          )
+        def keepLooking = (
+          lookupError == null
+            && imports.tail.nonEmpty
+            && (sameDepth || !imp1Explicit)
+        )
         // If we find a competitor imp2 which imports the same name, possible outcomes are:
         //
         //  - same depth, imp1 wild, imp2 explicit:        imp2 wins, drop imp1
@@ -1505,19 +1492,17 @@ trait Contexts { self: Analyzer =>
       else msg
     }
 
-    final def emitWarnings() =
-      if (_warningBuffer != null) {
-        _warningBuffer foreach { case (pos, msg) =>
-          reporter.warning(pos, msg)
-        }
-        _warningBuffer = null
+    final def emitWarnings() = if (_warningBuffer != null) {
+      _warningBuffer foreach { case (pos, msg) =>
+        reporter.warning(pos, msg)
       }
+      _warningBuffer = null
+    }
 
     // [JZ] Contexts, pre- the SI-7345 refactor, avoided allocating the buffers until needed. This
     // is replicated here out of conservatism.
-    private def newBuffer[A] =
-      mutable.LinkedHashSet
-        .empty[A] // Important to use LinkedHS for stable results.
+    private def newBuffer[A] = mutable.LinkedHashSet
+      .empty[A] // Important to use LinkedHS for stable results.
     final protected def errorBuffer = {
       if (_errorBuffer == null) _errorBuffer = newBuffer; _errorBuffer
     }
@@ -1593,15 +1578,14 @@ trait Contexts { self: Analyzer =>
     def posOf(sel: ImportSelector) = tree.pos withPoint sel.namePos
 
     /** The prefix expression */
-    def qual: Tree =
-      tree.symbol.info match {
-        case ImportType(expr) => expr
-        case ErrorType        => tree setType NoType // fix for #2870
-        case _ =>
-          throw new FatalError(
-            "symbol " + tree.symbol + " has bad type: " + tree.symbol.info
-          ) //debug
-      }
+    def qual: Tree = tree.symbol.info match {
+      case ImportType(expr) => expr
+      case ErrorType        => tree setType NoType // fix for #2870
+      case _ =>
+        throw new FatalError(
+          "symbol " + tree.symbol + " has bad type: " + tree.symbol.info
+        ) //debug
+    }
 
     /** Is name imported explicitly, not via wildcard? */
     def isExplicitImport(name: Name): Boolean =
@@ -1664,22 +1648,20 @@ trait Contexts { self: Analyzer =>
 
     private def transformImport(
         selectors: List[ImportSelector],
-        sym: Symbol): List[Symbol] =
-      selectors match {
-        case List()                                      => List()
-        case List(ImportSelector(nme.WILDCARD, _, _, _)) => List(sym)
-        case ImportSelector(from, _, to, _) :: _ if from == sym.name =>
-          if (to == nme.WILDCARD) List()
-          else List(sym.cloneSymbol(sym.owner, sym.rawflags, to))
-        case _ :: rest => transformImport(rest, sym)
-      }
+        sym: Symbol): List[Symbol] = selectors match {
+      case List()                                      => List()
+      case List(ImportSelector(nme.WILDCARD, _, _, _)) => List(sym)
+      case ImportSelector(from, _, to, _) :: _ if from == sym.name =>
+        if (to == nme.WILDCARD) List()
+        else List(sym.cloneSymbol(sym.owner, sym.rawflags, to))
+      case _ :: rest => transformImport(rest, sym)
+    }
 
     override def hashCode = tree.##
-    override def equals(other: Any) =
-      other match {
-        case that: ImportInfo => (tree == that.tree)
-        case _                => false
-      }
+    override def equals(other: Any) = other match {
+      case that: ImportInfo => (tree == that.tree)
+      case _                => false
+    }
     override def toString = tree.toString
   }
 
@@ -1777,8 +1759,8 @@ final class ContextMode private (val bits: Int) extends AnyVal {
 
   def &(other: ContextMode): ContextMode = new ContextMode(bits & other.bits)
   def |(other: ContextMode): ContextMode = new ContextMode(bits | other.bits)
-  def &~(other: ContextMode): ContextMode =
-    new ContextMode(bits & ~(other.bits))
+  def &~(other: ContextMode): ContextMode = new ContextMode(
+    bits & ~(other.bits))
   def set(value: Boolean, mask: ContextMode) = if (value) |(mask) else &~(mask)
 
   def inAll(required: ContextMode) = (this & required) == required

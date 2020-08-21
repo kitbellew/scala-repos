@@ -54,8 +54,8 @@ object BasicCommands {
   def ignore = Command.command(FailureWall)(idFun)
 
   def early = Command.arb(earlyParser, earlyHelp) { (s, other) => other :: s }
-  private[this] def earlyParser =
-    (s: State) => token(EarlyCommand).flatMap(_ => otherCommandParser(s))
+  private[this] def earlyParser = (s: State) =>
+    token(EarlyCommand).flatMap(_ => otherCommandParser(s))
   private[this] def earlyHelp =
     Help(EarlyCommand, EarlyCommandBrief, EarlyCommandDetailed)
 
@@ -141,61 +141,56 @@ object BasicCommands {
       otherCommandParser) { (s, arg) =>
       s.copy(onFailure = Some(arg))
     }
-  private[sbt] def compatCommands =
-    Seq(
-      Command.command(Compat.ClearOnFailure) { s =>
-        s.log.warn(Compat.ClearOnFailureDeprecated)
-        s.copy(onFailure = None)
-      },
-      Command.arb(s =>
-        token(Compat.OnFailure, hide = const(true)).flatMap(x =>
-          otherCommandParser(s))) { (s, arg) =>
-        s.log.warn(Compat.OnFailureDeprecated)
-        s.copy(onFailure = Some(arg))
-      },
-      Command.command(Compat.FailureWall) { s =>
-        s.log.warn(Compat.FailureWallDeprecated)
-        s
-      }
-    )
+  private[sbt] def compatCommands = Seq(
+    Command.command(Compat.ClearOnFailure) { s =>
+      s.log.warn(Compat.ClearOnFailureDeprecated)
+      s.copy(onFailure = None)
+    },
+    Command.arb(s =>
+      token(Compat.OnFailure, hide = const(true)).flatMap(x =>
+        otherCommandParser(s))) { (s, arg) =>
+      s.log.warn(Compat.OnFailureDeprecated)
+      s.copy(onFailure = Some(arg))
+    },
+    Command.command(Compat.FailureWall) { s =>
+      s.log.warn(Compat.FailureWallDeprecated)
+      s
+    }
+  )
 
   def clearOnFailure =
     Command.command(ClearOnFailure)(s => s.copy(onFailure = None))
-  def stashOnFailure =
-    Command.command(StashOnFailure)(s =>
-      s.copy(onFailure = None)
-        .update(OnFailureStack)(s.onFailure :: _.toList.flatten))
-  def popOnFailure =
-    Command.command(PopOnFailure) { s =>
-      val stack = s.get(OnFailureStack).getOrElse(Nil)
-      val updated =
-        if (stack.isEmpty) s.remove(OnFailureStack)
-        else s.put(OnFailureStack, stack.tail)
-      updated.copy(onFailure = stack.headOption.flatten)
-    }
+  def stashOnFailure = Command.command(StashOnFailure)(s =>
+    s.copy(onFailure = None)
+      .update(OnFailureStack)(s.onFailure :: _.toList.flatten))
+  def popOnFailure = Command.command(PopOnFailure) { s =>
+    val stack = s.get(OnFailureStack).getOrElse(Nil)
+    val updated =
+      if (stack.isEmpty) s.remove(OnFailureStack)
+      else s.put(OnFailureStack, stack.tail)
+    updated.copy(onFailure = stack.headOption.flatten)
+  }
 
-  def reboot =
-    Command(RebootCommand, Help.more(RebootCommand, RebootDetailed))(
-      rebootParser) { (s, full) =>
-      s.reboot(full)
-    }
+  def reboot = Command(RebootCommand, Help.more(RebootCommand, RebootDetailed))(
+    rebootParser) { (s, full) =>
+    s.reboot(full)
+  }
   def rebootParser(s: State) = token(Space ~> "full" ^^^ true) ?? false
 
-  def call =
-    Command(ApplyCommand, Help.more(ApplyCommand, ApplyDetailed))(_ =>
-      callParser) { case (state, (cp, args)) =>
-      val parentLoader = getClass.getClassLoader
-      state.log.info(
-        "Applying State transformations " + args
-          .mkString(", ") + (if (cp.isEmpty) ""
-                             else " from " + cp.mkString(File.pathSeparator)))
-      val loader =
-        if (cp.isEmpty) parentLoader
-        else toLoader(cp.map(f => new File(f)), parentLoader)
-      val loaded = args.map(arg =>
-        ModuleUtilities.getObject(arg, loader).asInstanceOf[State => State])
-      (state /: loaded)((s, obj) => obj(s))
-    }
+  def call = Command(ApplyCommand, Help.more(ApplyCommand, ApplyDetailed))(_ =>
+    callParser) { case (state, (cp, args)) =>
+    val parentLoader = getClass.getClassLoader
+    state.log.info(
+      "Applying State transformations " + args
+        .mkString(", ") + (if (cp.isEmpty) ""
+                           else " from " + cp.mkString(File.pathSeparator)))
+    val loader =
+      if (cp.isEmpty) parentLoader
+      else toLoader(cp.map(f => new File(f)), parentLoader)
+    val loaded = args.map(arg =>
+      ModuleUtilities.getObject(arg, loader).asInstanceOf[State => State])
+    (state /: loaded)((s, obj) => obj(s))
+  }
   def callParser: Parser[(Seq[String], Seq[String])] =
     token(Space) ~> ((classpathOptionParser ?? Nil) ~ rep1sep(
       className,
@@ -242,26 +237,25 @@ object BasicCommands {
       }
     }
 
-  def shell =
-    Command.command(Shell, Help.more(Shell, ShellDetailed)) { s =>
-      val history =
-        (s get historyPath) getOrElse Some(new File(s.baseDir, ".history"))
-      val prompt = (s get shellPrompt) match {
-        case Some(pf) => pf(s); case None => "> "
-      }
-      val reader = new FullReader(history, s.combinedParser)
-      val line = reader.readLine(prompt)
-      line match {
-        case Some(line) =>
-          val newState = s
-            .copy(
-              onFailure = Some(Shell),
-              remainingCommands = line +: Shell +: s.remainingCommands)
-            .setInteractive(true)
-          if (line.trim.isEmpty) newState else newState.clearGlobalLog
-        case None => s.setInteractive(false)
-      }
+  def shell = Command.command(Shell, Help.more(Shell, ShellDetailed)) { s =>
+    val history =
+      (s get historyPath) getOrElse Some(new File(s.baseDir, ".history"))
+    val prompt = (s get shellPrompt) match {
+      case Some(pf) => pf(s); case None => "> "
     }
+    val reader = new FullReader(history, s.combinedParser)
+    val line = reader.readLine(prompt)
+    line match {
+      case Some(line) =>
+        val newState = s
+          .copy(
+            onFailure = Some(Shell),
+            remainingCommands = line +: Shell +: s.remainingCommands)
+          .setInteractive(true)
+        if (line.trim.isEmpty) newState else newState.clearGlobalLog
+      case None => s.setInteractive(false)
+    }
+  }
 
   def read =
     Command.make(ReadCommand, Help.more(ReadCommand, ReadDetailed))(s =>
@@ -342,9 +336,8 @@ object BasicCommands {
     s.copy(definedCommands = newAlias(name, value) +: s.definedCommands)
 
   def removeAliases(s: State): State = removeTagged(s, CommandAliasKey)
-  def removeAlias(s: State, name: String): State =
-    s.copy(definedCommands = s.definedCommands.filter(c =>
-      !isAliasNamed(name, c)))
+  def removeAlias(s: State, name: String): State = s.copy(definedCommands =
+    s.definedCommands.filter(c => !isAliasNamed(name, c)))
 
   def removeTagged(s: State, tag: AttributeKey[_]): State =
     s.copy(definedCommands = removeTagged(s.definedCommands, tag))
@@ -358,8 +351,8 @@ object BasicCommands {
 
   def getAlias(c: Command): Option[(String, String)] =
     c.tags get CommandAliasKey
-  def printAlias(s: State, name: String): Unit =
-    printAliases(aliases(s, (n, v) => n == name))
+  def printAlias(s: State, name: String): Unit = printAliases(
+    aliases(s, (n, v) => n == name))
   def printAliases(s: State): Unit = printAliases(allAliases(s))
   def printAliases(as: Seq[(String, String)]): Unit =
     for ((name, value) <- as)

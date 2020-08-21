@@ -45,8 +45,8 @@ sealed trait ContentEncoding {
 object ContentEncoding {
   val decomposerV1: Decomposer[ContentEncoding] =
     new Decomposer[ContentEncoding] {
-      def decompose(ce: ContentEncoding) =
-        JObject("encoding" -> ce.id.serialize)
+      def decompose(ce: ContentEncoding) = JObject(
+        "encoding" -> ce.id.serialize)
     }
 
   val extractorV1: Extractor[ContentEncoding] = new Extractor[ContentEncoding] {
@@ -101,12 +101,11 @@ object FileContent {
     }
 
   val DecomposerV0: Decomposer[FileContent] = new Decomposer[FileContent] {
-    def decompose(v: FileContent) =
-      JObject(
-        "data" -> JString(v.encoding.encode(v.data)),
-        "mimeType" -> v.mimeType.jv,
-        "encoding" -> v.encoding.jv
-      )
+    def decompose(v: FileContent) = JObject(
+      "data" -> JString(v.encoding.encode(v.data)),
+      "mimeType" -> v.mimeType.jv,
+      "encoding" -> v.encoding.jv
+    )
   }
 
   val ExtractorV0: Extractor[FileContent] = new Extractor[FileContent] {

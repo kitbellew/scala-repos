@@ -84,10 +84,9 @@ private[data] sealed abstract class WriterTInstances extends WriterTInstances0 {
     }
 
   implicit def writerTShow[F[_], L, V](implicit
-      F: Show[F[(L, V)]]): Show[WriterT[F, L, V]] =
-    new Show[WriterT[F, L, V]] {
-      override def show(f: WriterT[F, L, V]): String = f.show
-    }
+      F: Show[F[(L, V)]]): Show[WriterT[F, L, V]] = new Show[WriterT[F, L, V]] {
+    override def show(f: WriterT[F, L, V]): String = f.show
+  }
 }
 
 private[data] sealed abstract class WriterTInstances0
@@ -190,10 +189,9 @@ private[data] sealed abstract class WriterTInstances6
 
 private[data] sealed abstract class WriterTInstances7 {
   implicit def writerTFunctor[F[_], L](implicit
-      F: Functor[F]): Functor[WriterT[F, L, ?]] =
-    new WriterTFunctor[F, L] {
-      implicit val F0: Functor[F] = F
-    }
+      F: Functor[F]): Functor[WriterT[F, L, ?]] = new WriterTFunctor[F, L] {
+    implicit val F0: Functor[F] = F
+  }
 }
 
 private[data] sealed trait WriterTFunctor[F[_], L]

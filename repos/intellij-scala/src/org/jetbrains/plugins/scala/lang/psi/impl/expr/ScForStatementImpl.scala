@@ -47,11 +47,10 @@ class ScForStatementImpl(node: ASTNode)
   def enumerators: Option[ScEnumerators] = findChild(classOf[ScEnumerators])
 
   // Binding patterns in reverse order
-  def patterns: Seq[ScPattern] =
-    enumerators match {
-      case None    => Seq.empty
-      case Some(x) => x.namings.reverse.map(_.pattern)
-    }
+  def patterns: Seq[ScPattern] = enumerators match {
+    case None    => Seq.empty
+    case Some(x) => x.namings.reverse.map(_.pattern)
+  }
 
   override def processDeclarations(
       processor: PsiScopeProcessor,
@@ -382,10 +381,10 @@ class ScForStatementImpl(node: ASTNode)
     }
   }
 
-  def getLeftParenthesis =
-    Option(findChildByType[PsiElement](ScalaTokenTypes.tLPARENTHESIS))
+  def getLeftParenthesis = Option(
+    findChildByType[PsiElement](ScalaTokenTypes.tLPARENTHESIS))
 
-  def getRightParenthesis =
-    Option(findChildByType[PsiElement](ScalaTokenTypes.tRPARENTHESIS))
+  def getRightParenthesis = Option(
+    findChildByType[PsiElement](ScalaTokenTypes.tRPARENTHESIS))
 
 }

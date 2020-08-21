@@ -39,9 +39,7 @@ class DottyLibraryType
 
 object DottyLibraryType {
 
-  def instance =
-    Option(
-      LibraryType.findByKind(DottyLibraryKind).asInstanceOf[DottyLibraryType])
-      .getOrElse(
-        throw new NoSuchElementException("Dotty library type not found"))
+  def instance = Option(
+    LibraryType.findByKind(DottyLibraryKind).asInstanceOf[DottyLibraryType])
+    .getOrElse(throw new NoSuchElementException("Dotty library type not found"))
 }

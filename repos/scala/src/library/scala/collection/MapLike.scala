@@ -123,11 +123,10 @@ trait MapLike[A, +B, +This <: MapLike[A, B, This] with Map[A, B]]
     *   @usecase def getOrElse(key: A, default: => B): B
     *     @inheritdoc
     */
-  def getOrElse[B1 >: B](key: A, default: => B1): B1 =
-    get(key) match {
-      case Some(v) => v
-      case None    => default
-    }
+  def getOrElse[B1 >: B](key: A, default: => B1): B1 = get(key) match {
+    case Some(v) => v
+    case None    => default
+  }
 
   /** Retrieves the value which is associated with the given key. This
     *  method invokes the `default` method of the map if there is no mapping
@@ -138,11 +137,10 @@ trait MapLike[A, +B, +This <: MapLike[A, B, This] with Map[A, B]]
     *  @return     the value associated with the given key, or the result of the
     *              map's `default` method, if none exists.
     */
-  def apply(key: A): B =
-    get(key) match {
-      case None        => default(key)
-      case Some(value) => value
-    }
+  def apply(key: A): B = get(key) match {
+    case None        => default(key)
+    case Some(value) => value
+  }
 
   /** Tests whether this map contains a binding for a key.
     *
@@ -173,12 +171,10 @@ trait MapLike[A, +B, +This <: MapLike[A, B, This] with Map[A, B]]
       with Serializable {
     def contains(key: A) = self.contains(key)
     def iterator = keysIterator
-    def +(elem: A): Set[A] =
-      (Set[A]() ++ this + elem)
-        .asInstanceOf[Set[A]] // !!! concrete overrides abstract problem
-    def -(elem: A): Set[A] =
-      (Set[A]() ++ this - elem)
-        .asInstanceOf[Set[A]] // !!! concrete overrides abstract problem
+    def +(elem: A): Set[A] = (Set[A]() ++ this + elem)
+      .asInstanceOf[Set[A]] // !!! concrete overrides abstract problem
+    def -(elem: A): Set[A] = (Set[A]() ++ this - elem)
+      .asInstanceOf[Set[A]] // !!! concrete overrides abstract problem
     override def size = self.size
     override def foreach[U](f: A => U) = self.keysIterator foreach f
   }
@@ -187,12 +183,11 @@ trait MapLike[A, +B, +This <: MapLike[A, B, This] with Map[A, B]]
     *
     *  @return an iterator over all keys.
     */
-  def keysIterator: Iterator[A] =
-    new AbstractIterator[A] {
-      val iter = self.iterator
-      def hasNext = iter.hasNext
-      def next() = iter.next()._1
-    }
+  def keysIterator: Iterator[A] = new AbstractIterator[A] {
+    val iter = self.iterator
+    def hasNext = iter.hasNext
+    def next() = iter.next()._1
+  }
 
   /** Collects all keys of this map in an iterable collection.
     *
@@ -225,12 +220,11 @@ trait MapLike[A, +B, +This <: MapLike[A, B, This] with Map[A, B]]
     *
     *  @return an iterator over all values that are associated with some key in this map.
     */
-  def valuesIterator: Iterator[B] =
-    new AbstractIterator[B] {
-      val iter = self.iterator
-      def hasNext = iter.hasNext
-      def next() = iter.next()._2
-    }
+  def valuesIterator: Iterator[B] = new AbstractIterator[B] {
+    val iter = self.iterator
+    def hasNext = iter.hasNext
+    def next() = iter.next()._2
+  }
 
   /** Defines the default value computation for the map,
     *  returned when a key is not found
@@ -246,8 +240,8 @@ trait MapLike[A, +B, +This <: MapLike[A, B, This] with Map[A, B]]
   protected class FilteredKeys(p: A => Boolean)
       extends AbstractMap[A, B]
       with DefaultMap[A, B] {
-    override def foreach[U](f: ((A, B)) => U): Unit =
-      for (kv <- self) if (p(kv._1)) f(kv)
+    override def foreach[U](f: ((A, B)) => U): Unit = for (kv <- self)
+      if (p(kv._1)) f(kv)
     def iterator = self.iterator.filter(kv => p(kv._1))
     override def contains(key: A) = p(key) && self.contains(key)
     def get(key: A) = if (!p(key)) None else self.get(key)
@@ -267,8 +261,8 @@ trait MapLike[A, +B, +This <: MapLike[A, B, This] with Map[A, B]]
   protected class MappedValues[C](f: B => C)
       extends AbstractMap[A, C]
       with DefaultMap[A, C] {
-    override def foreach[U](g: ((A, C)) => U): Unit =
-      for ((k, v) <- self) g((k, f(v)))
+    override def foreach[U](g: ((A, C)) => U): Unit = for ((k, v) <- self)
+      g((k, f(v)))
     def iterator = for ((k, v) <- self.iterator) yield (k, f(v))
     override def size = self.size
     override def contains(key: A) = self.contains(key)

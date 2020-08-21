@@ -52,20 +52,18 @@ final class JavaAccFlags private (val coded: Int) extends AnyVal {
     *  Such access in java is encoded in scala as protected[foo] or private[foo], where
     *  `foo` is the defining package.
     */
-  def hasPackageAccessBoundary =
-    !has(
-      JAVA_ACC_PRIVATE | JAVA_ACC_PUBLIC
-    ) // equivalently, allows protected or package level access
-  def isPackageProtected =
-    !has(JAVA_ACC_PRIVATE | JAVA_ACC_PROTECTED | JAVA_ACC_PUBLIC)
+  def hasPackageAccessBoundary = !has(
+    JAVA_ACC_PRIVATE | JAVA_ACC_PUBLIC
+  ) // equivalently, allows protected or package level access
+  def isPackageProtected = !has(
+    JAVA_ACC_PRIVATE | JAVA_ACC_PROTECTED | JAVA_ACC_PUBLIC)
 
   def toJavaFlags: Int = flags
-  def toScalaFlags: Long =
-    flagCarrierId match {
-      case Method | Constructor => FlagTranslation methodFlags flags
-      case Class                => FlagTranslation classFlags flags
-      case _                    => FlagTranslation fieldFlags flags
-    }
+  def toScalaFlags: Long = flagCarrierId match {
+    case Method | Constructor => FlagTranslation methodFlags flags
+    case Class                => FlagTranslation classFlags flags
+    case _                    => FlagTranslation fieldFlags flags
+  }
 }
 
 object JavaAccFlags {
@@ -85,11 +83,10 @@ object JavaAccFlags {
 
   def apply(access_flags: Int): JavaAccFlags = create(Unknown, access_flags)
   def apply(clazz: jClass[_]): JavaAccFlags = classFlags(clazz.getModifiers)
-  def apply(member: jMember): JavaAccFlags =
-    member match {
-      case x: jConstructor[_] => constructorFlags(x.getModifiers)
-      case x: jMethod         => methodFlags(x.getModifiers)
-      case x: jField          => fieldFlags(x.getModifiers)
-      case _                  => apply(member.getModifiers)
-    }
+  def apply(member: jMember): JavaAccFlags = member match {
+    case x: jConstructor[_] => constructorFlags(x.getModifiers)
+    case x: jMethod         => methodFlags(x.getModifiers)
+    case x: jField          => fieldFlags(x.getModifiers)
+    case _                  => apply(member.getModifiers)
+  }
 }

@@ -500,11 +500,10 @@ private class AFTAggregator(parameters: BDV[Double], fitIntercept: Boolean)
   def loss: Double = if (totalCnt == 0) 1.0 else lossSum / totalCnt
 
   // Here we optimize loss function over coefficients, intercept and log(sigma)
-  def gradient: BDV[Double] =
-    BDV.vertcat(
-      BDV(Array(gradientLogSigmaSum / totalCnt.toDouble)),
-      BDV(Array(gradientInterceptSum / totalCnt.toDouble)),
-      gradientCoefficientSum / totalCnt.toDouble)
+  def gradient: BDV[Double] = BDV.vertcat(
+    BDV(Array(gradientLogSigmaSum / totalCnt.toDouble)),
+    BDV(Array(gradientInterceptSum / totalCnt.toDouble)),
+    gradientCoefficientSum / totalCnt.toDouble)
 
   /**
     * Add a new training data to this AFTAggregator, and update the loss and gradient

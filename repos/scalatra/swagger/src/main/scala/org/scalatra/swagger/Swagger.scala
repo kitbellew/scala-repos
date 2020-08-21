@@ -449,8 +449,8 @@ object DataType {
   private[swagger] def fromManifest[T](implicit mf: Manifest[T]): DataType = {
     fromScalaType(Reflector.scalaTypeOf[T])
   }
-  private[swagger] def fromClass(klass: Class[_]): DataType =
-    fromScalaType(Reflector.scalaTypeOf(klass))
+  private[swagger] def fromClass(klass: Class[_]): DataType = fromScalaType(
+    Reflector.scalaTypeOf(klass))
   private[swagger] def fromScalaType(st: ScalaType): DataType = {
     val klass =
       if (st.isOption && st.typeArgs.size > 0) st.typeArgs.head.erasure

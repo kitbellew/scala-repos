@@ -22,8 +22,8 @@ class TransLiftTests extends CatsSuite {
       JustAp(ff.a(fa.a))
     override def product[A, B](fa: JustAp[A], fb: JustAp[B]): JustAp[(A, B)] =
       JustAp(fa.a -> fb.a)
-    override def map[A, B](fa: JustAp[A])(f: A => B): JustAp[B] =
-      JustAp(f(fa.a))
+    override def map[A, B](fa: JustAp[A])(f: A => B): JustAp[B] = JustAp(
+      f(fa.a))
   }
 
   test("transLift for XorT, OptionT, WriterT requires only Functor") {

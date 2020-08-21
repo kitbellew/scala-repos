@@ -149,13 +149,12 @@ class ScalacFork extends ScalaMatchingTask with ScalacShared with TaskArgs {
     java setClassname MainClass
 
     // Encode scalac/javac args for use in a file to be read back via "@file.txt"
-    def encodeScalacArgsFile(t: Traversable[String]) =
-      t map { s =>
-        if (s.find(c => c <= ' ' || "\"'\\".contains(c)).isDefined)
-          "\"" + s.flatMap(c =>
-            (if (c == '"' || c == '\\') "\\" else "") + c) + "\""
-        else s
-      } mkString "\n"
+    def encodeScalacArgsFile(t: Traversable[String]) = t map { s =>
+      if (s.find(c => c <= ' ' || "\"'\\".contains(c)).isDefined)
+        "\"" + s.flatMap(c =>
+          (if (c == '"' || c == '\\') "\\" else "") + c) + "\""
+      else s
+    } mkString "\n"
 
     // dump the arguments to a file and do "java @file"
     val tempArgFile = io.File.makeTemp("scalacfork")

@@ -52,12 +52,12 @@ private[http] class HttpResponseParser(
     super.emit(output)
   }
 
-  def badProtocol =
-    throw new ParsingException("The server-side HTTP version is not supported")
+  def badProtocol = throw new ParsingException(
+    "The server-side HTTP version is not supported")
 
   def parseStatus(input: ByteString, cursor: Int): Int = {
-    def badStatusCode =
-      throw new ParsingException("Illegal response status code")
+    def badStatusCode = throw new ParsingException(
+      "Illegal response status code")
     def parseStatusCode() = {
       def intValue(offset: Int): Int = {
         val c = byteChar(input, cursor + offset)

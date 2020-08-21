@@ -36,8 +36,8 @@ abstract class RoutingSettings private[akka] () { self: RoutingSettingsImpl ⇒
 }
 
 object RoutingSettings extends SettingsCompanion[RoutingSettings] {
-  override def create(config: Config): RoutingSettings =
-    RoutingSettingsImpl(config)
+  override def create(config: Config): RoutingSettings = RoutingSettingsImpl(
+    config)
   override def create(configOverrides: String): RoutingSettings =
     RoutingSettingsImpl(configOverrides)
 }

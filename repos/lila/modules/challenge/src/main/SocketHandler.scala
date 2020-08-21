@@ -22,15 +22,14 @@ private[challenge] final class SocketHandler(
       challengeId: Challenge.ID,
       uid: String,
       userId: Option[User.ID],
-      owner: Boolean): Fu[Option[JsSocketHandler]] =
-    for {
-      socket ← socketHub ? Get(challengeId) mapTo manifest[ActorRef]
-      join = Socket.Join(uid = uid, userId = userId, owner = owner)
-      handler ← Handler(hub, socket, uid, join, userId) {
-        case Socket.Connected(enum, member) =>
-          (controller(socket, challengeId, uid, member), enum, member)
-      }
-    } yield handler.some
+      owner: Boolean): Fu[Option[JsSocketHandler]] = for {
+    socket ← socketHub ? Get(challengeId) mapTo manifest[ActorRef]
+    join = Socket.Join(uid = uid, userId = userId, owner = owner)
+    handler ← Handler(hub, socket, uid, join, userId) {
+      case Socket.Connected(enum, member) =>
+        (controller(socket, challengeId, uid, member), enum, member)
+    }
+  } yield handler.some
 
   private def controller(
       socket: ActorRef,

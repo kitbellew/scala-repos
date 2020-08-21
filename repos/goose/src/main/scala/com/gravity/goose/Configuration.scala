@@ -113,14 +113,12 @@ class Configuration {
 
     def extract(rootElement: Element): java.util.Date = {
       // A few different ways to get a date.
-      def bestPubDate =
-        pubSelectors
-          .flatMap(extractCandidate(rootElement, _))
-          .reduceOption(minDate)
-      def bestModDate =
-        modSelectors
-          .flatMap(extractCandidate(rootElement, _))
-          .reduceOption(minDate)
+      def bestPubDate = pubSelectors
+        .flatMap(extractCandidate(rootElement, _))
+        .reduceOption(minDate)
+      def bestModDate = modSelectors
+        .flatMap(extractCandidate(rootElement, _))
+        .reduceOption(minDate)
 
       // Return the oldest 'published' date, or else the oldest 'modified' date, or null if none.
       bestPubDate.orElse(bestModDate).getOrElse(null)

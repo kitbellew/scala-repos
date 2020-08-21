@@ -39,81 +39,78 @@ trait JxBase {
 
   def label = "jx"
 
-  def addAttrs(varName: String, attrs: List[MetaData]): JsCmd =
-    attrs
-      .map { m =>
-        m.value
-          .map {
-            case exp: JsExp =>
-              JsRaw(varName + "." + m.key + " = " + exp.toJsCmd).cmd
+  def addAttrs(varName: String, attrs: List[MetaData]): JsCmd = attrs
+    .map { m =>
+      m.value
+        .map {
+          case exp: JsExp =>
+            JsRaw(varName + "." + m.key + " = " + exp.toJsCmd).cmd
 
-            case cmd: JsCmd =>
-              val varName = "v" + Helpers.nextFuncName
-              JsCrVar(varName, AnonFunc(cmd)) &
-                JsRaw(varName + "." + m.key + " = " + varName + "()")
+          case cmd: JsCmd =>
+            val varName = "v" + Helpers.nextFuncName
+            JsCrVar(varName, AnonFunc(cmd)) &
+              JsRaw(varName + "." + m.key + " = " + varName + "()")
 
-            case JxAttr(cmd) =>
-              JsRaw(varName + "." + m.key + " = " + cmd.toJsCmd).cmd
+          case JxAttr(cmd) =>
+            JsRaw(varName + "." + m.key + " = " + cmd.toJsCmd).cmd
 
-            case JxFuncAttr(cmd) =>
-              JsRaw(varName + "." + m.key + " = " + AnonFunc(cmd).toJsCmd).cmd
+          case JxFuncAttr(cmd) =>
+            JsRaw(varName + "." + m.key + " = " + AnonFunc(cmd).toJsCmd).cmd
 
-            case x =>
-              if (m.key == "class") {
-                // JsRaw(varName+".setAttribute('className',"+x.text.encJs+");").cmd
+          case x =>
+            if (m.key == "class") {
+              // JsRaw(varName+".setAttribute('className',"+x.text.encJs+");").cmd
 
-                JsRaw(varName + ".className = " + x.text.encJs).cmd &
-                  JsRaw(
-                    varName + ".setAttribute(" + m.key.encJs + "," + x.text.encJs + ");").cmd
-              } else {
+              JsRaw(varName + ".className = " + x.text.encJs).cmd &
                 JsRaw(
                   varName + ".setAttribute(" + m.key.encJs + "," + x.text.encJs + ");").cmd
-              }
-          }
-          .foldLeft(Noop)(_ & _)
-      }
-      .foldLeft(Noop)(_ & _)
-
-  private def fixText(in: String): String =
-    (in, in.trim) match {
-      case (x, y) if x == y         => x
-      case (x, y) if x startsWith y => y + " "
-      case (x, y) if y.length == 0  => " "
-      case (x, y) if x endsWith y   => " " + y
-      case (_, y)                   => " " + y + " "
+            } else {
+              JsRaw(
+                varName + ".setAttribute(" + m.key.encJs + "," + x.text.encJs + ");").cmd
+            }
+        }
+        .foldLeft(Noop)(_ & _)
     }
+    .foldLeft(Noop)(_ & _)
 
-  def addToDocFrag(parent: String, elems: List[Node]): JsCmd =
-    elems
-      .map {
-        case Jx(kids)     => addToDocFrag(parent, kids.toList)
-        case jb: JxBase   => jb.appendToParent(parent)
-        case Group(nodes) => addToDocFrag(parent, nodes.toList)
-        case Text(txt) =>
-          JsRaw(
-            parent + ".appendChild(document.createTextNode(" + fixText(
-              txt).encJs + "));").cmd
-        case a: Atom[_] =>
-          JsRaw(
-            parent + ".appendChild(document.createTextNode(" + a.text.encJs + "));").cmd
-        case e: scala.xml.Elem =>
-          val varName = "v" + Helpers.nextFuncName
-          JsCrVar(
-            varName,
-            JsRaw("document.createElement(" + e.label.encJs + ")")) &
-            addAttrs(varName, e.attributes.toList) &
-            JsRaw(parent + ".appendChild(" + varName + ")") &
-            addToDocFrag(varName, e.child.toList)
-        case ns: NodeSeq =>
-          if (ns.length == 0) Noop
-          else if (ns.length == 1) {
-            logger.error(
-              "In addToDocFrag, got a " + ns + " of type " + ns.getClass.getName)
-            Noop
-          } else addToDocFrag(parent, ns.toList)
+  private def fixText(in: String): String = (in, in.trim) match {
+    case (x, y) if x == y         => x
+    case (x, y) if x startsWith y => y + " "
+    case (x, y) if y.length == 0  => " "
+    case (x, y) if x endsWith y   => " " + y
+    case (_, y)                   => " " + y + " "
+  }
 
-      }
-      .foldLeft(Noop)(_ & _)
+  def addToDocFrag(parent: String, elems: List[Node]): JsCmd = elems
+    .map {
+      case Jx(kids)     => addToDocFrag(parent, kids.toList)
+      case jb: JxBase   => jb.appendToParent(parent)
+      case Group(nodes) => addToDocFrag(parent, nodes.toList)
+      case Text(txt) =>
+        JsRaw(
+          parent + ".appendChild(document.createTextNode(" + fixText(
+            txt).encJs + "));").cmd
+      case a: Atom[_] =>
+        JsRaw(
+          parent + ".appendChild(document.createTextNode(" + a.text.encJs + "));").cmd
+      case e: scala.xml.Elem =>
+        val varName = "v" + Helpers.nextFuncName
+        JsCrVar(
+          varName,
+          JsRaw("document.createElement(" + e.label.encJs + ")")) &
+          addAttrs(varName, e.attributes.toList) &
+          JsRaw(parent + ".appendChild(" + varName + ")") &
+          addToDocFrag(varName, e.child.toList)
+      case ns: NodeSeq =>
+        if (ns.length == 0) Noop
+        else if (ns.length == 1) {
+          logger.error(
+            "In addToDocFrag, got a " + ns + " of type " + ns.getClass.getName)
+          Noop
+        } else addToDocFrag(parent, ns.toList)
+
+    }
+    .foldLeft(Noop)(_ & _)
 }
 
 abstract class JxNodeBase extends Node with JxBase {}
@@ -209,11 +206,10 @@ case class Jx(child: NodeSeq) extends Node with JxBase with JxYieldFunc {
 
   def yieldFunction: JsExp = toJs
 
-  def toJs: JsExp =
-    AnonFunc(
-      "it",
-      JsCrVar("df", JsRaw("document.createDocumentFragment()")) &
-        addToDocFrag("df", child.toList) &
-        JsRaw("return df"))
+  def toJs: JsExp = AnonFunc(
+    "it",
+    JsCrVar("df", JsRaw("document.createDocumentFragment()")) &
+      addToDocFrag("df", child.toList) &
+      JsRaw("return df"))
 
 }

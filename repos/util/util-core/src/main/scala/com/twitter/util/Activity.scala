@@ -36,15 +36,14 @@ case class Activity[+T](run: Var[Activity.State[T]]) {
     * `f` is not defined for this activity's current value, the derived
     * activity becomes pending.
     */
-  def collect[U](f: PartialFunction[T, U]): Activity[U] =
-    flatMap {
-      case t if f.isDefinedAt(t) =>
-        try Activity.value(f(t))
-        catch {
-          case NonFatal(exc) => Activity.exception(exc)
-        }
-      case _ => Activity.pending
-    }
+  def collect[U](f: PartialFunction[T, U]): Activity[U] = flatMap {
+    case t if f.isDefinedAt(t) =>
+      try Activity.value(f(t))
+      catch {
+        case NonFatal(exc) => Activity.exception(exc)
+      }
+    case _ => Activity.pending
+  }
 
   /**
     * Join two activities.
@@ -103,11 +102,10 @@ case class Activity[+T](run: Var[Activity.State[T]]) {
     * An [[com.twitter.util.Event Event]] containing only nonpending
     * values.
     */
-  def values: Event[Try[T]] =
-    states collect {
-      case Ok(v)       => Return(v)
-      case Failed(exc) => Throw(exc)
-    }
+  def values: Event[Try[T]] = states collect {
+    case Ok(v)       => Return(v)
+    case Failed(exc) => Throw(exc)
+  }
 
   /**
     * Sample the current value of this activity. Sample throws an
@@ -200,10 +198,9 @@ object Activity {
   def join[A, B, C](
       a: Activity[A],
       b: Activity[B],
-      c: Activity[C]): Activity[(A, B, C)] =
-    collect(Seq(a, b, c)) map { ss =>
-      (ss(0).asInstanceOf[A], ss(1).asInstanceOf[B], ss(2).asInstanceOf[C])
-    }
+      c: Activity[C]): Activity[(A, B, C)] = collect(Seq(a, b, c)) map { ss =>
+    (ss(0).asInstanceOf[A], ss(1).asInstanceOf[B], ss(2).asInstanceOf[C])
+  }
 
   /**
     * Join 4 Activities. The returned Activity is complete when all
@@ -214,14 +211,14 @@ object Activity {
       a: Activity[A],
       b: Activity[B],
       c: Activity[C],
-      d: Activity[D]): Activity[(A, B, C, D)] =
-    collect(Seq(a, b, c, d)) map { ss =>
+      d: Activity[D]): Activity[(A, B, C, D)] = collect(Seq(a, b, c, d)) map {
+    ss =>
       (
         ss(0).asInstanceOf[A],
         ss(1).asInstanceOf[B],
         ss(2).asInstanceOf[C],
         ss(3).asInstanceOf[D])
-    }
+  }
 
   /**
     * Join 5 Activities. The returned Activity is complete when all
@@ -819,33 +816,32 @@ object Activity {
       s: Activity[S],
       t: Activity[T],
       u: Activity[U]): Activity[
-    (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)] =
-    collect(
-      Seq(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u)) map {
-      ss =>
-        (
-          ss(0).asInstanceOf[A],
-          ss(1).asInstanceOf[B],
-          ss(2).asInstanceOf[C],
-          ss(3).asInstanceOf[D],
-          ss(4).asInstanceOf[E],
-          ss(5).asInstanceOf[F],
-          ss(6).asInstanceOf[G],
-          ss(7).asInstanceOf[H],
-          ss(8).asInstanceOf[I],
-          ss(9).asInstanceOf[J],
-          ss(10).asInstanceOf[K],
-          ss(11).asInstanceOf[L],
-          ss(12).asInstanceOf[M],
-          ss(13).asInstanceOf[N],
-          ss(14).asInstanceOf[O],
-          ss(15).asInstanceOf[P],
-          ss(16).asInstanceOf[Q],
-          ss(17).asInstanceOf[R],
-          ss(18).asInstanceOf[S],
-          ss(19).asInstanceOf[T],
-          ss(20).asInstanceOf[U])
-    }
+    (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)] = collect(
+    Seq(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u)) map {
+    ss =>
+      (
+        ss(0).asInstanceOf[A],
+        ss(1).asInstanceOf[B],
+        ss(2).asInstanceOf[C],
+        ss(3).asInstanceOf[D],
+        ss(4).asInstanceOf[E],
+        ss(5).asInstanceOf[F],
+        ss(6).asInstanceOf[G],
+        ss(7).asInstanceOf[H],
+        ss(8).asInstanceOf[I],
+        ss(9).asInstanceOf[J],
+        ss(10).asInstanceOf[K],
+        ss(11).asInstanceOf[L],
+        ss(12).asInstanceOf[M],
+        ss(13).asInstanceOf[N],
+        ss(14).asInstanceOf[O],
+        ss(15).asInstanceOf[P],
+        ss(16).asInstanceOf[Q],
+        ss(17).asInstanceOf[R],
+        ss(18).asInstanceOf[S],
+        ss(19).asInstanceOf[T],
+        ss(20).asInstanceOf[U])
+  }
 
   /**
     * Join 22 Activities. The returned Activity is complete when all
@@ -973,8 +969,8 @@ object Activity {
   /**
     * Create a new static activity with exception `exc`.
     */
-  def exception(exc: Throwable): Activity[Nothing] =
-    Activity(Var.value(Failed(exc)))
+  def exception(exc: Throwable): Activity[Nothing] = Activity(
+    Var.value(Failed(exc)))
 
   /**
     * A static Activity that is pending.

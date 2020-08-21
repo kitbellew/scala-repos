@@ -65,8 +65,8 @@ trait AtmosphereSupport
 
   implicit protected def wireFormat: WireFormat = _defaultWireformat
 
-  implicit def json2JsonMessage(json: JValue): OutboundMessage =
-    JsonMessage(json)
+  implicit def json2JsonMessage(json: JValue): OutboundMessage = JsonMessage(
+    json)
 
   implicit def string2Outbound(text: String): OutboundMessage =
     text.blankOption map { txt =>
@@ -76,11 +76,10 @@ trait AtmosphereSupport
         TextMessage(txt)
     } getOrElse TextMessage("")
 
-  private[this] def isFilter =
-    self match {
-      case _: ScalatraFilter => true
-      case _                 => false
-    }
+  private[this] def isFilter = self match {
+    case _: ScalatraFilter => true
+    case _                 => false
+  }
 
   val atmosphereFramework = new ScalatraAtmosphereFramework(isFilter, false)
 
@@ -195,21 +194,18 @@ trait AtmosphereSupport
     }
   }
 
-  private[this] def noGetRoute =
-    sys.error(
-      "You are using the AtmosphereSupport without defining any Get route," +
-        "you should get rid of it.")
+  private[this] def noGetRoute = sys.error(
+    "You are using the AtmosphereSupport without defining any Get route," +
+      "you should get rid of it.")
 
-  private[this] def atmosphereRoutes =
-    routes.methodRoutes
-      .getOrElse(Get, noGetRoute)
-      .filter(_.metadata.contains('Atmosphere))
+  private[this] def atmosphereRoutes = routes.methodRoutes
+    .getOrElse(Get, noGetRoute)
+    .filter(_.metadata.contains('Atmosphere))
 
-  private[this] def atmosphereRoute(req: HttpServletRequest) =
-    (for {
-      route <- atmosphereRoutes.toStream
-      matched <- route(requestPath)
-    } yield matched).headOption
+  private[this] def atmosphereRoute(req: HttpServletRequest) = (for {
+    route <- atmosphereRoutes.toStream
+    matched <- route(requestPath)
+  } yield matched).headOption
 
   private[this] def configureBroadcasterFactory() {
     val factory = new ScalatraBroadcasterFactory(

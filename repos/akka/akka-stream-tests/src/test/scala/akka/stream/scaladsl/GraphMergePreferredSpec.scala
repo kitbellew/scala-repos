@@ -14,15 +14,14 @@ class GraphMergePreferredSpec extends TwoStreamsSetup {
 
   override type Outputs = Int
 
-  override def fixture(b: GraphDSL.Builder[_]): Fixture =
-    new Fixture(b) {
-      val merge = b.add(MergePreferred[Outputs](1))
+  override def fixture(b: GraphDSL.Builder[_]): Fixture = new Fixture(b) {
+    val merge = b.add(MergePreferred[Outputs](1))
 
-      override def left: Inlet[Outputs] = merge.preferred
-      override def right: Inlet[Outputs] = merge.in(0)
-      override def out: Outlet[Outputs] = merge.out
+    override def left: Inlet[Outputs] = merge.preferred
+    override def right: Inlet[Outputs] = merge.in(0)
+    override def out: Outlet[Outputs] = merge.out
 
-    }
+  }
 
   "preferred merge" must {
     commonTests()

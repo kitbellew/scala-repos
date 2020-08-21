@@ -33,10 +33,9 @@ private[finagle] class ZkGroup(serverSet: ServerSet, path: String)
 
   override def run() {
     serverSet.watch(new DynamicHostSet.HostChangeMonitor[ServiceInstance] {
-      def onChange(newSet: ImmutableSet[ServiceInstance]) =
-        synchronized {
-          set() = newSet.asScala.toSet
-        }
+      def onChange(newSet: ImmutableSet[ServiceInstance]) = synchronized {
+        set() = newSet.asScala.toSet
+      }
     })
   }
 }
@@ -161,17 +160,16 @@ class ZkResolver(factory: ZkClientFactory) extends Resolver {
     zkHosts
   }
 
-  def bind(arg: String) =
-    arg.split("!") match {
-      // zk!host:2181!/path
-      case Array(hosts, path) =>
-        resolve(zkHosts(hosts), path, None)
+  def bind(arg: String) = arg.split("!") match {
+    // zk!host:2181!/path
+    case Array(hosts, path) =>
+      resolve(zkHosts(hosts), path, None)
 
-      // zk!host:2181!/path!endpoint
-      case Array(hosts, path, endpoint) =>
-        resolve(zkHosts(hosts), path, Some(endpoint))
+    // zk!host:2181!/path!endpoint
+    case Array(hosts, path, endpoint) =>
+      resolve(zkHosts(hosts), path, Some(endpoint))
 
-      case _ =>
-        throw new ZkResolverException("Invalid address \"%s\"".format(arg))
-    }
+    case _ =>
+      throw new ZkResolverException("Invalid address \"%s\"".format(arg))
+  }
 }

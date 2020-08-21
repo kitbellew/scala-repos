@@ -73,12 +73,11 @@ trait SFXEnumDelegateCompanion[
     * @throws IllegalArgumentException If the specified `enum` type has no constant with the specified name,
     * or the specified class object does not represent an `enum` type.
     */
-  def apply(name: String) =
-    values.find(_.name == name) match {
-      case Some(e) => e
-      case None =>
-        throw new IllegalArgumentException(
-          "No enum constant %s.%s".format(values.head.getClass.getName, name))
-    }
+  def apply(name: String) = values.find(_.name == name) match {
+    case Some(e) => e
+    case None =>
+      throw new IllegalArgumentException(
+        "No enum constant %s.%s".format(values.head.getClass.getName, name))
+  }
 
 }

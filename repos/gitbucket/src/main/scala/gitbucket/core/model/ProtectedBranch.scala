@@ -12,12 +12,11 @@ trait ProtectedBranchComponent extends TemplateComponent { self: Profile =>
       extends Table[ProtectedBranch](tag, "PROTECTED_BRANCH")
       with BranchTemplate {
     val statusCheckAdmin = column[Boolean]("STATUS_CHECK_ADMIN")
-    def * =
-      (
-        userName,
-        repositoryName,
-        branch,
-        statusCheckAdmin) <> (ProtectedBranch.tupled, ProtectedBranch.unapply)
+    def * = (
+      userName,
+      repositoryName,
+      branch,
+      statusCheckAdmin) <> (ProtectedBranch.tupled, ProtectedBranch.unapply)
     def byPrimaryKey(userName: String, repositoryName: String, branch: String) =
       byBranch(userName, repositoryName, branch)
     def byPrimaryKey(
@@ -33,12 +32,11 @@ trait ProtectedBranchComponent extends TemplateComponent { self: Profile =>
         "PROTECTED_BRANCH_REQUIRE_CONTEXT")
       with BranchTemplate {
     val context = column[String]("CONTEXT")
-    def * =
-      (
-        userName,
-        repositoryName,
-        branch,
-        context) <> (ProtectedBranchContext.tupled, ProtectedBranchContext.unapply)
+    def * = (
+      userName,
+      repositoryName,
+      branch,
+      context) <> (ProtectedBranchContext.tupled, ProtectedBranchContext.unapply)
   }
 }
 

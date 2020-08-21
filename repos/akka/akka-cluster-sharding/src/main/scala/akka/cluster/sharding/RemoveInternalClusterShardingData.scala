@@ -174,23 +174,20 @@ object RemoveInternalClusterShardingData {
           context.become(waitDeleteMessagesSuccess)
     }
 
-    override def receiveCommand: Receive =
-      ({
-        case DeleteSnapshotsSuccess(_) ⇒
-          context.become(waitDeleteMessagesSuccess)
-        case DeleteMessagesSuccess(_) ⇒
-          context.become(waitDeleteSnapshotsSuccess)
-      }: Receive).orElse(handleFailure)
+    override def receiveCommand: Receive = ({
+      case DeleteSnapshotsSuccess(_) ⇒
+        context.become(waitDeleteMessagesSuccess)
+      case DeleteMessagesSuccess(_) ⇒
+        context.become(waitDeleteSnapshotsSuccess)
+    }: Receive).orElse(handleFailure)
 
-    def waitDeleteSnapshotsSuccess: Receive =
-      ({ case DeleteSnapshotsSuccess(_) ⇒
-        done()
-      }: Receive).orElse(handleFailure)
+    def waitDeleteSnapshotsSuccess: Receive = ({
+      case DeleteSnapshotsSuccess(_) ⇒ done()
+    }: Receive).orElse(handleFailure)
 
-    def waitDeleteMessagesSuccess: Receive =
-      ({ case DeleteMessagesSuccess(_) ⇒
-        done()
-      }: Receive).orElse(handleFailure)
+    def waitDeleteMessagesSuccess: Receive = ({ case DeleteMessagesSuccess(_) ⇒
+      done()
+    }: Receive).orElse(handleFailure)
 
     def handleFailure: Receive = {
       case DeleteMessagesFailure(cause, _) ⇒ failure(cause)

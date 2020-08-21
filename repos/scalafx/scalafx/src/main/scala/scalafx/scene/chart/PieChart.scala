@@ -70,8 +70,8 @@ object PieChart {
     def node: ReadOnlyObjectProperty[jfxs.Node] = delegate.nodeProperty()
   }
 
-  def apply(data: ObservableBuffer[jfxsc.PieChart.Data]) =
-    new PieChart(new jfxsc.PieChart(data))
+  def apply(data: ObservableBuffer[jfxsc.PieChart.Data]) = new PieChart(
+    new jfxsc.PieChart(data))
 }
 
 class PieChart(override val delegate: jfxsc.PieChart = new jfxsc.PieChart())

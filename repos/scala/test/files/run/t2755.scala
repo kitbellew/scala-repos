@@ -1,36 +1,33 @@
 // Test cases: the only place we can cut and paste without crying
 // ourself to sleep.
 object Test {
-  def f1(a: Any) =
-    a match {
-      case x: Array[Int]    => x(0)
-      case x: Array[Double] => 2
-      case x: Array[Float]  => x.sum.toInt
-      case x: Array[String] => x.size
-      case x: Array[AnyRef] => 5
-      case x: Array[_]      => 6
-      case _                => 7
-    }
-  def f2(a: Array[_]) =
-    a match {
-      case x: Array[Int]    => x(0)
-      case x: Array[Double] => 2
-      case x: Array[Float]  => x.sum.toInt
-      case x: Array[String] => x.size
-      case x: Array[AnyRef] => 5
-      case x: Array[_]      => 6
-      case _                => 7
-    }
-  def f3[T](a: Array[T]) =
-    a match {
-      case x: Array[Int]    => x(0)
-      case x: Array[Double] => 2
-      case x: Array[Float]  => x.sum.toInt
-      case x: Array[String] => x.size
-      case x: Array[AnyRef] => 5
-      case x: Array[_]      => 6
-      case _                => 7
-    }
+  def f1(a: Any) = a match {
+    case x: Array[Int]    => x(0)
+    case x: Array[Double] => 2
+    case x: Array[Float]  => x.sum.toInt
+    case x: Array[String] => x.size
+    case x: Array[AnyRef] => 5
+    case x: Array[_]      => 6
+    case _                => 7
+  }
+  def f2(a: Array[_]) = a match {
+    case x: Array[Int]    => x(0)
+    case x: Array[Double] => 2
+    case x: Array[Float]  => x.sum.toInt
+    case x: Array[String] => x.size
+    case x: Array[AnyRef] => 5
+    case x: Array[_]      => 6
+    case _                => 7
+  }
+  def f3[T](a: Array[T]) = a match {
+    case x: Array[Int]    => x(0)
+    case x: Array[Double] => 2
+    case x: Array[Float]  => x.sum.toInt
+    case x: Array[String] => x.size
+    case x: Array[AnyRef] => 5
+    case x: Array[_]      => 6
+    case _                => 7
+  }
 
   def main(args: Array[String]): Unit = {
     println(f1(Array(1, 2, 3)))

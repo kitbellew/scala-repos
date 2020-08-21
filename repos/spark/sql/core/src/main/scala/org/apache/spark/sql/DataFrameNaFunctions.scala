@@ -216,8 +216,8 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
     *
     * @since 1.3.1
     */
-  def fill(valueMap: java.util.Map[String, Any]): DataFrame =
-    fill0(valueMap.asScala.toSeq)
+  def fill(valueMap: java.util.Map[String, Any]): DataFrame = fill0(
+    valueMap.asScala.toSeq)
 
   /**
     * (Scala-specific) Returns a new [[DataFrame]] that replaces null values.
@@ -452,14 +452,13 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
     new Column(CaseKeyWhen(keyExpr, branches :+ keyExpr)).as(col.name)
   }
 
-  private def convertToDouble(v: Any): Double =
-    v match {
-      case v: Float  => v.toDouble
-      case v: Double => v
-      case v: Long   => v.toDouble
-      case v: Int    => v.toDouble
-      case v =>
-        throw new IllegalArgumentException(
-          s"Unsupported value type ${v.getClass.getName} ($v).")
-    }
+  private def convertToDouble(v: Any): Double = v match {
+    case v: Float  => v.toDouble
+    case v: Double => v
+    case v: Long   => v.toDouble
+    case v: Int    => v.toDouble
+    case v =>
+      throw new IllegalArgumentException(
+        s"Unsupported value type ${v.getClass.getName} ($v).")
+  }
 }

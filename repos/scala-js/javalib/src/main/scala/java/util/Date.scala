@@ -46,11 +46,10 @@ class Date private (private val date: js.Date)
   override def compareTo(anotherDate: Date): Int =
     date.getTime().compareTo(anotherDate.date.getTime())
 
-  override def equals(obj: Any): Boolean =
-    obj match {
-      case d: Date => d.date.getTime() == date.getTime()
-      case _       => false
-    }
+  override def equals(obj: Any): Boolean = obj match {
+    case d: Date => d.date.getTime() == date.getTime()
+    case _       => false
+  }
 
   override def hashCode(): Int = date.getTime().hashCode()
 

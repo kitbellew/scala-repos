@@ -39,12 +39,11 @@ object ListTest extends SpecLite {
   }
 
   "intersperse vs benchmark" ! forAll {
-    def intersperse[A](value: List[A], a: A): List[A] =
-      value match {
-        case Nil      => Nil
-        case x :: Nil => x :: Nil
-        case h :: t   => h :: a :: intersperse(t, a)
-      }
+    def intersperse[A](value: List[A], a: A): List[A] = value match {
+      case Nil      => Nil
+      case x :: Nil => x :: Nil
+      case h :: t   => h :: a :: intersperse(t, a)
+    }
     (a: List[Int], b: Int) => (a.intersperse(b) must_=== (intersperse(a, b)))
   }
 
@@ -118,14 +117,14 @@ object ListTest extends SpecLite {
   }
 
   "takeWhileM example" in {
-    def takeWhileN[A](as: List[A], n: Int)(f: A => Boolean): List[A] =
-      as.takeWhileM[State[Int, ?]](a =>
+    def takeWhileN[A](as: List[A], n: Int)(f: A => Boolean): List[A] = as
+      .takeWhileM[State[Int, ?]](a =>
         State { i =>
           val j = i + (if (f(a)) 0 else 1)
           val done = j >= n
           (j, !done)
         })
-        .evalZero[Int]
+      .evalZero[Int]
 
     val actual = takeWhileN("/abc/def/hij/klm".toList, 4)(_ != '/').mkString
     actual must_=== ("/abc/def/hij")

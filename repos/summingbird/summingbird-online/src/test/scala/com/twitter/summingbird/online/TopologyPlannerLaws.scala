@@ -42,10 +42,10 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
     tail <- oneOf(summed, written)
   } yield tail
 
-  implicit def genDag: Arbitrary[MemoryDag] =
-    Arbitrary(genGraph.map(OnlinePlan(_)))
-  implicit def genProducer: Arbitrary[TailProducer[Memory, _]] =
-    Arbitrary(genGraph)
+  implicit def genDag: Arbitrary[MemoryDag] = Arbitrary(
+    genGraph.map(OnlinePlan(_)))
+  implicit def genProducer: Arbitrary[TailProducer[Memory, _]] = Arbitrary(
+    genGraph)
 
   val testFn = { i: Int => List((i -> i)) }
 

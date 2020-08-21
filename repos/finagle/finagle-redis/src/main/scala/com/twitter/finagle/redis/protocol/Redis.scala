@@ -31,20 +31,19 @@ class Redis extends CodecFactory[Command, Reply] {
   def server: ServerCodecConfig => Codec[Command, Reply] =
     Function.const {
       new Codec[Command, Reply] {
-        def pipelineFactory =
-          new ChannelPipelineFactory {
-            def getPipeline() = {
-              val pipeline = Channels.pipeline()
-              val commandCodec = new CommandCodec
-              val replyCodec = new ReplyCodec
+        def pipelineFactory = new ChannelPipelineFactory {
+          def getPipeline() = {
+            val pipeline = Channels.pipeline()
+            val commandCodec = new CommandCodec
+            val replyCodec = new ReplyCodec
 
-              pipeline.addLast(
-                "codec",
-                new NaggatiCodec(commandCodec.decode, replyCodec.encode))
+            pipeline.addLast(
+              "codec",
+              new NaggatiCodec(commandCodec.decode, replyCodec.encode))
 
-              pipeline
-            }
+            pipeline
           }
+        }
       }
     }
 

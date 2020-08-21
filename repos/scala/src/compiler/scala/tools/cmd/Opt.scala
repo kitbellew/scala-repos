@@ -19,10 +19,10 @@ object Opt {
   trait Error {
     self: Implicit =>
 
-    protected def fail(msg: String) =
-      runAndExit(println(programInfo.runner + ": " + msg))
-    protected def failOption(arg: String, why: String) =
-      fail("%s: '%s' is %s".format(opt, arg, why))
+    protected def fail(msg: String) = runAndExit(
+      println(programInfo.runner + ": " + msg))
+    protected def failOption(arg: String, why: String) = fail(
+      "%s: '%s' is %s".format(opt, arg, why))
   }
 
   trait Implicit {

@@ -52,12 +52,11 @@
 
 object Test {
 
-  def tr[T](m: => T): String =
-    try {
-      val r = m
-      if (r == null) "null"
-      else r.toString
-    } catch { case e: InternalError => e.getMessage }
+  def tr[T](m: => T): String = try {
+    val r = m
+    if (r == null) "null"
+    else r.toString
+  } catch { case e: InternalError => e.getMessage }
 
   def assertNotAnonymous(c: Class[_]) = {
     val an =

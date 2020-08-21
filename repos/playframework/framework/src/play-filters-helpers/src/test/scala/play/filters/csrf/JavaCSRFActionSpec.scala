@@ -29,59 +29,51 @@ object JavaCSRFActionSpec extends CSRFCommonSpecs {
   def ws = Play.privateMaybeApplication.get.injector.instanceOf[WSClient]
   //def crypto = Play.privateMaybeApplication.get.injector.instanceOf[CSRFTokenSigner]
 
-  def javaAction[T: ClassTag](method: String, inv: => Result) =
-    new JavaAction(javaHandlerComponents) {
-      val clazz = implicitly[ClassTag[T]].runtimeClass
-      def parser =
-        HandlerInvokerFactory.javaBodyParserToScala(
-          javaHandlerComponents.getBodyParser(annotations.parser))
-      def invocation = CompletableFuture.completedFuture(inv)
-      val annotations =
-        new JavaActionAnnotations(clazz, clazz.getMethod(method))
-    }
+  def javaAction[T: ClassTag](method: String, inv: => Result) = new JavaAction(
+    javaHandlerComponents) {
+    val clazz = implicitly[ClassTag[T]].runtimeClass
+    def parser = HandlerInvokerFactory.javaBodyParserToScala(
+      javaHandlerComponents.getBodyParser(annotations.parser))
+    def invocation = CompletableFuture.completedFuture(inv)
+    val annotations = new JavaActionAnnotations(clazz, clazz.getMethod(method))
+  }
 
   def buildCsrfCheckRequest(
       sendUnauthorizedResult: Boolean,
-      configuration: (String, String)*) =
-    new CsrfTester {
-      def apply[T](makeRequest: (WSRequest) => Future[WSResponse])(
-          handleResponse: (WSResponse) => T) =
-        withServer(configuration) {
-          case _ if sendUnauthorizedResult =>
-            javaAction[MyUnauthorizedAction](
-              "check",
-              new MyUnauthorizedAction().check())
-          case _ => javaAction[MyAction]("check", myAction.check())
-        } {
-          handleResponse(
-            await(makeRequest(ws.url("http://localhost:" + testServerPort))))
-        }
+      configuration: (String, String)*) = new CsrfTester {
+    def apply[T](makeRequest: (WSRequest) => Future[WSResponse])(
+        handleResponse: (WSResponse) => T) = withServer(configuration) {
+      case _ if sendUnauthorizedResult =>
+        javaAction[MyUnauthorizedAction](
+          "check",
+          new MyUnauthorizedAction().check())
+      case _ => javaAction[MyAction]("check", myAction.check())
+    } {
+      handleResponse(
+        await(makeRequest(ws.url("http://localhost:" + testServerPort))))
     }
+  }
 
-  def buildCsrfAddToken(configuration: (String, String)*) =
-    new CsrfTester {
-      def apply[T](makeRequest: (WSRequest) => Future[WSResponse])(
-          handleResponse: (WSResponse) => T) =
-        withServer(configuration) { case _ =>
-          javaAction[MyAction]("add", myAction.add())
-        } {
-          handleResponse(
-            await(makeRequest(ws.url("http://localhost:" + testServerPort))))
-        }
+  def buildCsrfAddToken(configuration: (String, String)*) = new CsrfTester {
+    def apply[T](makeRequest: (WSRequest) => Future[WSResponse])(
+        handleResponse: (WSResponse) => T) = withServer(configuration) {
+      case _ => javaAction[MyAction]("add", myAction.add())
+    } {
+      handleResponse(
+        await(makeRequest(ws.url("http://localhost:" + testServerPort))))
     }
+  }
 
-  def buildCsrfWithSession(configuration: (String, String)*) =
-    new CsrfTester {
-      def apply[T](makeRequest: (WSRequest) => Future[WSResponse])(
-          handleResponse: (WSResponse) => T) =
-        withServer(configuration) { case _ =>
-          javaAction[MyAction]("withSession", myAction.withSession())
-        } {
-          import play.api.Play.current
-          handleResponse(
-            await(makeRequest(ws.url("http://localhost:" + testServerPort))))
-        }
+  def buildCsrfWithSession(configuration: (String, String)*) = new CsrfTester {
+    def apply[T](makeRequest: (WSRequest) => Future[WSResponse])(
+        handleResponse: (WSResponse) => T) = withServer(configuration) {
+      case _ => javaAction[MyAction]("withSession", myAction.withSession())
+    } {
+      import play.api.Play.current
+      handleResponse(
+        await(makeRequest(ws.url("http://localhost:" + testServerPort))))
     }
+  }
 
   "The Java CSRF filter support" should {
     "allow adding things to the session when a token is also added to the session" in {

@@ -112,16 +112,15 @@ object PopupWindow {
       "8.0.60-R10")
     val WINDOW_TOP_RIGHT = WindowTopRight
 
-    protected override def unsortedValues: Array[AnchorLocation] =
-      Array(
-        ContentBottomLeft,
-        ContentBottomRight,
-        ContentTopLeft,
-        ContentTopRight,
-        WindowBottomLeft,
-        WindowBottomRight,
-        WindowTopLeft,
-        WindowTopRight)
+    protected override def unsortedValues: Array[AnchorLocation] = Array(
+      ContentBottomLeft,
+      ContentBottomRight,
+      ContentTopLeft,
+      ContentTopRight,
+      WindowBottomLeft,
+      WindowBottomRight,
+      WindowTopLeft,
+      WindowTopRight)
   }
 
   /** Anchor location constants for popup anchor point selection.

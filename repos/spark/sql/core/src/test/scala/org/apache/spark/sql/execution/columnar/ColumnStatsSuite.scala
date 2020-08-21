@@ -53,8 +53,8 @@ class ColumnStatsSuite extends SparkFunSuite {
   testColumnStats(classOf[StringColumnStats], STRING, createRow(null, null, 0))
   testDecimalColumnStats(createRow(null, null, 0))
 
-  def createRow(values: Any*): GenericInternalRow =
-    new GenericInternalRow(values.toArray)
+  def createRow(values: Any*): GenericInternalRow = new GenericInternalRow(
+    values.toArray)
 
   def testColumnStats[T <: AtomicType, U <: ColumnStats](
       columnStatsClass: Class[U],

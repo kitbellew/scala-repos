@@ -118,9 +118,8 @@ class Beta(a: Double, b: Double)(implicit rand: RandBasis = Rand)
   def mean = a / (a + b)
   def variance = (a * b) / ((a + b) * (a + b) * (a + b + 1))
   def mode = (a - 1) / (a + b - 2)
-  def entropy =
-    logNormalizer - (a - 1) * digamma(a) - (b - 1) * digamma(
-      b) + (a + b - 2) * digamma(a + b)
+  def entropy = logNormalizer - (a - 1) * digamma(a) - (b - 1) * digamma(
+    b) + (a + b - 2) * digamma(a + b)
 
   // Probability that x < a <= Y
   override def cdf(x: Double): Double = {

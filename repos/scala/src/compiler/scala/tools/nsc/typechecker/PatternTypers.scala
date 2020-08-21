@@ -38,12 +38,11 @@ trait PatternTypers {
   import definitions._
 
   private object FixedAndRepeatedTypes {
-    def unapply(types: List[Type]) =
-      types match {
-        case init :+ last if isRepeatedParamType(last) =>
-          Some((init, dropRepeated(last)))
-        case _ => Some((types, NoType))
-      }
+    def unapply(types: List[Type]) = types match {
+      case init :+ last if isRepeatedParamType(last) =>
+        Some((init, dropRepeated(last)))
+      case _ => Some((types, NoType))
+    }
   }
 
   trait PatternTyper {
@@ -59,10 +58,10 @@ trait PatternTypers {
     // (rather than something that looks like a constructor call.) (for now, this only happens
     // due to wrapClassTagUnapply, but when we support parameterized extractors, it will become
     // more common place)
-    private def hasUnapplyMember(tpe: Type): Boolean =
-      reallyExists(unapplyMember(tpe))
-    private def hasUnapplyMember(sym: Symbol): Boolean =
-      hasUnapplyMember(sym.tpe_*)
+    private def hasUnapplyMember(tpe: Type): Boolean = reallyExists(
+      unapplyMember(tpe))
+    private def hasUnapplyMember(sym: Symbol): Boolean = hasUnapplyMember(
+      sym.tpe_*)
     private def hasUnapplyMember(fun: Tree): Boolean =
       hasUnapplyMember(fun.symbol) || hasUnapplyMember(fun.tpe)
 
@@ -70,12 +69,11 @@ trait PatternTypers {
     // If some but not all alternatives survive filtering the tree's symbol with `p`,
     // then update the tree's symbol and type to exclude the filtered out alternatives.
     private def inPlaceAdHocOverloadingResolution(fun: Tree)(
-        p: Symbol => Boolean): Tree =
-      fun.symbol filter p match {
-        case sym if sym.exists && (sym ne fun.symbol) =>
-          fun setSymbol sym modifyType (tp => filterOverloadedAlts(tp)(p))
-        case _ => fun
-      }
+        p: Symbol => Boolean): Tree = fun.symbol filter p match {
+      case sym if sym.exists && (sym ne fun.symbol) =>
+        fun setSymbol sym modifyType (tp => filterOverloadedAlts(tp)(p))
+      case _ => fun
+    }
     private def filterOverloadedAlts(tpe: Type)(p: Symbol => Boolean): Type =
       tpe match {
         case OverloadedType(pre, alts) => overloadedType(pre, alts filter p)
@@ -92,14 +90,13 @@ trait PatternTypers {
       val member = unapplyMember(fun.tpe)
       def resultType = (fun.tpe memberType member).finalResultType
       def isEmptyType = resultOfMatchingMethod(resultType, nme.isEmpty)()
-      def isOkay =
-        (
-          resultType.isErroneous
-            || (resultType <:< BooleanTpe)
-            || (isEmptyType <:< BooleanTpe)
-            || member.isMacro
-            || member.isOverloaded // the whole overloading situation is over the rails
-        )
+      def isOkay = (
+        resultType.isErroneous
+          || (resultType <:< BooleanTpe)
+          || (isEmptyType <:< BooleanTpe)
+          || member.isMacro
+          || member.isOverloaded // the whole overloading situation is over the rails
+      )
 
       // Dueling test cases: pos/overloaded-unapply.scala, run/case-class-23.scala, pos/t5022.scala
       // A case class with 23+ params has no unapply method.
@@ -199,36 +196,33 @@ trait PatternTypers {
 
       // !!! FIXME - skipping this when variance.isInvariant allows unsoundness, see SI-5189
       // Test case which presently requires the exclusion is run/gadts.scala.
-      def eligible(tparam: Symbol) =
-        (
-          tparam.isTypeParameterOrSkolem
-            && tparam.owner.isTerm
-            && (settings.strictInference || !variance.isInvariant)
-        )
+      def eligible(tparam: Symbol) = (
+        tparam.isTypeParameterOrSkolem
+          && tparam.owner.isTerm
+          && (settings.strictInference || !variance.isInvariant)
+      )
 
-      def skolems =
-        try skolemBuffer.toList
-        finally skolemBuffer.clear()
-      def apply(tp: Type): Type =
-        mapOver(tp) match {
-          case tp @ TypeRef(NoPrefix, tpSym, Nil) if eligible(tpSym) =>
-            val bounds =
-              (
-                if (variance.isInvariant) tpSym.tpeHK.bounds
-                else if (variance.isPositive) TypeBounds.upper(tpSym.tpeHK)
-                else TypeBounds.lower(tpSym.tpeHK)
-              )
-            // origin must be the type param so we can deskolemize
-            val skolem = context.owner.newGADTSkolem(
-              unit.freshTypeName("?" + tpSym.name),
-              tpSym,
-              bounds)
-            skolemBuffer += skolem
-            logResult(
-              s"Created gadt skolem $skolem: ${skolem.tpe_*} to stand in for $tpSym")(
-              skolem.tpe_*)
-          case tp1 => tp1
-        }
+      def skolems = try skolemBuffer.toList
+      finally skolemBuffer.clear()
+      def apply(tp: Type): Type = mapOver(tp) match {
+        case tp @ TypeRef(NoPrefix, tpSym, Nil) if eligible(tpSym) =>
+          val bounds =
+            (
+              if (variance.isInvariant) tpSym.tpeHK.bounds
+              else if (variance.isPositive) TypeBounds.upper(tpSym.tpeHK)
+              else TypeBounds.lower(tpSym.tpeHK)
+            )
+          // origin must be the type param so we can deskolemize
+          val skolem = context.owner.newGADTSkolem(
+            unit.freshTypeName("?" + tpSym.name),
+            tpSym,
+            bounds)
+          skolemBuffer += skolem
+          logResult(
+            s"Created gadt skolem $skolem: ${skolem.tpe_*} to stand in for $tpSym")(
+            skolem.tpe_*)
+        case tp1 => tp1
+      }
     }
 
     /*
@@ -326,26 +320,24 @@ trait PatternTypers {
       if (args.length > MaxTupleArity)
         return duplErrorTree(TooManyArgsPatternError(fun))
 
-      def freshArgType(tp: Type): Type =
-        tp match {
-          case MethodType(param :: _, _) => param.tpe
-          case PolyType(tparams, restpe) =>
-            createFromClonedSymbols(tparams, freshArgType(restpe))(genPolyType)
-          case OverloadedType(_, _) => OverloadedUnapplyError(fun); ErrorType
-          case _                    => UnapplyWithSingleArgError(fun); ErrorType
-        }
+      def freshArgType(tp: Type): Type = tp match {
+        case MethodType(param :: _, _) => param.tpe
+        case PolyType(tparams, restpe) =>
+          createFromClonedSymbols(tparams, freshArgType(restpe))(genPolyType)
+        case OverloadedType(_, _) => OverloadedUnapplyError(fun); ErrorType
+        case _                    => UnapplyWithSingleArgError(fun); ErrorType
+      }
       val unapplyMethod = unapplyMember(fun.tpe)
       val unapplyType = fun.tpe memberType unapplyMethod
       val unapplyParamType = firstParamType(unapplyType)
       def isSeq = unapplyMethod.name == nme.unapplySeq
 
       def extractor = extractorForUncheckedType(fun.pos, unapplyParamType)
-      def canRemedy =
-        unapplyParamType match {
-          case RefinedType(_, decls) if !decls.isEmpty                 => false
-          case RefinedType(parents, _) if parents exists isUncheckable => false
-          case _                                                       => extractor.nonEmpty
-        }
+      def canRemedy = unapplyParamType match {
+        case RefinedType(_, decls) if !decls.isEmpty                 => false
+        case RefinedType(parents, _) if parents exists isUncheckable => false
+        case _                                                       => extractor.nonEmpty
+      }
 
       def freshUnapplyArgType(): Type = {
         val GenPolyType(freeVars, unappFormal) = freshArgType(

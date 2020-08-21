@@ -20,12 +20,11 @@ class StopActorTest
     val probe = TestProbe()
 
     probe.setAutoPilot(new AutoPilot {
-      def run(sender: ActorRef, msg: Any): AutoPilot =
-        msg match {
-          case Cancel(reason) =>
-            system.stop(probe.ref)
-            NoAutoPilot
-        }
+      def run(sender: ActorRef, msg: Any): AutoPilot = msg match {
+        case Cancel(reason) =>
+          system.stop(probe.ref)
+          NoAutoPilot
+      }
     })
     val ref = system.actorOf(
       Props(classOf[StopActor], probe.ref, promise, new Exception))

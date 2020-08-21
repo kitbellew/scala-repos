@@ -1359,22 +1359,21 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
       m1: M[A1 ~ A2 ~ A3 ~ A4 ~ A5 ~ A6 ~ A7 ~ A8 ~ A9 ~ A10 ~ A11 ~ A12],
       m2: M[A13]) {
 
-    def ~[A14](m3: M[A14]) =
-      new CanBuild14[
-        A1,
-        A2,
-        A3,
-        A4,
-        A5,
-        A6,
-        A7,
-        A8,
-        A9,
-        A10,
-        A11,
-        A12,
-        A13,
-        A14](canBuild(m1, m2), m3)
+    def ~[A14](m3: M[A14]) = new CanBuild14[
+      A1,
+      A2,
+      A3,
+      A4,
+      A5,
+      A6,
+      A7,
+      A8,
+      A9,
+      A10,
+      A11,
+      A12,
+      A13,
+      A14](canBuild(m1, m2), m3)
 
     def and[A14](m3: M[A14]) = this.~(m3)
 
@@ -1623,23 +1622,22 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
       m1: M[A1 ~ A2 ~ A3 ~ A4 ~ A5 ~ A6 ~ A7 ~ A8 ~ A9 ~ A10 ~ A11 ~ A12 ~ A13],
       m2: M[A14]) {
 
-    def ~[A15](m3: M[A15]) =
-      new CanBuild15[
-        A1,
-        A2,
-        A3,
-        A4,
-        A5,
-        A6,
-        A7,
-        A8,
-        A9,
-        A10,
-        A11,
-        A12,
-        A13,
-        A14,
-        A15](canBuild(m1, m2), m3)
+    def ~[A15](m3: M[A15]) = new CanBuild15[
+      A1,
+      A2,
+      A3,
+      A4,
+      A5,
+      A6,
+      A7,
+      A8,
+      A9,
+      A10,
+      A11,
+      A12,
+      A13,
+      A14,
+      A15](canBuild(m1, m2), m3)
 
     def and[A15](m3: M[A15]) = this.~(m3)
 
@@ -1950,24 +1948,23 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
         A1 ~ A2 ~ A3 ~ A4 ~ A5 ~ A6 ~ A7 ~ A8 ~ A9 ~ A10 ~ A11 ~ A12 ~ A13 ~ A14],
       m2: M[A15]) {
 
-    def ~[A16](m3: M[A16]) =
-      new CanBuild16[
-        A1,
-        A2,
-        A3,
-        A4,
-        A5,
-        A6,
-        A7,
-        A8,
-        A9,
-        A10,
-        A11,
-        A12,
-        A13,
-        A14,
-        A15,
-        A16](canBuild(m1, m2), m3)
+    def ~[A16](m3: M[A16]) = new CanBuild16[
+      A1,
+      A2,
+      A3,
+      A4,
+      A5,
+      A6,
+      A7,
+      A8,
+      A9,
+      A10,
+      A11,
+      A12,
+      A13,
+      A14,
+      A15,
+      A16](canBuild(m1, m2), m3)
 
     def and[A16](m3: M[A16]) = this.~(m3)
 
@@ -2413,25 +2410,24 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
         A1 ~ A2 ~ A3 ~ A4 ~ A5 ~ A6 ~ A7 ~ A8 ~ A9 ~ A10 ~ A11 ~ A12 ~ A13 ~ A14 ~ A15],
       m2: M[A16]) {
 
-    def ~[A17](m3: M[A17]) =
-      new CanBuild17[
-        A1,
-        A2,
-        A3,
-        A4,
-        A5,
-        A6,
-        A7,
-        A8,
-        A9,
-        A10,
-        A11,
-        A12,
-        A13,
-        A14,
-        A15,
-        A16,
-        A17](canBuild(m1, m2), m3)
+    def ~[A17](m3: M[A17]) = new CanBuild17[
+      A1,
+      A2,
+      A3,
+      A4,
+      A5,
+      A6,
+      A7,
+      A8,
+      A9,
+      A10,
+      A11,
+      A12,
+      A13,
+      A14,
+      A15,
+      A16,
+      A17](canBuild(m1, m2), m3)
 
     def and[A17](m3: M[A17]) = this.~(m3)
 
@@ -2969,26 +2965,25 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
         A1 ~ A2 ~ A3 ~ A4 ~ A5 ~ A6 ~ A7 ~ A8 ~ A9 ~ A10 ~ A11 ~ A12 ~ A13 ~ A14 ~ A15 ~ A16],
       m2: M[A17]) {
 
-    def ~[A18](m3: M[A18]) =
-      new CanBuild18[
-        A1,
-        A2,
-        A3,
-        A4,
-        A5,
-        A6,
-        A7,
-        A8,
-        A9,
-        A10,
-        A11,
-        A12,
-        A13,
-        A14,
-        A15,
-        A16,
-        A17,
-        A18](canBuild(m1, m2), m3)
+    def ~[A18](m3: M[A18]) = new CanBuild18[
+      A1,
+      A2,
+      A3,
+      A4,
+      A5,
+      A6,
+      A7,
+      A8,
+      A9,
+      A10,
+      A11,
+      A12,
+      A13,
+      A14,
+      A15,
+      A16,
+      A17,
+      A18](canBuild(m1, m2), m3)
 
     def and[A18](m3: M[A18]) = this.~(m3)
 
@@ -3577,27 +3572,26 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
         A1 ~ A2 ~ A3 ~ A4 ~ A5 ~ A6 ~ A7 ~ A8 ~ A9 ~ A10 ~ A11 ~ A12 ~ A13 ~ A14 ~ A15 ~ A16 ~ A17],
       m2: M[A18]) {
 
-    def ~[A19](m3: M[A19]) =
-      new CanBuild19[
-        A1,
-        A2,
-        A3,
-        A4,
-        A5,
-        A6,
-        A7,
-        A8,
-        A9,
-        A10,
-        A11,
-        A12,
-        A13,
-        A14,
-        A15,
-        A16,
-        A17,
-        A18,
-        A19](canBuild(m1, m2), m3)
+    def ~[A19](m3: M[A19]) = new CanBuild19[
+      A1,
+      A2,
+      A3,
+      A4,
+      A5,
+      A6,
+      A7,
+      A8,
+      A9,
+      A10,
+      A11,
+      A12,
+      A13,
+      A14,
+      A15,
+      A16,
+      A17,
+      A18,
+      A19](canBuild(m1, m2), m3)
 
     def and[A19](m3: M[A19]) = this.~(m3)
 
@@ -4218,28 +4212,27 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
         A1 ~ A2 ~ A3 ~ A4 ~ A5 ~ A6 ~ A7 ~ A8 ~ A9 ~ A10 ~ A11 ~ A12 ~ A13 ~ A14 ~ A15 ~ A16 ~ A17 ~ A18],
       m2: M[A19]) {
 
-    def ~[A20](m3: M[A20]) =
-      new CanBuild20[
-        A1,
-        A2,
-        A3,
-        A4,
-        A5,
-        A6,
-        A7,
-        A8,
-        A9,
-        A10,
-        A11,
-        A12,
-        A13,
-        A14,
-        A15,
-        A16,
-        A17,
-        A18,
-        A19,
-        A20](canBuild(m1, m2), m3)
+    def ~[A20](m3: M[A20]) = new CanBuild20[
+      A1,
+      A2,
+      A3,
+      A4,
+      A5,
+      A6,
+      A7,
+      A8,
+      A9,
+      A10,
+      A11,
+      A12,
+      A13,
+      A14,
+      A15,
+      A16,
+      A17,
+      A18,
+      A19,
+      A20](canBuild(m1, m2), m3)
 
     def and[A20](m3: M[A20]) = this.~(m3)
 
@@ -4891,29 +4884,28 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
         A1 ~ A2 ~ A3 ~ A4 ~ A5 ~ A6 ~ A7 ~ A8 ~ A9 ~ A10 ~ A11 ~ A12 ~ A13 ~ A14 ~ A15 ~ A16 ~ A17 ~ A18 ~ A19],
       m2: M[A20]) {
 
-    def ~[A21](m3: M[A21]) =
-      new CanBuild21[
-        A1,
-        A2,
-        A3,
-        A4,
-        A5,
-        A6,
-        A7,
-        A8,
-        A9,
-        A10,
-        A11,
-        A12,
-        A13,
-        A14,
-        A15,
-        A16,
-        A17,
-        A18,
-        A19,
-        A20,
-        A21](canBuild(m1, m2), m3)
+    def ~[A21](m3: M[A21]) = new CanBuild21[
+      A1,
+      A2,
+      A3,
+      A4,
+      A5,
+      A6,
+      A7,
+      A8,
+      A9,
+      A10,
+      A11,
+      A12,
+      A13,
+      A14,
+      A15,
+      A16,
+      A17,
+      A18,
+      A19,
+      A20,
+      A21](canBuild(m1, m2), m3)
 
     def and[A21](m3: M[A21]) = this.~(m3)
 
@@ -5595,30 +5587,29 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
       m1: M[
         A1 ~ A2 ~ A3 ~ A4 ~ A5 ~ A6 ~ A7 ~ A8 ~ A9 ~ A10 ~ A11 ~ A12 ~ A13 ~ A14 ~ A15 ~ A16 ~ A17 ~ A18 ~ A19 ~ A20],
       m2: M[A21]) {
-    def ~[A22](m3: M[A22]) =
-      new CanBuild22[
-        A1,
-        A2,
-        A3,
-        A4,
-        A5,
-        A6,
-        A7,
-        A8,
-        A9,
-        A10,
-        A11,
-        A12,
-        A13,
-        A14,
-        A15,
-        A16,
-        A17,
-        A18,
-        A19,
-        A20,
-        A21,
-        A22](canBuild(m1, m2), m3)
+    def ~[A22](m3: M[A22]) = new CanBuild22[
+      A1,
+      A2,
+      A3,
+      A4,
+      A5,
+      A6,
+      A7,
+      A8,
+      A9,
+      A10,
+      A11,
+      A12,
+      A13,
+      A14,
+      A15,
+      A16,
+      A17,
+      A18,
+      A19,
+      A20,
+      A21,
+      A22](canBuild(m1, m2), m3)
 
     def and[A22](m3: M[A22]) = this.~(m3)
 

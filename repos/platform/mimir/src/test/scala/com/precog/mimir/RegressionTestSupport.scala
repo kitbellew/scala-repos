@@ -51,8 +51,8 @@ trait RegressionTestSupport[M[+_]] {
   def jvalues(
       samples: Seq[(Array[Double], Double)],
       cpaths: Seq[CPath],
-      mod: Int = 1): Seq[JValue] =
-    samples.zipWithIndex map { case ((xs, y), idx) =>
+      mod: Int = 1): Seq[JValue] = samples.zipWithIndex map {
+    case ((xs, y), idx) =>
       val cvalues = xs.map { x => CDouble(x).asInstanceOf[CValue] } :+ CDouble(
         y.toDouble).asInstanceOf[CValue]
       val withCPath = {
@@ -69,7 +69,7 @@ trait RegressionTestSupport[M[+_]] {
       withJValue.foldLeft(JArray(Nil).asInstanceOf[JValue]) {
         case (target, (jpath, jvalue)) => target.unsafeInsert(jpath, jvalue)
       }
-    }
+  }
 
   def stdDevMean(values: List[Double]): (Double, Double) = {
     val count = values.size

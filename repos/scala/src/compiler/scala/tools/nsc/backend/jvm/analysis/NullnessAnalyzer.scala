@@ -119,14 +119,13 @@ final class NullnessInterpreter(bTypes: BTypes)
 
   def unaryOperation(
       insn: AbstractInsnNode,
-      value: NullnessValue): NullnessValue =
-    (insn.getOpcode: @switch) match {
-      case Opcodes.CHECKCAST => value
+      value: NullnessValue): NullnessValue = (insn.getOpcode: @switch) match {
+    case Opcodes.CHECKCAST => value
 
-      case Opcodes.NEWARRAY | Opcodes.ANEWARRAY => NotNullValue
+    case Opcodes.NEWARRAY | Opcodes.ANEWARRAY => NotNullValue
 
-      case _ => NullnessValue.unknown(insn)
-    }
+    case _ => NullnessValue.unknown(insn)
+  }
 
   def binaryOperation(
       insn: AbstractInsnNode,
@@ -143,16 +142,15 @@ final class NullnessInterpreter(bTypes: BTypes)
 
   def naryOperation(
       insn: AbstractInsnNode,
-      values: util.List[_ <: NullnessValue]): NullnessValue =
-    insn match {
-      case mi: MethodInsnNode
-          if bTypes.backendUtils.isNonNullMethodInvocation(mi) =>
-        NotNullValue
+      values: util.List[_ <: NullnessValue]): NullnessValue = insn match {
+    case mi: MethodInsnNode
+        if bTypes.backendUtils.isNonNullMethodInvocation(mi) =>
+      NotNullValue
 
-      case _ =>
-        if (insn.getOpcode == Opcodes.MULTIANEWARRAY) NotNullValue
-        else NullnessValue.unknown(insn)
-    }
+    case _ =>
+      if (insn.getOpcode == Opcodes.MULTIANEWARRAY) NotNullValue
+      else NullnessValue.unknown(insn)
+  }
 
   def returnOperation(
       insn: AbstractInsnNode,

@@ -51,53 +51,52 @@ private[deploy] class ClientArguments(args: Array[String]) {
   parse(args.toList)
 
   @tailrec
-  private def parse(args: List[String]): Unit =
-    args match {
-      case ("--cores" | "-c") :: IntParam(value) :: tail =>
-        cores = value
-        parse(tail)
+  private def parse(args: List[String]): Unit = args match {
+    case ("--cores" | "-c") :: IntParam(value) :: tail =>
+      cores = value
+      parse(tail)
 
-      case ("--memory" | "-m") :: MemoryParam(value) :: tail =>
-        memory = value
-        parse(tail)
+    case ("--memory" | "-m") :: MemoryParam(value) :: tail =>
+      memory = value
+      parse(tail)
 
-      case ("--supervise" | "-s") :: tail =>
-        supervise = true
-        parse(tail)
+    case ("--supervise" | "-s") :: tail =>
+      supervise = true
+      parse(tail)
 
-      case ("--help" | "-h") :: tail =>
-        printUsageAndExit(0)
+    case ("--help" | "-h") :: tail =>
+      printUsageAndExit(0)
 
-      case ("--verbose" | "-v") :: tail =>
-        logLevel = Level.INFO
-        parse(tail)
+    case ("--verbose" | "-v") :: tail =>
+      logLevel = Level.INFO
+      parse(tail)
 
-      case "launch" :: _master :: _jarUrl :: _mainClass :: tail =>
-        cmd = "launch"
+    case "launch" :: _master :: _jarUrl :: _mainClass :: tail =>
+      cmd = "launch"
 
-        if (!ClientArguments.isValidJarUrl(_jarUrl)) {
-          // scalastyle:off println
-          println(s"Jar url '${_jarUrl}' is not in valid format.")
-          println(
-            s"Must be a jar file path in URL format " +
-              "(e.g. hdfs://host:port/XX.jar, file:///XX.jar)")
-          // scalastyle:on println
-          printUsageAndExit(-1)
-        }
+      if (!ClientArguments.isValidJarUrl(_jarUrl)) {
+        // scalastyle:off println
+        println(s"Jar url '${_jarUrl}' is not in valid format.")
+        println(
+          s"Must be a jar file path in URL format " +
+            "(e.g. hdfs://host:port/XX.jar, file:///XX.jar)")
+        // scalastyle:on println
+        printUsageAndExit(-1)
+      }
 
-        jarUrl = _jarUrl
-        masters = Utils.parseStandaloneMasterUrls(_master)
-        mainClass = _mainClass
-        _driverOptions ++= tail
+      jarUrl = _jarUrl
+      masters = Utils.parseStandaloneMasterUrls(_master)
+      mainClass = _mainClass
+      _driverOptions ++= tail
 
-      case "kill" :: _master :: _driverId :: tail =>
-        cmd = "kill"
-        masters = Utils.parseStandaloneMasterUrls(_master)
-        driverId = _driverId
+    case "kill" :: _master :: _driverId :: tail =>
+      cmd = "kill"
+      masters = Utils.parseStandaloneMasterUrls(_master)
+      driverId = _driverId
 
-      case _ =>
-        printUsageAndExit(1)
-    }
+    case _ =>
+      printUsageAndExit(1)
+  }
 
   /**
     * Print usage and exit JVM with the given exit code.

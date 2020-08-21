@@ -61,8 +61,8 @@ abstract class SymbolTable
 
   def informProgress(msg: String) =
     if (settings.verbose) inform("[" + msg + "]")
-  def informTime(msg: String, start: Long) =
-    informProgress(elapsedMessage(msg, start))
+  def informTime(msg: String, start: Long) = informProgress(
+    elapsedMessage(msg, start))
 
   def shouldLogAtThisPhase = false
   def isPastTyper = false
@@ -146,11 +146,10 @@ abstract class SymbolTable
     SimpleNameOrdering.asInstanceOf[Ordering[T]]
 
   private object SimpleNameOrdering extends Ordering[Names#Name] {
-    def compare(n1: Names#Name, n2: Names#Name) =
-      (
-        if (n1 eq n2) 0
-        else n1.toString compareTo n2.toString
-      )
+    def compare(n1: Names#Name, n2: Names#Name) = (
+      if (n1 eq n2) 0
+      else n1.toString compareTo n2.toString
+    )
   }
 
   /** Dump each symbol to stdout after shutdown.
@@ -200,11 +199,10 @@ abstract class SymbolTable
     ph
   }
 
-  def atPhaseStackMessage =
-    atPhaseStack match {
-      case Nil => ""
-      case ps  => ps.reverseMap("->" + _).mkString("(", " ", ")")
-    }
+  def atPhaseStackMessage = atPhaseStack match {
+    case Nil => ""
+    case ps  => ps.reverseMap("->" + _).mkString("(", " ", ")")
+  }
 
   final def phase_=(p: Phase) {
     //System.out.println("setting phase to " + p)
@@ -291,11 +289,10 @@ abstract class SymbolTable
     }
 
   final def isValidForBaseClasses(period: Period): Boolean = {
-    def noChangeInBaseClasses(it: InfoTransformer, limit: Phase#Id): Boolean =
-      (
-        it.pid >= limit ||
-          !it.changesBaseClasses && noChangeInBaseClasses(it.next, limit)
-      )
+    def noChangeInBaseClasses(it: InfoTransformer, limit: Phase#Id): Boolean = (
+      it.pid >= limit ||
+        !it.changesBaseClasses && noChangeInBaseClasses(it.next, limit)
+    )
     period != 0 && runId(period) == currentRunId && {
       val pid = phaseId(period)
       if (phase.id > pid)
@@ -331,25 +328,24 @@ abstract class SymbolTable
   /** Convert array parameters denoting a repeated parameter of a Java method
     *  to `JavaRepeatedParamClass` types.
     */
-  def arrayToRepeated(tp: Type): Type =
-    tp match {
-      case MethodType(params, rtpe) =>
-        val formals = tp.paramTypes
-        assert(formals.last.typeSymbol == definitions.ArrayClass, formals)
-        val method = params.last.owner
-        val elemtp = formals.last.typeArgs.head match {
-          case RefinedType(List(t1, t2), _)
-              if (t1.typeSymbol.isAbstractType && t2.typeSymbol == definitions.ObjectClass) =>
-            t1 // drop intersection with Object for abstract types in varargs. UnCurry can handle them.
-          case t =>
-            t
-        }
-        val newParams = method.newSyntheticValueParams(
-          formals.init :+ definitions.javaRepeatedType(elemtp))
-        MethodType(newParams, rtpe)
-      case PolyType(tparams, rtpe) =>
-        PolyType(tparams, arrayToRepeated(rtpe))
-    }
+  def arrayToRepeated(tp: Type): Type = tp match {
+    case MethodType(params, rtpe) =>
+      val formals = tp.paramTypes
+      assert(formals.last.typeSymbol == definitions.ArrayClass, formals)
+      val method = params.last.owner
+      val elemtp = formals.last.typeArgs.head match {
+        case RefinedType(List(t1, t2), _)
+            if (t1.typeSymbol.isAbstractType && t2.typeSymbol == definitions.ObjectClass) =>
+          t1 // drop intersection with Object for abstract types in varargs. UnCurry can handle them.
+        case t =>
+          t
+      }
+      val newParams = method.newSyntheticValueParams(
+        formals.init :+ definitions.javaRepeatedType(elemtp))
+      MethodType(newParams, rtpe)
+    case PolyType(tparams, rtpe) =>
+      PolyType(tparams, arrayToRepeated(rtpe))
+  }
 
   abstract class SymLoader extends LazyType {
     def fromSource = false
@@ -359,11 +355,10 @@ abstract class SymbolTable
   def openPackageModule(pkgClass: Symbol) {
 
     val pkgModule = pkgClass.packageObject
-    def fromSource =
-      pkgModule.rawInfo match {
-        case ltp: SymLoader => ltp.fromSource
-        case _              => false
-      }
+    def fromSource = pkgModule.rawInfo match {
+      case ltp: SymLoader => ltp.fromSource
+      case _              => false
+    }
     if (pkgModule.isModule && !fromSource) {
       openPackageModule(pkgModule, pkgClass)
     }

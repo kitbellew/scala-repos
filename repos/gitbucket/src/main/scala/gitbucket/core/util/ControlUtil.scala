@@ -32,11 +32,10 @@ object ControlUtil {
       git2.getRepository.close()
     }
 
-  def ignore[T](f: => Unit): Unit =
-    try {
-      f
-    } catch {
-      case e: Exception => ()
-    }
+  def ignore[T](f: => Unit): Unit = try {
+    f
+  } catch {
+    case e: Exception => ()
+  }
 
 }

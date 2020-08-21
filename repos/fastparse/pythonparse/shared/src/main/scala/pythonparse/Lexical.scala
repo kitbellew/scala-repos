@@ -65,19 +65,19 @@ object Lexical {
     "r" | "u" | "ur" | "R" | "U" | "UR" | "Ur" | "uR" | "b" | "B" | "br" | "Br" | "bR" | "BR"
   )
   val shortstring: P[String] = P(shortstring0("'") | shortstring0("\""))
-  def shortstring0(delimiter: String) =
-    P(delimiter ~ shortstringitem(delimiter).rep.! ~ delimiter)
+  def shortstring0(delimiter: String) = P(
+    delimiter ~ shortstringitem(delimiter).rep.! ~ delimiter)
   def shortstringitem(quote: String): P0 = P(shortstringchar(quote) | escapeseq)
-  def shortstringchar(quote: String): P0 =
-    P(CharsWhile(!s"\\\n${quote(0)}".contains(_)))
+  def shortstringchar(quote: String): P0 = P(
+    CharsWhile(!s"\\\n${quote(0)}".contains(_)))
 
   val longstring: P[String] = P(longstring0("'''") | longstring0("\"\"\""))
-  def longstring0(delimiter: String) =
-    P(delimiter ~ longstringitem(delimiter).rep.! ~ delimiter)
-  def longstringitem(quote: String): P0 =
-    P(longstringchar(quote) | escapeseq | !quote ~ quote.take(1))
-  def longstringchar(quote: String): P0 =
-    P(CharsWhile(!s"\\${quote(0)}".contains(_)))
+  def longstring0(delimiter: String) = P(
+    delimiter ~ longstringitem(delimiter).rep.! ~ delimiter)
+  def longstringitem(quote: String): P0 = P(
+    longstringchar(quote) | escapeseq | !quote ~ quote.take(1))
+  def longstringchar(quote: String): P0 = P(
+    CharsWhile(!s"\\${quote(0)}".contains(_)))
 
   val escapeseq: P0 = P("\\" ~ AnyChar)
 

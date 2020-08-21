@@ -121,13 +121,12 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
     private implicit val futureMonad = new FutureMonad(actorSystem.dispatcher)
 
-    private def ensureDescriptorDir(versionDir: File): IO[File] =
-      IO {
-        if (versionDir.isDirectory || versionDir.mkdirs) versionDir
-        else
-          throw new IOException(
-            "Failed to create directory for projection: %s".format(versionDir))
-      }
+    private def ensureDescriptorDir(versionDir: File): IO[File] = IO {
+      if (versionDir.isDirectory || versionDir.mkdirs) versionDir
+      else
+        throw new IOException(
+          "Failed to create directory for projection: %s".format(versionDir))
+    }
 
     // Resource creation/open and discovery
     def createNIHDB(
@@ -180,26 +179,25 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
     /**
       * Open the blob for reading in `baseDir`.
       */
-    def openBlob(versionDir: File): IO[ResourceError \/ FileBlobResource] =
-      IO {
-        //val metadataStore = PersistentJValue(versionDir, blobMetadataFilename)
-        //val metadata = metadataStore.json.validated[BlobMetadata]
-        JParser
-          .parseFromFile(new File(versionDir, blobMetadataFilename))
-          .leftMap(Extractor.Error.thrown)
-          .flatMap(_.validated[BlobMetadata])
-          .disjunction
-          .map { metadata =>
-            FileBlobResource(
-              new File(versionDir, "data"),
-              metadata
-            ) //(actorSystem.dispatcher)
-          } leftMap {
-          ResourceError.fromExtractorError(
-            "Error reading metadata from versionDir %s".format(
-              versionDir.toString))
-        }
+    def openBlob(versionDir: File): IO[ResourceError \/ FileBlobResource] = IO {
+      //val metadataStore = PersistentJValue(versionDir, blobMetadataFilename)
+      //val metadata = metadataStore.json.validated[BlobMetadata]
+      JParser
+        .parseFromFile(new File(versionDir, blobMetadataFilename))
+        .leftMap(Extractor.Error.thrown)
+        .flatMap(_.validated[BlobMetadata])
+        .disjunction
+        .map { metadata =>
+          FileBlobResource(
+            new File(versionDir, "data"),
+            metadata
+          ) //(actorSystem.dispatcher)
+        } leftMap {
+        ResourceError.fromExtractorError(
+          "Error reading metadata from versionDir %s".format(
+            versionDir.toString))
       }
+    }
 
     /**
       * Creates a blob from a data stream.
@@ -268,13 +266,12 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
     def recordCount(implicit M: Monad[Future]) = projection.map(_.length)
 
-    def asByteStream(mimeType: MimeType)(implicit M: Monad[Future]) =
-      OptionT {
-        projection map { p =>
-          val slices = p.getBlockStream(None) map VFS.derefValue
-          ColumnarTableModule.byteStream(slices, Some(mimeType))
-        }
+    def asByteStream(mimeType: MimeType)(implicit M: Monad[Future]) = OptionT {
+      projection map { p =>
+        val slices = p.getBlockStream(None) map VFS.derefValue
+        ColumnarTableModule.byteStream(slices, Some(mimeType))
       }
+    }
   }
 
   object FileBlobResource {
@@ -299,8 +296,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
     val byteLength = metadata.size
 
     /** Suck the file into a String */
-    def asString(implicit M: Monad[Future]): OptionT[Future, String] =
-      OptionT(M point {
+    def asString(implicit M: Monad[Future]): OptionT[Future, String] = OptionT(
+      M point {
         stringTypes
           .contains(mimeType)
           .option(IOUtils.readFileToString(dataFile))
@@ -338,12 +335,11 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         blobResource: BlobResource => A,
         projectionResource: ProjectionResource => A) = blobResource(this)
 
-    def asByteStream(mimeType: MimeType)(implicit M: Monad[Future]) =
-      OptionT {
-        M.point {
-          Some(ioStream.trans(IOF))
-        }
+    def asByteStream(mimeType: MimeType)(implicit M: Monad[Future]) = OptionT {
+      M.point {
+        Some(ioStream.trans(IOF))
       }
+    }
   }
 
   class VFSCompanion extends VFSCompanionLike {
@@ -375,24 +371,23 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
     }
 
     def writeAllSync(data: Seq[(Long, EventMessage)])
-        : EitherT[Future, ResourceError, PrecogUnit] =
-      EitherT {
-        implicit val timeout = sliceIngestTimeout
-        for {
-          // it's necessary to group by path then traverse since each path will respond to ingest independently.
-          // -- a bit of a leak of implementation detail, but that's the actor model for you.
-          allResults <- (data groupBy { case (offset, msg) =>
-              msg.path
-            }).toStream traverse { case (path, subset) =>
-            (projectionsActor ? IngestData(subset)).mapTo[WriteResult]
+        : EitherT[Future, ResourceError, PrecogUnit] = EitherT {
+      implicit val timeout = sliceIngestTimeout
+      for {
+        // it's necessary to group by path then traverse since each path will respond to ingest independently.
+        // -- a bit of a leak of implementation detail, but that's the actor model for you.
+        allResults <-
+          (data groupBy { case (offset, msg) => msg.path }).toStream traverse {
+            case (path, subset) =>
+              (projectionsActor ? IngestData(subset)).mapTo[WriteResult]
           }
-        } yield {
-          val errors: List[ResourceError] = allResults.toList collect {
-            case PathOpFailure(_, error) => error
-          }
-          errors.toNel.map(ResourceError.all).toLeftDisjunction(PrecogUnit)
+      } yield {
+        val errors: List[ResourceError] = allResults.toList collect {
+          case PathOpFailure(_, error) => error
         }
+        errors.toNel.map(ResourceError.all).toLeftDisjunction(PrecogUnit)
       }
+    }
 
     def readResource(
         path: Path,
@@ -944,11 +939,10 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
       }
     }
 
-    def versionOpt(version: Version) =
-      version match {
-        case Version.Archived(id) => Some(id)
-        case Version.Current      => versionLog.current.map(_.id)
-      }
+    def versionOpt(version: Version) = version match {
+      case Version.Archived(id) => Some(id)
+      case Version.Current      => versionLog.current.map(_.id)
+    }
 
     def receive = {
       case ReceiveTimeout =>

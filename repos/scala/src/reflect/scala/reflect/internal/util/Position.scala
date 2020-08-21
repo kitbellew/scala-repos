@@ -19,8 +19,8 @@ class Position
       newPos: Position): macros.Attachments { type Pos = Position.this.Pos } =
     newPos
 
-  protected def fail(what: String) =
-    throw new UnsupportedOperationException(s"Position.$what on $this")
+  protected def fail(what: String) = throw new UnsupportedOperationException(
+    s"Position.$what on $this")
 
   // If scala-refactoring extends Position directly it seems I have no
   // choice but to offer all the concrete methods.
@@ -56,16 +56,16 @@ object Position {
     prefix + (pos showError msg)
   }
 
-  def offset(source: SourceFile, point: Int): Position =
-    validate(new OffsetPosition(source, point))
+  def offset(source: SourceFile, point: Int): Position = validate(
+    new OffsetPosition(source, point))
   def range(source: SourceFile, start: Int, point: Int, end: Int): Position =
     validate(new RangePosition(source, start, point, end))
   def transparent(
       source: SourceFile,
       start: Int,
       point: Int,
-      end: Int): Position =
-    validate(new TransparentPosition(source, start, point, end))
+      end: Int): Position = validate(
+    new TransparentPosition(source, start, point, end))
 }
 
 class OffsetPosition(sourceIn: SourceFile, pointIn: Int)
@@ -101,18 +101,16 @@ case class FakePos(msg: String) extends UndefinedPosition {
 
 sealed abstract class DefinedPosition extends Position {
   final override def isDefined = true
-  override def equals(that: Any) =
-    that match {
-      case that: DefinedPosition =>
-        source.file == that.source.file && start == that.start && point == that.point && end == that.end
-      case _ => false
-    }
+  override def equals(that: Any) = that match {
+    case that: DefinedPosition =>
+      source.file == that.source.file && start == that.start && point == that.point && end == that.end
+    case _ => false
+  }
   override def hashCode = Seq[Any](source.file, start, point, end).##
-  override def toString =
-    (
-      if (isRange) s"RangePosition($canonicalPath, $start, $point, $end)"
-      else s"source-$canonicalPath,line-$line,$pointMessage$point"
-    )
+  override def toString = (
+    if (isRange) s"RangePosition($canonicalPath, $start, $point, $end)"
+    else s"source-$canonicalPath,line-$line,$pointMessage$point"
+  )
   private def pointMessage =
     if (point > source.length) "out-of-bounds-" else "offset="
   private def canonicalPath = source.file.canonicalPath
@@ -182,13 +180,12 @@ private[util] trait InternalPositionImpl {
   def |^(that: Position): Position = (this | that) ^ that.point
   def ^|(that: Position): Position = (this | that) ^ this.point
 
-  def union(pos: Position): Position =
-    (
-      if (!pos.isRange) this
-      else if (this.isRange)
-        copyRange(start = start min pos.start, end = end max pos.end)
-      else pos
-    )
+  def union(pos: Position): Position = (
+    if (!pos.isRange) this
+    else if (this.isRange)
+      copyRange(start = start min pos.start, end = end max pos.end)
+    else pos
+  )
 
   def includes(pos: Position): Boolean =
     isRange && pos.isDefined && start <= pos.start && pos.end <= end
@@ -235,13 +232,12 @@ private[util] trait InternalPositionImpl {
     }
   }
   def showDebug: String = toString
-  def show =
-    (
-      if (isOpaqueRange) s"[$start:$end]"
-      else if (isTransparent) s"<$start:$end>"
-      else if (isDefined) s"[$point]"
-      else "[NoPosition]"
-    )
+  def show = (
+    if (isOpaqueRange) s"[$start:$end]"
+    else if (isTransparent) s"<$start:$end>"
+    else if (isDefined) s"[$point]"
+    else "[NoPosition]"
+  )
 
   private def asOffset(point: Int): Position = Position.offset(source, point)
   private def copyRange(

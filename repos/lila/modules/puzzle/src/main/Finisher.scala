@@ -63,12 +63,11 @@ private[puzzle] final class Finisher(api: PuzzleApi, puzzleColl: Coll) {
   private val TAU = 0.75d
   private val system = new RatingCalculator(VOLATILITY, TAU)
 
-  private def mkRating(perf: Perf) =
-    new Rating(
-      math.max(1000, perf.glicko.rating),
-      perf.glicko.deviation,
-      perf.glicko.volatility,
-      perf.nb)
+  private def mkRating(perf: Perf) = new Rating(
+    math.max(1000, perf.glicko.rating),
+    perf.glicko.deviation,
+    perf.glicko.volatility,
+    perf.nb)
 
   private def updateRatings(u1: Rating, u2: Rating, result: Glicko.Result) {
     val results = new RatingPeriodResults()

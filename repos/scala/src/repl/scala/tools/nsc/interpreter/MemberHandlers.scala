@@ -32,24 +32,23 @@ trait MemberHandlers {
   private class ImportVarsTraverser extends Traverser {
     val importVars = new mutable.HashSet[Name]()
 
-    override def traverse(ast: Tree) =
-      ast match {
-        case Ident(name) =>
-          // XXX this is obviously inadequate but it's going to require some effort
-          // to get right.
-          if (name.toString startsWith "x$") ()
-          else {
-            importVars += name
-            // Needed to import `xxx` during line 2 of:
-            //   scala> val xxx = ""
-            //   scala> def foo: x<TAB>
-            if (name.endsWith(IMain.DummyCursorFragment)) {
-              val stripped = name.stripSuffix(IMain.DummyCursorFragment)
-              importVars += stripped
-            }
+    override def traverse(ast: Tree) = ast match {
+      case Ident(name) =>
+        // XXX this is obviously inadequate but it's going to require some effort
+        // to get right.
+        if (name.toString startsWith "x$") ()
+        else {
+          importVars += name
+          // Needed to import `xxx` during line 2 of:
+          //   scala> val xxx = ""
+          //   scala> def foo: x<TAB>
+          if (name.endsWith(IMain.DummyCursorFragment)) {
+            val stripped = name.stripSuffix(IMain.DummyCursorFragment)
+            importVars += stripped
           }
-        case _ => super.traverse(ast)
-      }
+        }
+      case _ => super.traverse(ast)
+    }
   }
   private object ImportVarsTraverser {
     def apply(member: Tree) = {
@@ -61,19 +60,18 @@ trait MemberHandlers {
 
   private def isTermMacro(ddef: DefDef): Boolean = ddef.mods.isMacro
 
-  def chooseHandler(member: Tree): MemberHandler =
-    member match {
-      case member: DefDef if isTermMacro(member) => new TermMacroHandler(member)
-      case member: DefDef                        => new DefHandler(member)
-      case member: ValDef                        => new ValHandler(member)
-      case member: ModuleDef                     => new ModuleHandler(member)
-      case member: ClassDef                      => new ClassHandler(member)
-      case member: TypeDef                       => new TypeAliasHandler(member)
-      case member: Assign                        => new AssignHandler(member)
-      case member: Import                        => new ImportHandler(member)
-      case DocDef(_, documented)                 => chooseHandler(documented)
-      case member                                => new GenericHandler(member)
-    }
+  def chooseHandler(member: Tree): MemberHandler = member match {
+    case member: DefDef if isTermMacro(member) => new TermMacroHandler(member)
+    case member: DefDef                        => new DefHandler(member)
+    case member: ValDef                        => new ValHandler(member)
+    case member: ModuleDef                     => new ModuleHandler(member)
+    case member: ClassDef                      => new ClassHandler(member)
+    case member: TypeDef                       => new TypeAliasHandler(member)
+    case member: Assign                        => new AssignHandler(member)
+    case member: Import                        => new ImportHandler(member)
+    case DocDef(_, documented)                 => chooseHandler(documented)
+    case member                                => new GenericHandler(member)
+  }
 
   sealed abstract class MemberDefHandler(override val member: MemberDef)
       extends MemberHandler(member) {
@@ -158,8 +156,9 @@ trait MemberHandlers {
   }
 
   class DefHandler(member: DefDef) extends MemberDefHandler(member) {
-    override def definesValue =
-      flattensToEmpty(member.vparamss) // true if 0-arity
+    override def definesValue = flattensToEmpty(
+      member.vparamss
+    ) // true if 0-arity
     override def resultExtractionCode(req: Request) = {
       val nameString = colorName(name)
       val typeString = colorType(req typeOf name)
@@ -168,9 +167,8 @@ trait MemberHandlers {
   }
 
   abstract class MacroHandler(member: DefDef) extends MemberDefHandler(member) {
-    override def referencedNames =
-      super.referencedNames.flatMap(name =>
-        List(name.toTermName, name.toTypeName))
+    override def referencedNames = super.referencedNames.flatMap(name =>
+      List(name.toTermName, name.toTypeName))
     override def definesValue = false
     override def definesTerm: Option[TermName] = Some(name.toTermName)
     override def definesType: Option[TypeName] = None

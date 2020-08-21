@@ -9,12 +9,11 @@ import scalaz.scalacheck.ScalaCheckBinding._
 case class FreeList[A](f: Free[List, A])
 
 sealed abstract class FreeListInstances {
-  implicit def freeListTraverse =
-    new Traverse[FreeList] {
-      def traverseImpl[G[_], A, B](fa: FreeList[A])(f: A => G[B])(implicit
-          G: Applicative[G]) =
-        G.map(Traverse[Free[List, ?]].traverseImpl(fa.f)(f))(FreeList.apply)
-    }
+  implicit def freeListTraverse = new Traverse[FreeList] {
+    def traverseImpl[G[_], A, B](fa: FreeList[A])(f: A => G[B])(implicit
+        G: Applicative[G]) =
+      G.map(Traverse[Free[List, ?]].traverseImpl(fa.f)(f))(FreeList.apply)
+  }
 }
 
 object FreeList extends FreeListInstances {
@@ -25,17 +24,16 @@ object FreeList extends FreeListInstances {
       FreeList(Z.zip(a.f, b.f))
   }
 
-  implicit def freeListMonad =
-    new Monad[FreeList] with BindRec[FreeList] {
-      def point[A](a: => A): FreeList[A] =
-        FreeList(Monad[Free[List, ?]].point(a))
+  implicit def freeListMonad = new Monad[FreeList] with BindRec[FreeList] {
+    def point[A](a: => A): FreeList[A] =
+      FreeList(Monad[Free[List, ?]].point(a))
 
-      def bind[A, B](fa: FreeList[A])(f: A => FreeList[B]): FreeList[B] =
-        FreeList(Monad[Free[List, ?]].bind(fa.f) { a => f(a).f })
+    def bind[A, B](fa: FreeList[A])(f: A => FreeList[B]): FreeList[B] =
+      FreeList(Monad[Free[List, ?]].bind(fa.f) { a => f(a).f })
 
-      def tailrecM[A, B](f: A => FreeList[A \/ B])(a: A): FreeList[B] =
-        FreeList(BindRec[Free[List, ?]].tailrecM((x: A) => f(x).f)(a))
-    }
+    def tailrecM[A, B](f: A => FreeList[A \/ B])(a: A): FreeList[B] =
+      FreeList(BindRec[Free[List, ?]].tailrecM((x: A) => f(x).f)(a))
+  }
 
   implicit def freeListArb[A](implicit
       A: Arbitrary[A]): Arbitrary[FreeList[A]] =
@@ -121,17 +119,15 @@ object FreeTest extends SpecLite {
     trait FTestApi[A]
     case class TB(i: Int) extends FTestApi[Int]
 
-    def a(i: Int): Free[FTestApi, Int] =
-      for {
-        j <- Free.liftF(TB(i))
-        z <- if (j < n) a(j) else Free.pure[FTestApi, Int](j)
-      } yield z
+    def a(i: Int): Free[FTestApi, Int] = for {
+      j <- Free.liftF(TB(i))
+      z <- if (j < n) a(j) else Free.pure[FTestApi, Int](j)
+    } yield z
 
     val runner = new (FTestApi ~> Id.Id) {
-      def apply[A](fa: FTestApi[A]) =
-        fa match {
-          case TB(i) => i + 1
-        }
+      def apply[A](fa: FTestApi[A]) = fa match {
+        case TB(i) => i + 1
+      }
     }
 
     a(0).foldMapRec(runner) must_=== n

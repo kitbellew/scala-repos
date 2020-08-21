@@ -151,13 +151,12 @@ private[ml] object DecisionTreeModelReadWrite {
   }
 
   object SplitData {
-    def apply(split: Split): SplitData =
-      split match {
-        case s: CategoricalSplit =>
-          SplitData(s.featureIndex, s.leftCategories, s.numCategories)
-        case s: ContinuousSplit =>
-          SplitData(s.featureIndex, Array(s.threshold), -1)
-      }
+    def apply(split: Split): SplitData = split match {
+      case s: CategoricalSplit =>
+        SplitData(s.featureIndex, s.leftCategories, s.numCategories)
+      case s: ContinuousSplit =>
+        SplitData(s.featureIndex, Array(s.threshold), -1)
+    }
   }
 
   /**
@@ -190,35 +189,34 @@ private[ml] object DecisionTreeModelReadWrite {
       *         The nodes are returned in pre-order traversal (root first) so that it is easy to
       *         get the ID of the subtree's root node.
       */
-    def build(node: Node, id: Int): (Seq[NodeData], Int) =
-      node match {
-        case n: InternalNode =>
-          val (leftNodeData, leftIdx) = build(n.leftChild, id + 1)
-          val (rightNodeData, rightIdx) = build(n.rightChild, leftIdx + 1)
-          val thisNodeData = NodeData(
-            id,
-            n.prediction,
-            n.impurity,
-            n.impurityStats.stats,
-            n.gain,
-            leftNodeData.head.id,
-            rightNodeData.head.id,
-            SplitData(n.split))
-          (thisNodeData +: (leftNodeData ++ rightNodeData), rightIdx)
-        case _: LeafNode =>
-          (
-            Seq(
-              NodeData(
-                id,
-                node.prediction,
-                node.impurity,
-                node.impurityStats.stats,
-                -1.0,
-                -1,
-                -1,
-                SplitData(-1, Array.empty[Double], -1))),
-            id)
-      }
+    def build(node: Node, id: Int): (Seq[NodeData], Int) = node match {
+      case n: InternalNode =>
+        val (leftNodeData, leftIdx) = build(n.leftChild, id + 1)
+        val (rightNodeData, rightIdx) = build(n.rightChild, leftIdx + 1)
+        val thisNodeData = NodeData(
+          id,
+          n.prediction,
+          n.impurity,
+          n.impurityStats.stats,
+          n.gain,
+          leftNodeData.head.id,
+          rightNodeData.head.id,
+          SplitData(n.split))
+        (thisNodeData +: (leftNodeData ++ rightNodeData), rightIdx)
+      case _: LeafNode =>
+        (
+          Seq(
+            NodeData(
+              id,
+              node.prediction,
+              node.impurity,
+              node.impurityStats.stats,
+              -1.0,
+              -1,
+              -1,
+              SplitData(-1, Array.empty[Double], -1))),
+          id)
+    }
   }
 
   def loadTreeNodes(

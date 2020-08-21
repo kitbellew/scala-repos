@@ -44,28 +44,26 @@ trait Formats { self: Formats =>
   /**
     * Adds the specified type hints to this formats.
     */
-  def +(extraHints: TypeHints): Formats =
-    new Formats {
-      val dateFormat = Formats.this.dateFormat
-      override val typeHintFieldName = self.typeHintFieldName
-      override val parameterNameReader = self.parameterNameReader
-      override val typeHints = self.typeHints + extraHints
-      override val customSerializers = self.customSerializers
-      override val fieldSerializers = self.fieldSerializers
-    }
+  def +(extraHints: TypeHints): Formats = new Formats {
+    val dateFormat = Formats.this.dateFormat
+    override val typeHintFieldName = self.typeHintFieldName
+    override val parameterNameReader = self.parameterNameReader
+    override val typeHints = self.typeHints + extraHints
+    override val customSerializers = self.customSerializers
+    override val fieldSerializers = self.fieldSerializers
+  }
 
   /**
     * Adds the specified custom serializer to this formats.
     */
-  def +(newSerializer: Serializer[_]): Formats =
-    new Formats {
-      val dateFormat = Formats.this.dateFormat
-      override val typeHintFieldName = self.typeHintFieldName
-      override val parameterNameReader = self.parameterNameReader
-      override val typeHints = self.typeHints
-      override val customSerializers = newSerializer :: self.customSerializers
-      override val fieldSerializers = self.fieldSerializers
-    }
+  def +(newSerializer: Serializer[_]): Formats = new Formats {
+    val dateFormat = Formats.this.dateFormat
+    override val typeHintFieldName = self.typeHintFieldName
+    override val parameterNameReader = self.parameterNameReader
+    override val typeHints = self.typeHints
+    override val customSerializers = newSerializer :: self.customSerializers
+    override val fieldSerializers = self.fieldSerializers
+  }
 
   /**
     * Adds the specified custom serializers to this formats.
@@ -77,19 +75,18 @@ trait Formats { self: Formats =>
     * Adds a field serializer for a given type to this formats.
     */
   def +[A](newSerializer: FieldSerializer[A])(implicit
-      mf: Manifest[A]): Formats =
-    new Formats {
-      val dateFormat = Formats.this.dateFormat
-      override val typeHintFieldName = self.typeHintFieldName
-      override val parameterNameReader = self.parameterNameReader
-      override val typeHints = self.typeHints
-      override val customSerializers = self.customSerializers
-      // The type inferencer infers an existential type below if we use
-      // value :: list instead of list.::(value), and we get a feature
-      // warning.
-      override val fieldSerializers: List[(Class[_], FieldSerializer[_])] =
-        self.fieldSerializers.::((mf.runtimeClass: Class[_], newSerializer))
-    }
+      mf: Manifest[A]): Formats = new Formats {
+    val dateFormat = Formats.this.dateFormat
+    override val typeHintFieldName = self.typeHintFieldName
+    override val parameterNameReader = self.parameterNameReader
+    override val typeHints = self.typeHints
+    override val customSerializers = self.customSerializers
+    // The type inferencer infers an existential type below if we use
+    // value :: list instead of list.::(value), and we get a feature
+    // warning.
+    override val fieldSerializers: List[(Class[_], FieldSerializer[_])] =
+      self.fieldSerializers.::((mf.runtimeClass: Class[_], newSerializer))
+  }
 
   private[json] def fieldSerializer(
       clazz: Class[_]): Option[FieldSerializer[_]] = {
@@ -170,8 +167,8 @@ trait TypeHints {
   /**
     * Adds the specified type hints to this type hints.
     */
-  def +(hints: TypeHints): TypeHints =
-    CompositeTypeHints(components ::: hints.components)
+  def +(hints: TypeHints): TypeHints = CompositeTypeHints(
+    components ::: hints.components)
 
   private[TypeHints] case class CompositeTypeHints(
       override val components: List[TypeHints])
@@ -181,18 +178,16 @@ trait TypeHints {
     /**
       * Chooses most specific class.
       */
-    def hintFor(clazz: Class[_]): String =
-      components
-        .filter(_.containsHint_?(clazz))
-        .map(th =>
-          (
-            th.hintFor(clazz),
-            th.classFor(th.hintFor(clazz))
-              .getOrElse(
-                sys.error("hintFor/classFor not invertible for " + th))))
-        .sortWith((x, y) => (delta(x._2, clazz) - delta(y._2, clazz)) < 0)
-        .head
-        ._1
+    def hintFor(clazz: Class[_]): String = components
+      .filter(_.containsHint_?(clazz))
+      .map(th =>
+        (
+          th.hintFor(clazz),
+          th.classFor(th.hintFor(clazz))
+            .getOrElse(sys.error("hintFor/classFor not invertible for " + th))))
+      .sortWith((x, y) => (delta(x._2, clazz) - delta(y._2, clazz)) < 0)
+      .head
+      ._1
 
     def classFor(hint: String): Option[Class[_]] = {
       def hasClass(h: TypeHints) =
@@ -267,12 +262,11 @@ trait DefaultFormats extends Formats {
   import java.text.{ParseException, SimpleDateFormat}
 
   val dateFormat = new DateFormat {
-    def parse(s: String) =
-      try {
-        Some(formatter.parse(s))
-      } catch {
-        case e: ParseException => None
-      }
+    def parse(s: String) = try {
+      Some(formatter.parse(s))
+    } catch {
+      case e: ParseException => None
+    }
 
     def format(d: Date) = formatter.format(d)
 
@@ -287,17 +281,15 @@ trait DefaultFormats extends Formats {
 
   /** Lossless date format includes milliseconds too.
     */
-  def lossless =
-    new DefaultFormats {
-      override def dateFormatter = DefaultFormats.losslessDate()
-    }
+  def lossless = new DefaultFormats {
+    override def dateFormatter = DefaultFormats.losslessDate()
+  }
 
   /** Default formats with given <code>TypeHint</code>s.
     */
-  def withHints(hints: TypeHints) =
-    new DefaultFormats {
-      override val typeHints = hints
-    }
+  def withHints(hints: TypeHints) = new DefaultFormats {
+    override val typeHints = hints
+  }
 }
 
 private[json] class ThreadLocal[A](init: => A)

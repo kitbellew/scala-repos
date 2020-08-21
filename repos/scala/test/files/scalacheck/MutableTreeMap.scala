@@ -37,8 +37,8 @@ package scala.collection.mutable {
 
     implicit def arbRedBlackTree[A: Arbitrary: Ordering, B: Arbitrary] =
       Arbitrary(genRedBlackTree[A, B])
-    implicit def arbTreeMap[A: Arbitrary: Ordering, B: Arbitrary] =
-      Arbitrary(genTreeMap[A, B])
+    implicit def arbTreeMap[A: Arbitrary: Ordering, B: Arbitrary] = Arbitrary(
+      genTreeMap[A, B])
   }
 
   object RedBlackTreeProperties

@@ -29,13 +29,12 @@ trait PriorityQueueStabilizer[E <: AnyRef] extends AbstractQueue[E] {
     backingQueue.offer(wrappedElement)
   }
 
-  override def iterator(): Iterator[E] =
-    new Iterator[E] {
-      private[this] val backingIterator = backingQueue.iterator()
-      def hasNext: Boolean = backingIterator.hasNext
-      def next(): E = backingIterator.next().element
-      def remove() = backingIterator.remove()
-    }
+  override def iterator(): Iterator[E] = new Iterator[E] {
+    private[this] val backingIterator = backingQueue.iterator()
+    def hasNext: Boolean = backingIterator.hasNext
+    def next(): E = backingIterator.next().element
+    def remove() = backingIterator.remove()
+  }
 
   override def poll(): E = {
     val wrappedElement = backingQueue.poll()

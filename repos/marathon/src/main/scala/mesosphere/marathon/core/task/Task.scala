@@ -36,11 +36,10 @@ sealed trait Task {
     */
   lazy val marathonTask: MarathonTask = TaskSerializer.toProto(this)
 
-  def launchedMesosId: Option[MesosProtos.TaskID] =
-    launched.map { _ =>
-      // it doesn't make sense for an unlaunched task
-      taskId.mesosTaskId
-    }
+  def launchedMesosId: Option[MesosProtos.TaskID] = launched.map { _ =>
+    // it doesn't make sense for an unlaunched task
+    taskId.mesosTaskId
+  }
 
   def mesosStatus: Option[MesosProtos.TaskStatus] = {
     launched.flatMap(_.status.mesosStatus).orElse {
@@ -90,52 +89,50 @@ object Task {
 
     override def reservationWithVolumes: Option[Reservation] = None
 
-    override def launched: Option[Launched] =
-      Some(Task.Launched(appVersion, status, networking))
+    override def launched: Option[Launched] = Some(
+      Task.Launched(appVersion, status, networking))
 
     private[this] def hasStartedRunning: Boolean = status.startedAt.isDefined
 
-    override def update(update: TaskStateOp): TaskStateChange =
-      update match {
-        // case 1: now running
-        case TaskStateOp.MesosUpdate(
-              MarathonTaskStatus.Running(mesosStatus),
-              now) if !hasStartedRunning =>
-          val updated = copy(
-            status =
-              status.copy(startedAt = Some(now), mesosStatus = mesosStatus))
-          TaskStateChange.Update(updated)
+    override def update(update: TaskStateOp): TaskStateChange = update match {
+      // case 1: now running
+      case TaskStateOp.MesosUpdate(MarathonTaskStatus.Running(mesosStatus), now)
+          if !hasStartedRunning =>
+        val updated = copy(
+          status =
+            status.copy(startedAt = Some(now), mesosStatus = mesosStatus))
+        TaskStateChange.Update(updated)
 
-        // case 2: terminal
-        case TaskStateOp.MesosUpdate(MarathonTaskStatus.Terminal(_), now) =>
-          TaskStateChange.Expunge
+      // case 2: terminal
+      case TaskStateOp.MesosUpdate(MarathonTaskStatus.Terminal(_), now) =>
+        TaskStateChange.Expunge
 
-        // case 3: health or state updated
-        case TaskStateOp.MesosUpdate(taskStatus, now) =>
-          val healthOrStateChange = for {
-            current <- status.mesosStatus
-            update <- taskStatus.mesosStatus
-            newStatus <- updatedHealthOrState(current, update)
-          } yield TaskStateChange.Update(
-            copy(status = status.copy(mesosStatus = Some(newStatus))))
+      // case 3: health or state updated
+      case TaskStateOp.MesosUpdate(taskStatus, now) =>
+        val healthOrStateChange = for {
+          current <- status.mesosStatus
+          update <- taskStatus.mesosStatus
+          newStatus <- updatedHealthOrState(current, update)
+        } yield TaskStateChange.Update(
+          copy(status = status.copy(mesosStatus = Some(newStatus))))
 
-          healthOrStateChange.getOrElse {
-            log.debug(
-              "Ignoring status update for {}. Status did not change.",
-              taskId)
-            TaskStateChange.NoChange
-          }
+        healthOrStateChange.getOrElse {
+          log.debug(
+            "Ignoring status update for {}. Status did not change.",
+            taskId)
+          TaskStateChange.NoChange
+        }
 
-        // failure case: Launch
-        case _: TaskStateOp.Launch =>
-          TaskStateChange.Failure(
-            "Unable to handle Launch op on LaunchedEphemeral")
+      // failure case: Launch
+      case _: TaskStateOp.Launch =>
+        TaskStateChange.Failure(
+          "Unable to handle Launch op on LaunchedEphemeral")
 
-        // failure case: Timeout
-        case TaskStateOp.ReservationTimeout =>
-          TaskStateChange.Failure(
-            "Unable to handle Timeout op on LaunchedEphemeral")
-      }
+      // failure case: Timeout
+      case TaskStateOp.ReservationTimeout =>
+        TaskStateChange.Failure(
+          "Unable to handle Timeout op on LaunchedEphemeral")
+    }
   }
 
   object LaunchedEphemeral {
@@ -159,26 +156,25 @@ object Task {
 
     override def launched: Option[Launched] = None
 
-    override def update(update: TaskStateOp): TaskStateChange =
-      update match {
-        case TaskStateOp.Launch(appVersion, status, networking) =>
-          TaskStateChange.Update(
-            LaunchedOnReservation(
-              taskId,
-              agentInfo,
-              appVersion,
-              status,
-              networking,
-              reservation))
+    override def update(update: TaskStateOp): TaskStateChange = update match {
+      case TaskStateOp.Launch(appVersion, status, networking) =>
+        TaskStateChange.Update(
+          LaunchedOnReservation(
+            taskId,
+            agentInfo,
+            appVersion,
+            status,
+            networking,
+            reservation))
 
-        case TaskStateOp.ReservationTimeout =>
-          TaskStateChange.Expunge
+      case TaskStateOp.ReservationTimeout =>
+        TaskStateChange.Expunge
 
-        // failure case: MesosUpdate
-        case _: TaskStateOp.MesosUpdate =>
-          TaskStateChange.Failure(
-            "Unable to handle MesosUpdate op on Reserved task")
-      }
+      // failure case: MesosUpdate
+      case _: TaskStateOp.MesosUpdate =>
+        TaskStateChange.Failure(
+          "Unable to handle MesosUpdate op on Reserved task")
+    }
   }
 
   case class LaunchedOnReservation(
@@ -194,59 +190,57 @@ object Task {
 
     override def reservationWithVolumes: Option[Reservation] = Some(reservation)
 
-    override def launched: Option[Launched] =
-      Some(Task.Launched(appVersion, status, networking))
+    override def launched: Option[Launched] = Some(
+      Task.Launched(appVersion, status, networking))
 
     private[this] def hasStartedRunning: Boolean = status.startedAt.isDefined
 
-    override def update(update: TaskStateOp): TaskStateChange =
-      update match {
-        // case 1: now running
-        case TaskStateOp.MesosUpdate(
-              MarathonTaskStatus.Running(mesosStatus),
-              now) if !hasStartedRunning =>
-          val updated = copy(
-            status =
-              status.copy(startedAt = Some(now), mesosStatus = mesosStatus))
-          TaskStateChange.Update(updated)
+    override def update(update: TaskStateOp): TaskStateChange = update match {
+      // case 1: now running
+      case TaskStateOp.MesosUpdate(MarathonTaskStatus.Running(mesosStatus), now)
+          if !hasStartedRunning =>
+        val updated = copy(
+          status =
+            status.copy(startedAt = Some(now), mesosStatus = mesosStatus))
+        TaskStateChange.Update(updated)
 
-        // case 2: terminal
-        // FIXME (3221): handle task_lost, kill etc differently and set appropriate timeouts (if any)
-        case TaskStateOp.MesosUpdate(MarathonTaskStatus.Terminal(_), now) =>
-          TaskStateChange.Update(
-            Task.Reserved(
-              taskId = taskId,
-              agentInfo = agentInfo,
-              reservation = reservation.copy(state =
-                Task.Reservation.State.Suspended(timeout = None))
-            ))
+      // case 2: terminal
+      // FIXME (3221): handle task_lost, kill etc differently and set appropriate timeouts (if any)
+      case TaskStateOp.MesosUpdate(MarathonTaskStatus.Terminal(_), now) =>
+        TaskStateChange.Update(
+          Task.Reserved(
+            taskId = taskId,
+            agentInfo = agentInfo,
+            reservation = reservation.copy(state =
+              Task.Reservation.State.Suspended(timeout = None))
+          ))
 
-        // case 3: health or state updated
-        case TaskStateOp.MesosUpdate(taskStatus, now) =>
-          val healthOrStateChange = for {
-            current <- status.mesosStatus
-            update <- taskStatus.mesosStatus
-            newStatus <- updatedHealthOrState(current, update)
-          } yield TaskStateChange.Update(
-            copy(status = status.copy(mesosStatus = Some(newStatus))))
+      // case 3: health or state updated
+      case TaskStateOp.MesosUpdate(taskStatus, now) =>
+        val healthOrStateChange = for {
+          current <- status.mesosStatus
+          update <- taskStatus.mesosStatus
+          newStatus <- updatedHealthOrState(current, update)
+        } yield TaskStateChange.Update(
+          copy(status = status.copy(mesosStatus = Some(newStatus))))
 
-          healthOrStateChange.getOrElse {
-            log.debug(
-              "Ignoring status update for {}. Status did not change.",
-              taskId)
-            TaskStateChange.NoChange
-          }
+        healthOrStateChange.getOrElse {
+          log.debug(
+            "Ignoring status update for {}. Status did not change.",
+            taskId)
+          TaskStateChange.NoChange
+        }
 
-        // failure case: Launch
-        case _: TaskStateOp.Launch =>
-          TaskStateChange.Failure(
-            "Unable to handle Launch op on LaunchedOnReservation}")
+      // failure case: Launch
+      case _: TaskStateOp.Launch =>
+        TaskStateChange.Failure(
+          "Unable to handle Launch op on LaunchedOnReservation}")
 
-        // failure case: Timeout
-        case TaskStateOp.ReservationTimeout =>
-          TaskStateChange.Failure(
-            "Unable to handle Timeout op on LaunchedOnReservation")
-      }
+      // failure case: Timeout
+      case TaskStateOp.ReservationTimeout =>
+        TaskStateChange.Failure(
+          "Unable to handle Timeout op on LaunchedOnReservation")
+    }
   }
 
   object LaunchedOnReservation {
@@ -291,8 +285,8 @@ object Task {
       }
     }
 
-    def apply(mesosTaskId: MesosProtos.TaskID): Id =
-      new Id(mesosTaskId.getValue)
+    def apply(mesosTaskId: MesosProtos.TaskID): Id = new Id(
+      mesosTaskId.getValue)
 
     def forApp(appId: PathId): Id = {
       val taskId = appId.safePath + appDelimiter + uuidGenerator.generate()
@@ -382,12 +376,11 @@ object Task {
         volume.containerPath,
         uuidGenerator.generate().toString)
 
-    def unapply(id: String): Option[(LocalVolumeId)] =
-      id match {
-        case LocalVolumeEncoderRE(app, path, uuid) =>
-          Some(LocalVolumeId(PathId.fromSafePath(app), path, uuid))
-        case _ => None
-      }
+    def unapply(id: String): Option[(LocalVolumeId)] = id match {
+      case LocalVolumeEncoderRE(app, path, uuid) =>
+        Some(LocalVolumeId(PathId.fromSafePath(app), path, uuid))
+      case _ => None
+    }
   }
 
   /**
@@ -462,13 +455,11 @@ object Task {
   }
 
   object Terminated {
-    def isTerminated(state: TaskState): Boolean =
-      state match {
-        case TASK_ERROR | TASK_FAILED | TASK_FINISHED | TASK_KILLED |
-            TASK_LOST =>
-          true
-        case _ => false
-      }
+    def isTerminated(state: TaskState): Boolean = state match {
+      case TASK_ERROR | TASK_FAILED | TASK_FINISHED | TASK_KILLED | TASK_LOST =>
+        true
+      case _ => false
+    }
 
     def unapply(state: TaskState): Option[TaskState] =
       if (isTerminated(state)) Some(state) else None

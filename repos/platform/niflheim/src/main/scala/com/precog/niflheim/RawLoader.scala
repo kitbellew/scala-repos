@@ -141,12 +141,11 @@ private[niflheim] object RawLoader {
     tmp.renameTo(f)
   }
 
-  def isValidEnd1(line: String, eventid: Long): Boolean =
-    try {
-      line.substring(6).toLong == eventid
-    } catch {
-      case _: Exception => false
-    }
+  def isValidEnd1(line: String, eventid: Long): Boolean = try {
+    line.substring(6).toLong == eventid
+  } catch {
+    case _: Exception => false
+  }
 
   def loadEvents1(
       reader: BufferedReader,

@@ -25,14 +25,13 @@ trait SummingbirdConfig { self =>
   def keys: Iterable[String]
   def updates: Map[String, AnyRef]
   def removes: Set[String]
-  def toMap: Map[String, AnyRef] =
-    new Map[String, AnyRef] {
-      def get(k: String) = self.get(k)
-      def +[B1 >: AnyRef](kv: (String, B1)) =
-        self.put(kv._1, kv._2.asInstanceOf[AnyRef]).toMap
-      def -(k: String) = self.-(k).toMap
-      def iterator = self.keys.iterator.map(k => (k, self.get(k).get))
-    }
+  def toMap: Map[String, AnyRef] = new Map[String, AnyRef] {
+    def get(k: String) = self.get(k)
+    def +[B1 >: AnyRef](kv: (String, B1)) =
+      self.put(kv._1, kv._2.asInstanceOf[AnyRef]).toMap
+    def -(k: String) = self.-(k).toMap
+    def iterator = self.keys.iterator.map(k => (k, self.get(k).get))
+  }
   def updated(newMap: Map[String, AnyRef]): SummingbirdConfig = {
     val removedKeys: Set[String] = keys.toSet -- newMap.keys
     val changedOrAddedKeys = newMap.flatMap { case (k, v) =>

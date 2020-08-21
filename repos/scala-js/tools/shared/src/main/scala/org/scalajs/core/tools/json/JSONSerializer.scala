@@ -18,10 +18,9 @@ object JSONSerializer {
     def serialize(x: Boolean): JSON = Impl.fromBoolean(x)
   }
 
-  implicit def listJSON[T: JSONSerializer] =
-    new JSONSerializer[List[T]] {
-      def serialize(x: List[T]): JSON = Impl.fromList(x.map(_.toJSON))
-    }
+  implicit def listJSON[T: JSONSerializer] = new JSONSerializer[List[T]] {
+    def serialize(x: List[T]): JSON = Impl.fromList(x.map(_.toJSON))
+  }
 
   implicit def mapJSON[V: JSONSerializer] = {
     new JSONSerializer[Map[String, V]] {

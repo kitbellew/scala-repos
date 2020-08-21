@@ -22,12 +22,11 @@ final class Env(
 
   def apply(text: String, page: Int) = paginatorBuilder(Query(text), page)
 
-  def cli =
-    new lila.common.Cli {
-      def process = { case "team" :: "search" :: "reset" :: Nil =>
-        api.reset inject "done"
-      }
+  def cli = new lila.common.Cli {
+    def process = { case "team" :: "search" :: "reset" :: Nil =>
+      api.reset inject "done"
     }
+  }
 
   private lazy val paginatorBuilder =
     new lila.search.PaginatorBuilder[lila.team.Team, Query](

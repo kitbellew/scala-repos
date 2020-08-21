@@ -9,8 +9,8 @@ object Test {
   def mkNumbers(x: Int): List[Number] =
     List(x.toByte, x.toShort, x, x.toLong, x.toFloat, x.toDouble)
 
-  def testLDF(x: Long) =
-    allSame(List[Number](x, x.toDouble, x.toFloat) map hashFromNumber)
+  def testLDF(x: Long) = allSame(
+    List[Number](x, x.toDouble, x.toFloat) map hashFromNumber)
 
   def main(args: Array[String]): Unit = {
     List(Byte.MinValue, -1, 0, 1, Byte.MaxValue) foreach { n =>

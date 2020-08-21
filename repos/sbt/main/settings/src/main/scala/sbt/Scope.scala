@@ -44,14 +44,13 @@ object Scope {
   def resolveBuildScope(thisScope: Scope, current: URI): Scope => Scope =
     buildResolve(current) compose replaceThis(thisScope) compose subThisProject
 
-  def replaceThis(thisScope: Scope): Scope => Scope =
-    (scope: Scope) =>
-      Scope(
-        subThis(thisScope.project, scope.project),
-        subThis(thisScope.config, scope.config),
-        subThis(thisScope.task, scope.task),
-        subThis(thisScope.extra, scope.extra)
-      )
+  def replaceThis(thisScope: Scope): Scope => Scope = (scope: Scope) =>
+    Scope(
+      subThis(thisScope.project, scope.project),
+      subThis(thisScope.config, scope.config),
+      subThis(thisScope.task, scope.task),
+      subThis(thisScope.extra, scope.extra)
+    )
 
   def subThis[T](sub: ScopeAxis[T], into: ScopeAxis[T]): ScopeAxis[T] =
     if (into == This) sub else into
@@ -284,10 +283,9 @@ object Scope {
       ps: Seq[ScopeAxis[ProjectRef]]): Seq[ScopeAxis[ResolvedReference]] =
     ps ++ (ps flatMap rawBuild).distinct :+ Global
 
-  def rawBuild(ps: ScopeAxis[ProjectRef]): Seq[ScopeAxis[BuildRef]] =
-    ps match {
-      case Select(ref) => Select(BuildRef(ref.build)) :: Nil; case _ => Nil
-    }
+  def rawBuild(ps: ScopeAxis[ProjectRef]): Seq[ScopeAxis[BuildRef]] = ps match {
+    case Select(ref) => Select(BuildRef(ref.build)) :: Nil; case _ => Nil
+  }
 
   def delegates[Proj](
       refs: Seq[(ProjectRef, Proj)],

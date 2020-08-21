@@ -103,13 +103,12 @@ private[sql] case class InMemoryRelation(
   // Statistics propagation contracts:
   // 1. Non-null `_statistics` must reflect the actual statistics of the underlying data
   // 2. Only propagate statistics when `_statistics` is non-null
-  private def statisticsToBePropagated =
-    if (_statistics == null) {
-      val updatedStats = statistics
-      if (_statistics == null) null else updatedStats
-    } else {
-      _statistics
-    }
+  private def statisticsToBePropagated = if (_statistics == null) {
+    val updatedStats = statistics
+    if (_statistics == null) null else updatedStats
+  } else {
+    _statistics
+  }
 
   override def statistics: Statistics = {
     if (_statistics == null) {
@@ -366,13 +365,12 @@ private[sql] case class InMemoryColumnarTableScan(
         if (inMemoryPartitionPruningEnabled) {
           cachedBatchIterator.filter { cachedBatch =>
             if (!partitionFilter(cachedBatch.stats)) {
-              def statsString: String =
-                schemaIndex
-                  .map { case (a, i) =>
-                    val value = cachedBatch.stats.get(i, a.dataType)
-                    s"${a.name}: $value"
-                  }
-                  .mkString(", ")
+              def statsString: String = schemaIndex
+                .map { case (a, i) =>
+                  val value = cachedBatch.stats.get(i, a.dataType)
+                  s"${a.name}: $value"
+                }
+                .mkString(", ")
               logInfo(s"Skipping partition based on stats $statsString")
               false
             } else {

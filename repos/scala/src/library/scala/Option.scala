@@ -210,8 +210,8 @@ sealed abstract class Option[+A] extends Product with Serializable {
     def map[B](f: A => B): Option[B] = self filter p map f
     def flatMap[B](f: A => Option[B]): Option[B] = self filter p flatMap f
     def foreach[U](f: A => U): Unit = self filter p foreach f
-    def withFilter(q: A => Boolean): WithFilter =
-      new WithFilter(x => p(x) && q(x))
+    def withFilter(q: A => Boolean): WithFilter = new WithFilter(x =>
+      p(x) && q(x))
   }
 
   /** Tests whether the option contains a given value as an element.

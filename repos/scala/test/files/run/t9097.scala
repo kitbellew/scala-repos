@@ -3,14 +3,13 @@ import java.io.{Console => _, _}
 
 object Test extends StoreReporterDirectTest {
 
-  override def extraSettings: String =
-    List(
-      "-usejavacp",
-      "-Xfatal-warnings",
-      "-Ydelambdafy:method",
-      "-Xprint:delambdafy",
-      s"-d ${testOutput.path}"
-    ) mkString " "
+  override def extraSettings: String = List(
+    "-usejavacp",
+    "-Xfatal-warnings",
+    "-Ydelambdafy:method",
+    "-Xprint:delambdafy",
+    s"-d ${testOutput.path}"
+  ) mkString " "
 
   override def code = """package o
                         |package a {

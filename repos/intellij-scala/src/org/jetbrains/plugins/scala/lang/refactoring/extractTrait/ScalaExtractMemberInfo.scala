@@ -12,6 +12,6 @@ class ScalaExtractMemberInfo(member: ScMember)
     extends ScalaMemberInfoBase[ScMember](member: ScMember)
 
 object ScalaExtractMemberInfo {
-  def unapply(info: ScalaExtractMemberInfo): Option[(ScMember, Boolean)] =
-    Some((info.getMember, info.isToAbstract))
+  def unapply(info: ScalaExtractMemberInfo): Option[(ScMember, Boolean)] = Some(
+    (info.getMember, info.isToAbstract))
 }

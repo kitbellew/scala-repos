@@ -168,12 +168,11 @@ object DependencyResolver {
   private def checkCommonJSNameConflicts(
       flatDeps: Traversable[FlatJSDependency]) = {
     @inline
-    def hasConflict(x: FlatJSDependency, y: FlatJSDependency) =
-      (
-        x.commonJSName.isDefined &&
-          y.commonJSName.isDefined &&
-          (x.relPath == y.relPath ^ x.commonJSName == y.commonJSName)
-      )
+    def hasConflict(x: FlatJSDependency, y: FlatJSDependency) = (
+      x.commonJSName.isDefined &&
+        y.commonJSName.isDefined &&
+        (x.relPath == y.relPath ^ x.commonJSName == y.commonJSName)
+    )
 
     val conflicts = for {
       dep <- flatDeps
@@ -188,12 +187,11 @@ object DependencyResolver {
       byRelPath: Map[String, Traversable[FlatJSDependency]]) = {
 
     @inline
-    def hasConflict(x: FlatJSDependency, y: FlatJSDependency) =
-      (
-        x.relPathMinified.isDefined &&
-          y.relPathMinified.isDefined &&
-          x.relPathMinified != y.relPathMinified
-      )
+    def hasConflict(x: FlatJSDependency, y: FlatJSDependency) = (
+      x.relPathMinified.isDefined &&
+        y.relPathMinified.isDefined &&
+        x.relPathMinified != y.relPathMinified
+    )
 
     val conflicts = for {
       (_, deps) <- byRelPath

@@ -127,11 +127,10 @@ class Classfile(in: ByteArrayReader) {
     lazy val length = entries.length
     def apply(x: Int) = entries(x)
     def stringOf(x: Int) = apply(x).toString
-    override def toString =
-      (
-        for ((x, i) <- entries.zipWithIndex; if x != null)
-          yield "const #%d = %s\t%s\n".format(i + 1, x.typeString, x)
-      ).mkString
+    override def toString = (
+      for ((x, i) <- entries.zipWithIndex; if x != null)
+        yield "const #%d = %s\t%s\n".format(i + 1, x.typeString, x)
+    ).mkString
   }
 
   /** *
@@ -143,10 +142,9 @@ class Classfile(in: ByteArrayReader) {
       tpe: Int,
       attribs: List[Attribute])
   case class Attribute(name: Int, data: Array[Byte]) {
-    override def toString =
-      (pool(name): @unchecked) match {
-        case pool.UTF8(s) => s
-      }
+    override def toString = (pool(name): @unchecked) match {
+      case pool.UTF8(s) => s
+    }
     def reader: ByteArrayReader = new ByteArrayReader(data)
   }
 }

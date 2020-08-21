@@ -103,15 +103,14 @@ object ZkUtils {
     (zkClient, zkConnection)
   }
 
-  def DefaultAcls(isSecure: Boolean): java.util.List[ACL] =
-    if (isSecure) {
-      val list = new java.util.ArrayList[ACL]
-      list.addAll(ZooDefs.Ids.CREATOR_ALL_ACL)
-      list.addAll(ZooDefs.Ids.READ_ACL_UNSAFE)
-      list
-    } else {
-      ZooDefs.Ids.OPEN_ACL_UNSAFE
-    }
+  def DefaultAcls(isSecure: Boolean): java.util.List[ACL] = if (isSecure) {
+    val list = new java.util.ArrayList[ACL]
+    list.addAll(ZooDefs.Ids.CREATOR_ALL_ACL)
+    list.addAll(ZooDefs.Ids.READ_ACL_UNSAFE)
+    list
+  } else {
+    ZooDefs.Ids.OPEN_ACL_UNSAFE
+  }
 
   def maybeDeletePath(zkUrl: String, dir: String) {
     try {

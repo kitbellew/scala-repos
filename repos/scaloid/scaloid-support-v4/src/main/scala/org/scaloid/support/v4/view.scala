@@ -99,9 +99,8 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
   }
 
   @inline def onPageChangeListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onPageChangeListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onPageChangeListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html#setOnPageChangeListener(android.support.v4.view.ViewPager.OnPageChangeListener) setOnPageChangeListener(android.support.v4.view.ViewPager.OnPageChangeListener)]]`
@@ -134,9 +133,8 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
   @inline def pageMargin_=(p: Int) = { basis.setPageMargin(p); basis }
 
   @inline def pageMarginDrawable(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'pageMarginDrawable'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'pageMarginDrawable'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html#setPageMarginDrawable(int) setPageMarginDrawable(int)]]`

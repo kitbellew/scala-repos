@@ -36,10 +36,9 @@ trait IfElseMatcher extends BraceMatcher {
   trait IfWithParenImpl extends HasLinks {
     object ifLink extends IfLink;
     object openParen extends parenPair.OpenLink;
-    override def link(b: Boolean): Link =
-      b match {
-        case true  => ifLink;
-        case false => openParen;
-      }
+    override def link(b: Boolean): Link = b match {
+      case true  => ifLink;
+      case false => openParen;
+    }
   }
 }

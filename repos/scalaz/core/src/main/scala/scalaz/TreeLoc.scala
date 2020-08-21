@@ -21,12 +21,11 @@ final case class TreeLoc[A](
   import Tree._
 
   /** Select the parent of the current node. */
-  def parent: Option[TreeLoc[A]] =
-    parents match {
-      case (pls, v, prs) #:: ps =>
-        Some(loc(Node(v, combChildren(lefts, tree, rights)), pls, prs, ps))
-      case Stream.Empty => None
-    }
+  def parent: Option[TreeLoc[A]] = parents match {
+    case (pls, v, prs) #:: ps =>
+      Some(loc(Node(v, combChildren(lefts, tree, rights)), pls, prs, ps))
+    case Stream.Empty => None
+  }
 
   /** Select the root node of the tree. */
   @tailrec
@@ -37,32 +36,28 @@ final case class TreeLoc[A](
     }
 
   /** Select the left sibling of the current node. */
-  def left: Option[TreeLoc[A]] =
-    lefts match {
-      case t #:: ts     => Some(loc(t, ts, tree #:: rights, parents))
-      case Stream.Empty => None
-    }
+  def left: Option[TreeLoc[A]] = lefts match {
+    case t #:: ts     => Some(loc(t, ts, tree #:: rights, parents))
+    case Stream.Empty => None
+  }
 
   /** Select the right sibling of the current node. */
-  def right: Option[TreeLoc[A]] =
-    rights match {
-      case t #:: ts     => Some(loc(t, tree #:: lefts, ts, parents))
-      case Stream.Empty => None
-    }
+  def right: Option[TreeLoc[A]] = rights match {
+    case t #:: ts     => Some(loc(t, tree #:: lefts, ts, parents))
+    case Stream.Empty => None
+  }
 
   /** Select the leftmost child of the current node. */
-  def firstChild: Option[TreeLoc[A]] =
-    tree.subForest match {
-      case t #:: ts     => Some(loc(t, Stream.Empty, ts, downParents))
-      case Stream.Empty => None
-    }
+  def firstChild: Option[TreeLoc[A]] = tree.subForest match {
+    case t #:: ts     => Some(loc(t, Stream.Empty, ts, downParents))
+    case Stream.Empty => None
+  }
 
   /** Select the rightmost child of the current node. */
-  def lastChild: Option[TreeLoc[A]] =
-    tree.subForest.reverse match {
-      case t #:: ts     => Some(loc(t, ts, Stream.Empty, downParents))
-      case Stream.Empty => None
-    }
+  def lastChild: Option[TreeLoc[A]] = tree.subForest.reverse match {
+    case t #:: ts     => Some(loc(t, ts, Stream.Empty, downParents))
+    case Stream.Empty => None
+  }
 
   /** Select the nth child of the current node. */
   def getChild(n: Int): Option[TreeLoc[A]] =
@@ -152,18 +147,17 @@ final case class TreeLoc[A](
       yield loc(t, lr._1, lr._2, downParents)
 
   /** Delete the current node and all its children. */
-  def delete: Option[TreeLoc[A]] =
-    rights match {
-      case Stream.cons(t, ts) => Some(loc(t, lefts, ts, parents))
-      case _ =>
-        lefts match {
-          case Stream.cons(t, ts) => Some(loc(t, ts, rights, parents))
-          case _ =>
-            for (loc1 <- parent)
-              yield loc1.modifyTree((t: Tree[A]) =>
-                Node(t.rootLabel, Stream.Empty))
-        }
-    }
+  def delete: Option[TreeLoc[A]] = rights match {
+    case Stream.cons(t, ts) => Some(loc(t, lefts, ts, parents))
+    case _ =>
+      lefts match {
+        case Stream.cons(t, ts) => Some(loc(t, ts, rights, parents))
+        case _ =>
+          for (loc1 <- parent)
+            yield loc1.modifyTree((t: Tree[A]) =>
+              Node(t.rootLabel, Stream.Empty))
+      }
+  }
 
   /**
     * The path from the focus to the root.
@@ -288,105 +282,104 @@ sealed abstract class TreeLocInstances {
               Foldable1[Tree].foldMapLeft1(fa.tree)(z)(f))(f))(f))(f)
 
       override def traverse1Impl[G[_], A, B](fa: TreeLoc[A])(f: A => G[B])(
-          implicit G: Apply[G]) =
-        fa.lefts match {
-          case l #:: ls =>
-            val lefts1 = ForestT1.traverse1(OneAnd(l, ls))(f)
-            fa.rights match {
-              case r #:: rs =>
-                val rights1 = ForestT1.traverse1(OneAnd(r, rs))(f)
-                fa.parents match {
-                  case p #:: ps =>
-                    G.apply4(
-                      fa.tree.traverse1(f),
-                      lefts1,
-                      rights1,
-                      ParentsT1.traverse1(OneAnd(p, ps))(f))(
-                      (tree, lefts, rights, parents) =>
-                        TreeLoc(
-                          tree = tree,
-                          lefts = lefts.head #:: lefts.tail,
-                          rights = rights.head #:: rights.tail,
-                          parents = parents.head #:: parents.tail
-                        ))
-                  case Empty =>
-                    G.apply3(fa.tree.traverse1(f), lefts1, rights1)(
-                      (tree, lefts, rights) =>
-                        TreeLoc(
-                          tree = tree,
-                          lefts = lefts.head #:: lefts.tail,
-                          rights = rights.head #:: rights.tail,
-                          parents = Empty
-                        ))
-                }
-              case Empty =>
-                fa.parents match {
-                  case p #:: ps =>
-                    G.apply3(
-                      fa.tree.traverse1(f),
-                      lefts1,
-                      ParentsT1.traverse1(OneAnd(p, ps))(f))(
-                      (tree, lefts, parents) =>
-                        TreeLoc(
-                          tree = tree,
-                          lefts = lefts.head #:: lefts.tail,
-                          rights = Empty,
-                          parents = parents.head #:: parents.tail
-                        ))
-                  case Empty =>
-                    G.apply2(fa.tree.traverse1(f), lefts1)((tree, lefts) =>
+          implicit G: Apply[G]) = fa.lefts match {
+        case l #:: ls =>
+          val lefts1 = ForestT1.traverse1(OneAnd(l, ls))(f)
+          fa.rights match {
+            case r #:: rs =>
+              val rights1 = ForestT1.traverse1(OneAnd(r, rs))(f)
+              fa.parents match {
+                case p #:: ps =>
+                  G.apply4(
+                    fa.tree.traverse1(f),
+                    lefts1,
+                    rights1,
+                    ParentsT1.traverse1(OneAnd(p, ps))(f))(
+                    (tree, lefts, rights, parents) =>
+                      TreeLoc(
+                        tree = tree,
+                        lefts = lefts.head #:: lefts.tail,
+                        rights = rights.head #:: rights.tail,
+                        parents = parents.head #:: parents.tail
+                      ))
+                case Empty =>
+                  G.apply3(fa.tree.traverse1(f), lefts1, rights1)(
+                    (tree, lefts, rights) =>
+                      TreeLoc(
+                        tree = tree,
+                        lefts = lefts.head #:: lefts.tail,
+                        rights = rights.head #:: rights.tail,
+                        parents = Empty
+                      ))
+              }
+            case Empty =>
+              fa.parents match {
+                case p #:: ps =>
+                  G.apply3(
+                    fa.tree.traverse1(f),
+                    lefts1,
+                    ParentsT1.traverse1(OneAnd(p, ps))(f))(
+                    (tree, lefts, parents) =>
                       TreeLoc(
                         tree = tree,
                         lefts = lefts.head #:: lefts.tail,
                         rights = Empty,
-                        parents = Empty
+                        parents = parents.head #:: parents.tail
                       ))
-                }
-            }
-          case Empty =>
-            fa.rights match {
-              case r #:: rs =>
-                val rights1 = ForestT1.traverse1(OneAnd(r, rs))(f)
-                fa.parents match {
-                  case p #:: ps =>
-                    G.apply3(
-                      fa.tree.traverse1(f),
-                      rights1,
-                      ParentsT1.traverse1(OneAnd(p, ps))(f))(
-                      (tree, rights, parents) =>
-                        TreeLoc(
-                          tree = tree,
-                          lefts = Empty,
-                          rights = rights.head #:: rights.tail,
-                          parents = parents.head #:: parents.tail
-                        ))
-                  case Empty =>
-                    G.apply2(fa.tree.traverse1(f), rights1)((tree, rights) =>
+                case Empty =>
+                  G.apply2(fa.tree.traverse1(f), lefts1)((tree, lefts) =>
+                    TreeLoc(
+                      tree = tree,
+                      lefts = lefts.head #:: lefts.tail,
+                      rights = Empty,
+                      parents = Empty
+                    ))
+              }
+          }
+        case Empty =>
+          fa.rights match {
+            case r #:: rs =>
+              val rights1 = ForestT1.traverse1(OneAnd(r, rs))(f)
+              fa.parents match {
+                case p #:: ps =>
+                  G.apply3(
+                    fa.tree.traverse1(f),
+                    rights1,
+                    ParentsT1.traverse1(OneAnd(p, ps))(f))(
+                    (tree, rights, parents) =>
                       TreeLoc(
                         tree = tree,
                         lefts = Empty,
                         rights = rights.head #:: rights.tail,
-                        parents = Empty
-                      ))
-                }
-              case Empty =>
-                fa.parents match {
-                  case p #:: ps =>
-                    G.apply2(
-                      fa.tree.traverse1(f),
-                      ParentsT1.traverse1(OneAnd(p, ps))(f))((tree, parents) =>
-                      TreeLoc(
-                        tree = tree,
-                        lefts = Empty,
-                        rights = Empty,
                         parents = parents.head #:: parents.tail
                       ))
-                  case Empty =>
-                    G.map(fa.tree.traverse1(f))(t =>
-                      TreeLoc(t, Empty, Empty, Empty))
-                }
-            }
-        }
+                case Empty =>
+                  G.apply2(fa.tree.traverse1(f), rights1)((tree, rights) =>
+                    TreeLoc(
+                      tree = tree,
+                      lefts = Empty,
+                      rights = rights.head #:: rights.tail,
+                      parents = Empty
+                    ))
+              }
+            case Empty =>
+              fa.parents match {
+                case p #:: ps =>
+                  G.apply2(
+                    fa.tree.traverse1(f),
+                    ParentsT1.traverse1(OneAnd(p, ps))(f))((tree, parents) =>
+                    TreeLoc(
+                      tree = tree,
+                      lefts = Empty,
+                      rights = Empty,
+                      parents = parents.head #:: parents.tail
+                    ))
+                case Empty =>
+                  G.map(fa.tree.traverse1(f))(t =>
+                    TreeLoc(t, Empty, Empty, Empty))
+              }
+          }
+      }
 
       override def foldMapRight1[A, B](fa: TreeLoc[A])(z: A => B)(
           f: (A, => B) => B) =
@@ -507,11 +500,10 @@ object TreeLoc extends TreeLocInstances {
       p: Parents[A]): TreeLoc[A] =
     TreeLoc(t, l, r, p)
 
-  def fromForest[A](ts: TreeForest[A]): Option[TreeLoc[A]] =
-    ts match {
-      case (Stream.cons(t, ts)) => Some(loc(t, Stream.Empty, ts, Stream.Empty))
-      case _                    => None
-    }
+  def fromForest[A](ts: TreeForest[A]): Option[TreeLoc[A]] = ts match {
+    case (Stream.cons(t, ts)) => Some(loc(t, Stream.Empty, ts, Stream.Empty))
+    case _                    => None
+  }
 }
 
 private trait TreeLocEqual[A] extends Equal[TreeLoc[A]] {

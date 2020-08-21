@@ -224,80 +224,79 @@ case object JsNull extends JsValue {
 
 trait Writer {
   /**/
-  def writeToBuffer(v: JsValue, sb: StringBuffer): Unit =
-    v match {
-      case JsString(s) =>
-        /**/
-        sb.append('"') /**/
-        /**/
-        var i = 0 /**/
-        while (i < s.length) { /**/
-          /**/
-          s.charAt(i) match {
-            case '\\' =>
-              /**/
-              sb.append("\\\\") /**/
-            case '"' => sb.append("\\\"")
-            case '/' =>
-              /**/
-              sb.append("\\/") /**/
-            case '\b' => sb.append("\\b")
-            case '\t' => sb.append("\\t")
-            case '\n' =>
-              /**/
-              sb.append("\\n") /**/
-            case '\f' => sb.append("\\f")
-            case '\r' => sb.append("\\r")
-            case c =>
-              if (c < ' ') {
-                val t = "000" + Integer.toHexString(c)
-                sb.append("\\u" + t.takeRight(4))
-              } else {
-                sb.append(c.toString)
-              }
-          }
-          i += 1
-        }
-        /**/
-        sb.append('"')
+  def writeToBuffer(v: JsValue, sb: StringBuffer): Unit = v match {
+    case JsString(s) =>
       /**/
-      case JsObject(kvs) =>
+      sb.append('"') /**/
+      /**/
+      var i = 0 /**/
+      while (i < s.length) { /**/
         /**/
-        sb.append("{")
-        /**/
-        var first = true
-        kvs.foreach(kv => {
-          /**/
-          val (k, v) = kv
-          if (first)
-            first = false
-          else
-            sb.append(", ")
-
-          /**/
-          writeToBuffer(JsString(k), sb)
-          sb.append(": ")
-          /**/
-          writeToBuffer(v, sb)
-        })
-        sb.append("}")
-
-      case JsArray(vs) =>
-        /**/
-        sb.append("[")
-        if (vs.length > 0) writeToBuffer(vs(0), sb)
-        var i = 1
-        while (i < vs.length) {
-          sb.append(", ")
-          writeToBuffer(vs(i), sb)
-          i += 1
+        s.charAt(i) match {
+          case '\\' =>
+            /**/
+            sb.append("\\\\") /**/
+          case '"' => sb.append("\\\"")
+          case '/' =>
+            /**/
+            sb.append("\\/") /**/
+          case '\b' => sb.append("\\b")
+          case '\t' => sb.append("\\t")
+          case '\n' =>
+            /**/
+            sb.append("\\n") /**/
+          case '\f' => sb.append("\\f")
+          case '\r' => sb.append("\\r")
+          case c =>
+            if (c < ' ') {
+              val t = "000" + Integer.toHexString(c)
+              sb.append("\\u" + t.takeRight(4))
+            } else {
+              sb.append(c.toString)
+            }
         }
-        sb.append("]")
-      case JsNumber(d) => sb.append(d)
-      case JsFalse     => sb.append("false")
-      case JsTrue      => sb.append("true")
-      case JsNull      => sb.append("null")
-    }
+        i += 1
+      }
+      /**/
+      sb.append('"')
+    /**/
+    case JsObject(kvs) =>
+      /**/
+      sb.append("{")
+      /**/
+      var first = true
+      kvs.foreach(kv => {
+        /**/
+        val (k, v) = kv
+        if (first)
+          first = false
+        else
+          sb.append(", ")
+
+        /**/
+        writeToBuffer(JsString(k), sb)
+        sb.append(": ")
+        /**/
+        writeToBuffer(v, sb)
+      })
+      sb.append("}")
+
+    case JsArray(vs) =>
+      /**/
+      sb.append("[")
+      if (vs.length > 0) writeToBuffer(vs(0), sb)
+      var i = 1
+      while (i < vs.length) {
+        sb.append(", ")
+        writeToBuffer(vs(i), sb)
+        i += 1
+      }
+      sb.append("]")
+    case JsNumber(d) => sb.append(d)
+    case JsFalse     => sb.append("false")
+    case JsTrue      => sb.append("true")
+    case JsNull      => sb.append("null")
+  }
   /**/
 }
 class Writer2 extends Writer {

@@ -48,17 +48,16 @@ case class PolySparse[@sp(Double) C] private[spire] (
     }
   }
 
-  def coeffsArray(implicit ring: Semiring[C]): Array[C] =
-    if (isZero) {
-      new Array[C](0)
-    } else {
-      val cs = new Array[C](degree + 1)
-      cfor(0)(_ < cs.length, _ + 1) { i => cs(i) = ring.zero }
-      cfor(0)(_ < exp.length, _ + 1) { i =>
-        cs(exp(i)) = coeff(i)
-      }
-      cs
+  def coeffsArray(implicit ring: Semiring[C]): Array[C] = if (isZero) {
+    new Array[C](0)
+  } else {
+    val cs = new Array[C](degree + 1)
+    cfor(0)(_ < cs.length, _ + 1) { i => cs(i) = ring.zero }
+    cfor(0)(_ < exp.length, _ + 1) { i =>
+      cs(exp(i)) = coeff(i)
     }
+    cs
+  }
 
   def nth(n: Int)(implicit ring: Semiring[C]): C = {
     val i = java.util.Arrays.binarySearch(exp, n)
@@ -119,22 +118,21 @@ case class PolySparse[@sp(Double) C] private[spire] (
   def isZero: Boolean =
     exp.isEmpty
 
-  def apply(x: C)(implicit ring: Semiring[C]): C =
-    if (isZero) {
-      ring.zero
-    } else if (exp.length == 1) {
-      if (exp(0) != 0) coeff(0) * (x pow exp(0)) else coeff(0)
-    } else {
-      // TODO: Rewrite this to be more like PolyDense.
-      val bits = expBits(x)
-      val e0 = exp(0)
-      val c0 = coeff(0)
-      var sum = if (e0 == 0) c0 else c0 * fastExp(bits, e0)
-      cfor(1)(_ < exp.length, _ + 1) { i =>
-        sum += coeff(i) * fastExp(bits, exp(i))
-      }
-      sum
+  def apply(x: C)(implicit ring: Semiring[C]): C = if (isZero) {
+    ring.zero
+  } else if (exp.length == 1) {
+    if (exp(0) != 0) coeff(0) * (x pow exp(0)) else coeff(0)
+  } else {
+    // TODO: Rewrite this to be more like PolyDense.
+    val bits = expBits(x)
+    val e0 = exp(0)
+    val c0 = coeff(0)
+    var sum = if (e0 == 0) c0 else c0 * fastExp(bits, e0)
+    cfor(1)(_ < exp.length, _ + 1) { i =>
+      sum += coeff(i) * fastExp(bits, exp(i))
     }
+    sum
+  }
 
   def derivative(implicit ring: Ring[C], eq: Eq[C]): Polynomial[C] = {
     val i0 = if (exp(0) == 0) 1 else 0
@@ -142,13 +140,12 @@ case class PolySparse[@sp(Double) C] private[spire] (
     val cs = new Array[C](es.length)
 
     @tailrec
-    def loop(i: Int, j: Int): Unit =
-      if (j < es.length) {
-        val e = exp(i)
-        es(j) = e - 1
-        cs(j) = e * coeff(i)
-        loop(i + 1, j + 1)
-      }
+    def loop(i: Int, j: Int): Unit = if (j < es.length) {
+      val e = exp(i)
+      es(j) = e - 1
+      cs(j) = e * coeff(i)
+      loop(i + 1, j + 1)
+    }
 
     loop(i0, 0)
     PolySparse.safe(es, cs)

@@ -95,9 +95,8 @@ trait TaskArgs extends CompilationPathProperty {
   protected var compilerPath: Option[Path] = None
   protected var destinationDir: Option[File] = None
 
-  def extraArgsFlat: Seq[String] =
-    extraArgs flatMap { a =>
-      val parts = a.getParts
-      if (parts eq null) Seq[String]() else parts.toSeq
-    }
+  def extraArgsFlat: Seq[String] = extraArgs flatMap { a =>
+    val parts = a.getParts
+    if (parts eq null) Seq[String]() else parts.toSeq
+  }
 }

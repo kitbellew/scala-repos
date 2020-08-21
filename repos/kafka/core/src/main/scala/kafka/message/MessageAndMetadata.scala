@@ -34,11 +34,9 @@ case class MessageAndMetadata[K, V](
   /**
     * Return the decoded message key and payload
     */
-  def key(): K =
-    if (rawMessage.key == null) null.asInstanceOf[K]
-    else keyDecoder.fromBytes(Utils.readBytes(rawMessage.key))
+  def key(): K = if (rawMessage.key == null) null.asInstanceOf[K]
+  else keyDecoder.fromBytes(Utils.readBytes(rawMessage.key))
 
-  def message(): V =
-    if (rawMessage.isNull) null.asInstanceOf[V]
-    else valueDecoder.fromBytes(Utils.readBytes(rawMessage.payload))
+  def message(): V = if (rawMessage.isNull) null.asInstanceOf[V]
+  else valueDecoder.fromBytes(Utils.readBytes(rawMessage.payload))
 }

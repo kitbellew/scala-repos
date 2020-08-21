@@ -46,9 +46,8 @@ class PasswordTestRecord private () extends Record[PasswordTestRecord] {
   def meta = PasswordTestRecord
 
   object password extends PasswordField(this) {
-    override def validations =
-      validateNonEmptyPassword _ ::
-        super.validations
+    override def validations = validateNonEmptyPassword _ ::
+      super.validations
 
     def validateNonEmptyPassword(v: String): List[FieldError] =
       v match {
@@ -276,14 +275,13 @@ class FieldTypeTestRecord private () extends Record[FieldTypeTestRecord] {
       ) // toInternetDate is lossy (doesn't retain time to ms precision)
   }
 
-  override def equals(other: Any): Boolean =
-    other match {
-      case that: FieldTypeTestRecord =>
-        that.fieldsToCompare.corresponds(this.fieldsToCompare) { (a, b) =>
-          a.name == b.name && a.valueBox == b.valueBox
-        }
-      case _ => false
-    }
+  override def equals(other: Any): Boolean = other match {
+    case that: FieldTypeTestRecord =>
+      that.fieldsToCompare.corresponds(this.fieldsToCompare) { (a, b) =>
+        a.name == b.name && a.valueBox == b.valueBox
+      }
+    case _ => false
+  }
 }
 
 object FieldTypeTestRecord
@@ -318,8 +316,8 @@ class CustomFormatDateTimeRecord private ()
 
   object customFormatDateTimeField extends DateTimeField(this) {
     override val formats = new DefaultFormats {
-      override def dateFormatter =
-        new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+      override def dateFormatter = new SimpleDateFormat(
+        "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     }
   }
 

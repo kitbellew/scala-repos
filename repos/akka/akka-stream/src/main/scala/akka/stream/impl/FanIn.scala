@@ -238,41 +238,38 @@ private[akka] object FanIn {
       override def isReady: Boolean = markedPending > 0
     }
 
-    def inputsAvailableFor(id: Int) =
-      new TransferState {
-        override def isCompleted: Boolean =
-          depleted(id) || cancelled(id) || (!pending(id) && completed(id))
-        override def isReady: Boolean = pending(id)
-      }
+    def inputsAvailableFor(id: Int) = new TransferState {
+      override def isCompleted: Boolean =
+        depleted(id) || cancelled(id) || (!pending(id) && completed(id))
+      override def isReady: Boolean = pending(id)
+    }
 
-    def inputsOrCompleteAvailableFor(id: Int) =
-      new TransferState {
-        override def isCompleted: Boolean = false
-        override def isReady: Boolean = pending(id) || depleted(id)
-      }
+    def inputsOrCompleteAvailableFor(id: Int) = new TransferState {
+      override def isCompleted: Boolean = false
+      override def isReady: Boolean = pending(id) || depleted(id)
+    }
 
     // FIXME: Eliminate re-wraps
-    def subreceive: SubReceive =
-      new SubReceive({
-        case OnSubscribe(id, subscription) ⇒
-          inputs(id).subreceive(ActorSubscriber.OnSubscribe(subscription))
-        case OnNext(id, elem) ⇒
-          if (marked(id) && !pending(id)) markedPending += 1
-          pending(id, on = true)
-          receivedInput = true
-          inputs(id).subreceive(ActorSubscriberMessage.OnNext(elem))
-        case OnComplete(id) ⇒
-          if (!pending(id)) {
-            if (marked(id) && !depleted(id)) markedDepleted += 1
-            depleted(id, on = true)
-            onDepleted(id)
-          }
-          registerCompleted(id)
-          inputs(id).subreceive(ActorSubscriberMessage.OnComplete)
-          if (!receivedInput && isAllCompleted) onCompleteWhenNoInput()
-        case OnError(id, e) ⇒
-          onError(id, e)
-      })
+    def subreceive: SubReceive = new SubReceive({
+      case OnSubscribe(id, subscription) ⇒
+        inputs(id).subreceive(ActorSubscriber.OnSubscribe(subscription))
+      case OnNext(id, elem) ⇒
+        if (marked(id) && !pending(id)) markedPending += 1
+        pending(id, on = true)
+        receivedInput = true
+        inputs(id).subreceive(ActorSubscriberMessage.OnNext(elem))
+      case OnComplete(id) ⇒
+        if (!pending(id)) {
+          if (marked(id) && !depleted(id)) markedDepleted += 1
+          depleted(id, on = true)
+          onDepleted(id)
+        }
+        registerCompleted(id)
+        inputs(id).subreceive(ActorSubscriberMessage.OnComplete)
+        if (!receivedInput && isAllCompleted) onCompleteWhenNoInput()
+      case OnError(id, e) ⇒
+        onError(id, e)
+    })
 
   }
 

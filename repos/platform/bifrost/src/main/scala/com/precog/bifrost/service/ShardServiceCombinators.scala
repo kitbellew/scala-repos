@@ -64,14 +64,13 @@ object ShardServiceCombinators extends Logging {
   trait NonNegativeLong {
     val BigIntPattern = """(0|[1-9][0-9]*)""".r
 
-    def unapply(str: String): Option[Long] =
-      str match {
-        case BigIntPattern(num) =>
-          val big = BigInt(num)
-          val n = big.toLong
-          if (big == BigInt(n)) Some(n) else None
-        case _ => None
-      }
+    def unapply(str: String): Option[Long] = str match {
+      case BigIntPattern(num) =>
+        val big = BigInt(num)
+        val n = big.toLong
+        if (big == BigInt(n)) Some(n) else None
+      case _ => None
+    }
   }
 
   private object Limit extends NonNegativeLong {
@@ -262,14 +261,13 @@ trait ShardServiceCombinators
         (request: HttpRequest[ByteChunk]) => {
           queryOpts(request) flatMap { opts =>
             def quirrelContent(
-                request: HttpRequest[ByteChunk]): Option[ByteChunk] =
-              for {
-                header <- request.headers.header[`Content-Type`]
-                if header.mimeTypes exists { t =>
-                  t == text / plain || (t.maintype == "text" && t.subtype == "x-quirrel-script")
-                }
-                content <- request.content
-              } yield content
+                request: HttpRequest[ByteChunk]): Option[ByteChunk] = for {
+              header <- request.headers.header[`Content-Type`]
+              if header.mimeTypes exists { t =>
+                t == text / plain || (t.maintype == "text" && t.subtype == "x-quirrel-script")
+              }
+              content <- request.content
+            } yield content
 
             next.service(request) map { f =>
               val serv: (

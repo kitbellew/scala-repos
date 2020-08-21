@@ -50,80 +50,75 @@ object ExpressionDagTests extends Properties("ExpressionDag") {
 
   def genConst: Gen[Formula[Int]] =
     Gen.chooseNum(Int.MinValue, Int.MaxValue).map(Constant(_))
-  def genInc: Gen[Formula[Int]] =
-    for {
-      by <- Gen.chooseNum(Int.MinValue, Int.MaxValue)
-      f <- Gen.lzy(genForm)
-    } yield Inc(f, by)
+  def genInc: Gen[Formula[Int]] = for {
+    by <- Gen.chooseNum(Int.MinValue, Int.MaxValue)
+    f <- Gen.lzy(genForm)
+  } yield Inc(f, by)
 
-  def genSum: Gen[Formula[Int]] =
-    for {
-      left <- Gen.lzy(genForm)
-      // We have to make dags, so select from the closure of left sometimes
-      right <- Gen.oneOf(genForm, Gen.oneOf(left.closure.toSeq))
-    } yield Sum(left, right)
-  def genProd: Gen[Formula[Int]] =
-    for {
-      left <- Gen.lzy(genForm)
-      // We have to make dags, so select from the closure of left sometimes
-      right <- Gen.oneOf(genForm, Gen.oneOf(left.closure.toSeq))
-    } yield Product(left, right)
+  def genSum: Gen[Formula[Int]] = for {
+    left <- Gen.lzy(genForm)
+    // We have to make dags, so select from the closure of left sometimes
+    right <- Gen.oneOf(genForm, Gen.oneOf(left.closure.toSeq))
+  } yield Sum(left, right)
+  def genProd: Gen[Formula[Int]] = for {
+    left <- Gen.lzy(genForm)
+    // We have to make dags, so select from the closure of left sometimes
+    right <- Gen.oneOf(genForm, Gen.oneOf(left.closure.toSeq))
+  } yield Product(left, right)
 
   type L[T] = Literal[T, Formula]
 
   /**
     * Here we convert our dag nodes into Literal[Formula, T]
     */
-  def toLiteral =
-    new GenFunction[Formula, L] {
-      def apply[T] = { (form: Formula[T]) =>
-        def recurse[T2](
-            memo: HMap[Formula, L],
-            f: Formula[T2]): (HMap[Formula, L], L[T2]) =
-          memo.get(f) match {
-            case Some(l) => (memo, l)
-            case None =>
-              f match {
-                case c @ Constant(_) =>
-                  def makeLit[T1](c: Constant[T1]) = {
-                    val lit: L[T1] = ConstLit(c)
-                    (memo + (c -> lit), lit)
-                  }
-                  makeLit(c)
-                case inc @ Inc(_, _) =>
-                  def makeLit[T1](i: Inc[T1]) = {
-                    val (m1, f1) = recurse(memo, i.in)
-                    val lit = UnaryLit(f1, { f: Formula[T1] => Inc(f, i.by) })
-                    (m1 + (i -> lit), lit)
-                  }
-                  makeLit(inc)
-                case sum @ Sum(_, _) =>
-                  def makeLit[T1](s: Sum[T1]) = {
-                    val (m1, fl) = recurse(memo, s.left)
-                    val (m2, fr) = recurse(m1, s.right)
-                    val lit = BinaryLit(
-                      fl,
-                      fr,
-                      { (f: Formula[T1], g: Formula[T1]) => Sum(f, g) })
-                    (m2 + (s -> lit), lit)
-                  }
-                  makeLit(sum)
-                case prod @ Product(_, _) =>
-                  def makeLit[T1](p: Product[T1]) = {
-                    val (m1, fl) = recurse(memo, p.left)
-                    val (m2, fr) = recurse(m1, p.right)
-                    val lit = BinaryLit(
-                      fl,
-                      fr,
-                      { (f: Formula[T1], g: Formula[T1]) => Product(f, g) })
-                    (m2 + (p -> lit), lit)
-                  }
-                  makeLit(prod)
+  def toLiteral = new GenFunction[Formula, L] {
+    def apply[T] = { (form: Formula[T]) =>
+      def recurse[T2](
+          memo: HMap[Formula, L],
+          f: Formula[T2]): (HMap[Formula, L], L[T2]) = memo.get(f) match {
+        case Some(l) => (memo, l)
+        case None =>
+          f match {
+            case c @ Constant(_) =>
+              def makeLit[T1](c: Constant[T1]) = {
+                val lit: L[T1] = ConstLit(c)
+                (memo + (c -> lit), lit)
               }
+              makeLit(c)
+            case inc @ Inc(_, _) =>
+              def makeLit[T1](i: Inc[T1]) = {
+                val (m1, f1) = recurse(memo, i.in)
+                val lit = UnaryLit(f1, { f: Formula[T1] => Inc(f, i.by) })
+                (m1 + (i -> lit), lit)
+              }
+              makeLit(inc)
+            case sum @ Sum(_, _) =>
+              def makeLit[T1](s: Sum[T1]) = {
+                val (m1, fl) = recurse(memo, s.left)
+                val (m2, fr) = recurse(m1, s.right)
+                val lit = BinaryLit(
+                  fl,
+                  fr,
+                  { (f: Formula[T1], g: Formula[T1]) => Sum(f, g) })
+                (m2 + (s -> lit), lit)
+              }
+              makeLit(sum)
+            case prod @ Product(_, _) =>
+              def makeLit[T1](p: Product[T1]) = {
+                val (m1, fl) = recurse(memo, p.left)
+                val (m2, fr) = recurse(m1, p.right)
+                val lit = BinaryLit(
+                  fl,
+                  fr,
+                  { (f: Formula[T1], g: Formula[T1]) => Product(f, g) })
+                (m2 + (p -> lit), lit)
+              }
+              makeLit(prod)
           }
-        recurse(HMap.empty[Formula, L], form)._2
       }
+      recurse(HMap.empty[Formula, L], form)._2
     }
+  }
 
   /**
     * Inc(Inc(a, b), c) = Inc(a, b + c)
@@ -160,13 +155,12 @@ object ExpressionDagTests extends Properties("ExpressionDag") {
 
   property("RemoveInc removes all Inc") = forAll(genForm) { form =>
     val noIncForm = ExpressionDag.applyRule(form, toLiteral, RemoveInc)
-    def noInc(f: Formula[Int]): Boolean =
-      f match {
-        case Constant(_)   => true
-        case Inc(_, _)     => false
-        case Sum(l, r)     => noInc(l) && noInc(r)
-        case Product(l, r) => noInc(l) && noInc(r)
-      }
+    def noInc(f: Formula[Int]): Boolean = f match {
+      case Constant(_)   => true
+      case Inc(_, _)     => false
+      case Sum(l, r)     => noInc(l) && noInc(r)
+      case Product(l, r) => noInc(l) && noInc(r)
+    }
     noInc(noIncForm) && (noIncForm.evaluate == form.evaluate)
   }
 
@@ -190,11 +184,10 @@ object ExpressionDagTests extends Properties("ExpressionDag") {
   }
 
   // The normal Inc gen recursively calls the general dag Generator
-  def genChainInc: Gen[Formula[Int]] =
-    for {
-      by <- Gen.chooseNum(Int.MinValue, Int.MaxValue)
-      chain <- genChain
-    } yield Inc(chain, by)
+  def genChainInc: Gen[Formula[Int]] = for {
+    by <- Gen.chooseNum(Int.MinValue, Int.MaxValue)
+    chain <- genChain
+  } yield Inc(chain, by)
 
   def genChain: Gen[Formula[Int]] =
     Gen.frequency((1, genConst), (3, genChainInc))

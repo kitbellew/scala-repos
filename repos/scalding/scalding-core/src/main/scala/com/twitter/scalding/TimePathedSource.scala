@@ -84,11 +84,10 @@ abstract class TimeSeqPathedSource(
     val tz: TimeZone)
     extends FileSource {
 
-  override def hdfsPaths =
-    patterns
-      .flatMap { pattern: String =>
-        Globifier(pattern)(tz).globify(dateRange)
-      }
+  override def hdfsPaths = patterns
+    .flatMap { pattern: String =>
+      Globifier(pattern)(tz).globify(dateRange)
+    }
 
   /**
     * Override this if you have for instance an hourly pattern but want to run every 6 hours.
@@ -125,9 +124,8 @@ abstract class TimeSeqPathedSource(
       good
     }
 
-  override def toString =
-    "TimeSeqPathedSource(" + patterns.mkString(",") +
-      ", " + dateRange + ", " + tz + ")"
+  override def toString = "TimeSeqPathedSource(" + patterns.mkString(",") +
+    ", " + dateRange + ", " + tz + ")"
 
   override def equals(that: Any) =
     (that != null) &&
@@ -136,10 +134,9 @@ abstract class TimeSeqPathedSource(
       this.dateRange == that.asInstanceOf[TimeSeqPathedSource].dateRange &&
       this.tz == that.asInstanceOf[TimeSeqPathedSource].tz
 
-  override def hashCode =
-    patterns.hashCode +
-      31 * dateRange.hashCode +
-      (31 ^ 2) * tz.hashCode
+  override def hashCode = patterns.hashCode +
+    31 * dateRange.hashCode +
+    (31 ^ 2) * tz.hashCode
 }
 
 /**
@@ -157,11 +154,10 @@ abstract class TimePathedSource(
   override def hdfsWritePath =
     TimePathedSource.writePathFor(pattern, dateRange, tz)
 
-  override def localPaths =
-    patterns
-      .flatMap { pattern: String =>
-        Globifier(pattern)(tz).globify(dateRange)
-      }
+  override def localPaths = patterns
+    .flatMap { pattern: String =>
+      Globifier(pattern)(tz).globify(dateRange)
+    }
 }
 
 /*
@@ -178,7 +174,6 @@ abstract class MostRecentGoodSource(p: String, dr: DateRange, t: TimeZone)
       .find(_._2)
       .map(_._1)
 
-  override def hdfsReadPathsAreGood(conf: Configuration) =
-    getPathStatuses(conf)
-      .exists(_._2)
+  override def hdfsReadPathsAreGood(conf: Configuration) = getPathStatuses(conf)
+    .exists(_._2)
 }

@@ -159,10 +159,9 @@ class ScLiteralImpl(node: ASTNode)
     }
   }
 
-  def getInjectedPsi =
-    if (getValue.isInstanceOf[String])
-      InjectedLanguageManager.getInstance(getProject).getInjectedPsiFiles(this)
-    else null
+  def getInjectedPsi = if (getValue.isInstanceOf[String])
+    InjectedLanguageManager.getInstance(getProject).getInjectedPsiFiles(this)
+  else null
 
   def processInjectedPsi(visitor: PsiLanguageInjectionHost.InjectedPsiVisitor) {
     InjectedLanguageUtil.enumerate(this, visitor)
@@ -175,21 +174,19 @@ class ScLiteralImpl(node: ASTNode)
     this
   }
 
-  def createLiteralTextEscaper =
-    if (isMultiLineString) new PassthroughLiteralEscaper(this)
-    else new ScLiteralEscaper(this)
+  def createLiteralTextEscaper = if (isMultiLineString)
+    new PassthroughLiteralEscaper(this)
+  else new ScLiteralEscaper(this)
 
-  def isString =
-    getFirstChild.getNode.getElementType match {
-      case ScalaTokenTypes.tMULTILINE_STRING | ScalaTokenTypes.tSTRING => true
-      case _                                                           => false
-    }
+  def isString = getFirstChild.getNode.getElementType match {
+    case ScalaTokenTypes.tMULTILINE_STRING | ScalaTokenTypes.tSTRING => true
+    case _                                                           => false
+  }
 
-  def isMultiLineString =
-    getFirstChild.getNode.getElementType match {
-      case ScalaTokenTypes.tMULTILINE_STRING => true
-      case _                                 => false
-    }
+  def isMultiLineString = getFirstChild.getNode.getElementType match {
+    case ScalaTokenTypes.tMULTILINE_STRING => true
+    case _                                 => false
+  }
 
   override def isSymbol: Boolean =
     getFirstChild.getNode.getElementType == ScalaTokenTypes.tSYMBOL

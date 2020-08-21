@@ -455,11 +455,10 @@ object Helpers
   * a default one that simply throws an exception if used.
   */
 private[play] object NoMaterializer extends Materializer {
-  def withNamePrefix(name: String) =
-    throw new UnsupportedOperationException("NoMaterializer cannot be named")
-  implicit def executionContext =
-    throw new UnsupportedOperationException(
-      "NoMaterializer does not have an execution context")
+  def withNamePrefix(name: String) = throw new UnsupportedOperationException(
+    "NoMaterializer cannot be named")
+  implicit def executionContext = throw new UnsupportedOperationException(
+    "NoMaterializer does not have an execution context")
   def materialize[Mat](runnable: Graph[ClosedShape, Mat]) =
     throw new UnsupportedOperationException(
       "No materializer was provided, probably when attempting to extract a response body, but that body is a streamed body and so requires a materializer to extract it.")

@@ -105,6 +105,6 @@ object Option {
   }
 
   implicit def java2ScalaOption[A](o: Option[A]): scala.Option[A] = o.asScala
-  implicit def scala2JavaOption[A](o: scala.Option[A]): Option[A] =
-    option(o.get)
+  implicit def scala2JavaOption[A](o: scala.Option[A]): Option[A] = option(
+    o.get)
 }

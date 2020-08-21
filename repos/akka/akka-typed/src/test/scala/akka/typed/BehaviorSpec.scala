@@ -34,8 +34,8 @@ class BehaviorSpec extends TypedSpec {
   }
   case class GetState(replyTo: ActorRef[State]) extends Command
   object GetState {
-    def apply()(implicit inbox: Inbox.SyncInbox[State]): GetState =
-      GetState(inbox.ref)
+    def apply()(implicit inbox: Inbox.SyncInbox[State]): GetState = GetState(
+      inbox.ref)
   }
   case class AuxPing(id: Int) extends Command {
     override def expectedResponse(ctx: ActorContext[Command]): Seq[Event] =
@@ -344,8 +344,8 @@ class BehaviorSpec extends TypedSpec {
       extends Messages
       with BecomeWithLifecycle
       with Stoppable {
-    override def behavior(monitor: ActorRef[Event]): Behavior[Command] =
-      mkFull(monitor)
+    override def behavior(monitor: ActorRef[Event]): Behavior[Command] = mkFull(
+      monitor)
   }
 
   object `A FullTotal Behavior`
@@ -442,23 +442,20 @@ class BehaviorSpec extends TypedSpec {
       SynchronousSelf(self ⇒ mkFull(monitor))
 
     private def behavior2(monitor: ActorRef[Event]): Behavior[Command] = {
-      def first(self: ActorRef[Command]) =
-        Tap.monitor(
-          inbox.ref,
-          Partial[Command] {
-            case AuxPing(id) ⇒ { self ! AuxPing(0); second(self) }
-          })
-      def second(self: ActorRef[Command]) =
+      def first(self: ActorRef[Command]) = Tap.monitor(
+        inbox.ref,
         Partial[Command] {
-          case AuxPing(0) ⇒ { self ! AuxPing(1); Same }
-          case AuxPing(1) ⇒ { self ! AuxPing(2); third(self) }
-        }
-      def third(self: ActorRef[Command]) =
-        Partial[Command] {
-          case AuxPing(2) ⇒ { self ! AuxPing(3); Unhandled }
-          case AuxPing(3) ⇒ { self ! Ping; Same }
-          case AuxPing(4) ⇒ { self ! Stop; Stopped }
-        }
+          case AuxPing(id) ⇒ { self ! AuxPing(0); second(self) }
+        })
+      def second(self: ActorRef[Command]) = Partial[Command] {
+        case AuxPing(0) ⇒ { self ! AuxPing(1); Same }
+        case AuxPing(1) ⇒ { self ! AuxPing(2); third(self) }
+      }
+      def third(self: ActorRef[Command]) = Partial[Command] {
+        case AuxPing(2) ⇒ { self ! AuxPing(3); Unhandled }
+        case AuxPing(3) ⇒ { self ! Ping; Same }
+        case AuxPing(4) ⇒ { self ! Stop; Stopped }
+      }
       SynchronousSelf(self ⇒ Or(mkFull(monitor), first(self)))
     }
 

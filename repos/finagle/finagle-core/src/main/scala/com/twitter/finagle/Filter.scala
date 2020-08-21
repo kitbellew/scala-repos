@@ -236,12 +236,11 @@ object Filter {
     */
   def choose[Req, Rep](
       pf: PartialFunction[Req, Filter[Req, Rep, Req, Rep]]
-  ): Filter[Req, Rep, Req, Rep] =
-    new Filter[Req, Rep, Req, Rep] {
-      private[this] val const: (Req => SimpleFilter[Req, Rep]) =
-        Function.const(Filter.identity[Req, Rep])
+  ): Filter[Req, Rep, Req, Rep] = new Filter[Req, Rep, Req, Rep] {
+    private[this] val const: (Req => SimpleFilter[Req, Rep]) =
+      Function.const(Filter.identity[Req, Rep])
 
-      def apply(request: Req, service: Service[Req, Rep]): Future[Rep] =
-        pf.applyOrElse(request, const)(request, service)
-    }
+    def apply(request: Req, service: Service[Req, Rep]): Future[Rep] =
+      pf.applyOrElse(request, const)(request, service)
+  }
 }

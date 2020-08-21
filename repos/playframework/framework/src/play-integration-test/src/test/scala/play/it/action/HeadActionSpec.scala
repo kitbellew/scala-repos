@@ -139,11 +139,10 @@ trait HeadActionSpec
       new RequestTaggingHandler with EssentialAction {
         def tagRequest(request: RequestHeader) =
           request.copy(tags = Map(RouteComments -> "some comment"))
-        def apply(rh: RequestHeader) =
-          Action {
-            Results.Ok.withHeaders(
-              rh.tags.get(RouteComments).map(RouteComments -> _).toSeq: _*)
-          }(rh)
+        def apply(rh: RequestHeader) = Action {
+          Results.Ok.withHeaders(
+            rh.tags.get(RouteComments).map(RouteComments -> _).toSeq: _*)
+        }(rh)
       }) { client =>
       val result = await(client.url("/get").head())
       result.status must_== OK

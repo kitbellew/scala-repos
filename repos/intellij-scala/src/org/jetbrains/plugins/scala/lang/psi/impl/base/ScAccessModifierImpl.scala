@@ -51,17 +51,16 @@ class ScAccessModifierImpl private (
     }
   }
 
-  def scope =
-    getReference match {
-      case null =>
-        PsiTreeUtil.getParentOfType(this, classOf[ScTypeDefinition], true)
-      case ref =>
-        ref.resolve() match {
-          case named: PsiNamedElement => named
-          case _ =>
-            PsiTreeUtil.getParentOfType(this, classOf[ScTypeDefinition], true)
-        }
-    }
+  def scope = getReference match {
+    case null =>
+      PsiTreeUtil.getParentOfType(this, classOf[ScTypeDefinition], true)
+    case ref =>
+      ref.resolve() match {
+        case named: PsiNamedElement => named
+        case _ =>
+          PsiTreeUtil.getParentOfType(this, classOf[ScTypeDefinition], true)
+      }
+  }
 
   //return ref only for {private|protected}[Id], not for private[this]
   def isProtected: Boolean = {
@@ -99,24 +98,22 @@ class ScAccessModifierImpl private (
           new TextRange(0, id.getTextLength)
             .shiftRight(id.getStartOffsetInParent)
         }
-        def getCanonicalText =
-          resolve() match {
-            case td: ScTypeDefinition => td.qualifiedName
-            case p: PsiPackage        => p.getQualifiedName
-            case _                    => null
-          }
+        def getCanonicalText = resolve() match {
+          case td: ScTypeDefinition => td.qualifiedName
+          case p: PsiPackage        => p.getQualifiedName
+          case _                    => null
+        }
         def isSoft = false
 
-        def handleElementRename(newElementName: String) =
-          doRename(newElementName)
-        def bindToElement(e: PsiElement) =
-          e match {
-            case td: ScTypeDefinition => doRename(td.name)
-            case p: PsiPackage        => doRename(p.name)
-            case _ =>
-              throw new IncorrectOperationException(
-                "cannot bind to anything but type definition or package")
-          }
+        def handleElementRename(newElementName: String) = doRename(
+          newElementName)
+        def bindToElement(e: PsiElement) = e match {
+          case td: ScTypeDefinition => doRename(td.name)
+          case p: PsiPackage        => doRename(p.name)
+          case _ =>
+            throw new IncorrectOperationException(
+              "cannot bind to anything but type definition or package")
+        }
 
         private def doRename(newName: String) = {
           val id = findChildByType[PsiElement](ScalaTokenTypes.tIDENTIFIER)
@@ -127,12 +124,11 @@ class ScAccessModifierImpl private (
           ScAccessModifierImpl.this
         }
 
-        def isReferenceTo(element: PsiElement) =
-          element match {
-            case td: ScTypeDefinition => td.name == text.get && resolve == td
-            case p: PsiPackage        => p.name == text.get && resolve == p
-            case _                    => false
-          }
+        def isReferenceTo(element: PsiElement) = element match {
+          case td: ScTypeDefinition => td.name == text.get && resolve == td
+          case p: PsiPackage        => p.name == text.get && resolve == p
+          case _                    => false
+        }
 
         def resolve(): PsiElement = {
           val name = text.get
@@ -146,14 +142,13 @@ class ScAccessModifierImpl private (
             null
           }
 
-          def find(e: PsiElement): PsiNamedElement =
-            e match {
-              case null                                    => null
-              case td: ScTypeDefinition if td.name == name => td
-              case file: ScalaFile                         => findPackage("")
-              case container: ScPackageContainer           => findPackage(container.fqn)
-              case _                                       => find(e.getParent)
-            }
+          def find(e: PsiElement): PsiNamedElement = e match {
+            case null                                    => null
+            case td: ScTypeDefinition if td.name == name => td
+            case file: ScalaFile                         => findPackage("")
+            case container: ScPackageContainer           => findPackage(container.fqn)
+            case _                                       => find(e.getParent)
+          }
           find(getParent)
         }
 

@@ -79,34 +79,33 @@ object FileWatchService {
   def defaultWatchService(
       targetDirectory: File,
       pollDelayMillis: Int,
-      logger: LoggerProxy): FileWatchService =
-    new FileWatchService {
-      lazy val delegate = os match {
-        // If Windows or Linux and JDK7, use JDK7 watch service
-        case (Windows | Linux) if Properties.isJavaAtLeast("1.7") =>
-          new JDK7FileWatchService(logger)
-        // If Windows, Linux or OSX, use JNotify but fall back to SBT
-        case (Windows | Linux | OSX) =>
-          JNotifyFileWatchService(targetDirectory).recover { case e =>
-            logger.warn("Error loading JNotify watch service: " + e.getMessage)
-            logger.trace(e)
-            new PollingFileWatchService(pollDelayMillis)
-          }.get
-        case _ => new PollingFileWatchService(pollDelayMillis)
-      }
-
-      def watch(filesToWatch: Seq[File], onChange: () => Unit) =
-        delegate.watch(filesToWatch, onChange)
+      logger: LoggerProxy): FileWatchService = new FileWatchService {
+    lazy val delegate = os match {
+      // If Windows or Linux and JDK7, use JDK7 watch service
+      case (Windows | Linux) if Properties.isJavaAtLeast("1.7") =>
+        new JDK7FileWatchService(logger)
+      // If Windows, Linux or OSX, use JNotify but fall back to SBT
+      case (Windows | Linux | OSX) =>
+        JNotifyFileWatchService(targetDirectory).recover { case e =>
+          logger.warn("Error loading JNotify watch service: " + e.getMessage)
+          logger.trace(e)
+          new PollingFileWatchService(pollDelayMillis)
+        }.get
+      case _ => new PollingFileWatchService(pollDelayMillis)
     }
 
-  def jnotify(targetDirectory: File): FileWatchService =
-    optional(JNotifyFileWatchService(targetDirectory))
+    def watch(filesToWatch: Seq[File], onChange: () => Unit) =
+      delegate.watch(filesToWatch, onChange)
+  }
 
-  def jdk7(logger: LoggerProxy): FileWatchService =
-    new JDK7FileWatchService(logger)
+  def jnotify(targetDirectory: File): FileWatchService = optional(
+    JNotifyFileWatchService(targetDirectory))
 
-  def sbt(pollDelayMillis: Int): FileWatchService =
-    new PollingFileWatchService(pollDelayMillis)
+  def jdk7(logger: LoggerProxy): FileWatchService = new JDK7FileWatchService(
+    logger)
+
+  def sbt(pollDelayMillis: Int): FileWatchService = new PollingFileWatchService(
+    pollDelayMillis)
 
   def optional(watchService: Try[FileWatchService]): FileWatchService =
     new OptionalFileWatchServiceDelegate(watchService)
@@ -123,10 +122,9 @@ private[play] class PollingFileWatchService(val pollDelayMillis: Int)
     extends FileWatchService {
 
   // Work around for https://github.com/sbt/sbt/issues/1973
-  def distinctPathFinder(pathFinder: PathFinder) =
-    PathFinder {
-      pathFinder.get.map(p => (p.asFile.getAbsolutePath, p)).toMap.values
-    }
+  def distinctPathFinder(pathFinder: PathFinder) = PathFinder {
+    pathFinder.get.map(p => (p.asFile.getAbsolutePath, p)).toMap.values
+  }
 
   def watch(filesToWatch: Seq[File], onChange: () => Unit) = {
 

@@ -121,8 +121,9 @@ final class KafkaRelayAgent(
   private val stopPromise = Promise[PrecogUnit]()
   private implicit val M: Monad[Future] = new FutureMonad(executor)
 
-  def stop: Future[PrecogUnit] =
-    Future({ runnable = false }) flatMap { _ => stopPromise }
+  def stop: Future[PrecogUnit] = Future({ runnable = false }) flatMap { _ =>
+    stopPromise
+  }
 
   override def run() {
     if (runnable) {

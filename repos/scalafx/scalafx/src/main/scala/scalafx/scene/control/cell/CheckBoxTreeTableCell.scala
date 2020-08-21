@@ -131,9 +131,8 @@ object CheckBoxTreeTableCell {
     since = "8.0")
   def forTreeTableColumn[S, T](
       selectedProperty: JCallIntToBool,
-      showLabel: Boolean) =
-    jfxscc.CheckBoxTreeTableCell
-      .forTreeTableColumn[S, T](selectedProperty, showLabel)
+      showLabel: Boolean) = jfxscc.CheckBoxTreeTableCell
+    .forTreeTableColumn[S, T](selectedProperty, showLabel)
 
   /**
     * $FTTC
@@ -165,9 +164,8 @@ object CheckBoxTreeTableCell {
     since = "8.0")
   def forTreeTableColumn[S, T](
       selectedProperty: JCallIntToBool,
-      converter: jfxu.StringConverter[T]) =
-    jfxscc.CheckBoxTreeTableCell
-      .forTreeTableColumn[S, T](selectedProperty, converter)
+      converter: jfxu.StringConverter[T]) = jfxscc.CheckBoxTreeTableCell
+    .forTreeTableColumn[S, T](selectedProperty, converter)
 
   /**
     * $FTTC

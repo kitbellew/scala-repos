@@ -335,10 +335,9 @@ object WebSocketFlowHandler {
   }
 
   def parseCloseMessage(data: ByteString): CloseMessage = {
-    def invalid(reason: String) =
-      CloseMessage(
-        Some(CloseCodes.ProtocolError),
-        s"Peer sent illegal close frame ($reason).")
+    def invalid(reason: String) = CloseMessage(
+      Some(CloseCodes.ProtocolError),
+      s"Peer sent illegal close frame ($reason).")
 
     if (data.length >= 2) {
       val code = ((data(0) & 0xff) << 8) | (data(1) & 0xff)

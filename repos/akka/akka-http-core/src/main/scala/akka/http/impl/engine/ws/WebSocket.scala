@@ -200,31 +200,31 @@ private[http] object WebSocket {
 
     val shape = new FanOutShape2(in, bypass, user)
 
-    def createLogic(effectiveAttributes: Attributes) =
-      new GraphStageLogic(shape) {
+    def createLogic(effectiveAttributes: Attributes) = new GraphStageLogic(
+      shape) {
 
-        setHandler(
-          in,
-          new InHandler {
-            override def onPush(): Unit = {
-              grab(in) match {
-                case b: BypassEvent with MessagePart ⇒
-                  emit(bypass, b, () ⇒ emit(user, b, pullIn))
-                case b: BypassEvent ⇒ emit(bypass, b, pullIn)
-                case m: MessagePart ⇒ emit(user, m, pullIn)
-              }
+      setHandler(
+        in,
+        new InHandler {
+          override def onPush(): Unit = {
+            grab(in) match {
+              case b: BypassEvent with MessagePart ⇒
+                emit(bypass, b, () ⇒ emit(user, b, pullIn))
+              case b: BypassEvent ⇒ emit(bypass, b, pullIn)
+              case m: MessagePart ⇒ emit(user, m, pullIn)
             }
           }
-        )
-        val pullIn = () ⇒ tryPull(in)
-
-        setHandler(bypass, eagerTerminateOutput)
-        setHandler(user, ignoreTerminateOutput)
-
-        override def preStart(): Unit = {
-          pullIn()
         }
+      )
+      val pullIn = () ⇒ tryPull(in)
+
+      setHandler(bypass, eagerTerminateOutput)
+      setHandler(user, ignoreTerminateOutput)
+
+      override def preStart(): Unit = {
+        pullIn()
       }
+    }
   }
 
   private case object BypassMerge
@@ -238,29 +238,29 @@ private[http] object WebSocket {
 
     val shape = new FanInShape3(bypass, user, tick, out)
 
-    def createLogic(effectiveAttributes: Attributes) =
-      new GraphStageLogic(shape) {
+    def createLogic(effectiveAttributes: Attributes) = new GraphStageLogic(
+      shape) {
 
-        class PassAlong[T <: AnyRef](from: Inlet[T])
-            extends InHandler
-            with (() ⇒ Unit) {
-          override def apply(): Unit = tryPull(from)
-          override def onPush(): Unit = emit(out, grab(from), this)
-          override def onUpstreamFinish(): Unit =
-            if (isClosed(bypass) && isClosed(user)) completeStage()
-        }
-        setHandler(bypass, new PassAlong(bypass))
-        setHandler(user, new PassAlong(user))
-        passAlong(tick, out, doFinish = false, doFail = false)
-
-        setHandler(out, eagerTerminateOutput)
-
-        override def preStart(): Unit = {
-          pull(bypass)
-          pull(user)
-          pull(tick)
-        }
+      class PassAlong[T <: AnyRef](from: Inlet[T])
+          extends InHandler
+          with (() ⇒ Unit) {
+        override def apply(): Unit = tryPull(from)
+        override def onPush(): Unit = emit(out, grab(from), this)
+        override def onUpstreamFinish(): Unit =
+          if (isClosed(bypass) && isClosed(user)) completeStage()
       }
+      setHandler(bypass, new PassAlong(bypass))
+      setHandler(user, new PassAlong(user))
+      passAlong(tick, out, doFinish = false, doFail = false)
+
+      setHandler(out, eagerTerminateOutput)
+
+      override def preStart(): Unit = {
+        pull(bypass)
+        pull(user)
+        pull(tick)
+      }
+    }
   }
 
   private case object LiftCompletions
@@ -272,24 +272,24 @@ private[http] object WebSocket {
 
     val shape = new FlowShape(in, out)
 
-    def createLogic(effectiveAttributes: Attributes) =
-      new GraphStageLogic(shape) {
-        setHandler(
-          out,
-          new OutHandler {
-            override def onPull(): Unit = pull(in)
-          })
-        setHandler(
-          in,
-          new InHandler {
-            override def onPush(): Unit = push(out, grab(in))
-            override def onUpstreamFinish(): Unit =
-              emit(out, UserHandlerCompleted, () ⇒ completeStage())
-            override def onUpstreamFailure(ex: Throwable): Unit =
-              emit(out, UserHandlerErredOut(ex), () ⇒ completeStage())
-          }
-        )
-      }
+    def createLogic(effectiveAttributes: Attributes) = new GraphStageLogic(
+      shape) {
+      setHandler(
+        out,
+        new OutHandler {
+          override def onPull(): Unit = pull(in)
+        })
+      setHandler(
+        in,
+        new InHandler {
+          override def onPush(): Unit = push(out, grab(in))
+          override def onUpstreamFinish(): Unit =
+            emit(out, UserHandlerCompleted, () ⇒ completeStage())
+          override def onUpstreamFailure(ex: Throwable): Unit =
+            emit(out, UserHandlerErredOut(ex), () ⇒ completeStage())
+        }
+      )
+    }
   }
 
   case object Tick

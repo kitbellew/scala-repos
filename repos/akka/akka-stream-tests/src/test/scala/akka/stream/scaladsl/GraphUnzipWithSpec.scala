@@ -35,16 +35,15 @@ class GraphUnzipWithSpec extends AkkaSpec {
 
   val f: (Int ⇒ (Int, String)) = b ⇒ (b + b, b + "+" + b)
 
-  def fixture(b: GraphDSL.Builder[_]): Fixture =
-    new Fixture(b) {
-      val unzip = b.add(UnzipWith[Int, Int, String](f))
+  def fixture(b: GraphDSL.Builder[_]): Fixture = new Fixture(b) {
+    val unzip = b.add(UnzipWith[Int, Int, String](f))
 
-      override def in: Inlet[Int] = unzip.in
+    override def in: Inlet[Int] = unzip.in
 
-      override def left: Outlet[Int] = unzip.out0
+    override def left: Outlet[Int] = unzip.out0
 
-      override def right: Outlet[String] = unzip.out1
-    }
+    override def right: Outlet[String] = unzip.out1
+  }
 
   def setup(p: Publisher[Int]) = {
     val leftSubscriber = TestSubscriber.probe[LeftOutput]()

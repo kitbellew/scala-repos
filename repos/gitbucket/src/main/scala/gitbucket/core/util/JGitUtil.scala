@@ -102,18 +102,17 @@ object JGitUtil {
       committerName: String,
       committerEmailAddress: String) {
 
-    def this(rev: org.eclipse.jgit.revwalk.RevCommit) =
-      this(
-        rev.getName,
-        rev.getShortMessage,
-        rev.getFullMessage,
-        rev.getParents().map(_.name).toList,
-        rev.getAuthorIdent.getWhen,
-        rev.getAuthorIdent.getName,
-        rev.getAuthorIdent.getEmailAddress,
-        rev.getCommitterIdent.getWhen,
-        rev.getCommitterIdent.getName,
-        rev.getCommitterIdent.getEmailAddress)
+    def this(rev: org.eclipse.jgit.revwalk.RevCommit) = this(
+      rev.getName,
+      rev.getShortMessage,
+      rev.getFullMessage,
+      rev.getParents().map(_.name).toList,
+      rev.getAuthorIdent.getWhen,
+      rev.getAuthorIdent.getName,
+      rev.getAuthorIdent.getEmailAddress,
+      rev.getCommitterIdent.getWhen,
+      rev.getCommitterIdent.getName,
+      rev.getCommitterIdent.getEmailAddress)
 
     val summary = getSummaryMessage(fullMessage, shortMessage)
 
@@ -315,10 +314,9 @@ object JGitUtil {
 
       def tupleAdd(
           tuple: (ObjectId, FileMode, String, Option[String]),
-          rev: RevCommit) =
-        tuple match {
-          case (oid, fmode, name, opt) => (oid, fmode, name, opt, rev)
-        }
+          rev: RevCommit) = tuple match {
+        case (oid, fmode, name, opt) => (oid, fmode, name, opt, rev)
+      }
 
       @tailrec
       def findLastCommits(
@@ -989,20 +987,19 @@ object JGitUtil {
   def getContentFromId(
       git: Git,
       id: ObjectId,
-      fetchLargeFile: Boolean): Option[Array[Byte]] =
-    try {
-      using(git.getRepository.getObjectDatabase) { db =>
-        val loader = db.open(id)
-        if (loader.isLarge || (fetchLargeFile == false && FileUtil.isLarge(
-            loader.getSize))) {
-          None
-        } else {
-          Some(loader.getBytes)
-        }
+      fetchLargeFile: Boolean): Option[Array[Byte]] = try {
+    using(git.getRepository.getObjectDatabase) { db =>
+      val loader = db.open(id)
+      if (loader.isLarge || (fetchLargeFile == false && FileUtil.isLarge(
+          loader.getSize))) {
+        None
+      } else {
+        Some(loader.getBytes)
       }
-    } catch {
-      case e: MissingObjectException => None
     }
+  } catch {
+    case e: MissingObjectException => None
+  }
 
   /**
     * Get objectLoader of the given object id from the Git repository.
@@ -1013,29 +1010,27 @@ object JGitUtil {
     * @return None if object does not exist
     */
   def getObjectLoaderFromId[A](git: Git, id: ObjectId)(
-      f: ObjectLoader => A): Option[A] =
-    try {
-      using(git.getRepository.getObjectDatabase) { db =>
-        Some(f(db.open(id)))
-      }
-    } catch {
-      case e: MissingObjectException => None
+      f: ObjectLoader => A): Option[A] = try {
+    using(git.getRepository.getObjectDatabase) { db =>
+      Some(f(db.open(id)))
     }
+  } catch {
+    case e: MissingObjectException => None
+  }
 
   /**
     * Returns all commit id in the specified repository.
     */
-  def getAllCommitIds(git: Git): Seq[String] =
-    if (isEmpty(git)) {
-      Nil
-    } else {
-      val existIds = new scala.collection.mutable.ListBuffer[String]()
-      val i = git.log.all.call.iterator
-      while (i.hasNext) {
-        existIds += i.next.name
-      }
-      existIds.toSeq
+  def getAllCommitIds(git: Git): Seq[String] = if (isEmpty(git)) {
+    Nil
+  } else {
+    val existIds = new scala.collection.mutable.ListBuffer[String]()
+    val i = git.log.all.call.iterator
+    while (i.hasNext) {
+      existIds += i.next.name
     }
+    existIds.toSeq
+  }
 
   def processTree(git: Git, id: ObjectId)(
       f: (String, CanonicalTreeParser) => Unit) = {

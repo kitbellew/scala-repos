@@ -27,11 +27,10 @@ object ScTypeUtil {
   //for java
   def presentableText(typez: ScType) = ScType.presentableText(typez)
 
-  def stripTypeArgs(tp: ScType): ScType =
-    tp match {
-      case ScParameterizedType(designator, _) => designator
-      case t                                  => t
-    }
+  def stripTypeArgs(tp: ScType): ScType = tp match {
+    case ScParameterizedType(designator, _) => designator
+    case t                                  => t
+  }
 
   case class AliasType(
       ta: ScTypeAlias,

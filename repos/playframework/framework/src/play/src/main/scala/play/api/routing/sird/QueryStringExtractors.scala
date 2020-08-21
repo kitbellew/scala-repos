@@ -15,14 +15,14 @@ class RequiredQueryStringParameter(paramName: String)
 
 class OptionalQueryStringParameter(paramName: String)
     extends QueryStringParameterExtractor[Option[String]] {
-  def unapply(qs: QueryString): Option[Option[String]] =
-    Some(qs.get(paramName).flatMap(_.headOption))
+  def unapply(qs: QueryString): Option[Option[String]] = Some(
+    qs.get(paramName).flatMap(_.headOption))
 }
 
 class SeqQueryStringParameter(paramName: String)
     extends QueryStringParameterExtractor[Seq[String]] {
-  def unapply(qs: QueryString): Option[Seq[String]] =
-    Some(qs.getOrElse(paramName, Nil))
+  def unapply(qs: QueryString): Option[Seq[String]] = Some(
+    qs.getOrElse(paramName, Nil))
 }
 
 trait QueryStringParameterExtractor[T] {

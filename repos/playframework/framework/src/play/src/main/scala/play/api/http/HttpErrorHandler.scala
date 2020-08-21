@@ -165,17 +165,16 @@ class DefaultHttpErrorHandler(
   def onClientError(
       request: RequestHeader,
       statusCode: Int,
-      message: String): Future[Result] =
-    statusCode match {
-      case BAD_REQUEST => onBadRequest(request, message)
-      case FORBIDDEN   => onForbidden(request, message)
-      case NOT_FOUND   => onNotFound(request, message)
-      case clientError if statusCode >= 400 && statusCode < 500 =>
-        onOtherClientError(request, statusCode, message)
-      case nonClientError =>
-        throw new IllegalArgumentException(
-          s"onClientError invoked with non client error status code $statusCode: $message")
-    }
+      message: String): Future[Result] = statusCode match {
+    case BAD_REQUEST => onBadRequest(request, message)
+    case FORBIDDEN   => onForbidden(request, message)
+    case NOT_FOUND   => onNotFound(request, message)
+    case clientError if statusCode >= 400 && statusCode < 500 =>
+      onOtherClientError(request, statusCode, message)
+    case nonClientError =>
+      throw new IllegalArgumentException(
+        s"onClientError invoked with non client error status code $statusCode: $message")
+  }
 
   /**
     * Invoked when a client makes a bad request.
@@ -331,27 +330,26 @@ object HttpErrorHandlerExceptions {
   def throwableToUsefulException(
       sourceMapper: Option[SourceMapper],
       isProd: Boolean,
-      throwable: Throwable): UsefulException =
-    throwable match {
-      case useful: UsefulException => useful
-      case e: ExecutionException =>
-        throwableToUsefulException(sourceMapper, isProd, e.getCause)
-      case prodException if isProd =>
-        UnexpectedException(unexpected = Some(prodException))
-      case other =>
-        val source = sourceMapper.flatMap(_.sourceFor(other))
+      throwable: Throwable): UsefulException = throwable match {
+    case useful: UsefulException => useful
+    case e: ExecutionException =>
+      throwableToUsefulException(sourceMapper, isProd, e.getCause)
+    case prodException if isProd =>
+      UnexpectedException(unexpected = Some(prodException))
+    case other =>
+      val source = sourceMapper.flatMap(_.sourceFor(other))
 
-        new PlayException.ExceptionSource(
-          "Execution exception",
-          "[%s: %s]".format(other.getClass.getSimpleName, other.getMessage),
-          other) {
-          def line =
-            source.flatMap(_._2).map(_.asInstanceOf[java.lang.Integer]).orNull
-          def position = null
-          def input = source.map(_._1).map(PlayIO.readFileAsString).orNull
-          def sourceName = source.map(_._1.getAbsolutePath).orNull
-        }
-    }
+      new PlayException.ExceptionSource(
+        "Execution exception",
+        "[%s: %s]".format(other.getClass.getSimpleName, other.getMessage),
+        other) {
+        def line =
+          source.flatMap(_._2).map(_.asInstanceOf[java.lang.Integer]).orNull
+        def position = null
+        def input = source.map(_._1).map(PlayIO.readFileAsString).orNull
+        def sourceName = source.map(_._1.getAbsolutePath).orNull
+      }
+  }
 }
 
 /**
@@ -369,9 +367,8 @@ object DefaultHttpErrorHandler
   */
 object LazyHttpErrorHandler extends HttpErrorHandler {
 
-  private def errorHandler =
-    Play.privateMaybeApplication.fold[HttpErrorHandler](
-      DefaultHttpErrorHandler)(_.errorHandler)
+  private def errorHandler = Play.privateMaybeApplication
+    .fold[HttpErrorHandler](DefaultHttpErrorHandler)(_.errorHandler)
 
   def onClientError(request: RequestHeader, statusCode: Int, message: String) =
     errorHandler.onClientError(request, statusCode, message)

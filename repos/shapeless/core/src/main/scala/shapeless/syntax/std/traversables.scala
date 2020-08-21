@@ -45,6 +45,6 @@ final class TraversableOps[T <% GenTraversable[_]](t: T) {
 final class TraversableOps2[CC[T] <: GenTraversable[T], A](as: CC[A]) {
   import ops.traversable._
 
-  def toSizedHList(n: Nat)(implicit ts: ToSizedHList[CC, A, n.N]): ts.Out =
-    ts(as)
+  def toSizedHList(n: Nat)(implicit ts: ToSizedHList[CC, A, n.N]): ts.Out = ts(
+    as)
 }

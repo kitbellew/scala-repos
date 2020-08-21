@@ -75,11 +75,10 @@ object LiftedEmbedding extends App {
 //#tabledef
 //#foreignkeynav
 //#foreignkey
-    def supplier =
-      foreignKey("SUP_FK", supID, suppliers)(
-        _.id,
-        onUpdate = ForeignKeyAction.Restrict,
-        onDelete = ForeignKeyAction.Cascade)
+    def supplier = foreignKey("SUP_FK", supID, suppliers)(
+      _.id,
+      onUpdate = ForeignKeyAction.Restrict,
+      onDelete = ForeignKeyAction.Cascade)
 //#foreignkeynav
     // compiles to SQL:
     //   alter table "COFFEES" add constraint "SUP_FK" foreign key("SUP_ID")
@@ -137,12 +136,11 @@ object LiftedEmbedding extends App {
   }
   val users = TableQuery[Users]
   //#mappedtable
-  def usersForInsert =
-    users.map(u =>
-      (u.first, u.last).shaped <>
-        ({ t => User(None, t._1, t._2) }, { (u: User) =>
-          Some((u.first, u.last))
-        }))
+  def usersForInsert = users.map(u =>
+    (u.first, u.last).shaped <>
+      ({ t => User(None, t._1, t._2) }, { (u: User) =>
+        Some((u.first, u.last))
+      }))
 //#insert2
 
 //#index
@@ -558,17 +556,16 @@ object LiftedEmbedding extends App {
           P <: Pair[_, _]](val shapes: Seq[Shape[_, _, _, _]])
           extends MappedScalaProductShape[Level, Pair[_, _], M, U, P] {
         def buildValue(elems: IndexedSeq[Any]) = Pair(elems(0), elems(1))
-        def copy(shapes: Seq[Shape[_ <: ShapeLevel, _, _, _]]) =
-          new PairShape(shapes)
+        def copy(shapes: Seq[Shape[_ <: ShapeLevel, _, _, _]]) = new PairShape(
+          shapes)
       }
 
       implicit def pairShape[Level <: ShapeLevel, M1, M2, U1, U2, P1, P2](
           implicit
           s1: Shape[_ <: Level, M1, U1, P1],
           s2: Shape[_ <: Level, M2, U2, P2]
-      ) =
-        new PairShape[Level, Pair[M1, M2], Pair[U1, U2], Pair[P1, P2]](
-          Seq(s1, s2))
+      ) = new PairShape[Level, Pair[M1, M2], Pair[U1, U2], Pair[P1, P2]](
+        Seq(s1, s2))
       //#recordtype1
 
       //#recordtype2
@@ -646,14 +643,13 @@ object LiftedEmbedding extends App {
       class CRow(tag: Tag) extends Table[C](tag, "shape_c") {
         def id = column[Int]("id")
         def s = column[String]("s")
-        def projection =
-          LiftedC(
-            Pair(
-              column("p1"),
-              column("p2")
-            ), // (cols defined inline, type inferred)
-            LiftedB(id, s)
-          )
+        def projection = LiftedC(
+          Pair(
+            column("p1"),
+            column("p2")
+          ), // (cols defined inline, type inferred)
+          LiftedB(id, s)
+        )
         def * = projection
       }
       val cs = TableQuery[CRow]

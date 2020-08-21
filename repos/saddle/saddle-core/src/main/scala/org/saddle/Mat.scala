@@ -258,14 +258,14 @@ trait Mat[@spec(Boolean, Int, Long, Double) A]
   /**
     * Yields a matrix without those rows that have NA
     */
-  def dropRowsWithNA(implicit ev: ST[A]): Mat[A] =
-    withoutRows(rowsWithNA.toArray)
+  def dropRowsWithNA(implicit ev: ST[A]): Mat[A] = withoutRows(
+    rowsWithNA.toArray)
 
   /**
     * Yields a matrix without those cols that have NA
     */
-  def dropColsWithNA(implicit ev: ST[A]): Mat[A] =
-    withoutCols(colsWithNA.toArray)
+  def dropColsWithNA(implicit ev: ST[A]): Mat[A] = withoutCols(
+    colsWithNA.toArray)
 
   /**
     * Returns a specific column of the Mat as a Vec
@@ -387,22 +387,20 @@ trait Mat[@spec(Boolean, Int, Long, Double) A]
   def toVec: Vec[A]
 
   private var flatCache: Option[Vec[A]] = None
-  private def flatten(implicit st: ST[A]): Vec[A] =
-    flatCache.getOrElse {
-      this.synchronized {
-        flatCache = Some(toVec)
-        flatCache.get
-      }
+  private def flatten(implicit st: ST[A]): Vec[A] = flatCache.getOrElse {
+    this.synchronized {
+      flatCache = Some(toVec)
+      flatCache.get
     }
+  }
 
   private var flatCacheT: Option[Vec[A]] = None
-  private def flattenT(implicit st: ST[A]): Vec[A] =
-    flatCacheT.getOrElse {
-      this.synchronized {
-        flatCacheT = Some(T.toVec)
-        flatCacheT.get
-      }
+  private def flattenT(implicit st: ST[A]): Vec[A] = flatCacheT.getOrElse {
+    this.synchronized {
+      flatCacheT = Some(T.toVec)
+      flatCacheT.get
     }
+  }
 
   // access like vector in row-major order
   private[saddle] def apply(i: Int): A
@@ -474,21 +472,20 @@ trait Mat[@spec(Boolean, Int, Long, Double) A]
     * Row-by-row equality check of all values.
     * NB: to avoid boxing, overwrite in child classes
     */
-  override def equals(o: Any): Boolean =
-    o match {
-      case rv: Mat[_] =>
-        (this eq rv) || this.numRows == rv.numRows && this.numCols == rv.numCols && {
-          var i = 0
-          var eq = true
-          while (eq && i < length) {
-            eq &&= (apply(i) == rv(i) || this.scalarTag.isMissing(
-              apply(i)) && rv.scalarTag.isMissing(rv(i)))
-            i += 1
-          }
-          eq
+  override def equals(o: Any): Boolean = o match {
+    case rv: Mat[_] =>
+      (this eq rv) || this.numRows == rv.numRows && this.numCols == rv.numCols && {
+        var i = 0
+        var eq = true
+        while (eq && i < length) {
+          eq &&= (apply(i) == rv(i) || this.scalarTag.isMissing(
+            apply(i)) && rv.scalarTag.isMissing(rv(i)))
+          i += 1
         }
-      case _ => false
-    }
+        eq
+      }
+    case _ => false
+  }
 }
 
 object Mat extends BinOpMat {

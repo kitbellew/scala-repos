@@ -124,9 +124,8 @@ private[remote] class UdpAssociationHandle(
     } else false
   }
 
-  override def disassociate(): Unit =
-    try channel.close()
-    finally transport.udpConnectionTable.remove(
-      transport.addressToSocketAddress(remoteAddress))
+  override def disassociate(): Unit = try channel.close()
+  finally transport.udpConnectionTable.remove(
+    transport.addressToSocketAddress(remoteAddress))
 
 }

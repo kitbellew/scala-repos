@@ -50,10 +50,9 @@ trait Set[A]
   }
 
   override def seq: Set[A] = this
-  protected override def parCombiner =
-    ParSet.newCombiner[
-      A
-    ] // if `immutable.SetLike` gets introduced, please move this there!
+  protected override def parCombiner = ParSet.newCombiner[
+    A
+  ] // if `immutable.SetLike` gets introduced, please move this there!
 }
 
 /** $factoryInfo

@@ -96,16 +96,16 @@ trait MapLike[A, +B, +This <: MapLike[A, B, This] with Map[A, B]]
     *  @return an immutable map consisting only of those key value pairs of this map where the key satisfies
     *          the predicate `p`. The resulting map wraps the original map without copying any elements.
     */
-  override def filterKeys(p: A => Boolean): Map[A, B] =
-    new FilteredKeys(p) with DefaultMap[A, B]
+  override def filterKeys(p: A => Boolean): Map[A, B] = new FilteredKeys(p)
+    with DefaultMap[A, B]
 
   /** Transforms this map by applying a function to every retrieved value.
     *  @param  f   the function used to transform values of this map.
     *  @return a map view which maps every key of this map
     *          to `f(this(key))`. The resulting map wraps the original map without copying any elements.
     */
-  override def mapValues[C](f: B => C): Map[A, C] =
-    new MappedValues(f) with DefaultMap[A, C]
+  override def mapValues[C](f: B => C): Map[A, C] = new MappedValues(f)
+    with DefaultMap[A, C]
 
   /** Collects all keys of this map in a set.
     *  @return  a set containing all keys of this map.

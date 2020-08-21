@@ -79,8 +79,8 @@ trait CacheConditionDirectives {
             .toList))
 
     // TODO: also handle Cache-Control and Vary
-    def complete304(): Route =
-      addResponseHeaders(complete(HttpResponse(NotModified)))
+    def complete304(): Route = addResponseHeaders(
+      complete(HttpResponse(NotModified)))
     def complete412(): Route = _.complete(PreconditionFailed)
 
     extractRequest.flatMap { request ⇒

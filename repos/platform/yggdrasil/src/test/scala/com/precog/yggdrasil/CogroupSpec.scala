@@ -180,13 +180,12 @@ trait CogroupSpec[M[+_]]
       toRecord(Array(i), JObject(List(JField("left", JString(i.toString)))))
     def recr(i: Int) =
       toRecord(Array(i), JObject(List(JField("right", JString(i.toString)))))
-    def recBoth(i: Int) =
-      toRecord(
-        Array(i),
-        JObject(
-          List(
-            JField("left", JString(i.toString)),
-            JField("right", JString(i.toString)))))
+    def recBoth(i: Int) = toRecord(
+      Array(i),
+      JObject(
+        List(
+          JField("left", JString(i.toString)),
+          JField("right", JString(i.toString)))))
 
     val ltable = fromSample(
       SampleData(
@@ -249,10 +248,9 @@ trait CogroupSpec[M[+_]]
       toRecord(Array(i), JObject(List(JField("left", JNum(j)))))
     def recr(i: Int, j: Int) =
       toRecord(Array(i), JObject(List(JField("right", JNum(j)))))
-    def recBoth(i: Int, j: Int, k: Int) =
-      toRecord(
-        Array(i),
-        JObject(List(JField("left", JNum(j)), JField("right", JNum(k)))))
+    def recBoth(i: Int, j: Int, k: Int) = toRecord(
+      Array(i),
+      JObject(List(JField("left", JNum(j)), JField("right", JNum(k)))))
 
     val ltable = fromSample(
       SampleData(
@@ -293,13 +291,12 @@ trait CogroupSpec[M[+_]]
       toRecord(Array(i), JObject(List(JField("left", JString(i.toString)))))
     def recr(i: Int) =
       toRecord(Array(i), JObject(List(JField("right", JString(i.toString)))))
-    def recBoth(i: Int) =
-      toRecord(
-        Array(i),
-        JObject(
-          List(
-            JField("left", JString(i.toString)),
-            JField("right", JString(i.toString)))))
+    def recBoth(i: Int) = toRecord(
+      Array(i),
+      JObject(
+        List(
+          JField("left", JString(i.toString)),
+          JField("right", JString(i.toString)))))
 
     val ltable = fromSample(
       SampleData(Stream(recl(2), recl(3), recl(4), recl(6), recl(7))))
@@ -337,13 +334,12 @@ trait CogroupSpec[M[+_]]
       toRecord(Array(i), JObject(List(JField("left", JString(i.toString)))))
     def recr(i: Int) =
       toRecord(Array(i), JObject(List(JField("right", JString(i.toString)))))
-    def recBoth(i: Int) =
-      toRecord(
-        Array(i),
-        JObject(
-          List(
-            JField("left", JString(i.toString)),
-            JField("right", JString(i.toString)))))
+    def recBoth(i: Int) = toRecord(
+      Array(i),
+      JObject(
+        List(
+          JField("left", JString(i.toString)),
+          JField("right", JString(i.toString)))))
 
     val rtable = fromSample(
       SampleData(Stream(recr(2), recr(3), recr(4), recr(6), recr(7))))
@@ -381,13 +377,12 @@ trait CogroupSpec[M[+_]]
       toRecord(Array(i), JObject(List(JField("left", JString(i.toString)))))
     def recr(i: Int) =
       toRecord(Array(i), JObject(List(JField("right", JString(i.toString)))))
-    def recBoth(i: Int) =
-      toRecord(
-        Array(i),
-        JObject(
-          List(
-            JField("left", JString(i.toString)),
-            JField("right", JString(i.toString)))))
+    def recBoth(i: Int) = toRecord(
+      Array(i),
+      JObject(
+        List(
+          JField("left", JString(i.toString)),
+          JField("right", JString(i.toString)))))
 
     val ltable = fromSample(SampleData(Stream(recl(0), recl(1))))
     val rtable = fromSample(SampleData(Stream(recr(1), recr(0))))

@@ -127,6 +127,6 @@ private[collections] abstract class ObservableArrayCompanionBase[
     * @param f Function to be repeatedly applied to previous element's value.
     * @return Array containing elements `start, f(start), f(f(start)), ...`.
     */
-  def iterate(start: V, n: Int)(f: V => V): T =
-    apply(Array.iterate(start, n)(f))
+  def iterate(start: V, n: Int)(f: V => V): T = apply(
+    Array.iterate(start, n)(f))
 }

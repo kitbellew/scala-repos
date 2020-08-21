@@ -21,10 +21,9 @@ object SbtData {
   val compilerInterfacesKey = "scala.compiler.interfaces.dir"
 
   private def compilerInterfacesDir = {
-    def defaultDir =
-      new File(
-        new File(System.getProperty("user.home"), ".idea-build"),
-        "scala-compiler-interfaces")
+    def defaultDir = new File(
+      new File(System.getProperty("user.home"), ".idea-build"),
+      "scala-compiler-interfaces")
 
     val customPath = Option(System.getProperty(compilerInterfacesKey))
     customPath.map(new File(_)).getOrElse(defaultDir)

@@ -78,9 +78,8 @@ trait TraitPopupWindow[This <: android.widget.PopupWindow] {
   @inline def background = basis.getBackground
 
   @inline def backgroundDrawable(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'backgroundDrawable'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'backgroundDrawable'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/PopupWindow.html#setBackgroundDrawable(android.graphics.drawable.Drawable) setBackgroundDrawable(android.graphics.drawable.Drawable)]]`
@@ -342,9 +341,8 @@ trait TraitArrayAdapter[This <: android.widget.ArrayAdapter[_]]
   @inline def context = basis.getContext
 
   @inline def dropDownViewResource(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'dropDownViewResource'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'dropDownViewResource'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ArrayAdapter.html#setDropDownViewResource(int) setDropDownViewResource(int)]]`
@@ -647,9 +645,8 @@ trait TraitListView[This <: android.widget.ListView]
   @inline def dividerHeight_=(p: Int) = { basis.setDividerHeight(p); basis }
 
   @inline def footerDividersEnabled(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'footerDividersEnabled'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'footerDividersEnabled'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ListView.html#setFooterDividersEnabled(boolean) setFooterDividersEnabled(boolean)]]`
@@ -676,9 +673,8 @@ trait TraitListView[This <: android.widget.ListView]
   @inline def footerViewsCount = basis.getFooterViewsCount
 
   @inline def headerDividersEnabled(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'headerDividersEnabled'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'headerDividersEnabled'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ListView.html#setHeaderDividersEnabled(boolean) setHeaderDividersEnabled(boolean)]]`
@@ -1735,9 +1731,8 @@ trait TraitTabHost[This <: android.widget.TabHost]
   @inline def currentView = basis.getCurrentView
 
   @inline def onTabChangedListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onTabChangedListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onTabChangedListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TabHost.html#setOnTabChangedListener(android.widget.TabHost.OnTabChangeListener) setOnTabChangedListener(android.widget.TabHost.OnTabChangeListener)]]`
@@ -2001,9 +1996,8 @@ trait TraitRadioGroup[This <: android.widget.RadioGroup]
   @inline def checkedRadioButtonId = basis.getCheckedRadioButtonId
 
   @inline def onCheckedChangeListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onCheckedChangeListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onCheckedChangeListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/RadioGroup.html#setOnCheckedChangeListener(android.widget.RadioGroup.OnCheckedChangeListener) setOnCheckedChangeListener(android.widget.RadioGroup.OnCheckedChangeListener)]]`
@@ -2343,9 +2337,8 @@ trait TraitSpinner[This <: android.widget.Spinner]
   @inline def popupBackground = basis.getPopupBackground
 
   @inline def popupBackgroundDrawable(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'popupBackgroundDrawable'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'popupBackgroundDrawable'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Spinner.html#setPopupBackgroundDrawable(android.graphics.drawable.Drawable) setPopupBackgroundDrawable(android.graphics.drawable.Drawable)]]`
@@ -2362,9 +2355,8 @@ trait TraitSpinner[This <: android.widget.Spinner]
   }
 
   @inline def popupBackgroundResource(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'popupBackgroundResource'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'popupBackgroundResource'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Spinner.html#setPopupBackgroundResource(int) setPopupBackgroundResource(int)]]`
@@ -2873,8 +2865,8 @@ trait TraitNumberPicker[This <: android.widget.NumberPicker]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/NumberPicker.html#setFormatter(android.widget.NumberPicker.Formatter) setFormatter(android.widget.NumberPicker.Formatter)]]`
     */
-  @inline def formatter(p: android.widget.NumberPicker.Formatter) =
-    formatter_=(p)
+  @inline def formatter(p: android.widget.NumberPicker.Formatter) = formatter_=(
+    p)
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/NumberPicker.html#setFormatter(android.widget.NumberPicker.Formatter) setFormatter(android.widget.NumberPicker.Formatter)]]`
@@ -2914,15 +2906,14 @@ trait TraitNumberPicker[This <: android.widget.NumberPicker]
   @inline def minValue_=(p: Int) = { basis.setMinValue(p); basis }
 
   @inline def onLongPressUpdateInterval(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onLongPressUpdateInterval'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onLongPressUpdateInterval'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/NumberPicker.html#setOnLongPressUpdateInterval(long) setOnLongPressUpdateInterval(long)]]`
     */
-  @inline def onLongPressUpdateInterval(p: Long) =
-    onLongPressUpdateInterval_=(p)
+  @inline def onLongPressUpdateInterval(p: Long) = onLongPressUpdateInterval_=(
+    p)
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/NumberPicker.html#setOnLongPressUpdateInterval(long) setOnLongPressUpdateInterval(long)]]`
@@ -2950,9 +2941,8 @@ trait TraitNumberPicker[This <: android.widget.NumberPicker]
   }
 
   @inline def onValueChangedListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onValueChangedListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onValueChangedListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/NumberPicker.html#setOnValueChangedListener(android.widget.NumberPicker.OnValueChangeListener) setOnValueChangedListener(android.widget.NumberPicker.OnValueChangeListener)]]`
@@ -3458,9 +3448,8 @@ trait TraitShareActionProvider[This <: android.widget.ShareActionProvider]
     extends TraitActionProvider[This] {
 
   @inline def onShareTargetSelectedListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onShareTargetSelectedListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onShareTargetSelectedListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ShareActionProvider.html#setOnShareTargetSelectedListener(android.widget.ShareActionProvider.OnShareTargetSelectedListener) setOnShareTargetSelectedListener(android.widget.ShareActionProvider.OnShareTargetSelectedListener)]]`
@@ -3478,9 +3467,8 @@ trait TraitShareActionProvider[This <: android.widget.ShareActionProvider]
   }
 
   @inline def shareHistoryFileName(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'shareHistoryFileName'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'shareHistoryFileName'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ShareActionProvider.html#setShareHistoryFileName(java.lang.String) setShareHistoryFileName(java.lang.String)]]`
@@ -3697,9 +3685,8 @@ trait TraitTimePicker[This <: android.widget.TimePicker]
   }
 
   @inline def onTimeChangedListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onTimeChangedListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onTimeChangedListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TimePicker.html#setOnTimeChangedListener(android.widget.TimePicker.OnTimeChangedListener) setOnTimeChangedListener(android.widget.TimePicker.OnTimeChangedListener)]]`
@@ -3845,9 +3832,8 @@ trait TraitExpandableListView[This <: android.widget.ExpandableListView]
   }
 
   @inline def onChildClickListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onChildClickListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onChildClickListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ExpandableListView.html#setOnChildClickListener(android.widget.ExpandableListView.OnChildClickListener) setOnChildClickListener(android.widget.ExpandableListView.OnChildClickListener)]]`
@@ -3865,9 +3851,8 @@ trait TraitExpandableListView[This <: android.widget.ExpandableListView]
   }
 
   @inline def onGroupClickListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onGroupClickListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onGroupClickListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ExpandableListView.html#setOnGroupClickListener(android.widget.ExpandableListView.OnGroupClickListener) setOnGroupClickListener(android.widget.ExpandableListView.OnGroupClickListener)]]`
@@ -3885,9 +3870,8 @@ trait TraitExpandableListView[This <: android.widget.ExpandableListView]
   }
 
   @inline def onGroupCollapseListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onGroupCollapseListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onGroupCollapseListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ExpandableListView.html#setOnGroupCollapseListener(android.widget.ExpandableListView.OnGroupCollapseListener) setOnGroupCollapseListener(android.widget.ExpandableListView.OnGroupCollapseListener)]]`
@@ -3905,9 +3889,8 @@ trait TraitExpandableListView[This <: android.widget.ExpandableListView]
   }
 
   @inline def onGroupExpandListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onGroupExpandListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onGroupExpandListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ExpandableListView.html#setOnGroupExpandListener(android.widget.ExpandableListView.OnGroupExpandListener) setOnGroupExpandListener(android.widget.ExpandableListView.OnGroupExpandListener)]]`
@@ -4243,9 +4226,8 @@ trait TraitAbsListView[This <: android.widget.AbsListView]
   @inline def listPaddingTop = basis.getListPaddingTop
 
   @inline def multiChoiceModeListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'multiChoiceModeListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'multiChoiceModeListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AbsListView.html#setMultiChoiceModeListener(android.widget.AbsListView.MultiChoiceModeListener) setMultiChoiceModeListener(android.widget.AbsListView.MultiChoiceModeListener)]]`
@@ -4299,9 +4281,8 @@ trait TraitAbsListView[This <: android.widget.AbsListView]
   }
 
   @inline def remoteViewsAdapter(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'remoteViewsAdapter'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'remoteViewsAdapter'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AbsListView.html#setRemoteViewsAdapter(android.content.Intent) setRemoteViewsAdapter(android.content.Intent)]]`
@@ -4580,9 +4561,8 @@ trait TraitSeekBar[This <: android.widget.SeekBar]
     extends TraitAbsSeekBar[This] {
 
   @inline def onSeekBarChangeListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onSeekBarChangeListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onSeekBarChangeListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/SeekBar.html#setOnSeekBarChangeListener(android.widget.SeekBar.OnSeekBarChangeListener) setOnSeekBarChangeListener(android.widget.SeekBar.OnSeekBarChangeListener)]]`
@@ -5069,9 +5049,8 @@ trait TraitResourceCursorAdapter[This <: android.widget.ResourceCursorAdapter]
     extends TraitCursorAdapter[This] {
 
   @inline def dropDownViewResource(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'dropDownViewResource'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'dropDownViewResource'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ResourceCursorAdapter.html#setDropDownViewResource(int) setDropDownViewResource(int)]]`
@@ -5156,8 +5135,8 @@ trait TraitViewAnimator[This <: android.widget.ViewAnimator]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ViewAnimator.html#setInAnimation(android.view.animation.Animation) setInAnimation(android.view.animation.Animation)]]`
     */
-  @inline def inAnimation(p: android.view.animation.Animation) =
-    inAnimation_=(p)
+  @inline def inAnimation(p: android.view.animation.Animation) = inAnimation_=(
+    p)
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ViewAnimator.html#setInAnimation(android.view.animation.Animation) setInAnimation(android.view.animation.Animation)]]`
@@ -5318,9 +5297,8 @@ trait TraitCalendarView[This <: android.widget.CalendarView]
   @inline def minDate_=(p: Long) = { basis.setMinDate(p); basis }
 
   @inline def onDateChangeListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onDateChangeListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onDateChangeListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/CalendarView.html#setOnDateChangeListener(android.widget.CalendarView.OnDateChangeListener) setOnDateChangeListener(android.widget.CalendarView.OnDateChangeListener)]]`
@@ -5559,9 +5537,8 @@ trait TraitSlidingDrawer[This <: android.widget.SlidingDrawer]
   @inline def handle = basis.getHandle
 
   @inline def onDrawerCloseListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onDrawerCloseListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onDrawerCloseListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/SlidingDrawer.html#setOnDrawerCloseListener(android.widget.SlidingDrawer.OnDrawerCloseListener) setOnDrawerCloseListener(android.widget.SlidingDrawer.OnDrawerCloseListener)]]`
@@ -5579,9 +5556,8 @@ trait TraitSlidingDrawer[This <: android.widget.SlidingDrawer]
   }
 
   @inline def onDrawerOpenListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onDrawerOpenListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onDrawerOpenListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/SlidingDrawer.html#setOnDrawerOpenListener(android.widget.SlidingDrawer.OnDrawerOpenListener) setOnDrawerOpenListener(android.widget.SlidingDrawer.OnDrawerOpenListener)]]`
@@ -5599,9 +5575,8 @@ trait TraitSlidingDrawer[This <: android.widget.SlidingDrawer]
   }
 
   @inline def onDrawerScrollListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onDrawerScrollListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onDrawerScrollListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/SlidingDrawer.html#setOnDrawerScrollListener(android.widget.SlidingDrawer.OnDrawerScrollListener) setOnDrawerScrollListener(android.widget.SlidingDrawer.OnDrawerScrollListener)]]`
@@ -5721,9 +5696,8 @@ trait TraitListPopupWindow[This <: android.widget.ListPopupWindow] {
   @inline def background = basis.getBackground
 
   @inline def backgroundDrawable(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'backgroundDrawable'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'backgroundDrawable'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ListPopupWindow.html#setBackgroundDrawable(android.graphics.drawable.Drawable) setBackgroundDrawable(android.graphics.drawable.Drawable)]]`
@@ -5853,9 +5827,8 @@ trait TraitListPopupWindow[This <: android.widget.ListPopupWindow] {
   }
 
   @inline def onItemClickListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onItemClickListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onItemClickListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ListPopupWindow.html#setOnItemClickListener(android.widget.AdapterView.OnItemClickListener) setOnItemClickListener(android.widget.AdapterView.OnItemClickListener)]]`
@@ -5873,9 +5846,8 @@ trait TraitListPopupWindow[This <: android.widget.ListPopupWindow] {
   }
 
   @inline def onItemSelectedListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onItemSelectedListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onItemSelectedListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ListPopupWindow.html#setOnItemSelectedListener(android.widget.AdapterView.OnItemSelectedListener) setOnItemSelectedListener(android.widget.AdapterView.OnItemSelectedListener)]]`
@@ -6482,9 +6454,8 @@ trait TraitZoomControls[This <: android.widget.ZoomControls]
   @inline def disableIsZoomOut() = { basis.setIsZoomOutEnabled(false); basis }
 
   @inline def onZoomInClickListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onZoomInClickListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onZoomInClickListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ZoomControls.html#setOnZoomInClickListener(android.view.View.OnClickListener) setOnZoomInClickListener(android.view.View.OnClickListener)]]`
@@ -6500,9 +6471,8 @@ trait TraitZoomControls[This <: android.widget.ZoomControls]
   }
 
   @inline def onZoomOutClickListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onZoomOutClickListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onZoomOutClickListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ZoomControls.html#setOnZoomOutClickListener(android.view.View.OnClickListener) setOnZoomOutClickListener(android.view.View.OnClickListener)]]`
@@ -6895,9 +6865,8 @@ trait TraitSearchView[This <: android.widget.SearchView]
   @inline def iconified_=(p: Boolean) = { basis.setIconified(p); basis }
 
   @inline def iconifiedByDefault(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'iconifiedByDefault'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'iconifiedByDefault'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/SearchView.html#setIconifiedByDefault(boolean) setIconifiedByDefault(boolean)]]`
@@ -6974,9 +6943,8 @@ trait TraitSearchView[This <: android.widget.SearchView]
   }
 
   @inline def onQueryTextFocusChangeListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onQueryTextFocusChangeListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onQueryTextFocusChangeListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/SearchView.html#setOnQueryTextFocusChangeListener(android.view.View.OnFocusChangeListener) setOnQueryTextFocusChangeListener(android.view.View.OnFocusChangeListener)]]`
@@ -6994,16 +6962,15 @@ trait TraitSearchView[This <: android.widget.SearchView]
   }
 
   @inline def onQueryTextListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onQueryTextListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onQueryTextListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/SearchView.html#setOnQueryTextListener(android.widget.SearchView.OnQueryTextListener) setOnQueryTextListener(android.widget.SearchView.OnQueryTextListener)]]`
     */
   @inline def onQueryTextListener(
-      p: android.widget.SearchView.OnQueryTextListener) =
-    onQueryTextListener_=(p)
+      p: android.widget.SearchView.OnQueryTextListener) = onQueryTextListener_=(
+    p)
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/SearchView.html#setOnQueryTextListener(android.widget.SearchView.OnQueryTextListener) setOnQueryTextListener(android.widget.SearchView.OnQueryTextListener)]]`
@@ -7014,9 +6981,8 @@ trait TraitSearchView[This <: android.widget.SearchView]
   }
 
   @inline def onSearchClickListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onSearchClickListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onSearchClickListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/SearchView.html#setOnSearchClickListener(android.view.View.OnClickListener) setOnSearchClickListener(android.view.View.OnClickListener)]]`
@@ -7032,9 +6998,8 @@ trait TraitSearchView[This <: android.widget.SearchView]
   }
 
   @inline def onSuggestionListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onSuggestionListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onSuggestionListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/SearchView.html#setOnSuggestionListener(android.widget.SearchView.OnSuggestionListener) setOnSuggestionListener(android.widget.SearchView.OnSuggestionListener)]]`
@@ -7103,8 +7068,8 @@ trait TraitSearchView[This <: android.widget.SearchView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/SearchView.html#setSearchableInfo(android.app.SearchableInfo) setSearchableInfo(android.app.SearchableInfo)]]`
     */
-  @inline def searchableInfo(p: android.app.SearchableInfo) =
-    searchableInfo_=(p)
+  @inline def searchableInfo(p: android.app.SearchableInfo) = searchableInfo_=(
+    p)
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/SearchView.html#setSearchableInfo(android.app.SearchableInfo) setSearchableInfo(android.app.SearchableInfo)]]`
@@ -7703,9 +7668,8 @@ trait TraitTabWidget[This <: android.widget.TabWidget]
   }
 
   @inline def rightStripDrawable(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'rightStripDrawable'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'rightStripDrawable'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TabWidget.html#setRightStripDrawable(int) setRightStripDrawable(int)]]`
@@ -7826,9 +7790,8 @@ trait TraitVideoView[This <: android.widget.VideoView]
   }
 
   @inline def onCompletionListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onCompletionListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onCompletionListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/VideoView.html#setOnCompletionListener(android.media.MediaPlayer.OnCompletionListener) setOnCompletionListener(android.media.MediaPlayer.OnCompletionListener)]]`
@@ -7863,9 +7826,8 @@ trait TraitVideoView[This <: android.widget.VideoView]
   }
 
   @inline def onPreparedListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onPreparedListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onPreparedListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/VideoView.html#setOnPreparedListener(android.media.MediaPlayer.OnPreparedListener) setOnPreparedListener(android.media.MediaPlayer.OnPreparedListener)]]`
@@ -9028,9 +8990,8 @@ object SZoomButton extends ImageViewCompanion[SZoomButton] {
   }
 
   @inline def callbackDuringFling(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'callbackDuringFling'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'callbackDuringFling'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Gallery.html#setCallbackDuringFling(boolean) setCallbackDuringFling(boolean)]]`
@@ -9170,9 +9131,8 @@ trait TraitPopupMenu[This <: android.widget.PopupMenu] {
   }
 
   @inline def onMenuItemClickListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onMenuItemClickListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onMenuItemClickListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/PopupMenu.html#setOnMenuItemClickListener(android.widget.PopupMenu.OnMenuItemClickListener) setOnMenuItemClickListener(android.widget.PopupMenu.OnMenuItemClickListener)]]`
@@ -9275,9 +9235,8 @@ trait TraitCompoundButton[This <: android.widget.CompoundButton]
   @inline def checked_=(p: Boolean) = { basis.setChecked(p); basis }
 
   @inline def onCheckedChangeListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onCheckedChangeListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onCheckedChangeListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/CompoundButton.html#setOnCheckedChangeListener(android.widget.CompoundButton.OnCheckedChangeListener) setOnCheckedChangeListener(android.widget.CompoundButton.OnCheckedChangeListener)]]`
@@ -9374,8 +9333,8 @@ trait TraitAdapterViewAnimator[This <: android.widget.AdapterViewAnimator]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AdapterViewAnimator.html#setInAnimation(android.animation.ObjectAnimator) setInAnimation(android.animation.ObjectAnimator)]]`
     */
-  @inline def inAnimation(p: android.animation.ObjectAnimator) =
-    inAnimation_=(p)
+  @inline def inAnimation(p: android.animation.ObjectAnimator) = inAnimation_=(
+    p)
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AdapterViewAnimator.html#setInAnimation(android.animation.ObjectAnimator) setInAnimation(android.animation.ObjectAnimator)]]`
@@ -9403,9 +9362,8 @@ trait TraitAdapterViewAnimator[This <: android.widget.AdapterViewAnimator]
   }
 
   @inline def remoteViewsAdapter(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'remoteViewsAdapter'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'remoteViewsAdapter'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AdapterViewAnimator.html#setRemoteViewsAdapter(android.content.Intent) setRemoteViewsAdapter(android.content.Intent)]]`
@@ -9515,8 +9473,8 @@ trait TraitFrameLayout[This <: android.widget.FrameLayout]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/FrameLayout.html#setForeground(android.graphics.drawable.Drawable) setForeground(android.graphics.drawable.Drawable)]]`
     */
-  @inline def foreground(p: android.graphics.drawable.Drawable) =
-    foreground_=(p)
+  @inline def foreground(p: android.graphics.drawable.Drawable) = foreground_=(
+    p)
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/FrameLayout.html#setForeground(android.graphics.drawable.Drawable) setForeground(android.graphics.drawable.Drawable)]]`
@@ -9986,9 +9944,8 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   @inline def hintTextColors = basis.getHintTextColors
 
   @inline def horizontallyScrolling(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'horizontallyScrolling'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'horizontallyScrolling'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setHorizontallyScrolling(boolean) setHorizontallyScrolling(boolean)]]`
@@ -10331,9 +10288,8 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   }
 
   @inline def onEditorActionListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onEditorActionListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onEditorActionListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setOnEditorActionListener(android.widget.TextView.OnEditorActionListener) setOnEditorActionListener(android.widget.TextView.OnEditorActionListener)]]`
@@ -11128,9 +11084,8 @@ trait TraitSimpleAdapter[This <: android.widget.SimpleAdapter]
     extends TraitBaseAdapter[This] {
 
   @inline def dropDownViewResource(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'dropDownViewResource'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'dropDownViewResource'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/SimpleAdapter.html#setDropDownViewResource(int) setDropDownViewResource(int)]]`
@@ -11240,9 +11195,8 @@ trait TraitAutoCompleteTextView[This <: android.widget.AutoCompleteTextView]
   @inline def dropDownBackground = basis.getDropDownBackground
 
   @inline def dropDownBackgroundDrawable(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'dropDownBackgroundDrawable'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'dropDownBackgroundDrawable'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AutoCompleteTextView.html#setDropDownBackgroundDrawable(android.graphics.drawable.Drawable) setDropDownBackgroundDrawable(android.graphics.drawable.Drawable)]]`
@@ -11259,15 +11213,14 @@ trait TraitAutoCompleteTextView[This <: android.widget.AutoCompleteTextView]
   }
 
   @inline def dropDownBackgroundResource(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'dropDownBackgroundResource'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'dropDownBackgroundResource'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AutoCompleteTextView.html#setDropDownBackgroundResource(int) setDropDownBackgroundResource(int)]]`
     */
-  @inline def dropDownBackgroundResource(p: Int) =
-    dropDownBackgroundResource_=(p)
+  @inline def dropDownBackgroundResource(p: Int) = dropDownBackgroundResource_=(
+    p)
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AutoCompleteTextView.html#setDropDownBackgroundResource(int) setDropDownBackgroundResource(int)]]`
@@ -12045,9 +11998,8 @@ trait TraitKeyboardView[This <: android.inputmethodservice.KeyboardView]
   }
 
   @inline def onKeyboardActionListener(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onKeyboardActionListener'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'onKeyboardActionListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/inputmethodservice/KeyboardView.html#setOnKeyboardActionListener(android.inputmethodservice.KeyboardView.OnKeyboardActionListener) setOnKeyboardActionListener(android.inputmethodservice.KeyboardView.OnKeyboardActionListener)]]`
@@ -12140,9 +12092,8 @@ trait TraitKeyboardView[This <: android.inputmethodservice.KeyboardView]
   @inline def shifted_=(p: Boolean) = { basis.setShifted(p); basis }
 
   @inline def verticalCorrection(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'verticalCorrection'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'verticalCorrection'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/inputmethodservice/KeyboardView.html#setVerticalCorrection(int) setVerticalCorrection(int)]]`
@@ -12381,9 +12332,8 @@ trait TraitGLSurfaceView[This <: android.opengl.GLSurfaceView]
   }
 
   @inline def EGLContextClientVersion(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'EGLContextClientVersion'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'EGLContextClientVersion'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/opengl/GLSurfaceView.html#setEGLContextClientVersion(int) setEGLContextClientVersion(int)]]`
@@ -12405,8 +12355,8 @@ trait TraitGLSurfaceView[This <: android.opengl.GLSurfaceView]
     * Shortcut for `[[https://developer.android.com/reference/android/opengl/GLSurfaceView.html#setEGLContextFactory(android.opengl.GLSurfaceView.EGLContextFactory) setEGLContextFactory(android.opengl.GLSurfaceView.EGLContextFactory)]]`
     */
   @inline def EGLContextFactory(
-      p: android.opengl.GLSurfaceView.EGLContextFactory) =
-    EGLContextFactory_=(p)
+      p: android.opengl.GLSurfaceView.EGLContextFactory) = EGLContextFactory_=(
+    p)
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/opengl/GLSurfaceView.html#setEGLContextFactory(android.opengl.GLSurfaceView.EGLContextFactory) setEGLContextFactory(android.opengl.GLSurfaceView.EGLContextFactory)]]`
@@ -12417,9 +12367,8 @@ trait TraitGLSurfaceView[This <: android.opengl.GLSurfaceView]
   }
 
   @inline def EGLWindowSurfaceFactory(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'EGLWindowSurfaceFactory'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'EGLWindowSurfaceFactory'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/opengl/GLSurfaceView.html#setEGLWindowSurfaceFactory(android.opengl.GLSurfaceView.EGLWindowSurfaceFactory) setEGLWindowSurfaceFactory(android.opengl.GLSurfaceView.EGLWindowSurfaceFactory)]]`
@@ -13193,9 +13142,8 @@ trait TraitWebView[This <: android.webkit.WebView]
   @inline def hitTestResult = basis.getHitTestResult
 
   @inline def horizontalScrollbarOverlay(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'horizontalScrollbarOverlay'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'horizontalScrollbarOverlay'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/webkit/WebView.html#setHorizontalScrollbarOverlay(boolean) setHorizontalScrollbarOverlay(boolean)]]`
@@ -13224,9 +13172,8 @@ trait TraitWebView[This <: android.webkit.WebView]
   @inline def initialScale_=(p: Int) = { basis.setInitialScale(p); basis }
 
   @inline def mapTrackballToArrowKeys(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'mapTrackballToArrowKeys'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'mapTrackballToArrowKeys'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/webkit/WebView.html#setMapTrackballToArrowKeys(boolean) setMapTrackballToArrowKeys(boolean)]]`
@@ -13304,15 +13251,14 @@ trait TraitWebView[This <: android.webkit.WebView]
   @inline def url = basis.getUrl
 
   @inline def verticalScrollbarOverlay(implicit
-      no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'verticalScrollbarOverlay'")
+      no: NoGetterForThisProperty): Nothing = throw new Error(
+    "Android does not support the getter for 'verticalScrollbarOverlay'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/webkit/WebView.html#setVerticalScrollbarOverlay(boolean) setVerticalScrollbarOverlay(boolean)]]`
     */
-  @inline def verticalScrollbarOverlay(p: Boolean) =
-    verticalScrollbarOverlay_=(p)
+  @inline def verticalScrollbarOverlay(p: Boolean) = verticalScrollbarOverlay_=(
+    p)
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/webkit/WebView.html#setVerticalScrollbarOverlay(boolean) setVerticalScrollbarOverlay(boolean)]]`
@@ -13349,8 +13295,8 @@ trait TraitWebView[This <: android.webkit.WebView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/webkit/WebView.html#setWebViewClient(android.webkit.WebViewClient) setWebViewClient(android.webkit.WebViewClient)]]`
     */
-  @inline def webViewClient(p: android.webkit.WebViewClient) =
-    webViewClient_=(p)
+  @inline def webViewClient(p: android.webkit.WebViewClient) = webViewClient_=(
+    p)
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/webkit/WebView.html#setWebViewClient(android.webkit.WebViewClient) setWebViewClient(android.webkit.WebViewClient)]]`

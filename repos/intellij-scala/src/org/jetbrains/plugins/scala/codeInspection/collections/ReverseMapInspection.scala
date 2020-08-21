@@ -23,6 +23,6 @@ object ReverseMap extends SimplificationType() {
 }
 
 class ReverseMapInspection extends OperationOnCollectionInspection {
-  override def possibleSimplificationTypes: Array[SimplificationType] =
-    Array(ReverseMap)
+  override def possibleSimplificationTypes: Array[SimplificationType] = Array(
+    ReverseMap)
 }

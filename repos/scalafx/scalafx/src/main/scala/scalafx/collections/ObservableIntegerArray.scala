@@ -40,8 +40,8 @@ object ObservableIntegerArray
   /**
     * @inheritdoc
     */
-  override def apply(v: Int*) =
-    new ObservableIntegerArray(jfxc.FXCollections.observableIntegerArray(v: _*))
+  override def apply(v: Int*) = new ObservableIntegerArray(
+    jfxc.FXCollections.observableIntegerArray(v: _*))
 
   /**
     * Returns an array containing equally spaced values in some integer interval.
@@ -56,8 +56,8 @@ object ObservableIntegerArray
     * `end`.
     * @throws IllegalArgumentException if `step` is 0.
     */
-  def range(start: Int, end: Int, step: Int = 1) =
-    apply(Array.range(start, end, step))
+  def range(start: Int, end: Int, step: Int = 1) = apply(
+    Array.range(start, end, step))
 }
 
 // TODO: Enter link when JavaFX 8 API Docs are available on-line.

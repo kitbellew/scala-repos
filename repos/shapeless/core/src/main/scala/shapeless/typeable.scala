@@ -295,9 +295,9 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
   /** Typeable instance for `HNil`. */
   implicit val hnilTypeable: Typeable[HNil] =
     new Typeable[HNil] {
-      def cast(t: Any): Option[HNil] =
-        if (t != null && t.isInstanceOf[HNil]) Some(t.asInstanceOf[HNil])
-        else None
+      def cast(t: Any): Option[HNil] = if (t != null && t.isInstanceOf[HNil])
+        Some(t.asInstanceOf[HNil])
+      else None
       def describe = "HNil"
     }
 
@@ -380,11 +380,10 @@ trait TypeCase[T] extends Serializable {
 
 object TypeCase {
   import syntax.typeable._
-  def apply[T](implicit tt: Typeable[T]): TypeCase[T] =
-    new TypeCase[T] {
-      def unapply(t: Any): Option[T] = t.cast[T]
-      override def toString = s"TypeCase[${tt.describe}]"
-    }
+  def apply[T](implicit tt: Typeable[T]): TypeCase[T] = new TypeCase[T] {
+    def unapply(t: Any): Option[T] = t.cast[T]
+    override def toString = s"TypeCase[${tt.describe}]"
+  }
 }
 
 @macrocompat.bundle

@@ -124,11 +124,10 @@ abstract class ActorSelection extends Serializable {
     builder.toString
   }
 
-  override def equals(obj: Any): Boolean =
-    obj match {
-      case s: ActorSelection ⇒ this.anchor == s.anchor && this.path == s.path
-      case _ ⇒ false
-    }
+  override def equals(obj: Any): Boolean = obj match {
+    case s: ActorSelection ⇒ this.anchor == s.anchor && this.path == s.path
+    case _ ⇒ false
+  }
 
   override lazy val hashCode: Int = {
     import MurmurHash._
@@ -195,11 +194,10 @@ object ActorSelection {
       @tailrec def rec(ref: InternalActorRef): Unit = {
         ref match {
           case refWithCell: ActorRefWithCell ⇒
-            def emptyRef =
-              new EmptyLocalActorRef(
-                refWithCell.provider,
-                anchor.path / sel.elements.map(_.toString),
-                refWithCell.underlying.system.eventStream)
+            def emptyRef = new EmptyLocalActorRef(
+              refWithCell.provider,
+              anchor.path / sel.elements.map(_.toString),
+              refWithCell.underlying.system.eventStream)
 
             iter.next() match {
               case SelectParent ⇒
@@ -283,11 +281,10 @@ private[akka] final case class ActorSelectionMessage(
     extends AutoReceivedMessage
     with PossiblyHarmful {
 
-  def identifyRequest: Option[Identify] =
-    msg match {
-      case x: Identify ⇒ Some(x)
-      case _ ⇒ None
-    }
+  def identifyRequest: Option[Identify] = msg match {
+    case x: Identify ⇒ Some(x)
+    case _ ⇒ None
+  }
 }
 
 /**

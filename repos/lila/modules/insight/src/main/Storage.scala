@@ -33,10 +33,9 @@ private final class Storage(coll: Coll) {
 
   def insert(p: Entry) = coll.insert(p).void
 
-  def bulkInsert(ps: Seq[Entry]) =
-    coll.bulkInsert(
-      documents = ps.map(BSONHandlers.EntryBSONHandler.write).toStream,
-      ordered = false)
+  def bulkInsert(ps: Seq[Entry]) = coll.bulkInsert(
+    documents = ps.map(BSONHandlers.EntryBSONHandler.write).toStream,
+    ordered = false)
 
   def update(p: Entry) = coll.update(selectId(p.id), p, upsert = true).void
 
@@ -49,20 +48,19 @@ private final class Storage(coll: Coll) {
   def ecos(userId: String): Fu[Set[String]] =
     coll.distinct(F.eco, selectUserId(userId).some) map lila.db.BSON.asStringSet
 
-  def nbByPerf(userId: String): Fu[Map[PerfType, Int]] =
-    coll
-      .aggregate(
-        Match(BSONDocument(F.userId -> userId)),
-        List(GroupField(F.perf)("nb" -> SumValue(1)))
-      )
-      .map {
-        _.documents.flatMap { doc =>
-          for {
-            perfType <- doc.getAs[PerfType]("_id")
-            nb <- doc.getAs[Int]("nb")
-          } yield perfType -> nb
-        }.toMap
-      }
+  def nbByPerf(userId: String): Fu[Map[PerfType, Int]] = coll
+    .aggregate(
+      Match(BSONDocument(F.userId -> userId)),
+      List(GroupField(F.perf)("nb" -> SumValue(1)))
+    )
+    .map {
+      _.documents.flatMap { doc =>
+        for {
+          perfType <- doc.getAs[PerfType]("_id")
+          nb <- doc.getAs[Int]("nb")
+        } yield perfType -> nb
+      }.toMap
+    }
 }
 
 private object Storage {
@@ -74,8 +72,7 @@ private object Storage {
   val sortChronological = BSONDocument(F.date -> 1)
   val sortAntiChronological = BSONDocument(F.date -> -1)
 
-  def combineDocs(docs: List[BSONDocument]) =
-    docs.foldLeft(BSONDocument()) { case (acc, doc) =>
-      acc ++ doc
-    }
+  def combineDocs(docs: List[BSONDocument]) = docs.foldLeft(BSONDocument()) {
+    case (acc, doc) => acc ++ doc
+  }
 }

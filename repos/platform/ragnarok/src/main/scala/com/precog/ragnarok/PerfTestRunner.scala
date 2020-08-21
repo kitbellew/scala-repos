@@ -46,17 +46,16 @@ trait PerfTestRunner[M[+_], T] {
 
   type RunResult[A] = Tree[(PerfTest, A, Option[(T, T)])]
 
-  private def fill[A](run: RunResult[A]): RunResult[A] =
-    run match {
-      case n @ Tree.Node((_: RunQuery, _, _), _) => n
-      case Tree.Node((test, a, _), children) =>
-        val kids = children map (fill(_))
-        val t = kids.foldLeft(None: Option[(T, T)]) {
-          case (acc, Tree.Node((_, _, t), _)) =>
-            acc |+| t
-        }
-        Tree.node((test, a, t), kids)
-    }
+  private def fill[A](run: RunResult[A]): RunResult[A] = run match {
+    case n @ Tree.Node((_: RunQuery, _, _), _) => n
+    case Tree.Node((test, a, _), children) =>
+      val kids = children map (fill(_))
+      val t = kids.foldLeft(None: Option[(T, T)]) {
+        case (acc, Tree.Node((_, _, t), _)) =>
+          acc |+| t
+      }
+      Tree.node((test, a, t), kids)
+  }
 
   private def merge[A: Monoid](
       run: RunResult[A],

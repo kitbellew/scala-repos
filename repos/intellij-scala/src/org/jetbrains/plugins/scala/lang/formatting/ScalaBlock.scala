@@ -74,14 +74,13 @@ class ScalaBlock(
     val parent = getNode.getPsi
     val braceShifted =
       mySettings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED
-    def isBlockOnlyScope(scope: PsiElement) =
-      !isLeaf &&
-        Set(ScalaTokenTypes.tLBRACE, ScalaTokenTypes.tLPARENTHESIS).contains(
-          scope.getNode.getElementType) &&
-        (scope.getParent match {
-          case _: ScTryBlock | _: ScForStatement | _: ScPackaging => true
-          case _                                                  => false
-        })
+    def isBlockOnlyScope(scope: PsiElement) = !isLeaf &&
+      Set(ScalaTokenTypes.tLBRACE, ScalaTokenTypes.tLPARENTHESIS).contains(
+        scope.getNode.getElementType) &&
+      (scope.getParent match {
+        case _: ScTryBlock | _: ScForStatement | _: ScPackaging => true
+        case _                                                  => false
+      })
     parent match {
       case m: ScMatchStmt =>
         if (m.caseClauses.length == 0) {
@@ -248,11 +247,10 @@ class ScalaBlock(
     _suggestedWrap
   }
 
-  def getChildBlockLastNode(childNode: ASTNode) =
-    subBlocksContext
-      .flatMap(_.childrenAdditionalContexts.get(childNode))
-      .map(_.getLastNode(childNode))
-      .orNull
+  def getChildBlockLastNode(childNode: ASTNode) = subBlocksContext
+    .flatMap(_.childrenAdditionalContexts.get(childNode))
+    .map(_.getLastNode(childNode))
+    .orNull
 
   def getCustomAlignment(childNode: ASTNode): Option[Alignment] =
     subBlocksContext

@@ -211,87 +211,84 @@ object State {
   }
 
   /** Provides operations and transformations on State. */
-  implicit def stateOps(s: State): StateOps =
-    new StateOps {
-      def process(f: (String, State) => State): State =
-        s.remainingCommands match {
-          case Seq() => exit(true)
-          case Seq(x, xs @ _*) =>
-            log.debug(s"> $x")
-            f(x, s.copy(remainingCommands = xs, history = x :: s.history))
-        }
-      def :::(newCommands: Seq[String]): State =
-        s.copy(remainingCommands = newCommands ++ s.remainingCommands)
-      def ::(command: String): State = (command :: Nil) ::: this
-      def ++(newCommands: Seq[Command]): State =
-        s.copy(definedCommands = (s.definedCommands ++ newCommands).distinct)
-      def +(newCommand: Command): State = this ++ (newCommand :: Nil)
-      def baseDir: File = s.configuration.baseDirectory
-      def setNext(n: Next) = s.copy(next = n)
-      def setResult(ro: Option[xsbti.MainResult]) =
-        ro match {
-          case None => continue; case Some(r) => setNext(new Return(r))
-        }
-      def continue = setNext(Continue)
-      def reboot(full: Boolean) = {
-        runExitHooks();
-        throw new xsbti.FullReload(s.remainingCommands.toArray, full)
+  implicit def stateOps(s: State): StateOps = new StateOps {
+    def process(f: (String, State) => State): State =
+      s.remainingCommands match {
+        case Seq() => exit(true)
+        case Seq(x, xs @ _*) =>
+          log.debug(s"> $x")
+          f(x, s.copy(remainingCommands = xs, history = x :: s.history))
       }
-      def reload = runExitHooks().setNext(new Return(defaultReload(s)))
-      def clearGlobalLog = setNext(ClearGlobalLog)
-      def keepLastLog = setNext(KeepLastLog)
-      def exit(ok: Boolean) =
-        runExitHooks().setNext(new Return(Exit(if (ok) 0 else 1)))
-      def get[T](key: AttributeKey[T]) = s.attributes get key
-      def put[T](key: AttributeKey[T], value: T) =
-        s.copy(attributes = s.attributes.put(key, value))
-      def update[T](key: AttributeKey[T])(f: Option[T] => T): State =
-        put(key, f(get(key)))
-      def has(key: AttributeKey[_]) = s.attributes contains key
-      def remove(key: AttributeKey[_]) =
-        s.copy(attributes = s.attributes remove key)
-      def log = s.globalLogging.full
-      def handleError(t: Throwable): State = handleException(t, s, log)
-      def fail = {
-        import BasicCommandStrings.Compat.{FailureWall => CompatFailureWall}
-        val remaining = s.remainingCommands.dropWhile(c =>
-          c != FailureWall && c != CompatFailureWall)
-        if (remaining.isEmpty)
-          applyOnFailure(s, Nil, exit(ok = false))
-        else
-          applyOnFailure(s, remaining, s.copy(remainingCommands = remaining))
-      }
-      private[this] def applyOnFailure(
-          s: State,
-          remaining: Seq[String],
-          noHandler: => State): State =
-        s.onFailure match {
-          case Some(c) =>
-            s.copy(remainingCommands = c +: remaining, onFailure = None)
-          case None => noHandler
-        }
-
-      def addExitHook(act: => Unit): State =
-        s.copy(exitHooks = s.exitHooks + ExitHook(act))
-      def runExitHooks(): State = {
-        ExitHooks.runExitHooks(s.exitHooks.toSeq)
-        s.copy(exitHooks = Set.empty)
-      }
-      def locked[T](file: File)(t: => T): T =
-        s.configuration.provider.scalaProvider.launcher.globalLock
-          .apply(file, new Callable[T] { def call = t })
-
-      def interactive = getBoolean(s, BasicKeys.interactive, false)
-      def setInteractive(i: Boolean) = s.put(BasicKeys.interactive, i)
-
-      def classLoaderCache: ClassLoaderCache =
-        s get BasicKeys.classLoaderCache getOrElse newClassLoaderCache
-      def initializeClassLoaderCache =
-        s.put(BasicKeys.classLoaderCache, newClassLoaderCache)
-      private[this] def newClassLoaderCache =
-        new ClassLoaderCache(
-          s.configuration.provider.scalaProvider.launcher.topLoader)
+    def :::(newCommands: Seq[String]): State =
+      s.copy(remainingCommands = newCommands ++ s.remainingCommands)
+    def ::(command: String): State = (command :: Nil) ::: this
+    def ++(newCommands: Seq[Command]): State =
+      s.copy(definedCommands = (s.definedCommands ++ newCommands).distinct)
+    def +(newCommand: Command): State = this ++ (newCommand :: Nil)
+    def baseDir: File = s.configuration.baseDirectory
+    def setNext(n: Next) = s.copy(next = n)
+    def setResult(ro: Option[xsbti.MainResult]) = ro match {
+      case None => continue; case Some(r) => setNext(new Return(r))
     }
+    def continue = setNext(Continue)
+    def reboot(full: Boolean) = {
+      runExitHooks();
+      throw new xsbti.FullReload(s.remainingCommands.toArray, full)
+    }
+    def reload = runExitHooks().setNext(new Return(defaultReload(s)))
+    def clearGlobalLog = setNext(ClearGlobalLog)
+    def keepLastLog = setNext(KeepLastLog)
+    def exit(ok: Boolean) =
+      runExitHooks().setNext(new Return(Exit(if (ok) 0 else 1)))
+    def get[T](key: AttributeKey[T]) = s.attributes get key
+    def put[T](key: AttributeKey[T], value: T) =
+      s.copy(attributes = s.attributes.put(key, value))
+    def update[T](key: AttributeKey[T])(f: Option[T] => T): State =
+      put(key, f(get(key)))
+    def has(key: AttributeKey[_]) = s.attributes contains key
+    def remove(key: AttributeKey[_]) =
+      s.copy(attributes = s.attributes remove key)
+    def log = s.globalLogging.full
+    def handleError(t: Throwable): State = handleException(t, s, log)
+    def fail = {
+      import BasicCommandStrings.Compat.{FailureWall => CompatFailureWall}
+      val remaining = s.remainingCommands.dropWhile(c =>
+        c != FailureWall && c != CompatFailureWall)
+      if (remaining.isEmpty)
+        applyOnFailure(s, Nil, exit(ok = false))
+      else
+        applyOnFailure(s, remaining, s.copy(remainingCommands = remaining))
+    }
+    private[this] def applyOnFailure(
+        s: State,
+        remaining: Seq[String],
+        noHandler: => State): State =
+      s.onFailure match {
+        case Some(c) =>
+          s.copy(remainingCommands = c +: remaining, onFailure = None)
+        case None => noHandler
+      }
+
+    def addExitHook(act: => Unit): State =
+      s.copy(exitHooks = s.exitHooks + ExitHook(act))
+    def runExitHooks(): State = {
+      ExitHooks.runExitHooks(s.exitHooks.toSeq)
+      s.copy(exitHooks = Set.empty)
+    }
+    def locked[T](file: File)(t: => T): T =
+      s.configuration.provider.scalaProvider.launcher.globalLock
+        .apply(file, new Callable[T] { def call = t })
+
+    def interactive = getBoolean(s, BasicKeys.interactive, false)
+    def setInteractive(i: Boolean) = s.put(BasicKeys.interactive, i)
+
+    def classLoaderCache: ClassLoaderCache =
+      s get BasicKeys.classLoaderCache getOrElse newClassLoaderCache
+    def initializeClassLoaderCache =
+      s.put(BasicKeys.classLoaderCache, newClassLoaderCache)
+    private[this] def newClassLoaderCache = new ClassLoaderCache(
+      s.configuration.provider.scalaProvider.launcher.topLoader)
+  }
 
   import ExceptionCategory._
 

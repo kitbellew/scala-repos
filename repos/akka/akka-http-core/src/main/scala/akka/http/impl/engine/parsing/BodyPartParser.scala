@@ -228,11 +228,10 @@ private[http] final class BodyPartParser(
     try {
       @tailrec def rec(index: Int): StateResult = {
         val currentPartEnd = boyerMoore.nextIndex(input, index)
-        def emitFinalChunk() =
-          emitFinalPartChunk(
-            headers,
-            contentType,
-            input.slice(offset, currentPartEnd))
+        def emitFinalChunk() = emitFinalPartChunk(
+          headers,
+          contentType,
+          input.slice(offset, currentPartEnd))
         val needleEnd = currentPartEnd + needle.length
         if (crlf(input, needleEnd)) {
           emitFinalChunk()

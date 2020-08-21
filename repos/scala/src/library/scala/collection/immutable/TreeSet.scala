@@ -119,8 +119,8 @@ class TreeSet[A] private (tree: RB.Tree[A, Unit])(implicit
     *  @param elem    a new element to add.
     *  @return        a new $coll containing `elem` and all the elements of this $coll.
     */
-  def +(elem: A): TreeSet[A] =
-    newSet(RB.update(tree, elem, (), overwrite = false))
+  def +(elem: A): TreeSet[A] = newSet(
+    RB.update(tree, elem, (), overwrite = false))
 
   /** A new `TreeSet` with the entry added is returned,
     *  assuming that elem is <em>not</em> in the TreeSet.
@@ -162,8 +162,8 @@ class TreeSet[A] private (tree: RB.Tree[A, Unit])(implicit
 
   override def rangeImpl(from: Option[A], until: Option[A]): TreeSet[A] =
     newSet(RB.rangeImpl(tree, from, until))
-  override def range(from: A, until: A): TreeSet[A] =
-    newSet(RB.range(tree, from, until))
+  override def range(from: A, until: A): TreeSet[A] = newSet(
+    RB.range(tree, from, until))
   override def from(from: A): TreeSet[A] = newSet(RB.from(tree, from))
   override def to(to: A): TreeSet[A] = newSet(RB.to(tree, to))
   override def until(until: A): TreeSet[A] = newSet(RB.until(tree, until))

@@ -19,14 +19,13 @@ private[finagle] class ZooKeeperHealthHandler extends Watcher {
   private[this] val mu = new AsyncMutex
   val pulse = new Broker[Health]()
 
-  def process(evt: WatchedEvent) =
-    for {
-      permit <- mu.acquire()
-      () <- evt.getState match {
-        case KeeperState.SyncConnected => pulse ! Healthy
-        case _                         => pulse ! Unhealthy
-      }
-    } permit.release()
+  def process(evt: WatchedEvent) = for {
+    permit <- mu.acquire()
+    () <- evt.getState match {
+      case KeeperState.SyncConnected => pulse ! Healthy
+      case _                         => pulse ! Unhealthy
+    }
+  } permit.release()
 }
 
 private[finagle] object DefaultZkClientFactory

@@ -361,9 +361,8 @@ trait TextSourceScheme extends SchemedSource {
 
   override def localScheme =
     new CLTextLine(new Fields("offset", "line"), Fields.ALL, textEncoding)
-  override def hdfsScheme =
-    HadoopSchemeInstance(
-      new CHTextLine(CHTextLine.DEFAULT_SOURCE_FIELDS, textEncoding))
+  override def hdfsScheme = HadoopSchemeInstance(
+    new CHTextLine(CHTextLine.DEFAULT_SOURCE_FIELDS, textEncoding))
 }
 
 trait TextLineScheme extends TextSourceScheme with SingleMappable[String] {
@@ -394,16 +393,15 @@ trait DelimitedScheme extends SchemedSource {
   val safe = true
 
   //These should not be changed:
-  override def localScheme =
-    new CLTextDelimited(
-      fields,
-      skipHeader,
-      writeHeader,
-      separator,
-      strict,
-      quote,
-      types,
-      safe)
+  override def localScheme = new CLTextDelimited(
+    fields,
+    skipHeader,
+    writeHeader,
+    separator,
+    strict,
+    quote,
+    types,
+    safe)
 
   override def hdfsScheme = {
     assert(

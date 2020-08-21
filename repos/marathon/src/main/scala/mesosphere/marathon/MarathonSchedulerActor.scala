@@ -81,31 +81,30 @@ class MarathonSchedulerActor private (
 
   def receive: Receive = suspended
 
-  def suspended: Receive =
-    LoggingReceive.withLabel("suspended") {
-      case LocalLeadershipEvent.ElectedAsLeader =>
-        log.info("Starting scheduler actor")
-        deploymentRepository.all() onComplete {
-          case Success(deployments) => self ! RecoverDeployments(deployments)
-          case Failure(_)           => self ! RecoverDeployments(Nil)
-        }
+  def suspended: Receive = LoggingReceive.withLabel("suspended") {
+    case LocalLeadershipEvent.ElectedAsLeader =>
+      log.info("Starting scheduler actor")
+      deploymentRepository.all() onComplete {
+        case Success(deployments) => self ! RecoverDeployments(deployments)
+        case Failure(_)           => self ! RecoverDeployments(Nil)
+      }
 
-      case RecoverDeployments(deployments) =>
-        deployments.foreach { plan =>
-          log.info(s"Recovering deployment:\n$plan")
-          deploy(context.system.deadLetters, Deploy(plan, force = false))
-        }
+    case RecoverDeployments(deployments) =>
+      deployments.foreach { plan =>
+        log.info(s"Recovering deployment:\n$plan")
+        deploy(context.system.deadLetters, Deploy(plan, force = false))
+      }
 
-        log.info("Scheduler actor ready")
-        unstashAll()
-        context.become(started)
-        self ! ReconcileHealthChecks
+      log.info("Scheduler actor ready")
+      unstashAll()
+      context.become(started)
+      self ! ReconcileHealthChecks
 
-      case LocalLeadershipEvent.Standby =>
-      // ignore, FIXME: When we get this while recovering deployments, we become active
+    case LocalLeadershipEvent.Standby =>
+    // ignore, FIXME: When we get this while recovering deployments, we become active
 
-      case _ => stash()
-    }
+    case _ => stash()
+  }
 
   //TODO: fix style issue and enable this scalastyle check
   //scalastyle:off cyclomatic.complexity method.length

@@ -33,21 +33,19 @@ case class TestData(
 
 object TimePathSourceLaws extends Properties("Time path source") {
 
-  implicit def arbRateRange: Arbitrary[DateRange] =
-    Arbitrary(for {
-      startTs <- Gen.choose(-137878042589500L, 137878042589500L)
-      startDate <- RichDate(startTs)
-      endTsDelta <- Gen.choose(10L, 137878042589500L)
-      endDate <- RichDate(startTs + endTsDelta)
-    } yield DateRange(startDate, endDate))
+  implicit def arbRateRange: Arbitrary[DateRange] = Arbitrary(for {
+    startTs <- Gen.choose(-137878042589500L, 137878042589500L)
+    startDate <- RichDate(startTs)
+    endTsDelta <- Gen.choose(10L, 137878042589500L)
+    endDate <- RichDate(startTs + endTsDelta)
+  } yield DateRange(startDate, endDate))
 
-  implicit def arbData =
-    Arbitrary(for {
-      reqRange <- arbitrary[DateRange]
-      availableRange <- arbitrary[DateRange]
-      embiggenVal <- Gen.choose(1L, 100000L)
-      embiggen <- Gen.oneOf(embiggenVal, 0L)
-    } yield TestData(reqRange, availableRange, embiggen))
+  implicit def arbData = Arbitrary(for {
+    reqRange <- arbitrary[DateRange]
+    availableRange <- arbitrary[DateRange]
+    embiggenVal <- Gen.choose(1L, 100000L)
+    embiggen <- Gen.oneOf(embiggenVal, 0L)
+  } yield TestData(reqRange, availableRange, embiggen))
 
   def genEmbiggen(embiggen: Long): (DateRange => DateRange) = {
     ((dr: DateRange) =>

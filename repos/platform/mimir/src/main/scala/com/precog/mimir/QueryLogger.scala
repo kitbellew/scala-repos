@@ -40,16 +40,15 @@ import scala.annotation.tailrec
 import java.util.concurrent.ConcurrentHashMap
 
 trait QueryLogger[M[+_], -P] { self =>
-  def contramap[P0](f: P0 => P): QueryLogger[M, P0] =
-    new QueryLogger[M, P0] {
-      def die(): M[Unit] = self.die()
-      def error(pos: P0, msg: String): M[Unit] = self.error(f(pos), msg)
-      def warn(pos: P0, msg: String): M[Unit] = self.warn(f(pos), msg)
-      def info(pos: P0, msg: String): M[Unit] = self.info(f(pos), msg)
-      def log(pos: P0, msg: String): M[Unit] = self.log(f(pos), msg)
-      def timing(pos: P0, nanos: Long): M[Unit] = self.timing(f(pos), nanos)
-      def done: M[Unit] = self.done
-    }
+  def contramap[P0](f: P0 => P): QueryLogger[M, P0] = new QueryLogger[M, P0] {
+    def die(): M[Unit] = self.die()
+    def error(pos: P0, msg: String): M[Unit] = self.error(f(pos), msg)
+    def warn(pos: P0, msg: String): M[Unit] = self.warn(f(pos), msg)
+    def info(pos: P0, msg: String): M[Unit] = self.info(f(pos), msg)
+    def log(pos: P0, msg: String): M[Unit] = self.log(f(pos), msg)
+    def timing(pos: P0, nanos: Long): M[Unit] = self.timing(f(pos), nanos)
+    def done: M[Unit] = self.done
+  }
 
   def die(): M[Unit]
 
@@ -122,10 +121,9 @@ trait JobQueryLogger[M[+_], P] extends QueryLogger[M, P] {
   private def send(channel: String, pos: P, msg: String): M[Unit] =
     jobManager.addMessage(jobId, channel, mkMessage(pos, msg)) map { _ => () }
 
-  def die(): M[Unit] =
-    for {
-      _ <- jobManager.cancel(jobId, "Cancelled because of error.", clock.now())
-    } yield ()
+  def die(): M[Unit] = for {
+    _ <- jobManager.cancel(jobId, "Cancelled because of error.", clock.now())
+  } yield ()
 
   def error(pos: P, msg: String): M[Unit] = send(channels.Error, pos, msg)
 
@@ -143,20 +141,17 @@ trait LoggingQueryLogger[M[+_], P] extends QueryLogger[M, P] {
 
   def die(): M[Unit] = M.point { () }
 
-  def error(pos: P, msg: String): M[Unit] =
-    M.point {
-      logger.error(pos.toString + " - " + msg)
-    }
+  def error(pos: P, msg: String): M[Unit] = M.point {
+    logger.error(pos.toString + " - " + msg)
+  }
 
-  def warn(pos: P, msg: String): M[Unit] =
-    M.point {
-      logger.warn(pos.toString + " - " + msg)
-    }
+  def warn(pos: P, msg: String): M[Unit] = M.point {
+    logger.warn(pos.toString + " - " + msg)
+  }
 
-  def info(pos: P, msg: String): M[Unit] =
-    M.point {
-      logger.info(pos.toString + " - " + msg)
-    }
+  def info(pos: P, msg: String): M[Unit] = M.point {
+    logger.info(pos.toString + " - " + msg)
+  }
 
   def log(pos: P, msg: String): M[Unit] = info(pos, msg)
 }
@@ -232,11 +227,10 @@ trait TimingQueryLogger[M[+_], P] extends QueryLogger[M, P] {
 trait ExceptionQueryLogger[M[+_], -P] extends QueryLogger[M, P] {
   implicit def M: Applicative[M]
 
-  abstract override def die(): M[Unit] =
-    for {
-      _ <- super.die()
-      _ = throw FatalQueryException("Query terminated abnormally.")
-    } yield ()
+  abstract override def die(): M[Unit] = for {
+    _ <- super.die()
+    _ = throw FatalQueryException("Query terminated abnormally.")
+  } yield ()
 }
 
 case class FatalQueryException(msg: String) extends RuntimeException(msg)

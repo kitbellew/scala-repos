@@ -9,22 +9,22 @@ package scala.test.scaladoc.implicits.typeclasses {
     import language.implicitConversions
     import scala.reflect.ClassTag
     import scala.reflect.runtime.universe.TypeTag
-    implicit def convertNumeric[T: Numeric](a: A[T]) =
-      new B(implicitly[Numeric[T]])
-    implicit def convertIntegral[T: Integral](a: A[T]) =
-      new B(implicitly[Integral[T]])
-    implicit def convertFractional[T: Fractional](a: A[T]) =
-      new B(implicitly[Fractional[T]])
-    implicit def convertManifest[T: Manifest](a: A[T]) =
-      new B(implicitly[Manifest[T]])
-    implicit def convertClassManifest[T: ClassManifest](a: A[T]) =
-      new B(implicitly[ClassManifest[T]])
-    implicit def convertOptManifest[T: OptManifest](a: A[T]) =
-      new B(implicitly[OptManifest[T]])
-    implicit def convertClassTag[T: ClassTag](a: A[T]) =
-      new B(implicitly[ClassTag[T]])
-    implicit def convertTypeTag[T: TypeTag](a: A[T]) =
-      new B(implicitly[TypeTag[T]])
+    implicit def convertNumeric[T: Numeric](a: A[T]) = new B(
+      implicitly[Numeric[T]])
+    implicit def convertIntegral[T: Integral](a: A[T]) = new B(
+      implicitly[Integral[T]])
+    implicit def convertFractional[T: Fractional](a: A[T]) = new B(
+      implicitly[Fractional[T]])
+    implicit def convertManifest[T: Manifest](a: A[T]) = new B(
+      implicitly[Manifest[T]])
+    implicit def convertClassManifest[T: ClassManifest](a: A[T]) = new B(
+      implicitly[ClassManifest[T]])
+    implicit def convertOptManifest[T: OptManifest](a: A[T]) = new B(
+      implicitly[OptManifest[T]])
+    implicit def convertClassTag[T: ClassTag](a: A[T]) = new B(
+      implicitly[ClassTag[T]])
+    implicit def convertTypeTag[T: TypeTag](a: A[T]) = new B(
+      implicitly[TypeTag[T]])
     type K[X] = Numeric[X]
     type L[X] = Integral[X]
     type M[X] = Fractional[X]

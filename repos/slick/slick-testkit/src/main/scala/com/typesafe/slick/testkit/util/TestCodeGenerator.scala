@@ -20,28 +20,27 @@ trait TestCodeGenerator {
   def computeFullTdbName(tdbName: String) =
     StandardTestDBs.getClass.getName.replaceAll("\\$", "") + "." + tdbName
 
-  def main(args: Array[String]): Unit =
-    try {
-      val clns = configurations.flatMap(_.generate(args(0)).toSeq)
-      new OutputHelpers {
-        def indent(code: String): String = code
-        def code: String = ""
-      }.writeStringToFile(
-        s"""
+  def main(args: Array[String]): Unit = try {
+    val clns = configurations.flatMap(_.generate(args(0)).toSeq)
+    new OutputHelpers {
+      def indent(code: String): String = code
+      def code: String = ""
+    }.writeStringToFile(
+      s"""
          |package $packageName
          |object AllTests extends com.typesafe.slick.testkit.util.TestCodeRunner.AllTests {
          |  val clns = Seq(${clns.map("\"" + _ + "\"").mkString(", ")})
          |}
        """.stripMargin,
-        args(0),
-        packageName,
-        "AllTests.scala"
-      )
-    } catch {
-      case ex: Throwable =>
-        ex.printStackTrace(System.err)
-        System.exit(1)
-    }
+      args(0),
+      packageName,
+      "AllTests.scala"
+    )
+  } catch {
+    case ex: Throwable =>
+      ex.printStackTrace(System.err)
+      System.exit(1)
+  }
 
   class Config(
       val objectName: String,
@@ -105,14 +104,13 @@ trait TestCodeGenerator {
     def testCode: String = defaultTestCode(this)
 
     class MyGen(model: Model) extends SourceCodeGenerator(model) {
-      override def entityName =
-        sqlName => {
-          val baseName = super.entityName(sqlName)
-          if (baseName.dropRight(3).last == 's') baseName.dropRight(4)
-          else baseName
-        }
-      override def parentType =
-        Some("com.typesafe.slick.testkit.util.TestCodeRunner.TestCase")
+      override def entityName = sqlName => {
+        val baseName = super.entityName(sqlName)
+        if (baseName.dropRight(3).last == 's') baseName.dropRight(4)
+        else baseName
+      }
+      override def parentType = Some(
+        "com.typesafe.slick.testkit.util.TestCodeRunner.TestCase")
       override def code = {
         s"""
            |lazy val tdb = $fullTdbName

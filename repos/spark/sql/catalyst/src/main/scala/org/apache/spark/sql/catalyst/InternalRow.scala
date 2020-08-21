@@ -70,8 +70,8 @@ object InternalRow {
   /**
     * This method can be used to construct a [[InternalRow]] from a [[Seq]] of values.
     */
-  def fromSeq(values: Seq[Any]): InternalRow =
-    new GenericInternalRow(values.toArray)
+  def fromSeq(values: Seq[Any]): InternalRow = new GenericInternalRow(
+    values.toArray)
 
   /** Returns an empty [[InternalRow]]. */
   val empty = apply()

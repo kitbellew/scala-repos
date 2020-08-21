@@ -86,41 +86,37 @@ case class SimpleFilteredScan(from: Int, to: Int)(
     ColumnsRequired.set = requiredColumns.toSet
 
     // Predicate test on integer column
-    def translateFilterOnA(filter: Filter): Int => Boolean =
-      filter match {
-        case EqualTo("a", v)                 => (a: Int) => a == v
-        case EqualNullSafe("a", v)           => (a: Int) => a == v
-        case LessThan("a", v: Int)           => (a: Int) => a < v
-        case LessThanOrEqual("a", v: Int)    => (a: Int) => a <= v
-        case GreaterThan("a", v: Int)        => (a: Int) => a > v
-        case GreaterThanOrEqual("a", v: Int) => (a: Int) => a >= v
-        case In("a", values) =>
-          (a: Int) => values.map(_.asInstanceOf[Int]).toSet.contains(a)
-        case IsNull("a")    => (a: Int) => false // Int can't be null
-        case IsNotNull("a") => (a: Int) => true
-        case Not(pred)      => (a: Int) => !translateFilterOnA(pred)(a)
-        case And(left, right) =>
-          (a: Int) =>
-            translateFilterOnA(left)(a) && translateFilterOnA(right)(a)
-        case Or(left, right) =>
-          (a: Int) =>
-            translateFilterOnA(left)(a) || translateFilterOnA(right)(a)
-        case _ => (a: Int) => true
-      }
+    def translateFilterOnA(filter: Filter): Int => Boolean = filter match {
+      case EqualTo("a", v)                 => (a: Int) => a == v
+      case EqualNullSafe("a", v)           => (a: Int) => a == v
+      case LessThan("a", v: Int)           => (a: Int) => a < v
+      case LessThanOrEqual("a", v: Int)    => (a: Int) => a <= v
+      case GreaterThan("a", v: Int)        => (a: Int) => a > v
+      case GreaterThanOrEqual("a", v: Int) => (a: Int) => a >= v
+      case In("a", values) =>
+        (a: Int) => values.map(_.asInstanceOf[Int]).toSet.contains(a)
+      case IsNull("a")    => (a: Int) => false // Int can't be null
+      case IsNotNull("a") => (a: Int) => true
+      case Not(pred)      => (a: Int) => !translateFilterOnA(pred)(a)
+      case And(left, right) =>
+        (a: Int) => translateFilterOnA(left)(a) && translateFilterOnA(right)(a)
+      case Or(left, right) =>
+        (a: Int) => translateFilterOnA(left)(a) || translateFilterOnA(right)(a)
+      case _ => (a: Int) => true
+    }
 
     // Predicate test on string column
-    def translateFilterOnC(filter: Filter): String => Boolean =
-      filter match {
-        case StringStartsWith("c", v) => _.startsWith(v)
-        case StringEndsWith("c", v)   => _.endsWith(v)
-        case StringContains("c", v)   => _.contains(v)
-        case EqualTo("c", v: String)  => _.equals(v)
-        case EqualTo("c", v: UTF8String) =>
-          sys.error("UTF8String should not appear in filters")
-        case In("c", values) =>
-          (s: String) => values.map(_.asInstanceOf[String]).toSet.contains(s)
-        case _ => (c: String) => true
-      }
+    def translateFilterOnC(filter: Filter): String => Boolean = filter match {
+      case StringStartsWith("c", v) => _.startsWith(v)
+      case StringEndsWith("c", v)   => _.endsWith(v)
+      case StringContains("c", v)   => _.contains(v)
+      case EqualTo("c", v: String)  => _.equals(v)
+      case EqualTo("c", v: UTF8String) =>
+        sys.error("UTF8String should not appear in filters")
+      case In("c", values) =>
+        (s: String) => values.map(_.asInstanceOf[String]).toSet.contains(s)
+      case _ => (c: String) => true
+    }
 
     def eval(a: Int) = {
       val c =

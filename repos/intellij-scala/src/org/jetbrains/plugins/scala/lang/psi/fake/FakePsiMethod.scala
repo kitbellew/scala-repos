@@ -100,16 +100,15 @@ class FakePsiMethod(
   def setName(name: String): PsiElement =
     new FakePsiMethod(navElement, name, params, retType, hasModifier)
 
-  def getModifierList: PsiModifierList =
-    navElement match {
-      case b: ScBindingPattern =>
-        b.nameContext match {
-          case v: ScVariable => v.getModifierList
-          case v: ScValue    => v.getModifierList
-          case _             => ScalaPsiUtil.getEmptyModifierList(getManager)
-        }
-      case _ => ScalaPsiUtil.getEmptyModifierList(getManager)
-    }
+  def getModifierList: PsiModifierList = navElement match {
+    case b: ScBindingPattern =>
+      b.nameContext match {
+        case v: ScVariable => v.getModifierList
+        case v: ScValue    => v.getModifierList
+        case _             => ScalaPsiUtil.getEmptyModifierList(getManager)
+      }
+    case _ => ScalaPsiUtil.getEmptyModifierList(getManager)
+  }
 
   def findSuperMethods(parentClass: PsiClass): Array[PsiMethod] =
     PsiMethod.EMPTY_ARRAY
@@ -124,22 +123,20 @@ class FakePsiMethod(
 
   def isConstructor: Boolean = false
 
-  def getThrowsList: PsiReferenceList =
-    new FakePsiReferenceList(
-      manager,
-      language,
-      PsiReferenceList.Role.THROWS_LIST)
+  def getThrowsList: PsiReferenceList = new FakePsiReferenceList(
+    manager,
+    language,
+    PsiReferenceList.Role.THROWS_LIST)
 
   def isVarArgs: Boolean = false
 
-  override def getIcon(flags: Int): Icon =
-    navElement match {
-      case t: ScTypedDefinition =>
-        val context = t.nameContext
-        if (context != null) context.getIcon(flags)
-        else super.getIcon(flags)
-      case _ => super.getIcon(flags)
-    }
+  override def getIcon(flags: Int): Icon = navElement match {
+    case t: ScTypedDefinition =>
+      val context = t.nameContext
+      if (context != null) context.getIcon(flags)
+      else super.getIcon(flags)
+    case _ => super.getIcon(flags)
+  }
 
   def getReturnTypeElement: PsiTypeElement = null
 
@@ -161,11 +158,10 @@ class FakePsiTypeElement(manager: PsiManager, language: Language, tp: ScType)
 
   def getInnermostComponentReferenceElement: PsiJavaCodeReferenceElement = null
 
-  def getType: PsiType =
-    ScType.toPsi(
-      tp,
-      manager.getProject,
-      GlobalSearchScope.allScope(manager.getProject))
+  def getType: PsiType = ScType.toPsi(
+    tp,
+    manager.getProject,
+    GlobalSearchScope.allScope(manager.getProject))
 
   def addAnnotation(qualifiedName: String): PsiAnnotation = null
 
@@ -205,11 +201,10 @@ class FakePsiParameter(
 
   def getInitializer: PsiExpression = null
 
-  def getType: PsiType =
-    ScType.toPsi(
-      parameter.paramType,
-      manager.getProject,
-      GlobalSearchScope.allScope(manager.getProject))
+  def getType: PsiType = ScType.toPsi(
+    parameter.paramType,
+    manager.getProject,
+    GlobalSearchScope.allScope(manager.getProject))
 
   def isVarArgs: Boolean = false
 

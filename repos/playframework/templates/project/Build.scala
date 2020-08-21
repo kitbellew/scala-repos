@@ -224,10 +224,9 @@ object Templates {
       val client = new NingWSClient(new Builder().build())
       try {
 
-        def clientCall(path: String): WSRequestHolder =
-          client
-            .url(s"https://$host$path")
-            .withAuth(creds.userName, creds.passwd, WSAuthScheme.BASIC)
+        def clientCall(path: String): WSRequestHolder = client
+          .url(s"https://$host$path")
+          .withAuth(creds.userName, creds.passwd, WSAuthScheme.BASIC)
 
         def timeout(duration: FiniteDuration): Future[Unit] = {
           val promise = Promise[Unit]()
@@ -395,12 +394,11 @@ object Templates {
       with FeedbackProvidedException
 
   private object StdOutLogger {
-    def apply(log: String => Unit) =
-      new ProcessLogger {
-        def info(s: => String) = log(s)
-        def error(s: => String) = System.err.println(s)
-        def buffer[T](f: => T) = f
-      }
+    def apply(log: String => Unit) = new ProcessLogger {
+      def info(s: => String) = log(s)
+      def error(s: => String) = System.err.println(s)
+      def buffer[T](f: => T) = f
+    }
   }
 
   private sealed trait TemplateStatus
@@ -409,15 +407,14 @@ object Templates {
       extends TemplateStatus
   private case class TemplatePending(uuid: String) extends TemplateStatus
 
-  private def extractErrors(body: String) =
-    body
-      .split("\n")
-      .dropWhile(!_.contains("This template failed to publish."))
-      .drop(1)
-      .takeWhile(!_.contains("</article>"))
-      .map(_.trim)
-      .filterNot(_.isEmpty)
-      .map(_.replaceAll("<p>", "").replaceAll("</p>", ""))
+  private def extractErrors(body: String) = body
+    .split("\n")
+    .dropWhile(!_.contains("This template failed to publish."))
+    .drop(1)
+    .takeWhile(!_.contains("</article>"))
+    .map(_.trim)
+    .filterNot(_.isEmpty)
+    .map(_.replaceAll("<p>", "").replaceAll("</p>", ""))
 
   play.api.Logger.configure(play.api.Environment.simple())
 }

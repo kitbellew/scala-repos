@@ -96,14 +96,12 @@ object Container {
     }
 
     new Validator[Container] {
-      override def apply(c: Container): Result =
-        c.`type` match {
-          case Mesos.ContainerInfo.Type.MESOS =>
-            validate(c)(validMesosContainer)
-          case Mesos.ContainerInfo.Type.DOCKER =>
-            validate(c)(validDockerContainer)
-          case _ => Failure(Set(RuleViolation(c.`type`, "unknown", None)))
-        }
+      override def apply(c: Container): Result = c.`type` match {
+        case Mesos.ContainerInfo.Type.MESOS => validate(c)(validMesosContainer)
+        case Mesos.ContainerInfo.Type.DOCKER =>
+          validate(c)(validDockerContainer)
+        case _ => Failure(Set(RuleViolation(c.`type`, "unknown", None)))
+      }
     } and validGeneralContainer
   }
 }

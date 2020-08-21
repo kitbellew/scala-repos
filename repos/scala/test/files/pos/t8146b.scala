@@ -84,13 +84,12 @@ class HListBench {
 
     def c: Column[Int]
 
-    def * =
+    def * = c :: c :: c :: c :: c ::
       c :: c :: c :: c :: c ::
-        c :: c :: c :: c :: c ::
-        c :: c :: c :: c :: c ::
-        c :: c :: c :: c :: c ::
-        c :: c :: c :: c :: c ::
-        c :: c :: HNil
+      c :: c :: c :: c :: c ::
+      c :: c :: c :: c :: c ::
+      c :: c :: c :: c :: c ::
+      c :: c :: HNil
 
   }
 }

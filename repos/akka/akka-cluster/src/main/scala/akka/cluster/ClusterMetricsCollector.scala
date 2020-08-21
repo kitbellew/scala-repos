@@ -237,19 +237,20 @@ private[cluster] final case class MetricsGossip(nodes: Set[NodeMetrics]) {
   /**
     * Adds new local [[akka.cluster.NodeMetrics]], or merges an existing.
     */
-  def :+(newNodeMetrics: NodeMetrics): MetricsGossip =
-    nodeMetricsFor(newNodeMetrics.address) match {
-      case Some(existingNodeMetrics) ⇒
-        copy(nodes =
-          nodes - existingNodeMetrics + (existingNodeMetrics merge newNodeMetrics))
-      case None ⇒ copy(nodes = nodes + newNodeMetrics)
-    }
+  def :+(newNodeMetrics: NodeMetrics): MetricsGossip = nodeMetricsFor(
+    newNodeMetrics.address) match {
+    case Some(existingNodeMetrics) ⇒
+      copy(nodes =
+        nodes - existingNodeMetrics + (existingNodeMetrics merge newNodeMetrics))
+    case None ⇒ copy(nodes = nodes + newNodeMetrics)
+  }
 
   /**
     * Returns [[akka.cluster.NodeMetrics]] for a node if exists.
     */
-  def nodeMetricsFor(address: Address): Option[NodeMetrics] =
-    nodes find { n ⇒ n.address == address }
+  def nodeMetricsFor(address: Address): Option[NodeMetrics] = nodes find { n ⇒
+    n.address == address
+  }
 
 }
 
@@ -371,11 +372,10 @@ final case class Metric private[cluster] (
   /**
     * The numerical value of the average, if defined, otherwise the latest value
     */
-  def smoothValue: Double =
-    average match {
-      case Some(avg) ⇒ avg.value
-      case None ⇒ value.doubleValue
-    }
+  def smoothValue: Double = average match {
+    case Some(avg) ⇒ avg.value
+    case None ⇒ value.doubleValue
+  }
 
   /**
     * @return true if this value is smoothed
@@ -388,11 +388,10 @@ final case class Metric private[cluster] (
   def sameAs(that: Metric): Boolean = name == that.name
 
   override def hashCode = name.##
-  override def equals(obj: Any) =
-    obj match {
-      case other: Metric ⇒ sameAs(other)
-      case _ ⇒ false
-    }
+  override def equals(obj: Any) = obj match {
+    case other: Metric ⇒ sameAs(other)
+    case _ ⇒ false
+  }
 
 }
 
@@ -423,19 +422,17 @@ object Metric extends MetricNumericConverter {
   def create(
       name: String,
       value: Try[Number],
-      decayFactor: Option[Double]): Option[Metric] =
-    value match {
-      case Success(v) ⇒ create(name, v, decayFactor)
-      case Failure(_) ⇒ None
-    }
+      decayFactor: Option[Double]): Option[Metric] = value match {
+    case Success(v) ⇒ create(name, v, decayFactor)
+    case Failure(_) ⇒ None
+  }
 
   private def ceateEWMA(
       value: Double,
-      decayFactor: Option[Double]): Option[EWMA] =
-    decayFactor match {
-      case Some(alpha) ⇒ Some(EWMA(value, alpha))
-      case None ⇒ None
-    }
+      decayFactor: Option[Double]): Option[EWMA] = decayFactor match {
+    case Some(alpha) ⇒ Some(EWMA(value, alpha))
+    case None ⇒ None
+  }
 
 }
 
@@ -472,8 +469,9 @@ final case class NodeMetrics(
     }
   }
 
-  def metric(key: String): Option[Metric] =
-    metrics.collectFirst { case m if m.name == key ⇒ m }
+  def metric(key: String): Option[Metric] = metrics.collectFirst {
+    case m if m.name == key ⇒ m
+  }
 
   /**
     * Java API
@@ -487,11 +485,10 @@ final case class NodeMetrics(
   def sameAs(that: NodeMetrics): Boolean = address == that.address
 
   override def hashCode = address.##
-  override def equals(obj: Any) =
-    obj match {
-      case other: NodeMetrics ⇒ sameAs(other)
-      case _ ⇒ false
-    }
+  override def equals(obj: Any) = obj match {
+    case other: NodeMetrics ⇒ sameAs(other)
+    case _ ⇒ false
+  }
 
 }
 
@@ -599,13 +596,12 @@ object StandardMetrics {
     * Java API to extract Cpu data from nodeMetrics, if the nodeMetrics
     * contains necessary cpu metrics, otherwise it returns null.
     */
-  def extractCpu(nodeMetrics: NodeMetrics): Cpu =
-    nodeMetrics match {
-      case Cpu(address, timestamp, systemLoadAverage, cpuCombined, processors) ⇒
-        // note that above extractor returns tuple
-        Cpu(address, timestamp, systemLoadAverage, cpuCombined, processors)
-      case _ ⇒ null
-    }
+  def extractCpu(nodeMetrics: NodeMetrics): Cpu = nodeMetrics match {
+    case Cpu(address, timestamp, systemLoadAverage, cpuCombined, processors) ⇒
+      // note that above extractor returns tuple
+      Cpu(address, timestamp, systemLoadAverage, cpuCombined, processors)
+    case _ ⇒ null
+  }
 
   /**
     * @param address [[akka.actor.Address]] of the node the metrics are gathered at
@@ -650,25 +646,23 @@ private[cluster] trait MetricNumericConverter {
     * <ul><li>JMX system load average and max heap can be 'undefined' for certain OS, in which case a -1 is returned</li>
     * <li>SIGAR combined CPU can occasionally return a NaN or Infinite (known bug)</li></ul>
     */
-  def defined(value: Number): Boolean =
-    convertNumber(value) match {
-      case Left(a) ⇒ a >= 0
-      case Right(b) ⇒ !(b < 0.0 || b.isNaN || b.isInfinite)
-    }
+  def defined(value: Number): Boolean = convertNumber(value) match {
+    case Left(a) ⇒ a >= 0
+    case Right(b) ⇒ !(b < 0.0 || b.isNaN || b.isInfinite)
+  }
 
   /**
     * May involve rounding or truncation.
     */
-  def convertNumber(from: Any): Either[Long, Double] =
-    from match {
-      case n: Int ⇒ Left(n)
-      case n: Long ⇒ Left(n)
-      case n: Double ⇒ Right(n)
-      case n: Float ⇒ Right(n)
-      case n: BigInt ⇒ Left(n.longValue)
-      case n: BigDecimal ⇒ Right(n.doubleValue)
-      case x ⇒ throw new IllegalArgumentException(s"Not a number [$x]")
-    }
+  def convertNumber(from: Any): Either[Long, Double] = from match {
+    case n: Int ⇒ Left(n)
+    case n: Long ⇒ Left(n)
+    case n: Double ⇒ Right(n)
+    case n: Float ⇒ Right(n)
+    case n: BigInt ⇒ Left(n.longValue)
+    case n: BigDecimal ⇒ Right(n.doubleValue)
+    case x ⇒ throw new IllegalArgumentException(s"Not a number [$x]")
+  }
 
 }
 
@@ -742,21 +736,19 @@ class JmxMetricsCollector(address: Address, decayFactor: Double)
     * returned from JMX, and None is returned from this method.
     * Creates a new instance each time.
     */
-  def systemLoadAverage: Option[Metric] =
-    Metric.create(
-      name = SystemLoadAverage,
-      value = osMBean.getSystemLoadAverage,
-      decayFactor = None)
+  def systemLoadAverage: Option[Metric] = Metric.create(
+    name = SystemLoadAverage,
+    value = osMBean.getSystemLoadAverage,
+    decayFactor = None)
 
   /**
     * (JMX) Returns the number of available processors
     * Creates a new instance each time.
     */
-  def processors: Option[Metric] =
-    Metric.create(
-      name = Processors,
-      value = osMBean.getAvailableProcessors,
-      decayFactor = None)
+  def processors: Option[Metric] = Metric.create(
+    name = Processors,
+    value = osMBean.getAvailableProcessors,
+    decayFactor = None)
 
   /**
     * Current heap to be passed in to heapUsed, heapCommitted and heapMax
@@ -767,22 +759,20 @@ class JmxMetricsCollector(address: Address, decayFactor: Double)
     * (JMX) Returns the current sum of heap memory used from all heap memory pools (in bytes).
     * Creates a new instance each time.
     */
-  def heapUsed(heap: MemoryUsage): Option[Metric] =
-    Metric.create(
-      name = HeapMemoryUsed,
-      value = heap.getUsed,
-      decayFactor = decayFactorOption)
+  def heapUsed(heap: MemoryUsage): Option[Metric] = Metric.create(
+    name = HeapMemoryUsed,
+    value = heap.getUsed,
+    decayFactor = decayFactorOption)
 
   /**
     * (JMX) Returns the current sum of heap memory guaranteed to be available to the JVM
     * from all heap memory pools (in bytes).
     * Creates a new instance each time.
     */
-  def heapCommitted(heap: MemoryUsage): Option[Metric] =
-    Metric.create(
-      name = HeapMemoryCommitted,
-      value = heap.getCommitted,
-      decayFactor = decayFactorOption)
+  def heapCommitted(heap: MemoryUsage): Option[Metric] = Metric.create(
+    name = HeapMemoryCommitted,
+    value = heap.getCommitted,
+    decayFactor = decayFactorOption)
 
   /**
     * (JMX) Returns the maximum amount of memory (in bytes) that can be used
@@ -875,15 +865,14 @@ class SigarMetricsCollector(
     * Hyperic SIGAR provides more precise values, thus, if the library is on the classpath, it is the default.
     * Creates a new instance each time.
     */
-  override def systemLoadAverage: Option[Metric] =
-    Metric.create(
-      name = SystemLoadAverage,
-      value = Try(
-        LoadAverage.get
-          .invoke(sigar)
-          .asInstanceOf[Array[AnyRef]](0)
-          .asInstanceOf[Number]),
-      decayFactor = None) orElse super.systemLoadAverage
+  override def systemLoadAverage: Option[Metric] = Metric.create(
+    name = SystemLoadAverage,
+    value = Try(
+      LoadAverage.get
+        .invoke(sigar)
+        .asInstanceOf[Array[AnyRef]](0)
+        .asInstanceOf[Number]),
+    decayFactor = None) orElse super.systemLoadAverage
 
   /**
     * (SIGAR) Returns the combined CPU sum of User + Sys + Nice + Wait, in percentage. This metric can describe
@@ -895,18 +884,17 @@ class SigarMetricsCollector(
     *
     * Creates a new instance each time.
     */
-  def cpuCombined: Option[Metric] =
-    Metric.create(
-      name = CpuCombined,
-      value =
-        Try(CombinedCpu.get.invoke(Cpu.get.invoke(sigar)).asInstanceOf[Number]),
-      decayFactor = decayFactorOption)
+  def cpuCombined: Option[Metric] = Metric.create(
+    name = CpuCombined,
+    value =
+      Try(CombinedCpu.get.invoke(Cpu.get.invoke(sigar)).asInstanceOf[Number]),
+    decayFactor = decayFactorOption)
 
   /**
     * Releases any native resources associated with this instance.
     */
-  override def close(): Unit =
-    Try(createMethodFrom(sigar, "close").get.invoke(sigar))
+  override def close(): Unit = Try(
+    createMethodFrom(sigar, "close").get.invoke(sigar))
 
   private def createMethodFrom(
       ref: AnyRef,

@@ -63,32 +63,30 @@ object TailCalls {
       * or the result if there are no more steps.
       */
     @annotation.tailrec
-    final def resume: Either[() => TailRec[A], A] =
-      this match {
-        case Done(a) => Right(a)
-        case Call(k) => Left(k)
-        case Cont(a, f) =>
-          a match {
-            case Done(v)    => f(v).resume
-            case Call(k)    => Left(() => k().flatMap(f))
-            case Cont(b, g) => b.flatMap(x => g(x) flatMap f).resume
-          }
-      }
+    final def resume: Either[() => TailRec[A], A] = this match {
+      case Done(a) => Right(a)
+      case Call(k) => Left(k)
+      case Cont(a, f) =>
+        a match {
+          case Done(v)    => f(v).resume
+          case Call(k)    => Left(() => k().flatMap(f))
+          case Cont(b, g) => b.flatMap(x => g(x) flatMap f).resume
+        }
+    }
 
     /** Returns the result of the tailcalling computation.
       */
     @annotation.tailrec
-    final def result: A =
-      this match {
-        case Done(a) => a
-        case Call(t) => t().result
-        case Cont(a, f) =>
-          a match {
-            case Done(v)    => f(v).result
-            case Call(t)    => t().flatMap(f).result
-            case Cont(b, g) => b.flatMap(x => g(x) flatMap f).result
-          }
-      }
+    final def result: A = this match {
+      case Done(a) => a
+      case Call(t) => t().result
+      case Cont(a, f) =>
+        a match {
+          case Done(v)    => f(v).result
+          case Call(t)    => t().flatMap(f).result
+          case Cont(b, g) => b.flatMap(x => g(x) flatMap f).result
+        }
+    }
   }
 
   /** Internal class representing a tailcall */
