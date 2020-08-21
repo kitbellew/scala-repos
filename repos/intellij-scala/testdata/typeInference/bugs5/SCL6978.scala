@@ -5,9 +5,7 @@ object SCL6978 {
   }
 
   "text" match {
-    case R(s) =>
-      /*start*/
-      s /*end*/
+    case R(s) => /*start*/ s /*end*/
   }
 }
 //String

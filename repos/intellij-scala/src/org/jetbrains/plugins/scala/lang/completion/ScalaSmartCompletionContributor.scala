@@ -364,7 +364,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
           var foundClazz = false
           while (parent != null) {
             parent match {
-              case t: ScNewTemplateDefinition if foundClazz => //do nothing, impossible to invoke
+              case t: ScNewTemplateDefinition
+                  if foundClazz => //do nothing, impossible to invoke
               case t: ScTemplateDefinition =>
                 t.getTypeWithProjections(
                   TypingContext.empty,

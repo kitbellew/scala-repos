@@ -346,7 +346,9 @@ object CachesUtil {
         false,
         classOf[ScModificationTrackerOwner],
         classOf[ScalaCodeFragment])) match {
-      case Some(_: ScalaCodeFragment) => //do not update on changes in dummy file
+      case Some(
+            _: ScalaCodeFragment
+          ) => //do not update on changes in dummy file
       case Some(owner: ScModificationTrackerOwner)
           if owner.isValidModificationTrackerOwner(checkForChangedReturn =
             true) =>

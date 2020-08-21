@@ -133,8 +133,8 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
               // b is zero, so nothing is added to A
               bldr.add(ari, ci, a.data(ap))
               ap += 1
-            } else
-              /* ari > bri */ {
+            } else /* ari > bri */
+              {
                 bldr.add(bri, ci, s * b.data(bp))
                 bp += 1
               }
@@ -268,8 +268,8 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
                 // next b row starts further down, therefore increase a pointer
                 bldr.add(ari, ci, a.data(ap))
                 ap += 1
-              } else
-                /* ari > bri */ {
+              } else /* ari > bri */
+                {
                   // next a row starts further down, therefore increase b pointer
                   bldr.add(bri, ci, b.data(bp))
                   bp += 1
@@ -515,8 +515,8 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
               } else if (ari < bri) {
                 // next b row starts further down, therefore increase a pointer
                 ap += 1
-              } else
-                /* ari > bri */ {
+              } else /* ari > bri */
+                {
                   // next a row starts further down, therefore increase b pointer
                   bp += 1
                 }
@@ -574,8 +574,8 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
                 // next b row starts further down, therefore increase a pointer
                 bldr.add(ari, ci, a.data(ap))
                 ap += 1
-              } else
-                /* ari > bri */ {
+              } else /* ari > bri */
+                {
                   // next a row starts further down, therefore increase b pointer
                   bldr.add(bri, ci, -b.data(bp))
                   bp += 1
@@ -980,8 +980,8 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
               // b is zero, so nothing is added to A
               bldr.add(ari, ci, a.data(ap))
               ap += 1
-            } else
-              /* ari > bri */ {
+            } else /* ari > bri */
+              {
                 bldr.add(bri, ci, ring.*(s, b.data(bp)))
                 bp += 1
               }
@@ -1414,8 +1414,8 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
               } else if (ari < bri) {
                 // next b row starts further down, therefore increase a pointer
                 ap += 1
-              } else
-                /* ari > bri */ {
+              } else /* ari > bri */
+                {
                   // next a row starts further down, therefore increase b pointer
                   bp += 1
                 }
@@ -1470,8 +1470,8 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
                 // next b row starts further down, therefore increase a pointer
                 bldr.add(ari, ci, a.data(ap))
                 ap += 1
-              } else
-                /* ari > bri */ {
+              } else /* ari > bri */
+                {
                   // next a row starts further down, therefore increase b pointer
                   bldr.add(bri, ci, b.data(bp))
                   bp += 1
@@ -1528,8 +1528,8 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
                 // next b row starts further down, therefore increase a pointer
                 bldr.add(ari, ci, a.data(ap))
                 ap += 1
-              } else
-                /* ari > bri */ {
+              } else /* ari > bri */
+                {
                   // next a row starts further down, therefore increase b pointer
                   bldr.add(bri, ci, ring.negate(b.data(bp)))
                   bp += 1

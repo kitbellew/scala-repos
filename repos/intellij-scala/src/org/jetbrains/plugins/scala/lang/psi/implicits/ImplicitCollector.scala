@@ -169,8 +169,9 @@ class ImplicitCollector(
               lastParent,
               place)) stop = true
         placeForTreeWalkUp match {
-          case (_: ScTemplateBody | _: ScExtendsBlock) => //template body and inherited members are at the same level
-          case _                                       => if (!processor.changedLevel) stop = true
+          case (_: ScTemplateBody |
+              _: ScExtendsBlock) => //template body and inherited members are at the same level
+          case _ => if (!processor.changedLevel) stop = true
         }
         if (!stop) {
           if (!placeCalculated) {

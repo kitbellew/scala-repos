@@ -216,8 +216,10 @@ class ServiceDiscovererTest
     gd2.res() = Throw(new Exception)
 
     Await.result(f1, 1.second) match {
-      case Activity.Failed(ServiceDiscoverer.EntryLookupFailureException) => // great!
-      case other                                                          => fail(s"Expected entry lookup exception. Received $other")
+      case Activity.Failed(
+            ServiceDiscoverer.EntryLookupFailureException
+          ) => // great!
+      case other => fail(s"Expected entry lookup exception. Received $other")
     }
   }
 

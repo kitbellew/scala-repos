@@ -233,18 +233,12 @@ trait Writer {
       while (i < s.length) { /**/
         /**/
         s.charAt(i) match {
-          case '\\' =>
-            /**/
-            sb.append("\\\\") /**/
-          case '"' => sb.append("\\\"")
-          case '/' =>
-            /**/
-            sb.append("\\/") /**/
+          case '\\' => /**/ sb.append("\\\\") /**/
+          case '"'  => sb.append("\\\"")
+          case '/'  => /**/ sb.append("\\/") /**/
           case '\b' => sb.append("\\b")
           case '\t' => sb.append("\\t")
-          case '\n' =>
-            /**/
-            sb.append("\\n") /**/
+          case '\n' => /**/ sb.append("\\n") /**/
           case '\f' => sb.append("\\f")
           case '\r' => sb.append("\\r")
           case c =>
@@ -281,8 +275,7 @@ trait Writer {
       })
       sb.append("}")
 
-    case JsArray(vs) =>
-      /**/
+    case JsArray(vs) => /**/
       sb.append("[")
       if (vs.length > 0) writeToBuffer(vs(0), sb)
       var i = 1
@@ -359,30 +352,20 @@ class Json extends Writer2 {
       case c if 'a'.toInt <= c && c <= 'z'.toInt => Letter
       case c if 'A'.toInt <= c && c <= 'Z'.toInt => Letter
       case c if '0'.toInt <= c && c <= '9'.toInt => Digit
-      case '-'                                   =>
-        /**/
-        Minus
-      case ',' =>
-        /**/
-        Comma
-      case '"' =>
-        /**/
-        Quote
-      case ':' =>
-        /**/
-        Colon
-      case '{' =>
-        /**/
-        Lbra
-      case '}'  => Rbra
-      case '['  => Larr
-      case ']'  => Rarr
-      case ' '  => Blank
-      case '\t' => Blank
-      case '\n' => Blank
-      case '\r' => Blank
-      case '/'  => Slash
-      case _    => Other
+      case '-'                                   => /**/ Minus
+      case ','                                   => /**/ Comma
+      case '"'                                   => /**/ Quote
+      case ':'                                   => /**/ Colon
+      case '{'                                   => /**/ Lbra
+      case '}'                                   => Rbra
+      case '['                                   => Larr
+      case ']'                                   => Rarr
+      case ' '                                   => Blank
+      case '\t'                                  => Blank
+      case '\n'                                  => Blank
+      case '\r'                                  => Blank
+      case '/'                                   => Slash
+      case _                                     => Other
     }
 
     // *** Character Escapes
@@ -632,11 +615,9 @@ class Json extends Writer2 {
         result = getJson() :: result
         /**/
         tokenKind match {
-          case COMMA =>
-            /**/
-            tokenNext()
-          case RARR => // do nothing
-          case _    => tokenError("Expecting , or ]")
+          case COMMA => /**/ tokenNext()
+          case RARR  => // do nothing
+          case _     => tokenError("Expecting , or ]")
         }
       }
       tokenNext()

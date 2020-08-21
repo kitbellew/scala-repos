@@ -1064,7 +1064,8 @@ abstract class Erasure
         tree.fun match {
           case TypeApply(fun @ Select(qual, name), args @ List(arg))
               if ((fun.symbol == Any_isInstanceOf || fun.symbol == Object_isInstanceOf) &&
-                unboundedGenericArrayLevel(arg.tpe) > 0) => // !!! todo: simplify by having GenericArray also extract trees
+                unboundedGenericArrayLevel(
+                  arg.tpe) > 0) => // !!! todo: simplify by having GenericArray also extract trees
             val level = unboundedGenericArrayLevel(arg.tpe)
             def isArrayTest(arg: Tree) =
               gen.mkRuntimeCall(

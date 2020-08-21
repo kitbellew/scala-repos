@@ -152,8 +152,9 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
           lastParent,
           ref)) return
       place match {
-        case (_: ScTemplateBody | _: ScExtendsBlock) => //template body and inherited members are at the same level
-        case _                                       => if (!processor.changedLevel) return
+        case (_: ScTemplateBody |
+            _: ScExtendsBlock) => //template body and inherited members are at the same level
+        case _ => if (!processor.changedLevel) return
       }
       treeWalkUp(place.getContext, place)
     }
@@ -282,7 +283,10 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
               exprs,
               invocationCount)
           }
-        case ScalaResolveResult(fun: FakePsiMethod, subst: ScSubstitutor) => //todo: ?
+        case ScalaResolveResult(
+              fun: FakePsiMethod,
+              subst: ScSubstitutor
+            ) => //todo: ?
         case ScalaResolveResult(method: PsiMethod, subst) =>
           assign.getContext match {
             case args: ScArgumentExprList =>

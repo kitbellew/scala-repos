@@ -290,7 +290,8 @@ class UncleanLeaderElectionTest extends ZooKeeperTestHarness {
       fail(
         "Message produced while leader is down should fail, but it succeeded")
     } catch {
-      case e: ExecutionException if e.getCause.isInstanceOf[TimeoutException] => // expected
+      case e: ExecutionException
+          if e.getCause.isInstanceOf[TimeoutException] => // expected
     }
 
     assertEquals(List.empty[String], consumeAllMessages(topic))

@@ -75,9 +75,9 @@ object TestkitDocSpec {
     import akka.event.LoggingReceive
     def receive = LoggingReceive { case msg => // Do something ...
     }
-    def otherState: Receive =
-      LoggingReceive.withLabel("other") { case msg => // Do something else ...
-      }
+    def otherState: Receive = LoggingReceive.withLabel("other") {
+      case msg => // Do something else ...
+    }
     //#logging-receive
   }
 }

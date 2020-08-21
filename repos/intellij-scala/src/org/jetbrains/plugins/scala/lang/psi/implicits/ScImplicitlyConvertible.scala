@@ -268,8 +268,9 @@ class ScImplicitlyConvertible(
           lastParent,
           place)) return
       p match {
-        case (_: ScTemplateBody | _: ScExtendsBlock) => //template body and inherited members are at the same level
-        case _                                       => if (!processor.changedLevel) return
+        case (_: ScTemplateBody |
+            _: ScExtendsBlock) => //template body and inherited members are at the same level
+        case _ => if (!processor.changedLevel) return
       }
       treeWalkUp(p.getContext, p)
     }

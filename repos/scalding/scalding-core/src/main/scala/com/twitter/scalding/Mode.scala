@@ -92,8 +92,9 @@ object Mode {
 
     if (args.boolean("local"))
       Local(strictSources)
-    else if (args.boolean("hdfs"))
-      /* FIXME: should we start printing deprecation warnings ? It's okay to set manually c.f.*.class though */
+    else if (args.boolean(
+        "hdfs"
+      )) /* FIXME: should we start printing deprecation warnings ? It's okay to set manually c.f.*.class though */
       Hdfs(strictSources, config)
     else if (args.boolean("hadoop1")) {
       config.set(CascadingFlowConnectorClassKey, DefaultHadoopFlowConnector)

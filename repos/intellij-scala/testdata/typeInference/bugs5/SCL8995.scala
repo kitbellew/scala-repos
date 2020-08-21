@@ -10,9 +10,7 @@ trait SCL8995 {
       extends SelectExtractor {} // object creation impossible, unapply not defined...
 
   def test(t: Tree) = t match {
-    case Select(a, b) =>
-      /*start*/
-      a /*end*/
+    case Select(a, b) => /*start*/ a /*end*/
   }
 }
 //SCL8995.this.Tree

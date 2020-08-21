@@ -111,8 +111,9 @@ class MethodResolveProcessor(
               isAccessible = accessible,
               isForwardReference = forwardReference,
               unresolvedTypeParameters = unresolvedTypeParameters))
-        case cc: ScClass                      =>
-        case o: ScObject if o.isPackageObject => // do not resolve to package object
+        case cc: ScClass =>
+        case o: ScObject
+            if o.isPackageObject => // do not resolve to package object
         case obj: ScObject
             if ref.getParent.isInstanceOf[ScMethodCall] || ref.getParent
               .isInstanceOf[ScGenericCall] =>

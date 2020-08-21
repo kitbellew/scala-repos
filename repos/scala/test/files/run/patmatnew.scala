@@ -490,7 +490,10 @@ object Test {
     }
     class Buffer {
       val Get = new Sync
-      val jp: PartialFunction[Any, Any] = { case Get(xs) => // the argDummy <unapply-selector> should have proper arg.tpe (Int in this case)
+      val jp: PartialFunction[Any, Any] = {
+        case Get(
+              xs
+            ) => // the argDummy <unapply-selector> should have proper arg.tpe (Int in this case)
       }
     }
     def run() {

@@ -211,8 +211,7 @@ private[engine] final class HttpHeaderParser private (
           insert(input, header)(cursor, endIx, nodeIx, colonIx = 0)
           values(branch.valueIx) = branch.withValueCountIncreased
         } catch {
-          case OutOfTrieSpaceException ⇒
-          /* if we cannot insert then we simply don't */
+          case OutOfTrieSpaceException ⇒ /* if we cannot insert then we simply don't */
         }
       resultHeader = header
       endIx

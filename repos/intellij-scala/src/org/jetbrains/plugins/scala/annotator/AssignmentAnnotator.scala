@@ -91,8 +91,12 @@ trait AssignmentAnnotator {
                         else {
                           //TODO investigate case when expression is null. It's possible when new Expression(ScType)
                         }
-                      case MissedValueParameter(_)    => // simultaneously handled above
-                      case UnresolvedParameter(_)     => // don't show function inapplicability, unresolved
+                      case MissedValueParameter(
+                            _
+                          ) => // simultaneously handled above
+                      case UnresolvedParameter(
+                            _
+                          ) => // don't show function inapplicability, unresolved
                       case WrongTypeParameterInferred => //todo: ?
                       case ExpectedTypeMismatch       => // will be reported later
                       case _ =>

@@ -377,7 +377,9 @@ private[play] class JDK7FileWatchService(logger: LoggerProxy)
               watchKey.reset()
             }
           } catch {
-            case NonFatal(e) => // Do nothing, this means the watch service has been closed, or we've been interrupted.
+            case NonFatal(
+                  e
+                ) => // Do nothing, this means the watch service has been closed, or we've been interrupted.
           } finally {
             // Just in case it wasn't closed.
             watcher.close()

@@ -135,7 +135,8 @@ class ScalaUnusedSymbolPass(file: PsiFile, editor: Editor)
       x: ScDeclaredElementsHolder,
       state: UnusedPassState) {
     x.getContext match {
-      case _: ScPackageLike | _: ScalaFile | _: ScEarlyDefinitions => // ignore, too expensive to check for references.
+      case _: ScPackageLike | _: ScalaFile |
+          _: ScEarlyDefinitions => // ignore, too expensive to check for references.
       case _: ScTemplateBody =>
         x match {
           case mem: ScMember

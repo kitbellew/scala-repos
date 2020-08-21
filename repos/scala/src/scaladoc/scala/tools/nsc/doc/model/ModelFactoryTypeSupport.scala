@@ -75,8 +75,7 @@ trait ModelFactoryTypeSupport {
           val owner =
             if ((preSym != NoSymbol) && /* it needs a prefix */
               (preSym != bSym.owner) && /* prefix is different from owner */
-              (aSym == bSym))
-              /* normalization doesn't play tricks on us */
+              (aSym == bSym)) /* normalization doesn't play tricks on us */
               preSym
             else
               bSym.owner

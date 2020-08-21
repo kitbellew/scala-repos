@@ -306,8 +306,9 @@ trait ResolvableStableCodeReferenceElement
                   lastParent,
                   ref)) return
               place match {
-                case (_: ScTemplateBody | _: ScExtendsBlock) => // template body and inherited members are at the same level.
-                case _                                       => if (!processor.changedLevel) return
+                case (_: ScTemplateBody |
+                    _: ScExtendsBlock) => // template body and inherited members are at the same level.
+                case _ => if (!processor.changedLevel) return
               }
               treeWalkUp(place.getContext, place)
           }

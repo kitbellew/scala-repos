@@ -142,7 +142,8 @@ private[akka] abstract class AbstractEventsByTagPublisher(
     case _: Request ⇒
       deliverBuf()
 
-    case Continue | _: LeveldbJournal.TaggedEventAppended ⇒ // skip during replay
+    case Continue |
+        _: LeveldbJournal.TaggedEventAppended ⇒ // skip during replay
 
     case Cancel ⇒
       context.stop(self)

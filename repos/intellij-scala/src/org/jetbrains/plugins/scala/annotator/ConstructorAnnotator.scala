@@ -66,7 +66,9 @@ trait ConstructorAnnotator {
               //TODO investigate case when expression is null. It's possible when new Expression(ScType)
             }
           case MissedValueParameter(_) => // simultaneously handled above
-          case UnresolvedParameter(_)  => // don't show function inapplicability, unresolved
+          case UnresolvedParameter(
+                _
+              ) => // don't show function inapplicability, unresolved
           case MalformedDefinition() =>
             holder.createErrorAnnotation(
               constructor.typeElement,

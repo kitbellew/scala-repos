@@ -1,7 +1,6 @@
 class Test {
-  def test(param: String): PartialFunction[String, String] = { case x: String =>
-    /*start*/
-    test2(x) + " Goodbye" /*end*/
+  def test(param: String): PartialFunction[String, String] = {
+    case x: String => /*start*/ test2(x) + " Goodbye" /*end*/
   }
 
   def test2(param: String): Unit = {

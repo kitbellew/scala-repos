@@ -318,7 +318,8 @@ private[thrift] class RawZipkinTracer(
           key,
           ByteBuffer.wrap(value.getBytes),
           thrift.AnnotationType.STRING)
-      case tracing.Annotation.BinaryAnnotation(key: String, value) => // Throw error?
+      case tracing.Annotation
+            .BinaryAnnotation(key: String, value) => // Throw error?
       case tracing.Annotation.LocalAddr(ia: InetSocketAddress) =>
         setEndpoint(record, ia)
       case tracing.Annotation.ClientAddr(ia: InetSocketAddress) =>

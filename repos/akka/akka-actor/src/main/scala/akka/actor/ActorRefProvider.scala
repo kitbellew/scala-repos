@@ -583,7 +583,10 @@ private[akka] class LocalActorRefProvider private[akka] (
               log.error(ex, s"guardian $child failed, shutting down!")
               causeOfTermination.tryFailure(ex)
               child.stop()
-            case Supervise(_, _) ⇒ // TODO register child in some map to keep track of it and enable shutdown after all dead
+            case Supervise(
+                  _,
+                  _
+                ) ⇒ // TODO register child in some map to keep track of it and enable shutdown after all dead
             case _: DeathWatchNotification ⇒ stop()
             case _ ⇒
               log.error(s"$this received unexpected system message [$message]")

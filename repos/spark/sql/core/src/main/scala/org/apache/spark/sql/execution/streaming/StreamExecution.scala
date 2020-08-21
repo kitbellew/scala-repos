@@ -132,7 +132,8 @@ class StreamExecution(
         Thread.sleep(minBatchTime) // TODO: Could be tighter
       }
     } catch {
-      case _: InterruptedException if state == TERMINATED => // interrupted by stop()
+      case _: InterruptedException
+          if state == TERMINATED => // interrupted by stop()
       case NonFatal(e) =>
         streamDeathCause = new ContinuousQueryException(
           this,

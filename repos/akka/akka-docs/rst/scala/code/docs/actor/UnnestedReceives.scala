@@ -33,17 +33,18 @@ class UnnestedReceives extends Actor {
     subscribe()
   }
 
-  def receive = { case 'Replay => //Our first message should be a 'Replay message, all others are invalid
-    allOldMessages() foreach process //Process all old messages/events
-    become { //Switch behavior to look for the GoAhead signal
-      case 'GoAhead => //When we get the GoAhead signal we process all our buffered messages/events
-        queue foreach process
-        queue.clear
-        become { //Then we change behaviour to process incoming messages/events as they arrive
-          case msg => process(msg)
-        }
-      case msg => //While we haven't gotten the GoAhead signal, buffer all incoming messages
-        queue += msg //Here you have full control, you can handle overflow etc
-    }
+  def receive = {
+    case 'Replay => //Our first message should be a 'Replay message, all others are invalid
+      allOldMessages() foreach process //Process all old messages/events
+      become { //Switch behavior to look for the GoAhead signal
+        case 'GoAhead => //When we get the GoAhead signal we process all our buffered messages/events
+          queue foreach process
+          queue.clear
+          become { //Then we change behaviour to process incoming messages/events as they arrive
+            case msg => process(msg)
+          }
+        case msg => //While we haven't gotten the GoAhead signal, buffer all incoming messages
+          queue += msg //Here you have full control, you can handle overflow etc
+      }
   }
 }

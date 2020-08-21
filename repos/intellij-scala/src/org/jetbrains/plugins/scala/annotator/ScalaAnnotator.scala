@@ -628,7 +628,8 @@ class ScalaAnnotator
             block.getContext match {
               case t: ScTryStmt =>
                 t.expectedTypeEx(fromUnderscore = false) match {
-                  case Some((tp: ScType, _)) if tp equiv psi.types.Unit => //do nothing
+                  case Some((tp: ScType, _))
+                      if tp equiv psi.types.Unit => //do nothing
                   case Some((tp: ScType, typeElement)) =>
                     import org.jetbrains.plugins.scala.lang.psi.types._
                     val returnType = candidates(0) match {
@@ -1234,7 +1235,8 @@ class ScalaAnnotator
           }
 
           expr.expectedTypeEx(fromUnderscore) match {
-            case Some((tp: ScType, _)) if tp equiv psi.types.Unit => //do nothing
+            case Some((tp: ScType, _))
+                if tp equiv psi.types.Unit => //do nothing
             case Some((tp: ScType, typeElement)) =>
               import org.jetbrains.plugins.scala.lang.psi.types._
               val expectedType = Success(tp, None)

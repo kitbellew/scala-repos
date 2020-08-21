@@ -411,7 +411,8 @@ private[remote] object EndpointManager {
       if (isWritable(endpoint)) {
         val address = writableToAddress(endpoint)
         addressToWritable.get(address) match {
-          case Some(policy) if policy.isTombstone ⇒ // There is already a tombstone directive, leave it there
+          case Some(policy)
+              if policy.isTombstone ⇒ // There is already a tombstone directive, leave it there
           case _ ⇒ addressToWritable -= address
         }
         writableToAddress -= endpoint
