@@ -22,19 +22,19 @@ trait WSTestRequestBuilding { self: RouteTest ⇒
       clientSideHandler: Flow[Message, Message, Any],
       subprotocols: Seq[String] = Nil)(): HttpRequest =
     HttpRequest(uri = uri)
-      .addHeader(new InternalCustomHeader("UpgradeToWebSocketTestHeader")
-        with UpgradeToWebSocket {
-        def requestedProtocols: immutable.Seq[String] = subprotocols.toList
+      .addHeader(
+        new InternalCustomHeader("UpgradeToWebSocketTestHeader")
+          with UpgradeToWebSocket {
+          def requestedProtocols: immutable.Seq[String] = subprotocols.toList
 
-        def handleMessages(
-            handlerFlow: Graph[FlowShape[Message, Message], Any],
-            subprotocol: Option[String]): HttpResponse = {
-          clientSideHandler.join(handlerFlow).run()
-          HttpResponse(
-            StatusCodes.SwitchingProtocols,
-            headers =
-              Upgrade(UpgradeProtocol("websocket") :: Nil) ::
+          def handleMessages(
+              handlerFlow: Graph[FlowShape[Message, Message], Any],
+              subprotocol: Option[String]): HttpResponse = {
+            clientSideHandler.join(handlerFlow).run()
+            HttpResponse(
+              StatusCodes.SwitchingProtocols,
+              headers = Upgrade(UpgradeProtocol("websocket") :: Nil) ::
                 subprotocol.map(p ⇒ `Sec-WebSocket-Protocol`(p :: Nil)).toList)
-        }
-      })
+          }
+        })
 }

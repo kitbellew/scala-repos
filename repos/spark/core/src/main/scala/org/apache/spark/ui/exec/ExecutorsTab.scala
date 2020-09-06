@@ -140,26 +140,22 @@ class ExecutorsListener(
             executorToInputRecords.getOrElse(eid, 0L) + inputMetrics.recordsRead
         }
         metrics.outputMetrics.foreach { outputMetrics =>
-          executorToOutputBytes(eid) =
-            executorToOutputBytes.getOrElse(
-              eid,
-              0L) + outputMetrics.bytesWritten
-          executorToOutputRecords(eid) =
-            executorToOutputRecords.getOrElse(
-              eid,
-              0L) + outputMetrics.recordsWritten
+          executorToOutputBytes(eid) = executorToOutputBytes.getOrElse(
+            eid,
+            0L) + outputMetrics.bytesWritten
+          executorToOutputRecords(eid) = executorToOutputRecords.getOrElse(
+            eid,
+            0L) + outputMetrics.recordsWritten
         }
         metrics.shuffleReadMetrics.foreach { shuffleRead =>
-          executorToShuffleRead(eid) =
-            executorToShuffleRead.getOrElse(
-              eid,
-              0L) + shuffleRead.remoteBytesRead
+          executorToShuffleRead(eid) = executorToShuffleRead.getOrElse(
+            eid,
+            0L) + shuffleRead.remoteBytesRead
         }
         metrics.shuffleWriteMetrics.foreach { shuffleWrite =>
-          executorToShuffleWrite(eid) =
-            executorToShuffleWrite.getOrElse(
-              eid,
-              0L) + shuffleWrite.bytesWritten
+          executorToShuffleWrite(eid) = executorToShuffleWrite.getOrElse(
+            eid,
+            0L) + shuffleWrite.bytesWritten
         }
         executorToJvmGCTime(eid) =
           executorToJvmGCTime.getOrElse(eid, 0L) + metrics.jvmGCTime

@@ -748,8 +748,7 @@ object Test extends Properties("HtmlFactory") {
         property("implicit conversion") =
           node.toString contains "<span class=\"modifier\">implicit </span>"
 
-        property("gt4s") =
-          node.toString contains "title=\"gt4s: $colon$colon\""
+        property("gt4s") = node.toString contains "title=\"gt4s: $colon$colon\""
 
         property("gt4s of a deprecated method") =
           node.toString contains "title=\"gt4s: $colon$colon$colon$colon. Deprecated: "

@@ -380,9 +380,8 @@ private[math] object Division {
       var i = modulusLen - 1
       while (i >= 0) {
         if (res(i) != modulusDigits(i)) {
-          doSub =
-            (res(i) != 0) && ((res(i) & UINT_MAX) > (modulusDigits(
-              i) & UINT_MAX))
+          doSub = (res(i) != 0) && ((res(i) & UINT_MAX) > (modulusDigits(
+            i) & UINT_MAX))
           //force break
           i = 0
         }

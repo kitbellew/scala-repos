@@ -67,10 +67,9 @@ class PortWithRoleRandomPortsFromRangesTest extends MarathonSpec {
         portRange("marathon", 14, 20),
         portRange("role", 21, 30)
       ),
-      expectedOutput =
-        (10 to 13).map(PortWithRole("role", _)) ++
-          (14 to 20).map(PortWithRole("marathon", _)) ++
-          (21 to 30).map(PortWithRole("role", _))
+      expectedOutput = (10 to 13).map(PortWithRole("role", _)) ++
+        (14 to 20).map(PortWithRole("marathon", _)) ++
+        (21 to 30).map(PortWithRole("role", _))
     )
   }
 

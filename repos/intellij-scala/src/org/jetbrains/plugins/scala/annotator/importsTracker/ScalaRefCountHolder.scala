@@ -135,9 +135,10 @@ object ScalaRefCountHolder {
     Key.create("scala.ref.count.holder.in.file.key")
 
   def getInstance(file: PsiFile): ScalaRefCountHolder = {
-    val myFile = /*Option(file.getViewProvider getPsi ScalaFileType.SCALA_LANGUAGE) getOrElse file
+    val myFile =
+      /*Option(file.getViewProvider getPsi ScalaFileType.SCALA_LANGUAGE) getOrElse file
     val file2 = */ Option(
-      ScalaLanguageDerivative getScalaFileOnDerivative file) getOrElse file
+        ScalaLanguageDerivative getScalaFileOnDerivative file) getOrElse file
 
     Option(myFile getUserData SCALA_REF_COUNT_HOLDER_IN_FILE_KEY) getOrElse {
       myFile.asInstanceOf[UserDataHolderEx] putUserDataIfAbsent (

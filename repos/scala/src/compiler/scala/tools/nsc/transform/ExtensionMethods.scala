@@ -230,8 +230,9 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
             if tree.symbol.isMethodWithExtension =>
           val origMeth = tree.symbol
           val origThis = currentOwner
-          val origTpeParams = tparams.map(
-            _.symbol) ::: origThis.typeParams // method type params ++ class type params
+          val origTpeParams =
+            tparams.map(
+              _.symbol) ::: origThis.typeParams // method type params ++ class type params
           val origParams = vparamss.flatten map (_.symbol)
           val companion = origThis.companionModule
 

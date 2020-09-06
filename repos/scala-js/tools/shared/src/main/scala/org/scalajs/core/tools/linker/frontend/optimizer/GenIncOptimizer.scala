@@ -568,10 +568,9 @@ abstract class GenIncOptimizer private[optimizer] (
 
     /** UPDATE PASS ONLY. */
     def updateHasElidableModuleAccessor(): Unit = {
-      hasElidableModuleAccessor =
-        isAdHocElidableModuleAccessor(encodedName) ||
-          (isModuleClass && lookupMethod("init___").exists(
-            isElidableModuleConstructor))
+      hasElidableModuleAccessor = isAdHocElidableModuleAccessor(encodedName) ||
+        (isModuleClass && lookupMethod("init___").exists(
+          isElidableModuleConstructor))
     }
 
     /** UPDATE PASS ONLY. */
