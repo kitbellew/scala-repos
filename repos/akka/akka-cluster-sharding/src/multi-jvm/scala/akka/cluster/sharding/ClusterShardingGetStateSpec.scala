@@ -147,8 +147,8 @@ abstract class ClusterShardingGetStateSpec
             val pingProbe = TestProbe()
             // trigger starting of 4 entities
             (1 to 4).foreach(n ⇒ region.tell(Ping(n), pingProbe.ref))
-            pingProbe.receiveWhile(messages = 4) { case Pong ⇒
-              ()
+            pingProbe.receiveWhile(messages = 4) {
+              case Pong ⇒ ()
             }
           }
         }

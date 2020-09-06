@@ -79,13 +79,12 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
     }
   } else {
     (r.end.toLong - r.start.toLong < 0, r.step < 0) match {
-      case (true, true) | (false, false) =>
-        (
-          (r.end.toLong - r.start.toLong).abs / r.step.abs.toLong
-            + (if ((r.end.toLong - r.start.toLong).abs % r.step.abs.toLong > 0L)
-                 1L
-               else 0L)
-        )
+      case (true, true) | (false, false) => (
+        (r.end.toLong - r.start.toLong).abs / r.step.abs.toLong
+          + (if ((r.end.toLong - r.start.toLong).abs % r.step.abs.toLong > 0L)
+               1L
+             else 0L)
+      )
       case _ => 0L
     }
   }

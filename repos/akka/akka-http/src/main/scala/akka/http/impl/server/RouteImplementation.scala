@@ -243,11 +243,12 @@ private[http] object RouteImplementation
         (requestValToDirective(dyn.value1) & requestValToDirective(dyn.value2))(
           runToRoute)
 
-      case o: OpaqueRoute ⇒
-        (ctx ⇒
+      case o: OpaqueRoute ⇒ (
+        ctx ⇒
           o.handle(new RequestContextImpl(ctx))
             .asInstanceOf[RouteResultImpl]
-            .underlying)
+            .underlying
+      )
       case p: Product ⇒
         extractExecutionContext { implicit ec ⇒
           complete((500, s"Not implemented: ${p.productPrefix}"))

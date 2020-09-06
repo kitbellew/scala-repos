@@ -187,8 +187,8 @@ object FileSource {
     // OR by key
     val uniqueUsedDirs = MapAlgebra
       .sumByKey(usedDirs)
-      .filter { case (_, (_, _, hasNonHidden)) =>
-        (!hiddenFilter || hasNonHidden.get)
+      .filter {
+        case (_, (_, _, hasNonHidden)) => (!hiddenFilter || hasNonHidden.get)
       }
 
     // there is at least one valid path, and all paths have success

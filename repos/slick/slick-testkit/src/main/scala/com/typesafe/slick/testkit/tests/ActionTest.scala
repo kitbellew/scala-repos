@@ -176,8 +176,8 @@ class ActionTest extends AsyncTest[RelationalTestDB] {
       })
       _ = result shouldBe 1
       _ = result shouldFail { _ =>
-        val future = db.run(q1.result.headOption.collect { case None =>
-          ()
+        val future = db.run(q1.result.headOption.collect {
+          case None => ()
         })
         import scala.concurrent.duration.Duration
         import scala.concurrent.Await

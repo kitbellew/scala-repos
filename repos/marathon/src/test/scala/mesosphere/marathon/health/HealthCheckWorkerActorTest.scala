@@ -53,8 +53,8 @@ class HealthCheckWorkerActorTest
     try { Await.result(res, 1.seconds) }
     finally { socket.close() }
 
-    expectMsgPF(1.seconds) { case Healthy(taskId, _, _) =>
-      ()
+    expectMsgPF(1.seconds) {
+      case Healthy(taskId, _, _) => ()
     }
   }
 
@@ -85,8 +85,8 @@ class HealthCheckWorkerActorTest
     try { Await.result(res, 1.seconds) }
     finally { socket.close() }
 
-    expectMsgPF(1.seconds) { case _: HealthResult =>
-      ()
+    expectMsgPF(1.seconds) {
+      case _: HealthResult => ()
     }
 
     watch(ref)

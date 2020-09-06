@@ -44,8 +44,8 @@ class Base3 {
 object Base4 {
   trait Test6 {
     private[this] var _st: Int = 0
-    def close: PartialFunction[Any, Any] = { case x: Int =>
-      ()
+    def close: PartialFunction[Any, Any] = {
+      case x: Int => ()
     }
   }
 }

@@ -431,8 +431,8 @@ abstract class MixMetricsSelectorBase(
           val (sum, count) = acc(address)
           acc + (address -> ((sum + capacity, count + 1)))
       }
-      .map { case (addr, (sum, count)) ⇒
-        (addr -> sum / count)
+      .map {
+        case (addr, (sum, count)) ⇒ (addr -> sum / count)
       }
   }
 
@@ -508,8 +508,8 @@ abstract class CapacityMetricsSelector extends MetricsSelector {
       val (_, min) = capacity.minBy { case (_, c) ⇒ c }
       // lowest usable capacity is 1% (>= 0.5% will be rounded to weight 1), also avoids div by zero
       val divisor = math.max(0.01, min)
-      capacity map { case (addr, c) ⇒
-        (addr -> math.round((c) / divisor).toInt)
+      capacity map {
+        case (addr, c) ⇒ (addr -> math.round((c) / divisor).toInt)
       }
     }
   }

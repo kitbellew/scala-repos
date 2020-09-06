@@ -387,8 +387,8 @@ trait BlockParsers extends Parsers {
     */
   def blockquoteFragment: Parser[List[MarkdownLine]] =
     line(classOf[BlockQuoteLine]) ~ ((line(classOf[BlockQuoteLine]) | line(
-      classOf[OtherLine])) *) ~ (optEmptyLines) ^^ { case l ~ ls ~ e =>
-      (l :: ls ++ e)
+      classOf[OtherLine])) *) ~ (optEmptyLines) ^^ {
+      case l ~ ls ~ e => (l :: ls ++ e)
     }
 
   /**

@@ -646,8 +646,9 @@ trait StatsLibSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 0 =>
-          (d.toDouble ~= 0.9998746737089123)
+        case (ids, SDecimal(d)) if ids.length == 0 => (
+          d.toDouble ~= 0.9998746737089123
+        )
       }
 
       result2 must contain(true).only
@@ -1102,8 +1103,9 @@ trait StatsLibSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 0 =>
-          (d.toDouble ~= 0.9998746737089123)
+        case (ids, SDecimal(d)) if ids.length == 0 => (
+          d.toDouble ~= 0.9998746737089123
+        )
       }
 
       result2 must contain(true).only
@@ -1229,8 +1231,9 @@ trait StatsLibSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 0 =>
-          (d.toDouble ~= 0.9998746737089123)
+        case (ids, SDecimal(d)) if ids.length == 0 => (
+          d.toDouble ~= 0.9998746737089123
+        )
       }
 
       result2 must contain(true).only
@@ -1983,8 +1986,9 @@ trait StatsLibSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 0 =>
-          (d.toDouble ~= 0.2832061115667535364)
+        case (ids, SDecimal(d)) if ids.length == 0 => (
+          d.toDouble ~= 0.2832061115667535364
+        )
       }
 
       result2 must contain(true).only
@@ -2452,8 +2456,9 @@ trait StatsLibSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 0 =>
-          (d.toDouble ~= 874.2741666666666)
+        case (ids, SDecimal(d)) if ids.length == 0 => (
+          d.toDouble ~= 874.2741666666666
+        )
       }
 
       result2 must contain(true).only
@@ -2509,8 +2514,9 @@ trait StatsLibSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 0 =>
-          (d.toDouble ~= 0.7835742008825)
+        case (ids, SDecimal(d)) if ids.length == 0 => (
+          d.toDouble ~= 0.7835742008825
+        )
       }
 
       result2 must contain(true).only
