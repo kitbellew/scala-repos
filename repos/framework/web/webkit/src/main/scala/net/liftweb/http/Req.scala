@@ -512,7 +512,7 @@ object Req {
     val paramCalcInfo: AvoidGAL = new AvoidGAL(() => {
       // post/put of XML or JSON... eagerly read the stream
       if ((reqType.post_? ||
-        reqType.put_?) && contentType.dmap(false) {
+          reqType.put_?) && contentType.dmap(false) {
           _.toLowerCase match {
             case x =>
               x.startsWith("text/xml") ||

@@ -258,8 +258,8 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
     val killLink =
       if (parent.killEnabled &&
         (driver.state == DriverState.RUNNING ||
-        driver.state == DriverState.SUBMITTED ||
-        driver.state == DriverState.RELAUNCHING)) {
+          driver.state == DriverState.SUBMITTED ||
+          driver.state == DriverState.RELAUNCHING)) {
         val confirm =
           s"if (window.confirm('Are you sure you want to kill driver ${driver.id} ?')) " +
             "{ this.parentNode.submit(); return true; } else { return false; }"

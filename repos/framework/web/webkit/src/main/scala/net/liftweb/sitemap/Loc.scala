@@ -420,7 +420,7 @@ trait Loc[T] {
     testAllParams(allParams, req) &&
     (
       currentValue.isDefined ||
-      params.contains(Loc.MatchWithoutCurrentValue)
+        params.contains(Loc.MatchWithoutCurrentValue)
     )
   }
 

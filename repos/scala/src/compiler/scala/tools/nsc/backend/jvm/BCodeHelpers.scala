@@ -1053,7 +1053,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       }
       val needsAnnotation = {
         (isRemoteClass ||
-        isRemote(meth) && isJMethodPublic) && !hasThrowsRemoteException
+          isRemote(meth) && isJMethodPublic) && !hasThrowsRemoteException
       }
       if (needsAnnotation) {
         val c = Constant(definitions.RemoteExceptionClass.tpe)

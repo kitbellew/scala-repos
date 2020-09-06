@@ -306,7 +306,7 @@ class ImplicitCollector(
           placeCalculated = true
           if (isPredefPriority || (ScImplicitlyConvertible
               .checkFucntionIsEligible(function, place) &&
-            ResolveUtils.isAccessible(function, getPlace))) {
+              ResolveUtils.isAccessible(function, getPlace))) {
             addResult(
               new ScalaResolveResult(
                 named,

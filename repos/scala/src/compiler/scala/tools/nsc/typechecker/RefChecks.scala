@@ -482,7 +482,7 @@ abstract class RefChecks
               (!other.isProtected || member.isProtected) && // if o is protected, so is m
               ((!isRootOrNone(ob) && ob.hasTransOwner(
                 mb)) || // m relaxes o's access boundary
-              other.isJavaDefined) // overriding a protected java member, see #3946
+                other.isJavaDefined) // overriding a protected java member, see #3946
             }
           if (!isOverrideAccessOK) {
             overrideAccessError()

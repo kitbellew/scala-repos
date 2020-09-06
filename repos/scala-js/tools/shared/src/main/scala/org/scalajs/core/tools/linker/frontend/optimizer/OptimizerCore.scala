@@ -1313,7 +1313,7 @@ private[optimizer] abstract class OptimizerCore(
                   isStat,
                   usePreTransform)(cont)
               } else if (target.inlineable && (target.shouldInline ||
-                shouldInlineBecauseOfArgs(target, treceiver :: targs))) {
+                  shouldInlineBecauseOfArgs(target, treceiver :: targs))) {
                 inline(
                   allocationSites,
                   Some(treceiver),

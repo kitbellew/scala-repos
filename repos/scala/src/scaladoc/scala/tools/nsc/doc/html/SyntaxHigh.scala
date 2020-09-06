@@ -158,9 +158,9 @@ private[html] object SyntaxHigh {
       if (j < l) -1
       else if (i < buf.length &&
         ('A' <= buf(i) && buf(i) <= 'Z' ||
-        'a' <= buf(i) && buf(i) <= 'z' ||
-        '0' <= buf(i) && buf(i) <= '9' ||
-        buf(i) == '_')) 1
+          'a' <= buf(i) && buf(i) <= 'z' ||
+          '0' <= buf(i) && buf(i) <= '9' ||
+          buf(i) == '_')) 1
       else 0
     }
 

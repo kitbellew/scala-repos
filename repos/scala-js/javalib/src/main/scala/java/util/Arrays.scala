@@ -578,7 +578,7 @@ object Arrays {
   @inline
   private def equalsImpl[T](a: Array[T], b: Array[T]): Boolean = {
     (a eq b) || (a != null && b != null && a.length == b.length &&
-    a.indices.forall(i => a(i) == b(i)))
+      a.indices.forall(i => a(i) == b(i)))
   }
 
   @noinline def fill(a: Array[Long], value: Long): Unit =

@@ -367,12 +367,12 @@ trait IssuesService {
       (t1.userName inSetBind condition.groups, condition.groups.nonEmpty) &&
       // Mentioned filter
       ((t1.openedUserName === condition.mentioned.get.bind) || t1.assignedUserName === condition.mentioned.get.bind ||
-      (IssueComments filter { t2 =>
-        (t2.byIssue(
-          t1.userName,
-          t1.repositoryName,
-          t1.issueId)) && (t2.commentedUserName === condition.mentioned.get.bind)
-      } exists), condition.mentioned.isDefined)
+        (IssueComments filter { t2 =>
+          (t2.byIssue(
+            t1.userName,
+            t1.repositoryName,
+            t1.issueId)) && (t2.commentedUserName === condition.mentioned.get.bind)
+        } exists), condition.mentioned.isDefined)
     }
 
   def createIssue(

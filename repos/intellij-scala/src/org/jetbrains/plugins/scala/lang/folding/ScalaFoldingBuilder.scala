@@ -103,10 +103,10 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
       if (!ScalaCodeFoldingSettings.getInstance().isFoldingForAllBlocks &&
         treeParent != null && (treeParent.getPsi
           .isInstanceOf[ScArgumentExprList] ||
-        treeParent.getPsi.isInstanceOf[ScPatternDefinition] ||
-        treeParent.getPsi.isInstanceOf[ScVariableDefinition] ||
-        treeParent.getPsi.isInstanceOf[ScForStatement] ||
-        treeParent.getPsi.isInstanceOf[ScIfStmt])) {
+          treeParent.getPsi.isInstanceOf[ScPatternDefinition] ||
+          treeParent.getPsi.isInstanceOf[ScVariableDefinition] ||
+          treeParent.getPsi.isInstanceOf[ScForStatement] ||
+          treeParent.getPsi.isInstanceOf[ScIfStmt])) {
         psi match {
           case _: ScBlockExpr =>
             descriptors += new FoldingDescriptor(node, nodeTextRange)
@@ -269,9 +269,9 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
       }
     }
     if (node.getTreeParent != null && (ScalaElementTypes.ARG_EXPRS == node.getTreeParent.getElementType
-      || ScalaElementTypes.INFIX_EXPR == node.getTreeParent.getElementType
-      || ScalaElementTypes.PATTERN_DEFINITION == node.getTreeParent.getElementType
-      || ScalaElementTypes.VARIABLE_DEFINITION == node.getTreeParent.getElementType)) {
+        || ScalaElementTypes.INFIX_EXPR == node.getTreeParent.getElementType
+        || ScalaElementTypes.PATTERN_DEFINITION == node.getTreeParent.getElementType
+        || ScalaElementTypes.VARIABLE_DEFINITION == node.getTreeParent.getElementType)) {
       node.getPsi match {
         case _: ScBlockExpr => return "{...}"
         case _              => return null
@@ -616,7 +616,7 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
   private def isWorksheetResults(node: ASTNode): Boolean = {
     node.getPsi.isInstanceOf[PsiComment] && (node.getText.startsWith(
       WorksheetFoldingBuilder.FIRST_LINE_PREFIX) ||
-    node.getText.startsWith(WorksheetFoldingBuilder.LINE_PREFIX))
+      node.getText.startsWith(WorksheetFoldingBuilder.LINE_PREFIX))
   }
 
   override def isDumbAware: Boolean = true

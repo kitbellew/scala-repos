@@ -49,7 +49,7 @@ class CatchFilter extends ElementFilter {
     var i = index
     if (i < 0) return 0
     while (i > 0 && (context.getContainingFile.getText.charAt(i) == ' ' ||
-      context.getContainingFile.getText.charAt(i) == '\n')) i = i - 1
+        context.getContainingFile.getText.charAt(i) == '\n')) i = i - 1
     val leaf = getLeafByOffset(i, context)
     if (leaf.isInstanceOf[PsiComment] || leaf.isInstanceOf[ScDocComment])
       return getPrevNotWhitespaceAndComment(
@@ -65,7 +65,7 @@ class CatchFilter extends ElementFilter {
       return context.getContainingFile.getTextLength - 2
     while (i < context.getContainingFile.getText.length - 1 && (context.getContainingFile.getText
         .charAt(i) == ' ' ||
-      context.getContainingFile.getText.charAt(i) == '\n')) i = i + 1
+        context.getContainingFile.getText.charAt(i) == '\n')) i = i + 1
     val leaf = getLeafByOffset(i, context)
     if (leaf.isInstanceOf[PsiComment] || leaf.isInstanceOf[ScDocComment])
       return getNextNotWhitespaceAndComment(

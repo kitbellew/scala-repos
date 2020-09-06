@@ -4803,8 +4803,8 @@ trait Types
           val tp1 = sym1.tpe
           val tp2 = sym2.tpe
           (tp1 =:= tp2 ||
-          syms1isJava && tp2.typeSymbol == ObjectClass && tp1.typeSymbol == AnyClass ||
-          syms2isJava && tp1.typeSymbol == ObjectClass && tp2.typeSymbol == AnyClass) &&
+            syms1isJava && tp2.typeSymbol == ObjectClass && tp1.typeSymbol == AnyClass ||
+            syms2isJava && tp1.typeSymbol == ObjectClass && tp2.typeSymbol == AnyClass) &&
           matchingParams(rest1, rest2, syms1isJava, syms2isJava)
       }
   }

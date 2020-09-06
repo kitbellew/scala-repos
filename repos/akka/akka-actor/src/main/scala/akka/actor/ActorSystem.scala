@@ -278,9 +278,9 @@ object ActorSystem {
         c ⇒
           c != null &&
           (c.getName.startsWith("akka.actor.ActorSystem") ||
-          c.getName.startsWith("scala.Option") ||
-          c.getName.startsWith("scala.collection.Iterator") ||
-          c.getName.startsWith("akka.util.Reflect"))
+            c.getName.startsWith("scala.Option") ||
+            c.getName.startsWith("scala.collection.Iterator") ||
+            c.getName.startsWith("akka.util.Reflect"))
       } next () match {
         case null ⇒ getClass.getClassLoader
         case c ⇒ c.getClassLoader

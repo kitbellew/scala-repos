@@ -30,7 +30,7 @@ class ScalaDocUnbalancedHeaderInspection extends LocalInspectionTool {
         }
 
         if (firstChildElementType == VALID_DOC_HEADER && (lastChildElementType == VALID_DOC_HEADER ||
-          lastChildElementType == DOC_HEADER)) {
+            lastChildElementType == DOC_HEADER)) {
           if (s.getFirstChild.getTextLength != s.getLastChild.getTextLength) {
             holder.registerProblem(
               holder.getManager.createProblemDescriptor(

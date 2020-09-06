@@ -211,7 +211,7 @@ trait CompletionControl {
               .sortWith({ (c1, c2) =>
                 c1.relevance > c2.relevance ||
                 (c1.relevance == c2.relevance &&
-                c1.name.length < c2.name.length)
+                  c1.name.length < c2.name.length)
               })
               .take(maxResults)
           )

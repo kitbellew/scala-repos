@@ -208,7 +208,7 @@ class ScalaFunctionParameterInfoHandler
                 }
               }
               if (k == index || (k == parameters.length - 1 && index >= parameters.length &&
-                parameters.last._1.isRepeated)) {
+                  parameters.last._1.isRepeated)) {
                 buffer.append("<b>")
               }
               if (k < index && !isGrey) {
@@ -267,7 +267,7 @@ class ScalaFunctionParameterInfoHandler
                 }
               }
               if (k == index || (k == parameters.length - 1 && index >= parameters.length &&
-                parameters.last._1.isRepeated)) {
+                  parameters.last._1.isRepeated)) {
                 buffer.append("</b>")
               }
               k = k + 1

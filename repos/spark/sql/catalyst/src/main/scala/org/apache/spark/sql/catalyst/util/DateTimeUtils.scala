@@ -336,7 +336,7 @@ object DateTimeUtils {
 
     if (!justTime && (segments(0) < 0 || segments(0) > 9999 || segments(
         1) < 1 ||
-      segments(1) > 12 || segments(2) < 1 || segments(2) > 31)) {
+        segments(1) > 12 || segments(2) < 1 || segments(2) > 31)) {
       return None
     }
 

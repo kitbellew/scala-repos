@@ -487,8 +487,8 @@ class RichPresentationCompiler(
     val sym = m.sym
     val ns = sym.nameString
     (((matchEntire && ns == prefix) ||
-    (!matchEntire && caseSens && ns.startsWith(prefix)) ||
-    (!matchEntire && !caseSens && ns.toUpperCase.startsWith(prefixUpper)))
+      (!matchEntire && caseSens && ns.startsWith(prefix)) ||
+      (!matchEntire && !caseSens && ns.toUpperCase.startsWith(prefixUpper)))
     && !sym.nameString.contains("$"))
   }
 

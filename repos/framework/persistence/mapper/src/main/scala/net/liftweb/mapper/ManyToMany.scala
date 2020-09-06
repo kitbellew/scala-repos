@@ -232,7 +232,7 @@ trait ManyToMany extends BaseKeyedMapper {
         _.delete_!
       } & ( // continue saving even if deleting fails
         children.forall(_.save) &&
-        joins.forall(_.save))
+          joins.forall(_.save))
     }
 
     /**

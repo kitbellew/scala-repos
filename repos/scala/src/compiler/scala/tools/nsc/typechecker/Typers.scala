@@ -2598,8 +2598,8 @@ trait Typers
         if (ddef.name == nme.CONSTRUCTOR && !ddef.symbol.hasStaticFlag) { // need this to make it possible to generate static ctors
           if (!meth.isPrimaryConstructor &&
             (!meth.owner.isClass ||
-            meth.owner.isModuleClass ||
-            meth.owner.isAnonOrRefinementClass))
+              meth.owner.isModuleClass ||
+              meth.owner.isAnonOrRefinementClass))
             InvalidConstructorDefError(ddef)
           typed(ddef.rhs)
         } else if (meth.isMacro) {

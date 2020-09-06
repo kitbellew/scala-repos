@@ -22,7 +22,7 @@ class MatchFilter extends ElementFilter {
       val parent = leaf.getParent
       if (parent.isInstanceOf[ScExpression] && (parent.getParent
           .isInstanceOf[ScInfixExpr] ||
-        parent.getParent.isInstanceOf[ScPostfixExpr])) {
+          parent.getParent.isInstanceOf[ScPostfixExpr])) {
         return true
       }
     }

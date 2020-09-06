@@ -90,7 +90,7 @@ class ScalaIsCommentComplete extends CommentCompleteHandler {
         }
       }
       if (!continue && (tokenType == commenter.getDocumentationCommentTokenType ||
-        tokenType == commenter.getBlockCommentTokenType)) {
+          tokenType == commenter.getBlockCommentTokenType)) {
         return false
       } else if (!continue) {
         lexer.advance()

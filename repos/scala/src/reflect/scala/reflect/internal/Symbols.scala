@@ -673,10 +673,10 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     private[scala] def lockOK: Boolean = {
       ((_rawflags & LOCKED) == 0L) ||
       ((settings.Yrecursion.value != 0) &&
-      (recursionTable get this match {
-        case Some(n) => (n <= settings.Yrecursion.value)
-        case None    => true
-      }))
+        (recursionTable get this match {
+          case Some(n) => (n <= settings.Yrecursion.value)
+          case None    => true
+        }))
     }
 
     // Lock a symbol, using the handler if the recursion depth becomes too great.

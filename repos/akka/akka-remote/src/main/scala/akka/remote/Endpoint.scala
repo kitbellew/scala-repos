@@ -88,8 +88,8 @@ private[remote] class DefaultMessageDispatcher(
           case sel: ActorSelectionMessage ⇒
             if (UntrustedMode && (!TrustedSelectionPaths.contains(
                 sel.elements.mkString("/", "/", "")) ||
-              sel.msg
-                .isInstanceOf[PossiblyHarmful] || l != provider.rootGuardian))
+                sel.msg
+                  .isInstanceOf[PossiblyHarmful] || l != provider.rootGuardian))
               log.debug(
                 "operating in UntrustedMode, dropping inbound actor selection to [{}], " +
                   "allow it by adding the path to 'akka.remote.trusted-selection-paths' configuration",

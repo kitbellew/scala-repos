@@ -248,7 +248,7 @@ object ScalaAfterNewCompletionUtil {
         //todo: filter inner classes smarter (how? don't forget deep inner classes)
         if (clazz.containingClass != null && (!clazz.containingClass
             .isInstanceOf[ScObject] ||
-          clazz.hasModifierPropertyScala("static"))) return null
+            clazz.hasModifierPropertyScala("static"))) return null
         if (!ResolveUtils.isAccessible(clazz, place, forCompletion = true))
           return null
         if (addedClasses.contains(clazz.qualifiedName)) return null

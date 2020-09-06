@@ -144,8 +144,8 @@ class Signature(
     ScalaPsiUtil.convertMemberName(name) == ScalaPsiUtil.convertMemberName(
       other.name) &&
     ((typeParams.length == other.typeParams.length && paramTypesEquiv(other)) ||
-    (paramLength == other.paramLength && javaErasedEquiv(other))) && fieldCheck(
-      other)
+      (paramLength == other.paramLength && javaErasedEquiv(
+        other))) && fieldCheck(other)
 
   }
 

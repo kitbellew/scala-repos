@@ -145,7 +145,7 @@ case class ScalaFieldEvaluator(
     var modifier: Modifier = null
     if (myEvaluatedField != null &&
       (myEvaluatedQualifier.isInstanceOf[ClassType] ||
-      myEvaluatedQualifier.isInstanceOf[ObjectReference])) {
+        myEvaluatedQualifier.isInstanceOf[ObjectReference])) {
       modifier = new Modifier {
         def canInspect: Boolean = {
           myEvaluatedQualifier.isInstanceOf[ObjectReference]

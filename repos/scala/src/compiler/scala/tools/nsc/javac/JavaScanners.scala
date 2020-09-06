@@ -787,8 +787,8 @@ trait JavaScanners extends ast.parser.ScannersCommon {
       }
       if (base <= 10 &&
         (in.ch == 'e' || in.ch == 'E' ||
-        in.ch == 'f' || in.ch == 'F' ||
-        in.ch == 'd' || in.ch == 'D')) {
+          in.ch == 'f' || in.ch == 'F' ||
+          in.ch == 'd' || in.ch == 'D')) {
         return getFraction()
       }
       setName()

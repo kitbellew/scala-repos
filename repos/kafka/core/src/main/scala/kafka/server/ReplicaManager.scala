@@ -222,8 +222,8 @@ class ReplicaManager(
       if (isrChangeSet.nonEmpty &&
         (lastIsrChangeMs
           .get() + ReplicaManager.IsrChangePropagationBlackOut < now ||
-        lastIsrPropagationMs
-          .get() + ReplicaManager.IsrChangePropagationInterval < now)) {
+          lastIsrPropagationMs
+            .get() + ReplicaManager.IsrChangePropagationInterval < now)) {
         ReplicationUtils.propagateIsrChanges(zkUtils, isrChangeSet)
         isrChangeSet.clear()
         lastIsrPropagationMs.set(now)

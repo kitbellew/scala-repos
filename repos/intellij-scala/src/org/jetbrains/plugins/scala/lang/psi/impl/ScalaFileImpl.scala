@@ -232,11 +232,13 @@ class ScalaFileImpl(
     val vFile = getVirtualFile
 
     vFile != null && (vFile.getExtension == ScalaFileType.WORKSHEET_EXTENSION ||
-    ScratchFileService
-      .getInstance()
-      .getRootType(vFile)
-      .isInstanceOf[ScratchRootType] &&
-    ScalaProjectSettings.getInstance(getProject).isTreatScratchFilesAsWorksheet)
+      ScratchFileService
+        .getInstance()
+        .getRootType(vFile)
+        .isInstanceOf[ScratchRootType] &&
+        ScalaProjectSettings
+          .getInstance(getProject)
+          .isTreatScratchFilesAsWorksheet)
   }
 
   def setPackageName(name: String) {

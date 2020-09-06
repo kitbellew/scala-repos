@@ -493,9 +493,9 @@ trait TypeComparers {
                else
                  (sym1.name == sym2.name && !sym1.isModuleClass && !sym2.isModuleClass &&
                  (isUnifiable(pre1, pre2) ||
-                 isSameSpecializedSkolem(sym1, sym2, pre1, pre2) ||
-                 sym2.isAbstractType && isSubPre(pre1, pre2, sym2)))) &&
-            isSubArgs(tr1.args, tr2.args, sym1.typeParams, depth))
+                   isSameSpecializedSkolem(sym1, sym2, pre1, pre2) ||
+                   sym2.isAbstractType && isSubPre(pre1, pre2, sym2)))) &&
+              isSubArgs(tr1.args, tr2.args, sym1.typeParams, depth))
             ||
             sym2.isClass && {
               val base = tr1 baseType sym2

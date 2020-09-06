@@ -706,10 +706,10 @@ object ScalaPsiElementFactory {
     for (expr <- exprs) names ++= expr.getNames
     val arrow = ScalaPsiUtil.functionArrow(manager.getProject)
     if ((names("_") ||
-      ScalaCodeStyleSettings
-        .getInstance(manager.getProject)
-        .getClassCountToUseImportOnDemand <=
-        names.size) &&
+        ScalaCodeStyleSettings
+          .getInstance(manager.getProject)
+          .getClassCountToUseImportOnDemand <=
+          names.size) &&
       names.filter(_.indexOf(arrow) != -1).toSeq.size == 0) text = text + "._"
     else {
       text = text + ".{"

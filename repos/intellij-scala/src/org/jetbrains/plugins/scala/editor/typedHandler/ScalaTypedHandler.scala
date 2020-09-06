@@ -168,10 +168,10 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
     if ((c == '"' && Set(
         ScalaTokenTypes.tMULTILINE_STRING,
         ScalaTokenTypes.tINTERPOLATED_STRING_END).contains(elementType) &&
-      element.getTextOffset + element.getTextLength - offset < 4) ||
+        element.getTextOffset + element.getTextLength - offset < 4) ||
       isInDocComment(element) && (elementType
         .isInstanceOf[ScaladocSyntaxElementType] ||
-      elementType == ScalaDocTokenType.DOC_INNER_CLOSE_CODE_TAG) &&
+        elementType == ScalaDocTokenType.DOC_INNER_CLOSE_CODE_TAG) &&
       element.getParent.getLastChild == element && element.getText.startsWith(
         "" + c) &&
       !(elementType == ScalaDocTokenType.DOC_ITALIC_TAG && element.getPrevSibling != null

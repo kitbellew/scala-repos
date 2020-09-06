@@ -1088,7 +1088,7 @@ abstract class PrepJSInterop
     val needsFix = {
       sym.isPrivate &&
       (wasPublicBeforeTyper(sym) ||
-      (sym.isAccessor && wasPublicBeforeTyper(sym.accessed)))
+        (sym.isAccessor && wasPublicBeforeTyper(sym.accessed)))
     }
     if (needsFix) {
       sym.resetFlag(Flag.PRIVATE)

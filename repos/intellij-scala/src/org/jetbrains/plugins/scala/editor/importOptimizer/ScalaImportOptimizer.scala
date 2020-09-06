@@ -699,7 +699,7 @@ object ScalaImportOptimizer {
     val groups = settings.importLayout
     val suitable = groups.filter { group =>
       group != ScalaCodeStyleSettings.BLANK_LINE && (group == ScalaCodeStyleSettings.ALL_OTHER_IMPORTS ||
-      info.startsWith(group))
+        info.startsWith(group))
     }
     val elem = suitable.tail.foldLeft(suitable.head) { (l, r) =>
       if (l == ScalaCodeStyleSettings.ALL_OTHER_IMPORTS) r

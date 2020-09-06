@@ -215,8 +215,8 @@ trait CorsSupport extends Handler with Initializable { self: ScalatraBase ⇒
     ho.isDefined && (ho forall { h ⇒
       val hu = h.toUpperCase(ENGLISH)
       SimpleHeaders.contains(hu) || (hu == "CONTENT-TYPE" &&
-      SimpleContentTypes.exists(
-        (request.contentType.getOrElse("")).toUpperCase(ENGLISH).startsWith))
+        SimpleContentTypes.exists(
+          (request.contentType.getOrElse("")).toUpperCase(ENGLISH).startsWith))
     })
   }
 

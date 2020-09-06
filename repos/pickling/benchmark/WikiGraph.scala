@@ -36,9 +36,9 @@ final class Vertex(val label: String, var neighbors: List[Vertex])
     (this ne other) &&
     this.label == other.label && (
       this.neighbors.length == other.neighbors.length &&
-      this.neighbors.zip(other.neighbors).forall { case (thisv, otherv) =>
-        thisv.label == otherv.label
-      }
+        this.neighbors.zip(other.neighbors).forall { case (thisv, otherv) =>
+          thisv.label == otherv.label
+        }
     )
   }
 

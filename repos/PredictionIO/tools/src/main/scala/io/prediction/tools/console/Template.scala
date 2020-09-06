@@ -364,8 +364,8 @@ object Template extends Logging {
 
         if (organization != "" &&
           (nameOnly.endsWith(".scala") ||
-          nameOnly == "build.sbt" ||
-          nameOnly == "engine.json")) {
+            nameOnly == "build.sbt" ||
+            nameOnly == "engine.json")) {
           filesToModify += destFilename
         }
       }

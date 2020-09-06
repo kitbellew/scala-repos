@@ -826,13 +826,13 @@ trait Contexts { self: Analyzer =>
         ((ab.isTerm || ab == rootMirror.RootClass)
         || (accessWithin(ab) || accessWithinLinked(ab)) &&
         (!sym.isLocalToThis
-        || sym.isProtected && isSubThisType(pre, sym.owner)
-        || pre =:= sym.owner.thisType)
+          || sym.isProtected && isSubThisType(pre, sym.owner)
+          || pre =:= sym.owner.thisType)
         || sym.isProtected &&
         (superAccess
-        || pre.isInstanceOf[ThisType]
-        || phase.erasedTypes
-        || (sym.overrideChain exists isProtectedAccessOK)
+          || pre.isInstanceOf[ThisType]
+          || phase.erasedTypes
+          || (sym.overrideChain exists isProtectedAccessOK)
         // that last condition makes protected access via self types work.
         ))
         // note: phase.erasedTypes disables last test, because after addinterfaces

@@ -664,10 +664,10 @@ private[scalajs] final class ScalaJSClassEmitter(
                         !js.BinaryOp(JSBinaryOp.<, arrayDepth, depth) && (
                           // Array[Array[A]] <: Array[Object]
                           js.BinaryOp(JSBinaryOp.>, arrayDepth, depth) ||
-                          // Array[Int] </: Array[Object]
-                          !genIdentBracketSelect(
-                            data DOT "arrayBase",
-                            "isPrimitive")
+                            // Array[Int] </: Array[Object]
+                            !genIdentBracketSelect(
+                              data DOT "arrayBase",
+                              "isPrimitive")
                         )
                       }
                     )

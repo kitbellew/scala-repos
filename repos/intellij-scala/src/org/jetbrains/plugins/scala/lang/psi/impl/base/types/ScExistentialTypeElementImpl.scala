@@ -86,9 +86,9 @@ class ScExistentialTypeElementImpl(node: ASTNode)
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
     if (lastParent == quantified || (lastParent.isInstanceOf[ScalaPsiElement] &&
-      lastParent
-        .asInstanceOf[ScalaPsiElement]
-        .getDeepSameElementInContext == quantified)) {
+        lastParent
+          .asInstanceOf[ScalaPsiElement]
+          .getDeepSameElementInContext == quantified)) {
       for (decl <- clause.declarations) {
         decl match {
           case alias: ScTypeAliasDeclaration =>

@@ -54,11 +54,11 @@ class DefinitionsFilter extends ElementFilter {
                 .asInstanceOf[ScalaFile]
                 .isScriptFile())
               if ((leaf.getPrevSibling == null || leaf.getPrevSibling.getPrevSibling == null ||
-                leaf.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaTokenTypes.kDEF) &&
+                  leaf.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaTokenTypes.kDEF) &&
                 (parent.getPrevSibling == null || parent.getPrevSibling.getPrevSibling == null ||
-                (parent.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaElementTypes.MATCH_STMT ||
-                !parent.getPrevSibling.getPrevSibling.getLastChild
-                  .isInstanceOf[PsiErrorElement])))
+                  (parent.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaElementTypes.MATCH_STMT ||
+                    !parent.getPrevSibling.getPrevSibling.getLastChild
+                      .isInstanceOf[PsiErrorElement])))
                 return p
             null
           case _ => findParent(p.getParent)

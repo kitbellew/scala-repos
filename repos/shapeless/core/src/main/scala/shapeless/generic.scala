@@ -657,7 +657,7 @@ trait CaseClassMacros extends ReprTypes {
 
     sym.isCaseClass ||
     (!sym.isAbstract && !sym.isTrait && !(sym == symbolOf[Object]) &&
-    sym.knownDirectSubclasses.isEmpty && checkCtor)
+      sym.knownDirectSubclasses.isEmpty && checkCtor)
   }
 
   def isCaseObjectLike(sym: ClassSymbol): Boolean = sym.isModuleClass
