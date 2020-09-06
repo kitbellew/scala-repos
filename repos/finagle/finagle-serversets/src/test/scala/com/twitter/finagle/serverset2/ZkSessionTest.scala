@@ -196,8 +196,8 @@ class ZkSessionTest extends FunSuite with Eventually with IntegrationPatience {
         retryStream,
         () => new ZkSession(retryStream, watchedZk, NullStatsReceiver))
 
-      zk.changes.respond {
-        case _ => ()
+      zk.changes.respond { case _ =>
+        ()
       }
 
       zkState() = WatchState.SessionState(SessionState.SyncConnected)

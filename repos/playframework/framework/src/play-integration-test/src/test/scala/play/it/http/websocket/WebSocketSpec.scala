@@ -577,8 +577,8 @@ trait WebSocketSpec
                   out ! msg
                 }
                 out ! Status.Success(())
-                def receive = {
-                  case msg: Message => ()
+                def receive = { case msg: Message =>
+                  ()
                 }
               })
             }

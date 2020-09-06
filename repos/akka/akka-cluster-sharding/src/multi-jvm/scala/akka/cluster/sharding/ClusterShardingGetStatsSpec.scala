@@ -162,8 +162,8 @@ abstract class ClusterShardingGetStatsSpec
             // trigger starting of 2 entities on first and second node
             // but leave third node without entities
             List(1, 2, 4, 6).foreach(n ⇒ region.tell(Ping(n), pingProbe.ref))
-            pingProbe.receiveWhile(messages = 4) {
-              case Pong ⇒ ()
+            pingProbe.receiveWhile(messages = 4) { case Pong ⇒
+              ()
             }
           }
         }
@@ -212,8 +212,8 @@ abstract class ClusterShardingGetStatsSpec
             val pingProbe = TestProbe()
             // make sure we have the 4 entities still alive across the fewer nodes
             List(1, 2, 4, 6).foreach(n ⇒ region.tell(Ping(n), pingProbe.ref))
-            pingProbe.receiveWhile(messages = 4) {
-              case Pong ⇒ ()
+            pingProbe.receiveWhile(messages = 4) { case Pong ⇒
+              ()
             }
           }
         }

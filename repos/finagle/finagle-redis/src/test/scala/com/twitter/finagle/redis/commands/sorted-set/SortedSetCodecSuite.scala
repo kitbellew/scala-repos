@@ -276,11 +276,11 @@ final class SortedSetCodecSuite extends RedisRequestTest {
       scored: Option[CommandArgument]
   ): PartialFunction[Command, Unit] = {
     cmd match {
-      case "ZRANGE" => {
-        case ZRange(k, start, stop, scored) => ()
+      case "ZRANGE" => { case ZRange(k, start, stop, scored) =>
+        ()
       }
-      case "ZREVRANGE" => {
-        case ZRevRange(k, start, stop, scored) => ()
+      case "ZREVRANGE" => { case ZRevRange(k, start, stop, scored) =>
+        ()
       }
     }
   }
