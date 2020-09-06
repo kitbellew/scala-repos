@@ -804,8 +804,8 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
 
   def mkKey(path: ActorPath): String = Internal.mkKey(path)
 
-  def myVersions: Map[Address, Long] = registry.map {
-    case (owner, bucket) ⇒ (owner -> bucket.version)
+  def myVersions: Map[Address, Long] = registry.map { case (owner, bucket) ⇒
+    (owner -> bucket.version)
   }
 
   def collectDelta(

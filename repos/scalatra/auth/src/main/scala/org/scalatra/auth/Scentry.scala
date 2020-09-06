@@ -82,8 +82,8 @@ class Scentry[UserType <: AnyRef](
   }
 
   def strategies: mutable.Map[String, ScentryStrategy[UserType]] =
-    (globalStrategies ++ _strategies) map {
-      case (nm, fact) ⇒ (nm -> fact.asInstanceOf[StrategyFactory](app))
+    (globalStrategies ++ _strategies) map { case (nm, fact) ⇒
+      (nm -> fact.asInstanceOf[StrategyFactory](app))
     }
 
   def userOption(implicit
