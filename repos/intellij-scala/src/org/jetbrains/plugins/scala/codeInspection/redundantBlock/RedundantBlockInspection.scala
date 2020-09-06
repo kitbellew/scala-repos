@@ -28,7 +28,7 @@ class RedundantBlockInspection extends AbstractInspection {
     case (block: ScBlock) childOf ((blockOfExpr: ScBlock) childOf (_: ScCaseClause))
         if block.hasRBrace && block.getFirstChild.getText == "{" &&
           blockOfExpr.getChildren.length == 1 && !block.getChildren.exists(
-          _.isInstanceOf[ScCaseClauses]) =>
+            _.isInstanceOf[ScCaseClauses]) =>
       holder.registerProblem(
         block,
         new TextRange(0, 1),

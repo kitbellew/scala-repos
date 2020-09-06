@@ -272,13 +272,13 @@ object ScalaOIUtil {
       case x
           if x.containingClass != null && x.containingClass.isInterface &&
             !x.containingClass.isInstanceOf[ScTrait] && x.hasModifierProperty(
-            "abstract") =>
+              "abstract") =>
         true
       case x
           if x.hasModifierPropertyScala("abstract") && !x
             .isInstanceOf[ScFunctionDefinition] &&
             !x.isInstanceOf[ScPatternDefinition] && !x
-            .isInstanceOf[ScVariableDefinition] =>
+              .isInstanceOf[ScVariableDefinition] =>
         true
       case x: ScFunctionDeclaration
           if x.hasAnnotation("scala.native") == None =>

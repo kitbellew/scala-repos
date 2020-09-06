@@ -1002,16 +1002,16 @@ private[spark] class Client(
     val amArgs =
       Seq(amClass) ++ userClass ++ userJar ++ primaryPyFile ++ primaryRFile ++
         userArgs ++ Seq(
-        "--executor-memory",
-        args.executorMemory.toString + "m",
-        "--executor-cores",
-        args.executorCores.toString,
-        "--properties-file",
-        buildPath(
-          YarnSparkHadoopUtil.expandEnvironment(Environment.PWD),
-          LOCALIZED_CONF_DIR,
-          SPARK_CONF_FILE)
-      )
+          "--executor-memory",
+          args.executorMemory.toString + "m",
+          "--executor-cores",
+          args.executorCores.toString,
+          "--properties-file",
+          buildPath(
+            YarnSparkHadoopUtil.expandEnvironment(Environment.PWD),
+            LOCALIZED_CONF_DIR,
+            SPARK_CONF_FILE)
+        )
 
     // Command for the ApplicationMaster
     val commands = prefixEnv ++ Seq(

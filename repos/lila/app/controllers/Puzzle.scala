@@ -71,13 +71,13 @@ object Puzzle extends LilaController {
   private def puzzleJson(puzzle: PuzzleModel)(implicit ctx: Context) =
     (env userInfos ctx.me) zip
       (ctx.me ?? { env.api.attempt.hasPlayed(_, puzzle) map (!_) }) map {
-      case (infos, asPlay) =>
-        JsData(
-          puzzle,
-          infos,
-          asPlay.fold("play", "try"),
-          animationDuration = env.AnimationDuration)
-    }
+        case (infos, asPlay) =>
+          JsData(
+            puzzle,
+            infos,
+            asPlay.fold("play", "try"),
+            animationDuration = env.AnimationDuration)
+      }
 
   def history = Auth { implicit ctx => me =>
     env userInfos me flatMap { ui =>
@@ -155,17 +155,17 @@ object Puzzle extends LilaController {
                     env.api.puzzle find id zip
                       (env userInfos me2.some) zip
                       (env.api.attempt hasVoted me2) map {
-                      case ((p2, infos), voted) =>
-                        Ok {
-                          JsData(
-                            p2 | puzzle,
-                            infos,
-                            "view",
-                            attempt = newAttempt.some,
-                            voted = voted.some,
-                            animationDuration = env.AnimationDuration)
-                        }
-                    }
+                        case ((p2, infos), voted) =>
+                          Ok {
+                            JsData(
+                              p2 | puzzle,
+                              infos,
+                              "view",
+                              attempt = newAttempt.some,
+                              voted = voted.some,
+                              animationDuration = env.AnimationDuration)
+                          }
+                      }
                   }
                 case (oldAttempt, Some(win)) =>
                   env userInfos me.some map { infos =>

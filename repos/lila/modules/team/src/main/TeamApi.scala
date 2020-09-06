@@ -33,13 +33,13 @@ final class TeamApi(
       createdBy = me)
     $insert(team) >>
       MemberRepo.add(team.id, me.id) >>- {
-      (cached.teamIdsCache invalidate me.id)
-      (forum ! MakeTeam(team.id, team.name))
-      (indexer ! InsertTeam(team))
-      (timeline ! Propagate(
-        TeamCreate(me.id, team.id)
-      ).toFollowersOf(me.id))
-    } inject team
+        (cached.teamIdsCache invalidate me.id)
+        (forum ! MakeTeam(team.id, team.name))
+        (indexer ! InsertTeam(team))
+        (timeline ! Propagate(
+          TeamCreate(me.id, team.id)
+        ).toFollowersOf(me.id))
+      } inject team
   }
 
   def update(team: Team, edit: TeamEdit, me: User): Funit = edit.trim |> { e =>
@@ -124,9 +124,9 @@ final class TeamApi(
     (!belongsTo(team.id, userId)) ?? {
       MemberRepo.add(team.id, userId) >>
         TeamRepo.incMembers(team.id, +1) >>- {
-        cached.teamIdsCache invalidate userId
-        timeline ! Propagate(TeamJoin(userId, team.id)).toFollowersOf(userId)
-      }
+          cached.teamIdsCache invalidate userId
+          timeline ! Propagate(TeamJoin(userId, team.id)).toFollowersOf(userId)
+        }
     } recover lila.db.recoverDuplicateKey(e => ())
 
   def quit(teamId: String)(implicit ctx: UserContext): Fu[Option[Team]] = for {

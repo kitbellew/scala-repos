@@ -271,8 +271,8 @@ class SubBlocksContext(
       .filter(_.isDefined)
       .map(_.get) ++
       additionalNodes ++ childrenAdditionalContexts.map { case (child, _) =>
-      child
-    } match {
+        child
+      } match {
       case empty if empty.isEmpty => None
       case nonEmpty               => Some(nonEmpty.maxBy(_.getTextRange.getEndOffset))
     }

@@ -54,44 +54,44 @@ abstract class ClusterAccrualFailureDetectorSpec
 
     "mark node as 'unavailable' when network partition and then back to 'available' when partition is healed" taggedAs
       LongRunningTest in {
-      runOn(first) {
-        testConductor.blackhole(first, second, Direction.Both).await
+        runOn(first) {
+          testConductor.blackhole(first, second, Direction.Both).await
+        }
+
+        enterBarrier("broken")
+
+        runOn(first) {
+          // detect failure...
+          awaitCond(!cluster.failureDetector.isAvailable(second), 15.seconds)
+          // other connections still ok
+          cluster.failureDetector.isAvailable(third) should ===(true)
+        }
+
+        runOn(second) {
+          // detect failure...
+          awaitCond(!cluster.failureDetector.isAvailable(first), 15.seconds)
+          // other connections still ok
+          cluster.failureDetector.isAvailable(third) should ===(true)
+        }
+
+        enterBarrier("partitioned")
+
+        runOn(first) {
+          testConductor.passThrough(first, second, Direction.Both).await
+        }
+
+        enterBarrier("repaired")
+
+        runOn(first, third) {
+          awaitCond(cluster.failureDetector.isAvailable(second), 15.seconds)
+        }
+
+        runOn(second) {
+          awaitCond(cluster.failureDetector.isAvailable(first), 15.seconds)
+        }
+
+        enterBarrier("after-2")
       }
-
-      enterBarrier("broken")
-
-      runOn(first) {
-        // detect failure...
-        awaitCond(!cluster.failureDetector.isAvailable(second), 15.seconds)
-        // other connections still ok
-        cluster.failureDetector.isAvailable(third) should ===(true)
-      }
-
-      runOn(second) {
-        // detect failure...
-        awaitCond(!cluster.failureDetector.isAvailable(first), 15.seconds)
-        // other connections still ok
-        cluster.failureDetector.isAvailable(third) should ===(true)
-      }
-
-      enterBarrier("partitioned")
-
-      runOn(first) {
-        testConductor.passThrough(first, second, Direction.Both).await
-      }
-
-      enterBarrier("repaired")
-
-      runOn(first, third) {
-        awaitCond(cluster.failureDetector.isAvailable(second), 15.seconds)
-      }
-
-      runOn(second) {
-        awaitCond(cluster.failureDetector.isAvailable(first), 15.seconds)
-      }
-
-      enterBarrier("after-2")
-    }
 
     "mark node as 'unavailable' if a node in the cluster is shut down (and its heartbeats stops)" taggedAs LongRunningTest in {
       runOn(first) {

@@ -120,17 +120,17 @@ final class GameSearchApi(client: ESClient) extends SearchReadApi[Game, Query] {
       Enumeratee.mapM[Seq[Game]].apply[(Seq[Game], Set[String])] { games =>
         GameRepo filterAnalysed games.map(_.id) map games.->
       } &>
-        Iteratee.foldM[(Seq[Game], Set[String]), Long](nowMillis) {
-          case (millis, (games, analysedIds)) =>
-            client.storeBulk(games map { g =>
-              Id(g.id) -> toDoc(g, analysedIds(g.id))
-            }) inject {
-              val date =
-                games.headOption.map(_.createdAt) ?? dateTimeFormatter.print
-              val gameMs = (nowMillis - millis) / batchSize.toDouble
-              logger.info(s"$date ${(1000 / gameMs).toInt} games/s")
-              nowMillis
-            }
-        } void
+      Iteratee.foldM[(Seq[Game], Set[String]), Long](nowMillis) {
+        case (millis, (games, analysedIds)) =>
+          client.storeBulk(games map { g =>
+            Id(g.id) -> toDoc(g, analysedIds(g.id))
+          }) inject {
+            val date =
+              games.headOption.map(_.createdAt) ?? dateTimeFormatter.print
+            val gameMs = (nowMillis - millis) / batchSize.toDouble
+            logger.info(s"$date ${(1000 / gameMs).toInt} games/s")
+            nowMillis
+          }
+      } void
   }
 }

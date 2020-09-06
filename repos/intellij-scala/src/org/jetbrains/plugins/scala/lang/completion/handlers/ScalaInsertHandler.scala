@@ -129,7 +129,7 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
                 .isInstanceOf[ScReferenceExpression]
                 && elem.getParent.getParent.isInstanceOf[
                   ScReferenceExpression] && item.getAllLookupStrings
-                .size() > 1 =>
+                  .size() > 1 =>
             val ref = elem.getParent.asInstanceOf[ScReferenceExpression]
             val newRefText = ref.getText
             val newRef = ScalaPsiElementFactory.createExpressionFromText(

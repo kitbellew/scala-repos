@@ -28,10 +28,10 @@ object User extends LilaController {
     OptionFuResult(UserRepo named username) { user =>
       (GameRepo lastPlayedPlaying user) orElse
         (GameRepo lastPlayed user) flatMap {
-        _.fold(fuccess(Redirect(routes.User.show(username)))) { pov =>
-          Round.watch(pov, userTv = user.some)
+          _.fold(fuccess(Redirect(routes.User.show(username)))) { pov =>
+            Round.watch(pov, userTv = user.some)
+          }
         }
-      }
     }
   }
 
@@ -47,11 +47,20 @@ object User extends LilaController {
         (ctx.userId ?? { Env.game.crosstableApi(user.id, _) }) zip
         (ctx.isAuth ?? { Env.pref.api.followable(user.id) }) zip
         (ctx.userId ?? { relationApi.fetchRelation(_, user.id) }) map {
-        case (((((pov, donor), blocked), crosstable), followable), relation) =>
-          Ok(html.user
-            .mini(user, pov, blocked, followable, relation, crosstable, donor))
-            .withHeaders(CACHE_CONTROL -> "max-age=5")
-      }
+          case (
+                ((((pov, donor), blocked), crosstable), followable),
+                relation) =>
+            Ok(
+              html.user.mini(
+                user,
+                pov,
+                blocked,
+                followable,
+                relation,
+                crosstable,
+                donor))
+              .withHeaders(CACHE_CONTROL -> "max-age=5")
+        }
     }
   }
 
@@ -221,17 +230,17 @@ object User extends LilaController {
         (Env.security userSpy user.id) zip
         (Env.mod.assessApi.getPlayerAggregateAssessmentWithGames(user.id)) zip
         Env.mod.logApi.userHistory(user.id) flatMap {
-        case ((((email, spy), playerAggregateAssessment), history)) =>
-          (Env.playban.api bans spy.usersSharingIp.map(_.id)) map { bans =>
-            html.user.mod(
-              user,
-              email,
-              spy,
-              playerAggregateAssessment,
-              bans,
-              history)
-          }
-      }
+          case ((((email, spy), playerAggregateAssessment), history)) =>
+            (Env.playban.api bans spy.usersSharingIp.map(_.id)) map { bans =>
+              html.user.mod(
+                user,
+                email,
+                spy,
+                playerAggregateAssessment,
+                bans,
+                history)
+            }
+        }
     }
   }
 

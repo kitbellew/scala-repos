@@ -463,7 +463,7 @@ object SlickBuild extends Build {
           .map(_.data)
           .filter(f => f.name.contains("logback-") || f.name.contains("h2")),
         publishArtifact := false
-    )
+      )
       dependsOn (slickProject % "test")
   )
 

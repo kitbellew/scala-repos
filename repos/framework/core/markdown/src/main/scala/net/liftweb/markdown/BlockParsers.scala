@@ -363,10 +363,10 @@ trait BlockParsers extends Parsers {
     (line(classOf[ExtendedFencedCode]) | line(classOf[FencedCode])) ~
       (notLine(classOf[FencedCode]) *) ~
       opt(line(classOf[FencedCode])) ^^ {
-      case (start: ExtendedFencedCode) ~ lines ~ _ =>
-        new FencedCodeBlock(start.languageFormat, lines)
-      case _ ~ lines ~ _ => new FencedCodeBlock("", lines)
-    }
+        case (start: ExtendedFencedCode) ~ lines ~ _ =>
+          new FencedCodeBlock(start.languageFormat, lines)
+        case _ ~ lines ~ _ => new FencedCodeBlock("", lines)
+      }
 
   //line(classOf[FencedCodeStart]) ~
   //((not(line(classOf[FencedCodeEnd]))*) ~

@@ -49,8 +49,8 @@ case class GroupCoordinatorRequest(
 
   def sizeInBytes =
     2 + /* versionId */
-    4 + /* correlationId */
-    ApiUtils.shortStringLength(clientId) +
+      4 + /* correlationId */
+      ApiUtils.shortStringLength(clientId) +
       ApiUtils.shortStringLength(group)
 
   def writeTo(buffer: ByteBuffer) {

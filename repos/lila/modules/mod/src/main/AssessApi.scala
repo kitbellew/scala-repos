@@ -61,8 +61,8 @@ final class AssessApi(
   def getGameResultsById(gameId: String) =
     getResultsByGameIdAndColor(gameId, Color.White) zip
       getResultsByGameIdAndColor(gameId, Color.Black) map { a =>
-      PlayerAssessments(a._1, a._2)
-    }
+        PlayerAssessments(a._1, a._2)
+      }
 
   def getPlayerAggregateAssessment(
       userId: String,
@@ -72,17 +72,17 @@ final class AssessApi(
       getPlayerAssessmentsByUserId(userId, nb) zip
       relatedUsers zip
       (relatedUsers flatMap UserRepo.filterByEngine) map {
-      case (
-            ((Some(user), assessedGamesHead :: assessedGamesTail), relatedUs),
-            relatedCheaters) =>
-        Some(
-          PlayerAggregateAssessment(
-            user,
-            assessedGamesHead :: assessedGamesTail,
-            relatedUs,
-            relatedCheaters))
-      case _ => none
-    }
+        case (
+              ((Some(user), assessedGamesHead :: assessedGamesTail), relatedUs),
+              relatedCheaters) =>
+          Some(
+            PlayerAggregateAssessment(
+              user,
+              assessedGamesHead :: assessedGamesTail,
+              relatedUs,
+              relatedCheaters))
+        case _ => none
+      }
   }
 
   def withGames(

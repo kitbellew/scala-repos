@@ -558,7 +558,7 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
           this.req.copy(entity = HttpEntity.Empty) == other.req.copy(entity =
             HttpEntity.Empty) &&
             this.req.entity.toStrict(awaitAtMost).awaitResult(awaitAtMost) ==
-              other.req.entity.toStrict(awaitAtMost).awaitResult(awaitAtMost)
+            other.req.entity.toStrict(awaitAtMost).awaitResult(awaitAtMost)
       }
 
       override def toString = req.toString

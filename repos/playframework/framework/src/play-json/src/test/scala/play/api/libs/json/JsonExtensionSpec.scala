@@ -402,7 +402,7 @@ object JsonExtensionSpec extends Specification {
           (
             (__ \ "obj1").format[A] and
               (__ \ "obj2").format[B]
-          )
+            )
         )(GenericCaseClass2[A, B] _, unlift(GenericCaseClass2.unapply[A, B]))
 
       implicit val genericHolderFormat = Json.format[WrappedGenericIntString]

@@ -60,8 +60,8 @@ case class ControlledShutdownRequest(
 
   def sizeInBytes: Int = {
     2 + /* version id */
-    4 + /* correlation id */
-    clientId.fold(0)(shortStringLength) +
+      4 + /* correlation id */
+      clientId.fold(0)(shortStringLength) +
       4 /* broker id */
   }
 

@@ -388,7 +388,7 @@ class ScReferenceExpressionImpl(node: ASTNode)
                 this,
                 true) &&
                 stableTypeRequired && owner
-                .isInstanceOf[ScTypeDefinition] && owner == clazz =>
+                  .isInstanceOf[ScTypeDefinition] && owner == clazz =>
             ScType.designator(
               param
             ) //todo: think about projection from this type?

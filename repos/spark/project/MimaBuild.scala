@@ -88,7 +88,7 @@ object MimaBuild {
 
     defaultExcludes ++ ignoredClasses.flatMap(excludeClass) ++
       ignoredMembers.flatMap(excludeMember) ++ MimaExcludes.excludes(
-      currentSparkVersion)
+        currentSparkVersion)
   }
 
   def mimaSettings(sparkHome: File, projectRef: ProjectRef) = {

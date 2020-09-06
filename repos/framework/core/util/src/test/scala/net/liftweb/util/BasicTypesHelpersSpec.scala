@@ -68,8 +68,8 @@ object BasicTypesHelpersSpec extends Specification with DataTables {
         Full("t") !! true |
         failure !! false |
         List("t", "f") !! true |> { (o: Any, result: Boolean) =>
-        toBoolean(o) must_== result
-      }
+          toBoolean(o) must_== result
+        }
     }
 
     "have a AsBoolean extractor converting any object to a reasonable Boolean value" in {
@@ -81,24 +81,24 @@ object BasicTypesHelpersSpec extends Specification with DataTables {
         "T" !! Some(true) |
         "This" !! None |
         "0" !! Some(false) | { (o: String, result: Option[Boolean]) =>
-        AsBoolean.unapply(o) must_== result
-      }
+          AsBoolean.unapply(o) must_== result
+        }
     }
 
     "have an AsInt extractor converting any String to a reasonable Int value" in {
       "object value" || "int value" |>
         "3" !! Some(3) |
         "n" !! None | { (o: String, result: Option[Int]) =>
-        AsInt.unapply(o) must_== result
-      }
+          AsInt.unapply(o) must_== result
+        }
     }
 
     "have an AsLong extractor converting any String to a reasonable Long value" in {
       "object value" || "long value" |>
         "3" !! Some(3L) |
         "n" !! None | { (o: String, result: Option[Long]) =>
-        AsLong.unapply(o) must_== result
-      }
+          AsLong.unapply(o) must_== result
+        }
     }
 
     "have a toInt method converting any object to a reasonable Int value" in {
@@ -116,8 +116,8 @@ object BasicTypesHelpersSpec extends Specification with DataTables {
         "3" !! 3 |
         "n" !! 0 |
         date(3000) !! 3 | { (o: Any, result: Int) =>
-        toInt(o) must_== result
-      }
+          toInt(o) must_== result
+        }
     }
 
     "have a toLong method converting any object to a reasonable Long value" in {
@@ -135,8 +135,8 @@ object BasicTypesHelpersSpec extends Specification with DataTables {
         "3" !! 3L |
         "n" !! 0L |
         date(3000) !! 3000L | { (o: Any, result: Long) =>
-        toLong(o) must_== result
-      }
+          toLong(o) must_== result
+        }
     }
 
     "have a toByteArrayInputStream reading an InputStream to a ByteArrayInputStream" in {

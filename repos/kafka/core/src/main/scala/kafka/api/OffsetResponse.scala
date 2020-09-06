@@ -66,20 +66,20 @@ case class OffsetResponse(
 
   val sizeInBytes = {
     4 + /* correlation id */
-    4 + /* topic count */
-    offsetsGroupedByTopic.foldLeft(0)((foldedTopics, currTopic) => {
-      val (topic, errorAndOffsetsMap) = currTopic
-      foldedTopics +
-        shortStringLength(topic) +
-        4 + /* partition count */
-      errorAndOffsetsMap.foldLeft(0)((foldedPartitions, currPartition) => {
-        foldedPartitions +
-          4 + /* partition id */
-        2 + /* partition error */
-        4 + /* offset array length */
-        currPartition._2.offsets.size * 8 /* offset */
+      4 + /* topic count */
+      offsetsGroupedByTopic.foldLeft(0)((foldedTopics, currTopic) => {
+        val (topic, errorAndOffsetsMap) = currTopic
+        foldedTopics +
+          shortStringLength(topic) +
+          4 + /* partition count */
+          errorAndOffsetsMap.foldLeft(0)((foldedPartitions, currPartition) => {
+            foldedPartitions +
+              4 + /* partition id */
+              2 + /* partition error */
+              4 + /* offset array length */
+              currPartition._2.offsets.size * 8 /* offset */
+          })
       })
-    })
   }
 
   def writeTo(buffer: ByteBuffer) {

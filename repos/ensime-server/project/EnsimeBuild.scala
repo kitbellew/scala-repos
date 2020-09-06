@@ -77,7 +77,7 @@ object EnsimeBuild extends Build {
     ) settings (
       libraryDependencies += "commons-io" % "commons-io" % "2.4",
       libraryDependencies ++= Sensible.testLibs("compile")
-  )
+    )
 
   lazy val s_express = Project(
     "s-express",
@@ -96,7 +96,7 @@ object EnsimeBuild extends Build {
         "org.scalariform" %% "scalariform" % "0.1.8"
       ),
       licenses := Seq(Apache2)
-  )
+    )
 
   // the JSON protocol
   lazy val jerky = Project(

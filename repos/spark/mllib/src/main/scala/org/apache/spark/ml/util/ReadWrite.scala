@@ -305,8 +305,8 @@ private[ml] object DefaultParamsReader {
             values.length == 1,
             s"Expected one instance of Param '$paramName' but found" +
               s" ${values.length} in JSON Params: " + pairs
-              .map(_.toString)
-              .mkString(", "))
+                .map(_.toString)
+                .mkString(", "))
           values.head
         case _ =>
           throw new IllegalArgumentException(

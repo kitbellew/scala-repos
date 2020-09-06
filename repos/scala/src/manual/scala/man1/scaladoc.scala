@@ -47,8 +47,8 @@ object scaladoc extends Command {
     "By default, the generator puts each HTML file in the same directory as " &
       "its source file. You can specify a separate destination directory with " &
       CmdOption("d") & "(see " & Link(
-      Bold("OPTIONS"),
-      "#options") & ", below).",
+        Bold("OPTIONS"),
+        "#options") & ", below).",
     // tags are defined in class "scala.tools.nsc.doc.DocGenerator"
     "The recognised format of comments in source is described in the " & Link(
       "online documentation",
@@ -113,7 +113,7 @@ object scaladoc extends Command {
               "built-in (" & Mono("\"boot\"") & ") search path.",
             "The default class path is the current directory. Setting the " &
               Mono("CLASSPATH") & " variable or using the " & Mono(
-              "-classpath") & " " &
+                "-classpath") & " " &
               "command-line option overrides that default, so if you want to " &
               "include the current directory in the search path, you must " &
               "include " & Mono("\".\"") & " in the new settings."
@@ -126,7 +126,7 @@ object scaladoc extends Command {
           CmdOption("bootclasspath", Argument("path")),
           "Override location of bootstrap class files (where to find the " &
             "standard built-in classes, such as \"" & Mono(
-            "scala.List") & "\")."
+              "scala.List") & "\")."
         ),
         Definition(
           CmdOption("extdirs", Argument("dirs")),
@@ -138,7 +138,7 @@ object scaladoc extends Command {
             "The default value is platform-specific (Linux: " & Mono(
               "\"UTF8\"") &
               ", Windows: " & Mono(
-              "\"Cp1252\"") & "). Executing the following " &
+                "\"Cp1252\"") & "). Executing the following " &
               "code in the Scala interpreter will return the default value " &
               "on your system:",
             MBold("    scala> ") &

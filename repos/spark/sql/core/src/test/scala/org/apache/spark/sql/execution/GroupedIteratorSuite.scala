@@ -47,7 +47,7 @@ class GroupedIteratorSuite extends SparkFunSuite {
     assert(
       result ==
         1 -> Seq(input(0), input(1)) ::
-          2 -> Seq(input(2)) :: Nil)
+        2 -> Seq(input(2)) :: Nil)
   }
 
   test("group by 2 columns") {
@@ -77,9 +77,9 @@ class GroupedIteratorSuite extends SparkFunSuite {
     assert(
       result ==
         (1, 2L, Seq(input(0), input(1))) ::
-          (1, 3L, Seq(input(2))) ::
-          (2, 1L, Seq(input(3))) ::
-          (3, 2L, Seq(input(4))) :: Nil)
+        (1, 3L, Seq(input(2))) ::
+        (2, 1L, Seq(input(3))) ::
+        (3, 2L, Seq(input(4))) :: Nil)
   }
 
   test("do nothing to the value iterator") {

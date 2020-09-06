@@ -12,8 +12,8 @@ object Donation extends LilaController {
       Env.donation.api.list(100) zip
         Env.donation.api.top(10) zip
         Env.donation.api.progress map { case ((donations, top), progress) =>
-        views.html.donation.index(doc, resolver, donations, top, progress)
-      }
+          views.html.donation.index(doc, resolver, donations, top, progress)
+        }
     }
   }
 

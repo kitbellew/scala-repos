@@ -1698,7 +1698,7 @@ object ResolveUpCast extends Rule[LogicalPlan] {
     throw new AnalysisException(s"Cannot up cast ${from.sql} from " +
       s"${from.dataType.simpleString} to ${to.simpleString} as it may truncate\n" +
       "The type path of the target object is:\n" + walkedTypePath
-      .mkString("", "\n", "\n") +
+        .mkString("", "\n", "\n") +
       "You can either add an explicit cast to the input data or choose a higher precision " +
       "type of the field in the target object")
   }

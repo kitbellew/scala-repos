@@ -77,8 +77,8 @@ private[tournament] final class TournamentApi(
             pairings.map { pairing =>
               PairingRepo.insert(pairing) >>
                 autoPairing(tour, pairing) addEffect { game =>
-                sendTo(tour.id, StartGame(game))
-              }
+                  sendTo(tour.id, StartGame(game))
+                }
             }.sequenceFu >> featureOneOf(tour, pairings, ranking) >>- {
               lila.mon.tournament.pairing.create(pairings.size)
             }
@@ -99,21 +99,21 @@ private[tournament] final class TournamentApi(
       ranking: Ranking): Funit =
     tour.featuredId.ifTrue(pairings.nonEmpty) ?? PairingRepo.byId map2
       RankedPairing(ranking) map (_.flatten) flatMap { curOption =>
-      pairings
-        .flatMap(RankedPairing(ranking))
-        .sortBy(_.bestRank)
-        .headOption ?? { bestCandidate =>
-        def switch = TournamentRepo.setFeaturedGameId(
-          tour.id,
-          bestCandidate.pairing.gameId)
-        curOption.filter(_.pairing.playing) match {
-          case Some(current) if bestCandidate.bestRank < current.bestRank =>
-            switch
-          case Some(_) => funit
-          case _       => switch
+        pairings
+          .flatMap(RankedPairing(ranking))
+          .sortBy(_.bestRank)
+          .headOption ?? { bestCandidate =>
+          def switch = TournamentRepo.setFeaturedGameId(
+            tour.id,
+            bestCandidate.pairing.gameId)
+          curOption.filter(_.pairing.playing) match {
+            case Some(current) if bestCandidate.bestRank < current.bestRank =>
+              switch
+            case Some(_) => funit
+            case _       => switch
+          }
         }
       }
-    }
 
   def tourAndRanks(game: Game): Fu[Option[TourAndRanks]] = ~ {
     for {
@@ -344,9 +344,9 @@ private[tournament] final class TournamentApi(
     TournamentRepo.publicCreatedSorted(6 * 60) zip
       TournamentRepo.publicStarted zip
       TournamentRepo.finishedNotable(10) map {
-      case ((created, started), finished) =>
-        VisibleTournaments(created, started, finished)
-    }
+        case ((created, started), finished) =>
+          VisibleTournaments(created, started, finished)
+      }
 
   def playerInfo(tourId: String, userId: String): Fu[Option[PlayerInfoExt]] =
     UserRepo named userId flatMap {

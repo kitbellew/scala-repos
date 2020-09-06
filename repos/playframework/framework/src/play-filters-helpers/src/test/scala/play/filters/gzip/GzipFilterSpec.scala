@@ -71,10 +71,10 @@ object GzipFilterSpec extends PlaySpecification with DataTables {
         "gzip;q=0.6, identity;q=0.5" !! gzipped |
         "*;q=0.7, gzip;q=0.6, identity;q=0.4" !! gzipped |
         "" !! plain |> { (codings, expectedEncoding) =>
-        header(
-          CONTENT_ENCODING,
-          requestAccepting(codings)) must be equalTo (expectedEncoding)
-      }
+          header(
+            CONTENT_ENCODING,
+            requestAccepting(codings)) must be equalTo (expectedEncoding)
+        }
     }
 
     "not gzip empty responses" in withApplication(Ok) { implicit mat =>

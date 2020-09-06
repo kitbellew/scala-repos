@@ -19,21 +19,21 @@ trait QaController extends LilaController {
       fetchPopular zip
       api.relation.questions(q, 10) zip
       (QaAuth.canAsk ?? { forms.anyCaptcha map (_.some) }) flatMap {
-      case (((answers, popular), related), captcha) =>
-        fuccess {
-          Ok(
-            views.html.qa.questionShow(
-              q,
-              answers,
-              popular,
-              related,
-              answerForm =
-                if (QaAuth canAnswer q) answerForm orElse Some(forms.answer)
-                else None,
-              captcha = captcha))
-        }
-      case _ => notFound
-    }
+        case (((answers, popular), related), captcha) =>
+          fuccess {
+            Ok(
+              views.html.qa.questionShow(
+                q,
+                answers,
+                popular,
+                related,
+                answerForm =
+                  if (QaAuth canAnswer q) answerForm orElse Some(forms.answer)
+                  else None,
+                captcha = captcha))
+          }
+        case _ => notFound
+      }
 
   protected def renderN00b(implicit ctx: Context) = fetchPopular map {
     popular =>

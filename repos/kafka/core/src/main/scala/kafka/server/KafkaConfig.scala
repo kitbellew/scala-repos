@@ -1947,7 +1947,7 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
       BrokerCompressionCodec.isValid(compressionType),
       "compression.type : " + compressionType + " is not valid." +
         " Valid options are " + BrokerCompressionCodec.brokerCompressionOptions
-        .mkString(",")
+          .mkString(",")
     )
     require(
       advertisedListeners.keySet.contains(interBrokerSecurityProtocol),

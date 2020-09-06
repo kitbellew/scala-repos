@@ -177,9 +177,9 @@ object Finagle extends Build {
     settings = Defaults.coreDefaultSettings ++
       sharedSettings ++
       unidocSettings ++ Seq(
-      unidocProjectFilter in (ScalaUnidoc, unidoc) :=
-        inAnyProject -- inProjects(finagleExample)
-    )
+        unidocProjectFilter in (ScalaUnidoc, unidoc) :=
+          inAnyProject -- inProjects(finagleExample)
+      )
   ) aggregate (
     // Core, support.
     finagleCore, finagleStats, finagleNetty4,

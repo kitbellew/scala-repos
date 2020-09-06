@@ -718,9 +718,9 @@ class ScalaFunctionParameterInfoHandler
                     for (constr <- clazz.functions
                       if !constr.isInstanceOf[ScPrimaryConstructor] &&
                         constr.isConstructor && ((constr.clauses match {
-                        case Some(x) => x.clauses.length
-                        case None    => 1
-                      }) > i))
+                          case Some(x) => x.clauses.length
+                          case None    => 1
+                        }) > i))
                       res += ((new PhysicalSignature(constr, subst), i))
                   case clazz: PsiClass if clazz.isAnnotationType =>
                     val resulting: (AnnotationParameters, Int) =

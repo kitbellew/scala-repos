@@ -232,28 +232,29 @@ class SearchService(
                 sourceUri,
                 method.line)
             } ::: clazz.fields.toList.filter(_.access == Public).map { field =>
-            val internal = field.clazz.internalString
-            FqnSymbol(
-              None,
-              name,
-              path,
-              field.name.fqnString,
-              None,
-              Some(internal),
-              sourceUri,
-              clazz.source.line)
-          } ::: depickler.getTypeAliases.toList.filter(_.access == Public).map {
-            rawType =>
+              val internal = field.clazz.internalString
               FqnSymbol(
                 None,
                 name,
                 path,
-                rawType.fqnString,
+                field.name.fqnString,
                 None,
-                None,
+                Some(internal),
                 sourceUri,
-                None)
-          }
+                clazz.source.line)
+            } ::: depickler.getTypeAliases.toList
+              .filter(_.access == Public)
+              .map { rawType =>
+                FqnSymbol(
+                  None,
+                  name,
+                  path,
+                  rawType.fqnString,
+                  None,
+                  None,
+                  sourceUri,
+                  None)
+              }
 
     }
   }.filterNot(sym => ignore.exists(sym.fqn.contains))

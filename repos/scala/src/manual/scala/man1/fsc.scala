@@ -120,7 +120,7 @@ object fsc extends Command {
         MBold("JAVA_HOME"),
         "Specify JDK/JRE home directory. This directory is used to locate " &
           "the " & MBold("java") & " command unless " & MBold(
-          "JAVACMD") & " variable set."
+            "JAVACMD") & " variable set."
       ),
       Definition(
         MBold("JAVA_OPTS"),

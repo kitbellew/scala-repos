@@ -119,8 +119,8 @@ private[puzzle] final class PuzzleApi(
               BSONDocument(
                 "$set" -> BSONDocument(
                   Puzzle.BSONFields.vote -> p2.vote))) map { case _ =>
-            p2 -> a2
-          }
+              p2 -> a2
+            }
       }
 
     def add(a: Attempt) = attemptColl insert a void

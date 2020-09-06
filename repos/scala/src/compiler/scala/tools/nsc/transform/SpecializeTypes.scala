@@ -384,11 +384,11 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
       newTermName(
         base.toString + "$"
           + "m" + ms + types1
-          .map(t => abbrvTag(t.typeSymbol))
-          .mkString("", "", "")
+            .map(t => abbrvTag(t.typeSymbol))
+            .mkString("", "", "")
           + "c" + cs + types2
-          .map(t => abbrvTag(t.typeSymbol))
-          .mkString("", "", "$sp"))
+            .map(t => abbrvTag(t.typeSymbol))
+            .mkString("", "", "$sp"))
     }
   )
 

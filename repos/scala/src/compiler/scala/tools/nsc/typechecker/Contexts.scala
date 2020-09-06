@@ -807,9 +807,9 @@ trait Contexts { self: Analyzer =>
             val res =
               isSubClassOrCompanion(pre.widen.typeSymbol, c.owner) ||
                 c.owner.isModuleClass &&
-                  isSubClassOrCompanion(
-                    pre.widen.typeSymbol,
-                    c.owner.linkedClassOfClass)
+                isSubClassOrCompanion(
+                  pre.widen.typeSymbol,
+                  c.owner.linkedClassOfClass)
             if (!res)
               lastAccessCheckDetails =
                 "\n Access to protected " + target + " not permitted because" +

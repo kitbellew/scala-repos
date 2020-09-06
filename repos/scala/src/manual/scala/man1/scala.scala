@@ -39,7 +39,7 @@ object scala extends Command {
         "How to execute " & Argument("torun") & ", if it is present. " &
           "Options for " & Argument("how") & " are " & Mono("guess") &
           " (the default), " & Mono("script") & ", " & Mono(
-          "jar") & ", and " & Mono("object") &
+            "jar") & ", and " & Mono("object") &
           "."
       ),
       Definition(
@@ -55,9 +55,9 @@ object scala extends Command {
           "later executions of the same script.  When running a script, " &
           "save the compiled version in a file with the same name as the " &
           "script but with an extension of " & Mono(
-          ".jar") & ".  On subsequent " &
+            ".jar") & ".  On subsequent " &
           "runs of the same script, the pre-compiled " & Mono(
-          ".jar") & " file " &
+            ".jar") & " file " &
           "will be used if it is newer than the script file."
       ),
       Definition(
@@ -162,7 +162,7 @@ object scala extends Command {
         MBold("JAVA_HOME"),
         "Specify JDK/JRE home directory. This directory is used to locate " &
           "the " & MBold("java") & " command unless " & MBold(
-          "JAVACMD") & " variable set."
+            "JAVACMD") & " variable set."
       ),
       Definition(
         MBold("JAVA_OPTS"),

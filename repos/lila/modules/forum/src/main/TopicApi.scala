@@ -73,14 +73,14 @@ private[forum] final class TopicApi(
             lila.hub.actorApi.shutup.RecordTeamForumMessage(userId, text),
             lila.hub.actorApi.shutup.RecordPublicForumMessage(userId, text))
         } >>- {
-        (ctx.userId ifFalse post.troll) ?? { userId =>
-          timeline ! Propagate(
-            ForumPost(userId, topic.id.some, topic.name, post.id)).|>(prop =>
-            post.isStaff
-              .fold(prop toStaffFriendsOf userId, prop toFollowersOf userId))
-        }
-        lila.mon.forum.post.create()
-      } inject topic
+          (ctx.userId ifFalse post.troll) ?? { userId =>
+            timeline ! Propagate(
+              ForumPost(userId, topic.id.some, topic.name, post.id)).|>(prop =>
+              post.isStaff
+                .fold(prop toStaffFriendsOf userId, prop toFollowersOf userId))
+          }
+          lila.mon.forum.post.create()
+        } inject topic
     }
 
   def paginator(

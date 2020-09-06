@@ -163,8 +163,8 @@ private object ScalaMavenImporter {
     def localPathTo(id: MavenId) =
       project.getLocalRepository / id.getGroupId.replaceAll("\\.", "/") /
         id.getArtifactId / id.getVersion / "%s-%s.jar".format(
-        id.getArtifactId,
-        id.getVersion)
+          id.getArtifactId,
+          id.getVersion)
   }
 
   implicit class RichFile(val file: File) extends AnyVal {

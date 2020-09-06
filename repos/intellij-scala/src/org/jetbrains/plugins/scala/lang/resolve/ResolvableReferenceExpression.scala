@@ -554,7 +554,7 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
       case Success(ScTypePolymorphicType(internal, tp), _)
           if tp.nonEmpty &&
             !internal.isInstanceOf[ScMethodType] && !internal
-            .isInstanceOf[ScUndefinedType] /* optimization */ =>
+              .isInstanceOf[ScUndefinedType] /* optimization */ =>
         processType(internal, reference, e, processor)
         if (processor.candidates.nonEmpty) return processor
       case _ =>

@@ -72,7 +72,7 @@ object scalac extends Command {
           CmdOption("bootclasspath", Argument("path")),
           "Override location of bootstrap class files (where to find the " &
             "standard built-in classes, such as \"" & Mono(
-            "scala.List") & "\")."
+              "scala.List") & "\")."
         ),
         Definition(
           CmdOption("classpath", Argument("path")),
@@ -83,7 +83,7 @@ object scalac extends Command {
               "built-in (" & Mono("\"boot\"") & ") search path.",
             "The default class path is the current directory. Setting the " &
               Mono("CLASSPATH") & " variable or using the " & Mono(
-              "-classpath") & " " &
+                "-classpath") & " " &
               "command-line option overrides that default, so if you want to " &
               "include the current directory in the search path, you must " &
               "include " & Mono("\".\"") & " in the new settings."
@@ -104,7 +104,7 @@ object scalac extends Command {
             "The default value is platform-specific (Linux: " & Mono(
               "\"UTF8\"") &
               ", Windows: " & Mono(
-              "\"Cp1252\"") & "). Executing the following " &
+                "\"Cp1252\"") & "). Executing the following " &
               "code in the Scala interpreter will return the default value " &
               "on your system:",
             MBold("    scala> ") &
@@ -421,7 +421,7 @@ object scalac extends Command {
         MBold("JAVA_HOME"),
         "Specify JDK/JRE home directory. This directory is used to locate " &
           "the " & MBold("java") & " command unless " & MBold(
-          "JAVACMD") & " variable set."
+            "JAVACMD") & " variable set."
       ),
       Definition(
         MBold("JAVA_OPTS"),

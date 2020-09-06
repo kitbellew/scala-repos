@@ -633,7 +633,7 @@ object ScalaJSPluginInternal {
         val code = {
           "var __ScalaJSEnv = (typeof __ScalaJSEnv === \"object\" && __ScalaJSEnv) ? __ScalaJSEnv : {};\n" +
             "__ScalaJSEnv.javaSystemProperties = {" + formattedProps.mkString(
-            ", ") + "};\n"
+              ", ") + "};\n"
         }
         Seq(ResolvedJSDependency.minimal(
           new MemVirtualJSFile("setJavaSystemProperties.js").withContent(code)))

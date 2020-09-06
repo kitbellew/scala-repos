@@ -40,9 +40,9 @@ class HasManyThrough[
         "SELECT DISTINCT " + otherSingleton._dbTableNameLC + ".* FROM " + otherSingleton._dbTableNameLC + "," +
           through._dbTableNameLC + " WHERE " +
           otherSingleton._dbTableNameLC + "." + otherSingleton
-          .indexedField(otherSingleton.asInstanceOf[To])
-          .openOrThrowException("legacy code")
-          ._dbColumnNameLC + " = " +
+            .indexedField(otherSingleton.asInstanceOf[To])
+            .openOrThrowException("legacy code")
+            ._dbColumnNameLC + " = " +
           through._dbTableNameLC + "." + throughToField._dbColumnNameLC + " AND " +
           through._dbTableNameLC + "." + throughFromField._dbColumnNameLC + " = ?"
       DB.prepareStatement(query, conn) { st =>

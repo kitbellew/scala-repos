@@ -834,7 +834,7 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
           val spaceInsideOneLineMethod =
             scalaSettings.SPACES_IN_ONE_LINE_BLOCKS &&
               rightNode.getTreeParent.getTreeParent != null && rightNode.getTreeParent.getTreeParent.getPsi
-              .isInstanceOf[ScFunction]
+                .isInstanceOf[ScFunction]
           val spaceInsideClosure =
             scalaSettings.SPACE_INSIDE_CLOSURE_BRACES && (leftNode.getElementType match {
               case ScalaElementTypes.FUNCTION_EXPR => true
@@ -938,9 +938,9 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
         case b: ScBlockExpr
             if scalaSettings.KEEP_ONE_LINE_LAMBDAS_IN_ARG_LIST &&
               !getText(b.getNode, fileText).contains('\n') && (rightPsi
-              .isInstanceOf[ScCaseClauses] && b.getParent != null &&
-              b.getParent.isInstanceOf[ScArgumentExprList] || rightPsi
-              .isInstanceOf[ScFunctionExpr]) =>
+                .isInstanceOf[ScCaseClauses] && b.getParent != null &&
+                b.getParent.isInstanceOf[ScArgumentExprList] || rightPsi
+                  .isInstanceOf[ScFunctionExpr]) =>
           return Spacing.createDependentLFSpacing(
             1,
             1,

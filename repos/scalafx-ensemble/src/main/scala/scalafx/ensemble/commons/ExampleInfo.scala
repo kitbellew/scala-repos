@@ -161,7 +161,7 @@ class ExampleInfo(exampleName: String, exampleGroupName: String) {
       "\n\n" +
       "  stage = new JFXApp.PrimaryStage {\n" +
       "    title = \"" + formatAddSpaces(
-      extractSampleName(sourceRaw)) + " Example\"\n" +
+        extractSampleName(sourceRaw)) + " Example\"\n" +
       (if (stageProperties.isEmpty) ""
        else stageProperties.mkString("    ", "\n    ", "\n")) +
       "    scene = new Scene {\n" +

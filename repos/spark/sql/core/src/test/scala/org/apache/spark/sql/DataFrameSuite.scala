@@ -1433,8 +1433,9 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     val df9 =
       Seq((1L, Tuple4(1L, Tuple4(1L, 2L, 3L, 4L), 2L, 3L), 20.0, 1))
         .toDF("c1", "c2", "c3", "c4")
-    assert(df9.toString ===
-      "[c1: bigint, c2: struct<_1: bigint," +
+    assert(
+      df9.toString ===
+        "[c1: bigint, c2: struct<_1: bigint," +
         " _2: struct<_1: bigint," +
         " _2: bigint ... 2 more fields> ... 2 more fields> ... 2 more fields]")
 

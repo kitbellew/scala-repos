@@ -230,10 +230,10 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
       (actual \ "consumes" must_== expected \ "consumes") and
       (actual \ "produces" must_== expected \ "produces") and
       (actual \ "resourcePath" must_== expected \ "resourcePath") and {
-      val ja = actual \ "apis" \ "path" \\ classOf[JString]
-      (ja must haveSize(operationPaths.size)) and
-        (ja must containTheSameElementsAs(operationPaths))
-    }
+        val ja = actual \ "apis" \ "path" \\ classOf[JString]
+        (ja must haveSize(operationPaths.size)) and
+          (ja must containTheSameElementsAs(operationPaths))
+      }
   }
 
   def verifyOperation(actual: JValue, expected: JValue, name: String) = {
@@ -502,7 +502,7 @@ class StoreApi(val swagger: Swagger)
       responseMessages (
         StringResponseMessage(400, "Invalid ID supplied"),
         StringResponseMessage(404, "Order not found")
-  ))
+      ))
 
   get("/order/:orderId", operation(getOrderOperation)) {
     ""
@@ -515,7 +515,7 @@ class StoreApi(val swagger: Swagger)
       responseMessages (
         StringResponseMessage(400, "Invalid ID supplied"),
         StringResponseMessage(404, "Order not found")
-  ))
+      ))
 
   delete("/order/:orderId", operation(deleteOrderOperation)) {
     NoContent()

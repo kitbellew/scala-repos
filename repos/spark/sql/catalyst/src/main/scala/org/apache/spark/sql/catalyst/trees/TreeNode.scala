@@ -608,8 +608,8 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
       fieldNames.length == fieldValues.length,
       s"${getClass.getSimpleName} fields: " +
         fieldNames.mkString(", ") + s", values: " + fieldValues
-        .map(_.toString)
-        .mkString(", ")
+          .map(_.toString)
+          .mkString(", ")
     )
 
     fieldNames

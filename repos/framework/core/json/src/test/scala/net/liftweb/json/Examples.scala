@@ -208,11 +208,11 @@ object Examples {
   val personDSL =
     ("person" ->
       ("name" -> "Joe") ~
-        ("age" -> 35) ~
-        ("spouse" ->
-          ("person" ->
-            ("name" -> "Marilyn") ~
-              ("age" -> 33))))
+      ("age" -> 35) ~
+      ("spouse" ->
+        ("person" ->
+          ("name" -> "Marilyn") ~
+          ("age" -> 33))))
 
   val objArray =
     """

@@ -2023,7 +2023,7 @@ class LiftSession(
             {ret}
           </form> %
             checkMultiPart(attrs) % LiftRules.formAttrs.vend.foldLeft[MetaData](
-            Null)((base, name) => checkAttr(name, attrs, base))
+              Null)((base, name) => checkAttr(name, attrs, base))
 
         case _ => ret
       }

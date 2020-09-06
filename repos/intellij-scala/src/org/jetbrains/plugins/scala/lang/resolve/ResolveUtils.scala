@@ -365,8 +365,8 @@ object ResolveUtils {
                           .getOrElse(null: PsiElement),
                         place,
                         false) || (td.isInstanceOf[ScObject] &&
-                      td.asInstanceOf[ScObject]
-                        .isPackageObject && processPackage(td.qualifiedName))
+                        td.asInstanceOf[ScObject]
+                          .isPackageObject && processPackage(td.qualifiedName))
                   case pack: PsiPackage =>
                     val packageName = pack.getQualifiedName
                     processPackage(packageName)

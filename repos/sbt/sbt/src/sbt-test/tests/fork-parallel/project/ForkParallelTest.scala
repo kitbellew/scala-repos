@@ -25,7 +25,7 @@ object ForkParallelTest extends Build {
           if (!(file("max-concurrent-tests_3").exists() || file(
               "max-concurrent-tests_4").exists() ||
               file("max-concurrent-tests_" + (nbProc - 1)).exists() || file(
-              "max-concurrent-tests_" + nbProc).exists())) {
+                "max-concurrent-tests_" + nbProc).exists())) {
             sys.error("Forked tests were not executed in parallel!")
           }
         }

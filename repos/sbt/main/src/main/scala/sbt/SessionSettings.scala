@@ -370,7 +370,7 @@ save, save-all
       (token("list-all" ^^^ new Print(true)) | token(
         "list" ^^^ new Print(false)) | token("clear" ^^^ new Clear(false)) |
         token("save-all" ^^^ new Save(true)) | token(
-        "save" ^^^ new Save(false)) | token("clear-all" ^^^ new Clear(true)) |
+          "save" ^^^ new Save(false)) | token("clear-all" ^^^ new Clear(true)) |
         remove)
 
   lazy val remove = token("remove") ~> token(Space) ~> natSelect.map(ranges =>

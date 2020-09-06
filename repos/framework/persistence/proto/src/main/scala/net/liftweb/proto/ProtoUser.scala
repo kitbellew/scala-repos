@@ -1016,7 +1016,7 @@ trait ProtoUser {
         user.resetUniqueId().save
         val resetLink = S.hostAndPath +
           passwordResetPath.mkString("/", "/", "/") + urlEncode(
-          user.getUniqueId())
+            user.getUniqueId())
 
         val email: String = user.getEmail
 

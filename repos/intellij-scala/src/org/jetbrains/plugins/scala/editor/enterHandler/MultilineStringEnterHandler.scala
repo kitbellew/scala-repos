@@ -170,7 +170,7 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
                 (!hasMarginChars(
                   element,
                   mChar.toString) && lines.length > 3) || needAddByType(
-                literal) =>
+                  literal) =>
             marginCharFromSettings
           case _ => None
         }

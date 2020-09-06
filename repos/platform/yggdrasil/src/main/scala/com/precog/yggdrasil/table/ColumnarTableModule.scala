@@ -1082,9 +1082,9 @@ trait ColumnarTableModule[M[+_]]
           "left: " + lbuf.toArray.mkString("[", ",", "]") + "\n" +
             "right: " + rbuf.toArray.mkString("[", ",", "]") + "\n" +
             "both: " + (leqbuf.toArray zip reqbuf.toArray).mkString(
-            "[",
-            ",",
-            "]")
+              "[",
+              ",",
+              "]")
         }
       }
 

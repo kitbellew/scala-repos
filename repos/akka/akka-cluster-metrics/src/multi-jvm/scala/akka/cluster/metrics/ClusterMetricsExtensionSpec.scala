@@ -112,18 +112,18 @@ abstract class ClusterMetricsEnabledSpec
   "Cluster metrics" must {
     "periodically collect metrics on each node, publish to the event stream, " +
       "and gossip metrics around the node ring" in within(60 seconds) {
-      awaitClusterUp(roles: _*)
-      enterBarrier("cluster-started")
-      awaitAssert(
-        clusterView.members.count(_.status == MemberStatus.Up) should ===(
-          roles.size))
-      // TODO ensure same contract
-      //awaitAssert(clusterView.clusterMetrics.size should ===(roles.size))
-      awaitAssert(metricsView.clusterMetrics.size should ===(roles.size))
-      val collector = MetricsCollector(cluster.system)
-      collector.sample.metrics.size should be > (3)
-      enterBarrier("after")
-    }
+        awaitClusterUp(roles: _*)
+        enterBarrier("cluster-started")
+        awaitAssert(
+          clusterView.members.count(_.status == MemberStatus.Up) should ===(
+            roles.size))
+        // TODO ensure same contract
+        //awaitAssert(clusterView.clusterMetrics.size should ===(roles.size))
+        awaitAssert(metricsView.clusterMetrics.size should ===(roles.size))
+        val collector = MetricsCollector(cluster.system)
+        collector.sample.metrics.size should be > (3)
+        enterBarrier("after")
+      }
     "reflect the correct number of node metrics in cluster view" in within(
       30 seconds) {
       runOn(node2) {

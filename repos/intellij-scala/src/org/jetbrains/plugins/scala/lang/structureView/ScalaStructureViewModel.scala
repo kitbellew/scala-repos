@@ -43,7 +43,7 @@ class ScalaStructureViewModel(
   def isAlwaysLeaf(element: StructureViewTreeElement): Boolean =
     !(isAlwaysShowsPlus(element) ||
       element.isInstanceOf[TestStructureViewElement] || element
-      .isInstanceOf[ScalaValueStructureViewElement])
+        .isInstanceOf[ScalaValueStructureViewElement])
 
   def isAlwaysShowsPlus(element: StructureViewTreeElement): Boolean = {
     element match {

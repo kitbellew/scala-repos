@@ -347,7 +347,7 @@ object WorksheetSourceProcessor {
           fun, {
             objectRes append (printMethodName + "(\"" + fun.getName + ": \" + " + macroPrinterName +
               s".printGeneric({import $instanceName._ ;" + fun.getText
-              .stripPrefix(hadMods) + " })" + eraseClassName + ")\n")
+                .stripPrefix(hadMods) + " })" + eraseClassName + ")\n")
           }
         )
       case tpeDef: ScTypeDefinition =>

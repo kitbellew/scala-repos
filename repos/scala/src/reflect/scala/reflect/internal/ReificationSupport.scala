@@ -1309,7 +1309,7 @@ trait ReificationSupport { self: SymbolTable =>
               pf: TypeTree)
             if pf.tpe != null && pf.tpe.typeSymbol.eq(PartialFunctionClass) &&
               abspf.tpe != null && abspf.tpe.typeSymbol.eq(
-              AbstractPartialFunctionClass) &&
+                AbstractPartialFunctionClass) &&
               ser.tpe != null && ser.tpe.typeSymbol.eq(SerializableClass) &&
               clsMods.hasFlag(FINAL) && clsMods.hasFlag(SYNTHETIC) =>
           Some(cases)

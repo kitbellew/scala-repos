@@ -635,7 +635,7 @@ object ScalaPsiUtil {
       case ScTypePolymorphicType(internal, typeParam)
           if typeParam.nonEmpty &&
             !internal.isInstanceOf[ScMethodType] && !internal
-            .isInstanceOf[ScUndefinedType] =>
+              .isInstanceOf[ScUndefinedType] =>
         if (!isDynamic || approveDynamic(
             internal,
             call.getProject,

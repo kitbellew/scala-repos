@@ -518,7 +518,7 @@ class CheckpointSuite
       partitionAfterCheckpoint.partitions(0).getClass !=
         partitionBeforeCheckpoint.partitions(0).getClass &&
         partitionAfterCheckpoint.partitions(1).getClass !=
-          partitionBeforeCheckpoint.partitions(1).getClass,
+        partitionBeforeCheckpoint.partitions(1).getClass,
       "ZippedPartitionsRDD partition 0 (or 1) not updated after parent RDDs are checkpointed"
     )
   }

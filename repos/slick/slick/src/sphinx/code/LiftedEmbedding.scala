@@ -501,11 +501,12 @@ object LiftedEmbedding extends App {
             db.run(
               salesPerDay.schema.create >>
                 (salesPerDay += ((new Date(999999999), 999))) >> {
-                //#simpleliteral
-                val current_date = SimpleLiteral[java.sql.Date]("CURRENT_DATE")
-                salesPerDay.map(_ => current_date)
-                //#simpleliteral
-              }.result.head
+                  //#simpleliteral
+                  val current_date =
+                    SimpleLiteral[java.sql.Date]("CURRENT_DATE")
+                  salesPerDay.map(_ => current_date)
+                  //#simpleliteral
+                }.result.head
             ),
             Duration.Inf
           )

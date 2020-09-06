@@ -58,10 +58,10 @@ final class Api(
             else t
           sendUnlessBlocked(thread, fromMod) >>-
             updateUser(invited) >>- {
-            val text = s"${data.subject} ${data.text}"
-            shutup ! lila.hub.actorApi.shutup
-              .RecordPrivateMessage(me.id, invited.id, text)
-          } inject thread
+              val text = s"${data.subject} ${data.text}"
+              shutup ! lila.hub.actorApi.shutup
+                .RecordPrivateMessage(me.id, invited.id, text)
+            } inject thread
         }
       }
     }

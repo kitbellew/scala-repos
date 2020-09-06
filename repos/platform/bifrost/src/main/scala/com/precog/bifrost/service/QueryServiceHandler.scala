@@ -306,7 +306,7 @@ class SyncQueryServiceHandler(
                         JArray(serverErrors.toList map (_.value)).renderCompact,
                         JArray(
                           serverWarnings.toList map (_.value)).renderCompact
-                    )
+                      )
                     Some((CharBuffer.wrap(suffix), None))
                 }
             }

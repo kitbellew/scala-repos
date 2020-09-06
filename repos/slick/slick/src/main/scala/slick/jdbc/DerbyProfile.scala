@@ -80,7 +80,7 @@ trait DerbyProfile extends JdbcProfile {
       - RelationalCapabilities.pagingNested
       - JdbcCapabilities.returnInsertOther
       - SqlCapabilities.sequenceCurr
-    // Cycling is broken in Derby. It cycles to the start value instead of min or max
+      // Cycling is broken in Derby. It cycles to the start value instead of min or max
       - SqlCapabilities.sequenceCycle
       - RelationalCapabilities.zip
       - RelationalCapabilities.joinFull

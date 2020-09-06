@@ -147,8 +147,8 @@ class ExceptionsTest extends FunSuite with MockitoSugar {
     assert(
       ex.getMessage ==
         "No hosts are available for /s/cool/story, " +
-          s"Dtab.base=[${Dtab.base.show}], " +
-          "Dtab.local=[/foo=>/$/com.twitter.butt]. " +
-          "Remote Info: Not Available")
+        s"Dtab.base=[${Dtab.base.show}], " +
+        "Dtab.local=[/foo=>/$/com.twitter.butt]. " +
+        "Remote Info: Not Available")
   }
 }

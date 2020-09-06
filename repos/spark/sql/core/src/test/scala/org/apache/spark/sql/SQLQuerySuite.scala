@@ -2020,8 +2020,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
         Row(2, 1),
         Row(1, 2)) ::
         Row(Row(2, 2), Row(2, 2)) :: Row(Row(3, 1), Row(1, 3)) :: Row(
-        Row(3, 2),
-        Row(2, 3)) :: Nil
+          Row(3, 2),
+          Row(2, 3)) :: Nil
     )
     checkAnswer(
       nestedStructData.select($"record.r1"),

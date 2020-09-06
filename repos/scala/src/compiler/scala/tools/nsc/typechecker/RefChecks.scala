@@ -185,12 +185,12 @@ abstract class RefChecks
               "in " + clazz +
                 ", multiple overloaded alternatives of " + haveDefaults.head +
                 " define default arguments" + (
-                if (owners.forall(_ == clazz)) "."
-                else
-                  ".\nThe members with defaults are defined in " + owners
-                    .map(_.fullLocationString)
-                    .mkString("", " and ", ".")
-              )
+                  if (owners.forall(_ == clazz)) "."
+                  else
+                    ".\nThe members with defaults are defined in " + owners
+                      .map(_.fullLocationString)
+                      .mkString("", " and ", ".")
+                )
             )
           }
         }
@@ -881,7 +881,7 @@ abstract class RefChecks
                   false,
                   "there is a deferred declaration of " + infoString(decl) +
                     " which is not implemented in a subclass" + analyzer
-                    .abstractVarMessage(decl))
+                      .abstractVarMessage(decl))
               }
             }
           }

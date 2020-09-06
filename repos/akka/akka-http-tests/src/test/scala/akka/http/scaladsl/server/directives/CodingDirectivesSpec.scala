@@ -474,9 +474,9 @@ class CodingDirectivesSpec extends RoutingSpec with Inside {
     "reject the request if it has a `Content-Encoding: deflate` header but the request is encoded with Gzip" in {
       Post("/", helloGzipped) ~> `Content-Encoding`(deflate) ~>
         decodeRequest { echoRequestContent } ~> check {
-        status shouldEqual BadRequest
-        responseAs[String] shouldEqual "The request's encoding is corrupt"
-      }
+          status shouldEqual BadRequest
+          responseAs[String] shouldEqual "The request's encoding is corrupt"
+        }
     }
   }
 

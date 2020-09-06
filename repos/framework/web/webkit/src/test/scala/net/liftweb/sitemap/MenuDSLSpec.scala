@@ -56,7 +56,7 @@ object MenuDslSpec extends Specification {
         Menu("Foo") / "test" submenus (
           Menu("Bar") / "bar",
           Menu("Bat") / "bat"
-      )
+        )
 
       menu.toMenu.kids.size mustEqual 2
     }
@@ -69,7 +69,7 @@ object MenuDslSpec extends Specification {
             Menu("BarTwo") / "bar" / "two"
           ),
           Menu("Bat") / "bat"
-      )
+        )
 
       menu.toMenu.kids(0).kids.size mustEqual 2
     }
@@ -91,7 +91,7 @@ object MenuDslSpec extends Specification {
             Menu("BarThree") / "bar" / "three"
           ),
           Menu("Bat") / "bat"
-      )
+        )
 
       val complete = SiteMap(menu)
         .kids(0)

@@ -105,7 +105,7 @@ abstract class SFXEnumDelegateSpec[
   protected override def isSpecialMethodName(name: String) =
     super.isImplementation(name) ||
       (name == "values") || (name == "valueOf") || name.startsWith("is") || name
-      .startsWith("get")
+        .startsWith("get")
 
   // Simply it gets the first constant available.
   override protected def getScalaClassInstance = companion.values.toList.head

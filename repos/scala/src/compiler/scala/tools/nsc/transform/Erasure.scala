@@ -87,9 +87,9 @@ abstract class Erasure
   private def isTypeParameterInSig(sym: Symbol, initialSymbol: Symbol) = (
     !sym.isHigherOrderTypeParameter &&
       sym.isTypeParameterOrSkolem && (
-      (initialSymbol.enclClassChain.exists(sym isNestedIn _)) ||
-        (initialSymbol.isMethod && initialSymbol.typeParams.contains(sym))
-    )
+        (initialSymbol.enclClassChain.exists(sym isNestedIn _)) ||
+          (initialSymbol.isMethod && initialSymbol.typeParams.contains(sym))
+      )
   )
 
   // Ensure every '.' in the generated signature immediately follows
@@ -523,12 +523,12 @@ abstract class Erasure
         !member.isMacro &&
           !(other.tpe =:= member.tpe) &&
           !(deconstMap(other.tpe) =:= deconstMap(member.tpe)) && {
-          var e = bridgesScope.lookupEntry(member.name)
-          while ((e ne null) && !((e.sym.tpe =:= otpe) && (bridgeTarget(
-              e.sym) == member)))
-            e = bridgesScope.lookupNextEntry(e)
-          (e eq null)
-        }
+            var e = bridgesScope.lookupEntry(member.name)
+            while ((e ne null) && !((e.sym.tpe =:= otpe) && (bridgeTarget(
+                e.sym) == member)))
+              e = bridgesScope.lookupNextEntry(e)
+            (e eq null)
+          }
       )
       if (!bridgeNeeded)
         return

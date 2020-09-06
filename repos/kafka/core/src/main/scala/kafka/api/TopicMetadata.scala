@@ -53,8 +53,8 @@ case class TopicMetadata(
     2 /* error code */ +
       shortStringLength(topic) +
       4 + partitionsMetadata
-      .map(_.sizeInBytes)
-      .sum /* size and partition data array */
+        .map(_.sizeInBytes)
+        .sum /* size and partition data array */
   }
 
   def writeTo(buffer: ByteBuffer) {

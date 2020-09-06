@@ -12,7 +12,7 @@ object MyBuild extends Build {
       managedClasspath in Provided <<= (classpathTypes, update) map {
         (cpts, report) => Classpaths.managedJars(Provided, cpts, report)
       }
-  )
+    )
 
   def checkTask = InputTask(_ => parser) { result =>
     (

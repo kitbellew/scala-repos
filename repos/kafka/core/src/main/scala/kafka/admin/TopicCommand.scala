@@ -379,8 +379,8 @@ object TopicCommand extends Logging {
         "config",
         "A topic configuration override for the topic being created or altered." +
           "The following is a list of valid configurations: " + nl + LogConfig.configNames
-          .map("\t" + _)
-          .mkString(nl) + nl +
+            .map("\t" + _)
+            .mkString(nl) + nl +
           "See the Kafka documentation for full details on the topic configs."
       )
       .withRequiredArg

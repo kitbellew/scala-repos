@@ -10,7 +10,7 @@ object B extends Build {
       publishTo <<= baseDirectory in ThisBuild apply { base =>
         Some(Resolver.file("file", base / "repo")(Resolver.ivyStylePatterns))
       }
-  )
+    )
   lazy val use =
     Project("use", file("use")) settings (baseSettings: _*) settings (
       libraryDependencies += "org.example" %% "dep" % "1.0",
@@ -22,7 +22,7 @@ object B extends Build {
         val inCache = ((base / "target" / "use-cache") ** "*.jar").get
         assert(inCache.isEmpty, "Cache contained jars: " + inCache)
       }
-  )
+    )
   lazy val baseSettings = Seq(
     autoScalaLibrary := false,
     ivyScala := None,

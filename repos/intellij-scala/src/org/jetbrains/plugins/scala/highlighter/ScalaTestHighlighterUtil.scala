@@ -47,5 +47,5 @@ object ScalaTestHighlighterUtil {
       .getInstance(project)
       .isCustomScalatestSyntaxHighlighting &&
       classFqn.startsWith("org.scalatest") && scalaTestKeywords.contains(
-      methodName)
+        methodName)
 }

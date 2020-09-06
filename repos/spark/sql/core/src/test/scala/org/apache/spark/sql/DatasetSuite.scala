@@ -653,9 +653,9 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
     assert(
       message ==
         "Try to map struct<a:string,b:int> to Tuple3, " +
-          "but failed as the number of fields does not line up.\n" +
-          " - Input schema: struct<a:string,b:int>\n" +
-          " - Target schema: struct<_1:string,_2:int,_3:bigint>")
+        "but failed as the number of fields does not line up.\n" +
+        " - Input schema: struct<a:string,b:int>\n" +
+        " - Target schema: struct<_1:string,_2:int,_3:bigint>")
 
     val message2 = intercept[AnalysisException] {
       ds.as[Tuple1[String]]
@@ -663,9 +663,9 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
     assert(
       message2 ==
         "Try to map struct<a:string,b:int> to Tuple1, " +
-          "but failed as the number of fields does not line up.\n" +
-          " - Input schema: struct<a:string,b:int>\n" +
-          " - Target schema: struct<_1:string>")
+        "but failed as the number of fields does not line up.\n" +
+        " - Input schema: struct<a:string,b:int>\n" +
+        " - Target schema: struct<_1:string>")
   }
 
   test("SPARK-13440: Resolving option fields") {

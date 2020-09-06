@@ -410,9 +410,9 @@ private[hive] class HiveMetastoreCatalog(
             s"Persisting partitioned data source relation $qualifiedTableName into " +
               "Hive metastore in Spark SQL specific format, which is NOT compatible with Hive. " +
               "Input path(s): " + relation.location.paths.mkString(
-              "\n",
-              "\n",
-              "")
+                "\n",
+                "\n",
+                "")
           (None, message)
 
         case (Some(serde), relation: HadoopFsRelation) =>
@@ -420,9 +420,9 @@ private[hive] class HiveMetastoreCatalog(
             s"Persisting data source relation $qualifiedTableName with multiple input paths into " +
               "Hive metastore in Spark SQL specific format, which is NOT compatible with Hive. " +
               s"Input paths: " + relation.location.paths.mkString(
-              "\n",
-              "\n",
-              "")
+                "\n",
+                "\n",
+                "")
           (None, message)
 
         case (Some(serde), _) =>

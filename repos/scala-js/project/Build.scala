@@ -1215,73 +1215,73 @@ object Build extends sbt.Build {
     base = file("test-suite/js"),
     settings = commonSettings ++ myScalaJSSettings ++ testTagSettings ++
       testSuiteCommonSettings(isJSTest = true) ++ Seq(
-      name := "Scala.js test suite",
-      jsDependencies += ProvidedJS / "ScalaJSDefinedTestNatives.js" % "test",
-      scalaJSSemantics ~= (_.withRuntimeClassName(_.fullName match {
-        case "org.scalajs.testsuite.compiler.ReflectionTest$RenamedTestClass" =>
-          "renamed.test.Class"
-        case fullName =>
-          fullName
-      })),
-      /* Generate a scala source file that throws exceptions in
-       * various places (while attaching the source line to the
-       * exception). When we catch the exception, we can then
-       * compare the attached source line and the source line
-       * calculated via the source maps.
-       *
-       * see test-suite/src/test/resources/SourceMapTestTemplate.scala
-       */
-      sourceGenerators in Test <+= Def.task {
-        val dir = (sourceManaged in Test).value
-        IO.createDirectory(dir)
+        name := "Scala.js test suite",
+        jsDependencies += ProvidedJS / "ScalaJSDefinedTestNatives.js" % "test",
+        scalaJSSemantics ~= (_.withRuntimeClassName(_.fullName match {
+          case "org.scalajs.testsuite.compiler.ReflectionTest$RenamedTestClass" =>
+            "renamed.test.Class"
+          case fullName =>
+            fullName
+        })),
+        /* Generate a scala source file that throws exceptions in
+         * various places (while attaching the source line to the
+         * exception). When we catch the exception, we can then
+         * compare the attached source line and the source line
+         * calculated via the source maps.
+         *
+         * see test-suite/src/test/resources/SourceMapTestTemplate.scala
+         */
+        sourceGenerators in Test <+= Def.task {
+          val dir = (sourceManaged in Test).value
+          IO.createDirectory(dir)
 
-        val template = IO.read((resourceDirectory in Test).value /
-          "SourceMapTestTemplate.scala")
+          val template = IO.read((resourceDirectory in Test).value /
+            "SourceMapTestTemplate.scala")
 
-        def lineNo(cs: CharSequence) =
-          (0 until cs.length).count(i => cs.charAt(i) == '\n') + 1
+          def lineNo(cs: CharSequence) =
+            (0 until cs.length).count(i => cs.charAt(i) == '\n') + 1
 
-        var i = 0
-        val pat = "/\\*{2,3}/".r
-        val replaced = pat.replaceAllIn(
-          template,
-          { mat =>
-            val lNo = lineNo(mat.before)
-            val res =
-              if (mat.end - mat.start == 5)
-                // matching a /***/
-                s"if (TC.is($i)) { throw new TestException($lNo) } else "
-              else
-                // matching a /**/
-                s"; if (TC.is($i)) { throw new TestException($lNo) } ;"
+          var i = 0
+          val pat = "/\\*{2,3}/".r
+          val replaced = pat.replaceAllIn(
+            template,
+            { mat =>
+              val lNo = lineNo(mat.before)
+              val res =
+                if (mat.end - mat.start == 5)
+                  // matching a /***/
+                  s"if (TC.is($i)) { throw new TestException($lNo) } else "
+                else
+                  // matching a /**/
+                  s"; if (TC.is($i)) { throw new TestException($lNo) } ;"
 
-            i += 1
+              i += 1
 
-            res
+              res
+            }
+          )
+
+          val outFile = dir / "SourceMapTest.scala"
+          val unitTests =
+            (0 until i)
+              .map(i => s"@Test def workTest$i(): Unit = test($i)")
+              .mkString("; ")
+          IO.write(
+            outFile,
+            replaced.replace(
+              "@Test def workTest(): Unit = sys.error(\"stubs\")",
+              unitTests))
+          Seq(outFile)
+        },
+        scalacOptions in Test ++= {
+          if (isGeneratingEclipse) {
+            Seq.empty
+          } else {
+            val jar = (packageBin in (jUnitPlugin, Compile)).value
+            Seq(s"-Xplugin:$jar")
           }
-        )
-
-        val outFile = dir / "SourceMapTest.scala"
-        val unitTests =
-          (0 until i)
-            .map(i => s"@Test def workTest$i(): Unit = test($i)")
-            .mkString("; ")
-        IO.write(
-          outFile,
-          replaced.replace(
-            "@Test def workTest(): Unit = sys.error(\"stubs\")",
-            unitTests))
-        Seq(outFile)
-      },
-      scalacOptions in Test ++= {
-        if (isGeneratingEclipse) {
-          Seq.empty
-        } else {
-          val jar = (packageBin in (jUnitPlugin, Compile)).value
-          Seq(s"-Xplugin:$jar")
         }
-      }
-    )
+      )
   ).withScalaJSCompiler.dependsOn(
     library,
     jUnitRuntime,

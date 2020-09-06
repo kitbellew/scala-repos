@@ -890,7 +890,7 @@ object ScalaDocumentationProvider {
             (
               "<b>Description copied from class: </b><a href=\"psi_element://" +
                 escapeHtml(e.qualifiedName) + "\"><code>" + escapeHtml(
-                e.name) + "</code></a><p>",
+                  e.name) + "</code></a><p>",
               "</p>")
           case _ => ("", "")
         }
@@ -1316,7 +1316,7 @@ object ScalaDocumentationProvider {
              else if (clParameter.isVar) "var "
              else "") + clParameter.name +
             ": " + ScType.presentableText(
-            subst.subst(clParameter.getType(TypingContext.empty).getOrAny))
+              subst.subst(clParameter.getType(TypingContext.empty).getOrAny))
       case _ => defaultText
     }) +
       (if (parameter.isRepeatedParameter) "*" else "")

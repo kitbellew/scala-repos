@@ -86,8 +86,7 @@ object UserInfo {
       trophyApi.findByUser(user) zip
       (user.count.rated >= 10).??(insightShare.grant(user, ctx.me)) zip
       PlayTime(user) flatMap {
-      case (
-            (
+        case (
               (
                 (
                   (
@@ -96,37 +95,38 @@ object UserInfo {
                         (
                           (
                             (
-                              (((nbUsers, ranks), nbPlaying), nbImported),
-                              crosstable),
-                            ratingChart),
-                          nbFollowing),
-                        nbFollowers),
-                      nbBlockers),
-                    nbPosts),
-                  isDonor),
-                trophies),
-              insightVisible),
-            playTime) =>
-        (nbPlaying > 0) ?? isHostingSimul(user.id) map { hasSimul =>
-          new UserInfo(
-            user = user,
-            ranks = ranks,
-            nbUsers = nbUsers,
-            nbPlaying = nbPlaying,
-            hasSimul = hasSimul,
-            crosstable = crosstable,
-            nbBookmark = bookmarkApi countByUser user,
-            nbImported = nbImported,
-            ratingChart = ratingChart,
-            nbFollowing = nbFollowing,
-            nbFollowers = nbFollowers,
-            nbBlockers = nbBlockers,
-            nbPosts = nbPosts,
-            playTime = playTime,
-            donor = isDonor,
-            trophies = trophies,
-            isStreamer = isStreamer(user.id),
-            insightVisible = insightVisible)
-        }
-    }
+                              (
+                                (((nbUsers, ranks), nbPlaying), nbImported),
+                                crosstable),
+                              ratingChart),
+                            nbFollowing),
+                          nbFollowers),
+                        nbBlockers),
+                      nbPosts),
+                    isDonor),
+                  trophies),
+                insightVisible),
+              playTime) =>
+          (nbPlaying > 0) ?? isHostingSimul(user.id) map { hasSimul =>
+            new UserInfo(
+              user = user,
+              ranks = ranks,
+              nbUsers = nbUsers,
+              nbPlaying = nbPlaying,
+              hasSimul = hasSimul,
+              crosstable = crosstable,
+              nbBookmark = bookmarkApi countByUser user,
+              nbImported = nbImported,
+              ratingChart = ratingChart,
+              nbFollowing = nbFollowing,
+              nbFollowers = nbFollowers,
+              nbBlockers = nbBlockers,
+              nbPosts = nbPosts,
+              playTime = playTime,
+              donor = isDonor,
+              trophies = trophies,
+              isStreamer = isStreamer(user.id),
+              insightVisible = insightVisible)
+          }
+      }
 }

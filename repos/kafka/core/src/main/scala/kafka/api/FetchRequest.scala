@@ -127,23 +127,23 @@ case class FetchRequest(
 
   def sizeInBytes: Int = {
     2 + /* versionId */
-    4 + /* correlationId */
-    shortStringLength(clientId) +
+      4 + /* correlationId */
+      shortStringLength(clientId) +
       4 + /* replicaId */
-    4 + /* maxWait */
-    4 + /* minBytes */
-    4 + /* topic count */
-    requestInfoGroupedByTopic.foldLeft(0)((foldedTopics, currTopic) => {
-      val (topic, partitionFetchInfos) = currTopic
-      foldedTopics +
-        shortStringLength(topic) +
-        4 + /* partition count */
-      partitionFetchInfos.size * (
-        4 + /* partition id */
-        8 + /* offset */
-        4 /* fetch size */
-      )
-    })
+      4 + /* maxWait */
+      4 + /* minBytes */
+      4 + /* topic count */
+      requestInfoGroupedByTopic.foldLeft(0)((foldedTopics, currTopic) => {
+        val (topic, partitionFetchInfos) = currTopic
+        foldedTopics +
+          shortStringLength(topic) +
+          4 + /* partition count */
+          partitionFetchInfos.size * (
+            4 + /* partition id */
+              8 + /* offset */
+              4 /* fetch size */
+          )
+      })
   }
 
   def isFromFollower = Request.isValidBrokerId(replicaId)

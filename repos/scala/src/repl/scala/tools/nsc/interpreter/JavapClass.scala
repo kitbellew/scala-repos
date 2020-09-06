@@ -138,11 +138,11 @@ class JavapClass(
       Some(p) filter (_ contains '.')
       // take path as a Name in scope
         orElse (intp translatePath p filter loadable)
-      // take path as a Name in scope and find its enclosing class
+        // take path as a Name in scope and find its enclosing class
         orElse (intp translateEnclosingClass p filter loadable)
-      // take path as a synthetic derived from some Name in scope
+        // take path as a synthetic derived from some Name in scope
         orElse desynthesize(p)
-      // just try it plain
+        // just try it plain
         getOrElse p
     )
     load(q)

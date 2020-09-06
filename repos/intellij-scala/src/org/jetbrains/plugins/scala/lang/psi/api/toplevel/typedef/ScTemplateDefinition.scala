@@ -462,7 +462,7 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
                             place,
                             true) &&
                           processor.isInstanceOf[BaseProcessor] && !t
-                          .isInstanceOf[ScObject] =>
+                            .isInstanceOf[ScObject] =>
                       selfTypeElement match {
                         case Some(_) =>
                           processor

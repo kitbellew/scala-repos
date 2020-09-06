@@ -331,8 +331,8 @@ class Dataset[T] private[sql] (
       schema.size == colNames.size,
       "The number of columns doesn't match.\n" +
         s"Old column names (${schema.size}): " + schema.fields
-        .map(_.name)
-        .mkString(", ") + "\n" +
+          .map(_.name)
+          .mkString(", ") + "\n" +
         s"New column names (${colNames.size}): " + colNames.mkString(", ")
     )
 

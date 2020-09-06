@@ -39,13 +39,13 @@ object LottoExample extends Specification {
   val json =
     ("lotto" ->
       ("id" -> lotto.id) ~
-        ("winning-numbers" -> lotto.`winning-numbers`) ~
-        ("draw-date" -> lotto.`draw-date`.map(_.toString)) ~
-        ("winners" ->
-          lotto.winners.map { w =>
-            (("winner-id" -> w.`winner-id`) ~
-              ("numbers" -> w.numbers))
-          }))
+      ("winning-numbers" -> lotto.`winning-numbers`) ~
+      ("draw-date" -> lotto.`draw-date`.map(_.toString)) ~
+      ("winners" ->
+        lotto.winners.map { w =>
+          (("winner-id" -> w.`winner-id`) ~
+            ("numbers" -> w.numbers))
+        }))
 
   "Parse Lotto" in {
 

@@ -303,13 +303,13 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
     primitiveBoxConstructors.map(ownerDesc).toSet ++
       srRefConstructors.map(ownerDesc) ++
       tupleClassConstructors.map(ownerDesc) ++ Set(
-      (ObjectRef.internalName, MethodBType(Nil, UNIT).descriptor),
-      (StringRef.internalName, MethodBType(Nil, UNIT).descriptor),
-      (StringRef.internalName, MethodBType(List(StringRef), UNIT).descriptor),
-      (
-        StringRef.internalName,
-        MethodBType(List(ArrayBType(CHAR)), UNIT).descriptor)
-    )
+        (ObjectRef.internalName, MethodBType(Nil, UNIT).descriptor),
+        (StringRef.internalName, MethodBType(Nil, UNIT).descriptor),
+        (StringRef.internalName, MethodBType(List(StringRef), UNIT).descriptor),
+        (
+          StringRef.internalName,
+          MethodBType(List(ArrayBType(CHAR)), UNIT).descriptor)
+      )
   }
 
   def isSideEffectFreeConstructorCall(insn: MethodInsnNode): Boolean = {

@@ -38,9 +38,9 @@ case class BitCount(
           case Some(i) => Seq(StringToChannelBuffer(i.toString))
           case None    => Seq.empty
         }) ++ (end match {
-        case Some(i) => Seq(StringToChannelBuffer(i.toString))
-        case None    => Seq.empty
-      }))
+          case Some(i) => Seq(StringToChannelBuffer(i.toString))
+          case None    => Seq.empty
+        }))
   }
 }
 object BitCount {

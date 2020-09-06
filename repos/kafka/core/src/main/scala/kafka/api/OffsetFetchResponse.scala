@@ -71,20 +71,20 @@ case class OffsetFetchResponse(
 
   override def sizeInBytes =
     4 + /* correlationId */
-    4 + /* topic count */
-    requestInfoGroupedByTopic.foldLeft(0)((count, topicAndOffsets) => {
-      val (topic, offsets) = topicAndOffsets
-      count +
-        shortStringLength(topic) + /* topic */
-      4 + /* number of partitions */
-      offsets.foldLeft(0)((innerCount, offsetsAndMetadata) => {
-        innerCount +
-          4 /* partition */ +
-          8 /* offset */ +
-          shortStringLength(offsetsAndMetadata._2.metadata) +
-          2 /* error */
+      4 + /* topic count */
+      requestInfoGroupedByTopic.foldLeft(0)((count, topicAndOffsets) => {
+        val (topic, offsets) = topicAndOffsets
+        count +
+          shortStringLength(topic) + /* topic */
+          4 + /* number of partitions */
+          offsets.foldLeft(0)((innerCount, offsetsAndMetadata) => {
+            innerCount +
+              4 /* partition */ +
+              8 /* offset */ +
+              shortStringLength(offsetsAndMetadata._2.metadata) +
+              2 /* error */
+          })
       })
-    })
 
   override def describe(details: Boolean): String = { toString }
 }

@@ -111,7 +111,7 @@ object FirstExample extends App {
             yield LiteralColumn("  ") ++ c.name ++ "\t" ++ c.supID
               .asColumnOf[String] ++
               "\t" ++ c.price.asColumnOf[String] ++ "\t" ++ c.sales
-              .asColumnOf[String] ++
+                .asColumnOf[String] ++
               "\t" ++ c.total.asColumnOf[String]
         // The first string constant needs to be lifted manually to a LiteralColumn
         // so that the proper ++ operator is found

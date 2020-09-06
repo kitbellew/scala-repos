@@ -146,13 +146,13 @@ package ll {
         block(fmt(site)) {
           fmt("type", "seen from prefix", "is") ::
             fmt("----", "----------------", "--") :: {
-            xs.groupBy(_._2).toList.sortBy(_._1.toString) flatMap {
-              case (tp, ys) =>
-                (ys map { case (_, _, prefix, seen) =>
-                  fmt(tp, prefix, seen)
-                }).sorted.distinct
+              xs.groupBy(_._2).toList.sortBy(_._1.toString) flatMap {
+                case (tp, ys) =>
+                  (ys map { case (_, _, prefix, seen) =>
+                    fmt(tp, prefix, seen)
+                  }).sorted.distinct
+              }
             }
-          }
         }
       }
     }

@@ -957,19 +957,19 @@ private[akka] class ActorSystemImpl(
               case _ ⇒ ""
             }) +
             " " + (cell.childrenRefs match {
-            case ChildrenContainer.TerminatingChildrenContainer(
-                  _,
-                  toDie,
-                  reason) ⇒
-              "Terminating(" + reason + ")" +
-                (toDie.toSeq.sorted mkString ("\n" + indent + "   |    toDie: ", "\n" + indent + "   |           ", ""))
-            case x @ (ChildrenContainer.TerminatedChildrenContainer |
-                ChildrenContainer.EmptyChildrenContainer) ⇒
-              x.toString
-            case n: ChildrenContainer.NormalChildrenContainer ⇒
-              n.c.size + " children"
-            case x ⇒ Logging.simpleName(x)
-          }) +
+              case ChildrenContainer.TerminatingChildrenContainer(
+                    _,
+                    toDie,
+                    reason) ⇒
+                "Terminating(" + reason + ")" +
+                  (toDie.toSeq.sorted mkString ("\n" + indent + "   |    toDie: ", "\n" + indent + "   |           ", ""))
+              case x @ (ChildrenContainer.TerminatedChildrenContainer |
+                  ChildrenContainer.EmptyChildrenContainer) ⇒
+                x.toString
+              case n: ChildrenContainer.NormalChildrenContainer ⇒
+                n.c.size + " children"
+              case x ⇒ Logging.simpleName(x)
+            }) +
             (if (cell.childrenRefs.children.isEmpty) "" else "\n") +
             ({
               val children = cell.childrenRefs.children.toSeq.sorted

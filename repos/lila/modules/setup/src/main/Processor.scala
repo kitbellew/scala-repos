@@ -28,8 +28,8 @@ private[setup] final class Processor(
     saveConfig(_ withAi config) >>
       (GameRepo insertDenormalized pov.game) >>-
       onStart(pov.game.id) >> {
-      pov.game.player.isAi ?? fishnetPlayer(pov.game)
-    } inject pov
+        pov.game.player.isAi ?? fishnetPlayer(pov.game)
+      } inject pov
   }
 
   private def blamePov(pov: Pov, user: Option[User]): Pov = pov withGame {

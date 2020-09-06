@@ -262,7 +262,7 @@ trait PostgresProfile extends JdbcProfile {
             tname) + " before update or delete on " +
             quoteIdentifier(
               tname) + " for each row execute procedure lo_manage(" + quoteIdentifier(
-            column.name) + ")"
+              column.name) + ")"
         )
       else None
 

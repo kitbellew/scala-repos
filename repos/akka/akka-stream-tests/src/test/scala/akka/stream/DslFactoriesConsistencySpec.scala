@@ -257,8 +257,8 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
             .mkString(",") + "): " + returnTypeString(row._1) +
             " == " +
             "Java:" + matches.head.j.name + "(" + matches.head.j.parameterTypes
-            .map(_.getName)
-            .mkString(",") + "): " + returnTypeString(matches.head.j))
+              .map(_.getName)
+              .mkString(",") + "): " + returnTypeString(matches.head.j))
       } else {
         warnings += 1
         alert("Multiple matches for " + row._1 + "!")

@@ -221,11 +221,11 @@ abstract class ScaladocModelTest extends DirectTest {
         sys.error(
           "Error getting " + expl + ": " + list.length + " elements with this name. " +
             "All elements in list: [" + list
-            .map({
-              case ent: Entity => ent.kind + " " + ent.qualifiedName
-              case other       => other.toString
-            })
-            .mkString(", ") + "]")
+              .map({
+                case ent: Entity => ent.kind + " " + ent.qualifiedName
+                case other       => other.toString
+              })
+              .mkString(", ") + "]")
     }
 
     def extractCommentText(c: Any) = {

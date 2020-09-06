@@ -689,7 +689,7 @@ trait EntityPage extends HtmlPage {
                 "This conversion will take place only if ") ++ constraintToHtml(
                 constraint1) ++
                 scala.xml.Text(" and at the same time ") ++ constraintToHtml(
-                constraint2) ++ scala.xml.Text(".")
+                  constraint2) ++ scala.xml.Text(".")
             case constraints =>
               <br/> ++ "This conversion will take place only if all of the following constraints are met:" ++ <br/> ++ {
                 var index = 0
@@ -724,9 +724,9 @@ trait EntityPage extends HtmlPage {
                 <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala"
                 target="_blank">type ascription</a> ++ scala.xml.Text(":") ++
                 <br/> ++ <div class="cmt"><pre>{
-                "(" + EntityPage.lowerFirstLetter(
-                  tpl.name) + ": " + conv.targetType.name + ")." + mbr.name + params
-              }</pre></div>
+                  "(" + EntityPage.lowerFirstLetter(
+                    tpl.name) + ": " + conv.targetType.name + ")." + mbr.name + params
+                }</pre></div>
             }
 
             val shadowingWarning: NodeSeq =
@@ -1345,7 +1345,7 @@ trait EntityPage extends HtmlPage {
         scala.xml.Text(tcc.typeParamName + " is ") ++
           <a href="http://stackoverflow.com/questions/2982276/what-is-a-context-bound-in-scala" target="_blank">
         context-bounded</a> ++ scala.xml.Text(
-          " by " + tcc.typeClassEntity.qualifiedName + " (" + tcc.typeParamName + ": ") ++
+            " by " + tcc.typeClassEntity.qualifiedName + " (" + tcc.typeParamName + ": ") ++
           templateToHtml(tcc.typeClassEntity) ++ scala.xml.Text(")")
       case impl: ImplicitInScopeConstraint =>
         scala.xml.Text("an implicit value of type ") ++ typeToHtml(
@@ -1360,7 +1360,7 @@ trait EntityPage extends HtmlPage {
           bt.typeParamName + " is a superclass of " + bt.lowerBound.name + " and a subclass of " +
             bt.upperBound.name + " (" + bt.typeParamName + " >: ") ++
           typeToHtml(bt.lowerBound, hasLinks = true) ++ scala.xml.Text(
-          " <: ") ++
+            " <: ") ++
           typeToHtml(bt.upperBound, hasLinks = true) ++ scala.xml.Text(")")
       case lb: LowerBoundedTypeParamConstraint =>
         scala.xml.Text(

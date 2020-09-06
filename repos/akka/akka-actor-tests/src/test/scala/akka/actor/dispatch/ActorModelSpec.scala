@@ -500,8 +500,8 @@ abstract class ActorModelSpec(config: String)
                     System.err.println(
                       " - " + cell.self.path + " " + cell.isTerminated + " " + cell.mailbox.currentStatus + " "
                         + cell.mailbox.numberOfMessages + " " + cell.mailbox
-                        .systemDrain(SystemMessageList.LNil)
-                        .size)
+                          .systemDrain(SystemMessageList.LNil)
+                          .size)
                   }
 
                   System.err.println(

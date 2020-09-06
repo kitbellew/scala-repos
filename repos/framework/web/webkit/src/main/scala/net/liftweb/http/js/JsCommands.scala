@@ -336,9 +336,10 @@ object JE {
                 JE.JsRaw("return df").cmd
             ).toJsCmd
               + "(), " + AnonFunc(
-              JsCmds.JsCrVar("df", JsRaw("document.createDocumentFragment()")) &
-                addToDocFrag("df", hidden.toList) &
-                JE.JsRaw("return df").cmd).toJsCmd + "()))").cmd
+                JsCmds
+                  .JsCrVar("df", JsRaw("document.createDocumentFragment()")) &
+                  addToDocFrag("df", hidden.toList) &
+                  JE.JsRaw("return df").cmd).toJsCmd + "()))").cmd
       }
     }
   }

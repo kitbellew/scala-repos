@@ -100,7 +100,7 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
     "Jan" ~ push(1) | "Feb" ~ push(2) | "Mar" ~ push(3) | "Apr" ~ push(
       4) | "May" ~ push(5) | "Jun" ~ push(6) | "Jul" ~ push(7) |
       "Aug" ~ push(8) | "Sep" ~ push(9) | "Oct" ~ push(10) | "Nov" ~ push(
-      11) | "Dec" ~ push(12))
+        11) | "Dec" ~ push(12))
 
   def year = rule { digit4 }
 
@@ -344,8 +344,8 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
       | ignoreCase("secure")
       | ignoreCase("httponly")) ~
       capture(zeroOrMore(`av-octet`)) ~ OWS ~> { (c: HttpCookie, s: String) ⇒
-      c.copy(extension = Some(s))
-    }
+        c.copy(extension = Some(s))
+      }
   }
 
   // ******************************************************************************************

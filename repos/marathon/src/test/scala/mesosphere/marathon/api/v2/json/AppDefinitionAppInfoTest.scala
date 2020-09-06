@@ -72,8 +72,8 @@ class AppDefinitionAppInfoTest extends MarathonSpec with GivenWhenThen {
           "tasksHealthy" -> 4,
           "tasksUnhealthy" -> 1
         ) ++ Json.obj(
-        "deployments" -> Seq(Json.obj("id" -> "deployment1"))
-      )
+          "deployments" -> Seq(Json.obj("id" -> "deployment1"))
+        )
     JsonTestHelper.assertThatJsonOf(extended).correspondsToJsonOf(expectedJson)
   }
 

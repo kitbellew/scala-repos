@@ -468,8 +468,8 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       def doc: String =
         (if (model.unique) "Uniqueness " else "") +
           "Index over " + columns
-          .map(_.name)
-          .mkString("(", ",", ")") + s" (database name ${dbName})"
+            .map(_.name)
+            .mkString("(", ",", ")") + s" (database name ${dbName})"
     }
 
     /** Common interface for any kind of definition within the generated code */

@@ -169,9 +169,9 @@ object Mod extends LilaController {
   def gamify = Secure(_.SeeReport) { implicit ctx => me =>
     Env.mod.gamify.leaderboards zip
       Env.mod.gamify.history(orCompute = true) map {
-      case (leaderboards, history) =>
-        Ok(html.mod.gamify.index(leaderboards, history))
-    }
+        case (leaderboards, history) =>
+          Ok(html.mod.gamify.index(leaderboards, history))
+      }
   }
   def gamifyPeriod(periodStr: String) = Secure(_.SeeReport) {
     implicit ctx => me =>

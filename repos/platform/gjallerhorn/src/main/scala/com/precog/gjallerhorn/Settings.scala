@@ -82,8 +82,8 @@ object Settings {
           q(ingestPort, "ingestPort") ++ q(ingestPath, "ingestPath") ++
           q(jobsPort, "jobsPort") ++ q(jobsPath, "jobsPath") ++
           q(shardPort, "shardPort") ++ q(shardPath, "shardPath") ++ q(
-          secure,
-          "secure")
+            secure,
+            "secure")
       }
 
       def settings: Option[Settings] = for {

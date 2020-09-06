@@ -38,8 +38,8 @@ object Video extends LilaController {
             control.filter.tags,
             getInt("page") | 1) zip
             env.api.video.count.apply map { case (videos, count) =>
-            Ok(html.video.index(videos, count, control))
-          }
+              Ok(html.video.index(videos, count, control))
+            }
       }
     }
   }
@@ -53,8 +53,8 @@ object Video extends LilaController {
             ctx.userId.?? { userId =>
               env.api.view.add(View.make(videoId = video.id, userId = userId))
             } map { case (similar, _) =>
-            Ok(html.video.show(video, similar, control))
-          }
+              Ok(html.video.show(video, similar, control))
+            }
       }
     }
   }

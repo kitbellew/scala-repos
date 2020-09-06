@@ -562,23 +562,23 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
               MapperRules.quoteColumnName.vend(
                 in.outerField._dbColumnNameLC) + in.inKeyword +
               "(" + in.innerMeta
-              .addEndStuffs(
-                in.innerMeta.addFields(
-                  "SELECT " +
-                    in.distinct +
-                    MapperRules.quoteColumnName.vend(
-                      in.innerField._dbColumnNameLC) +
-                    " FROM " +
-                    MapperRules.quoteTableName.vend(
-                      in.innerMeta._dbTableNameLC) + " ",
-                  false,
+                .addEndStuffs(
+                  in.innerMeta.addFields(
+                    "SELECT " +
+                      in.distinct +
+                      MapperRules.quoteColumnName.vend(
+                        in.innerField._dbColumnNameLC) +
+                      " FROM " +
+                      MapperRules.quoteTableName.vend(
+                        in.innerMeta._dbTableNameLC) + " ",
+                    false,
+                    in.queryParams,
+                    conn
+                  ),
                   in.queryParams,
                   conn
-                ),
-                in.queryParams,
-                conn
-              )
-              ._1 + " ) "
+                )
+                ._1 + " ) "
 
           // Executes a subquery with {@code query}
           case BySql(query, _, _*) =>
@@ -2376,8 +2376,8 @@ trait KeyedMetaMapper[Type, A <: KeyedMapper[Type, A]]
         "SELECT " +
           fields.map(_.dbSelectString).mkString(", ") +
           " FROM " + MapperRules.quoteTableName.vend(
-          _dbTableNameLC) + " WHERE " + MapperRules.quoteColumnName.vend(
-          field._dbColumnNameLC) + " = ?",
+            _dbTableNameLC) + " WHERE " + MapperRules.quoteColumnName.vend(
+            field._dbColumnNameLC) + " = ?",
         conn
       ) { st =>
         if (field.dbIgnoreSQLType_?)

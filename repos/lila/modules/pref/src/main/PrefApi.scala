@@ -160,6 +160,6 @@ final class PrefApi(coll: Coll, cacheTtl: Duration, bus: lila.common.Bus) {
       notifyChange: Boolean): Funit =
     getPref(user) map { _.set(name, value) } flatten
       s"Bad pref ${user.id} $name -> $value" flatMap {
-      setPref(_, notifyChange)
-    }
+        setPref(_, notifyChange)
+      }
 }

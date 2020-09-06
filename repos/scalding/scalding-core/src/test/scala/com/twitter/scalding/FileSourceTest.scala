@@ -244,13 +244,13 @@ class FileSourceTest extends WordSpec with Matchers {
 
     "accept a multi-dir glob if all dirs with non-hidden files have _SUCCESS while dirs with " +
       "hidden ones don't" in {
-      pathIsGood("test_data/2013/{04,05}/*") shouldBe true
-    }
+        pathIsGood("test_data/2013/{04,05}/*") shouldBe true
+      }
 
     "accept a multi-dir glob if all dirs with non-hidden files have _SUCCESS while other dirs " +
       "are empty or don't exist" in {
-      pathIsGood("test_data/2013/{02,04,05}/*") shouldBe true
-    }
+        pathIsGood("test_data/2013/{02,04,05}/*") shouldBe true
+      }
   }
 
   "FixedPathSource.hdfsWritePath" should {

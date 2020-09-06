@@ -405,7 +405,7 @@ object EnumerateesSpec
             "Concat",
             "!") &>
             Enumeratee.grouped(folderIteratee) ><>
-              Enumeratee.map[String](List(_))(mapEC) |>>>
+            Enumeratee.map[String](List(_))(mapEC) |>>>
             Iteratee.consume[List[String]]()
         Await.result(result, Duration.Inf) must equalTo(
           List("Hello", "World", "!"))
@@ -438,7 +438,7 @@ object EnumerateesSpec
         val result =
           Enumerator(1, 2, 3, 4) &>
             Enumeratee.scanLeft[Int](0)(_ + _) ><>
-              Enumeratee.map[Int](List(_))(mapEC) |>>>
+            Enumeratee.map[Int](List(_))(mapEC) |>>>
             Iteratee.consume[List[Int]]()
 
         Await.result(result, Duration.Inf) must equalTo(List(1, 3, 6, 10))

@@ -24,11 +24,10 @@ object Tv extends LilaController {
           OptionFuResult(GameRepo.pov(gameId, color)) { pov =>
             Env.tv.tv.getChampions zip
               Env.game.crosstableApi(pov.game) map {
-              case (champions, crosstable) =>
-                Ok(
-                  html.tv
+                case (champions, crosstable) =>
+                  Ok(html.tv
                     .sides(channel, champions, pov, crosstable, streams = Nil))
-            }
+              }
           }
       }
   }
@@ -47,10 +46,10 @@ object Tv extends LilaController {
             withOpening = false) zip
             Env.game.crosstableApi(game) zip
             Env.tv.tv.getChampions map { case ((data, cross), champions) =>
-            NoCache {
-              Ok(html.tv.index(channel, champions, pov, data, cross, flip))
+              NoCache {
+                Ok(html.tv.index(channel, champions, pov, data, cross, flip))
+              }
             }
-          }
         },
         api = apiVersion =>
           Env.api.roundApi
@@ -69,10 +68,10 @@ object Tv extends LilaController {
   private def lichessGames(channel: lila.tv.Tv.Channel)(implicit ctx: Context) =
     Env.tv.tv.getChampions zip
       Env.tv.tv.getGames(channel, 9) map { case (champs, games) =>
-      NoCache {
-        Ok(html.tv.games(channel, games map lila.game.Pov.first, champs))
+        NoCache {
+          Ok(html.tv.games(channel, games map lila.game.Pov.first, champs))
+        }
       }
-    }
 
   def streamIn(id: String) = Open { implicit ctx =>
     OptionFuResult(Env.tv.streamerList find id) { streamer =>
@@ -94,8 +93,8 @@ object Tv extends LilaController {
     implicit val encoder = play.api.libs.Comet.CometMessage.jsonMessages
     Env.round.tvBroadcast ? TvBroadcast.GetEnumerator mapTo
       manifest[TvBroadcast.EnumeratorType] map { enum =>
-      Ok.chunked(enum &> EventSource()).as("text/event-stream")
-    }
+        Ok.chunked(enum &> EventSource()).as("text/event-stream")
+      }
   }
 
   def streamConfig = Auth { implicit ctx => me =>
@@ -111,7 +110,7 @@ object Tv extends LilaController {
     } { text =>
       Env.tv.streamerList.store.set(text) >>
         Env.mod.logApi.streamConfig(me.id) inject Redirect(
-        routes.Tv.streamConfig)
+          routes.Tv.streamConfig)
     }
   }
 

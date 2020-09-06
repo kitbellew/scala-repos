@@ -327,11 +327,11 @@ object Extraction {
             fail(
               "Parsed JSON values do not match with class constructor\nargs=" +
                 args.mkString(",") + "\narg types=" + args
-                .map(a =>
-                  if (a != null)
-                    a.asInstanceOf[AnyRef].getClass.getName
-                  else "null")
-                .mkString(",") +
+                  .map(a =>
+                    if (a != null)
+                      a.asInstanceOf[AnyRef].getClass.getName
+                    else "null")
+                  .mkString(",") +
                 "\nconstructor=" + jconstructor)
         }
       }

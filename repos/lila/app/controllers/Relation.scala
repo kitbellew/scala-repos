@@ -20,31 +20,31 @@ object Relation extends LilaController {
     (ctx.userId ?? { env.api.fetchRelation(_, userId) }) zip
       (ctx.isAuth ?? { Env.pref.api followable userId }) zip
       (ctx.userId ?? { env.api.fetchBlocks(userId, _) }) flatMap {
-      case ((relation, followable), blocked) =>
-        negotiate(
-          html = fuccess(
-            Ok(mini.fold(
-              html.relation.mini(
-                userId,
-                blocked = blocked,
-                followable = followable,
-                relation = relation),
-              html.relation.actions(
-                userId,
-                relation = relation,
-                blocked = blocked,
-                followable = followable)
-            ))),
-          api = _ =>
-            fuccess(
-              Ok(
-                Json.obj(
-                  "followable" -> followable,
-                  "following" -> relation.contains(true),
-                  "blocking" -> relation.contains(false)
-                )))
-        )
-    }
+        case ((relation, followable), blocked) =>
+          negotiate(
+            html = fuccess(
+              Ok(mini.fold(
+                html.relation.mini(
+                  userId,
+                  blocked = blocked,
+                  followable = followable,
+                  relation = relation),
+                html.relation.actions(
+                  userId,
+                  relation = relation,
+                  blocked = blocked,
+                  followable = followable)
+              ))),
+            api = _ =>
+              fuccess(
+                Ok(
+                  Json.obj(
+                    "followable" -> followable,
+                    "following" -> relation.contains(true),
+                    "blocking" -> relation.contains(false)
+                  )))
+          )
+      }
 
   def follow(userId: String) = Auth { implicit ctx => me =>
     env.api.follow(me.id, userId).nevermind >> renderActions(

@@ -84,7 +84,7 @@ object EnumeratorsSpec
         val iterator = scala.collection.Iterator.single[Int](3)
         val futureOfResult = Enumerator.enumerate(iterator) |>>>
           Enumeratee.take(1) &>>
-            Iteratee.fold(List.empty[Int])((r, e: Int) => e :: r)(foldEC)
+          Iteratee.fold(List.empty[Int])((r, e: Int) => e :: r)(foldEC)
         val result = Await.result(futureOfResult, Duration.Inf)
         result(0) must equalTo(3)
         result.length must equalTo(1)
@@ -96,7 +96,7 @@ object EnumeratorsSpec
         val iterator = scala.collection.Iterator.range(0, 50)
         val futureOfResult = Enumerator.enumerate(iterator) |>>>
           Enumeratee.take(100) &>>
-            Iteratee.fold(Seq.empty[Int])((r, e: Int) => r :+ e)(foldEC)
+          Iteratee.fold(Seq.empty[Int])((r, e: Int) => r :+ e)(foldEC)
         val result = Await.result(futureOfResult, Duration.Inf)
         result.length must equalTo(50)
         result(0) must equalTo(0)
@@ -108,7 +108,7 @@ object EnumeratorsSpec
         val seq = List(1, 2, 3, 7, 42, 666)
         val futureOfResult = Enumerator.enumerate(seq) |>>>
           Enumeratee.take(100) &>>
-            Iteratee.fold(Seq.empty[Int])((r, e: Int) => r :+ e)(foldEC)
+          Iteratee.fold(Seq.empty[Int])((r, e: Int) => r :+ e)(foldEC)
         val result = Await.result(futureOfResult, Duration.Inf)
         result.length must equalTo(6)
         result(0) must equalTo(1)

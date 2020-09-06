@@ -147,20 +147,20 @@ trait Errors extends Traces {
       implRefError(
         s"${macroImplementationWording} has incompatible shape:" +
           "\n required: " + showMeth(
-          rparamss,
-          rret,
-          abbreviate = true,
-          untype = false) +
+            rparamss,
+            rret,
+            abbreviate = true,
+            untype = false) +
           "\n or      : " + showMeth(
-          rparamss,
-          rret,
-          abbreviate = true,
-          untype = true) +
+            rparamss,
+            rret,
+            abbreviate = true,
+            untype = true) +
           "\n found   : " + showMeth(
-          aparamss,
-          aret,
-          abbreviate = false,
-          untype = false) +
+            aparamss,
+            aret,
+            abbreviate = false,
+            untype = false) +
           "\n" + message)
 
     def MacroImplParamssMismatchError() = compatibilityError(

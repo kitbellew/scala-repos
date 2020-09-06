@@ -59,9 +59,9 @@ class ExecutionDirectivesSpec extends RoutingSpec {
             throw MyException
           }
         } ~> check {
-        status shouldEqual StatusCodes.InternalServerError
-        responseAs[String] shouldEqual "There was an internal server error."
-      }
+          status shouldEqual StatusCodes.InternalServerError
+          responseAs[String] shouldEqual "There was an internal server error."
+        }
     }
     "not handle other exceptions" in EventFilter[RuntimeException](
       occurrences = 1,
@@ -72,9 +72,9 @@ class ExecutionDirectivesSpec extends RoutingSpec {
             throw new RuntimeException("buh")
           }
         } ~> check {
-        status shouldEqual StatusCodes.InternalServerError
-        responseAs[String] shouldEqual "There was an internal server error."
-      }
+          status shouldEqual StatusCodes.InternalServerError
+          responseAs[String] shouldEqual "There was an internal server error."
+        }
     }
     "always fall back to a default content type" in EventFilter[
       RuntimeException](occurrences = 2, message = "buh2").intercept {
@@ -84,9 +84,9 @@ class ExecutionDirectivesSpec extends RoutingSpec {
             throw new RuntimeException("buh2")
           }
         } ~> check {
-        status shouldEqual StatusCodes.InternalServerError
-        responseAs[String] shouldEqual "There was an internal server error."
-      }
+          status shouldEqual StatusCodes.InternalServerError
+          responseAs[String] shouldEqual "There was an internal server error."
+        }
 
       Get("/abc") ~> Accept(
         MediaTypes.`text/xml`,
@@ -96,9 +96,9 @@ class ExecutionDirectivesSpec extends RoutingSpec {
             throw new RuntimeException("buh2")
           }
         } ~> check {
-        status shouldEqual StatusCodes.InternalServerError
-        responseAs[String] shouldEqual "There was an internal server error."
-      }
+          status shouldEqual StatusCodes.InternalServerError
+          responseAs[String] shouldEqual "There was an internal server error."
+        }
     }
   }
 

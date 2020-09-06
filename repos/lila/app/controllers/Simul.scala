@@ -40,8 +40,8 @@ object Simul extends LilaController {
         env.version(sim.id) zip
           env.jsonView(sim) zip
           chatOf(sim) map { case ((version, data), chat) =>
-          html.simul.show(sim, version, data, chat)
-        }
+            html.simul.show(sim, version, data, chat)
+          }
       }
     } map NoCache
   }

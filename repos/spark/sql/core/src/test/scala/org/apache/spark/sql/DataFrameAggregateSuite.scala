@@ -171,9 +171,9 @@ class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
         1,
         2) :: Row(5, 2, 1)
         :: Row(2, null, 0) :: Row(3, null, 0) :: Row(4, null, 2) :: Row(
-        5,
-        null,
-        1)
+          5,
+          null,
+          1)
         :: Row(null, null, 3) :: Nil
     )
 
@@ -196,9 +196,9 @@ class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
         1,
         2) :: Row(5, 2, 1)
         :: Row(2, null, 0) :: Row(3, null, 0) :: Row(4, null, 2) :: Row(
-        5,
-        null,
-        1)
+          5,
+          null,
+          1)
         :: Row(null, 1, 3) :: Row(null, 2, 0)
         :: Row(null, null, 3) :: Nil
     )

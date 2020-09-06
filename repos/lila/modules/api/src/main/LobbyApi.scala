@@ -26,18 +26,18 @@ final class LobbyApi(
       ctx.me.fold(seekApi.forAnon)(seekApi.forUser) zip
       (ctx.me ?? GameRepo.urgentGames) zip
       getFilter(ctx) map { case (((hooks, seeks), povs), filter) =>
-      Json.obj(
-        "me" -> ctx.me.map { u =>
-          Json.obj("username" -> u.username)
-        },
-        "version" -> lobbyVersion(),
-        "hooks" -> JsArray(hooks map (_.render)),
-        "seeks" -> JsArray(seeks map (_.render)),
-        "nowPlaying" -> JsArray(povs take 9 map nowPlaying),
-        "nbNowPlaying" -> povs.size,
-        "filter" -> filter.render
-      )
-    }
+        Json.obj(
+          "me" -> ctx.me.map { u =>
+            Json.obj("username" -> u.username)
+          },
+          "version" -> lobbyVersion(),
+          "hooks" -> JsArray(hooks map (_.render)),
+          "seeks" -> JsArray(seeks map (_.render)),
+          "nowPlaying" -> JsArray(povs take 9 map nowPlaying),
+          "nbNowPlaying" -> povs.size,
+          "filter" -> filter.render
+        )
+      }
 
   def nowPlaying(pov: Pov) = Json.obj(
     "fullId" -> pov.fullId,

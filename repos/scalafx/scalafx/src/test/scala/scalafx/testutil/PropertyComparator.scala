@@ -43,7 +43,7 @@ trait PropertyComparator extends AbstractComparator {
     super.isImplementation(name) ||
       (name == "applyTo") || (name == "create") || (name == "build") ||
       name.endsWith("Property") || name.startsWith("get") || name.startsWith(
-      "set") || name.startsWith("is")
+        "set") || name.startsWith("is")
 
   private def assertProperties(
       javaFxProperties: Set[String],

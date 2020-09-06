@@ -831,12 +831,12 @@ class Flags(
     cmd + argv0 + " [<flag>...]\n" +
       "flags:\n" +
       (lines mkString "\n") + (
-      if (globalLines.isEmpty) ""
-      else {
-        "\nglobal flags:\n" +
-          (globalLines mkString "\n")
-      }
-    )
+        if (globalLines.isEmpty) ""
+        else {
+          "\nglobal flags:\n" +
+            (globalLines mkString "\n")
+        }
+      )
   }
 
   /**

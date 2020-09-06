@@ -301,11 +301,11 @@ trait ItemsListEditor[T <: Mapper[T]] {
             { f: MappedField[_, T] =>
               ".form" #> <strike>{f.asHtml}</strike>
             }) &
-            ".removeBtn" #> SHtml.submit(
-              ?("Remove"),
-              () => onRemove(item),
-              noPrompt) &
-            ".msg" #> Text(?("Deleted"))
+          ".removeBtn" #> SHtml.submit(
+            ?("Remove"),
+            () => onRemove(item),
+            noPrompt) &
+          ".msg" #> Text(?("Deleted"))
       }
 
     val bindRegularItems =
@@ -314,23 +314,23 @@ trait ItemsListEditor[T <: Mapper[T]] {
           ".fields" #> eachField(
             item,
             { f: MappedField[_, T] => ".form" #> f.toForm }) &
-            ".removeBtn" #> SHtml.submit(
-              ?("Remove"),
-              () => onRemove(item),
-              noPrompt) &
-            ".msg" #> {
-              item.validate match {
-                case Nil =>
-                  if (!item.saved_?)
-                    Text(?("New"))
-                  else if (item.dirty_?)
-                    Text(?("Unsaved"))
-                  else
-                    NodeSeq.Empty
-                case errors =>
-                  <ul>{errors.flatMap(e => <li>{e.msg}</li>)}</ul>
-              }
+          ".removeBtn" #> SHtml.submit(
+            ?("Remove"),
+            () => onRemove(item),
+            noPrompt) &
+          ".msg" #> {
+            item.validate match {
+              case Nil =>
+                if (!item.saved_?)
+                  Text(?("New"))
+                else if (item.dirty_?)
+                  Text(?("Unsaved"))
+                else
+                  NodeSeq.Empty
+              case errors =>
+                <ul>{errors.flatMap(e => <li>{e.msg}</li>)}</ul>
             }
+          }
       }
 
     "^ >*" #> optScript andThen
@@ -343,11 +343,11 @@ trait ItemsListEditor[T <: Mapper[T]] {
           fieldFilter
         )
       } &
-        ".table" #> {
-          ".title *" #> title &
-            ".insertBtn" #> SHtml.submit(?("Insert"), onInsert _, noPrompt) &
-            ".item" #> (bindRegularItems ++ bindRemovedItems) &
-            ".saveBtn" #> SHtml.submit(?("Save"), onSubmit _, noPrompt)
-        }
+      ".table" #> {
+        ".title *" #> title &
+          ".insertBtn" #> SHtml.submit(?("Insert"), onInsert _, noPrompt) &
+          ".item" #> (bindRegularItems ++ bindRemovedItems) &
+          ".saveBtn" #> SHtml.submit(?("Save"), onSubmit _, noPrompt)
+      }
   }
 }

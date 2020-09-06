@@ -45,9 +45,9 @@ class CoGroupedIteratorSuite extends SparkFunSuite with ExpressionEvalHelper {
           1,
           Seq(create_row(1, "a"), create_row(1, "b")),
           Seq(create_row(1, 2L))) ::
-          (2, Seq(create_row(2, "c")), Seq(create_row(2, 3L))) ::
-          (3, Seq.empty, Seq(create_row(3, 4L))) ::
-          Nil)
+        (2, Seq(create_row(2, "c")), Seq(create_row(2, 3L))) ::
+        (3, Seq.empty, Seq(create_row(3, 4L))) ::
+        Nil)
   }
 
   test(
@@ -69,7 +69,7 @@ class CoGroupedIteratorSuite extends SparkFunSuite with ExpressionEvalHelper {
     assert(
       result ==
         (1, Seq.empty, Seq(create_row(1, 2L))) ::
-          (2, Seq(create_row(2, "a")), Seq.empty) ::
-          Nil)
+        (2, Seq(create_row(2, "a")), Seq.empty) ::
+        Nil)
   }
 }

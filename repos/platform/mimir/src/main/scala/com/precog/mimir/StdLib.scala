@@ -682,7 +682,7 @@ object StdLib {
 
       override def isDefinedAt(row: Int) = super.isDefinedAt(row) &&
         defined(c1(row).toDouble, c2(row).toDouble) && doubleIsDefined(
-        apply(row))
+          apply(row))
 
       def apply(row: Int) = f(c1(row).toDouble, c2(row).toDouble)
     }
@@ -697,7 +697,7 @@ object StdLib {
 
       override def isDefinedAt(row: Int) = super.isDefinedAt(row) &&
         defined(c1(row).toDouble, c2(row).toDouble) && doubleIsDefined(
-        apply(row))
+          apply(row))
 
       def apply(row: Int) = f(c1(row).toDouble, c2(row).toDouble)
     }
@@ -728,7 +728,7 @@ object StdLib {
 
       override def isDefinedAt(row: Int) = super.isDefinedAt(row) &&
         defined(c1(row).toDouble, c2(row).toDouble) && doubleIsDefined(
-        apply(row))
+          apply(row))
 
       def apply(row: Int) = f(c1(row).toDouble, c2(row).toDouble)
     }
@@ -743,7 +743,7 @@ object StdLib {
 
       override def isDefinedAt(row: Int) = super.isDefinedAt(row) &&
         defined(c1(row).toDouble, c2(row).toDouble) && doubleIsDefined(
-        apply(row))
+          apply(row))
 
       def apply(row: Int) = f(c1(row).toDouble, c2(row).toDouble)
     }

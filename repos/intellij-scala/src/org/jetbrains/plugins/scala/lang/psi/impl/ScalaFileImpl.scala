@@ -236,9 +236,9 @@ class ScalaFileImpl(
         .getInstance()
         .getRootType(vFile)
         .isInstanceOf[ScratchRootType] &&
-        ScalaProjectSettings
-          .getInstance(getProject)
-          .isTreatScratchFilesAsWorksheet)
+      ScalaProjectSettings
+        .getInstance(getProject)
+        .isTreatScratchFilesAsWorksheet)
   }
 
   def setPackageName(name: String) {

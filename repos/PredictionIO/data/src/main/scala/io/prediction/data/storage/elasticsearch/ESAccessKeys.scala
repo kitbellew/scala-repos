@@ -48,7 +48,7 @@ class ESAccessKeys(client: Client, config: StorageClientConfig, index: String)
       (estype ->
         ("properties" ->
           ("key" -> ("type" -> "string") ~ ("index" -> "not_analyzed")) ~
-            ("events" -> ("type" -> "string") ~ ("index" -> "not_analyzed"))))
+          ("events" -> ("type" -> "string") ~ ("index" -> "not_analyzed"))))
     indices
       .preparePutMapping(index)
       .setType(estype)

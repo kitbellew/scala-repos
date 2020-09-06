@@ -18,7 +18,7 @@ object Util extends Build {
       ExclusionRule("com.sun.jdmk", "jmxtools"),
       ExclusionRule("com.sun.jmx", "jmxri"),
       ExclusionRule("javax.jms", "jms")
-  )
+    )
 
   val parserCombinators = scalaVersion { sv =>
     CrossVersion.partialVersion(sv) match {

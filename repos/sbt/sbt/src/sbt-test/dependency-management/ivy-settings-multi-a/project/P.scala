@@ -7,7 +7,7 @@ object B extends Build {
     Project("dep", file("dep")) settings (baseSettings: _*) settings (
       organization := "org.example",
       version := "1.0"
-  )
+    )
   lazy val use = Project(
     "use",
     file("use")) dependsOn (dep) settings (baseSettings: _*) settings (

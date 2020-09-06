@@ -77,6 +77,6 @@ case class EndPoint(host: String, port: Int, protocolType: SecurityProtocol) {
 
   def sizeInBytes: Int =
     4 + /* port */
-    shortStringLength(host) +
+      shortStringLength(host) +
       2 /* protocol id */
 }

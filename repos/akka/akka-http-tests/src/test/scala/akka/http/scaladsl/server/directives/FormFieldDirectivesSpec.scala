@@ -95,15 +95,15 @@ class FormFieldDirectivesSpec extends RoutingSpec {
     }
     "properly extract the value if only a urlencoded deserializer is available for a multipart field that comes without a" +
       "Content-Type (or text/plain)" in {
-      Post("/", multipartForm) ~> {
-        formFields('firstName, "age", 'sex.?, "VIPBoolean" ? false) {
-          (firstName, age, sex, vip) ⇒
-            complete(firstName + age + sex + vip)
+        Post("/", multipartForm) ~> {
+          formFields('firstName, "age", 'sex.?, "VIPBoolean" ? false) {
+            (firstName, age, sex, vip) ⇒
+              complete(firstName + age + sex + vip)
+          }
+        } ~> check {
+          responseAs[String] shouldEqual "Mike<int>42</int>Nonetrue"
         }
-      } ~> check {
-        responseAs[String] shouldEqual "Mike<int>42</int>Nonetrue"
       }
-    }
     "work even if only a FromStringUnmarshaller is available for a multipart field with custom Content-Type" in {
       Post("/", multipartFormWithTextHtml) ~> {
         formFields(('firstName, "age", 'super ? false)) {

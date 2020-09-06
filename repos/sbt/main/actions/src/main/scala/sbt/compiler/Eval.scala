@@ -182,7 +182,7 @@ final class Eval(
           stringSeqBytes(content) :: optBytes(backing)(
             fileExistsBytes) :: stringSeqBytes(options) ::
             seqBytes(classpath)(fileModifiedBytes) :: stringSeqBytes(
-            imports.strings.map(_._1)) :: optBytes(tpeName)(bytes) ::
+              imports.strings.map(_._1)) :: optBytes(tpeName)(bytes) ::
             bytes(ev.extraHash) :: Nil)))
     val moduleName = makeModuleName(hash)
 

@@ -293,8 +293,8 @@ case class ExpressionEncoder[T](
         s"Try to map ${st.simpleString} to Tuple${maxOrdinal + 1}, " +
           "but failed as the number of fields does not line up.\n" +
           " - Input schema: " + StructType
-          .fromAttributes(schema)
-          .simpleString + "\n" +
+            .fromAttributes(schema)
+            .simpleString + "\n" +
           " - Target schema: " + this.schema.simpleString)
     }
 

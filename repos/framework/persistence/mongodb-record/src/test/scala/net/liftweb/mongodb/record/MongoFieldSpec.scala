@@ -632,7 +632,7 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
           ("oid" -> ("$oid" -> subRec.oid.value.toString)) ~
           ("pattern" ->
             ("$regex" -> subRec.pattern.value.pattern) ~
-              ("$flags" -> subRec.pattern.value.flags)) ~
+            ("$flags" -> subRec.pattern.value.flags)) ~
           ("uuid" -> ("$uuid" -> subRec.uuid.value.toString))
 
       val srJsExp = new JsExp {
@@ -676,7 +676,7 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
           ("oid" -> ("$oid" -> lst(0).oid.value.toString)) ~
           ("pattern" ->
             ("$regex" -> lst(0).pattern.value.pattern) ~
-              ("$flags" -> lst(0).pattern.value.flags)) ~
+            ("$flags" -> lst(0).pattern.value.flags)) ~
           ("uuid" -> ("$uuid" -> lst(0).uuid.value.toString))
 
       val sr2Json =
@@ -690,7 +690,7 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
           ("oid" -> ("$oid" -> lst(1).oid.value.toString)) ~
           ("pattern" ->
             ("$regex" -> lst(1).pattern.value.pattern) ~
-              ("$flags" -> lst(1).pattern.value.flags)) ~
+            ("$flags" -> lst(1).pattern.value.flags)) ~
           ("uuid" -> ("$uuid" -> lst(1).uuid.value.toString))
 
       val sr1JsExp = new JsExp {

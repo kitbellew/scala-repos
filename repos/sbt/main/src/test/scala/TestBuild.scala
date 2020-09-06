@@ -164,7 +164,7 @@ object TestBuild {
       "Project " + id + "\n      Delegates:\n        " + delegates.mkString(
         "\n        ") +
         "\n      Configurations:\n        " + configurations.mkString(
-        "\n        ")
+          "\n        ")
     val confMap = mapBy(configurations)(_.name)
   }
 

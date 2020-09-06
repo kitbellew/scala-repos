@@ -18,10 +18,10 @@ private final class Performance {
         val performance = pairings.foldLeft(0) { case (acc, pairing) =>
           acc +
             ~(pairing.opponentOf(player.userId) flatMap ratingMap.get) + {
-            if (pairing wonBy player.userId) DIFF
-            else if (pairing lostBy player.userId) -DIFF
-            else 0
-          }
+              if (pairing wonBy player.userId) DIFF
+              else if (pairing lostBy player.userId) -DIFF
+              else 0
+            }
         } / pairings.size
         PlayerRepo.setPerformance(player, performance) inject performance.some
       }

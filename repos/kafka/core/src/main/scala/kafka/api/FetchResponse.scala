@@ -45,8 +45,8 @@ object FetchResponsePartitionData {
 
   val headerSize =
     2 + /* error code */
-    8 + /* high watermark */
-    4 /* messageSetSize */
+      8 + /* high watermark */
+      4 /* messageSetSize */
 }
 
 case class FetchResponsePartitionData(
@@ -199,8 +199,8 @@ object FetchResponse {
   def headerSize(requestVersion: Int): Int = {
     val throttleTimeSize = if (requestVersion > 0) 4 else 0
     4 + /* correlationId */
-    4 + /* topic count */
-    throttleTimeSize
+      4 + /* topic count */
+      throttleTimeSize
   }
 
   // Returns the size of entire fetch response in bytes (including the header size)

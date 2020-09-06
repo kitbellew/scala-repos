@@ -334,8 +334,8 @@ trait InlineParsers extends BaseParsers {
     (limiter ~ not(ws)) ~>
       (spanInline((not(lookbehind(Set(' ', '\t', '\n'))) ~ limiter), ctx) +) <~
       limiter ^^ {
-      _.mkString
-    }
+        _.mkString
+      }
 
   /** Either an emphasis or a strong text wrapped in asterisks.
     */

@@ -252,8 +252,8 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
 
   private lazy val id: Parser[String] = letter ~
     rep(letter | number | '-' | '_' | ':' | '.') ^^ { case first ~ rest =>
-    (first :: rest).mkString
-  }
+      (first :: rest).mkString
+    }
 
   private def isLetter(c: Char): Boolean = c.isLetter
 
@@ -269,8 +269,8 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
       (opt('*') ~ '[' ~> attrName <~ '!' ~ ']' ^^ { name =>
         AttrRemoveSubNode(name)
       }) | (opt('*') ~ '[' ~> attrName <~ ']' ^^ { name =>
-      AttrSubNode(name)
-    }) |
+        AttrSubNode(name)
+      }) |
 
       ('!' ~ '!' ^^ (a => DontMergeAttributes)) |
       ('<' ~ '*' ~ '>') ^^ (a => SurroundKids()) |
@@ -284,8 +284,8 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
 
   private lazy val attrName: Parser[String] = (letter | '_' | ':') ~
     rep(letter | number | '-' | '_' | ':' | '.') ^^ { case first ~ rest =>
-    (first :: rest).mkString
-  }
+      (first :: rest).mkString
+    }
 
   private lazy val attrConst: Parser[String] = {
     (('\'' ~> rep(

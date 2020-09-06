@@ -31,7 +31,7 @@ trait ScalaDocWithSyntaxSurrounder extends Surrounder {
         expr.substring(
           startOffset - offset,
           endOffset - offset) + getSyntaxTag + expr.substring(
-        endOffset - offset)
+          endOffset - offset)
 
     val surroundedText = new StringBuilder()
     elements.foreach(surroundedText append _.getText)

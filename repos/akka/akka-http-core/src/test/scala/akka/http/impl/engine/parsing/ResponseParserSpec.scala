@@ -313,7 +313,7 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
           this.resp.copy(entity = HttpEntity.Empty) == other.resp.copy(entity =
             HttpEntity.Empty) &&
             Await.result(this.resp.entity.toStrict(250.millis), 250.millis) ==
-              Await.result(other.resp.entity.toStrict(250.millis), 250.millis)
+            Await.result(other.resp.entity.toStrict(250.millis), 250.millis)
       }
 
       override def toString = resp.toString

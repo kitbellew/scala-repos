@@ -47,7 +47,7 @@ object DefaultRoutines {
           Templates(
             realPath.dropRight(1) :::
               ("resources-hidden" ::
-              realPath.takeRight(1)),
+                realPath.takeRight(1)),
             loc)
 
       bundle <- BundleBuilder.convert(xml, loc)

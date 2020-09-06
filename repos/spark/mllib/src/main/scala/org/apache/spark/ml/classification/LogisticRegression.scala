@@ -98,7 +98,7 @@ private[classification] trait LogisticRegressionParams
         ts.length == 2,
         "Logistic Regression getThreshold only applies to" +
           " binary classification, but thresholds has length != 2.  thresholds: " + ts
-          .mkString(",")
+            .mkString(",")
       )
       1.0 / (1.0 + ts(0) / ts(1))
     } else {

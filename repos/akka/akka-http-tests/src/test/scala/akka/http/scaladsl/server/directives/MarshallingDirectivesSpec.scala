@@ -215,9 +215,9 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
       Accept(`text/xxml`),
       `Accept-Charset`(`UTF-16`)) ~>
       handleWith(times2) ~> check {
-      rejection shouldEqual UnacceptedResponseContentTypeRejection(
-        Set(`application/xhtml+xml`, `text/xxml`))
-    })
+        rejection shouldEqual UnacceptedResponseContentTypeRejection(
+          Set(`application/xhtml+xml`, `text/xxml`))
+      })
   }
 
   "The marshalling infrastructure for JSON" should {

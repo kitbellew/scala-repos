@@ -68,26 +68,22 @@ class HiveQlSuite extends SparkFunSuite with BeforeAndAfterAll {
     assert(
       desc.schema ==
         CatalogColumn("viewtime", "int") ::
-          CatalogColumn("userid", "bigint") ::
-          CatalogColumn("page_url", "string") ::
-          CatalogColumn("referrer_url", "string") ::
-          CatalogColumn(
-            "ip",
-            "string",
-            comment = Some("IP Address of the User")) ::
-          CatalogColumn(
-            "country",
-            "string",
-            comment = Some("country of origination")) :: Nil)
+        CatalogColumn("userid", "bigint") ::
+        CatalogColumn("page_url", "string") ::
+        CatalogColumn("referrer_url", "string") ::
+        CatalogColumn(
+          "ip",
+          "string",
+          comment = Some("IP Address of the User")) ::
+        CatalogColumn(
+          "country",
+          "string",
+          comment = Some("country of origination")) :: Nil)
     // TODO will be SQLText
     assert(desc.viewText == Option("This is the staging page view table"))
-    assert(
-      desc.partitionColumns ==
-        CatalogColumn("dt", "string", comment = Some("date type")) ::
-          CatalogColumn(
-            "hour",
-            "string",
-            comment = Some("hour of the day")) :: Nil)
+    assert(desc.partitionColumns ==
+      CatalogColumn("dt", "string", comment = Some("date type")) ::
+      CatalogColumn("hour", "string", comment = Some("hour of the day")) :: Nil)
     assert(
       desc.storage.serdeProperties ==
         Map(
@@ -133,26 +129,22 @@ class HiveQlSuite extends SparkFunSuite with BeforeAndAfterAll {
     assert(
       desc.schema ==
         CatalogColumn("viewtime", "int") ::
-          CatalogColumn("userid", "bigint") ::
-          CatalogColumn("page_url", "string") ::
-          CatalogColumn("referrer_url", "string") ::
-          CatalogColumn(
-            "ip",
-            "string",
-            comment = Some("IP Address of the User")) ::
-          CatalogColumn(
-            "country",
-            "string",
-            comment = Some("country of origination")) :: Nil)
+        CatalogColumn("userid", "bigint") ::
+        CatalogColumn("page_url", "string") ::
+        CatalogColumn("referrer_url", "string") ::
+        CatalogColumn(
+          "ip",
+          "string",
+          comment = Some("IP Address of the User")) ::
+        CatalogColumn(
+          "country",
+          "string",
+          comment = Some("country of origination")) :: Nil)
     // TODO will be SQLText
     assert(desc.viewText == Option("This is the staging page view table"))
-    assert(
-      desc.partitionColumns ==
-        CatalogColumn("dt", "string", comment = Some("date type")) ::
-          CatalogColumn(
-            "hour",
-            "string",
-            comment = Some("hour of the day")) :: Nil)
+    assert(desc.partitionColumns ==
+      CatalogColumn("dt", "string", comment = Some("date type")) ::
+      CatalogColumn("hour", "string", comment = Some("hour of the day")) :: Nil)
     assert(desc.storage.serdeProperties == Map())
     assert(
       desc.storage.inputFormat == Some(

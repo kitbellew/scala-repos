@@ -135,7 +135,7 @@ abstract class TreeInfo {
     symOk(
       sym) && (!sym.isTerm || (sym.isStable && (allowVolatile || !sym.hasVolatileType))) &&
       typeOk(tree.tpe) && (allowVolatile || !hasVolatileType(
-      tree)) && !definitions.isByNameParamType(tree.tpe)
+        tree)) && !definitions.isByNameParamType(tree.tpe)
   )
 
   private def isStableIdent(tree: Ident, allowVolatile: Boolean): Boolean = (

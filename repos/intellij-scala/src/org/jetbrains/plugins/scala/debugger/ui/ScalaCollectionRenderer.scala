@@ -107,7 +107,7 @@ object ScalaCollectionRenderer {
       case ct: ClassType
           if ct.name.startsWith("scala.collection") &&
             !DebuggerUtils.instanceOf(ct, streamClassName) && !DebuggerUtils
-            .instanceOf(ct, iteratorClassName) =>
+              .instanceOf(ct, iteratorClassName) =>
         true
       case _ => evaluateBoolean(value, evaluationContext, hasDefiniteSizeEval)
     }

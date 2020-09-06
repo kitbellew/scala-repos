@@ -683,7 +683,7 @@ trait Crudify {
         <a href={
           listPathString +
             "?first=" + (0L max (first -
-            rowsPerPage.toLong))
+              rowsPerPage.toLong))
         }></a>
     }
   }

@@ -42,19 +42,20 @@ object Account extends LilaController {
               relationEnv.api.countFollowing(me.id) zip
               Env.pref.api.getPref(me) zip
               lila.game.GameRepo.urgentGames(me) map {
-              case (((nbFollowers, nbFollowing), prefs), povs) =>
-                Env.current.bus.publish(lila.user.User.Active(me), 'userActive)
-                Ok {
-                  import play.api.libs.json._
-                  import lila.pref.JsonView._
-                  Env.user.jsonView(me) ++ Json.obj(
-                    "prefs" -> prefs,
-                    "nowPlaying" -> JsArray(
-                      povs take 20 map Env.api.lobbyApi.nowPlaying),
-                    "nbFollowing" -> nbFollowing,
-                    "nbFollowers" -> nbFollowers)
-                }
-            }
+                case (((nbFollowers, nbFollowing), prefs), povs) =>
+                  Env.current.bus
+                    .publish(lila.user.User.Active(me), 'userActive)
+                  Ok {
+                    import play.api.libs.json._
+                    import lila.pref.JsonView._
+                    Env.user.jsonView(me) ++ Json.obj(
+                      "prefs" -> prefs,
+                      "nowPlaying" -> JsArray(
+                        povs take 20 map Env.api.lobbyApi.nowPlaying),
+                      "nbFollowing" -> nbFollowing,
+                      "nbFollowers" -> nbFollowers)
+                  }
+              }
         }
     ) map ensureSessionId(ctx.req)
   }
@@ -158,8 +159,8 @@ object Account extends LilaController {
   def security = Auth { implicit ctx => me =>
     Env.security.api.dedup(me.id, ctx.req) >>
       Env.security.api.locatedOpenSessions(me.id, 50) map { sessions =>
-      Ok(html.account.security(me, sessions, currentSessionId))
-    }
+        Ok(html.account.security(me, sessions, currentSessionId))
+      }
   }
 
   def signout(sessionId: String) = Auth { implicit ctx => me =>

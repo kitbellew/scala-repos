@@ -58,33 +58,35 @@ final class Preload(
       streamsOnAir() zip
       (ctx.userId ?? getPlayban) zip
       (ctx.me ?? Preload.currentGame(lightUser)) map {
-      case (
-            (
+        case (
               (
                 (
                   (
-                    ((((((data, posts), tours), simuls), feat), entries), lead),
-                    tWinners),
-                  puzzle),
-                streams),
-              playban),
-            currentGame) =>
-        (
-          data,
-          entries,
-          posts,
-          tours,
-          simuls,
-          feat,
-          lead,
-          tWinners,
-          puzzle,
-          streams,
-          Env.blog.lastPostCache.apply,
-          playban,
-          currentGame,
-          countRounds())
-    }
+                    (
+                      (
+                        (((((data, posts), tours), simuls), feat), entries),
+                        lead),
+                      tWinners),
+                    puzzle),
+                  streams),
+                playban),
+              currentGame) =>
+          (
+            data,
+            entries,
+            posts,
+            tours,
+            simuls,
+            feat,
+            lead,
+            tWinners,
+            puzzle,
+            streams,
+            Env.blog.lastPostCache.apply,
+            playban,
+            currentGame,
+            countRounds())
+      }
 }
 
 object Preload {
