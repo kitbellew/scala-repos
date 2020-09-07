@@ -889,10 +889,9 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       */
     def normalizeIndentation(_code: String): String = {
 
-      val code =
-        _code
-          .replaceAll("\\s+$", "")
-          .dropWhile(_ == '\n') // right-trim + remove all leading '\n'
+      val code = _code
+        .replaceAll("\\s+$", "")
+        .dropWhile(_ == '\n') // right-trim + remove all leading '\n'
       val lines = code.split("\n")
 
       // maxSkip - size of the longest common whitespace prefix of non-empty lines

@@ -33,11 +33,10 @@ class WrappedArrayTest extends FunSuite {
             val elemClass = elem.getClass
             // TODO: allow passing in ClassLoader to picklers selected from registry
             val classLoader: ClassLoader = elemClass.getClassLoader
-            val elemTag =
-              FastTypeTag.mkRaw(
-                elemClass,
-                mirror
-              ) // slow: `mkRaw` is called for each element
+            val elemTag = FastTypeTag.mkRaw(
+              elemClass,
+              mirror
+            ) // slow: `mkRaw` is called for each element
             val pickler = internal.currentRuntime.picklers
               .genPickler(classLoader, elemClass, elemTag)
               .asInstanceOf[Pickler[AnyRef]]

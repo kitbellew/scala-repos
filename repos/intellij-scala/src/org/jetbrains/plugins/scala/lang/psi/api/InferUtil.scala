@@ -239,10 +239,9 @@ object InferUtil {
     val iterator = params.iterator
     while (iterator.hasNext) {
       val param = iterator.next()
-      val paramType =
-        abstractSubstitutor.subst(
-          param.paramType
-        ) //we should do all of this with information known before
+      val paramType = abstractSubstitutor.subst(
+        param.paramType
+      ) //we should do all of this with information known before
       val implicitState = ImplicitState(
         place,
         paramType,

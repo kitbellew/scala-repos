@@ -208,8 +208,9 @@ class MutableSettings(val errorFn: String => Unit)
     * and boot classpaths in the same form as would be passed on the command line.
     */
   def embeddedDefaults(loader: ClassLoader) {
-    explicitParentLoader =
-      Option(loader) // for the Interpreter parentClassLoader
+    explicitParentLoader = Option(
+      loader
+    ) // for the Interpreter parentClassLoader
     getClasspath("app", loader) foreach { classpath.value = _ }
     getClasspath("boot", loader) foreach { bootclasspath append _ }
   }

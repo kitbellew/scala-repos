@@ -3009,11 +3009,10 @@ trait Types
     def withTypeVars(op: Type => Boolean, depth: Depth): Boolean = {
       val quantifiedFresh = cloneSymbols(quantified)
       val tvars = quantifiedFresh map (tparam => TypeVar(tparam))
-      val underlying1 =
-        underlying.instantiateTypeParams(
-          quantified,
-          tvars
-        ) // fuse subst quantified -> quantifiedFresh -> tvars
+      val underlying1 = underlying.instantiateTypeParams(
+        quantified,
+        tvars
+      ) // fuse subst quantified -> quantifiedFresh -> tvars
       op(underlying1) && {
         solve(
           tvars,

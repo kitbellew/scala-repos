@@ -233,12 +233,11 @@ private class StringIteratorReader(val iter: Iterator[String])
         }
         next += n
         if (n < len) {
-          val m =
-            read(
-              cbuf,
-              off + n,
-              len - n
-            ) // have more space, fetch more input from iter
+          val m = read(
+            cbuf,
+            off + n,
+            len - n
+          ) // have more space, fetch more input from iter
           if (m != -1) n += m
         }
       }

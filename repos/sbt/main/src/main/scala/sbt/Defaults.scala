@@ -2097,10 +2097,9 @@ object Classpaths {
           loadedBuild,
           thisProjectRef) map { (pid, sbtDep, classifiers, lb, ref) =>
           val pluginClasspath = lb.units(ref.build).unit.plugins.fullClasspath
-          val pluginJars =
-            pluginClasspath.filter(
-              _.data.isFile
-            ) // exclude directories: an approximation to whether they've been published
+          val pluginJars = pluginClasspath.filter(
+            _.data.isFile
+          ) // exclude directories: an approximation to whether they've been published
           val pluginIDs: Seq[ModuleID] = pluginJars.flatMap(_ get moduleID.key)
           GetClassifiersModule(
             pid,

@@ -651,12 +651,11 @@ abstract class Erasure
       tree match {
         case Apply(ta @ TypeApply(sel @ Select(qual, name), List(targ)), List())
             if tree.symbol == Any_asInstanceOf =>
-          val qual1 =
-            typedQualifier(
-              qual,
-              NOmode,
-              ObjectTpe
-            ) // need to have an expected type, see #3037
+          val qual1 = typedQualifier(
+            qual,
+            NOmode,
+            ObjectTpe
+          ) // need to have an expected type, see #3037
           // !!! Make pending/run/t5866b.scala work. The fix might be here and/or in unbox1.
           if (isPrimitiveValueType(targ.tpe) || isErasedValueType(targ.tpe)) {
             val noNullCheckNeeded = targ.tpe match {

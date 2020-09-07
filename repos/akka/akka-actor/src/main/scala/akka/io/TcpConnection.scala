@@ -459,10 +459,9 @@ private[io] abstract class TcpConnection(
 
     def doWrite(info: ConnectionInfo): PendingWrite = {
       @tailrec def writeToChannel(data: ByteString): PendingWrite = {
-        val writtenBytes =
-          channel.write(
-            buffer
-          ) // at first we try to drain the remaining bytes from the buffer
+        val writtenBytes = channel.write(
+          buffer
+        ) // at first we try to drain the remaining bytes from the buffer
         if (TraceLogging) log.debug("Wrote [{}] bytes to channel", writtenBytes)
         if (buffer.hasRemaining) {
           // we weren't able to write all bytes from the buffer, so we need to try again later

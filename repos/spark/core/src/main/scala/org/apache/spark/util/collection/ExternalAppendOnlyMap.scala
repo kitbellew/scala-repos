@@ -359,8 +359,9 @@ class ExternalAppendOnlyMap[K, V, C](
       */
     private def removeFromBuffer[T](buffer: ArrayBuffer[T], index: Int): T = {
       val elem = buffer(index)
-      buffer(index) =
-        buffer(buffer.size - 1) // This also works if index == buffer.size - 1
+      buffer(index) = buffer(
+        buffer.size - 1
+      ) // This also works if index == buffer.size - 1
       buffer.reduceToSize(buffer.size - 1)
       elem
     }

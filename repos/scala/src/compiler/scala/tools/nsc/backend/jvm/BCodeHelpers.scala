@@ -806,10 +806,9 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
               case ClazzTag =>
                 av.visit(name, typeToBType(const.typeValue).toASMType)
               case EnumTag =>
-                val edesc =
-                  descriptor(
-                    const.tpe
-                  ) // the class descriptor of the enumeration class.
+                val edesc = descriptor(
+                  const.tpe
+                ) // the class descriptor of the enumeration class.
                 val evalue =
                   const.symbolValue.name.toString // value the actual enumeration value.
                 av.visitEnum(name, edesc, evalue)
@@ -835,10 +834,9 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         case NestedAnnotArg(annInfo) =>
           val AnnotationInfo(typ, args, assocs) = annInfo
           assert(args.isEmpty, args)
-          val desc =
-            descriptor(
-              typ
-            ) // the class descriptor of the nested annotation class
+          val desc = descriptor(
+            typ
+          ) // the class descriptor of the nested annotation class
           val nestedVisitor = av.visitAnnotation(name, desc)
           emitAssocs(nestedVisitor, assocs)
       }

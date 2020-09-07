@@ -92,11 +92,10 @@ object VersionUtil {
       }
 
       val date = executeTool("get-scala-commit-date")
-      val sha =
-        executeTool("get-scala-commit-sha").substring(
-          0,
-          7
-        ) // The script produces 10 digits at the moment
+      val sha = executeTool("get-scala-commit-sha").substring(
+        0,
+        7
+      ) // The script produces 10 digits at the moment
 
       val (canonicalV, mavenV, osgiV, release) = suffix match {
         case "SNAPSHOT" =>

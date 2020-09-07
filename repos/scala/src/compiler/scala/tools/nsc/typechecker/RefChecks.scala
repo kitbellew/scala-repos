@@ -1464,8 +1464,9 @@ abstract class RefChecks
         }
       case ModuleDef(_, _, _) => eliminateModuleDefs(tree)
       case ValDef(_, _, _, _) =>
-        val tree1 =
-          transform(tree) // important to do before forward reference check
+        val tree1 = transform(
+          tree
+        ) // important to do before forward reference check
         if (tree1.symbol.isLazy) tree1 :: Nil
         else {
           val lazySym = tree.symbol.lazyAccessorOrSelf

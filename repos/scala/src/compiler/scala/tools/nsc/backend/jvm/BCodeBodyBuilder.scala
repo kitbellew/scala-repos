@@ -746,10 +746,9 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
         case Apply(fun @ _, List(expr))
             if currentRun.runDefinitions.isUnbox(fun.symbol) =>
           genLoad(expr)
-          val boxType =
-            unboxResultType(
-              fun.symbol
-            ) // was typeToBType(fun.symbol.owner.linkedClassOfClass.tpe)
+          val boxType = unboxResultType(
+            fun.symbol
+          ) // was typeToBType(fun.symbol.owner.linkedClassOfClass.tpe)
           generatedType = boxType
           val MethodNameAndType(mname, methodType) =
             srBoxesRuntimeUnboxToMethods(boxType)

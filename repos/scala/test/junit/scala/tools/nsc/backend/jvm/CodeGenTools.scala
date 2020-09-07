@@ -105,10 +105,9 @@ object CodeGenTools {
   def checkReport(
       compiler: Global,
       allowMessage: StoreReporter#Info => Boolean = _ => false): Unit = {
-    val disallowed =
-      reporter(compiler).infos.toList.filter(
-        !allowMessage(_)
-      ) // toList prevents an infer-non-wildcard-existential warning.
+    val disallowed = reporter(compiler).infos.toList.filter(
+      !allowMessage(_)
+    ) // toList prevents an infer-non-wildcard-existential warning.
     if (disallowed.nonEmpty) {
       val msg = disallowed.mkString("\n")
       assert(

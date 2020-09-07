@@ -88,12 +88,11 @@ class DirectAPIKeyFinder[M[+_]](underlying: APIKeyManager[M])(implicit
       : PartialFunction[APIKeyRecord, M[v1.APIKeyDetails]] = {
     case APIKeyRecord(apiKey, name, description, issuer, grantIds, false) =>
       underlying.findAPIKeyAncestry(apiKey).flatMap { ancestors =>
-        val ancestorKeys =
-          ancestors
-            .drop(1)
-            .map(
-              _.apiKey
-            ) // The first element of ancestors is the key itself, so we drop it
+        val ancestorKeys = ancestors
+          .drop(1)
+          .map(
+            _.apiKey
+          ) // The first element of ancestors is the key itself, so we drop it
         grantIds.map(underlying.findGrant).toList.sequence map { grants =>
           val divulgedIssuers = rootKey
             .map { rk => ancestorKeys.reverse.dropWhile(_ != rk).reverse }

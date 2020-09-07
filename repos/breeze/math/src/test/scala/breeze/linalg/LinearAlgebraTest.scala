@@ -118,12 +118,11 @@ class LinearAlgebraTest
     val B = DenseMatrix((1, 2, 3), (4, 5, -6), (7, 8, 9))
     det(B) should be(-72.0 +- 1e-16)
 
-    val C =
-      DenseMatrix(
-        (1, 2, 3),
-        (2, 4, 6),
-        (0, -1, 0)
-      ) // 1st and 2nd row linearly dep.
+    val C = DenseMatrix(
+      (1, 2, 3),
+      (2, 4, 6),
+      (0, -1, 0)
+    ) // 1st and 2nd row linearly dep.
     det(C) should be(0.0 +- 1e-6)
 
     val D = DenseMatrix((-1, 1, -1), (1, 2, 3), (3, -10, 1))
@@ -141,12 +140,11 @@ class LinearAlgebraTest
     detB should be(math.log(72.0) +- 1e-15)
     assert(signB === -1.0)
 
-    val C =
-      DenseMatrix(
-        (1, 2, 3),
-        (2, 4, 6),
-        (0, -1, 0)
-      ) // 1st and 2nd row linearly dep.
+    val C = DenseMatrix(
+      (1, 2, 3),
+      (2, 4, 6),
+      (0, -1, 0)
+    ) // 1st and 2nd row linearly dep.
     val (signC, detC) = logdet(C)
     detC should be(Double.NegativeInfinity +- 1e-15)
     assert(signC === 0.0)
@@ -224,24 +222,21 @@ class LinearAlgebraTest
   }
 
   test("rank") {
-    val r1 =
-      DenseMatrix(
-        (1.0, 2.0, 3.0),
-        (1.0, 2.0, 3.0),
-        (1.0, 2.0, 3.0)
-      ) // rank 1 matrix
-    val r2 =
-      DenseMatrix(
-        (1.0, 2.0, 3.0),
-        (4.0, 5.0, 6.0),
-        (7.0, 8.0, 9.0)
-      ) // rank 2 matrix
-    val r3 =
-      DenseMatrix(
-        (1.0, 2.0, 3.0),
-        (4.0, 5.0, 6.0),
-        (6.0, 8.0, 9.0)
-      ) // rank 3 matrix
+    val r1 = DenseMatrix(
+      (1.0, 2.0, 3.0),
+      (1.0, 2.0, 3.0),
+      (1.0, 2.0, 3.0)
+    ) // rank 1 matrix
+    val r2 = DenseMatrix(
+      (1.0, 2.0, 3.0),
+      (4.0, 5.0, 6.0),
+      (7.0, 8.0, 9.0)
+    ) // rank 2 matrix
+    val r3 = DenseMatrix(
+      (1.0, 2.0, 3.0),
+      (4.0, 5.0, 6.0),
+      (6.0, 8.0, 9.0)
+    ) // rank 3 matrix
     assert(rank(r1) === 1)
     assert(rank(r2) === 2)
     assert(rank(r3) === 3)

@@ -558,8 +558,9 @@ trait Definitions extends api.StandardDefinitions {
     def ArrayModule_apply(tp: Type) = ArrayModule_overloadedApply.suchThat(
       _.tpe.resultType =:= arrayType(tp)
     ) // (p1: AnyVal1, ps: AnyVal1*): Array[AnyVal1]
-    lazy val ArrayClass =
-      getRequiredClass("scala.Array") // requiredClass[scala.Array[_]]
+    lazy val ArrayClass = getRequiredClass(
+      "scala.Array"
+    ) // requiredClass[scala.Array[_]]
     lazy val Array_apply = getMemberMethod(ArrayClass, nme.apply)
     lazy val Array_update = getMemberMethod(ArrayClass, nme.update)
     lazy val Array_length = getMemberMethod(ArrayClass, nme.length)
@@ -600,10 +601,9 @@ trait Definitions extends api.StandardDefinitions {
 
     // scala.reflect
     lazy val ReflectPackage = requiredModule[scala.reflect.`package`.type]
-    lazy val ReflectApiPackage =
-      getPackageObjectIfDefined(
-        "scala.reflect.api"
-      ) // defined in scala-reflect.jar, so we need to be careful
+    lazy val ReflectApiPackage = getPackageObjectIfDefined(
+      "scala.reflect.api"
+    ) // defined in scala-reflect.jar, so we need to be careful
     lazy val ReflectRuntimePackage = getPackageObjectIfDefined(
       "scala.reflect.runtime"
     ) // defined in scala-reflect.jar, so we need to be careful
@@ -612,10 +612,9 @@ trait Definitions extends api.StandardDefinitions {
     def ReflectRuntimeCurrentMirror =
       ReflectRuntimePackage.map(sym => getMemberMethod(sym, nme.currentMirror))
 
-    lazy val UniverseClass =
-      getClassIfDefined(
-        "scala.reflect.api.Universe"
-      ) // defined in scala-reflect.jar, so we need to be careful
+    lazy val UniverseClass = getClassIfDefined(
+      "scala.reflect.api.Universe"
+    ) // defined in scala-reflect.jar, so we need to be careful
     def UniverseInternal = getMemberValue(UniverseClass, nme.internal)
 
     lazy val PartialManifestModule =
@@ -626,38 +625,33 @@ trait Definitions extends api.StandardDefinitions {
     lazy val OptManifestClass = requiredClass[scala.reflect.OptManifest[_]]
     lazy val NoManifest = requiredModule[scala.reflect.NoManifest.type]
 
-    lazy val TreesClass =
-      getClassIfDefined(
-        "scala.reflect.api.Trees"
-      ) // defined in scala-reflect.jar, so we need to be careful
+    lazy val TreesClass = getClassIfDefined(
+      "scala.reflect.api.Trees"
+    ) // defined in scala-reflect.jar, so we need to be careful
 
-    lazy val ExprsClass =
-      getClassIfDefined(
-        "scala.reflect.api.Exprs"
-      ) // defined in scala-reflect.jar, so we need to be careful
+    lazy val ExprsClass = getClassIfDefined(
+      "scala.reflect.api.Exprs"
+    ) // defined in scala-reflect.jar, so we need to be careful
     def ExprClass = ExprsClass.map(sym => getMemberClass(sym, tpnme.Expr))
     def ExprSplice = ExprClass.map(sym => getMemberMethod(sym, nme.splice))
     def ExprValue = ExprClass.map(sym => getMemberMethod(sym, nme.value))
 
     lazy val ClassTagModule = requiredModule[scala.reflect.ClassTag[_]]
     lazy val ClassTagClass = requiredClass[scala.reflect.ClassTag[_]]
-    lazy val TypeTagsClass =
-      getClassIfDefined(
-        "scala.reflect.api.TypeTags"
-      ) // defined in scala-reflect.jar, so we need to be careful
+    lazy val TypeTagsClass = getClassIfDefined(
+      "scala.reflect.api.TypeTags"
+    ) // defined in scala-reflect.jar, so we need to be careful
 
-    lazy val ApiUniverseClass =
-      getClassIfDefined(
-        "scala.reflect.api.Universe"
-      ) // defined in scala-reflect.jar, so we need to be careful
+    lazy val ApiUniverseClass = getClassIfDefined(
+      "scala.reflect.api.Universe"
+    ) // defined in scala-reflect.jar, so we need to be careful
     lazy val JavaUniverseClass = getClassIfDefined(
       "scala.reflect.api.JavaUniverse"
     ) // defined in scala-reflect.jar, so we need to be careful
 
-    lazy val MirrorClass =
-      getClassIfDefined(
-        "scala.reflect.api.Mirror"
-      ) // defined in scala-reflect.jar, so we need to be careful
+    lazy val MirrorClass = getClassIfDefined(
+      "scala.reflect.api.Mirror"
+    ) // defined in scala-reflect.jar, so we need to be careful
 
     lazy val TypeCreatorClass = getClassIfDefined(
       "scala.reflect.api.TypeCreator"

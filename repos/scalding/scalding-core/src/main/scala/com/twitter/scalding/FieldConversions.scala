@@ -174,10 +174,9 @@ trait FieldConversions extends LowPriorityFieldConversions {
           val newName = newSymbol(taken, name)
           (taken + newName, newName :: renames)
         }
-      val newRight =
-        fields(
-          reversedRename.reverse
-        ) // We pushed in as a stack, so we need to reverse
+      val newRight = fields(
+        reversedRename.reverse
+      ) // We pushed in as a stack, so we need to reverse
       (newRight, RichPipe(rightPipe).rename(right -> newRight))
     }
   }

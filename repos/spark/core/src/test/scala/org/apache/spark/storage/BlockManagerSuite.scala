@@ -183,12 +183,11 @@ class BlockManagerSuite
 
   test("BlockManagerId object caching") {
     val id1 = BlockManagerId("e1", "XXX", 1)
-    val id2 =
-      BlockManagerId(
-        "e1",
-        "XXX",
-        1
-      ) // this should return the same object as id1
+    val id2 = BlockManagerId(
+      "e1",
+      "XXX",
+      1
+    ) // this should return the same object as id1
     val id3 =
       BlockManagerId("e1", "XXX", 2) // this should return a different object
     assert(id2 === id1, "id2 is not same as id1")

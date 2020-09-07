@@ -623,8 +623,9 @@ private[clustering] object OnlineLDAOptimizer {
     // Initialize the variational distribution q(theta|gamma) for the mini-batch
     val gammad: BDV[Double] =
       new Gamma(gammaShape, 1.0 / gammaShape).samplesVector(k) // K
-    val expElogthetad: BDV[Double] =
-      exp(LDAUtils.dirichletExpectation(gammad)) // K
+    val expElogthetad: BDV[Double] = exp(
+      LDAUtils.dirichletExpectation(gammad)
+    ) // K
     val expElogbetad = expElogbeta(ids, ::).toDenseMatrix // ids * K
 
     val phiNorm: BDV[Double] = expElogbetad * expElogthetad :+ 1e-100 // ids

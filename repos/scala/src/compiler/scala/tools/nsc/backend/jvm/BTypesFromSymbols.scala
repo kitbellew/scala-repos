@@ -436,10 +436,9 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
      * We collect them here.
      */
     val nestedClassSymbols = {
-      val linkedClass =
-        exitingPickler(
-          classSym.linkedClassOfClass
-        ) // linkedCoC does not work properly in late phases
+      val linkedClass = exitingPickler(
+        classSym.linkedClassOfClass
+      ) // linkedCoC does not work properly in late phases
 
       // The lambdalift phase lifts all nested classes to the enclosing class, so if we collect
       // member classes right after lambdalift, we obtain all nested classes, including local and

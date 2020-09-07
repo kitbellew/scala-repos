@@ -117,18 +117,21 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
   lazy val jlCharSequenceRef: ClassBType = classBTypeFromSymbol(
     JavaCharSequenceClass)
   lazy val jlThrowableRef: ClassBType = classBTypeFromSymbol(ThrowableClass)
-  lazy val jlCloneableRef: ClassBType =
-    classBTypeFromSymbol(JavaCloneableClass) // java/lang/Cloneable
+  lazy val jlCloneableRef: ClassBType = classBTypeFromSymbol(
+    JavaCloneableClass
+  ) // java/lang/Cloneable
   lazy val jiSerializableRef: ClassBType = classBTypeFromSymbol(
     JavaSerializableClass
   ) // java/io/Serializable
   lazy val jlClassCastExceptionRef: ClassBType = classBTypeFromSymbol(
     ClassCastExceptionClass
   ) // java/lang/ClassCastException
-  lazy val juMapRef: ClassBType =
-    classBTypeFromSymbol(JavaUtilMap) // java/util/Map
-  lazy val juHashMapRef: ClassBType =
-    classBTypeFromSymbol(JavaUtilHashMap) // java/util/HashMap
+  lazy val juMapRef: ClassBType = classBTypeFromSymbol(
+    JavaUtilMap
+  ) // java/util/Map
+  lazy val juHashMapRef: ClassBType = classBTypeFromSymbol(
+    JavaUtilHashMap
+  ) // java/util/HashMap
   lazy val sbScalaBeanInfoRef: ClassBType = classBTypeFromSymbol(
     requiredClass[scala.beans.ScalaBeanInfo])
   lazy val jliSerializedLambdaRef: ClassBType = classBTypeFromSymbol(

@@ -395,12 +395,11 @@ trait StringLibSpecs[M[+_]]
         Vector(SString("e"), SString("")))
     }
     "determine compareTo" in {
-      val input =
-        op2Input(
-          compareTo,
-          CString("quirky"),
-          homStrings
-        ) //todo put regex here!
+      val input = op2Input(
+        compareTo,
+        CString("quirky"),
+        homStrings
+      ) //todo put regex here!
 
       val result = testEval(input)
 

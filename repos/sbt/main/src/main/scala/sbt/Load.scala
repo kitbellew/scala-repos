@@ -1029,10 +1029,9 @@ object Load {
       lazy val defaultSbtFiles = configurationSources(transformedProject.base)
       // Grabs the plugin settings for old-style sbt plugins.
       def pluginSettings(f: Plugins) = {
-        val included =
-          loadedPlugins.detected.plugins.values.filter(
-            f.include
-          ) // don't apply the filter to AutoPlugins, only Plugins
+        val included = loadedPlugins.detected.plugins.values.filter(
+          f.include
+        ) // don't apply the filter to AutoPlugins, only Plugins
         included.flatMap(p =>
           p.settings.filter(isProjectThis) ++ p.projectSettings)
       }

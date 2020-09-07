@@ -727,10 +727,9 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
         val ixer = rix.join(gIdx) //   to compute map to final (rix) locations;
         val vals =
           values.take(taker) // Take values corresponding to current pivot label
-        val v =
-          ixer.rTake
-            .map(vals.take(_))
-            .getOrElse(vals) //   map values to be in correspondence to rix
+        val v = ixer.rTake
+          .map(vals.take(_))
+          .getOrElse(vals) //   map values to be in correspondence to rix
         result(loc) = v //   and save resulting col vec in array.
         loc += 1 // Increment offset into result array
       }

@@ -4955,12 +4955,11 @@ trait Typers
             }
 
             val body1 = typed(body, mode, pt)
-            val impliedType =
-              patmat.binderTypeImpliedByPattern(
-                body1,
-                pt,
-                sym
-              ) // SI-1503, SI-5204
+            val impliedType = patmat.binderTypeImpliedByPattern(
+              body1,
+              pt,
+              sym
+            ) // SI-1503, SI-5204
             val symTp =
               if (treeInfo.isSequenceValued(body)) seqType(impliedType)
               else impliedType
@@ -6088,12 +6087,11 @@ trait Typers
               }
             case Typed(expr, tpt) =>
               val tpt1 = typedType(tpt, mode) // type the ascribed type first
-              val expr1 =
-                typed(
-                  expr,
-                  mode.onlySticky,
-                  tpt1.tpe.deconst
-                ) // then type the expression with tpt1 as the expected type
+              val expr1 = typed(
+                expr,
+                mode.onlySticky,
+                tpt1.tpe.deconst
+              ) // then type the expression with tpt1 as the expected type
               treeCopy.Typed(tree, expr1, tpt1) setType tpt1.tpe
           }
       }

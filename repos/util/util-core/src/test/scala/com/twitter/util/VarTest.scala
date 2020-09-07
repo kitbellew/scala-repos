@@ -66,16 +66,15 @@ class VarTest extends FunSuite with GeneratorDrivenPropertyChecks {
     val v1 = Var(2)
     var result = 0
 
-    val o1 =
-      v1.changes.register(Witness({ i => result = result + i })) // result = 2
-    val o2 =
-      v1.changes.register(Witness({ i =>
-        result = result * i * i
-      })) // result = 2 * 2 * 2 = 8
-    val o3 =
-      v1.changes.register(Witness({ i =>
-        result = result + result + i
-      })) // result = 8 + 8 + 2 = 18
+    val o1 = v1.changes.register(Witness({ i =>
+      result = result + i
+    })) // result = 2
+    val o2 = v1.changes.register(Witness({ i =>
+      result = result * i * i
+    })) // result = 2 * 2 * 2 = 8
+    val o3 = v1.changes.register(Witness({ i =>
+      result = result + result + i
+    })) // result = 8 + 8 + 2 = 18
 
     assert(result == 18) // ensure those three things happened in sequence
 

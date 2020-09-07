@@ -347,11 +347,10 @@ class SparkHadoopUtil extends Logging {
     text match {
       case HADOOP_CONF_PATTERN(matched) => {
         logDebug(text + " matched " + HADOOP_CONF_PATTERN)
-        val key =
-          matched.substring(
-            13,
-            matched.length() - 1
-          ) // remove ${hadoopconf- .. }
+        val key = matched.substring(
+          13,
+          matched.length() - 1
+        ) // remove ${hadoopconf- .. }
         val eval = Option[String](hadoopConf.get(key))
           .map { value =>
             logDebug("Substituted " + matched + " with " + value)

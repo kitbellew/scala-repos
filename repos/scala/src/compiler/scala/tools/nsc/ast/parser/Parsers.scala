@@ -2589,11 +2589,10 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
         // TODO AM: freshTermName(o2p(in.skipToken()), "_$$"), will need to update test suite
         val pname: TypeName = wildcardOrIdent().toTypeName
         val param = atPos(start, nameOffset) {
-          val tparams =
-            typeParamClauseOpt(
-              pname,
-              null
-            ) // @M TODO null --> no higher-order context bounds for now
+          val tparams = typeParamClauseOpt(
+            pname,
+            null
+          ) // @M TODO null --> no higher-order context bounds for now
           TypeDef(mods, pname, tparams, typeBounds())
         }
         if (contextBoundBuf ne null) {
@@ -3408,10 +3407,9 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
         var firstOpt: Option[Tree] = None
         if (isExprIntro) {
           in.flushDoc
-          val first =
-            expr(
-              InTemplate
-            ) // @S: first statement is potentially converted so cannot be stubbed.
+          val first = expr(
+            InTemplate
+          ) // @S: first statement is potentially converted so cannot be stubbed.
           if (in.token == ARROW) {
             first match {
               case Typed(tree @ This(tpnme.EMPTY), tpt) =>

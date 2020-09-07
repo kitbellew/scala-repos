@@ -374,10 +374,9 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
             }
           case "scala.<byname>" => "=> " + toString(typeArgs.head)
           case _ => {
-            val path =
-              StringUtil.cutSubstring(symbol.path)(
-                ".package"
-              ) //remove package object reference
+            val path = StringUtil.cutSubstring(symbol.path)(
+              ".package"
+            ) //remove package object reference
             StringUtil.trimStart(
               processName(path) + typeArgString(typeArgs),
               "<empty>.")

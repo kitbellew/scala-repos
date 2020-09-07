@@ -408,14 +408,13 @@ class MongoDocumentExamplesSpec extends Specification with MongoTestKit {
     tc2FromDb.get must_== tc2
 
     // update
-    val tc3 =
-      TstCollection(
-        tc._id,
-        "MongoDB",
-        "document",
-        2,
-        info
-      ) // the new object to update with, replaces the entire document, except possibly _id
+    val tc3 = TstCollection(
+      tc._id,
+      "MongoDB",
+      "document",
+      2,
+      info
+    ) // the new object to update with, replaces the entire document, except possibly _id
     val q =
       ("name" -> "MongoDB") // the query to select the document(s) to update
     TstCollection.update(q, tc3)

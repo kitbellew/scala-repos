@@ -683,10 +683,9 @@ class CheckpointSuite
   // failure, are re-processed or not.
   test("recovery with file input stream") {
     // Set up the streaming context and input streams
-    val batchDuration =
-      Seconds(
-        2
-      ) // Due to 1-second resolution of setLastModified() on some OS's.
+    val batchDuration = Seconds(
+      2
+    ) // Due to 1-second resolution of setLastModified() on some OS's.
     val testDir = Utils.createTempDir()
     val outputBuffer = new ConcurrentLinkedQueue[Seq[Int]]
 

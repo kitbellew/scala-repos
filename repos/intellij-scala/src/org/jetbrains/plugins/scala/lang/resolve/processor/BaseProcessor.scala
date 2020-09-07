@@ -425,10 +425,9 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
       visitedAliases: HashSet[ScTypeAlias],
       visitedTypeParameter: HashSet[ScTypeParameterType]): Boolean = {
     val subst = state.get(ScSubstitutor.key)
-    val compound =
-      state.get(
-        BaseProcessor.COMPOUND_TYPE_THIS_TYPE_KEY
-      ) //todo: looks like ugly workaround
+    val compound = state.get(
+      BaseProcessor.COMPOUND_TYPE_THIS_TYPE_KEY
+    ) //todo: looks like ugly workaround
     val newSubst =
       compound match {
         case Some(_) => subst

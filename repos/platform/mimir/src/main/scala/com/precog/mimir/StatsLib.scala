@@ -796,10 +796,9 @@ trait StatsLibModule[M[+_]]
               val stdDev2 = sqrt(unscaledVar2) / count
               val correlation = cov / (stdDev1 * stdDev2)
 
-              val resultTable =
-                Table.constDecimal(
-                  Set(correlation)
-                ) //TODO the following lines are used throughout. refactor!
+              val resultTable = Table.constDecimal(
+                Set(correlation)
+              ) //TODO the following lines are used throughout. refactor!
               val valueTable = resultTable.transform(
                 trans.WrapObject(Leaf(Source), paths.Value.name))
               val keyTable = Table.constEmptyArray.transform(

@@ -50,12 +50,11 @@ trait ScInterpolated extends ScalaPsiElement {
   @CachedInsidePsiElement(this, ModCount.getBlockModificationCount)
   def getStringContextExpression: Option[ScExpression] = {
     val quote = if (isMultiLineString) "\"\"\"" else "\""
-    val parts =
-      getStringParts(this).mkString(
-        quote,
-        s"$quote, $quote",
-        quote
-      ) //making list of string literals
+    val parts = getStringParts(this).mkString(
+      quote,
+      s"$quote, $quote",
+      quote
+    ) //making list of string literals
     val params = getInjections.map(_.getText).mkString("(", ",", ")")
     if (getContext == null) None
     else

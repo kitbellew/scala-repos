@@ -62,11 +62,10 @@ class InlineInfoTest extends ClearAfterClass {
       """.stripMargin
 //    val classes = compile(code) // SD-86
     InlineInfoTest.notPerRun.foreach(_.clear())
-    val classes =
-      compileClasses(compiler)(
-        code,
-        allowMessage = _ => true
-      ) // SD-86 inline warnings
+    val classes = compileClasses(compiler)(
+      code,
+      allowMessage = _ => true
+    ) // SD-86 inline warnings
 
     val fromSyms = classes.map(c =>
       compiler.genBCode.bTypes

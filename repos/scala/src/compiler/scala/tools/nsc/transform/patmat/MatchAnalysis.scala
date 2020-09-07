@@ -355,11 +355,10 @@ trait MatchApproximation
             boundFrom map (CODE.REF(_)))
           // debug.patmat ("normalize subst: "+ normalize)
 
-          val okSubst =
-            Substitution(
-              unboundFrom,
-              unboundTo map (normalize(_))
-            ) // it's important substitution does not duplicate trees here -- it helps to keep hash consing simple, anyway
+          val okSubst = Substitution(
+            unboundFrom,
+            unboundTo map (normalize(_))
+          ) // it's important substitution does not duplicate trees here -- it helps to keep hash consing simple, anyway
           pointsToBound ++= ((okSubst.from, okSubst.to).zipped filter {
             (f, t) => pointsToBound exists (sym => t.exists(_.symbol == sym))
           })._1
@@ -542,10 +541,9 @@ trait MatchAnalysis extends MatchApproximation {
           removeVarEq(propsCasesFail, modelNull = true)
         val (eqAxiomsOk, symbolicCasesOk) =
           removeVarEq(propsCasesOk, modelNull = true)
-        val eqAxioms =
-          simplify(
-            And(eqAxiomsOk, eqAxiomsFail)
-          ) // I'm pretty sure eqAxiomsOk == eqAxiomsFail, but not 100% sure.
+        val eqAxioms = simplify(
+          And(eqAxiomsOk, eqAxiomsFail)
+        ) // I'm pretty sure eqAxiomsOk == eqAxiomsFail, but not 100% sure.
 
         val prefix = mutable.ArrayBuffer[Prop]()
         prefix += eqAxioms

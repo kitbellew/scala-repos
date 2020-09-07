@@ -92,11 +92,10 @@ object Scripted {
       classpath.ClasspathUtilities.toLoader(scriptedSbtClasspath.files, noJLine)
     val bridgeClass = Class.forName("sbt.test.ScriptedRunner", true, loader)
     val bridge = bridgeClass.newInstance.asInstanceOf[SbtScriptedRunner]
-    val launcherVmOptions =
-      Array(
-        "-XX:MaxPermSize=256M",
-        "-Xmx1G"
-      ) // increased after a failure in scripted source-dependencies/macro
+    val launcherVmOptions = Array(
+      "-XX:MaxPermSize=256M",
+      "-Xmx1G"
+    ) // increased after a failure in scripted source-dependencies/macro
     try {
       // Using java.util.List to encode File => Unit.
       val callback = new java.util.AbstractList[File] {

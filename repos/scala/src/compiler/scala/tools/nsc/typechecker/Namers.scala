@@ -1161,10 +1161,9 @@ trait Namers extends MethodSynthesis {
       }
 
       def overriddenSymbol(resTp: Type) = {
-        lazy val schema: Type =
-          methodTypeSchema(
-            resTp
-          ) // OPT create once. Must be lazy to avoid cycles in neg/t5093.scala
+        lazy val schema: Type = methodTypeSchema(
+          resTp
+        ) // OPT create once. Must be lazy to avoid cycles in neg/t5093.scala
         intersectionType(methOwner.info.parents)
           .nonPrivateMember(meth.name)
           .filter { sym =>
@@ -1502,10 +1501,9 @@ trait Namers extends MethodSynthesis {
     private def typeDefSig(tdef: TypeDef) = {
       val TypeDef(_, _, tparams, rhs) = tdef
       // log("typeDefSig(" + tpsym + ", " + tparams + ")")
-      val tparamSyms =
-        typer.reenterTypeParams(
-          tparams
-        ) //@M make tparams available in scope (just for this abstypedef)
+      val tparamSyms = typer.reenterTypeParams(
+        tparams
+      ) //@M make tparams available in scope (just for this abstypedef)
       val tp = typer.typedType(rhs).tpe match {
         case TypeBounds(lt, rt) if (lt.isError || rt.isError) =>
           TypeBounds.empty

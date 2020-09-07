@@ -355,10 +355,9 @@ class ServerTest extends FunSuite with MockitoSugar with AssertionsForJUnit {
           ChannelBuffers.EMPTY_BUFFER))
       assert(server.read().isDefined)
 
-      val drain =
-        server.server.close(
-          Time.Top
-        ) // synchronously sends drain request to client
+      val drain = server.server.close(
+        Time.Top
+      ) // synchronously sends drain request to client
 
       val Some(Return(tdrain)) = server.read().poll
       val Tdrain(tag) = tdrain

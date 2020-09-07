@@ -955,8 +955,9 @@ trait CaseClassMacros extends ReprTypes {
       val sym = tpe.typeSymbol
       val isCaseClass = sym.asClass.isCaseClass
 
-      val repWCard =
-        Star(Ident(termNames.WILDCARD)) // like pq"_*" except that it does work
+      val repWCard = Star(
+        Ident(termNames.WILDCARD)
+      ) // like pq"_*" except that it does work
 
       def narrow(tree: Tree, tpe: Type): Tree =
         tpe match {
